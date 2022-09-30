@@ -47,9 +47,3 @@ Body: <br/>
 }
 ]
 }`
-<br/>
-<br/>
-
-## Run the code in dev mode <br/>
-If you have quarkus cli installed: `quarkus dev -Dalpine.application.properties=./alpine.properties`<br/>
-Using maven: `mvn quarkus:dev -Dalpine.application.properties=./alpine.properties`<br/>
