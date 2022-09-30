@@ -31,6 +31,7 @@ import org.acme.notification.NotificationConstants;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
 import org.acme.producer.CacheProducer;
+import org.acme.producer.VulnCacheProducer;
 import org.acme.producer.VulnerabilityResultProducer;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -38,6 +39,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import javax.inject.Inject;
 import javax.json.*;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Date;
 
 /**
@@ -61,77 +63,81 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
     @Inject
     VulnerablityResult vulnerablityResult;
 
+    @Inject
+    VulnCacheProducer vulnCacheProducer;
+
 
     @Inject
     VulnCacheReader vulnCacheReader;
     //@ConfigProperty(name = "analysis.cache.validity.period")
     long cacheValidityPeriod;// =Long.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_ANALYSIS_CACHE_VALIDITY_PERIOD.getPropertyName()).getPropertyValue());// 84600;
-/*
-    private final Logger LOGGER = Logger.getLogger(this.getClass()); // We dont want this class reporting the logger
 
-    protected boolean isEnabled(final ConfigPropertyConstants configPropertyConstants) {
-        try (QueryManager qm = new QueryManager()) {
-            final ConfigProperty property = qm.getConfigProperty(
-                    configPropertyConstants.getGroupName(), configPropertyConstants.getPropertyName()
-            );
-            if (property != null && ConfigProperty.PropertyType.BOOLEAN == property.getPropertyType()) {
-                return BooleanUtil.valueOf(property.getPropertyValue());
-            }
-            return false;
-        }
-    }
+    /*
+        private final Logger LOGGER = Logger.getLogger(this.getClass()); // We dont want this class reporting the logger
 
-    protected boolean isCacheCurrent(Vulnerability.Source source, String targetHost, String target) {
-        try (QueryManager qm = new QueryManager()) {
-            boolean isCacheCurrent = false;
-            ConfigProperty cacheClearPeriod = qm.getConfigProperty(ConfigPropertyConstants.SCANNER_ANALYSIS_CACHE_VALIDITY_PERIOD.getGroupName(), ConfigPropertyConstants.SCANNER_ANALYSIS_CACHE_VALIDITY_PERIOD.getPropertyName());
-            long cacheValidityPeriod = Long.valueOf(cacheClearPeriod.getPropertyValue());
-            ComponentAnalysisCache cac = qm.getComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, targetHost, source.name(), target);
-            if (cac != null) {
-                final Date now = new Date();
-                if (now.getTime() > cac.getLastOccurrence().getTime()) {
-                    final long delta = now.getTime() - cac.getLastOccurrence().getTime();
-                    isCacheCurrent = delta <= cacheValidityPeriod;
+        protected boolean isEnabled(final ConfigPropertyConstants configPropertyConstants) {
+            try (QueryManager qm = new QueryManager()) {
+                final ConfigProperty property = qm.getConfigProperty(
+                        configPropertyConstants.getGroupName(), configPropertyConstants.getPropertyName()
+                );
+                if (property != null && ConfigProperty.PropertyType.BOOLEAN == property.getPropertyType()) {
+                    return BooleanUtil.valueOf(property.getPropertyValue());
                 }
+                return false;
             }
-            if (isCacheCurrent) {
-                LOGGER.debug("Cache is current. Skipping analysis. (source: " + source + " / targetHost: " + targetHost + " / target: " + target);
-            } else {
-                LOGGER.debug("Cache is not current. Analysis should be performed (source: " + source + " / targetHost: " + targetHost + " / target: " + target);
-            }
-            return isCacheCurrent;
         }
-    }
 
-    protected void applyAnalysisFromCache(Vulnerability.Source source, String targetHost, String target, Component component, AnalyzerIdentity analyzerIdentity) {
-        try (QueryManager qm = new QueryManager()) {
-            final ComponentAnalysisCache cac = qm.getComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, targetHost, source.name(), target);
-            if (cac != null) {
-                final JsonObject result = cac.getResult();
-                if (result != null) {
-                    final JsonArray vulns = result.getJsonArray("vulnIds");
-                    if (vulns != null) {
-                        for (JsonNumber vulnId : vulns.getValuesAs(JsonNumber.class)) {
-                            final Vulnerability vulnerability = qm.getObjectById(Vulnerability.class, vulnId.longValue());
-                            final Component c = qm.getObjectByUuid(Component.class, component.getUuid());
-                            if (c == null) continue;
-                            if (vulnerability != null) {
-                                NotificationUtil.analyzeNotificationCriteria(qm, vulnerability, component);
-                                qm.addVulnerability(vulnerability, c, analyzerIdentity);
+        protected boolean isCacheCurrent(Vulnerability.Source source, String targetHost, String target) {
+            try (QueryManager qm = new QueryManager()) {
+                boolean isCacheCurrent = false;
+                ConfigProperty cacheClearPeriod = qm.getConfigProperty(ConfigPropertyConstants.SCANNER_ANALYSIS_CACHE_VALIDITY_PERIOD.getGroupName(), ConfigPropertyConstants.SCANNER_ANALYSIS_CACHE_VALIDITY_PERIOD.getPropertyName());
+                long cacheValidityPeriod = Long.valueOf(cacheClearPeriod.getPropertyValue());
+                ComponentAnalysisCache cac = qm.getComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, targetHost, source.name(), target);
+                if (cac != null) {
+                    final Date now = new Date();
+                    if (now.getTime() > cac.getLastOccurrence().getTime()) {
+                        final long delta = now.getTime() - cac.getLastOccurrence().getTime();
+                        isCacheCurrent = delta <= cacheValidityPeriod;
+                    }
+                }
+                if (isCacheCurrent) {
+                    LOGGER.debug("Cache is current. Skipping analysis. (source: " + source + " / targetHost: " + targetHost + " / target: " + target);
+                } else {
+                    LOGGER.debug("Cache is not current. Analysis should be performed (source: " + source + " / targetHost: " + targetHost + " / target: " + target);
+                }
+                return isCacheCurrent;
+            }
+        }
+
+        protected void applyAnalysisFromCache(Vulnerability.Source source, String targetHost, String target, Component component, AnalyzerIdentity analyzerIdentity) {
+            try (QueryManager qm = new QueryManager()) {
+                final ComponentAnalysisCache cac = qm.getComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, targetHost, source.name(), target);
+                if (cac != null) {
+                    final JsonObject result = cac.getResult();
+                    if (result != null) {
+                        final JsonArray vulns = result.getJsonArray("vulnIds");
+                        if (vulns != null) {
+                            for (JsonNumber vulnId : vulns.getValuesAs(JsonNumber.class)) {
+                                final Vulnerability vulnerability = qm.getObjectById(Vulnerability.class, vulnId.longValue());
+                                final Component c = qm.getObjectByUuid(Component.class, component.getUuid());
+                                if (c == null) continue;
+                                if (vulnerability != null) {
+                                    NotificationUtil.analyzeNotificationCriteria(qm, vulnerability, component);
+                                    qm.addVulnerability(vulnerability, c, analyzerIdentity);
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
 
-    protected synchronized void updateAnalysisCacheStats(QueryManager qm, Vulnerability.Source source, String targetHost, String target, JsonObject result) {
-        qm.updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, targetHost, source.name(), target, new Date(), result);
-    }
+        protected synchronized void updateAnalysisCacheStats(QueryManager qm, Vulnerability.Source source, String targetHost, String target, JsonObject result) {
+            qm.updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, targetHost, source.name(), target, new Date(), result);
+        }
 
 
-*/
+    */
     protected void handleUnexpectedHttpResponse(final Logger logger, String url, final int statusCode, final String statusText) {
         logger.error("HTTP Status : " + statusCode + " " + statusText);
         logger.error(" - Analyzer URL : " + url);
@@ -139,7 +145,7 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
                 .scope(NotificationScope.SYSTEM)
                 .group(NotificationGroup.ANALYZER)
                 .title(NotificationConstants.Title.ANALYZER_ERROR)
-                .content("An error occurred while communicating with a vulnerability intelligence source. URL: " + url + " HTTP Status: " + statusCode + ". Check log for details." )
+                .content("An error occurred while communicating with a vulnerability intelligence source. URL: " + url + " HTTP Status: " + statusCode + ". Check log for details.")
                 .level(NotificationLevel.ERROR)
         );
     }
@@ -155,6 +161,29 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
         );
     }
 
+    protected boolean isCacheCurrent(Vulnerability.Source source, String targetHost, String target) {
+        cacheValidityPeriod = Long.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_ANALYSIS_CACHE_VALIDITY_PERIOD.getPropertyName()).getPropertyValue());
+        boolean isCacheCurrent = false;
+        CacheKey key = new CacheKey();
+        key.setAnalyzerType(source.name());
+        key.setComponentPurl(target);
+        ComponentAnalysisCache cac = cacheReader.getComponentCache(key);
+        if (cac != null) {
+            final Date now = new Date();
+            if (now.getTime() > cac.getLastOccurrence().getTime()) {
+                final long delta = now.getTime() - cac.getLastOccurrence().getTime();
+                isCacheCurrent = delta <= cacheValidityPeriod;
+            }
+        }
+        if (isCacheCurrent) {
+            LOGGER.debug("Cache is current. Skipping analysis. (source: " + source + " / targetHost: " + targetHost + " / target: " + target);
+        } else {
+            LOGGER.debug("Cache is not current. Analysis should be performed (source: " + source + " / targetHost: " + targetHost + " / target: " + target);
+        }
+        return isCacheCurrent;
+
+    }
+
     protected void addVulnerabilityToCache(Component component, Vulnerability vulnerability) {
         if (component.getCacheResult() == null) {
             final JsonArray vulns = Json.createArrayBuilder().add(vulnerability.getId()).build();
@@ -165,30 +194,9 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
             final JsonArrayBuilder vulnsBuilder = Json.createArrayBuilder(result.getJsonArray("vulnIds"));
             final JsonArray vulns = vulnsBuilder.add(Json.createValue(vulnerability.getId())).build();
             component.setCacheResult(Json.createObjectBuilder(result).add("vulnIds", vulns).build());
+
         }
-    }
-
-    protected boolean isCacheCurrent(Vulnerability.Source source, String targetHost, String target) {
-            cacheValidityPeriod =Long.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_ANALYSIS_CACHE_VALIDITY_PERIOD.getPropertyName()).getPropertyValue());
-            boolean isCacheCurrent = false;
-            CacheKey key = new CacheKey();
-            key.setAnalyzerType(source.name());
-            key.setComponentPurl(target);
-            ComponentAnalysisCache cac = cacheReader.getComponentCache(key);
-            if (cac != null) {
-                final Date now = new Date();
-                if (now.getTime() > cac.getLastOccurrence().getTime()) {
-                    final long delta = now.getTime() - cac.getLastOccurrence().getTime();
-                    isCacheCurrent = delta <= cacheValidityPeriod;
-                }
-            }
-            if (isCacheCurrent) {
-                LOGGER.debug("Cache is current. Skipping analysis. (source: " + source + " / targetHost: " + targetHost + " / target: " + target);
-            } else {
-                LOGGER.debug("Cache is not current. Analysis should be performed (source: " + source + " / targetHost: " + targetHost + " / target: " + target);
-            }
-            return isCacheCurrent;
-
+        vulnCacheProducer.sendVulnCacheToKafka(vulnerability.getId(), vulnerability);
     }
 
     public JsonObject getJsonResult(String result) {
@@ -208,8 +216,8 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
         key.setAnalyzerType(source.name());
         key.setComponentPurl(target);
         ComponentAnalysisCache cac = cacheReader.getComponentCache(key);
-        if(cac != null){
-        final JsonObject jsonResult= getJsonResult(cac.getResult());
+        if (cac != null) {
+            final JsonObject jsonResult = getJsonResult(cac.getResult());
 
             if (jsonResult != null) {
                 final JsonArray vulns = jsonResult.getJsonArray("vulnIds");
@@ -218,19 +226,51 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
                         final Vulnerability vulnerability = vulnCacheReader.getVulnCache(vulnId.longValue());
                             /*final Component c = qm.getObjectByUuid(Component.class, component.getUuid());
                             if (c == null) continue;*/
-                            if (vulnerability != null) {
-                                //NotificationUtil.analyzeNotificationCriteria(qm, vulnerability, component);
-                                vulnerablityResult.setIdentity(analyzerIdentity);
-                                vulnerablityResult.setComponent(component);
-                                vulnerablityResult.setVulnerability(vulnerability);
-                                vulnerabilityResultProducer.sendVulnResultToKafkaAsCache(component.getUuid(), vulnerablityResult);
+                        if (vulnerability != null) {
+                            //NotificationUtil.analyzeNotificationCriteria(qm, vulnerability, component);
+                            vulnerablityResult.setIdentity(analyzerIdentity);
+                            vulnerablityResult.setComponent(component);
+                            vulnerablityResult.setVulnerability(vulnerability);
+                            vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
 
-                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    public synchronized void updateComponentAnalysisCache(ComponentAnalysisCache.CacheType cacheType, String targetHost, String targetType, String target, Date lastOccurrence, JsonObject result) {
+        CacheKey key = new CacheKey();
+        key.setAnalyzerType(targetType);
+        key.setComponentPurl(target);
+        ComponentAnalysisCache cac = cacheReader.getComponentCache(key);//getComponentAnalysisCache(cacheType, targetHost, targetType, target); To-Do- Apurva
+        if (cac == null) {
+            cac = new ComponentAnalysisCache();
+            cac.setCacheType(cacheType);
+            cac.setTargetHost(targetHost);
+            cac.setTargetType(targetType);
+            cac.setTarget(target);
+        }
+        cac.setLastOccurrence(lastOccurrence);
+        String jsonObject = "";
+        if (result != null) {
+            try (final StringWriter sw = new StringWriter();
+                 final JsonWriter jw = Json.createWriter(sw)) {
+                jw.write(result);
+                jsonObject = sw.toString();
+            } catch (Exception e) {
+                result = null;
+            }
+            cac.setResult(jsonObject);
+        }
+
+        LOGGER.info("Sending Data Index analysis complete");
+
+        producer.sendVulnCacheToKafka(key, cac);
+
+    }
+
 
 
    /* public synchronized void updateComponentAnalysisCache(ComponentAnalysisCache.CacheType cacheType, String targetHost, String targetType, String target, Date lastOccurrence, JsonObject result) {

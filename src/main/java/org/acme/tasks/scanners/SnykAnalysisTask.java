@@ -362,11 +362,13 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                                 vulnerablityResult.setComponent(component);
                                 vulnerablityResult.setVulnerability(vulnerability);
                                 vulnerablityResult.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
-                                vulnerabilityResultProducer.sendVulnResultToKafkaAsCache(component.getUuid(), vulnerablityResult);
+                                vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
 
                             } else {
                                 handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());
                             }
+                            updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, API_BASE_URL, Vulnerability.Source.SNYK.name(), component.getPurl().toString(), Date.from(Instant.now()), component.getCacheResult());
+
                         } else {
                             LOGGER.info("Cache is current, apply analysis from cache");
                             applyAnalysisFromCache(Vulnerability.Source.SNYK, API_BASE_URL, component.getPurl().toString(), component, getAnalyzerIdentity());
