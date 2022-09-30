@@ -30,7 +30,7 @@ import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
 import org.acme.consumer.ConfigConsumer;
 import org.acme.event.SnykAnalysisEvent;
-import org.acme.event.VexUploadEvent;
+import org.acme.producer.VulnerabilityResultProducer;
 import org.apache.http.HttpHeaders;
 import org.acme.common.UnirestFactory;
 import org.acme.event.IndexEvent;
@@ -58,12 +58,18 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
     ConfigConsumer configConsumer;
 
     private final Logger LOGGER = Logger.getLogger(SnykAnalysisTask.class);
+    @Inject
+    VulnerablityResult vulnerablityResult;
+
+    @Inject
+    Vulnerability vulnerability;
 
     private String apiToken;
 
     private String API_BASE_URL = "";
 
-    private final ArrayList<VulnerableSoftware> finalVsList = new ArrayList<>();
+    @Inject
+    VulnerabilityResultProducer vulnerabilityResultProducer;
 
     public AnalyzerIdentity getAnalyzerIdentity() {
         return AnalyzerIdentity.SNYK_ANALYZER;
@@ -348,15 +354,12 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                     final HttpResponse<JsonNode> jsonResponse = request.asJson();
                     if (jsonResponse.getStatus() == 200) {
                         ArrayList<VulnerableSoftware> vsList = handle(component, jsonResponse.getBody().getObject());
-                        for (VulnerableSoftware vs : vsList) {
-                            System.out.println("Printing vulnerable software list item here start::::::::::::::: ");
-                            System.out.println(vs.getPurl());
-                            System.out.println(vs.getVersion());
-                            System.out.println(vs.getVendor());
-                            System.out.println(vs.getPurlName());
-                            System.out.println("Printing vulnerable software list item here end::::::::::::::: ");
-                        }
-                        finalVsList.addAll(vsList);
+                        vulnerability.setVulnerableSoftware(vsList);
+                        vulnerablityResult.setComponent(component);
+                        vulnerablityResult.setVulnerability(vulnerability);
+                        vulnerablityResult.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
+                        vulnerabilityResultProducer.sendVulnResultToKafkaAsCache(component.getUuid(), vulnerablityResult);
+
                     } else {
                         handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());
                     }

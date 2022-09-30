@@ -223,7 +223,7 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
                                 vulnerablityResult.setIdentity(analyzerIdentity);
                                 vulnerablityResult.setComponent(component);
                                 vulnerablityResult.setVulnerability(vulnerability);
-                                vulnerabilityResultProducer.sendVulnCacheToKafka(component.getUuid(), vulnerablityResult);
+                                vulnerabilityResultProducer.sendVulnResultToKafkaAsCache(component.getUuid(), vulnerablityResult);
 
                             }
                         }
