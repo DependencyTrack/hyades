@@ -148,27 +148,13 @@ public class ComponentAnalysisCache implements Serializable {
 
     public ComponentAnalysisCache() {
     }
-    //@JsonDeserialize(using = CustomJsonDeserializer.class)
+
     @JsonGetter
     public String getResult() {
 
         return result;
     }
 
-
-   /* public void setResult(JsonObject jsonObject) {
-        if (jsonObject == null) {
-            result = null;
-        } else {
-            try (final StringWriter sw = new StringWriter();
-                 final JsonWriter jw = Json.createWriter(sw)) {
-                jw.write(jsonObject);
-                result = sw.toString();
-            } catch (Exception e) {
-                result = null;
-            }
-        }
-    }*/
     @JsonSetter
     public void setResult(String jsonObject){
         result = jsonObject;
