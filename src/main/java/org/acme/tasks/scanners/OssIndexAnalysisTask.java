@@ -287,7 +287,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                         vulnerablityResult.setComponent(component);
                         vulnerablityResult.setVulnerability(vulnerability);
                         vulnerablityResult.setIdentity(getAnalyzerIdentity());
-                        vulnerabilityResultProducer.sendVulnCacheToKafka(component.getUuid(), vulnerablityResult);
+                        vulnerabilityResultProducer.sendVulnResultToKafkaAsCache(component.getUuid(), vulnerablityResult);
                     }
                 }
 
