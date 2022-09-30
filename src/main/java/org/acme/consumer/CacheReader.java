@@ -54,11 +54,9 @@ public class CacheReader {
         StreamsBuilder builder = new StreamsBuilder();
         ObjectMapperSerde<ComponentAnalysisCache> componentSerde = new ObjectMapperSerde<>(ComponentAnalysisCache.class);
         ObjectMapperSerde<CacheKey> cacheSerde = new ObjectMapperSerde<>(CacheKey.class);
-        //com.google.gson.JsonDeserializer<ComponentAnalysisCache> deserializer = new com.google.gson.JsonDeserializer<>(ComponentAnalysisCache.class);
-        GlobalKTable<CacheKey, ComponentAnalysisCache> componentCache = builder.globalTable("component-cache", Materialized.<CacheKey, ComponentAnalysisCache, KeyValueStore<Bytes, byte[]>>as(cacheStoreName)
+        GlobalKTable<CacheKey, ComponentAnalysisCache> componentCache = builder.globalTable(cacheTopic, Materialized.<CacheKey, ComponentAnalysisCache, KeyValueStore<Bytes, byte[]>>as(cacheStoreName)
                 .withKeySerde(Serdes.serdeFrom(new CacheKeySerializer(), new CacheKeyDeserializer()))
                 .withValueSerde(Serdes.serdeFrom(new ComponentAnalysisCacheSerializer(), new ComponentAnalysisCacheDeserializer())));
-        //KStream<CacheKey, ComponentAnalysisCache> componentCache = builder.stream("vuln-cache", Consumed.with(Serdes.serdeFrom(new CacheKeySerializer(), new CacheKeyDeserializer()), componentSerde));
         streams = new KafkaStreams(builder.build(), props);
         streams.start();
 

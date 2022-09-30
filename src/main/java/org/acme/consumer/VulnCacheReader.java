@@ -50,11 +50,9 @@ public class VulnCacheReader {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"latest");
         StreamsBuilder builder = new StreamsBuilder();
-        //ObjectMapperSerde<Vulnerability> vulnerabilityObjectMapperSerde = new ObjectMapperSerde<>(Vulnerability.class);
         GlobalKTable<Long, Vulnerability> vulnCache = builder.globalTable(cacheTopic, Materialized.<Long, Vulnerability, KeyValueStore<Bytes, byte[]>>as(vulnCacheStoreName)
                 .withKeySerde(Serdes.Long())
                 .withValueSerde(Serdes.serdeFrom(new VulnerabilitySerializer(), new VulnerabilityDeserializer())));
-        //KStream<CacheKey, ComponentAnalysisCache> componentCache = builder.stream("vuln-cache", Consumed.with(Serdes.serdeFrom(new CacheKeySerializer(), new CacheKeyDeserializer()), componentSerde));
         streams = new KafkaStreams(builder.build(), props);
         streams.start();
 
