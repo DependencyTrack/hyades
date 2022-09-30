@@ -91,9 +91,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     VulnerablityResult vulnerablityResult;
 
     @Inject
-    VulnCacheProducer vulnCacheProducer;
-
-    @Inject
     VulnerabilityResultProducer vulnerabilityResultProducer;
 
     private String apiUsername;
@@ -287,7 +284,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                         vulnerablityResult.setComponent(component);
                         vulnerablityResult.setVulnerability(vulnerability);
                         vulnerablityResult.setIdentity(getAnalyzerIdentity());
-                        vulnerabilityResultProducer.sendVulnResultToKafkaAsCache(component.getUuid(), vulnerablityResult);
+                        vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
                     }
                 }
 
@@ -350,53 +347,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
             }
         }
         return vulnerability;
-    }
-
-
-    protected void addVulnerabilityToCache(Component component, Vulnerability vulnerability) {
-        if (component.getCacheResult() == null) {
-            final JsonArray vulns = Json.createArrayBuilder().add(vulnerability.getId()).build();
-            final JsonObject result = Json.createObjectBuilder().add("vulnIds", vulns).build();
-            component.setCacheResult(result);
-        } else {
-            final JsonObject result = component.getCacheResult();
-            final JsonArrayBuilder vulnsBuilder = Json.createArrayBuilder(result.getJsonArray("vulnIds"));
-            final JsonArray vulns = vulnsBuilder.add(Json.createValue(vulnerability.getId())).build();
-            component.setCacheResult(Json.createObjectBuilder(result).add("vulnIds", vulns).build());
-
-        }
-        vulnCacheProducer.sendVulnCacheToKafka(vulnerability.getId(), vulnerability);
-    }
-
-    public synchronized void updateComponentAnalysisCache(ComponentAnalysisCache.CacheType cacheType, String targetHost, String targetType, String target, Date lastOccurrence, JsonObject result) {
-        CacheKey key = new CacheKey();
-        key.setAnalyzerType(targetType);
-        key.setComponentPurl(target);
-        ComponentAnalysisCache cac = cacheReader.getComponentCache(key);//getComponentAnalysisCache(cacheType, targetHost, targetType, target); To-Do- Apurva
-        if (cac == null) {
-            cac = new ComponentAnalysisCache();
-            cac.setCacheType(cacheType);
-            cac.setTargetHost(targetHost);
-            cac.setTargetType(targetType);
-            cac.setTarget(target);
-        }
-        cac.setLastOccurrence(lastOccurrence);
-        String jsonObject = "";
-        if (result != null) {
-            try (final StringWriter sw = new StringWriter();
-                 final JsonWriter jw = Json.createWriter(sw)) {
-                jw.write(result);
-                jsonObject = sw.toString();
-            } catch (Exception e) {
-                result = null;
-            }
-            cac.setResult(jsonObject);
-        }
-
-        LOGGER.info("Sending Data Index analysis complete");
-
-        producer.sendVulnCacheToKafka(key, cac);
-
     }
 
     public Integer parseCweString(final String cweString) {
