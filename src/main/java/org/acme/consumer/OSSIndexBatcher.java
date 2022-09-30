@@ -77,6 +77,7 @@ public class OSSIndexBatcher {
                 queue.add(value);
                 if (queue.remainingCapacity() == 0) {
                     processQueue();
+                    context().commit();
                 }
             }
 
@@ -87,7 +88,6 @@ public class OSSIndexBatcher {
                     ossIndexAnalysisEvent.setComponents(collection);
                     task.inform(ossIndexAnalysisEvent);
                 }
-                context.commit();
             }
 
         });
