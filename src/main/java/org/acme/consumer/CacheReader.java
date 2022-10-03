@@ -50,7 +50,7 @@ public class CacheReader {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, cacheTopic);
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, server);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"latest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,offset);
         StreamsBuilder builder = new StreamsBuilder();
         ObjectMapperSerde<ComponentAnalysisCache> componentSerde = new ObjectMapperSerde<>(ComponentAnalysisCache.class);
         ObjectMapperSerde<CacheKey> cacheSerde = new ObjectMapperSerde<>(CacheKey.class);
