@@ -29,6 +29,7 @@ public class VulnCacheProducer {
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, "VulnCacheProducer");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, VulnerabilitySerializer.class.getName());
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
         producer = new KafkaProducer<>(properties);
     }
 

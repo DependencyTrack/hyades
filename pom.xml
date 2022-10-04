@@ -23,7 +23,7 @@
     <lib.unirest.version>3.13.11</lib.unirest.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.12.2.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.13.0.Final</quarkus.platform.version>
     <lib.jaxb.runtime.version>2.3.6</lib.jaxb.runtime.version>
 
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
@@ -153,6 +153,33 @@
   </dependencies>
   <build>
     <plugins>
+        <plugin>
+          <groupId>org.cyclonedx</groupId>
+          <artifactId>cyclonedx-maven-plugin</artifactId>
+          <version>2.7.1</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>makeAggregateBom</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <projectType>library</projectType>
+            <schemaVersion>1.4</schemaVersion>
+            <includeBomSerialNumber>true</includeBomSerialNumber>
+            <includeCompileScope>true</includeCompileScope>
+            <includeProvidedScope>true</includeProvidedScope>
+            <includeRuntimeScope>true</includeRuntimeScope>
+            <includeSystemScope>true</includeSystemScope>
+            <includeTestScope>true</includeTestScope>
+            <includeLicenseText>false</includeLicenseText>
+            <outputReactorProjects>true</outputReactorProjects>
+            <outputFormat>all</outputFormat>
+            <outputName>bom</outputName>
+          </configuration>
+        </plugin>
       <plugin>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>

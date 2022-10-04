@@ -36,6 +36,7 @@ public class CacheProducer {
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, "CacheProducer");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, CacheKeySerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ComponentAnalysisCacheSerializer.class.getName());
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
         producer = new KafkaProducer<>(properties);
     }
 
