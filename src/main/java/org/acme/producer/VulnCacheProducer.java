@@ -11,13 +11,15 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongSerializer;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Properties;
 
 @ApplicationScoped
 public class VulnCacheProducer {
-
+    @ConfigProperty(name = "topic.vuln.cache")
+    String cacheTopic;
     private static final Producer<Long, Vulnerability> producer;
 
 
@@ -32,7 +34,7 @@ public class VulnCacheProducer {
 
 
     public void sendVulnCacheToKafka(Long vulnId, Vulnerability cacheValue) {
-        producer.send(new ProducerRecord<>("vuln-cache", vulnId, cacheValue));
+        producer.send(new ProducerRecord<>(cacheTopic, vulnId, cacheValue));
 
     }
 
