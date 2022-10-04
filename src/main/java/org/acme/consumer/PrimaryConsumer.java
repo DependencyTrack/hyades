@@ -35,11 +35,8 @@ public class PrimaryConsumer {
     @ConfigProperty(name = "consumer.offset")
     String offset;
 
-    @ConfigProperty(name = "topic.snyk")
-    String snykTopic;
-
-    @ConfigProperty(name = "topic.oss")
-    String ossTopic;
+    @ConfigProperty(name = "topic.event")
+    String eventTopic;
 
     @ConfigProperty(name = "topic.in.primary")
     String inputTopic;
@@ -64,14 +61,8 @@ public class PrimaryConsumer {
         //Setting the message key same as the name of component to send messages on different partitions of topic event-out
         KStream<String, Component> splittedStreams = kStreamsVulnTask.flatMapValues(value -> value.getComponents()).selectKey((key, value) -> value.getName());
 
-       /* if (isConsumerEnabled(ConfigPropertyConstants.SCANNER_OSSINDEX_ENABLED.getPropertyName())) {
-            splittedStreams.to(ossTopic, (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
-        }
-        if (isConsumerEnabled(ConfigPropertyConstants.SCANNER_SNYK_ENABLED.getPropertyName())) {
-            splittedStreams.to(snykTopic, (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
-        }*/
-        splittedStreams.to(ossTopic, (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
-        splittedStreams.to(snykTopic, (Produced<String, Component>) Produced.with(Serdes.String(),  componentSerde));
+        splittedStreams.to(eventTopic, (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
+
         streams = new KafkaStreams(builder.build(), props);
         streams.start();
 

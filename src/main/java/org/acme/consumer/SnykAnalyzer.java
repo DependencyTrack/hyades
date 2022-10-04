@@ -19,8 +19,8 @@ public class SnykAnalyzer {
     String loggerName;
     Logger logger = Logger.getLogger(loggerName);
 
-    @ConfigProperty(name = "topic.snyk")
-    static final String snykTopic = "SnykEvent";
+    @ConfigProperty(name = "topic.event")
+    static final String eventTopic = "SnykEvent";
 
     @Inject
     SnykAnalysisTask snykTask;
@@ -30,7 +30,7 @@ public class SnykAnalyzer {
 
     Component component;
 
-    @Incoming(snykTopic)
+    @Incoming(eventTopic)
     public CompletionStage<Void> consume(KafkaRecord<String, Component> records) {
         Component payload = records.getPayload();
         component = payload;
