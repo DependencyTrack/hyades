@@ -36,7 +36,9 @@ services:
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
-       /usr/bin/rpk topic list --brokers=localhost:8082
+       /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
+      echo -e 'Creating topics now'
+
       /usr/bin/rpk topic create event --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create OSSEvent --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create SnykEvent --brokers=redpanda:29092 --replicas=1 --partitions=3
@@ -46,4 +48,4 @@ services:
       /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3
       "
     ports:
-      - "8088:8088"
+      - "8093:8093"
