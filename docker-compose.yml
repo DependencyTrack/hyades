@@ -46,6 +46,18 @@ services:
       /usr/bin/rpk topic create vuln-cache --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic produce configuration --brokers=redpanda:29092
+      /usr/bin/rpk topic produce cweValues --brokers=redpanda:29092
+      /usr/bin/rpk topic produce event --brokers=redpanda:29092
+      /usr/bin/rpk topic produce vuln-cache --brokers=redpanda:29092
+      /usr/bin/rpk topic produce vuln-result --brokers=redpanda:29092
+      /usr/bin/rpk topic consume component-cache --brokers=localhost:9092
+      /usr/bin/rpk topic consume configuration --brokers=localhost:9092
+      /usr/bin/rpk topic consume cweValues --brokers=localhost:9092
+      /usr/bin/rpk topic consume OSSEvent --brokers=localhost:9092
+      /usr/bin/rpk topic consume event --brokers=localhost:9092
+      /usr/bin/rpk topic consume SnykEvent --brokers=localhost:9092
+      /usr/bin/rpk topic consume vuln-cache --brokers=localhost:9092
       "
     ports:
       - "8093:8093"
