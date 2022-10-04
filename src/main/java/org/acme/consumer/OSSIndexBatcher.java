@@ -33,8 +33,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class OSSIndexBatcher {
     KafkaStreams streams;
 
-    @ConfigProperty(name = "topic.oss")
-    String ossTopic;
+    @ConfigProperty(name = "topic.event")
+    String eventTopic;
 
     @ConfigProperty(name = "consumer.server")
     String server;
@@ -51,14 +51,14 @@ public class OSSIndexBatcher {
     OssIndexAnalysisTask task;
     void onStart(@Observes StartupEvent event) {
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, ossTopic);
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "OSSConsumer");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offset);
         final var streamsBuilder = new StreamsBuilder();
 
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
-        KStream<String, Component> kStreams = streamsBuilder.stream(ossTopic, Consumed.with(Serdes.String(), componentSerde));
+        KStream<String, Component> kStreams = streamsBuilder.stream(eventTopic, Consumed.with(Serdes.String(), componentSerde));
         kStreams.process(() -> new AbstractProcessor<String, Component>() {
             final LinkedBlockingQueue<Component> queue = new LinkedBlockingQueue<>(2);
 
