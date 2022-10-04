@@ -47,7 +47,7 @@ public class CweConsumer {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationId);
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, server);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offset);
         StreamsBuilder builder = new StreamsBuilder();
         ObjectMapperSerde<Cwe> cweSerde = new ObjectMapperSerde<>(Cwe.class);
         GlobalKTable<Integer, String> cweTable = builder.globalTable(cweTopic, Materialized.<Integer, String, KeyValueStore<Bytes, byte[]>>as(storeName).withKeySerde(Serdes.Integer())

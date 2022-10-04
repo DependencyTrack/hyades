@@ -24,7 +24,22 @@ Body:<br/>
 "id": 4,
 "propertyName": "snyk.enabled",
 "propertyValue": "true"
+},{
+"id": 5,
+"propertyName": "ossindex.api.username",
+"propertyValue": "org id"
+},
+{
+"id": 6,
+"propertyName": "ossindex.api.token",
+"propertyValue": "org id"
+},
+{
+"id": 7,
+"propertyName": "analysis.cache.validity.period",
+"propertyValue": "org id"
 }
+
 ]`<br/> <br/>
 ### Verify if Cwe store contains values
 Get request to http://localhost:8089/cwe/data?id=178

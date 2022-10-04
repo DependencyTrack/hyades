@@ -12,13 +12,21 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Properties;
 
+
+
+
+
 @ApplicationScoped
 public class CacheProducer {
 
+    @ConfigProperty(name = "topic.component.cache")
+    String cacheTopic;
     private static final Producer<CacheKey, ComponentAnalysisCache> producer;
 
 
@@ -34,7 +42,7 @@ public class CacheProducer {
 
 
     public void sendVulnCacheToKafka(CacheKey key, ComponentAnalysisCache cacheValue) {
-        producer.send(new ProducerRecord<>("component-cache", key, cacheValue));
+        producer.send(new ProducerRecord<>(cacheTopic, key, cacheValue));
 
     }
 
