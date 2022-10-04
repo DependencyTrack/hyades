@@ -30,16 +30,20 @@ services:
       - "29092:29092"
     restart: unless-stopped
   init:
-    image: docker.redpanda.com/vectorized/redpanda:v21.11.15
+    image: docker.redpanda.com/vectorized/redpanda:v22.2.2
     depends_on:
       - redpanda
+    entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
-      topic create event --brokers=redpanda:29092
-      topic create OSSEvent --brokers=redpanda:29092
-      topic create SnykEvent --brokers=redpanda:29092
-      topic create cweValues --brokers=redpanda:29092
-      topic create vuln-cache --brokers=redpanda:29092
-      topic create vuln-result --brokers=redpanda:29092
-      topic create component-cache --brokers=redpanda:29092
+       /usr/bin/rpk topic list --brokers=localhost:8082
+      /usr/bin/rpk topic create event --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create OSSEvent --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create SnykEvent --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create cweValues --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create vuln-cache --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3
       "
+    ports:
+      - "8088:8088"
