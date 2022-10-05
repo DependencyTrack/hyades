@@ -5,10 +5,10 @@ import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
 import org.acme.model.Cwe;
 import org.acme.persistence.CweImporter;
-import org.acme.producer.CweDataProducer;
 import org.jboss.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.Map;
 
 @QuarkusMain
@@ -18,9 +18,9 @@ public class Main {
         Quarkus.run(MyApp.class, args);
     }
 
+    public static HashMap<Integer, String> cweInfo = new HashMap<>();
+
     public static class MyApp implements QuarkusApplication {
-        @Inject
-        CweDataProducer cweRecordGenerator;
         Logger logger = Logger.getLogger("poc");
 
         @Override
@@ -28,10 +28,9 @@ public class Main {
             try {
                 Map<Integer, String> cweList = new CweImporter().processCweDefinitions();
                 for (Map.Entry<Integer, String> entry : cweList.entrySet()) {
-                    Cwe cwe = new Cwe();
-                    cwe.setCweId(entry.getKey());
-                    cwe.setName(entry.getValue());
-                    cweRecordGenerator.sendCweToKafka(cwe);
+                    if (entry != null) {
+                        cweInfo.put(entry.getKey(), entry.getValue());
+                    }
                 }
             } catch (Exception ex) {
                 logger.error("Error adding CWEs to database");
