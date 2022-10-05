@@ -2,7 +2,7 @@ version: "3"
 
 services:
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v22.2.2
+    image: docker.redpanda.com/vectorized/redpanda:v22.2.5
     container_name: redpanda
     command:
       - redpanda
@@ -30,7 +30,7 @@ services:
       - "29092:29092"
     restart: unless-stopped
   init:
-    image: docker.redpanda.com/vectorized/redpanda:v22.2.2
+    image: docker.redpanda.com/vectorized/redpanda:v22.2.5
     depends_on:
       - redpanda
     entrypoint: [ '/bin/sh', '-c' ]
