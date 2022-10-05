@@ -56,6 +56,7 @@ public class ConfigConsumer {
             @Override
             public void apply(String configPropertyName, ConfigProperty configPropertyValue) {
                 Main.configValues.put(configPropertyName, configPropertyValue);
+
             }
         });
         //Main.configValues.put(configStream.)
@@ -73,11 +74,12 @@ public class ConfigConsumer {
     }
 
     public ConfigProperty getConfigProperty(String propertyName) {
-        ConfigProperty configProperty = null;
-        if(Main.configValues.containsKey(propertyName))
-            configProperty = Main.configValues.get(propertyName);
 
-        return configProperty;
+        if(Main.configValues.containsKey(propertyName))
+            return Main.configValues.get(propertyName);
+        else {
+            return null;
+        }
     }
 
 

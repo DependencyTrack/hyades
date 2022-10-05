@@ -19,7 +19,7 @@ public class Main {
     }
 
     public static HashMap<Integer, String> cweInfo = new HashMap<>();
-    public static HashMap<String, ConfigProperty> configValues = new HashMap<>();
+    public static final Map<String, ConfigProperty> configValues = new HashMap<>();
 
 
     public static class MyApp implements QuarkusApplication {
