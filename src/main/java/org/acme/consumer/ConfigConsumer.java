@@ -50,8 +50,7 @@ public class ConfigConsumer {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offset);
         StreamsBuilder builder = new StreamsBuilder();
-        //GlobalKTable<String, ConfigProperty> configTable = builder.globalTable(configTopic, Materialized.<String, ConfigProperty, KeyValueStore<Bytes, byte[]>>as(storeName).withKeySerde(Serdes.String())
-        //      .withValueSerde(Serdes.serdeFrom(new ConfigPropertySerializer(), new ConfigPropertyDeserializer())));
+
         KStream<String, ConfigProperty> configStream = builder.stream(configTopic, Consumed.with(Serdes.String(),Serdes.serdeFrom(new ConfigPropertySerializer(), new ConfigPropertyDeserializer()))); //receiving the message on topic event
         configStream.foreach(new ForeachAction<String, ConfigProperty>() {
             @Override
@@ -81,13 +80,5 @@ public class ConfigConsumer {
         return configProperty;
     }
 
-    private ReadOnlyKeyValueStore<String, ConfigProperty> getProperties() {
-        while (true) {
-            try {
-                return streams.store(StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore()));
-            } catch (InvalidStateStoreException e) {
-                // ignore, store not ready yet
-            }
-        }
-    }
+
 }
