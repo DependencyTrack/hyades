@@ -42,7 +42,6 @@ services:
       /usr/bin/rpk topic create event --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create OSSEvent --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create SnykEvent --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create cweValues --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create vuln-cache --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3

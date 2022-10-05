@@ -19,28 +19,19 @@
 package org.acme.tasks.scanners;
 
 import alpine.common.logging.Logger;
-import alpine.common.util.Pageable;
 import alpine.event.framework.Event;
 import alpine.event.framework.Subscriber;
-import alpine.security.crypto.DataEncryption;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import kong.unirest.*;
 import kong.unirest.json.JSONObject;
 import org.acme.common.*;
 
-import java.io.StringWriter;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.*;
 
-import org.acme.consumer.CacheReader;
 import org.acme.consumer.ConfigConsumer;
-import org.acme.consumer.CweConsumer;
-import org.acme.producer.CacheProducer;
-import org.acme.producer.VulnCacheProducer;
 import org.acme.producer.VulnerabilityResultProducer;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.CvssV2;
 import us.springett.cvss.CvssV3;
@@ -49,16 +40,12 @@ import us.springett.cvss.Score;
 import org.acme.model.*;
 import org.apache.http.HttpHeaders;
 import kong.unirest.UnirestInstance;
-import org.acme.event.MetricsUpdateEvent;
 import org.acme.event.OssIndexAnalysisEvent;
 import org.apache.commons.collections4.CollectionUtils;
-import org.acme.parser.common.resolver.CweResolver;
 import org.acme.parser.OssIndexParser;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.json.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,15 +65,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
 
     @Inject
     ConfigConsumer configConsumer;
-
-
-    @Inject
-    CweConsumer cweConsumer;
-
-    @Inject
-    CacheProducer producer;
-    @Inject
-    CacheReader cacheReader;
     @Inject
     VulnerablityResult vulnerablityResult;
 

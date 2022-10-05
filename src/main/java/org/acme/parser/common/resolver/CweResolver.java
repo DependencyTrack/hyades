@@ -18,7 +18,7 @@
  */
 package org.acme.parser.common.resolver;
 
-import org.acme.consumer.CweConsumer;
+import org.acme.Main;
 import org.apache.commons.lang3.StringUtils;
 import org.acme.model.Cwe;
 
@@ -35,8 +35,6 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class CweResolver {
-    @Inject
-    CweConsumer cweConsumer;
 
     @Inject
     Cwe cwe;
@@ -68,8 +66,11 @@ public class CweResolver {
      * @since 4.5.0
      */
     public Cwe lookup(final Integer cweId) {
+        if(Main.cweInfo.isEmpty()){
+            return null;
+        }
         if (cweId != null) {
-            String cweName = cweConsumer.getCweValues(cweId);
+            String cweName = Main.cweInfo.get(cweId);
             cwe.setCweId(cweId);
             cwe.setName(cweName);
             return cwe;
@@ -88,8 +89,11 @@ public class CweResolver {
      */
     public Cwe resolve(final String cweString) {
         final Integer cweId = parseCweString(cweString);
+        if(Main.cweInfo.isEmpty()){
+            return null;
+        }
         if (cweId != null) {
-            String cweName = cweConsumer.getCweValues(cweId);
+            String cweName = Main.cweInfo.get(cweId);
             cwe.setCweId(cweId);
             cwe.setName(cweName);
             return cwe;
