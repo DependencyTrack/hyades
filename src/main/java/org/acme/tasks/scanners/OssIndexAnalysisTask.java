@@ -94,7 +94,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
             LOGGER.info("Sonatype OSS Index analysis complete");
         }
     }
-
     /**
      * Determines if the {@link OssIndexAnalysisTask} is capable of analyzing the specified Component.
      *
