@@ -3,7 +3,6 @@ package org.acme;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
-import org.acme.model.Cwe;
 import org.acme.persistence.CweImporter;
 import org.jboss.logging.Logger;
 
