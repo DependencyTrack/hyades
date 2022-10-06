@@ -1,10 +1,6 @@
 package org.acme.producer;
 
-import org.acme.model.CacheKey;
-import org.acme.model.ComponentAnalysisCache;
 import org.acme.model.Vulnerability;
-import org.acme.serde.CacheKeySerializer;
-import org.acme.serde.ComponentAnalysisCacheSerializer;
 import org.acme.serde.VulnerabilitySerializer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -29,7 +25,9 @@ public class VulnCacheProducer {
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, "VulnCacheProducer");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, VulnerabilitySerializer.class.getName());
-        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        properties.put(ProducerConfig.ACKS_CONFIG, "all");
+        properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 60000);
         producer = new KafkaProducer<>(properties);
     }
 

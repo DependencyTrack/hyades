@@ -24,7 +24,9 @@ public class ConfigProducer {
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, "ConfigProducer");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ConfigPropertySerializer.class.getName());
-        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
+        properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        properties.put(ProducerConfig.ACKS_CONFIG, "all");
+        properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 60000);
         producer = new KafkaProducer<>(properties);
     }
 
