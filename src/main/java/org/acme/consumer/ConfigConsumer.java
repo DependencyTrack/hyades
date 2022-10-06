@@ -3,6 +3,7 @@ package org.acme.consumer;
 import alpine.model.ConfigProperty;
 import io.quarkus.runtime.StartupEvent;
 import org.acme.Main;
+import org.acme.common.ApplicationProperty;
 import org.acme.event.VulnerabilityAnalysisEvent;
 import org.acme.model.Component;
 import org.acme.serde.ConfigPropertyDeserializer;
@@ -23,6 +24,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import java.util.*;
 
 @ApplicationScoped
@@ -30,28 +32,17 @@ public class ConfigConsumer {
 
     KafkaStreams streams;
 
-    @org.eclipse.microprofile.config.inject.ConfigProperty(name = "consumer.config.applicationId")
-    String applicationId;
-    @org.eclipse.microprofile.config.inject.ConfigProperty(name = "consumer.server")
-    String server;
-
-    @org.eclipse.microprofile.config.inject.ConfigProperty(name = "consumer.offset")
-    String offset;
-
-    @org.eclipse.microprofile.config.inject.ConfigProperty(name = "config.global.ktable.topic")
-    String configTopic;
-
-    @org.eclipse.microprofile.config.inject.ConfigProperty(name = "config.global.ktable.store.name")
-    String storeName;
+    @Inject
+    ApplicationProperty applicationProperty;
 
     void onStart(@Observes StartupEvent event) {
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationId);
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, server);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offset);
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.consumerConfigAppId());
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         StreamsBuilder builder = new StreamsBuilder();
 
-        KStream<String, ConfigProperty> configStream = builder.stream(configTopic, Consumed.with(Serdes.String(),Serdes.serdeFrom(new ConfigPropertySerializer(), new ConfigPropertyDeserializer()))); //receiving the message on topic event
+        KStream<String, ConfigProperty> configStream = builder.stream(applicationProperty.configTopicName(), Consumed.with(Serdes.String(), Serdes.serdeFrom(new ConfigPropertySerializer(), new ConfigPropertyDeserializer()))); //receiving the message on topic event
         configStream.foreach(new ForeachAction<String, ConfigProperty>() {
             @Override
             public void apply(String configPropertyName, ConfigProperty configPropertyValue) {
@@ -59,7 +50,6 @@ public class ConfigConsumer {
 
             }
         });
-        //Main.configValues.put(configStream.)
         //Splitting the incoming message into number of components
         //Setting the message key same as the name of component to send messages on different partitions of topic event-out
 
@@ -75,7 +65,7 @@ public class ConfigConsumer {
 
     public ConfigProperty getConfigProperty(String propertyName) {
 
-        if(Main.configValues.containsKey(propertyName))
+        if (Main.configValues.containsKey(propertyName))
             return Main.configValues.get(propertyName);
         else {
             return null;

@@ -7,8 +7,8 @@ import javax.inject.Inject;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 
 import io.quarkus.runtime.StartupEvent;
+import org.acme.common.ApplicationProperty;
 import org.acme.event.OssIndexAnalysisEvent;
-import org.acme.event.VexUploadEvent;
 import org.acme.model.Component;
 import org.acme.tasks.scanners.OssIndexAnalysisTask;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -21,7 +21,6 @@ import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.PunctuationType;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -33,17 +32,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class OSSIndexBatcher {
     KafkaStreams streams;
 
-    @ConfigProperty(name = "topic.event")
-    String eventTopic;
-
-    @ConfigProperty(name = "consumer.server")
-    String server;
-
-    @ConfigProperty(name = "consumer.offset")
-    String offset;
-
-    @ConfigProperty(name = "batch.wait.time")
-    int waitTime;
+    @Inject
+    ApplicationProperty applicationProperty;
 
     @Inject
     OssIndexAnalysisEvent ossIndexAnalysisEvent;
@@ -52,20 +42,20 @@ public class OSSIndexBatcher {
     void onStart(@Observes StartupEvent event) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "OSSConsumer");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, server);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offset);
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         final var streamsBuilder = new StreamsBuilder();
 
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
-        KStream<String, Component> kStreams = streamsBuilder.stream(eventTopic, Consumed.with(Serdes.String(), componentSerde));
+        KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.eventTopic(), Consumed.with(Serdes.String(), componentSerde));
         kStreams.process(() -> new AbstractProcessor<String, Component>() {
             final LinkedBlockingQueue<Component> queue = new LinkedBlockingQueue<>(2);
 
             @Override
             public void init(ProcessorContext context) {
                 super.init(context);
-                context.schedule(Duration.of(waitTime, ChronoUnit.MINUTES), PunctuationType.WALL_CLOCK_TIME, timestamp -> {
+                context.schedule(Duration.of(applicationProperty.batchWaitTime(), ChronoUnit.MINUTES), PunctuationType.WALL_CLOCK_TIME, timestamp -> {
                     processQueue();
                     context().commit();
                 });
