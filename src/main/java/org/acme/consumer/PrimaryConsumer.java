@@ -57,13 +57,12 @@ public class PrimaryConsumer {
 
         KStream<String, VulnerabilityAnalysisEvent> kStreamsVulnTask = builder.stream(inputTopic, Consumed.with(Serdes.String(), vulnerabilityAnalysisEventSerde)); //receiving the message on topic event
         //Setting the message key same as the name of component to send messages on different partitions of topic event-out
-        // KStream<String, Component> splittedStreams = kStreamsVulnTask.flatMapValues(value -> value.getComponents()).selectKey((key, value) -> value.getName());
         KStream<String, Component> splittedStreams = kStreamsVulnTask.flatMap((s, vulnerabilityAnalysisEvent) -> {
             List<Component> components = vulnerabilityAnalysisEvent.getComponents();
             for (Component component : components) {
                 return Collections.singletonList(KeyValue.pair(component.getName(), component));
             }
-            return Collections.emptyList();
+            return null;
         });
         splittedStreams.to(eventTopic, (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
         streams = new KafkaStreams(builder.build(), props);
