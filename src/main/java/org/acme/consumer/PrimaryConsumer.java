@@ -2,15 +2,17 @@ package org.acme.consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import alpine.common.util.BooleanUtil;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 
 import io.quarkus.runtime.StartupEvent;
+import org.acme.common.ApplicationProperty;
 import org.acme.event.VulnerabilityAnalysisEvent;
 import org.acme.model.Component;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
@@ -19,7 +21,6 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.KStream;
-import org.checkerframework.checker.units.qual.A;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.ArrayList;
@@ -30,36 +31,23 @@ import java.util.Properties;
 @ApplicationScoped
 public class PrimaryConsumer {
 
-    @ConfigProperty(name = "consumer.primary.applicationId")
-    String applicationId;
+    @Inject
+    ApplicationProperty applicationProperty;
 
-    @ConfigProperty(name = "consumer.server")
-    String server;
-
-    @ConfigProperty(name = "consumer.offset")
-    String offset;
-
-    @ConfigProperty(name = "topic.event")
-    String eventTopic;
-
-    @ConfigProperty(name = "topic.in.primary")
-    String inputTopic;
     KafkaStreams streams;
     ConfigConsumer configConsumer;
 
     void onStart(@Observes StartupEvent event) {
-        Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationId);
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, server);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offset);
-
-
+        Properties properties = new Properties();
+        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.primaryApplicationName());
+        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         StreamsBuilder builder = new StreamsBuilder();
         ObjectMapperSerde<VulnerabilityAnalysisEvent> vulnerabilityAnalysisEventSerde = new ObjectMapperSerde<>(
                 VulnerabilityAnalysisEvent.class);
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
-        KStream<String, VulnerabilityAnalysisEvent> kStreamsVulnTask = builder.stream(inputTopic, Consumed.with(Serdes.String(), vulnerabilityAnalysisEventSerde)); //receiving the message on topic event
+        KStream<String, VulnerabilityAnalysisEvent> kStreamsVulnTask = builder.stream(applicationProperty.primaryTopic(), Consumed.with(Serdes.String(), vulnerabilityAnalysisEventSerde)); //receiving the message on topic event
         //Setting the message key same as the name of component to send messages on different partitions of topic event-out
         KStream<String, Component> splittedStreams = kStreamsVulnTask.flatMap((s, vulnerabilityAnalysisEvent) -> {
             List<Component> components = vulnerabilityAnalysisEvent.getComponents();
@@ -73,8 +61,8 @@ public class PrimaryConsumer {
                 return componentList;
             }
         });
-        splittedStreams.to(eventTopic, (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
-        streams = new KafkaStreams(builder.build(), props);
+        splittedStreams.to(applicationProperty.eventTopic(), (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
+        streams = new KafkaStreams(builder.build(), properties);
         streams.start();
 
     }
