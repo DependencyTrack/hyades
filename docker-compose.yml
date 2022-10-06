@@ -49,3 +49,13 @@ services:
       "
     ports:
       - "8093:8093"
+  redpanda-console:
+    image: docker.redpanda.com/vectorized/console:v2.0.3
+    container_name: redpanda-console
+    depends_on:
+      - redpanda
+    environment:
+      KAFKA_BROKERS: "redpanda:29092"
+    ports:
+      - "127.0.0.1:28080:8080"
+    restart: unless-stopped
