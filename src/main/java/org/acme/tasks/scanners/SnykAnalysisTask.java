@@ -94,7 +94,11 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         SnykAnalysisEvent event = (SnykAnalysisEvent) e;
         LOGGER.info("Starting Snyk vulnerability analysis task");
         if (event.getComponents().size() > 0) {
-            analyze(event.getComponents());
+            try {
+                analyze(event.getComponents());
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         LOGGER.info("Snyk vulnerability analysis complete");
         Instant end = Instant.now();
@@ -131,7 +135,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
      *
      * @param components a list of Components
      */
-    public void analyze(final List<Component> components) {
+    public void analyze(final List<Component> components) throws InterruptedException {
         int PAGE_SIZE = 100;
         final Pageable<Component> paginatedComponents = new Pageable<>(PAGE_SIZE, components);
         while (!paginatedComponents.isPaginationComplete()) {
@@ -154,6 +158,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                     }
                     Thread analysisUtil = new Thread(new SnykAnalysisTaskUtil(temp, apiToken));
                     analysisUtil.start();
+                    analysisUtil.join();
                 }
             }
             paginatedComponents.nextPage();

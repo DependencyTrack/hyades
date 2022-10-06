@@ -42,6 +42,7 @@ public class SnykAnalyzer {
         ArrayList<Component> componentArrayList = new ArrayList<>();
         componentArrayList.add(component);
         snykAnalysisEvent.setComponents(componentArrayList);
+
         snykTask.inform(snykAnalysisEvent);
         // ack will commit the latest offsets (per partition) of the batch.
         return records.ack();
