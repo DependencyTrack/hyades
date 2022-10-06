@@ -43,8 +43,6 @@ public class CacheReader {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,applicationProperty.consumerOffset());
         StreamsBuilder builder = new StreamsBuilder();
-        ObjectMapperSerde<ComponentAnalysisCache> componentSerde = new ObjectMapperSerde<>(ComponentAnalysisCache.class);
-        ObjectMapperSerde<CacheKey> cacheSerde = new ObjectMapperSerde<>(CacheKey.class);
         GlobalKTable<CacheKey, ComponentAnalysisCache> componentCache = builder.globalTable(applicationProperty.topicComponentCache(), Materialized.<CacheKey, ComponentAnalysisCache, KeyValueStore<Bytes, byte[]>>as(applicationProperty.componentCacheStoreName())
                 .withKeySerde(Serdes.serdeFrom(new CacheKeySerializer(), new CacheKeyDeserializer()))
                 .withValueSerde(Serdes.serdeFrom(new ComponentAnalysisCacheSerializer(), new ComponentAnalysisCacheDeserializer())));
