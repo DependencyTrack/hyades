@@ -62,3 +62,13 @@ Body: <br/>
 }
 ]
 }`
+
+## Redpanda Console
+
+The provided `docker-compose.yml` includes an instance of [Redpanda Console](https://github.com/redpanda-data/console) 
+to aid with gaining insight into what's happening in the message broker. Among many other things, it can be used to 
+inspect messages inside any given topic:
+
+![Redpanda Console - Messages](.github/images/redpanda-console_messages.png)
+
+The console is exposed at `http://127.0.0.1:28080`.
