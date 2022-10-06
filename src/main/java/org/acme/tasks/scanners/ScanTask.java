@@ -41,7 +41,7 @@ public interface ScanTask {
      * @param components the components to analyze
      * @since 3.0.0
      */
-    void analyze(List<Component> components) throws InterruptedException;
+    void analyze(List<Component> components);
 
     /**
      * Determines if the analyzer is capable of analyzing a component.
