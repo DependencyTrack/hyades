@@ -35,14 +35,14 @@ import java.util.List;
  */
 
 public class CweSerializer extends JsonSerializer<List<Integer>> {
-    @Inject
-    CweResolver cweResolver;
+
     @Override
     public void serialize(List<Integer> cweIds, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException, JsonProcessingException {
 
         jsonGenerator.writeStartArray();
         for (final Integer cweId: cweIds) {
+            CweResolver cweResolver = new CweResolver();
             final Cwe cwe = cweResolver.lookup(cweId);
             if (cwe != null) {
                 jsonGenerator.writeObject(cwe);
