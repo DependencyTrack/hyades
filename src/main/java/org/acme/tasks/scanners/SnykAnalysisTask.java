@@ -159,8 +159,9 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                     }
                 }
                 paginatedComponents.nextPage();
-            }catch (InterruptedException ex){
-                LOGGER.info("Exception occured: "+ex.getMessage());
+            } catch (InterruptedException ex) {
+                LOGGER.info("Exception occured: " + ex.getMessage());
+                Thread.currentThread().interrupt();
             }
         }
     }

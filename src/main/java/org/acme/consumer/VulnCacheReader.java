@@ -3,7 +3,7 @@ package org.acme.consumer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-;
+
 import io.quarkus.runtime.StartupEvent;
 import org.acme.common.ApplicationProperty;
 import org.acme.model.Vulnerability;
@@ -35,7 +35,7 @@ public class VulnCacheReader {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.topicVulnCache());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,applicationProperty.consumerOffset());
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         StreamsBuilder builder = new StreamsBuilder();
         GlobalKTable<Long, Vulnerability> vulnCache = builder.globalTable(applicationProperty.topicVulnCache(), Materialized.<Long, Vulnerability, KeyValueStore<Bytes, byte[]>>as(applicationProperty.vulnCacheStoreName())
                 .withKeySerde(Serdes.Long())
@@ -45,10 +45,12 @@ public class VulnCacheReader {
 
 
     }
+
     public Vulnerability getVulnCache(Long vulnId) {
         Vulnerability vuln = getCache().get(vulnId);
         return vuln;
     }
+
     private ReadOnlyKeyValueStore<Long, Vulnerability> getCache() {
         while (true) {
             try {
