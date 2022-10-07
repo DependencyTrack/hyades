@@ -24,7 +24,7 @@
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.13.1.Final</quarkus.platform.version>
-    <lib.jaxb.runtime.version>2.3.6</lib.jaxb.runtime.version>
+    <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
 
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <skipITs>true</skipITs>
@@ -127,7 +127,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20220320</version>
+      <version>20220924</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.github.package-url/packageurl-java -->
     <dependency>

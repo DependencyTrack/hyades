@@ -2,25 +2,22 @@ package org.acme.consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;
+import org.acme.common.ApplicationProperty;
 import org.acme.event.SnykAnalysisEvent;
 import org.acme.model.Component;
 import org.acme.tasks.scanners.SnykAnalysisTask;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
+
 import java.util.ArrayList;
 import java.util.concurrent.CompletionStage;
 
 @ApplicationScoped
 public class SnykAnalyzer {
-
-    @ConfigProperty(name = "application.logger")
-    String loggerName;
-    Logger logger = Logger.getLogger(loggerName);
-
-    @ConfigProperty(name = "topic.event")
-    static final String eventTopic = "SnykEvent";
+    Logger logger = Logger.getLogger("poc");
 
     @Inject
     SnykAnalysisTask snykTask;
@@ -30,7 +27,7 @@ public class SnykAnalyzer {
 
     Component component;
 
-    @Incoming(eventTopic)
+    @Incoming("SnykEvent")
     public CompletionStage<Void> consume(KafkaRecord<String, Component> records) {
         Component payload = records.getPayload();
         component = payload;
