@@ -2,7 +2,9 @@ package org.acme.consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 import io.smallrye.reactive.messaging.kafka.KafkaRecordBatch;
 import org.acme.event.SnykAnalysisEvent;
@@ -27,6 +29,7 @@ public class SnykAnalyzer {
     Component component;
 
     @Incoming("SnykEvent")
+    @Blocking
     public CompletionStage<Void> consume(KafkaRecordBatch<String, Component> records) {
         if (!records.getRecords().isEmpty()) {
             ArrayList<Component> componentArrayList = new ArrayList<>();
