@@ -4,8 +4,6 @@ import alpine.model.ConfigProperty;
 import io.quarkus.runtime.StartupEvent;
 import org.acme.Main;
 import org.acme.common.ApplicationProperty;
-import org.acme.event.VulnerabilityAnalysisEvent;
-import org.acme.model.Component;
 import org.acme.serde.ConfigPropertyDeserializer;
 import org.acme.serde.ConfigPropertySerializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

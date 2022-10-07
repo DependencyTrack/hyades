@@ -4,7 +4,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import io.quarkus.runtime.StartupEvent;
 import org.acme.common.ApplicationProperty;
 import org.acme.model.CacheKey;
@@ -25,7 +24,6 @@ import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Objects;
 import java.util.Properties;
@@ -41,7 +39,7 @@ public class CacheReader {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.topicComponentCache());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,applicationProperty.consumerOffset());
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         StreamsBuilder builder = new StreamsBuilder();
         GlobalKTable<CacheKey, ComponentAnalysisCache> componentCache = builder.globalTable(applicationProperty.topicComponentCache(), Materialized.<CacheKey, ComponentAnalysisCache, KeyValueStore<Bytes, byte[]>>as(applicationProperty.componentCacheStoreName())
                 .withKeySerde(Serdes.serdeFrom(new CacheKeySerializer(), new CacheKeyDeserializer()))
@@ -51,14 +49,16 @@ public class CacheReader {
 
 
     }
-   public ComponentAnalysisCache getComponentCache(CacheKey key) {
+
+    public ComponentAnalysisCache getComponentCache(CacheKey key) {
         ComponentAnalysisCache cache = getCache().get(key);
 
-        if(Objects.isNull(cache)){
+        if (Objects.isNull(cache)) {
             return null;
-        }else
+        } else
             return cache;
     }
+
     private ReadOnlyKeyValueStore<CacheKey, ComponentAnalysisCache> getCache() {
         while (true) {
             try {

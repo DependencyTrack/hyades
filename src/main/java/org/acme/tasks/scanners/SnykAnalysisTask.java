@@ -86,14 +86,14 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         API_BASE_URL = "https://api.snyk.io/rest/orgs/" + ORG_ID + "/packages/";
         Instant start = Instant.now();
         try {
-            apiToken = "token " + snykToken;//DataEncryption.decryptAsString(snykToken);
+            apiToken = "token " + snykToken;
         } catch (Exception ex) {
             LOGGER.error("An error occurred decrypting the Snyk API Token. Skipping", ex);
             return;
         }
         SnykAnalysisEvent event = (SnykAnalysisEvent) e;
         LOGGER.info("Starting Snyk vulnerability analysis task");
-        if (event.getComponents().size() > 0) {
+        if (!event.getComponents().isEmpty()) {
             analyze(event.getComponents());
         }
         LOGGER.info("Snyk vulnerability analysis complete");

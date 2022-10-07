@@ -2,7 +2,7 @@ package org.acme.common;
 
 import io.smallrye.config.ConfigMapping;
 
-@ConfigMapping(prefix = "common")
+@ConfigMapping(prefix = "poc")
 public interface ApplicationProperty {
     String server();
 

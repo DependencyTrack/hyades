@@ -3,10 +3,7 @@ package org.acme.producer;
 import io.quarkus.runtime.StartupEvent;
 import org.acme.common.ApplicationProperty;
 import org.acme.event.VulnerabilityAnalysisEvent;
-import org.acme.serde.CacheKeySerializer;
-import org.acme.serde.ComponentAnalysisCacheSerializer;
 import org.acme.serde.VulnerabilityAnalysisEventSerializer;
-import org.acme.model.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -19,13 +16,13 @@ import javax.inject.Inject;
 import java.util.Properties;
 
 @ApplicationScoped
-public class  EventProducer {
+public class EventProducer {
 
     private Producer<String, Object> producer;
     @Inject
     ApplicationProperty applicationProperty;
 
-    void onStart(@Observes StartupEvent event){
+    void onStart(@Observes StartupEvent event) {
         final var properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, applicationProperty.primaryEventProducer());

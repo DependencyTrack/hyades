@@ -3,12 +3,9 @@ package org.acme.consumer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
+;
 import io.quarkus.runtime.StartupEvent;
 import org.acme.common.ApplicationProperty;
-import org.acme.model.CacheKey;
-import org.acme.model.ComponentAnalysisCache;
 import org.acme.model.Vulnerability;
 import org.acme.serde.*;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -23,7 +20,6 @@ import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Objects;
 import java.util.Properties;
