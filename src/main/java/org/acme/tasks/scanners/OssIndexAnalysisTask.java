@@ -31,6 +31,7 @@ import java.time.Instant;
 import java.util.*;
 
 import org.acme.consumer.ConfigConsumer;
+import org.acme.parser.common.resolver.CweResolver;
 import org.acme.producer.VulnerabilityResultProducer;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.CvssV2;
@@ -68,6 +69,8 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     @Inject
     VulnerablityResult vulnerablityResult;
 
+    @Inject
+    CweResolver cweResolver;
     @Inject
     VulnerabilityResultProducer vulnerabilityResultProducer;
 
@@ -283,12 +286,9 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
         vulnerability.setDescription(reportedVuln.getDescription());
 
         /*if (reportedVuln.getCwe() != null) {
-           final Integer cweId = parseCweString(reportedVuln.getCwe());
-            final String cweStr = cweConsumer.getCweValues(cweId);
-            if (cweStr != null) {
-                Cwe cwe = new Cwe();
-                cwe.setName(cweStr);
-                cwe.setCweId(cweId);
+            Cwe cwe  = cweResolver.resolve(reportedVuln.getCwe());
+            if (cwe != null) {
+
                 vulnerability.addCwe(cwe);
             }
         }*/
