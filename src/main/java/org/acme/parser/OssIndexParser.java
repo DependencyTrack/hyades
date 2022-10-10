@@ -24,6 +24,7 @@ import kong.unirest.json.JSONObject;
 import org.acme.model.ComponentReport;
 import org.acme.model.ComponentReportVulnerability;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import java.util.List;
  * @author Steve Springett
  * @since 3.2.0
  */
+@ApplicationScoped
 public class OssIndexParser {
 
     private static final Logger LOGGER = Logger.getLogger(OssIndexParser.class);

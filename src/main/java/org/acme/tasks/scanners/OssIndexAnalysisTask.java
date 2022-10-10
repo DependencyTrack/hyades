@@ -69,10 +69,14 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     @Inject
     VulnerablityResult vulnerablityResult;
 
-    @Inject
-    CweResolver cweResolver;
+
+
+
     @Inject
     VulnerabilityResultProducer vulnerabilityResultProducer;
+
+    @Inject
+    OssIndexParser parser;
 
     private String apiUsername;
     private String apiToken;
@@ -205,7 +209,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
         }
         final HttpResponse<JsonNode> jsonResponse = request.body(payload).asJson();
         if (jsonResponse.getStatus() == 200) {
-            final OssIndexParser parser = new OssIndexParser();
+
             return parser.parse(jsonResponse.getBody());
         } else {
             /*handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());*/
@@ -244,7 +248,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 final String minimalSonatypePurl = minimizePurl(sonatypePurl);
                 if (componentPurl != null && (componentPurl.equals(componentReport.getCoordinates()) ||
                         (sonatypePurl != null && componentPurl.equals(minimalSonatypePurl)))) {
-                    Vulnerability vulnerability = null;
+                        Vulnerability vulnerability = null;
                         /*
                         Found the component
                          */
@@ -274,7 +278,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     }
 
     private Vulnerability generateVulnerability(final ComponentReportVulnerability reportedVuln) {
-        final Vulnerability vulnerability = new Vulnerability();
+        Vulnerability vulnerability = new Vulnerability();
         if (reportedVuln.getCve() != null) {
             vulnerability.setSource(Vulnerability.Source.NVD);
             vulnerability.setVulnId(reportedVuln.getCve());
@@ -285,13 +289,14 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
         }
         vulnerability.setDescription(reportedVuln.getDescription());
 
-        /*if (reportedVuln.getCwe() != null) {
+        if (reportedVuln.getCwe() != null) {
+            CweResolver cweResolver = new CweResolver();
             Cwe cwe  = cweResolver.resolve(reportedVuln.getCwe());
             if (cwe != null) {
 
                 vulnerability.addCwe(cwe);
             }
-        }*/
+        }
 
         final StringBuilder sb = new StringBuilder();
         final String reference = reportedVuln.getReference();

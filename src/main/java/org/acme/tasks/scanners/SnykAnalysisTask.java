@@ -61,9 +61,6 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
     @Inject
     VulnerablityResult vulnerablityResult;
 
-    @Inject
-    Vulnerability vulnerability;
-
     private String apiToken;
 
     private String API_BASE_URL = "";
@@ -154,6 +151,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                             final HttpResponse<JsonNode> jsonResponse = request.asJson();
                             if (jsonResponse.getStatus() == 200) {
                                 ArrayList<VulnerableSoftware> vsList = handle(component, jsonResponse.getBody().getObject());
+                                Vulnerability vulnerability = new Vulnerability();
                                 vulnerability.setVulnerableSoftware(vsList);
                                 vulnerablityResult.setComponent(component);
                                 vulnerablityResult.setVulnerability(vulnerability);

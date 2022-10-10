@@ -39,7 +39,7 @@ import java.io.Serializable;
  */
 @PersistenceCapable
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApplicationScoped
+
 public class Cwe implements Serializable {
 
     private static final long serialVersionUID = -2370075071951574877L;
