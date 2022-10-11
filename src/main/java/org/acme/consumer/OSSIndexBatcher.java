@@ -40,8 +40,7 @@ public class OSSIndexBatcher {
     @Inject
     ApplicationProperty applicationProperty;
 
-    @Inject
-    OssIndexAnalysisEvent ossIndexAnalysisEvent;
+
     @Inject
     OssIndexAnalysisTask task;
     void onStart(@Observes StartupEvent event) {
@@ -51,15 +50,16 @@ public class OSSIndexBatcher {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         final var streamsBuilder = new StreamsBuilder();
 
-        Duration timeDifference = Duration.ofSeconds(2);
+        Duration timeDifference = Duration.ofSeconds(5);
         Duration gracePeriod = Duration.ofMillis(500);
+        TimeWindows tumblingWindow = TimeWindows.of(timeDifference);
 
         List<Component> list = new ArrayList<>();
 
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
         KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.analysisTopic(), Consumed.with(Serdes.String(), componentSerde));
-        KTable<Windowed<String>, ArrayList<Component>> a = kStreams.groupByKey().windowedBy(SlidingWindows.withTimeDifferenceAndGrace(timeDifference, gracePeriod))
+        KTable<Windowed<String>, ArrayList<Component>> a = kStreams.groupByKey().windowedBy(tumblingWindow)
                 .aggregate(() -> new ArrayList<Component>(), (k, v, aggr) -> { aggr.add(v); return aggr;}, Materialized.<String,ArrayList<Component>, WindowStore<Bytes, byte[]>>
                                 as("windowedComponents")
                         .withKeySerde(Serdes.String())
@@ -68,6 +68,7 @@ public class OSSIndexBatcher {
                 a.toStream().foreach(new ForeachAction<Windowed<String>, ArrayList<Component>>() {
                     @Override
                     public void apply(Windowed<String> stringWindowed, ArrayList<Component> components) {
+                        OssIndexAnalysisEvent ossIndexAnalysisEvent = new OssIndexAnalysisEvent();
                         ossIndexAnalysisEvent.setComponents(components);
                         task.inform(ossIndexAnalysisEvent);
                     }
@@ -75,7 +76,6 @@ public class OSSIndexBatcher {
 
         streams = new KafkaStreams(streamsBuilder.build(), props);
         streams.start();
-
 
     }
 
