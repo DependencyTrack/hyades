@@ -61,7 +61,7 @@ public class OSSIndexBatcher {
         KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.analysisTopic(), Consumed.with(Serdes.String(), componentSerde));
         KTable<Windowed<String>, ArrayList<Component>> a = kStreams.groupByKey().windowedBy(SlidingWindows.withTimeDifferenceAndGrace(timeDifference, gracePeriod))
                 .aggregate(() -> new ArrayList<Component>(), (k, v, aggr) -> { aggr.add(v); return aggr;}, Materialized.<String,ArrayList<Component>, WindowStore<Bytes, byte[]>>
-                                as("userGroupedWindowStore")
+                                as("windowedComponents")
                         .withKeySerde(Serdes.String())
                         .withValueSerde(Serdes.serdeFrom(new ArrayListSerializer(), new ArrayListDeserializer()))//Custom Serdes
                 );
