@@ -48,7 +48,7 @@ public class OSSIndexBatcher {
 
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
-        KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.primaryTopic(), Consumed.with(Serdes.String(), componentSerde));
+        KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.analysisTopic(), Consumed.with(Serdes.String(), componentSerde));
         kStreams.process(() -> new AbstractProcessor<String, Component>() {
             final LinkedBlockingQueue<Component> queue = new LinkedBlockingQueue<>(2);
 

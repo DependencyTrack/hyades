@@ -27,7 +27,7 @@ public class SnykAnalyzer {
 
     Component component;
 
-    @Incoming("SnykEvent")
+    @Incoming("EventNew")
     @Blocking
     public CompletionStage<Void> consume(KafkaRecordBatch<String, Component> records) {
         if (!records.getRecords().isEmpty()) {

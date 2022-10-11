@@ -6,6 +6,8 @@ import io.smallrye.config.ConfigMapping;
 public interface ApplicationProperty {
     String server();
 
+    String analysisTopic();
+
     String configProducerAppName();
 
     boolean enableIdempotence();
@@ -31,7 +33,7 @@ public interface ApplicationProperty {
     String topicVulnCache();
 
     String componentCacheStoreName();
-    
+
     String vulnCacheStoreName();
 
     String consumerConfigAppId();
