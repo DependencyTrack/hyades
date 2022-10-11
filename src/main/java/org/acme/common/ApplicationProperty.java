@@ -28,8 +28,6 @@ public interface ApplicationProperty {
 
     String consumerOffset();
 
-    String eventTopic();
-
     String topicVulnCache();
 
     String componentCacheStoreName();

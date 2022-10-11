@@ -59,7 +59,7 @@ public class PrimaryConsumer {
                 return componentList;
             }
         });
-        splittedStreams.to(applicationProperty.eventTopic(), (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
+        splittedStreams.to(applicationProperty.primaryTopic(), (Produced<String, Component>) Produced.with(Serdes.String(), componentSerde));
         streams = new KafkaStreams(builder.build(), properties);
         streams.start();
 

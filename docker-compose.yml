@@ -45,7 +45,7 @@ services:
       /usr/bin/rpk topic create vuln-cache --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create configuration --brokers=redpanda:29092 --replicas=1 --partitions=3 --cleanup.policy=compact
+      /usr/bin/rpk topic create configuration --brokers=redpanda:29092 --replicas=1 --partitions=3 -c cleanup.policy=compact
       "
     ports:
       - "8093:8093"
