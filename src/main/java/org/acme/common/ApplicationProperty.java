@@ -28,10 +28,6 @@ public interface ApplicationProperty {
 
     String consumerOffset();
 
-    String primaryApplicationName();
-
-    String primaryTopic();
-
     String eventTopic();
 
     String topicVulnCache();
