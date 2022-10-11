@@ -28,10 +28,6 @@ public interface ApplicationProperty {
 
     String consumerOffset();
 
-    String primaryApplicationName();
-
-    String primaryTopic();
-
     String eventTopic();
 
     String topicVulnCache();
@@ -45,4 +41,8 @@ public interface ApplicationProperty {
     String configTopicName();
 
     int batchWaitTime();
+
+    String primaryApplicationName();
+
+    String primaryTopic();
 }

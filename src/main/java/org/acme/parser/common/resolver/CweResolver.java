@@ -21,6 +21,7 @@ package org.acme.parser.common.resolver;
 import org.acme.Main;
 import org.apache.commons.lang3.StringUtils;
 import org.acme.model.Cwe;
+import org.checkerframework.checker.units.qual.C;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -36,8 +37,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class CweResolver {
 
-    @Inject
-    Cwe cwe;
+    Cwe cwe = new Cwe();
     //private static final CweResolver INSTANCE = new CweResolver();
 
     /*private CweResolver() {
