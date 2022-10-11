@@ -27,7 +27,7 @@ public class SnykAnalyzer {
 
     Component component;
 
-    @Incoming("SnykEvent")
+    @Incoming("event")
     public CompletionStage<Void> consume(KafkaRecord<String, Component> records) {
         Component payload = records.getPayload();
         component = payload;

@@ -37,7 +37,7 @@ public class ConfigConsumer {
 
     void onStart(@Observes StartupEvent event) {
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.consumerConfigAppId());
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, (applicationProperty.consumerConfigAppId() + UUID.randomUUID().toString()));
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         StreamsBuilder builder = new StreamsBuilder();
