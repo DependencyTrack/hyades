@@ -6,13 +6,10 @@ import org.acme.model.CacheKey;
 import org.acme.model.ComponentAnalysisCache;
 import org.acme.serde.CacheKeySerializer;
 import org.acme.serde.ComponentAnalysisCacheSerializer;
-import org.acme.serde.ConfigPropertySerializer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -28,7 +25,7 @@ public class CacheProducer {
     @Inject
     ApplicationProperty applicationProperty;
 
-    void onStart(@Observes StartupEvent event){
+    void onStart(@Observes StartupEvent event) {
         final var properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, applicationProperty.cacheProducerAppName());

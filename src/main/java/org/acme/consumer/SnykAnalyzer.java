@@ -4,11 +4,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.smallrye.reactive.messaging.kafka.KafkaRecord;
-import org.acme.common.ApplicationProperty;
 import org.acme.event.SnykAnalysisEvent;
 import org.acme.model.Component;
 import org.acme.tasks.scanners.SnykAnalysisTask;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
 
