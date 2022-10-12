@@ -20,18 +20,12 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.*;
-
-import org.apache.kafka.streams.processor.AbstractProcessor;
-import org.apache.kafka.streams.processor.ProcessorContext;
-import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.state.WindowStore;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.LinkedBlockingQueue;
 
 @ApplicationScoped
 public class OSSIndexBatcher {
@@ -43,6 +37,7 @@ public class OSSIndexBatcher {
 
     @Inject
     OssIndexAnalysisTask task;
+
     void onStart(@Observes StartupEvent event) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "OSSConsumer");
@@ -51,28 +46,26 @@ public class OSSIndexBatcher {
         final var streamsBuilder = new StreamsBuilder();
 
         Duration timeDifference = Duration.ofSeconds(5);
-        Duration gracePeriod = Duration.ofMillis(500);
         TimeWindows tumblingWindow = TimeWindows.of(timeDifference);
 
-        List<Component> list = new ArrayList<>();
 
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
         KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.analysisTopic(), Consumed.with(Serdes.String(), componentSerde));
         KTable<Windowed<String>, ArrayList<Component>> a = kStreams.groupByKey().windowedBy(tumblingWindow)
-                .aggregate(() -> new ArrayList<Component>(), (k, v, aggr) -> { aggr.add(v); return aggr;}, Materialized.<String,ArrayList<Component>, WindowStore<Bytes, byte[]>>
-                                as("windowedComponents")
-                        .withKeySerde(Serdes.String())
-                        .withValueSerde(Serdes.serdeFrom(new ArrayListSerializer(), new ArrayListDeserializer()))//Custom Serdes
+                .aggregate(ArrayList::new, (k, v, aggr) -> {
+                            aggr.add(v);
+                            return aggr;
+                        }, Materialized.<String, ArrayList<Component>, WindowStore<Bytes, byte[]>>
+                                        as("windowedComponents")
+                                .withKeySerde(Serdes.String())
+                                .withValueSerde(Serdes.serdeFrom(new ArrayListSerializer(), new ArrayListDeserializer()))//Custom Serdes
                 );
-                a.toStream().foreach(new ForeachAction<Windowed<String>, ArrayList<Component>>() {
-                    @Override
-                    public void apply(Windowed<String> stringWindowed, ArrayList<Component> components) {
-                        OssIndexAnalysisEvent ossIndexAnalysisEvent = new OssIndexAnalysisEvent();
-                        ossIndexAnalysisEvent.setComponents(components);
-                        task.inform(ossIndexAnalysisEvent);
-                    }
-                });
+        a.toStream().foreach((stringWindowed, components) -> {
+            OssIndexAnalysisEvent ossIndexAnalysisEvent = new OssIndexAnalysisEvent();
+            ossIndexAnalysisEvent.setComponents(components);
+            task.inform(ossIndexAnalysisEvent);
+        });
 
         streams = new KafkaStreams(streamsBuilder.build(), props);
         streams.start();

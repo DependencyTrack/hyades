@@ -13,7 +13,7 @@
   </parent>
   <properties>
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
-    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--    hardcoding the version of alpine. Need to check this later in poc-->
     <lib.alpine.version>${project.parent.version}</lib.alpine.version>
