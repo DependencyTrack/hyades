@@ -28,7 +28,6 @@ import kong.unirest.*;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
-import org.acme.Main;
 import org.acme.event.SnykAnalysisEvent;
 import org.acme.producer.VulnerabilityResultProducer;
 import org.apache.http.HttpHeaders;
@@ -79,7 +78,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         this.snykToken = "token " + snykToken;
     }
 
-    public SnykAnalysisTask(){
+    public SnykAnalysisTask() {
 
     }
 

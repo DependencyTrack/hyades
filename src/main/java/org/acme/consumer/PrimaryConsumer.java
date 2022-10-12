@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 
 import io.quarkus.runtime.StartupEvent;
-import org.acme.Main;
 import org.acme.common.ApplicationProperty;
 import org.acme.event.VulnerabilityAnalysisEvent;
 import org.acme.model.Component;
