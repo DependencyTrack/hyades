@@ -2,9 +2,11 @@ package org.acme.common;
 
 import io.smallrye.config.ConfigMapping;
 
-@ConfigMapping(prefix = "common")
+@ConfigMapping(prefix = "poc")
 public interface ApplicationProperty {
     String server();
+
+    String analysisTopic();
 
     String configProducerAppName();
 
@@ -28,12 +30,10 @@ public interface ApplicationProperty {
 
     String consumerOffset();
 
-    String eventTopic();
-
     String topicVulnCache();
 
     String componentCacheStoreName();
-    
+
     String vulnCacheStoreName();
 
     String consumerConfigAppId();
@@ -41,4 +41,8 @@ public interface ApplicationProperty {
     String configTopicName();
 
     int batchWaitTime();
+
+    String primaryApplicationName();
+
+    String primaryTopic();
 }

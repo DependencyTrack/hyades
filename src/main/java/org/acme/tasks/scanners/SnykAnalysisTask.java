@@ -133,50 +133,33 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         final Pageable<Component> paginatedComponents = new Pageable<>(PAGE_SIZE, components);
         while (!paginatedComponents.isPaginationComplete()) {
             final List<Component> paginatedList = paginatedComponents.getPaginatedList();
+            //Starting with number of threads as 10
             LOGGER.info("Printing current page size: " + paginatedList.size());
-            for (final Component component : paginatedList) {
-
-                try {
-
-                    //---------- cache logic start------------------------------
-                    if (component.getPurl() != null) {
-                        if (!isCacheCurrent(Vulnerability.Source.SNYK, API_BASE_URL, component.getPurl().toString())) {
-                            LOGGER.info("Cache is not current");
-                            LOGGER.info("Inside run. Printing component info now: " + component.getPurl() + " " + component.getName() + " " + component.getProject());
-                            final UnirestInstance ui = UnirestFactory.getUnirestInstance();
-                            String API_ENDPOINT = "/issues?version=2022-09-28";
-                            final String snykUrl = API_BASE_URL + parsePurlToSnykUrlParam(component.getPurl()) + API_ENDPOINT;
-                            final GetRequest request = ui.get(snykUrl)
-                                    .header(HttpHeaders.AUTHORIZATION, this.apiToken);
-                            final HttpResponse<JsonNode> jsonResponse = request.asJson();
-                            if (jsonResponse.getStatus() == 200) {
-                                ArrayList<VulnerableSoftware> vsList = handle(component, jsonResponse.getBody().getObject());
-                                Vulnerability vulnerability = new Vulnerability();
-                                vulnerability.setVulnerableSoftware(vsList);
-                                vulnerablityResult.setComponent(component);
-                                vulnerablityResult.setVulnerability(vulnerability);
-                                vulnerablityResult.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
-                                vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
-
-                            } else {
-                                handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());
-                            }
-                            updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, API_BASE_URL, Vulnerability.Source.SNYK.name(), component.getPurl().toString(), Date.from(Instant.now()), component.getCacheResult());
-
-                        } else {
-                            LOGGER.info("Cache is current, apply analysis from cache");
-                            applyAnalysisFromCache(Vulnerability.Source.SNYK, API_BASE_URL, component.getPurl().toString(), component, getAnalyzerIdentity());
+            int numThreads = 10;
+            int trackComponent = 0;
+            try {
+                while (trackComponent < paginatedList.size()) {
+                    for (int i = 0; i < numThreads; i++) {
+                        final List<Component> temp = new ArrayList<>();
+                        int k = 0;
+                        while (trackComponent < paginatedList.size() && k < numThreads) {
+                            temp.add(paginatedList.get(trackComponent));
+                            k += 1;
+                            trackComponent += 1;
                         }
+                        for (Component component : temp) {
+                            LOGGER.info(component.getName());
+                        }
+                        Thread analysisUtil = new Thread(new SnykAnalysisTaskUtil(temp, apiToken));
+                        analysisUtil.start();
+                        analysisUtil.join();
                     }
-
-                    //cache logic end------------------------------------------
-                } catch (UnirestException e) {
-                    handleRequestException(LOGGER, e);
                 }
+                paginatedComponents.nextPage();
+            } catch (InterruptedException ex) {
+                LOGGER.info("Exception occured: " + ex.getMessage());
+                Thread.currentThread().interrupt();
             }
-
-
-            paginatedComponents.nextPage();
         }
     }
 
@@ -349,9 +332,60 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         }
         return vulnerableSoftwares;
     }
+
+
+    private class SnykAnalysisTaskUtil implements Runnable {
+        private final List<Component> paginatedList;
+        private String apiToken;
+
+        protected SnykAnalysisTaskUtil(List<Component> paginatedList, String apiToken) {
+            this.paginatedList = paginatedList;
+            this.apiToken = apiToken;
+        }
+
+        public void run() {
+            for (final Component component : this.paginatedList) {
+
+                try {
+
+                    //---------- cache logic start------------------------------
+                    if (component.getPurl() != null) {
+                        if (!isCacheCurrent(Vulnerability.Source.SNYK, API_BASE_URL, component.getPurl().toString())) {
+                            LOGGER.info("Cache is not current");
+                            LOGGER.info("Inside run. Printing component info now: " + component.getPurl() + " " + component.getName() + " " + component.getProject());
+                            final UnirestInstance ui = UnirestFactory.getUnirestInstance();
+                            String API_ENDPOINT = "/issues?version=2022-09-28";
+                            final String snykUrl = API_BASE_URL + parsePurlToSnykUrlParam(component.getPurl()) + API_ENDPOINT;
+                            final GetRequest request = ui.get(snykUrl)
+                                    .header(HttpHeaders.AUTHORIZATION, this.apiToken);
+                            final HttpResponse<JsonNode> jsonResponse = request.asJson();
+                            if (jsonResponse.getStatus() == 200) {
+                                ArrayList<VulnerableSoftware> vsList = handle(component, jsonResponse.getBody().getObject());
+                                Vulnerability vulnerability = new Vulnerability();
+                                vulnerability.setVulnerableSoftware(vsList);
+                                vulnerablityResult.setComponent(component);
+                                vulnerablityResult.setVulnerability(vulnerability);
+                                vulnerablityResult.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
+                                vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
+
+                            } else {
+                                handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());
+                            }
+                            updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, API_BASE_URL, Vulnerability.Source.SNYK.name(), component.getPurl().toString(), Date.from(Instant.now()), component.getCacheResult());
+
+                        } else {
+                            LOGGER.info("Cache is current, apply analysis from cache");
+                            applyAnalysisFromCache(Vulnerability.Source.SNYK, API_BASE_URL, component.getPurl().toString(), component, getAnalyzerIdentity());
+                        }
+                    }
+
+                    //cache logic end------------------------------------------
+                } catch (UnirestException e) {
+                    handleRequestException(LOGGER, e);
+                }
+            }
+
+        }
+    }
 }
-
-
-
-
 

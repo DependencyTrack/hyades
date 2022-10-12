@@ -24,7 +24,6 @@ import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Objects;
 import java.util.Properties;

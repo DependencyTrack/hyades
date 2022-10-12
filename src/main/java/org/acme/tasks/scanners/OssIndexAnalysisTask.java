@@ -19,6 +19,7 @@
 package org.acme.tasks.scanners;
 
 import alpine.common.logging.Logger;
+import alpine.common.util.Pageable;
 import alpine.event.framework.Event;
 import alpine.event.framework.Subscriber;
 import com.github.packageurl.MalformedPackageURLException;
@@ -133,33 +134,36 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
      * @param components a list of Components
      */
     public void analyze(final List<Component> components) {
-        final List<String> coordinates = new ArrayList<>();
-        for (final Component component : components) {
-            if (!component.isInternal() && isCapable(component)) {
-                if (component.getPurl() != null) {
-                    if (!isCacheCurrent(Vulnerability.Source.OSSINDEX, API_BASE_URL, component.getPurl().toString())) {
-                        LOGGER.info("Cache is not current");
-                        coordinates.add(minimizePurl(component.getPurl()));
-                    } else {
-                        LOGGER.info("Cache is current, apply analysis from cache");
-                        applyAnalysisFromCache(Vulnerability.Source.OSSINDEX, API_BASE_URL, component.getPurl().toString(), component, getAnalyzerIdentity());
+        final Pageable<Component> paginatedComponents = new Pageable<>(PAGE_SIZE, components);
+        while (!paginatedComponents.isPaginationComplete()) {
+            final List<String> coordinates = new ArrayList<>();
+            for (final Component component : components) {
+                if (!component.isInternal() && isCapable(component)) {
+                    if (component.getPurl() != null) {
+                        if (!isCacheCurrent(Vulnerability.Source.OSSINDEX, API_BASE_URL, component.getPurl().toString())) {
+                            LOGGER.info("Cache is not current");
+                            coordinates.add(minimizePurl(component.getPurl()));
+                        } else {
+                            LOGGER.info("Cache is current, apply analysis from cache");
+                            applyAnalysisFromCache(Vulnerability.Source.OSSINDEX, API_BASE_URL, component.getPurl().toString(), component, getAnalyzerIdentity());
+                        }
                     }
+
                 }
-
             }
-        }
-        if (!CollectionUtils.isEmpty(coordinates)) {
-            final JSONObject json = new JSONObject();
-            json.put("coordinates", coordinates);
-            try {
-                final List<ComponentReport> report = submit(json);
-                processResults(report, components);
+            if (!CollectionUtils.isEmpty(coordinates)) {
+                final JSONObject json = new JSONObject();
+                json.put("coordinates", coordinates);
+                try {
+                    final List<ComponentReport> report = submit(json);
+                    processResults(report, components);
 
-            } catch (UnirestException e) {
+                } catch (UnirestException e) {
+                }
+                LOGGER.info("Analyzing " + coordinates.size() + " component(s)");
             }
-            LOGGER.info("Analyzing " + coordinates.size() + " component(s)");
+            paginatedComponents.nextPage();
         }
-
     }
 
     /**
