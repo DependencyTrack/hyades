@@ -1,6 +1,5 @@
 package org.acme;
 
-import alpine.model.ConfigProperty;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
@@ -19,8 +18,6 @@ public class Main {
     }
 
     public static HashMap<Integer, String> cweInfo = new HashMap<>();
-    public static final Map<String, ConfigProperty> configValues = new HashMap<>();
-
 
     public static class MyApp implements QuarkusApplication {
         Logger logger = Logger.getLogger("poc");
@@ -28,6 +25,7 @@ public class Main {
         @Override
         public int run(String... args) {
             try {
+
                 Map<Integer, String> cweList = new CweImporter().processCweDefinitions();
                 for (Map.Entry<Integer, String> entry : cweList.entrySet()) {
                     if (entry != null) {

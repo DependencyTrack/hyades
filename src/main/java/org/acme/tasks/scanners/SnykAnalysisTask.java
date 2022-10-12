@@ -28,7 +28,7 @@ import kong.unirest.*;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
-import org.acme.consumer.ConfigConsumer;
+import org.acme.Main;
 import org.acme.event.SnykAnalysisEvent;
 import org.acme.producer.VulnerabilityResultProducer;
 import org.apache.http.HttpHeaders;
@@ -36,6 +36,7 @@ import org.acme.common.UnirestFactory;
 import org.acme.event.IndexEvent;
 import org.acme.model.*;
 import org.acme.parser.common.resolver.CweResolver;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -54,16 +55,15 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
     @Inject
     CweResolver cweResolver;
 
-    @Inject
-    ConfigConsumer configConsumer;
-
     private final Logger LOGGER = Logger.getLogger(SnykAnalysisTask.class);
     @Inject
     VulnerablityResult vulnerablityResult;
 
-    private String apiToken;
-
     private String API_BASE_URL = "";
+
+    private String orgId;
+
+    private String snykToken;
 
     @Inject
     VulnerabilityResultProducer vulnerabilityResultProducer;
@@ -72,22 +72,23 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         return AnalyzerIdentity.SNYK_ANALYZER;
     }
 
+    @Inject
+    public SnykAnalysisTask(@ConfigProperty(name = "SNYK_ORG_ID") String orgId, @ConfigProperty(name = "SNYK_TOKEN") String snykToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity) {
+        super(cacheValidity);
+        this.orgId = orgId;
+        this.snykToken = "token " + snykToken;
+    }
+
+    public SnykAnalysisTask(){
+
+    }
+
     /**
      * {@inheritDoc}
      */
     public void inform(final Event e) {
-        alpine.model.ConfigProperty orgId = configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_SNYK_API_ORG_ID.getPropertyName());
-        alpine.model.ConfigProperty token = configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getPropertyName());
-        String ORG_ID = orgId.getPropertyValue();
-        String snykToken = token.getPropertyValue();
-        API_BASE_URL = "https://api.snyk.io/rest/orgs/" + ORG_ID + "/packages/";
+        API_BASE_URL = "https://api.snyk.io/rest/orgs/" + this.orgId + "/packages/";
         Instant start = Instant.now();
-        try {
-            apiToken = "token " + snykToken;//DataEncryption.decryptAsString(snykToken);
-        } catch (Exception ex) {
-            LOGGER.error("An error occurred decrypting the Snyk API Token. Skipping", ex);
-            return;
-        }
         SnykAnalysisEvent event = (SnykAnalysisEvent) e;
         LOGGER.info("Starting Snyk vulnerability analysis task");
         if (event.getComponents().size() > 0) {
@@ -150,7 +151,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                         for (Component component : temp) {
                             LOGGER.info(component.getName());
                         }
-                        Thread analysisUtil = new Thread(new SnykAnalysisTaskUtil(temp, apiToken));
+                        Thread analysisUtil = new Thread(new SnykAnalysisTaskUtil(temp, this.snykToken));
                         analysisUtil.start();
                         analysisUtil.join();
                     }

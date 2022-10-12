@@ -24,7 +24,6 @@ import org.apache.kafka.streams.state.WindowStore;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 @ApplicationScoped
@@ -40,7 +39,7 @@ public class OSSIndexBatcher {
 
     void onStart(@Observes StartupEvent event) {
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "OSSConsumer");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.ossApplicationName());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         final var streamsBuilder = new StreamsBuilder();
@@ -57,7 +56,7 @@ public class OSSIndexBatcher {
                             aggr.add(v);
                             return aggr;
                         }, Materialized.<String, ArrayList<Component>, WindowStore<Bytes, byte[]>>
-                                        as("windowedComponents")
+                                        as(applicationProperty.ossStoreName())
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(Serdes.serdeFrom(new ArrayListSerializer(), new ArrayListDeserializer()))//Custom Serdes
                 );

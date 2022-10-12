@@ -45,4 +45,8 @@ public interface ApplicationProperty {
     String primaryApplicationName();
 
     String primaryTopic();
+
+    String ossApplicationName();
+
+    String ossStoreName();
 }

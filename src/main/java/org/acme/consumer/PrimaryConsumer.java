@@ -4,10 +4,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import alpine.common.util.BooleanUtil;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 
 import io.quarkus.runtime.StartupEvent;
+import org.acme.Main;
 import org.acme.common.ApplicationProperty;
 import org.acme.event.VulnerabilityAnalysisEvent;
 import org.acme.model.Component;
@@ -30,7 +30,6 @@ public class PrimaryConsumer {
     ApplicationProperty applicationProperty;
 
     KafkaStreams streams;
-    ConfigConsumer configConsumer;
 
     void onStart(@Observes StartupEvent event) {
         Properties properties = new Properties();
@@ -60,11 +59,6 @@ public class PrimaryConsumer {
         streams = new KafkaStreams(builder.build(), properties);
         streams.start();
 
-    }
-
-    public boolean isConsumerEnabled(String propertyName) {
-        alpine.model.ConfigProperty configProperty = configConsumer.getConfigProperty(propertyName);
-        return BooleanUtil.valueOf(configProperty.getPropertyValue());
     }
 
 }

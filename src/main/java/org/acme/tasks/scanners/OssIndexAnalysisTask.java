@@ -26,14 +26,15 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import kong.unirest.*;
 import kong.unirest.json.JSONObject;
+import org.acme.Main;
 import org.acme.common.*;
 
 import java.time.Instant;
 import java.util.*;
 
-import org.acme.consumer.ConfigConsumer;
 import org.acme.parser.common.resolver.CweResolver;
 import org.acme.producer.VulnerabilityResultProducer;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.CvssV2;
 import us.springett.cvss.CvssV3;
@@ -66,11 +67,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     private static final int PAGE_SIZE = 100;
 
     @Inject
-    ConfigConsumer configConsumer;
-    @Inject
     VulnerablityResult vulnerablityResult;
-
-
 
 
     @Inject
@@ -82,6 +79,14 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     private String apiUsername;
     private String apiToken;
 
+    @Inject
+    public OssIndexAnalysisTask(@ConfigProperty(name = "SCANNER_OSSINDEX_API_USERNAME") String apiUsername, @ConfigProperty(name = "SCANNER_OSSINDEX_API_TOKEN") String apiToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity ){
+        super(cacheValidity);
+        this.apiUsername = apiUsername;
+        this.apiToken = apiToken;
+
+    }
+
     public AnalyzerIdentity getAnalyzerIdentity() {
         return AnalyzerIdentity.OSSINDEX_ANALYZER;
     }
@@ -90,8 +95,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
      * {@inheritDoc}
      */
     public void inform(final Event e) {
-        apiUsername = String.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_OSSINDEX_API_USERNAME.getPropertyName()).getPropertyValue());
-        apiToken = String.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_OSSINDEX_API_TOKEN.getPropertyName()).getPropertyValue());
         if (e instanceof OssIndexAnalysisEvent) {
 
             final OssIndexAnalysisEvent event = (OssIndexAnalysisEvent) e;
@@ -102,6 +105,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
             LOGGER.info("Sonatype OSS Index analysis complete");
         }
     }
+
     /**
      * Determines if the {@link OssIndexAnalysisTask} is capable of analyzing the specified Component.
      *
@@ -208,15 +212,13 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.USER_AGENT, ManagedHttpClientFactory.getUserAgent());
-        if (apiUsername != null && apiToken != null) {
-            request.basicAuth(apiUsername, apiToken);
+        if (this.apiUsername != null && this.apiToken != null) {
+            request.basicAuth(this.apiUsername, this.apiToken);
         }
         final HttpResponse<JsonNode> jsonResponse = request.body(payload).asJson();
         if (jsonResponse.getStatus() == 200) {
 
             return parser.parse(jsonResponse.getBody());
-        } else {
-            /*handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());*/
         }
         return new ArrayList<>();
     }
@@ -252,7 +254,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 final String minimalSonatypePurl = minimizePurl(sonatypePurl);
                 if (componentPurl != null && (componentPurl.equals(componentReport.getCoordinates()) ||
                         (sonatypePurl != null && componentPurl.equals(minimalSonatypePurl)))) {
-                        Vulnerability vulnerability = null;
+                    Vulnerability vulnerability = null;
                         /*
                         Found the component
                          */
@@ -295,7 +297,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
 
         if (reportedVuln.getCwe() != null) {
             CweResolver cweResolver = new CweResolver();
-            Cwe cwe  = cweResolver.resolve(reportedVuln.getCwe());
+            Cwe cwe = cweResolver.resolve(reportedVuln.getCwe());
             if (cwe != null) {
 
                 vulnerability.addCwe(cwe);
