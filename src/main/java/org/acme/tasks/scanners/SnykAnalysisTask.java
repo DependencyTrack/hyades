@@ -64,6 +64,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
 
     private String snykToken;
 
+    private boolean snykEnabled;
     @Inject
     VulnerabilityResultProducer vulnerabilityResultProducer;
 
@@ -72,10 +73,11 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
     }
 
     @Inject
-    public SnykAnalysisTask(@ConfigProperty(name = "SNYK_ORG_ID") String orgId, @ConfigProperty(name = "SNYK_TOKEN") String snykToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity) {
+    public SnykAnalysisTask(@ConfigProperty(name = "SNYK_ORG_ID") String orgId, @ConfigProperty(name = "SNYK_TOKEN") String snykToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity, @ConfigProperty(name = "SNYK_ENABLED") String isEnabled) {
         super(cacheValidity);
         this.orgId = orgId;
         this.snykToken = "token " + snykToken;
+        this.snykEnabled = isEnabled.equalsIgnoreCase("true");
     }
 
     public SnykAnalysisTask() {
@@ -86,17 +88,21 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
      * {@inheritDoc}
      */
     public void inform(final Event e) {
-        API_BASE_URL = "https://api.snyk.io/rest/orgs/" + this.orgId + "/packages/";
-        Instant start = Instant.now();
-        SnykAnalysisEvent event = (SnykAnalysisEvent) e;
-        LOGGER.info("Starting Snyk vulnerability analysis task");
-        if (event.getComponents().size() > 0) {
-            analyze(event.getComponents());
+        if(this.snykEnabled){
+            API_BASE_URL = "https://api.snyk.io/rest/orgs/" + this.orgId + "/packages/";
+            Instant start = Instant.now();
+            SnykAnalysisEvent event = (SnykAnalysisEvent) e;
+            LOGGER.info("Starting Snyk vulnerability analysis task");
+            if (!event.getComponents().isEmpty()) {
+                analyze(event.getComponents());
+            }
+            LOGGER.info("Snyk vulnerability analysis complete");
+            Instant end = Instant.now();
+            Duration timeElapsed = Duration.between(start, end);
+            LOGGER.info("Time taken to complete snyk vulnerability analysis task: " + timeElapsed.toMillis() + " milliseconds");
+        } else{
+            LOGGER.warn("SNYK analyzer is currently disabled.");
         }
-        LOGGER.info("Snyk vulnerability analysis complete");
-        Instant end = Instant.now();
-        Duration timeElapsed = Duration.between(start, end);
-        LOGGER.info("Time taken to complete snyk vulnerability analysis task: " + timeElapsed.toMillis() + " milliseconds");
     }
 
     /**

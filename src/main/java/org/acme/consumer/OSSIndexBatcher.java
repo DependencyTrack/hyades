@@ -68,7 +68,6 @@ public class OSSIndexBatcher {
 
         streams = new KafkaStreams(streamsBuilder.build(), props);
         streams.start();
-
     }
 
 }

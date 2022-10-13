@@ -79,12 +79,14 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     private String apiUsername;
     private String apiToken;
 
+    private boolean ossEnabled;
+
     @Inject
-    public OssIndexAnalysisTask(@ConfigProperty(name = "SCANNER_OSSINDEX_API_USERNAME") String apiUsername, @ConfigProperty(name = "SCANNER_OSSINDEX_API_TOKEN") String apiToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity ){
+    public OssIndexAnalysisTask(@ConfigProperty(name = "SCANNER_OSSINDEX_API_USERNAME") String apiUsername, @ConfigProperty(name = "SCANNER_OSSINDEX_API_TOKEN") String apiToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity, @ConfigProperty(name = "OSS_ENABLED") String enabled ){
         super(cacheValidity);
         this.apiUsername = apiUsername;
         this.apiToken = apiToken;
-
+        this.ossEnabled = enabled.equalsIgnoreCase("true");
     }
 
     public AnalyzerIdentity getAnalyzerIdentity() {
@@ -95,7 +97,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
      * {@inheritDoc}
      */
     public void inform(final Event e) {
-        if (e instanceof OssIndexAnalysisEvent) {
+        if (this.ossEnabled && e instanceof OssIndexAnalysisEvent) {
 
             final OssIndexAnalysisEvent event = (OssIndexAnalysisEvent) e;
             LOGGER.info("Starting Sonatype OSS Index analysis task");
@@ -103,6 +105,9 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 analyze(event.getComponents());
             }
             LOGGER.info("Sonatype OSS Index analysis complete");
+        }
+        else{
+            LOGGER.warn("OSS analyzer is currently disabled.");
         }
     }
 

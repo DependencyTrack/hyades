@@ -55,7 +55,6 @@ public class VulnCacheReader {
             try {
                 return streams.store(StoreQueryParameters.fromNameAndType(applicationProperty.vulnCacheStoreName(), QueryableStoreTypes.keyValueStore()));
             } catch (InvalidStateStoreException e) {
-                // ignore, store not ready yet
             }
         }
     }
