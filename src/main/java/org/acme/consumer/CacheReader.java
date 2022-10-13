@@ -20,6 +20,7 @@ import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
+import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -40,6 +41,7 @@ public class CacheReader {
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.topicComponentCache());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
+        props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
         StreamsBuilder builder = new StreamsBuilder();
         GlobalKTable<CacheKey, ComponentAnalysisCache> componentCache = builder.globalTable(applicationProperty.topicComponentCache(), Materialized.<CacheKey, ComponentAnalysisCache, KeyValueStore<Bytes, byte[]>>as(applicationProperty.componentCacheStoreName())
                 .withKeySerde(Serdes.serdeFrom(new CacheKeySerializer(), new CacheKeyDeserializer()))

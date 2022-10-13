@@ -9,7 +9,6 @@ import io.smallrye.reactive.messaging.kafka.KafkaRecordBatch;
 import org.acme.event.SnykAnalysisEvent;
 import org.acme.model.Component;
 import org.acme.tasks.scanners.SnykAnalysisTask;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
 

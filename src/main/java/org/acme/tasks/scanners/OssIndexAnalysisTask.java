@@ -83,7 +83,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
 
     @Inject
     public OssIndexAnalysisTask(@ConfigProperty(name = "SCANNER_OSSINDEX_API_USERNAME") String apiUsername, @ConfigProperty(name = "SCANNER_OSSINDEX_API_TOKEN") String apiToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity, @ConfigProperty(name = "OSS_ENABLED") String enabled ){
-        super(cacheValidity);
+        super.cacheValidityPeriod = Long.parseLong(cacheValidity);
         this.apiUsername = apiUsername;
         this.apiToken = apiToken;
         this.ossEnabled = enabled.equalsIgnoreCase("true");

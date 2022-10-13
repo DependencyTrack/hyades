@@ -68,16 +68,6 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
     VulnCacheReader vulnCacheReader;
     long cacheValidityPeriod;
 
-    @Inject
-    public BaseComponentAnalyzerTask(@ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity){
-        this.cacheValidity = Long.parseLong(cacheValidity);
-
-    }
-
-    public BaseComponentAnalyzerTask(){
-
-    }
-
     protected void handleUnexpectedHttpResponse(final Logger logger, String url, final int statusCode, final String statusText) {
         logger.error("HTTP Status : " + statusCode + " " + statusText);
         logger.error(" - Analyzer URL : " + url);
@@ -210,29 +200,4 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
         producer.sendVulnCacheToKafka(key, cac);
 
     }
-
-
-
-   /* public synchronized void updateComponentAnalysisCache(ComponentAnalysisCache.CacheType cacheType, String targetHost, String targetType, String target, Date lastOccurrence, JsonObject result) {
-        CacheKey key = new CacheKey();
-        key.setAnalyzerType(targetType);
-        key.setComponentPurl(target);
-        ComponentAnalysisCache cac = cacheReader.getComponentCache(key);//getComponentAnalysisCache(cacheType, targetHost, targetType, target); To-Do- Apurva
-        if (cac == null) {
-            cac = new ComponentAnalysisCache();
-            cac.setCacheType(cacheType);
-            cac.setTargetHost(targetHost);
-            cac.setTargetType(targetType);
-            cac.setTarget(target);
-        }
-        cac.setLastOccurrence(lastOccurrence);
-        if (result != null) {
-            cac.setResult(result);
-        }
-
-
-
-        producer.sendVulnCacheToKafka(key, cac);
-
-    }*/
 }

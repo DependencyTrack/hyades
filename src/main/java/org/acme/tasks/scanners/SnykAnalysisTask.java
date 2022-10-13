@@ -74,7 +74,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
 
     @Inject
     public SnykAnalysisTask(@ConfigProperty(name = "SNYK_ORG_ID") String orgId, @ConfigProperty(name = "SNYK_TOKEN") String snykToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity, @ConfigProperty(name = "SNYK_ENABLED") String isEnabled) {
-        super(cacheValidity);
+        super.cacheValidityPeriod = Long.parseLong(cacheValidity);
         this.orgId = orgId;
         this.snykToken = "token " + snykToken;
         this.snykEnabled = isEnabled.equalsIgnoreCase("true");
