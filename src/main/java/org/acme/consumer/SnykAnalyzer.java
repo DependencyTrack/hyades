@@ -21,7 +21,6 @@ public class SnykAnalyzer {
 
     @Inject
     SnykAnalysisTask snykTask;
-
     @Inject
     SnykAnalysisEvent snykAnalysisEvent;
 
@@ -30,7 +29,6 @@ public class SnykAnalyzer {
     @Incoming("EventNew")
     @Blocking
     public CompletionStage<Void> consume(KafkaRecordBatch<String, Component> records) {
-        if (!records.getRecords().isEmpty()) {
             ArrayList<Component> componentArrayList = new ArrayList<>();
             for (KafkaRecord<String, Component> record : records) {
                 Component payload = record.getPayload();
@@ -47,7 +45,5 @@ public class SnykAnalyzer {
             snykTask.inform(snykAnalysisEvent);
             // ack will commit the latest offsets (per partition) of the batch.
             return records.ack();
-        }
-        return null;
     }
 }

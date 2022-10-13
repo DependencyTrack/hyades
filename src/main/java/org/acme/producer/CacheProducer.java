@@ -34,6 +34,7 @@ public class CacheProducer {
         properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, applicationProperty.enableIdempotence());
         properties.put(ProducerConfig.ACKS_CONFIG, applicationProperty.acksConfig());
         properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, applicationProperty.deliveryTimeout());
+
         producer = new KafkaProducer<>(properties);
     }
 
