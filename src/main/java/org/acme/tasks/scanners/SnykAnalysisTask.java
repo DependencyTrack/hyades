@@ -73,11 +73,14 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
     }
 
     @Inject
-    public SnykAnalysisTask(@ConfigProperty(name = "SNYK_ORG_ID") String orgId, @ConfigProperty(name = "SNYK_TOKEN") String snykToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity, @ConfigProperty(name = "SNYK_ENABLED") String isEnabled) {
-        super.cacheValidityPeriod = Long.parseLong(cacheValidity);
-        this.orgId = orgId;
-        this.snykToken = "token " + snykToken;
-        this.snykEnabled = isEnabled.equalsIgnoreCase("true");
+    public SnykAnalysisTask(@ConfigProperty(name = "scanner.snyk.org.id") Optional<String> orgId,
+                            @ConfigProperty(name = "scanner.snyk.token") Optional<String> snykToken,
+                            @ConfigProperty(name = "scanner.cache.validity.period") long cacheValidity,
+                            @ConfigProperty(name = "scanner.snyk.enabled") Optional<Boolean> isEnabled) {
+        super.cacheValidityPeriod = cacheValidity;
+        this.orgId = orgId.orElse(null);
+        this.snykToken = snykToken.map(token -> "token " + token).orElse(null);
+        this.snykEnabled = isEnabled.orElse(false);
     }
 
     public SnykAnalysisTask() {
@@ -88,7 +91,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
      * {@inheritDoc}
      */
     public void inform(final Event e) {
-        if(this.snykEnabled){
+        if(this.snykEnabled && this.orgId != null && this.snykToken != null){
             API_BASE_URL = "https://api.snyk.io/rest/orgs/" + this.orgId + "/packages/";
             Instant start = Instant.now();
             SnykAnalysisEvent event = (SnykAnalysisEvent) e;

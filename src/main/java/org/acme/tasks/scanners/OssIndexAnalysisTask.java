@@ -75,17 +75,20 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     @Inject
     OssIndexParser parser;
 
-    private String apiUsername;
-    private String apiToken;
+    private final String apiUsername;
+    private final String apiToken;
 
-    private boolean ossEnabled;
+    private final boolean ossEnabled;
 
     @Inject
-    public OssIndexAnalysisTask(@ConfigProperty(name = "SCANNER_OSSINDEX_API_USERNAME") String apiUsername, @ConfigProperty(name = "SCANNER_OSSINDEX_API_TOKEN") String apiToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity, @ConfigProperty(name = "OSS_ENABLED") String enabled) {
+    public OssIndexAnalysisTask(@ConfigProperty(name = "scanner.ossindex.api.username") Optional<String> apiUsername,
+                                @ConfigProperty(name = "scanner.ossindex.api.token") Optional<String> apiToken,
+                                @ConfigProperty(name = "scanner.cache.validity.period") String cacheValidity,
+                                @ConfigProperty(name = "scanner.ossindex.enabled") Optional<Boolean> enabled){
         super.cacheValidityPeriod = Long.parseLong(cacheValidity);
-        this.apiUsername = apiUsername;
-        this.apiToken = apiToken;
-        this.ossEnabled = enabled.equalsIgnoreCase("true");
+        this.apiUsername = apiUsername.orElse(null);
+        this.apiToken = apiToken.orElse(null);
+        this.ossEnabled = enabled.orElse(false);
     }
 
     public AnalyzerIdentity getAnalyzerIdentity() {

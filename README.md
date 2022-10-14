@@ -4,16 +4,24 @@ Implement the design mentioned here: https://excalidraw.com/#room=fba0103fa26425
 
 ## Setup
 
-### Set config properties:<br/>
+### Set config properties:
  
-In order to provide configuration to this application, you would need to export the below environment variables:
-- SNYK_ORG_ID=orgid
-- SNYK_TOKEN=token
+In order to provide configuration to this application, you would need to modify the 
+[`application.properties`](src/main/resources/application.properties) file, or export the following environment variables:
+
+- SCANNER_OSSINDEX_ENABLED=true
 - SCANNER_OSSINDEX_API_USERNAME=username
 - SCANNER_OSSINDEX_API_TOKEN=token
-- CACHE_VALIDITY=token
-- SNYK_ENABLED=true
-- OSS_ENABLED=true
+- SCANNER_SNYK_ENABLED=true
+- SCANNER_SNYK_ORG_ID=orgid
+- SCANNER_SNYK_TOKEN=token
+- SCANNER_CACHE_VALIDITY_PERIOD=6666
+
+> **Note**
+> The OSS Index analyzer is enabled per default for unauthenticated use.
+
+Refer to the [Quarkus Configuration Reference](https://quarkus.io/guides/config-reference#configuration-sources) 
+for more information about available configuration sources and the order in which they're loaded.
 
 ### Verify if Cwe store contains values
 
