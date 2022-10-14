@@ -32,6 +32,7 @@ public class VulnCacheProducer {
         properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, applicationProperty.enableIdempotence());
         properties.put(ProducerConfig.ACKS_CONFIG, applicationProperty.acksConfig());
         properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, applicationProperty.deliveryTimeout());
+        properties.put(ProducerConfig.RETRIES_CONFIG, applicationProperty.retries());
         producer = new KafkaProducer<>(properties);
     }
 

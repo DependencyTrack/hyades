@@ -44,12 +44,11 @@ public class OSSIndexBatcher {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, applicationProperty.consumerBatchSizeOSS()));
         final var streamsBuilder = new StreamsBuilder();
-
-        Duration timeDifference = Duration.ofSeconds(5);
-        TimeWindows tumblingWindow = TimeWindows.of(timeDifference);
-
-
+        Duration timeDifference = Duration.ofSeconds(applicationProperty.timeDifference());
+        Duration gracePeriod = Duration.ofSeconds(applicationProperty.gracePeriod());
+        TimeWindows tumblingWindow = TimeWindows.ofSizeAndGrace(timeDifference, gracePeriod);
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
         KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.analysisTopic(), Consumed.with(Serdes.String(), componentSerde));

@@ -49,4 +49,18 @@ public interface ApplicationProperty {
     String ossApplicationName();
 
     String ossStoreName();
+
+    int timeDifference();
+
+    int gracePeriod();
+
+    String snykApplicationName();
+
+    String snykStoreName();
+
+    int retries();
+
+    int consumerBatchSizeSnyk();
+
+    int consumerBatchSizeOSS();
 }
