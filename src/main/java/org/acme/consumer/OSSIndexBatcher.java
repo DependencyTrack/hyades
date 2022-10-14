@@ -45,11 +45,9 @@ public class OSSIndexBatcher {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
         final var streamsBuilder = new StreamsBuilder();
-
-        Duration timeDifference = Duration.ofSeconds(5);
-        TimeWindows tumblingWindow = TimeWindows.of(timeDifference);
-
-
+        Duration timeDifference = Duration.ofSeconds(applicationProperty.timeDifference());
+        Duration gracePeriod = Duration.ofSeconds(applicationProperty.gracePeriod());
+        TimeWindows tumblingWindow = TimeWindows.ofSizeAndGrace(timeDifference,gracePeriod);
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
         KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.analysisTopic(), Consumed.with(Serdes.String(), componentSerde));
