@@ -372,7 +372,6 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                                 ArrayList<VulnerableSoftware> vsList = handle(component, jsonResponse.getBody().getObject());
                                 Vulnerability vulnerability = new Vulnerability();
                                 vulnerability.setVulnerableSoftware(vsList);
-                                vulnerablityResult.setComponent(component);
                                 vulnerablityResult.setVulnerability(vulnerability);
                                 vulnerablityResult.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
                                 vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
