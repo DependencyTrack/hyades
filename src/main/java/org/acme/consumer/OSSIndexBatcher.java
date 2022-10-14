@@ -48,7 +48,7 @@ public class OSSIndexBatcher {
         final var streamsBuilder = new StreamsBuilder();
         Duration timeDifference = Duration.ofSeconds(applicationProperty.timeDifference());
         Duration gracePeriod = Duration.ofSeconds(applicationProperty.gracePeriod());
-        TimeWindows tumblingWindow = TimeWindows.ofSizeAndGrace(timeDifference,gracePeriod);
+        TimeWindows tumblingWindow = TimeWindows.ofSizeAndGrace(timeDifference, gracePeriod);
         ObjectMapperSerde<Component> componentSerde = new ObjectMapperSerde<>(Component.class);
 
         KStream<String, Component> kStreams = streamsBuilder.stream(applicationProperty.analysisTopic(), Consumed.with(Serdes.String(), componentSerde));

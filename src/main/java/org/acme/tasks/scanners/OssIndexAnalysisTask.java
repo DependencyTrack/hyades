@@ -26,7 +26,6 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import kong.unirest.*;
 import kong.unirest.json.JSONObject;
-import org.acme.Main;
 import org.acme.common.*;
 
 import java.time.Instant;
