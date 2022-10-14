@@ -51,6 +51,7 @@ public class SnykAnalyzer {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
         props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, applicationProperty.consumerBatchSizeSnyk());
         final var streamsBuilder = new StreamsBuilder();
         Duration timeDifference = Duration.ofSeconds(applicationProperty.timeDifference());
         Duration gracePeriod = Duration.ofSeconds(applicationProperty.gracePeriod());

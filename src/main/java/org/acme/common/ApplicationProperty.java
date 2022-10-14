@@ -59,4 +59,8 @@ public interface ApplicationProperty {
     String snykStoreName();
 
     int retries();
+
+    int consumerBatchSizeSnyk();
+
+    int consumerBatchSizeOSS();
 }

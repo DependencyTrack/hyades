@@ -82,7 +82,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     private boolean ossEnabled;
 
     @Inject
-    public OssIndexAnalysisTask(@ConfigProperty(name = "SCANNER_OSSINDEX_API_USERNAME") String apiUsername, @ConfigProperty(name = "SCANNER_OSSINDEX_API_TOKEN") String apiToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity, @ConfigProperty(name = "OSS_ENABLED") String enabled ){
+    public OssIndexAnalysisTask(@ConfigProperty(name = "SCANNER_OSSINDEX_API_USERNAME") String apiUsername, @ConfigProperty(name = "SCANNER_OSSINDEX_API_TOKEN") String apiToken, @ConfigProperty(name = "CACHE_VALIDITY") String cacheValidity, @ConfigProperty(name = "OSS_ENABLED") String enabled) {
         super.cacheValidityPeriod = Long.parseLong(cacheValidity);
         this.apiUsername = apiUsername;
         this.apiToken = apiToken;
@@ -105,8 +105,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 analyze(event.getComponents());
             }
             LOGGER.info("Sonatype OSS Index analysis complete");
-        }
-        else{
+        } else {
             LOGGER.warn("OSS analyzer is currently disabled.");
         }
     }
@@ -268,8 +267,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                         addVulnerabilityToCache(component, vulnerability);
 
                     }
-
-                    //Event.dispatch(new MetricsUpdateEvent(component));
 
                     updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, API_BASE_URL, Vulnerability.Source.OSSINDEX.name(), component.getPurl().toString(), Date.from(Instant.now()), component.getCacheResult());
                     if (vulnerability != null) {
