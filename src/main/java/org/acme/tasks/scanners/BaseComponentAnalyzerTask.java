@@ -159,7 +159,6 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
                         if (vulnerability != null) {
                             //NotificationUtil.analyzeNotificationCriteria(qm, vulnerability, component);
                             vulnerablityResult.setIdentity(analyzerIdentity);
-                            vulnerablityResult.setComponent(component);
                             vulnerablityResult.setVulnerability(vulnerability);
                             vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
 

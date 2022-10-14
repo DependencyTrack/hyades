@@ -62,5 +62,5 @@ public interface ApplicationProperty {
 
     int consumerBatchSizeSnyk();
 
-    int consumerBatchSizeOSS();
+    int consumerBatchSizeOss();
 }

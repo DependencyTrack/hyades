@@ -275,7 +275,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
 
                         LOGGER.info("Sending final Vulnerability result back to DT");
 
-                        vulnerablityResult.setComponent(component);
                         vulnerablityResult.setVulnerability(vulnerability);
                         vulnerablityResult.setIdentity(getAnalyzerIdentity());
                         vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
