@@ -23,7 +23,7 @@
     <lib.unirest.version>3.13.11</lib.unirest.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.13.1.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.13.2.Final</quarkus.platform.version>
     <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
 
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
@@ -73,11 +73,6 @@
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
     </dependency>
-   <!-- <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jaxb</artifactId>
-      <version>2.13.0.Final</version>
-    </dependency>-->
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>

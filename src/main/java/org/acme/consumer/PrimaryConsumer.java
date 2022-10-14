@@ -4,7 +4,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import alpine.common.util.BooleanUtil;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 
 import io.quarkus.runtime.StartupEvent;
@@ -17,6 +16,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.KStream;
@@ -30,13 +30,13 @@ public class PrimaryConsumer {
     ApplicationProperty applicationProperty;
 
     KafkaStreams streams;
-    ConfigConsumer configConsumer;
 
     void onStart(@Observes StartupEvent event) {
         Properties properties = new Properties();
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.primaryApplicationName());
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, applicationProperty.consumerOffset());
+        properties.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
         StreamsBuilder builder = new StreamsBuilder();
         ObjectMapperSerde<VulnerabilityAnalysisEvent> vulnerabilityAnalysisEventSerde = new ObjectMapperSerde<>(
                 VulnerabilityAnalysisEvent.class);
@@ -60,11 +60,6 @@ public class PrimaryConsumer {
         streams = new KafkaStreams(builder.build(), properties);
         streams.start();
 
-    }
-
-    public boolean isConsumerEnabled(String propertyName) {
-        alpine.model.ConfigProperty configProperty = configConsumer.getConfigProperty(propertyName);
-        return BooleanUtil.valueOf(configProperty.getPropertyValue());
     }
 
 }

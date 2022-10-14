@@ -31,9 +31,9 @@ import org.acme.common.*;
 import java.time.Instant;
 import java.util.*;
 
-import org.acme.consumer.ConfigConsumer;
 import org.acme.parser.common.resolver.CweResolver;
 import org.acme.producer.VulnerabilityResultProducer;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.CvssV2;
 import us.springett.cvss.CvssV3;
@@ -66,11 +66,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     private static final int PAGE_SIZE = 100;
 
     @Inject
-    ConfigConsumer configConsumer;
-    @Inject
     VulnerablityResult vulnerablityResult;
-
-
 
 
     @Inject
@@ -79,8 +75,21 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     @Inject
     OssIndexParser parser;
 
-    private String apiUsername;
-    private String apiToken;
+    private final String apiUsername;
+    private final String apiToken;
+
+    private final boolean ossEnabled;
+
+    @Inject
+    public OssIndexAnalysisTask(@ConfigProperty(name = "scanner.ossindex.api.username") Optional<String> apiUsername,
+                                @ConfigProperty(name = "scanner.ossindex.api.token") Optional<String> apiToken,
+                                @ConfigProperty(name = "scanner.cache.validity.period") String cacheValidity,
+                                @ConfigProperty(name = "scanner.ossindex.enabled") Optional<Boolean> enabled){
+        super.cacheValidityPeriod = Long.parseLong(cacheValidity);
+        this.apiUsername = apiUsername.orElse(null);
+        this.apiToken = apiToken.orElse(null);
+        this.ossEnabled = enabled.orElse(false);
+    }
 
     public AnalyzerIdentity getAnalyzerIdentity() {
         return AnalyzerIdentity.OSSINDEX_ANALYZER;
@@ -90,9 +99,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
      * {@inheritDoc}
      */
     public void inform(final Event e) {
-        apiUsername = String.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_OSSINDEX_API_USERNAME.getPropertyName()).getPropertyValue());
-        apiToken = String.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_OSSINDEX_API_TOKEN.getPropertyName()).getPropertyValue());
-        if (e instanceof OssIndexAnalysisEvent) {
+        if (this.ossEnabled && e instanceof OssIndexAnalysisEvent) {
 
             final OssIndexAnalysisEvent event = (OssIndexAnalysisEvent) e;
             LOGGER.info("Starting Sonatype OSS Index analysis task");
@@ -100,8 +107,11 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 analyze(event.getComponents());
             }
             LOGGER.info("Sonatype OSS Index analysis complete");
+        } else {
+            LOGGER.warn("OSS analyzer is currently disabled.");
         }
     }
+
     /**
      * Determines if the {@link OssIndexAnalysisTask} is capable of analyzing the specified Component.
      *
@@ -208,15 +218,13 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.USER_AGENT, ManagedHttpClientFactory.getUserAgent());
-        if (apiUsername != null && apiToken != null) {
-            request.basicAuth(apiUsername, apiToken);
+        if (this.apiUsername != null && this.apiToken != null) {
+            request.basicAuth(this.apiUsername, this.apiToken);
         }
         final HttpResponse<JsonNode> jsonResponse = request.body(payload).asJson();
         if (jsonResponse.getStatus() == 200) {
 
             return parser.parse(jsonResponse.getBody());
-        } else {
-            /*handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());*/
         }
         return new ArrayList<>();
     }
@@ -252,7 +260,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 final String minimalSonatypePurl = minimizePurl(sonatypePurl);
                 if (componentPurl != null && (componentPurl.equals(componentReport.getCoordinates()) ||
                         (sonatypePurl != null && componentPurl.equals(minimalSonatypePurl)))) {
-                        Vulnerability vulnerability = null;
+                    Vulnerability vulnerability = null;
                         /*
                         Found the component
                          */
@@ -261,8 +269,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                         addVulnerabilityToCache(component, vulnerability);
 
                     }
-
-                    //Event.dispatch(new MetricsUpdateEvent(component));
 
                     updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, API_BASE_URL, Vulnerability.Source.OSSINDEX.name(), component.getPurl().toString(), Date.from(Instant.now()), component.getCacheResult());
                     if (vulnerability != null) {
@@ -295,7 +301,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
 
         if (reportedVuln.getCwe() != null) {
             CweResolver cweResolver = new CweResolver();
-            Cwe cwe  = cweResolver.resolve(reportedVuln.getCwe());
+            Cwe cwe = cweResolver.resolve(reportedVuln.getCwe());
             if (cwe != null) {
 
                 vulnerability.addCwe(cwe);
