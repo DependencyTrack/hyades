@@ -21,7 +21,6 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
-import java.util.Objects;
 import java.util.Properties;
 
 @ApplicationScoped
