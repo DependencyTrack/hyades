@@ -138,17 +138,24 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
             if (jsonResult != null) {
                 final JsonArray vulns = jsonResult.getJsonArray("vulnIds");
                 if (vulns != null) {
-                    for (JsonNumber vulnId : vulns.getValuesAs(JsonNumber.class)) {
-                        final Vulnerability vulnerability = vulnCacheReader.getVulnCache(vulnId.longValue());
+                    if (vulns.isEmpty()) {
+                        final var vulnerablityResult = new VulnerablityResult();
+                        vulnerablityResult.setIdentity(analyzerIdentity);
+                        vulnerablityResult.setVulnerability(null);
+                        vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
+                    } else {
+                        for (JsonNumber vulnId : vulns.getValuesAs(JsonNumber.class)) {
+                            final Vulnerability vulnerability = vulnCacheReader.getVulnCache(vulnId.longValue());
                             /*final Component c = qm.getObjectByUuid(Component.class, component.getUuid());
                             if (c == null) continue;*/
-                        if (vulnerability != null) {
-                            //NotificationUtil.analyzeNotificationCriteria(qm, vulnerability, component);
-                            final var vulnerablityResult = new VulnerablityResult();
-                            vulnerablityResult.setIdentity(analyzerIdentity);
-                            vulnerablityResult.setVulnerability(vulnerability);
-                            vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
+                            if (vulnerability != null) {
+                                //NotificationUtil.analyzeNotificationCriteria(qm, vulnerability, component);
+                                final var vulnerablityResult = new VulnerablityResult();
+                                vulnerablityResult.setIdentity(analyzerIdentity);
+                                vulnerablityResult.setVulnerability(vulnerability);
+                                vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
 
+                            }
                         }
                     }
                 }
