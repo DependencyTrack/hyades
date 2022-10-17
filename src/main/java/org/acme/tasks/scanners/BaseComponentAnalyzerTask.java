@@ -23,19 +23,25 @@ import alpine.notification.Notification;
 import alpine.notification.NotificationLevel;
 import org.acme.consumer.CacheReader;
 import org.acme.consumer.VulnCacheReader;
-import org.acme.model.*;
-
+import org.acme.model.CacheKey;
+import org.acme.model.Component;
+import org.acme.model.ComponentAnalysisCache;
+import org.acme.model.Vulnerability;
+import org.acme.model.VulnerablityResult;
 import org.acme.notification.NotificationConstants;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
 import org.acme.producer.CacheProducer;
 import org.acme.producer.VulnCacheProducer;
 import org.acme.producer.VulnerabilityResultProducer;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 
 import javax.inject.Inject;
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Date;
@@ -49,16 +55,12 @@ import java.util.Date;
 
 public abstract class BaseComponentAnalyzerTask implements ScanTask {
     private static final Logger LOGGER = Logger.getLogger(OssIndexAnalysisTask.class);
-    private long cacheValidity;
     @Inject
     CacheProducer producer;
     @Inject
     CacheReader cacheReader;
     @Inject
     VulnerabilityResultProducer vulnerabilityResultProducer;
-
-    @Inject
-    VulnerablityResult vulnerablityResult;
 
     @Inject
     VulnCacheProducer vulnCacheProducer;
@@ -92,7 +94,6 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
     }
 
     protected boolean isCacheCurrent(Vulnerability.Source source, String targetHost, String target) {
-        cacheValidityPeriod = this.cacheValidity;
         boolean isCacheCurrent = false;
         CacheKey key = new CacheKey();
         key.setAnalyzerType(source.name());
@@ -112,21 +113,6 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
         }
         return isCacheCurrent;
 
-    }
-
-    protected void addVulnerabilityToCache(Component component, Vulnerability vulnerability) {
-        if (component.getCacheResult() == null) {
-            final JsonArray vulns = Json.createArrayBuilder().add(vulnerability.getId()).build();
-            final JsonObject result = Json.createObjectBuilder().add("vulnIds", vulns).build();
-            component.setCacheResult(result);
-        } else {
-            final JsonObject result = component.getCacheResult();
-            final JsonArrayBuilder vulnsBuilder = Json.createArrayBuilder(result.getJsonArray("vulnIds"));
-            final JsonArray vulns = vulnsBuilder.add(Json.createValue(vulnerability.getId())).build();
-            component.setCacheResult(Json.createObjectBuilder(result).add("vulnIds", vulns).build());
-
-        }
-        vulnCacheProducer.sendVulnCacheToKafka(vulnerability.getId(), vulnerability);
     }
 
     public JsonObject getJsonResult(String result) {
@@ -158,6 +144,7 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
                             if (c == null) continue;*/
                         if (vulnerability != null) {
                             //NotificationUtil.analyzeNotificationCriteria(qm, vulnerability, component);
+                            final var vulnerablityResult = new VulnerablityResult();
                             vulnerablityResult.setIdentity(analyzerIdentity);
                             vulnerablityResult.setVulnerability(vulnerability);
                             vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
