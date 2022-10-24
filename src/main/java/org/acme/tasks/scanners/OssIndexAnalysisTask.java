@@ -53,8 +53,6 @@ import us.springett.cvss.Score;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -345,17 +343,6 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
         vulnerability.setId(Objects.hash(vulnerability.getSource(), vulnerability.getVulnId()));
 
         return vulnerability;
-    }
-
-    private JsonObject addVulnerabilityToCache(final JsonObject result, final long vulnId) {
-        if (result == null) {
-            final JsonArray vulns = Json.createArrayBuilder().add(vulnId).build();
-            return Json.createObjectBuilder().add("vulnIds", vulns).build();
-        } else {
-            final JsonArrayBuilder vulnsBuilder = Json.createArrayBuilder(result.getJsonArray("vulnIds"));
-            final JsonArray vulns = vulnsBuilder.add(Json.createValue(vulnId)).build();
-            return Json.createObjectBuilder(result).add("vulnIds", vulns).build();
-        }
     }
 
 }
