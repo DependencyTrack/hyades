@@ -24,25 +24,42 @@ import alpine.event.framework.Event;
 import alpine.event.framework.Subscriber;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
+import kong.unirest.GetRequest;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.UnirestException;
+import kong.unirest.UnirestInstance;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
+import org.acme.common.UnirestFactory;
 import org.acme.event.SnykAnalysisEvent;
+import org.acme.model.Component;
+import org.acme.model.ComponentAnalysisCache.CacheType;
+import org.acme.model.Cwe;
+import org.acme.model.Severity;
+import org.acme.model.Vulnerability;
+import org.acme.model.Vulnerability.Source;
+import org.acme.model.VulnerabilityAlias;
+import org.acme.model.VulnerableSoftware;
+import org.acme.model.VulnerablityResult;
+import org.acme.parser.common.resolver.CweResolver;
 import org.acme.producer.VulnerabilityResultProducer;
 import org.apache.http.HttpHeaders;
-import org.acme.common.UnirestFactory;
-import org.acme.event.IndexEvent;
-import org.acme.model.*;
-import org.acme.parser.common.resolver.CweResolver;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.acme.util.JsonUtil.jsonStringToTimestamp;
 
@@ -55,8 +72,6 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
     CweResolver cweResolver;
 
     private final Logger LOGGER = Logger.getLogger(SnykAnalysisTask.class);
-    @Inject
-    VulnerablityResult vulnerablityResult;
 
     private String API_BASE_URL = "";
 
@@ -172,22 +187,22 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         }
     }
 
-    public ArrayList<VulnerableSoftware> handle(Component component, JSONObject object) {
-        ArrayList<VulnerableSoftware> vsList = new ArrayList<>();
+    public void handle(Component component, JSONObject object) {
         try {
             String purl = null;
             final JSONObject metaInfo = object.optJSONObject("meta");
             if (metaInfo != null) {
                 purl = metaInfo.optJSONObject("package").optString("url");
                 if (purl == null) {
-                    purl = parsePurlToSnykUrlParam(component.getPurl());
+                    purl = component.getPurl().toString();
                 }
             }
+            JsonObject cacheResult = null;
             final JSONArray data = object.optJSONArray("data");
             if (data != null) {
                 for (int count = 0; count < data.length(); count++) {
                     Vulnerability vulnerability = new Vulnerability();
-                    vulnerability.setSource(Vulnerability.Source.SNYK);
+                    vulnerability.setSource(Source.SNYK);
                     // get the id of the data record (vulnerability)
                     vulnerability.setVulnId(data.optJSONObject(count).optString("id", null));
                     final JSONObject vulnAttributes = data.optJSONObject(count).optJSONObject("attributes");
@@ -260,24 +275,34 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
 
                             JSONArray coordinates = vulnAttributes.optJSONArray("coordinates");
                             if (coordinates != null) {
-
                                 for (int countCoordinates = 0; countCoordinates < coordinates.length(); countCoordinates++) {
                                     JSONArray representation = coordinates.getJSONObject(countCoordinates).optJSONArray("representation");
                                     if (representation != null) {
-                                        vsList = parseVersionRanges(purl, representation);
-
+                                        final List<VulnerableSoftware> vsList = parseVersionRanges(purl, representation);
+                                        vulnerability.setVulnerableSoftware(vsList);
                                     }
                                 }
                             }
+
+                            // FIXME: We still use the ID as key for the Kafka topic, but the ID was previously populated
+                            // by the persistence layer. For now, a hash code of source+vulnId works, but ultimately we
+                            // should use another key.
+                            vulnerability.setId(Objects.hash(vulnerability.getSource(), vulnerability.getVulnId()));
+                            vulnCacheProducer.sendVulnCacheToKafka(vulnerability.getId(), vulnerability);
+                            cacheResult = addVulnerabilityToCache(cacheResult, vulnerability.getId());
+
+                            final var result = new VulnerablityResult();
+                            result.setVulnerability(vulnerability);
+                            result.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
+                            vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), result);
                         }
-                        Event.dispatch(new IndexEvent(IndexEvent.Action.COMMIT, Vulnerability.class));
                     }
                 }
             }
+            updateComponentAnalysisCache(CacheType.VULNERABILITY, API_BASE_URL, Source.SNYK.name(), component.getPurl().toString(), new Date(), cacheResult);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        return vsList;
     }
 
     public ArrayList<VulnerableSoftware> parseVersionRanges(final String purl, final JSONArray ranges) {
@@ -359,7 +384,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
 
                     //---------- cache logic start------------------------------
                     if (component.getPurl() != null) {
-                        if (!isCacheCurrent(Vulnerability.Source.SNYK, API_BASE_URL, component.getPurl().toString())) {
+                        if (!isCacheCurrent(Source.SNYK, API_BASE_URL, component.getPurl().toString())) {
                             LOGGER.info("Cache is not current");
                             LOGGER.info("Inside run. Printing component info now: " + component.getPurl() + " " + component.getName() + " " + component.getProject());
                             final UnirestInstance ui = UnirestFactory.getUnirestInstance();
@@ -369,21 +394,13 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                                     .header(HttpHeaders.AUTHORIZATION, this.apiToken);
                             final HttpResponse<JsonNode> jsonResponse = request.asJson();
                             if (jsonResponse.getStatus() == 200) {
-                                ArrayList<VulnerableSoftware> vsList = handle(component, jsonResponse.getBody().getObject());
-                                Vulnerability vulnerability = new Vulnerability();
-                                vulnerability.setVulnerableSoftware(vsList);
-                                vulnerablityResult.setVulnerability(vulnerability);
-                                vulnerablityResult.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
-                                vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
-
+                                handle(component, jsonResponse.getBody().getObject());
                             } else {
                                 handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());
                             }
-                            updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, API_BASE_URL, Vulnerability.Source.SNYK.name(), component.getPurl().toString(), Date.from(Instant.now()), component.getCacheResult());
-
                         } else {
                             LOGGER.info("Cache is current, apply analysis from cache");
-                            applyAnalysisFromCache(Vulnerability.Source.SNYK, API_BASE_URL, component.getPurl().toString(), component, getAnalyzerIdentity());
+                            applyAnalysisFromCache(Source.SNYK, API_BASE_URL, component.getPurl().toString(), component, getAnalyzerIdentity());
                         }
                     }
 
