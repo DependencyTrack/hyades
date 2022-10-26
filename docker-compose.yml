@@ -39,15 +39,18 @@ services:
        /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
       echo -e 'Creating topics now'
 
-      /usr/bin/rpk topic create event --brokers=redpanda:29092 --replicas=1 --partitions=3 --config retention.ms=86400000,retention.bytes=-1
-      /usr/bin/rpk topic create OSSEvent --brokers=redpanda:29092 --replicas=1 --partitions=3 --config retention.ms=86400000,retention.bytes=-1
-      /usr/bin/rpk topic create EventNew --brokers=redpanda:29092 --replicas=1 --partitions=3 --config retention.ms=86400000,retention.bytes=-1
-      /usr/bin/rpk topic create vuln-cache --brokers=redpanda:29092 --replicas=1 --partitions=3 --config retention.ms=86400000,retention.bytes=-1
-      /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3 --config retention.ms=86400000,retention.bytes=-1
-      /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3 --config retention.ms=86400000,retention.bytes=-1
+
+      /usr/bin/rpk topic create event --brokers=redpanda:29092 --replicas=1 --partitions=3  --topic-config retention.ms=86400000 
+      /usr/bin/rpk topic create OSSEvent --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create EventNew --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create vuln-cache --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+
       "
     ports:
       - "8093:8093"
+
   redpanda-console:
     image: docker.redpanda.com/vectorized/console:v2.0.3
     container_name: redpanda-console
