@@ -12,6 +12,8 @@ import org.acme.serde.ArrayListSerializer;
 import org.acme.serde.ComponentDeserializer;
 import org.acme.serde.ComponentSerializer;
 import org.acme.serde.VulnerabilityResultDeserializer;
+import org.acme.serde.VulnerabilityResultListDeserializer;
+import org.acme.serde.VulnerabilityResultListSerializer;
 import org.acme.serde.VulnerabilityResultSerializer;
 import org.acme.tasks.scanners.AnalyzerIdentity;
 import org.apache.commons.lang3.StringUtils;
@@ -54,14 +56,15 @@ public class AnalyzerTopology {
         final var streamsBuilder = new StreamsBuilder();
 
         final var componentListSerde = Serdes.serdeFrom(new ArrayListSerializer(), new ArrayListDeserializer());
-        final var vulnResultAggregateSerde = new ObjectMapperSerde<>(VulnerabilityResultAggregate.class);
         final var componentSerde = Serdes.serdeFrom(new ComponentSerializer(), new ComponentDeserializer());
         final var vulnerabilityResultSerde = Serdes.serdeFrom(new VulnerabilityResultSerializer(), new VulnerabilityResultDeserializer());
+        final var vulnerabilityResultListSerde = Serdes.serdeFrom(new VulnerabilityResultListSerializer(), new VulnerabilityResultListDeserializer());
 
         // Flat-Map incoming components from the API server, and re-key the stream from UUIDs to CPEs, PURLs, and SWID Tag IDs.
         // Every component from component-analysis can thus produce up to three new events.
         final KStream<String, Component> componentStream = streamsBuilder
                 .stream("component-analysis", Consumed.with(Serdes.UUID(), new ObjectMapperSerde<>(Component.class)))
+                .peek((k, v) -> LOGGER.info("Received component: {}", k))
                 .flatMap((projectUuid, component) -> {
                     final var components = new ArrayList<KeyValue<String, Component>>();
                     if (component.getCpe() != null) {
@@ -77,7 +80,7 @@ public class AnalyzerTopology {
                     }
                     return components;
                 }, Named.as("component-mapper"))
-                .peek((identifier, component) -> LOGGER.info("Mapped: {}", identifier));
+                .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier));
 
         // Consume from the topic where analyzers write their results to.
         final KStream<String, VulnerablityResult> analyzerResultStream = streamsBuilder
@@ -85,40 +88,47 @@ public class AnalyzerTopology {
 
         // Re-key all vulnerability results from CPE/PURL/SWID back to component UUIDs.
         analyzerResultStream
+                .peek((identifier, result) -> LOGGER.info("Re-keying result: {} -> {}", identifier, result.getComponent().getUuid()))
                 .map((identifier, result) -> KeyValue.pair(result.getComponent().getUuid(), result), Named.as("vuln-result-mapper"))
                 .to("component-vuln-analysis-result", Produced.with(Serdes.UUID(), vulnerabilityResultSerde));
 
         // Aggregate vulnerability results in a KTable.
         // This will map identifiers (CPE, PURL, SWID Tag ID) to identified vulnerabilities.
-        final KTable<String, VulnerabilityResultAggregate> cacheTable = analyzerResultStream
+        final KTable<String, List<VulnerablityResult>> cacheTable = analyzerResultStream
                 .groupByKey()
-                .aggregate(VulnerabilityResultAggregate::new,
+                .aggregate(ArrayList::new,
                         (identity, result, aggregate) -> {
-                            aggregate.setComponent(result.getComponent());
-                            aggregate.getVulnerablityResults().add(result);
+                            result.setComponent(null); // Component details are not required
+                            aggregate.add(result);
                             return aggregate;
                         }, Named.as("component-analysis-vuln-aggregate"),
-                        Materialized.<String, VulnerabilityResultAggregate, KeyValueStore<Bytes, byte[]>>as("component-analysis-vuln-aggregate")
+                        Materialized.<String, List<VulnerablityResult>, KeyValueStore<Bytes, byte[]>>as("component-analysis-vuln-aggregate")
                                 .withKeySerde(Serdes.String())
-                                .withValueSerde(vulnResultAggregateSerde));
+                                .withValueSerde(vulnerabilityResultListSerde));
 
         // Left-Join the stream of components with the cacheTable constructed above.
         final KStream<String, VulnerabilityResultAggregate> componentCacheJoinStream = componentStream
-                .leftJoin(cacheTable, (component, vulnResultAggregate) -> {
+                .leftJoin(cacheTable, (component, vulnerabilityResults) -> {
                             final var aggregate = new VulnerabilityResultAggregate();
                             aggregate.setComponent(component);
-                            if (vulnResultAggregate != null) {
-                                aggregate.setVulnerablityResults(vulnResultAggregate.getVulnerablityResults());
+                            if (vulnerabilityResults != null) {
+                                aggregate.setVulnerabilityResults(vulnerabilityResults);
                             }
                             return aggregate;
                         },
-                        Joined.with(Serdes.String(), componentSerde, vulnResultAggregateSerde).withName("component-cache-join"));
+                        Joined.with(Serdes.String(), componentSerde, vulnerabilityResultListSerde).withName("component-cache-join"))
+                .peek((k, v) -> LOGGER.info("Joined: {} -> {}", k, v));
 
-        componentCacheJoinStream.split(Named.as("vuln-cache"))
+        componentCacheJoinStream
+                .split(Named.as("vuln-cache"))
                 .branch(
-                        (identifier, vulnResults) -> vulnResults.getVulnerablityResults() != null && vulnResults.getVulnerablityResults().size() > 0,
-                        Branched.<String, VulnerabilityResultAggregate>withConsumer(cachedVulnResults -> cachedVulnResults
-                                .flatMapValues((identifier, vulnResults) -> vulnResults.getVulnerablityResults())
+                        (identifier, vulnResultAggregate) -> vulnResultAggregate.getVulnerabilityResults() != null
+                                && vulnResultAggregate.getVulnerabilityResults().size() > 0,
+                        Branched.<String, VulnerabilityResultAggregate>withConsumer(vulnResultAggregateStream -> vulnResultAggregateStream
+                                .peek((identifier, vulnResultAggregate) -> LOGGER.info("Cache hit: {}", identifier))
+                                .flatMapValues((identifier, vulnResultAggregate) -> vulnResultAggregate.getVulnerabilityResults().stream()
+                                        .peek(vulnResult -> vulnResult.setComponent(vulnResultAggregate.getComponent()))
+                                        .toList())
                                 .map((identifier, vulnResult) -> KeyValue.pair(vulnResult.getComponent().getUuid(), vulnResult))
                                 .to("component-vuln-analysis-result", Produced.with(Serdes.UUID(), vulnerabilityResultSerde))
                         ).withName("hit")
@@ -127,6 +137,7 @@ public class AnalyzerTopology {
                         Branched.<String, VulnerabilityResultAggregate>withConsumer(missed -> {
                             // Branch off component events to different topics, based on their identifiers.
                             final Map<String, KStream<String, Component>> branches = missed
+                                    .peek((identifier, vulnResultAggregate) -> LOGGER.info("Cache miss: {}", identifier))
                                     .mapValues(VulnerabilityResultAggregate::getComponent)
                                     .split(Named.as("component-analysis-"))
                                     .branch((identifier, component) -> isCpe(identifier), Branched.as("cpe"))
@@ -158,10 +169,10 @@ public class AnalyzerTopology {
 
         // Perform the actual analysis based on the PURL aggregates.
         purlAggregateStream
-                .flatMap((purl, components) -> analyzeOssIndex(components), Named.as("ossindex-analyzer"))
+                .flatMap((window, components) -> analyzeOssIndex(components), Named.as("ossindex-analyzer"))
                 .to("component-analysis-vuln", Produced.with(Serdes.String(), vulnerabilityResultSerde));
         purlAggregateStream
-                .flatMap((purl, components) -> analyzeSnyk(components), Named.as("snyk-analyzer"))
+                .flatMap((window, components) -> analyzeSnyk(components), Named.as("snyk-analyzer"))
                 .to("component-analysis-vuln", Produced.with(Serdes.String(), vulnerabilityResultSerde));
 
         return streamsBuilder.build();
