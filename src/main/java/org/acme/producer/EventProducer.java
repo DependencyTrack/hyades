@@ -22,7 +22,7 @@ public class EventProducer {
     @Inject
     ApplicationProperty applicationProperty;
 
-    void onStart(@Observes StartupEvent event) {
+    /*void onStart(@Observes StartupEvent event) {
         final var properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, applicationProperty.primaryEventProducer());
@@ -33,7 +33,7 @@ public class EventProducer {
         properties.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, applicationProperty.deliveryTimeout());
         properties.put(ProducerConfig.RETRIES_CONFIG, applicationProperty.retries());
         producer = new KafkaProducer<>(properties);
-    }
+    }*/
 
     public void sendEventToKafka(VulnerabilityAnalysisEvent data) {
         producer.send(new ProducerRecord<>("event", "abc", data));

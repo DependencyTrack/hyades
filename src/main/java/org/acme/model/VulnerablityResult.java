@@ -9,6 +9,7 @@ public class VulnerablityResult {
 
     Vulnerability vulnerability;
     AnalyzerIdentity identity;
+    Component component;
 
     public Vulnerability getVulnerability() {
         return vulnerability;
@@ -24,5 +25,14 @@ public class VulnerablityResult {
 
     public void setIdentity(AnalyzerIdentity identity) {
         this.identity = identity;
+    }
+
+
+    public Component getComponent() {
+        return component;
+    }
+
+    public void setComponent(Component component) {
+        this.component = component;
     }
 }

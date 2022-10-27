@@ -69,7 +69,7 @@ import java.util.Optional;
  * @author Steve Springett
  * @since 3.2.0
  */
-@ApplicationScoped
+//@ApplicationScoped
 public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements Subscriber {
 
     private static final String API_BASE_URL = "https://ossindex.sonatype.org/api/v3/component-report";

@@ -25,7 +25,7 @@ public class CacheProducer {
     @Inject
     ApplicationProperty applicationProperty;
 
-    void onStart(@Observes StartupEvent event) {
+    /*void onStart(@Observes StartupEvent event) {
         final var properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
         properties.put(ProducerConfig.CLIENT_ID_CONFIG, applicationProperty.cacheProducerAppName());
@@ -37,7 +37,7 @@ public class CacheProducer {
         properties.put(ProducerConfig.RETRIES_CONFIG, applicationProperty.retries());
 
         producer = new KafkaProducer<>(properties);
-    }
+    }*/
 
 
     public void sendVulnCacheToKafka(CacheKey key, ComponentAnalysisCache cacheValue) {

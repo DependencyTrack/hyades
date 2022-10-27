@@ -23,7 +23,7 @@ import org.apache.kafka.streams.kstream.KStream;
 
 import java.util.*;
 
-@ApplicationScoped
+//@ApplicationScoped
 public class PrimaryConsumer {
 
     @Inject
@@ -31,7 +31,7 @@ public class PrimaryConsumer {
 
     KafkaStreams streams;
 
-    void onStart(@Observes StartupEvent event) {
+    /*void onStart(@Observes StartupEvent event) {
         Properties properties = new Properties();
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.primaryApplicationName());
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
@@ -60,6 +60,6 @@ public class PrimaryConsumer {
         streams = new KafkaStreams(builder.build(), properties);
         streams.start();
 
-    }
+    }*/
 
 }

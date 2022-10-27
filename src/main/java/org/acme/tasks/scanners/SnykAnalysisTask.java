@@ -66,7 +66,7 @@ import static org.acme.util.JsonUtil.jsonStringToTimestamp;
 /**
  * Subscriber task that performs an analysis of component using Snyk vulnerability REST API.
  */
-@ApplicationScoped
+//@ApplicationScoped
 public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subscriber {
     @Inject
     CweResolver cweResolver;

@@ -37,7 +37,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Properties;
 
-@ApplicationScoped
+//@ApplicationScoped
 public class OSSIndexBatcher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OSSIndexBatcher.class);
@@ -51,7 +51,7 @@ public class OSSIndexBatcher {
     @Inject
     OssIndexAnalysisTask task;
 
-    void onStart(@Observes StartupEvent event) {
+    void onStart(/*@Observes*/ StartupEvent event) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.ossApplicationName());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());

@@ -29,14 +29,14 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import java.util.Objects;
 import java.util.Properties;
 
-@ApplicationScoped
+//@ApplicationScoped
 public class CacheReader {
     KafkaStreams streams;
 
     @Inject
     ApplicationProperty applicationProperty;
 
-    void onStart(@Observes StartupEvent event) {
+    void onStart(/*@Observes*/ StartupEvent event) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.topicComponentCache());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());

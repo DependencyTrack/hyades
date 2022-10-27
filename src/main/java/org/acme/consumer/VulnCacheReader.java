@@ -25,7 +25,7 @@ import org.jboss.logging.Logger;
 
 import java.util.Properties;
 
-@ApplicationScoped
+//@ApplicationScoped
 public class VulnCacheReader {
     KafkaStreams streams;
     Logger logger = Logger.getLogger("poc");
@@ -33,7 +33,7 @@ public class VulnCacheReader {
     @Inject
     ApplicationProperty applicationProperty;
 
-    void onStart(@Observes StartupEvent event) {
+    void onStart(/*@Observes*/ StartupEvent event) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.topicVulnCache());
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.server());
