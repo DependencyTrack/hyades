@@ -21,6 +21,7 @@
     <lib.cyclonedx-java.version>7.2.0</lib.cyclonedx-java.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.unirest.version>3.13.12</lib.unirest.version>
+    <lib.pebble.version>3.1.6</lib.pebble.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.13.3.Final</quarkus.platform.version>
@@ -46,6 +47,17 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -144,6 +156,11 @@
       <groupId>us.springett</groupId>
       <artifactId>cpe-parser</artifactId>
       <version>${lib.cpe-parser.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.pebbletemplates</groupId>
+      <artifactId>pebble</artifactId>
+      <version>${lib.pebble.version}</version>
     </dependency>
   </dependencies>
   <build>
