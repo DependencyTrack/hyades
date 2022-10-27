@@ -102,9 +102,11 @@ public final class NotificationUtil {
         JsonUtil.add(vulnerabilityBuilder, "cvssv3", vulnerability.getCvssV3BaseScore());
         JsonUtil.add(vulnerabilityBuilder, "severity",  vulnerability.getSeverity());
         final JsonArrayBuilder cwesBuilder = Json.createArrayBuilder();
-        if (vulnerability.getCwes() != null) { //- TO-DO Apurva
-            /*for (final Integer cweId: vulnerability.getCwes()) {
-                final Cwe cwe = CweResolver.getInstance().lookup(cweId);
+        CweResolver resolver = new CweResolver();
+        if (vulnerability.getCwes() != null) {
+
+            for (final Integer cweId: vulnerability.getCwes()) {
+                final Cwe cwe = resolver.lookup(cweId);
                 if (cwe != null) {
                     final JsonObject cweNode = Json.createObjectBuilder()
                             .add("cweId", cwe.getCweId())
@@ -112,7 +114,7 @@ public final class NotificationUtil {
                             .build();
                     cwesBuilder.add(cweNode);
                 }
-            }*/
+            }
         }
         final JsonArray cwes = cwesBuilder.build();
         if (cwes != null && !cwes.isEmpty()) {

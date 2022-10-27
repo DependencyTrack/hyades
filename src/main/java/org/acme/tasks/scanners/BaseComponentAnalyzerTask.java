@@ -179,7 +179,7 @@ public abstract class BaseComponentAnalyzerTask implements ScanTask {
         CacheKey key = new CacheKey();
         key.setAnalyzerType(targetType);
         key.setComponentPurl(target);
-        ComponentAnalysisCache cac = cacheReader.getComponentCache(key);//getComponentAnalysisCache(cacheType, targetHost, targetType, target); To-Do- Apurva
+        ComponentAnalysisCache cac = cacheReader.getComponentCache(key);
         if (cac == null) {
             cac = new ComponentAnalysisCache();
             cac.setCacheType(cacheType);

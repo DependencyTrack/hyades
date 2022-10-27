@@ -66,7 +66,7 @@ public class SendMailPublisher implements Publisher {
             LOGGER.warn("A destination or template was not found. Skipping notification");
             return;
         }
-        try /*(QueryManager qm = new QueryManager()) */{
+        try /*(QueryManager qm = new QueryManager()) */{ //To-do Apurva
             final ConfigProperty smtpEnabled = null;//qm.getConfigProperty(EMAIL_SMTP_ENABLED.getGroupName(), EMAIL_SMTP_ENABLED.getPropertyName());
             final ConfigProperty smtpFrom = null;//qm.getConfigProperty(EMAIL_SMTP_FROM_ADDR.getGroupName(), EMAIL_SMTP_FROM_ADDR.getPropertyName());
             final ConfigProperty smtpHostname = null;//qm.getConfigProperty(EMAIL_SMTP_SERVER_HOSTNAME.getGroupName(), EMAIL_SMTP_SERVER_HOSTNAME.getPropertyName());
