@@ -17,28 +17,27 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.acme.notification.publisher;
-
 import alpine.common.logging.Logger;
-import alpine.common.util.BooleanUtil;
 import alpine.model.*;
 import alpine.notification.Notification;
 import alpine.security.crypto.DataEncryption;
 import alpine.server.mail.SendMail;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-
-
+import org.acme.common.ApplicationProperty;
+import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static org.acme.model.ConfigPropertyConstants.*;
 
 public class SendMailPublisher implements Publisher {
 
     private static final Logger LOGGER = Logger.getLogger(SendMailPublisher.class);
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
+    @Inject
+    static ApplicationProperty applicationProperty;
 
     public void inform(final Notification notification, final JsonObject config) {
         if (config == null) {
@@ -66,35 +65,35 @@ public class SendMailPublisher implements Publisher {
             LOGGER.warn("A destination or template was not found. Skipping notification");
             return;
         }
-        try /*(QueryManager qm = new QueryManager()) */{ //To-do Apurva
-            final ConfigProperty smtpEnabled = null;//qm.getConfigProperty(EMAIL_SMTP_ENABLED.getGroupName(), EMAIL_SMTP_ENABLED.getPropertyName());
-            final ConfigProperty smtpFrom = null;//qm.getConfigProperty(EMAIL_SMTP_FROM_ADDR.getGroupName(), EMAIL_SMTP_FROM_ADDR.getPropertyName());
-            final ConfigProperty smtpHostname = null;//qm.getConfigProperty(EMAIL_SMTP_SERVER_HOSTNAME.getGroupName(), EMAIL_SMTP_SERVER_HOSTNAME.getPropertyName());
-            final ConfigProperty smtpPort = null;//qm.getConfigProperty(EMAIL_SMTP_SERVER_PORT.getGroupName(), EMAIL_SMTP_SERVER_PORT.getPropertyName());
-            final ConfigProperty smtpUser = null;//qm.getConfigProperty(EMAIL_SMTP_USERNAME.getGroupName(), EMAIL_SMTP_USERNAME.getPropertyName());
-            final ConfigProperty smtpPass = null;//qm.getConfigProperty(EMAIL_SMTP_PASSWORD.getGroupName(), EMAIL_SMTP_PASSWORD.getPropertyName());
-            final ConfigProperty smtpSslTls = null;//qm.getConfigProperty(EMAIL_SMTP_SSLTLS.getGroupName(), EMAIL_SMTP_SSLTLS.getPropertyName());
-            final ConfigProperty smtpTrustCert = null;//qm.getConfigProperty(EMAIL_SMTP_TRUSTCERT.getGroupName(), EMAIL_SMTP_TRUSTCERT.getPropertyName());
+        try {
+            final boolean smtpEnabled = applicationProperty.smtpEnabled();
+            final String smtpFrom = applicationProperty.smtpFromAddress();
+            final String smtpHostname = applicationProperty.smtpServerHostname();
+            final int smtpPort = applicationProperty.smtpServerPort();
+            final String smtpUser = applicationProperty.smtpUsername();
+            final String smtpPassword = applicationProperty.smtpPassword();
+            final boolean smtpSslTls = applicationProperty.smtpSsltls();
+            final boolean smtpTrustCert = applicationProperty.smptTrustcert();
 
-            if (!BooleanUtil.valueOf(smtpEnabled.getPropertyValue())) {
+            if (!smtpEnabled) {
                 LOGGER.warn("SMTP is not enabled");
                 return; // smtp is not enabled
             }
-            final boolean smtpAuth = (smtpUser.getPropertyValue() != null && smtpPass.getPropertyValue() != null);
-            final String password = (smtpPass.getPropertyValue() != null) ? DataEncryption.decryptAsString(smtpPass.getPropertyValue()) : null;
+            final boolean smtpAuth = (smtpUser != null && smtpPassword != null);
+            final String password = (smtpPassword != null) ? DataEncryption.decryptAsString(smtpPassword) : null;
             final SendMail sendMail = new SendMail()
-                    .from(smtpFrom.getPropertyValue())
+                    .from(smtpFrom)
                     .to(destinations)
                     .subject("[Dependency-Track] " + notification.getTitle())
                     .body(content)
                     .bodyMimeType(mimeType)
-                    .host(smtpHostname.getPropertyValue())
-                    .port(Integer.valueOf(smtpPort.getPropertyValue()))
-                    .username(smtpUser.getPropertyValue())
+                    .host(smtpHostname)
+                    .port(Integer.valueOf(smtpPort))
+                    .username(smtpUser)
                     .password(password)
                     .smtpauth(smtpAuth)
-                    .useStartTLS(BooleanUtil.valueOf(smtpSslTls.getPropertyValue()))
-                    .trustCert(Boolean.valueOf(smtpTrustCert.getPropertyValue()));
+                    .useStartTLS(smtpSslTls)
+                    .trustCert(smtpTrustCert);
             sendMail.send();
         } catch (Exception e) {
             LOGGER.error("An error occurred sending output email notification", e);
@@ -129,4 +128,5 @@ public class SendMailPublisher implements Publisher {
                 .toArray(String[]::new);
         return destination.length == 0 ? null : destination;
     }
+
 }

@@ -1,6 +1,7 @@
 package org.acme.common;
 
 import io.smallrye.config.ConfigMapping;
+import org.apache.kafka.common.protocol.types.Field;
 
 @ConfigMapping(prefix = "poc")
 public interface ApplicationProperty {
@@ -63,4 +64,16 @@ public interface ApplicationProperty {
     int consumerBatchSizeSnyk();
 
     int consumerBatchSizeOss();
+
+    boolean smtpEnabled();
+    String smtpFromAddress();
+    String smtpServerHostname();
+
+    int smtpServerPort();
+
+    String smtpUsername();
+    String smtpPassword();
+    boolean smtpSsltls();
+    boolean smptTrustcert();
+
 }

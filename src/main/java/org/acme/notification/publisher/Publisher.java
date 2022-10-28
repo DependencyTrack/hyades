@@ -18,18 +18,22 @@
  */
 package org.acme.notification.publisher;
 
+import alpine.Config;
 import alpine.common.logging.Logger;
 import alpine.common.util.UrlUtil;
 import alpine.model.ConfigProperty;
 import alpine.notification.Notification;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import org.acme.common.ApplicationProperty;
+import org.acme.common.ConfigKey;
 import org.acme.exception.PublisherException;
 import org.acme.model.ConfigPropertyConstants;
 import org.acme.notification.NotificationScope;
 import org.acme.notification.vo.*;
 import org.acme.util.NotificationUtil;
 
+import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -45,6 +49,7 @@ public interface Publisher {
     String CONFIG_TEMPLATE_MIME_TYPE_KEY = "mimeType";
 
     String CONFIG_DESTINATION = "destination";
+
 
     void inform(Notification notification, JsonObject config);
 
@@ -69,11 +74,7 @@ public interface Publisher {
 
     default String prepareTemplate(final Notification notification, final PebbleTemplate template) {
 
-        //try (QueryManager qm = new QueryManager()) {
-            final ConfigProperty baseUrlProperty = null;/*qm.getConfigProperty( To-DO- Apurva
-                    ConfigPropertyConstants.GENERAL_BASE_URL.getGroupName(),
-                    ConfigPropertyConstants.GENERAL_BASE_URL.getPropertyName()
-            );*/
+            String baseUrl = Config.getInstance().getProperty(ConfigKey.GENERAL_BASE_URL);
 
             final Map<String, Object> context = new HashMap<>();
             final long epochSecond = notification.getTimestamp().toEpochSecond(
@@ -83,8 +84,8 @@ public interface Publisher {
             context.put("timestampEpochSecond", epochSecond);
             context.put("timestamp", notification.getTimestamp().toString());
             context.put("notification", notification);
-            if (baseUrlProperty != null) {
-                context.put("baseUrl", UrlUtil.normalize(baseUrlProperty.getPropertyValue()));
+            if (baseUrl != null) {
+                context.put("baseUrl", UrlUtil.normalize(baseUrl));
             } else {
                 context.put("baseUrl", "");
             }
