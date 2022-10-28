@@ -3,8 +3,8 @@ package org.acme.consumer;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
+import org.acme.analyzer.OssIndexAnalyzer;
 import org.acme.model.Component;
-import org.acme.model.Vulnerability;
 import org.acme.model.VulnerabilityResultAggregate;
 import org.acme.model.VulnerablityResult;
 import org.acme.serde.ArrayListDeserializer;
@@ -15,7 +15,6 @@ import org.acme.serde.VulnerabilityResultDeserializer;
 import org.acme.serde.VulnerabilityResultListDeserializer;
 import org.acme.serde.VulnerabilityResultListSerializer;
 import org.acme.serde.VulnerabilityResultSerializer;
-import org.acme.tasks.scanners.AnalyzerIdentity;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -41,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +50,13 @@ import java.util.Map;
 public class AnalyzerTopology {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzerTopology.class);
+
+    private final OssIndexAnalyzer ossIndexAnalyzer;
+
+    @Inject
+    public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer) {
+        this.ossIndexAnalyzer = ossIndexAnalyzer;
+    }
 
     @Produces
     public Topology topology() {
@@ -197,13 +204,15 @@ public class AnalyzerTopology {
 
     private List<KeyValue<String, VulnerablityResult>> analyzeOssIndex(final ArrayList<Component> components) {
         LOGGER.info("Performing OSS Index analysis for {} components: {}", components.size(), components);
-        var res = new VulnerablityResult();
-        res.setComponent(components.get(0));
-        var vul = new Vulnerability();
-        vul.setVulnId("CVE-123");
-        res.setVulnerability(vul);
-        res.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
-        return new ArrayList<>(List.of(KeyValue.pair(res.getComponent().getPurl().getCoordinates(), res)));
+        return ossIndexAnalyzer.analyze(components).stream()
+                .map(analysisResult -> {
+                    final var vulnResult = new VulnerablityResult();
+                    vulnResult.setIdentity(analysisResult.identity());
+                    vulnResult.setComponent(analysisResult.component());
+                    vulnResult.setVulnerability(analysisResult.vulnerability());
+                    return KeyValue.pair(analysisResult.component().getPurl().getCoordinates(), vulnResult);
+                })
+                .toList();
     }
 
     private List<KeyValue<String, VulnerablityResult>> analyzeSnyk(final ArrayList<Component> components) {
