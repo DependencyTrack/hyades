@@ -8,6 +8,7 @@ import org.acme.client.ossindex.ModelConverter;
 import org.acme.client.ossindex.OssIndexClient;
 import org.acme.model.Component;
 import org.acme.model.Vulnerability;
+import org.acme.model.VulnerablityResult;
 import org.acme.tasks.scanners.AnalyzerIdentity;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -42,13 +43,13 @@ public class OssIndexAnalyzer {
         }
     }
 
-    public List<AnalysisResult> analyze(final List<Component> components) {
+    public List<VulnerablityResult> analyze(final List<Component> components) {
         final var purlComponents = new MultivaluedHashMap<String, Component>();
         for (final Component component : components) {
             purlComponents.add(component.getPurl().getCoordinates(), component);
         }
 
-        final var results = new ArrayList<AnalysisResult>();
+        final var results = new ArrayList<VulnerablityResult>();
 
         final Pageable<String> paginatedPurls = new Pageable<>(128, new ArrayList<>(purlComponents.keySet()));
         while (!paginatedPurls.isPaginationComplete()) {
@@ -68,7 +69,11 @@ public class OssIndexAnalyzer {
 
                 if (report.vulnerabilities().isEmpty()) {
                     for (final Component component : affectedComponents) {
-                        results.add(new AnalysisResult(component, null, AnalyzerIdentity.OSSINDEX_ANALYZER));
+                        final var result = new VulnerablityResult();
+                        result.setComponent(component);
+                        result.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
+                        result.setVulnerability(null);
+                        results.add(result);
                     }
                     continue;
                 }
@@ -77,7 +82,11 @@ public class OssIndexAnalyzer {
                     final Vulnerability vuln = ModelConverter.convert(reportedVuln);
 
                     for (final Component component : affectedComponents) {
-                        results.add(new AnalysisResult(component, vuln, AnalyzerIdentity.OSSINDEX_ANALYZER));
+                        final var result = new VulnerablityResult();
+                        result.setComponent(component);
+                        result.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
+                        result.setVulnerability(vuln);
+                        results.add(result);
                     }
                 }
             }

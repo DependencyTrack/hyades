@@ -1,6 +1,5 @@
 package org.acme.client.ossindex;
 
-import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.ws.rs.Consumes;
@@ -12,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @RegisterRestClient
-@ClientHeaderParam(name = "Authorization", value = "{buildAuthorization}", required = false)
 public interface OssIndexClient {
 
     @POST

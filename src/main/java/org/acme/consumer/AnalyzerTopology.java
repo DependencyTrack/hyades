@@ -105,7 +105,11 @@ public class AnalyzerTopology {
                 .groupByKey()
                 .aggregate(ArrayList::new,
                         (identity, result, aggregate) -> {
-                            result.setComponent(null); // Component details are not required
+                            // Component details are not required at this level, because the vulnerabilities
+                            // are only associated with identifiers.
+                            // TODO: Maybe use a separate model class to make this more clear?
+                            result.setComponent(null);
+
                             aggregate.add(result);
                             return aggregate;
                         }, Named.as("component-analysis-vuln-aggregate"),
@@ -205,13 +209,7 @@ public class AnalyzerTopology {
     private List<KeyValue<String, VulnerablityResult>> analyzeOssIndex(final ArrayList<Component> components) {
         LOGGER.info("Performing OSS Index analysis for {} components: {}", components.size(), components);
         return ossIndexAnalyzer.analyze(components).stream()
-                .map(analysisResult -> {
-                    final var vulnResult = new VulnerablityResult();
-                    vulnResult.setIdentity(analysisResult.identity());
-                    vulnResult.setComponent(analysisResult.component());
-                    vulnResult.setVulnerability(analysisResult.vulnerability());
-                    return KeyValue.pair(analysisResult.component().getPurl().getCoordinates(), vulnResult);
-                })
+                .map(vulnResult -> KeyValue.pair(vulnResult.getComponent().getPurl().getCoordinates(), vulnResult))
                 .toList();
     }
 
