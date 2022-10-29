@@ -74,6 +74,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5-mockito</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
       <version>${lib.jaxb.runtime.version}</version>
@@ -86,6 +90,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kafka-streams</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-streams-test-utils</artifactId>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
