@@ -42,13 +42,11 @@ import org.acme.model.Vulnerability;
 import org.acme.model.Vulnerability.Source;
 import org.acme.model.VulnerabilityAlias;
 import org.acme.model.VulnerableSoftware;
-import org.acme.model.VulnerablityResult;
+import org.acme.model.VulnerabilityResult;
 import org.acme.parser.common.resolver.CweResolver;
-import org.acme.producer.VulnerabilityResultProducer;
 import org.apache.http.HttpHeaders;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.math.BigDecimal;
@@ -80,8 +78,6 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
     private String snykToken;
 
     private boolean snykEnabled;
-    @Inject
-    VulnerabilityResultProducer vulnerabilityResultProducer;
 
     public AnalyzerIdentity getAnalyzerIdentity() {
         return AnalyzerIdentity.SNYK_ANALYZER;
@@ -106,7 +102,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
      * {@inheritDoc}
      */
     public void inform(final Event e) {
-        if(this.snykEnabled && this.orgId != null && this.snykToken != null){
+        if (this.snykEnabled && this.orgId != null && this.snykToken != null) {
             API_BASE_URL = "https://api.snyk.io/rest/orgs/" + this.orgId + "/packages/";
             Instant start = Instant.now();
             SnykAnalysisEvent event = (SnykAnalysisEvent) e;
@@ -118,7 +114,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
             Instant end = Instant.now();
             Duration timeElapsed = Duration.between(start, end);
             LOGGER.info("Time taken to complete snyk vulnerability analysis task: " + timeElapsed.toMillis() + " milliseconds");
-        } else{
+        } else {
             LOGGER.warn("SNYK analyzer is currently disabled.");
         }
     }
@@ -288,13 +284,11 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                             // by the persistence layer. For now, a hash code of source+vulnId works, but ultimately we
                             // should use another key.
                             vulnerability.setId(Objects.hash(vulnerability.getSource(), vulnerability.getVulnId()));
-                            vulnCacheProducer.sendVulnCacheToKafka(vulnerability.getId(), vulnerability);
                             cacheResult = addVulnerabilityToCache(cacheResult, vulnerability.getId());
 
-                            final var result = new VulnerablityResult();
+                            final var result = new VulnerabilityResult();
                             result.setVulnerability(vulnerability);
                             result.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
-                            vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), result);
                         }
                     }
                 }
