@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -37,7 +38,8 @@ public class OssIndexAnalyzer {
                             @ConfigProperty(name = "scanner.ossindex.api.token") final Optional<String> apiToken) {
         this.client = client;
         if (apiUsername.isPresent() && apiToken.isPresent()) {
-            this.apiAuth = "Basic " + Base64.getEncoder().encodeToString("%s:%s".formatted(apiUsername.get(), apiToken.get()).getBytes());
+            final byte[] credentials = "%s:%s".formatted(apiUsername.get(), apiToken.get()).getBytes(StandardCharsets.UTF_8);
+            this.apiAuth = "Basic " + Base64.getEncoder().encodeToString(credentials);
         } else {
             this.apiAuth = null;
         }

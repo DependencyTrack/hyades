@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -166,7 +167,7 @@ public class AnalyzerTopology {
         // TODO: Repeat this for CPE and SWID Tag ID
         final KStream<Windowed<Integer>, List<Component>> purlAggregateStream = streamsBuilder
                 .stream("component-analysis-purl", Consumed.with(Serdes.String(), componentSerde))
-                .groupBy((purl, component) -> Utils.toPositive(Utils.murmur2(purl.getBytes())) % 3, Grouped.with(Serdes.Integer(), componentSerde))
+                .groupBy((purl, component) -> Utils.toPositive(Utils.murmur2(purl.getBytes(StandardCharsets.UTF_8))) % 3, Grouped.with(Serdes.Integer(), componentSerde))
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofSeconds(2), Duration.ofSeconds(1)))
                 .aggregate(ArrayList::new,
                         (partition, component, aggregate) -> {
