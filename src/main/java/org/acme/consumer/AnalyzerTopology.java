@@ -8,12 +8,11 @@ import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import org.acme.analyzer.OssIndexAnalyzer;
 import org.acme.model.Component;
-import org.acme.model.VulnerabilityResultAggregate;
 import org.acme.model.VulnerabilityResult;
+import org.acme.model.VulnerabilityResultAggregate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
@@ -26,6 +25,8 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.Suppressed;
+import org.apache.kafka.streams.kstream.Suppressed.BufferConfig;
 import org.apache.kafka.streams.kstream.TimeWindows;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -36,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,7 +72,7 @@ public class AnalyzerTopology {
         // Every component from component-analysis can thus produce up to three new events.
         final KStream<String, Component> componentStream = streamsBuilder
                 .stream("component-analysis", Consumed.with(Serdes.UUID(), new ObjectMapperSerde<>(Component.class)))
-                .peek((k, v) -> LOGGER.info("Received component: {}", k))
+                .peek((uuid, component) -> LOGGER.info("Received component: {}", component))
                 .flatMap((projectUuid, component) -> {
                     final var components = new ArrayList<KeyValue<String, Component>>();
                     if (component.getCpe() != null) {
@@ -86,6 +86,9 @@ public class AnalyzerTopology {
                         // NOTE: Barely any components have a SWID Tag ID yet, and no scanner supports it
                         components.add(KeyValue.pair(component.getSwidTagId(), component));
                     }
+                    if (component.getCpe() == null && component.getPurl() == null && component.getSwidTagId() == null) {
+                        components.add(KeyValue.pair("no-identifier", component));
+                    }
                     return components;
                 }, Named.as("component-mapper"))
                 .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier));
@@ -96,8 +99,8 @@ public class AnalyzerTopology {
 
         // Re-key all vulnerability results from CPE/PURL/SWID back to component UUIDs.
         analyzerResultStream
-                .peek((identifier, result) -> LOGGER.info("Re-keying result: {} -> {}", identifier, result.getComponent().getUuid()))
-                .map((identifier, result) -> KeyValue.pair(result.getComponent().getUuid(), result), Named.as("vuln-result-mapper"))
+                .peek((identifier, vulnResult) -> LOGGER.info("Re-keying result: {} -> {}", identifier, vulnResult.getComponent().getUuid()))
+                .map((identifier, vulnResult) -> KeyValue.pair(vulnResult.getComponent().getUuid(), vulnResult))
                 .to("component-vuln-analysis-result", Produced.with(Serdes.UUID(), vulnResultSerde));
 
         // Aggregate vulnerability results in a KTable.
@@ -129,7 +132,7 @@ public class AnalyzerTopology {
                             return aggregate;
                         },
                         Joined.with(Serdes.String(), componentSerde, vulnResultsSerde).withName("component-cache-join"))
-                .peek((k, v) -> LOGGER.info("Joined: {} -> {}", k, v));
+                .peek((identifier, vulnResultAggregate) -> LOGGER.info("Joined: {} -> {}", identifier, vulnResultAggregate));
 
         componentCacheJoinStream
                 .split(Named.as("vuln-cache"))
@@ -159,7 +162,18 @@ public class AnalyzerTopology {
                             branches.get("component-analysis-cpe").to("component-analysis-cpe", Produced.with(Serdes.String(), componentSerde));
                             branches.get("component-analysis-purl").to("component-analysis-purl", Produced.with(Serdes.String(), componentSerde));
                             branches.get("component-analysis-swid").to("component-analysis-swid", Produced.with(Serdes.String(), componentSerde));
-                            branches.get("component-analysis-default").foreach((identifier, component) -> LOGGER.warn("Unmatched branch: {}", identifier));
+                            branches.get("component-analysis-default")
+                                    // The component does not have an identifier that we can work with,
+                                    // but we still want to produce a result.
+                                    // TODO: Instead of reporting "no vulnerability", report "not applicable" or so
+                                    .map((identifier, component) -> {
+                                        final var result = new VulnerabilityResult();
+                                        result.setComponent(component);
+                                        result.setIdentity(null);
+                                        result.setVulnerability(null);
+                                        return KeyValue.pair(component.getUuid(), result);
+                                    })
+                                    .to("component-vuln-analysis-result", Produced.with(Serdes.UUID(), vulnResultSerde));
                         }).withName("miss")
                 );
 
@@ -167,8 +181,13 @@ public class AnalyzerTopology {
         // TODO: Repeat this for CPE and SWID Tag ID
         final KStream<Windowed<Integer>, List<Component>> purlAggregateStream = streamsBuilder
                 .stream("component-analysis-purl", Consumed.with(Serdes.String(), componentSerde))
-                .groupBy((purl, component) -> Utils.toPositive(Utils.murmur2(purl.getBytes(StandardCharsets.UTF_8))) % 3, Grouped.with(Serdes.Integer(), componentSerde))
-                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofSeconds(2), Duration.ofSeconds(1)))
+                // Windowing and aggregation requires records to have the same key.
+                // Because most records will have different identifiers as key, we re-key
+                // the stream to the partition ID the records are in.
+                // This allows us to aggregate all records within the partition(s) we're consuming from.
+                .transform(PartitionIdReKeyTransformer::new, Named.as("rekey-to-partition-id"))
+                .groupByKey(Grouped.with(Serdes.Integer(), componentSerde).withName("group-by-key"))
+                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofSeconds(3), Duration.ofSeconds(1))) // TODO: Tweak this?
                 .aggregate(ArrayList::new,
                         (partition, component, aggregate) -> {
                             aggregate.add(component);
@@ -177,6 +196,15 @@ public class AnalyzerTopology {
                         Materialized.<Integer, List<Component>, WindowStore<Bytes, byte[]>>as("component-analysis-purl-aggregate")
                                 .withKeySerde(Serdes.Integer())
                                 .withValueSerde(componentsSerde))
+                // We're only interested in the final aggregation result of the window
+                // when it closes. Per default though, all updates to the aggregate are
+                // streamed to the changelog topic, causing too many and largely duplicated
+                // "batches":
+                //  --> [A]
+                //  --> [A B]
+                //  --> [A B C]
+                // Instead, we suppress all updates to the changelog topic until the window closed.
+                .suppress(Suppressed.untilWindowCloses(BufferConfig.unbounded()))
                 .toStream();
 
         // Perform the actual analysis based on the PURL aggregates.
@@ -209,7 +237,7 @@ public class AnalyzerTopology {
 
     private List<KeyValue<String, VulnerabilityResult>> analyzeOssIndex(final List<Component> components) {
         LOGGER.info("Performing OSS Index analysis for {} components: {}", components.size(), components);
-        return ossIndexAnalyzer.analyze(components).stream()
+        return ossIndexAnalyzer.analyze(components).stream() // TODO: Handle exceptions
                 .map(vulnResult -> KeyValue.pair(vulnResult.getComponent().getPurl().getCoordinates(), vulnResult))
                 .toList();
     }

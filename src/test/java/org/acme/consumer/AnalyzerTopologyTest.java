@@ -10,6 +10,7 @@ import org.acme.model.VulnerabilityResult;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
@@ -80,6 +81,23 @@ class AnalyzerTopologyTest {
         inputTopic.pipeInput(uuid, component);
 
         Assertions.assertTrue(outputTopic.isEmpty());
+    }
+
+    @Test
+    void testUnknownIdentifier() {
+        final UUID uuid = UUID.randomUUID();
+        final var component = new Component();
+        component.setUuid(uuid);
+
+        inputTopic.pipeInput(uuid, component);
+
+        Assertions.assertEquals(1, outputTopic.getQueueSize());
+
+        final KeyValue<UUID, VulnerabilityResult> record = outputTopic.readKeyValue();
+        Assertions.assertEquals(uuid, record.key);
+        Assertions.assertEquals(uuid, record.value.getComponent().getUuid());
+        Assertions.assertNull(record.value.getIdentity());
+        Assertions.assertNull(record.value.getVulnerability());
     }
 
     @AfterEach
