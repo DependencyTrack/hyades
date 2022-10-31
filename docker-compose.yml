@@ -47,7 +47,6 @@ services:
       /usr/bin/rpk topic create component-analysis-swid --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-vuln --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000 
       /usr/bin/rpk topic create component-vuln-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create dtrack-vuln-analyzer-component-analysis-purl-aggregate-repartition --brokers=redpanda:29092 --replicas=1 --partitions=3
       "
     ports:
       - "8093:8093"
