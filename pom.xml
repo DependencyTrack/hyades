@@ -209,7 +209,6 @@
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <maven.home>/opt/homebrew/Cellar/maven/3.8.3</maven.home>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -226,7 +225,6 @@
               <systemPropertyVariables>
                 <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                <maven.home>/opt/homebrew/Cellar/maven/3.8.3</maven.home>
               </systemPropertyVariables>
             </configuration>
           </execution>
