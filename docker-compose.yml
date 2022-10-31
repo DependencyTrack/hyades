@@ -46,6 +46,7 @@ services:
       /usr/bin/rpk topic create vuln-cache --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification-dispatch-object --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
 
       "
     ports:

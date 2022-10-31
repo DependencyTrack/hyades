@@ -17,6 +17,7 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.acme.notification.publisher;
+import alpine.Config;
 import alpine.common.logging.Logger;
 import alpine.model.*;
 import alpine.notification.Notification;
@@ -25,6 +26,8 @@ import alpine.server.mail.SendMail;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.acme.common.ApplicationProperty;
+import org.acme.common.ConfigKey;
+
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.util.*;
@@ -66,14 +69,14 @@ public class SendMailPublisher implements Publisher {
             return;
         }
         try {
-            final boolean smtpEnabled = applicationProperty.smtpEnabled();
-            final String smtpFrom = applicationProperty.smtpFromAddress();
-            final String smtpHostname = applicationProperty.smtpServerHostname();
-            final int smtpPort = applicationProperty.smtpServerPort();
-            final String smtpUser = applicationProperty.smtpUsername();
-            final String smtpPassword = applicationProperty.smtpPassword();
-            final boolean smtpSslTls = applicationProperty.smtpSsltls();
-            final boolean smtpTrustCert = applicationProperty.smptTrustcert();
+            final boolean smtpEnabled = Boolean.valueOf(Config.getInstance().getProperty(ConfigKey.SMTP_ENABLED));
+            final String smtpFrom = Config.getInstance().getProperty(ConfigKey.SMTP_FROM_ADDRESS);
+            final String smtpHostname = Config.getInstance().getProperty(ConfigKey.SMTP_SERVER_HOSTNAME);
+            final int smtpPort = Integer.valueOf(Config.getInstance().getProperty(ConfigKey.SMTP_SERVER_PORT));
+            final String smtpUser = Config.getInstance().getProperty(ConfigKey.SMTP_USERNAME);
+            final String smtpPassword = Config.getInstance().getProperty(ConfigKey.SMTP_PASSWORD);
+            final boolean smtpSslTls = Boolean.valueOf(Config.getInstance().getProperty(ConfigKey.SMTP_SSLTLS));
+            final boolean smtpTrustCert = Boolean.valueOf(Config.getInstance().getProperty(ConfigKey.SMTP_TRUSTCERT));
 
             if (!smtpEnabled) {
                 LOGGER.warn("SMTP is not enabled");

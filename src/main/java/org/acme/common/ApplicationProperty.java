@@ -65,7 +65,7 @@ public interface ApplicationProperty {
 
     int consumerBatchSizeOss();
 
-    boolean smtpEnabled();
+   /* boolean smtpEnabled();
     String smtpFromAddress();
     String smtpServerHostname();
 
@@ -74,6 +74,6 @@ public interface ApplicationProperty {
     String smtpUsername();
     String smtpPassword();
     boolean smtpSsltls();
-    boolean smptTrustcert();
+    boolean smptTrustcert();*/
 
 }
