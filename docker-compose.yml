@@ -23,11 +23,12 @@ services:
       - --advertise-pandaproxy-addr
       - PLAINTEXT://redpanda:28082,OUTSIDE://localhost:8082
     ports:
-      - "8081:8081"
-      - "8082:8082"
-      - "9092:9092"
-      - "28082:28082"
-      - "29092:29092"
+      # Kafka API
+      - "127.0.0.1:9092:9092"
+      # Schema Registry
+      - "127.0.0.1:28081:8081"
+      # Pandaproxy (REST API)
+      - "127.0.0.1:28082:8082"
     restart: unless-stopped
   init:
     image: docker.redpanda.com/vectorized/redpanda:v22.2.7
@@ -36,7 +37,7 @@ services:
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
-       /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
+      /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
       echo -e 'Creating topics now'
 
       /usr/bin/rpk topic create component-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
