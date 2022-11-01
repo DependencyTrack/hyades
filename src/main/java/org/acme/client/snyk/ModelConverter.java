@@ -3,7 +3,9 @@ package org.acme.client.snyk;
 import org.acme.model.Vulnerability;
 import org.acme.util.JsonUtil;
 
+import java.time.chrono.ChronoZonedDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 public final class ModelConverter {
 
@@ -16,9 +18,16 @@ public final class ModelConverter {
         vuln.setSource(Vulnerability.Source.SNYK);
         vuln.setTitle(issue.title());
         vuln.setDescription(issue.description());
-        vuln.setCreated(Date.from(JsonUtil.jsonStringToTimestamp(issue.createdAt()).toInstant()));
-        vuln.setUpdated(Date.from(JsonUtil.jsonStringToTimestamp(issue.updatedAt()).toInstant()));
-
+        Optional.ofNullable(issue.createdAt())
+                .map(JsonUtil::jsonStringToTimestamp)
+                .map(ChronoZonedDateTime::toInstant)
+                .map(Date::from)
+                .ifPresent(vuln::setCreated);
+        Optional.ofNullable(issue.updatedAt())
+                .map(JsonUtil::jsonStringToTimestamp)
+                .map(ChronoZonedDateTime::toInstant)
+                .map(Date::from)
+                .ifPresent(vuln::setUpdated);
         return vuln;
     }
 

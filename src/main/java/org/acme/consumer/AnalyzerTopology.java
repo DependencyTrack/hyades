@@ -7,6 +7,7 @@ import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import org.acme.analyzer.OssIndexAnalyzer;
+import org.acme.analyzer.SnykAnalyzer;
 import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
 import org.acme.model.VulnerabilityResultAggregate;
@@ -39,7 +40,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -49,10 +49,13 @@ public class AnalyzerTopology {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzerTopology.class);
 
     private final OssIndexAnalyzer ossIndexAnalyzer;
+    private final SnykAnalyzer snykAnalyzer;
 
     @Inject
-    public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer) {
+    public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer,
+                            final SnykAnalyzer snykAnalyzer) {
         this.ossIndexAnalyzer = ossIndexAnalyzer;
+        this.snykAnalyzer = snykAnalyzer;
     }
 
     @Produces
@@ -177,10 +180,12 @@ public class AnalyzerTopology {
                         }).withName("miss")
                 );
 
+        final KStream<String, Component> purlComponentStream = streamsBuilder
+                .stream("component-analysis-purl", Consumed.with(Serdes.String(), componentSerde));
+
         // Perform a time window based aggregation of components with PURLs.
         // TODO: Repeat this for CPE and SWID Tag ID
-        final KStream<Windowed<Integer>, List<Component>> purlAggregateStream = streamsBuilder
-                .stream("component-analysis-purl", Consumed.with(Serdes.String(), componentSerde))
+        final KStream<Windowed<Integer>, List<Component>> purlAggregateStream = purlComponentStream
                 // Windowing and aggregation requires records to have the same key.
                 // Because most records will have different identifiers as key, we re-key
                 // the stream to the partition ID the records are in.
@@ -211,8 +216,10 @@ public class AnalyzerTopology {
         purlAggregateStream
                 .flatMap((window, components) -> analyzeOssIndex(components), Named.as("ossindex-analyzer"))
                 .to("component-analysis-vuln", Produced.with(Serdes.String(), vulnResultSerde));
-        purlAggregateStream
-                .flatMap((window, components) -> analyzeSnyk(components), Named.as("snyk-analyzer"))
+
+        // Snyk does not benefit from batching yet, so consume from the non-aggregated stream directly.
+        purlComponentStream
+                .flatMap((purl, component) -> analyzeSnyk(component), Named.as("snyk-analyzer"))
                 .to("component-analysis-vuln", Produced.with(Serdes.String(), vulnResultSerde));
 
         return streamsBuilder.build();
@@ -242,9 +249,11 @@ public class AnalyzerTopology {
                 .toList();
     }
 
-    private List<KeyValue<String, VulnerabilityResult>> analyzeSnyk(final List<Component> components) {
-        LOGGER.info("Performing Snyk analysis for {} components: {}", components.size(), components);
-        return Collections.emptyList();
+    private List<KeyValue<String, VulnerabilityResult>> analyzeSnyk(final Component component) {
+        LOGGER.info("Performing Snyk analysis for component: {}", component);
+        return snykAnalyzer.analyze(component).stream() // TODO: Handle exceptions
+                .map(vulnResult -> KeyValue.pair(vulnResult.getComponent().getPurl().getCoordinates(), vulnResult))
+                .toList();
     }
 
 }

@@ -5,6 +5,7 @@ import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.acme.analyzer.OssIndexAnalyzer;
+import org.acme.analyzer.SnykAnalyzer;
 import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -35,11 +36,15 @@ class AnalyzerTopologyTest {
     private TestInputTopic<UUID, Component> inputTopic;
     private TestOutputTopic<UUID, VulnerabilityResult> outputTopic;
     private OssIndexAnalyzer ossIndexAnalyzerMock;
+    private SnykAnalyzer snykAnalyzerMock;
 
     @BeforeEach
     void beforeEach() {
         ossIndexAnalyzerMock = Mockito.mock(OssIndexAnalyzer.class);
         QuarkusMock.installMockForType(ossIndexAnalyzerMock, OssIndexAnalyzer.class);
+
+        snykAnalyzerMock = Mockito.mock(SnykAnalyzer.class);
+        QuarkusMock.installMockForType(snykAnalyzerMock, SnykAnalyzer.class);
 
         testDriver = new TopologyTestDriver(topology);
         inputTopic = testDriver.createInputTopic("component-analysis", new UUIDSerializer(), new ObjectMapperSerializer<>());
@@ -72,6 +77,7 @@ class AnalyzerTopologyTest {
     @Test
     void testNoVulnerabilities() {
         Mockito.when(ossIndexAnalyzerMock.analyze(Mockito.any())).thenReturn(Collections.emptyList());
+        Mockito.when(snykAnalyzerMock.analyze(Mockito.any())).thenReturn(Collections.emptyList());
 
         final UUID uuid = UUID.randomUUID();
         final var component = new Component();
