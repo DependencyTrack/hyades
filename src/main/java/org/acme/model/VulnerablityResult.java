@@ -7,17 +7,8 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class VulnerablityResult {
 
-    Component component;
     Vulnerability vulnerability;
     AnalyzerIdentity identity;
-
-    public Component getComponent() {
-        return component;
-    }
-
-    public void setComponent(Component component) {
-        this.component = component;
-    }
 
     public Vulnerability getVulnerability() {
         return vulnerability;

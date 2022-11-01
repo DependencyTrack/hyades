@@ -22,46 +22,46 @@ import alpine.common.logging.Logger;
 import alpine.common.util.Pageable;
 import alpine.event.framework.Event;
 import alpine.event.framework.Subscriber;
-import alpine.security.crypto.DataEncryption;
-import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
+import kong.unirest.HttpRequestWithBody;
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.UnirestException;
+import kong.unirest.UnirestInstance;
 import kong.unirest.json.JSONObject;
-import org.acme.common.*;
-
-import java.io.StringWriter;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.*;
-
-import org.acme.consumer.CacheReader;
-import org.acme.consumer.ConfigConsumer;
-import org.acme.consumer.CweConsumer;
-import org.acme.producer.CacheProducer;
-import org.acme.producer.VulnCacheProducer;
+import org.acme.common.ManagedHttpClientFactory;
+import org.acme.common.UnirestFactory;
+import org.acme.event.OssIndexAnalysisEvent;
+import org.acme.model.Component;
+import org.acme.model.ComponentAnalysisCache.CacheType;
+import org.acme.model.ComponentReport;
+import org.acme.model.ComponentReportVulnerability;
+import org.acme.model.Cwe;
+import org.acme.model.Vulnerability;
+import org.acme.model.Vulnerability.Source;
+import org.acme.model.VulnerablityResult;
+import org.acme.parser.OssIndexParser;
+import org.acme.parser.common.resolver.CweResolver;
 import org.acme.producer.VulnerabilityResultProducer;
+import org.apache.http.HttpHeaders;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.CvssV2;
 import us.springett.cvss.CvssV3;
 import us.springett.cvss.Score;
 
-import org.acme.model.*;
-import org.apache.http.HttpHeaders;
-import kong.unirest.UnirestInstance;
-import org.acme.event.MetricsUpdateEvent;
-import org.acme.event.OssIndexAnalysisEvent;
-import org.apache.commons.collections4.CollectionUtils;
-import org.acme.parser.common.resolver.CweResolver;
-import org.acme.parser.OssIndexParser;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Subscriber task that performs an analysis of component using Sonatype OSS Index REST API.
@@ -74,27 +74,29 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
 
     private static final String API_BASE_URL = "https://ossindex.sonatype.org/api/v3/component-report";
     private static final Logger LOGGER = Logger.getLogger(OssIndexAnalysisTask.class);
-    private static final int PAGE_SIZE = 100;
-
-    @Inject
-    ConfigConsumer configConsumer;
-
-
-    @Inject
-    CweConsumer cweConsumer;
-
-    @Inject
-    CacheProducer producer;
-    @Inject
-    CacheReader cacheReader;
-    @Inject
-    VulnerablityResult vulnerablityResult;
+    private static final int PAGE_SIZE = 128;
 
     @Inject
     VulnerabilityResultProducer vulnerabilityResultProducer;
 
-    private String apiUsername;
-    private String apiToken;
+    @Inject
+    OssIndexParser parser;
+
+    private final String apiUsername;
+    private final String apiToken;
+
+    private final boolean ossEnabled;
+
+    @Inject
+    public OssIndexAnalysisTask(@ConfigProperty(name = "scanner.ossindex.api.username") Optional<String> apiUsername,
+                                @ConfigProperty(name = "scanner.ossindex.api.token") Optional<String> apiToken,
+                                @ConfigProperty(name = "scanner.cache.validity.period") String cacheValidity,
+                                @ConfigProperty(name = "scanner.ossindex.enabled") Optional<Boolean> enabled) {
+        super.cacheValidityPeriod = Long.parseLong(cacheValidity);
+        this.apiUsername = apiUsername.orElse(null);
+        this.apiToken = apiToken.orElse(null);
+        this.ossEnabled = enabled.orElse(false);
+    }
 
     public AnalyzerIdentity getAnalyzerIdentity() {
         return AnalyzerIdentity.OSSINDEX_ANALYZER;
@@ -104,9 +106,7 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
      * {@inheritDoc}
      */
     public void inform(final Event e) {
-        apiUsername = String.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_OSSINDEX_API_USERNAME.getPropertyName()).getPropertyValue());
-        apiToken = String.valueOf(configConsumer.getConfigProperty(ConfigPropertyConstants.SCANNER_OSSINDEX_API_TOKEN.getPropertyName()).getPropertyValue());
-        if (e instanceof OssIndexAnalysisEvent) {
+        if (this.ossEnabled && e instanceof OssIndexAnalysisEvent) {
 
             final OssIndexAnalysisEvent event = (OssIndexAnalysisEvent) e;
             LOGGER.info("Starting Sonatype OSS Index analysis task");
@@ -114,6 +114,8 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 analyze(event.getComponents());
             }
             LOGGER.info("Sonatype OSS Index analysis complete");
+        } else {
+            LOGGER.warn("OSS analyzer is currently disabled.");
         }
     }
 
@@ -130,52 +132,56 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
     }
 
     /**
-     * Determines if the {@link OssIndexAnalysisTask} should analyze the specified PackageURL.
-     *
-     * @param purl the PackageURL to analyze
-     * @return true if OssIndexAnalysisTask should analyze, false if not
-     */
-
-
-    /**
-     * Analyzes the specified component from local {@link org.dependencytrack.model.ComponentAnalysisCache}.
-     *
-     * @param component component the Component to analyze from cache
-     */
-
-    /**
      * Analyzes a list of Components.
      *
      * @param components a list of Components
      */
     public void analyze(final List<Component> components) {
-        final List<String> coordinates = new ArrayList<>();
-        for (final Component component : components) {
-            if (!component.isInternal() && isCapable(component)) {
-                if (component.getPurl() != null) {
-                    if (!isCacheCurrent(Vulnerability.Source.OSSINDEX, API_BASE_URL, component.getPurl().toString())) {
-                        LOGGER.info("Cache is not current");
-                        coordinates.add(minimizePurl(component.getPurl()));
-                    } else {
-                        LOGGER.info("Cache is current, apply analysis from cache");
-                        applyAnalysisFromCache(Vulnerability.Source.OSSINDEX, API_BASE_URL, component.getPurl().toString(), component, getAnalyzerIdentity());
-                    }
-                }
+        // We (ab-)use the fact that OSS Index works exclusively with "minimal" PURLs
+        // to reduce the amount of requests we have to make. There may be multiple
+        // components with the same PURL, albeit with different qualifiers or sub-paths.
+        final var purlComponents = new MultivaluedHashMap<String, Component>();
 
+        for (final Component component : components) {
+            // Safety check: Components we can't analyze should've been filtered out in OSSIndexBatcher already.
+            if (component.isInternal() || !isCapable(component) || component.getPurl() == null) {
+                LOGGER.warn("Incapable of analyzing " + component + "; It should have been filtered out before");
+                continue;
             }
+
+            // Immediately provide feedback for components for which we have results cached
+            // TODO: Move this to OSSIndexBatcher maybe?
+            final String minimizedPurl = minimizePurl(component.getPurl());
+            if (isCacheCurrent(Source.OSSINDEX, API_BASE_URL, minimizedPurl)) {
+                LOGGER.info("Cache is current for PURL " + minimizedPurl);
+                applyAnalysisFromCache(Source.OSSINDEX, API_BASE_URL, minimizedPurl, component, AnalyzerIdentity.OSSINDEX_ANALYZER);
+                continue;
+            }
+
+            purlComponents.add(minimizedPurl, component);
         }
-        if (!CollectionUtils.isEmpty(coordinates)) {
+
+        final Pageable<String> paginatedPurls = new Pageable<>(PAGE_SIZE, new ArrayList<>(purlComponents.keySet()));
+        int purlsAnalyzed = 0;
+
+        while (!paginatedPurls.isPaginationComplete()) {
+            final List<String> page = paginatedPurls.getPaginatedList();
+
             final JSONObject json = new JSONObject();
-            json.put("coordinates", coordinates);
+            json.put("coordinates", page);
+
             try {
                 final List<ComponentReport> report = submit(json);
-                processResults(report, components);
-
+                processResults(report, purlComponents);
             } catch (UnirestException e) {
+                LOGGER.error("Failed to process results", e);
             }
-            LOGGER.info("Analyzing " + coordinates.size() + " component(s)");
-        }
 
+            purlsAnalyzed += page.size();
+            LOGGER.info("PURLs analyzed: " + purlsAnalyzed + "/" + paginatedPurls.getList().size());
+
+            paginatedPurls.nextPage();
+        }
     }
 
     /**
@@ -220,101 +226,85 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
                 .header(HttpHeaders.USER_AGENT, ManagedHttpClientFactory.getUserAgent());
-        if (apiUsername != null && apiToken != null) {
-            request.basicAuth(apiUsername, apiToken);
+        if (this.apiUsername != null && this.apiToken != null) {
+            request.basicAuth(this.apiUsername, this.apiToken);
         }
         final HttpResponse<JsonNode> jsonResponse = request.body(payload).asJson();
         if (jsonResponse.getStatus() == 200) {
-            final OssIndexParser parser = new OssIndexParser();
             return parser.parse(jsonResponse.getBody());
         } else {
-            /*handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());*/
+            LOGGER.error("Got unexpected response status from OSS Index: " + jsonResponse.getStatus());
         }
         return new ArrayList<>();
     }
 
-
-    /**
-     * Sonatype OSS Index currently uses an old/outdated version of the PackageURL specification.
-     * Attempt to convert it into the current spec format and return it.
-     */
-    private PackageURL oldPurlResolver(String coordinates) {
-        try {
-            // Check if OSSIndex has updated their implementation or not
-            if (coordinates.startsWith("pkg:")) {
-                return new PackageURL(coordinates);
-            }
-            // Nope, they're still using the 'old' style. Force update it.
-            return new PackageURL("pkg:" + coordinates.replaceFirst(":", "/"));
-        } catch (MalformedPackageURLException e) {
-            return null;
-        }
-    }
-
     @Override
-    protected void applyAnalysisFromCache(Vulnerability.Source source, String targetHost, String target, Component component, AnalyzerIdentity analyzerIdentity) {
+    protected void applyAnalysisFromCache(Source source, String targetHost, String target, Component component, AnalyzerIdentity analyzerIdentity) {
         super.applyAnalysisFromCache(source, targetHost, target, component, analyzerIdentity);
     }
 
-    private void processResults(final List<ComponentReport> report, final List<Component> componentsScanned) {
-        for (final ComponentReport componentReport : report) {
-            for (final Component component : componentsScanned) {
-                final String componentPurl = minimizePurl(component.getPurl());
-                final PackageURL sonatypePurl = oldPurlResolver(componentReport.getCoordinates());
-                final String minimalSonatypePurl = minimizePurl(sonatypePurl);
-                if (componentPurl != null && (componentPurl.equals(componentReport.getCoordinates()) ||
-                        (sonatypePurl != null && componentPurl.equals(minimalSonatypePurl)))) {
-                    Vulnerability vulnerability = null;
-                        /*
-                        Found the component
-                         */
-                    for (final ComponentReportVulnerability reportedVuln : componentReport.getVulnerabilities()) {
-                        vulnerability = generateVulnerability(reportedVuln);
-                        addVulnerabilityToCache(component, vulnerability);
-
-                    }
-
-                    //Event.dispatch(new MetricsUpdateEvent(component));
-
-                    updateComponentAnalysisCache(ComponentAnalysisCache.CacheType.VULNERABILITY, API_BASE_URL, Vulnerability.Source.OSSINDEX.name(), component.getPurl().toString(), Date.from(Instant.now()), component.getCacheResult());
-                    if (vulnerability != null) {
-
-                        LOGGER.info("Sending final Vulnerability result back to DT");
-
-                        vulnerablityResult.setComponent(component);
-                        vulnerablityResult.setVulnerability(vulnerability);
-                        vulnerablityResult.setIdentity(getAnalyzerIdentity());
-                        vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), vulnerablityResult);
-                    }
+    private void processResults(final List<ComponentReport> reports, final MultivaluedMap<String, Component> purlComponents) {
+        for (final ComponentReport report : reports) {
+            final List<Component> components = purlComponents.get(report.getCoordinates());
+            if (components == null || components.isEmpty()) {
+                LOGGER.warn("No components found for coordinates " + report.getCoordinates());
+                continue;
+            } else if (report.getVulnerabilities().isEmpty()) {
+                // Report "no vulnerabilities" for all components matching the report PURL
+                for (final Component component : components) {
+                    final var result = new VulnerablityResult();
+                    result.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
+                    vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), result);
                 }
 
-            }
-        }
+                // Cache "no vulnerabilities" for the report PURL
+                updateComponentAnalysisCache(CacheType.VULNERABILITY, API_BASE_URL,
+                        Source.OSSINDEX.name(), report.getCoordinates(), new Date(),
+                        Json.createObjectBuilder().add("vulnIds", Json.createArrayBuilder()).build());
 
+                continue;
+            }
+
+            JsonObject cacheResult = null;
+            for (final ComponentReportVulnerability reportedVulnerability : report.getVulnerabilities()) {
+                final Vulnerability vulnerability = generateVulnerability(reportedVulnerability);
+                vulnCacheProducer.sendVulnCacheToKafka(vulnerability.getId(), vulnerability);
+                cacheResult = addVulnerabilityToCache(cacheResult, vulnerability.getId());
+
+                // Report vulnerability for all components matching the report PURL
+                for (final Component component : components) {
+                    final var result = new VulnerablityResult();
+                    result.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
+                    result.setVulnerability(vulnerability);
+                    vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), result);
+                }
+            }
+
+            updateComponentAnalysisCache(CacheType.VULNERABILITY, API_BASE_URL,
+                    Source.OSSINDEX.name(), report.getCoordinates(), new Date(), cacheResult);
+        }
     }
 
     private Vulnerability generateVulnerability(final ComponentReportVulnerability reportedVuln) {
-        final Vulnerability vulnerability = new Vulnerability();
+        Vulnerability vulnerability = new Vulnerability();
         if (reportedVuln.getCve() != null) {
-            vulnerability.setSource(Vulnerability.Source.NVD);
+            vulnerability.setSource(Source.NVD);
             vulnerability.setVulnId(reportedVuln.getCve());
         } else {
-            vulnerability.setSource(Vulnerability.Source.OSSINDEX);
+            vulnerability.setSource(Source.OSSINDEX);
             vulnerability.setVulnId(reportedVuln.getId());
             vulnerability.setTitle(reportedVuln.getTitle());
         }
         vulnerability.setDescription(reportedVuln.getDescription());
 
-        /*if (reportedVuln.getCwe() != null) {
-           final Integer cweId = parseCweString(reportedVuln.getCwe());
-            final String cweStr = cweConsumer.getCweValues(cweId);
-            if (cweStr != null) {
-                Cwe cwe = new Cwe();
-                cwe.setName(cweStr);
-                cwe.setCweId(cweId);
+        if (reportedVuln.getCwe() != null) {
+            CweResolver cweResolver = new CweResolver();
+            Cwe cwe = cweResolver.resolve(reportedVuln.getCwe());
+            if (cwe != null) {
+
                 vulnerability.addCwe(cwe);
             }
-        }*/
+        }
 
         final StringBuilder sb = new StringBuilder();
         final String reference = reportedVuln.getReference();
@@ -346,32 +336,13 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
                 }
             }
         }
+
+        // FIXME: We still use the ID as key for the Kafka topic, but the ID was previously populated
+        // by the persistence layer. For now, a hash code of source+vulnId works, but ultimately we
+        // should use another key.
+        vulnerability.setId(Objects.hash(vulnerability.getSource(), vulnerability.getVulnId()));
+
         return vulnerability;
     }
 
-    public Integer parseCweString(final String cweString) {
-        if (cweString != null) {
-            final String string = cweString.trim();
-            String lookupString = "";
-            if (string.startsWith("CWE-") && string.contains(" ")) {
-                // This is likely to be in the following format:
-                // CWE-264 Permissions, Privileges, and Access Controls
-                lookupString = string.substring(4, string.indexOf(" "));
-            } else if (string.startsWith("CWE-") && string.length() < 9) {
-                // This is likely to be in the following format:
-                // CWE-264
-                lookupString = string.substring(4);
-            } else if (string.length() < 5) {
-                // This is likely to be in the following format:
-                // 264
-                lookupString = string;
-            }
-            try {
-                return Integer.valueOf(lookupString);
-            } catch (NumberFormatException e) {
-                // throw it away
-            }
-        }
-        return null;
-    }
 }

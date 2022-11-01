@@ -9,22 +9,22 @@
   <parent>
     <groupId>us.springett</groupId>
     <artifactId>alpine-parent</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
   </parent>
   <properties>
-    <compiler-plugin.version>3.8.1</compiler-plugin.version>
-    <maven.compiler.release>11</maven.compiler.release>
+    <compiler-plugin.version>3.10.1</compiler-plugin.version>
+    <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--    hardcoding the version of alpine. Need to check this later in poc-->
     <lib.alpine.version>${project.parent.version}</lib.alpine.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <lib.cyclonedx-java.version>7.2.0</lib.cyclonedx-java.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
-    <lib.unirest.version>3.13.11</lib.unirest.version>
+    <lib.unirest.version>3.13.12</lib.unirest.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.12.2.Final</quarkus.platform.version>
-    <lib.jaxb.runtime.version>2.3.6</lib.jaxb.runtime.version>
+    <quarkus.platform.version>2.13.3.Final</quarkus.platform.version>
+    <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
 
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <skipITs>true</skipITs>
@@ -73,11 +73,6 @@
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
     </dependency>
-   <!-- <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jaxb</artifactId>
-      <version>2.13.0.Final</version>
-    </dependency>-->
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
@@ -127,7 +122,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20220320</version>
+      <version>20220924</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.github.package-url/packageurl-java -->
     <dependency>
@@ -163,6 +158,33 @@
   </dependencies>
   <build>
     <plugins>
+        <plugin>
+          <groupId>org.cyclonedx</groupId>
+          <artifactId>cyclonedx-maven-plugin</artifactId>
+          <version>2.7.2</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>makeAggregateBom</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <projectType>library</projectType>
+            <schemaVersion>1.4</schemaVersion>
+            <includeBomSerialNumber>true</includeBomSerialNumber>
+            <includeCompileScope>true</includeCompileScope>
+            <includeProvidedScope>true</includeProvidedScope>
+            <includeRuntimeScope>true</includeRuntimeScope>
+            <includeSystemScope>true</includeSystemScope>
+            <includeTestScope>true</includeTestScope>
+            <includeLicenseText>false</includeLicenseText>
+            <outputReactorProjects>true</outputReactorProjects>
+            <outputFormat>all</outputFormat>
+            <outputName>bom</outputName>
+          </configuration>
+        </plugin>
       <plugin>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
