@@ -3,6 +3,7 @@ package org.acme.common;
 import alpine.Config;
 
 public enum ConfigKey implements Config.Key{
+
     GENERAL_BASE_URL("base.url", ""),
     SMTP_ENABLED("smtp.enabled", true),
     SMTP_FROM_ADDRESS("smtp.from.address", "xyz"),
@@ -11,7 +12,8 @@ public enum ConfigKey implements Config.Key{
     SMTP_USERNAME("smtp.username", "xyz"),
     SMTP_PASSWORD("smtp.password", "xyz"),
     SMTP_SSLTLS("smtp.ssltls", true),
-    SMTP_TRUSTCERT("smtp.trustcert", true);
+    SMTP_TRUSTCERT("smtp.trustcert", true),
+    NOTIFICATION_APPLICATION_ID("notification.application.id", "notification");
 
     private final String propertyName;
     private final Object defaultValue;
