@@ -27,28 +27,26 @@ for more information about available configuration sources and the order in whic
 
 Get request to http://localhost:8089/cwe/data?id=178
 
-### Post components to test:
+### Testing
 
-Post request to http://localhost:8089/event  
-Body:
+The `test.sh` script can be used to test the analyzer.  
+It publishes an event to the `component-analysis` topic for each component with a 
+PURL in a given CycloneDX BOM, thus emulating the API server after a BOM was uploaded to it.
 
-```json
-{
-  "project": {
-    "id": 1,
-    "name": "death_star"
-  },
-  "components": [
-    {
-      "id": 11,
-      "name": "air",
-      "purl": "pkg:pypi/django@1.11.1",
-      "group": "g1",
-      "author": "mehatest"
-    }
-  ]
-}
+```shell
+./test.sh bom.json
 ```
+
+> **Note**
+> The script requires `jq` and `rpk` to be installed.  
+> They can be installed using Homebrew:
+> ```shell
+> brew install jq
+> brew install redpanda-data/tap/redpanda
+> ```
+
+Analysis results that are intended for consumption by the API server will be
+published to the `component-vuln-analysis-result` topic.
 
 ## Redpanda Console
 

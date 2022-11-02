@@ -23,11 +23,12 @@ services:
       - --advertise-pandaproxy-addr
       - PLAINTEXT://redpanda:28082,OUTSIDE://localhost:8082
     ports:
-      - "8081:8081"
-      - "8082:8082"
-      - "9092:9092"
-      - "28082:28082"
-      - "29092:29092"
+      # Kafka API
+      - "127.0.0.1:9092:9092"
+      # Schema Registry
+      - "127.0.0.1:28081:8081"
+      # Pandaproxy (REST API)
+      - "127.0.0.1:28082:8082"
     restart: unless-stopped
   init:
     image: docker.redpanda.com/vectorized/redpanda:v22.2.7
@@ -36,17 +37,16 @@ services:
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
-       /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
+      /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
       echo -e 'Creating topics now'
 
-
-      /usr/bin/rpk topic create event --brokers=redpanda:29092 --replicas=1 --partitions=3  --topic-config retention.ms=86400000 
-      /usr/bin/rpk topic create OSSEvent --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create EventNew --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create vuln-cache --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create component-cache --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-
+      /usr/bin/rpk topic create component-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-analysis-cpe --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-analysis-purl --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-analysis-purl-aggregate --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-analysis-swid --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-analysis-vuln --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000 
+      /usr/bin/rpk topic create component-vuln-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
       "
     ports:
       - "8093:8093"
