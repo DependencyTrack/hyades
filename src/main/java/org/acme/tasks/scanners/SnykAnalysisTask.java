@@ -40,11 +40,12 @@ import org.acme.model.ComponentAnalysisCache.CacheType;
 import org.acme.model.Vulnerability.Source;
 import org.acme.parser.common.resolver.CweResolver;
 import org.acme.persistence.QueryManager;
-import org.acme.producer.VulnerabilityResultProducer;
+import org.acme.model.VulnerabilityAlias;
+import org.acme.model.VulnerableSoftware;
+import org.acme.model.VulnerabilityResult;
 import org.apache.http.HttpHeaders;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.math.BigDecimal;
@@ -62,7 +63,7 @@ import static org.acme.util.JsonUtil.jsonStringToTimestamp;
 /**
  * Subscriber task that performs an analysis of component using Snyk vulnerability REST API.
  */
-@ApplicationScoped
+//@ApplicationScoped
 public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subscriber {
     @Inject
     CweResolver cweResolver;
@@ -76,8 +77,6 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
     private String snykToken;
 
     private boolean snykEnabled;
-    @Inject
-    VulnerabilityResultProducer vulnerabilityResultProducer;
 
     public AnalyzerIdentity getAnalyzerIdentity() {
         return AnalyzerIdentity.SNYK_ANALYZER;
@@ -128,7 +127,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
             Instant end = Instant.now();
             Duration timeElapsed = Duration.between(start, end);
             LOGGER.info("Time taken to complete snyk vulnerability analysis task: " + timeElapsed.toMillis() + " milliseconds");
-        } else{
+        } else {
             LOGGER.warn("SNYK analyzer is currently disabled.");
         }
     }
@@ -197,7 +196,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         }
     }
 
-    public void handle(QueryManager qm, Component component, JSONObject object) {
+    public void handle(Component component, JSONObject object) {
         try {
             String purl = null;
             final JSONObject metaInfo = object.optJSONObject("meta");
@@ -248,11 +247,11 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                                     String id = problem.optString("id");
                                     // CWE
                                     if (source.equalsIgnoreCase("CWE")) {
-                                        //Cwe cwe = cweResolver.resolve(id);
-                                        Cwe cwe = cweResolver.resolve(qm, id);
-                                        if (cwe != null) {
-                                            vulnerability.addCwe(cwe);
-                                        }
+                                        //Commenting out temporarily
+//                                        Cwe cwe = cweResolver.resolve(id);
+//                                        if (cwe != null) {
+//                                            vulnerability.addCwe(cwe);
+//                                        }
                                     }
                                 }
                                 vulnerability.setAliases(vulnerabilityAliasList);
@@ -299,13 +298,11 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                             // by the persistence layer. For now, a hash code of source+vulnId works, but ultimately we
                             // should use another key.
                             vulnerability.setId(Objects.hash(vulnerability.getSource(), vulnerability.getVulnId()));
-                            vulnCacheProducer.sendVulnCacheToKafka(vulnerability.getId(), vulnerability);
                             cacheResult = addVulnerabilityToCache(cacheResult, vulnerability.getId());
 
-                            final var result = new VulnerablityResult();
+                            final var result = new VulnerabilityResult();
                             result.setVulnerability(vulnerability);
                             result.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
-                            vulnerabilityResultProducer.sendVulnResultToDT(component.getUuid(), result);
                         }
                     }
                 }
@@ -405,7 +402,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                                     .header(HttpHeaders.AUTHORIZATION, this.apiToken);
                             final HttpResponse<JsonNode> jsonResponse = request.asJson();
                             if (jsonResponse.getStatus() == 200) {
-                                handle(qm, component, jsonResponse.getBody().getObject());
+                                handle(component, jsonResponse.getBody().getObject());
                             } else {
                                 handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());
                             }

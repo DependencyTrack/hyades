@@ -91,6 +91,14 @@
             <artifactId>quarkus-kafka-streams</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5-mockito</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams-test-utils</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
             <version>${lib.pebble.version}</version>
@@ -155,9 +163,9 @@
             <version>${lib.cyclonedx-java.version}</version>
         </dependency>
         <dependency>
-            <groupId>us.springett</groupId>
-            <artifactId>cpe-parser</artifactId>
-            <version>${lib.cpe-parser.version}</version>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-ratelimiter</artifactId>
+            <version>1.7.1</version>
         </dependency>
     </dependencies>
     <build>
