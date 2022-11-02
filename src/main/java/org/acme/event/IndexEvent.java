@@ -67,11 +67,11 @@ public class IndexEvent implements Event {
         this.indexableObject = license;
     }
 
- /*   public IndexEvent(final Action action, final Cpe cpe) {
+    public IndexEvent(final Action action, final Cpe cpe) {
         this.action = action;
         this.indexableObject = cpe;
     }
-*/
+
     public IndexEvent(final Action action, final VulnerableSoftware vs) {
         this.action = action;
         this.indexableObject = vs;

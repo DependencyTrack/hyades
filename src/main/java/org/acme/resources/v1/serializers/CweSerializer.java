@@ -24,8 +24,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.acme.model.Cwe;
 import org.acme.parser.common.resolver.CweResolver;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,7 +31,6 @@ import java.util.List;
  * Custom serializer which takes in a List of CWE IDs (Integer) serializes them into an JSON array of Cwe objects.
  * @since 4.5.0
  */
-
 public class CweSerializer extends JsonSerializer<List<Integer>> {
 
     @Override
@@ -42,8 +39,7 @@ public class CweSerializer extends JsonSerializer<List<Integer>> {
 
         jsonGenerator.writeStartArray();
         for (final Integer cweId: cweIds) {
-            CweResolver cweResolver = new CweResolver();
-            final Cwe cwe = cweResolver.lookup(cweId);
+            final Cwe cwe = CweResolver.getInstance().lookup(cweId);
             if (cwe != null) {
                 jsonGenerator.writeObject(cwe);
             }

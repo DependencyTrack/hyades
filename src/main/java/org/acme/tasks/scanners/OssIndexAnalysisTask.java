@@ -298,8 +298,8 @@ public class OssIndexAnalysisTask extends BaseComponentAnalyzerTask implements S
         vulnerability.setDescription(reportedVuln.getDescription());
 
         if (reportedVuln.getCwe() != null) {
-            CweResolver cweResolver = new CweResolver();
-            Cwe cwe = cweResolver.resolve(reportedVuln.getCwe());
+            CweResolver cweResolver = CweResolver.getInstance();
+            Cwe cwe = cweResolver.resolve(qm, reportedVuln.getCwe());
             if (cwe != null) {
 
                 vulnerability.addCwe(cwe);

@@ -22,6 +22,7 @@ import alpine.common.logging.Logger;
 import alpine.common.util.Pageable;
 import alpine.event.framework.Event;
 import alpine.event.framework.Subscriber;
+import alpine.security.crypto.DataEncryption;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import kong.unirest.GetRequest;
@@ -34,16 +35,11 @@ import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
 import org.acme.common.UnirestFactory;
 import org.acme.event.SnykAnalysisEvent;
-import org.acme.model.Component;
+import org.acme.model.*;
 import org.acme.model.ComponentAnalysisCache.CacheType;
-import org.acme.model.Cwe;
-import org.acme.model.Severity;
-import org.acme.model.Vulnerability;
 import org.acme.model.Vulnerability.Source;
-import org.acme.model.VulnerabilityAlias;
-import org.acme.model.VulnerableSoftware;
-import org.acme.model.VulnerablityResult;
 import org.acme.parser.common.resolver.CweResolver;
+import org.acme.persistence.QueryManager;
 import org.acme.producer.VulnerabilityResultProducer;
 import org.apache.http.HttpHeaders;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -94,7 +90,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                             @ConfigProperty(name = "scanner.snyk.enabled") Optional<Boolean> isEnabled) {
         super.cacheValidityPeriod = cacheValidity;
         this.orgId = orgId.orElse(null);
-        this.snykToken = snykToken.map(token -> "token " + token).orElse(null);
+       // this.snykToken = snykToken.map(token -> "token " + token).orElse(null);
         this.snykEnabled = isEnabled.orElse(false);
     }
 
@@ -106,6 +102,20 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
      * {@inheritDoc}
      */
     public void inform(final Event e) {
+        try (QueryManager qm = new QueryManager()) {
+            final alpine.model.ConfigProperty apiTokenProperty = qm.getConfigProperty(
+                    ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getGroupName(),
+                    ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getPropertyName()
+            );
+            String tokenNew;
+            try {
+                tokenNew = DataEncryption.decryptAsString(apiTokenProperty.getPropertyValue());
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+
+            this.snykToken = "token " + tokenNew;
+        }
         if(this.snykEnabled && this.orgId != null && this.snykToken != null){
             API_BASE_URL = "https://api.snyk.io/rest/orgs/" + this.orgId + "/packages/";
             Instant start = Instant.now();
@@ -187,7 +197,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
         }
     }
 
-    public void handle(Component component, JSONObject object) {
+    public void handle(QueryManager qm, Component component, JSONObject object) {
         try {
             String purl = null;
             final JSONObject metaInfo = object.optJSONObject("meta");
@@ -238,7 +248,8 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                                     String id = problem.optString("id");
                                     // CWE
                                     if (source.equalsIgnoreCase("CWE")) {
-                                        Cwe cwe = cweResolver.resolve(id);
+                                        //Cwe cwe = cweResolver.resolve(id);
+                                        Cwe cwe = cweResolver.resolve(qm, id);
                                         if (cwe != null) {
                                             vulnerability.addCwe(cwe);
                                         }
@@ -394,7 +405,7 @@ public class SnykAnalysisTask extends BaseComponentAnalyzerTask implements Subsc
                                     .header(HttpHeaders.AUTHORIZATION, this.apiToken);
                             final HttpResponse<JsonNode> jsonResponse = request.asJson();
                             if (jsonResponse.getStatus() == 200) {
-                                handle(component, jsonResponse.getBody().getObject());
+                                handle(qm, component, jsonResponse.getBody().getObject());
                             } else {
                                 handleUnexpectedHttpResponse(LOGGER, API_BASE_URL, jsonResponse.getStatus(), jsonResponse.getStatusText());
                             }
