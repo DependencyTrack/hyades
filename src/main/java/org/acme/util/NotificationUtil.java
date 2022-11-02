@@ -19,6 +19,7 @@
 package org.acme.util;
 
 import alpine.model.ConfigProperty;
+import org.acme.persistence.QueryManager;
 import org.apache.commons.io.FileUtils;
 import org.acme.model.*;
 import org.acme.notification.publisher.DefaultNotificationPublishers;
@@ -265,5 +266,37 @@ public final class NotificationUtil {
         return builder.build();
     }
 
+    public static void loadDefaultNotificationPublishers(QueryManager qm) throws IOException {
+        for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
+            File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
+            if (qm.isEnabled(ConfigPropertyConstants.NOTIFICATION_TEMPLATE_DEFAULT_OVERRIDE_ENABLED)) {
+                ConfigProperty templateBaseDir = qm.getConfigProperty(
+                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getGroupName(),
+                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getPropertyName()
+                );
+                File userProvidedTemplateFile = new File(Path.of(templateBaseDir.getPropertyValue(), publisher.getPublisherTemplateFile()).toUri());
+                if (userProvidedTemplateFile.exists()) {
+                    templateFile = userProvidedTemplateFile;
+                }
+            }
+            final String templateContent = FileUtils.readFileToString(templateFile, UTF_8);
+            final NotificationPublisher existingPublisher = qm.getDefaultNotificationPublisher(publisher.getPublisherClass());
+            if (existingPublisher == null) {
+                qm.createNotificationPublisher(
+                        publisher.getPublisherName(), publisher.getPublisherDescription(),
+                        publisher.getPublisherClass(), templateContent, publisher.getTemplateMimeType(),
+                        publisher.isDefaultPublisher()
+                );
+            } else {
+                existingPublisher.setName(publisher.getPublisherName());
+                existingPublisher.setDescription(publisher.getPublisherDescription());
+                existingPublisher.setPublisherClass(publisher.getPublisherClass().getCanonicalName());
+                existingPublisher.setTemplate(templateContent);
+                existingPublisher.setTemplateMimeType(publisher.getTemplateMimeType());
+                existingPublisher.setDefaultPublisher(publisher.isDefaultPublisher());
+                qm.updateNotificationPublisher(existingPublisher);
+            }
+        }
+    }
 
 }

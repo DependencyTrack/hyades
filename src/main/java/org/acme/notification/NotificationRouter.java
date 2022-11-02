@@ -29,6 +29,7 @@ import org.acme.model.Project;
 import org.acme.notification.publisher.Publisher;
 import org.acme.notification.publisher.SendMailPublisher;
 import org.acme.notification.vo.*;
+import org.acme.persistence.QueryManager;
 //import org.acme.persistence.QueryManager;
 
 import javax.jdo.PersistenceManager;
@@ -49,7 +50,7 @@ public class NotificationRouter implements Subscriber {
     private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
 
     public void inform(final Notification notification) {
-        for (final NotificationRule rule: new NotificationRule[2]){//resolveRules(notification)) { - TO-do APurva
+        for (final NotificationRule rule: resolveRules(notification)) {
 
             // Not all publishers need configuration (i.e. ConsolePublisher)
             JsonObject config = Json.createObjectBuilder().build();
@@ -115,7 +116,7 @@ public class NotificationRouter implements Subscriber {
                 && rule.getProjects().size() > 0;
     }
 
-    /*List<NotificationRule> resolveRules(final Notification notification) {
+    List<NotificationRule> resolveRules(final Notification notification) {
         // The notification rules to process for this specific notification
         final List<NotificationRule> rules = new ArrayList<>();
 
@@ -191,7 +192,6 @@ public class NotificationRouter implements Subscriber {
         }
         return rules;
     }
-*/
     /**
      * if the rule specified one or more projects as targets, reduce the execution
      * of the notification down to those projects that the rule matches and which

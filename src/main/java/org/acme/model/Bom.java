@@ -91,6 +91,12 @@ public class Bom implements Serializable {
     @NotNull
     private Project project;
 
+    @Persistent(defaultFetchGroup = "true")
+    @Unique(name = "BOM_UPLOAD_TOKEN_IDX")
+    @Column(name = "UPLOAD_TOKEN", allowsNull = "false")
+    @NotNull
+    private UUID uploadToken;
+
     @Persistent(customValueStrategy = "uuid")
     @Unique(name = "BOM_UUID_IDX")
     @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
@@ -151,6 +157,14 @@ public class Bom implements Serializable {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public UUID getUploadToken() {
+        return uploadToken;
+    }
+
+    public void setUploadToken(UUID uploadToken) {
+        this.uploadToken = uploadToken;
     }
 
     public UUID getUuid() {
