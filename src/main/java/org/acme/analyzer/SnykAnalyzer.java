@@ -9,6 +9,7 @@ import org.acme.client.snyk.PageData;
 import org.acme.client.snyk.SnykClient;
 import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
+import org.acme.parser.common.resolver.CweResolver;
 import org.acme.tasks.scanners.AnalyzerIdentity;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -31,21 +32,30 @@ public class SnykAnalyzer {
 
     private final SnykClient client;
     private final RateLimiter rateLimiter;
+    private final CweResolver cweResolver;
     private final String apiToken;
     private final String apiOrgId;
 
     @Inject
     public SnykAnalyzer(@RestClient final SnykClient client,
                         @Named("snykRateLimiter") final RateLimiter rateLimiter,
+                        final CweResolver cweResolver,
                         @ConfigProperty(name = "scanner.snyk.token") final Optional<String> apiToken,
                         @ConfigProperty(name = "scanner.snyk.org.id") final Optional<String> apiOrgId) {
         this.client = client;
         this.rateLimiter = rateLimiter;
+        this.cweResolver = cweResolver;
         this.apiToken = apiToken.map(token -> "token " + token).orElse(null);
         this.apiOrgId = apiOrgId.orElse(null);
     }
 
-    public List<VulnerabilityResult> analyze(final Component component) {
+    public List<VulnerabilityResult> analyze(final List<Component> components) {
+        return components.stream()
+                .flatMap(component -> analyzeComponent(component).stream())
+                .toList();
+    }
+
+    private List<VulnerabilityResult> analyzeComponent(final Component component) {
         final PackageURL purl = component.getPurl();
 
         final Supplier<Page<Issue>> rateLimitedRequest;
@@ -58,6 +68,13 @@ public class SnykAnalyzer {
         }
 
         final Page<Issue> issuesPage = rateLimitedRequest.get();
+        if (issuesPage.data() == null || issuesPage.data().isEmpty()) {
+            final var result = new VulnerabilityResult();
+            result.setComponent(component);
+            result.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
+            result.setVulnerability(null);
+            return List.of(result);
+        }
 
         final var results = new ArrayList<VulnerabilityResult>();
         for (final PageData<Issue> data : issuesPage.data()) {
@@ -69,7 +86,7 @@ public class SnykAnalyzer {
             final var result = new VulnerabilityResult();
             result.setComponent(component);
             result.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
-            result.setVulnerability(ModelConverter.convert(data.attributes()));
+            result.setVulnerability(ModelConverter.convert(cweResolver, data.attributes()));
             results.add(result);
         }
 

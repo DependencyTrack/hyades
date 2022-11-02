@@ -74,8 +74,11 @@ public class AnalyzerTopology {
         // Flat-Map incoming components from the API server, and re-key the stream from UUIDs to CPEs, PURLs, and SWID Tag IDs.
         // Every component from component-analysis can thus produce up to three new events.
         final KStream<String, Component> componentStream = streamsBuilder
-                .stream("component-analysis", Consumed.with(Serdes.UUID(), new ObjectMapperSerde<>(Component.class)))
-                .peek((uuid, component) -> LOGGER.info("Received component: {}", component))
+                .stream("component-analysis", Consumed
+                        .with(Serdes.UUID(), componentSerde)
+                        .withName("consume_component-analysis_topic"))
+                .peek((uuid, component) -> LOGGER.info("Received component: {}", component),
+                        Named.as("log_components"))
                 .flatMap((projectUuid, component) -> {
                     final var components = new ArrayList<KeyValue<String, Component>>();
                     if (component.getCpe() != null) {
@@ -93,23 +96,30 @@ public class AnalyzerTopology {
                         components.add(KeyValue.pair("no-identifier", component));
                     }
                     return components;
-                }, Named.as("component-mapper"))
-                .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier));
+                }, Named.as("re-key_components_from_uuid_to_identifiers"))
+                .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier),
+                        Named.as("log_re-keyed_components"));
 
         // Consume from the topic where analyzers write their results to.
         final KStream<String, VulnerabilityResult> analyzerResultStream = streamsBuilder
-                .stream("component-analysis-vuln", Consumed.with(Serdes.String(), vulnResultSerde));
+                .stream("component-analysis-vuln", Consumed
+                        .with(Serdes.String(), vulnResultSerde)
+                        .withName("consume_component-analysis-vuln_topic"));
 
         // Re-key all vulnerability results from CPE/PURL/SWID back to component UUIDs.
         analyzerResultStream
-                .peek((identifier, vulnResult) -> LOGGER.info("Re-keying result: {} -> {}", identifier, vulnResult.getComponent().getUuid()))
-                .map((identifier, vulnResult) -> KeyValue.pair(vulnResult.getComponent().getUuid(), vulnResult))
-                .to("component-vuln-analysis-result", Produced.with(Serdes.UUID(), vulnResultSerde));
+                .peek((identifier, vulnResult) -> LOGGER.info("Re-keying result: {} -> {}", identifier, vulnResult.getComponent().getUuid()),
+                        Named.as("log_vuln_results_re-keying"))
+                .map((identifier, vulnResult) -> KeyValue.pair(vulnResult.getComponent().getUuid(), vulnResult),
+                        Named.as("re-key_vuln_results_from_identifier_to_component_uuid"))
+                .to("component-vuln-analysis-result", Produced
+                        .with(Serdes.UUID(), vulnResultSerde)
+                        .withName("produce_to_component-vuln-analysis-result_topic"));
 
         // Aggregate vulnerability results in a KTable.
         // This will map identifiers (CPE, PURL, SWID Tag ID) to identified vulnerabilities.
         final KTable<String, List<VulnerabilityResult>> cacheTable = analyzerResultStream
-                .groupByKey()
+                .groupByKey(Grouped.as("group_by_component_identifier"))
                 .aggregate(ArrayList::new,
                         (identity, result, aggregate) -> {
                             // Component details are not required at this level, because the vulnerabilities
@@ -119,8 +129,8 @@ public class AnalyzerTopology {
 
                             aggregate.add(result);
                             return aggregate;
-                        }, Named.as("component-analysis-vuln-aggregate"),
-                        Materialized.<String, List<VulnerabilityResult>, KeyValueStore<Bytes, byte[]>>as("component-analysis-vuln-aggregate")
+                        }, Named.as("aggregate_vuln_results_for_component_identifier"),
+                        Materialized.<String, List<VulnerabilityResult>, KeyValueStore<Bytes, byte[]>>as("vuln_results_cache")
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(vulnResultsSerde));
 
@@ -134,38 +144,51 @@ public class AnalyzerTopology {
                             }
                             return aggregate;
                         },
-                        Joined.with(Serdes.String(), componentSerde, vulnResultsSerde).withName("component-cache-join"))
-                .peek((identifier, vulnResultAggregate) -> LOGGER.info("Joined: {} -> {}", identifier, vulnResultAggregate));
+                        Joined.with(Serdes.String(), componentSerde, vulnResultsSerde)
+                                .withName("component_vuln-results-cache_join"))
+                .peek((identifier, vulnResultAggregate) -> LOGGER.info("Joined: {} -> {}", identifier, vulnResultAggregate),
+                        Named.as("log_join_result"));
 
         componentCacheJoinStream
-                .split(Named.as("vuln-cache"))
+                .split(Named.as("vuln-result-cache"))
                 .branch(
                         (identifier, vulnResultAggregate) -> vulnResultAggregate.getVulnerabilityResults() != null
                                 && vulnResultAggregate.getVulnerabilityResults().size() > 0,
                         Branched.<String, VulnerabilityResultAggregate>withConsumer(vulnResultAggregateStream -> vulnResultAggregateStream
-                                .peek((identifier, vulnResultAggregate) -> LOGGER.info("Cache hit: {}", identifier))
+                                .peek((identifier, vulnResultAggregate) -> LOGGER.info("Cache hit: {}", identifier),
+                                        Named.as("log_cache_hit"))
                                 .flatMapValues((identifier, vulnResultAggregate) -> vulnResultAggregate.getVulnerabilityResults().stream()
                                         .peek(vulnResult -> vulnResult.setComponent(vulnResultAggregate.getComponent()))
-                                        .toList())
-                                .map((identifier, vulnResult) -> KeyValue.pair(vulnResult.getComponent().getUuid(), vulnResult))
-                                .to("component-vuln-analysis-result", Produced.with(Serdes.UUID(), vulnResultSerde))
-                        ).withName("hit")
+                                        .toList(), Named.as("populate_component_field_of_vuln_results"))
+                                .map((identifier, vulnResult) -> KeyValue.pair(vulnResult.getComponent().getUuid(), vulnResult),
+                                        Named.as("re-key_cached_vuln_results_from_identifier_to_component_uuid"))
+                                .to("component-vuln-analysis-result", Produced
+                                        .with(Serdes.UUID(), vulnResultSerde)
+                                        .withName("produce_cached_vuln_results_to_component-vuln-analysis-result_topic"))
+                        ).withName("-hit")
                 )
                 .defaultBranch(
                         Branched.<String, VulnerabilityResultAggregate>withConsumer(missed -> {
                             // Branch off component events to different topics, based on their identifiers.
                             final Map<String, KStream<String, Component>> branches = missed
-                                    .peek((identifier, vulnResultAggregate) -> LOGGER.info("Cache miss: {}", identifier))
-                                    .mapValues(VulnerabilityResultAggregate::getComponent)
-                                    .split(Named.as("component-analysis-"))
-                                    .branch((identifier, component) -> isCpe(identifier), Branched.as("cpe"))
-                                    .branch((identifier, component) -> isPurl(identifier), Branched.as("purl"))
-                                    .branch((identifier, component) -> isSwidTagId(identifier), Branched.as("swid"))
-                                    .defaultBranch(Branched.as("default"));
-                            branches.get("component-analysis-cpe").to("component-analysis-cpe", Produced.with(Serdes.String(), componentSerde));
-                            branches.get("component-analysis-purl").to("component-analysis-purl", Produced.with(Serdes.String(), componentSerde));
-                            branches.get("component-analysis-swid").to("component-analysis-swid", Produced.with(Serdes.String(), componentSerde));
-                            branches.get("component-analysis-default")
+                                    .peek((identifier, vulnResultAggregate) -> LOGGER.info("Cache miss: {}", identifier),
+                                            Named.as("log_cache_miss"))
+                                    .mapValues(VulnerabilityResultAggregate::getComponent, Named.as("map_to_component"))
+                                    .split(Named.as("component-with-identifier-type"))
+                                    .branch((identifier, component) -> isCpe(identifier), Branched.as("-cpe"))
+                                    .branch((identifier, component) -> isPurl(identifier), Branched.as("-purl"))
+                                    .branch((identifier, component) -> isSwidTagId(identifier), Branched.as("-swid"))
+                                    .defaultBranch(Branched.as("-unknown"));
+                            branches.get("component-with-identifier-type-cpe").to("component-analysis-cpe", Produced
+                                    .with(Serdes.String(), componentSerde)
+                                    .withName("produce_to_component-analysis-cpe_topic"));
+                            branches.get("component-with-identifier-type-purl").to("component-analysis-purl", Produced
+                                    .with(Serdes.String(), componentSerde)
+                                    .withName("produce_to_component-analysis-purl_topic"));
+                            branches.get("component-with-identifier-type-swid").to("component-analysis-swid", Produced
+                                    .with(Serdes.String(), componentSerde)
+                                    .withName("produce_to_component-analysis-swid_topic"));
+                            branches.get("component-with-identifier-type-unknown")
                                     // The component does not have an identifier that we can work with,
                                     // but we still want to produce a result.
                                     // TODO: Instead of reporting "no vulnerability", report "not applicable" or so
@@ -175,13 +198,17 @@ public class AnalyzerTopology {
                                         result.setIdentity(null);
                                         result.setVulnerability(null);
                                         return KeyValue.pair(component.getUuid(), result);
-                                    })
-                                    .to("component-vuln-analysis-result", Produced.with(Serdes.UUID(), vulnResultSerde));
-                        }).withName("miss")
+                                    }, Named.as("map_to_empty_vuln_result"))
+                                    .to("component-vuln-analysis-result", Produced
+                                            .with(Serdes.UUID(), vulnResultSerde)
+                                            .withName("produce_empty_result_to_component-vuln-analysis-result_topic"));
+                        }).withName("-miss")
                 );
 
         final KStream<String, Component> purlComponentStream = streamsBuilder
-                .stream("component-analysis-purl", Consumed.with(Serdes.String(), componentSerde));
+                .stream("component-analysis-purl", Consumed
+                        .with(Serdes.String(), componentSerde)
+                        .withName("consume_from_component-analysis-purl_topic"));
 
         // Perform a time window based aggregation of components with PURLs.
         // TODO: Repeat this for CPE and SWID Tag ID
@@ -190,15 +217,16 @@ public class AnalyzerTopology {
                 // Because most records will have different identifiers as key, we re-key
                 // the stream to the partition ID the records are in.
                 // This allows us to aggregate all records within the partition(s) we're consuming from.
-                .transform(PartitionIdReKeyTransformer::new, Named.as("rekey-to-partition-id"))
-                .groupByKey(Grouped.with(Serdes.Integer(), componentSerde).withName("group-by-key"))
+                .transform(PartitionIdReKeyTransformer::new, Named.as("re-key_components_from_purl_to_partition_id"))
+                .groupByKey(Grouped.with(Serdes.Integer(), componentSerde)
+                        .withName("group_by_partition_id"))
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofSeconds(3), Duration.ofSeconds(1))) // TODO: Tweak this?
                 .aggregate(ArrayList::new,
                         (partition, component, aggregate) -> {
                             aggregate.add(component);
                             return aggregate;
-                        },
-                        Materialized.<Integer, List<Component>, WindowStore<Bytes, byte[]>>as("component-analysis-purl-aggregate")
+                        }, Named.as("aggregate_components_with_purl"),
+                        Materialized.<Integer, List<Component>, WindowStore<Bytes, byte[]>>as("aggregated_components_with_purl")
                                 .withKeySerde(Serdes.Integer())
                                 .withValueSerde(componentsSerde))
                 // We're only interested in the final aggregation result of the window
@@ -209,18 +237,25 @@ public class AnalyzerTopology {
                 //  --> [A B]
                 //  --> [A B C]
                 // Instead, we suppress all updates to the changelog topic until the window closed.
-                .suppress(Suppressed.untilWindowCloses(BufferConfig.unbounded()))
-                .toStream();
+                .suppress(Suppressed.untilWindowCloses(BufferConfig.unbounded())
+                        .withName("suppress_aggregates_until_time_window_closes"))
+                .toStream(Named.as("stream_component_aggregates"));
 
-        // Perform the actual analysis based on the PURL aggregates.
+        // Perform the OSS Index analysis based on the PURL aggregates.
         purlAggregateStream
-                .flatMap((window, components) -> analyzeOssIndex(components), Named.as("ossindex-analyzer"))
-                .to("component-analysis-vuln", Produced.with(Serdes.String(), vulnResultSerde));
+                .flatMap((window, components) -> analyzeOssIndex(components),
+                        Named.as("analyze_with_ossindex"))
+                .to("component-analysis-vuln", Produced
+                        .with(Serdes.String(), vulnResultSerde)
+                        .withName("produce_ossindex_results_to_component-analysis-vuln_topic"));
 
         // Snyk does not benefit from batching yet, so consume from the non-aggregated stream directly.
         purlComponentStream
-                .flatMap((purl, component) -> analyzeSnyk(component), Named.as("snyk-analyzer"))
-                .to("component-analysis-vuln", Produced.with(Serdes.String(), vulnResultSerde));
+                .flatMap((purl, component) -> analyzeSnyk(component),
+                        Named.as("analyze_with_snyk"))
+                .to("component-analysis-vuln", Produced
+                        .with(Serdes.String(), vulnResultSerde)
+                        .withName("produce_snyk_results_to_component-analysis-vuln_topic"));
 
         return streamsBuilder.build();
     }
@@ -251,7 +286,7 @@ public class AnalyzerTopology {
 
     private List<KeyValue<String, VulnerabilityResult>> analyzeSnyk(final Component component) {
         LOGGER.info("Performing Snyk analysis for component: {}", component);
-        return snykAnalyzer.analyze(component).stream() // TODO: Handle exceptions
+        return snykAnalyzer.analyze(List.of(component)).stream() // TODO: Handle exceptions
                 .map(vulnResult -> KeyValue.pair(vulnResult.getComponent().getPurl().getCoordinates(), vulnResult))
                 .toList();
     }
