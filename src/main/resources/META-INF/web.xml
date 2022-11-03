@@ -27,11 +27,14 @@
         <listener-class>alpine.server.persistence.PersistenceInitializer</listener-class>
     </listener>
 
+
     <listener>
         <listener-class>alpine.server.persistence.PersistenceManagerFactory</listener-class>
     </listener>
 
-
+    <listener>
+        <listener-class>org.acme.upgrade.UpgradeInitializer</listener-class>
+    </listener>
     <filter>
         <filter-name>WhitelistUrlFilter</filter-name>
         <filter-class>alpine.server.filters.WhitelistUrlFilter</filter-class>

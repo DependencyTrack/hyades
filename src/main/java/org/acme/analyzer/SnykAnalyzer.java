@@ -1,8 +1,6 @@
 package org.acme.analyzer;
 
-import alpine.Config;
 import alpine.security.crypto.DataEncryption;
-import alpine.security.crypto.KeyManager;
 import com.github.packageurl.PackageURL;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import org.acme.client.snyk.Issue;
@@ -16,7 +14,6 @@ import org.acme.model.VulnerabilityResult;
 import org.acme.parser.common.resolver.CweResolver;
 import org.acme.persistence.QueryManager;
 import org.acme.tasks.scanners.AnalyzerIdentity;
-import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
@@ -26,7 +23,6 @@ import javax.crypto.SecretKey;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jdo.PersistenceManager;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
