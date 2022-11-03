@@ -118,6 +118,14 @@
     </dependency>
 
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm-panache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
       <version>${lib.jaxb.runtime.version}</version>
@@ -199,9 +207,11 @@
       <artifactId>pebble</artifactId>
       <version>${lib.pebble.version}</version>
     </dependency>
+
   </dependencies>
   <build>
     <plugins>
+
         <plugin>
           <groupId>org.cyclonedx</groupId>
           <artifactId>cyclonedx-maven-plugin</artifactId>
@@ -297,6 +307,18 @@
     </plugins>
   </build>
   <profiles>
+
+    <profile>
+      <id>embedded-jetty</id>
+      <activation>
+        <property>
+          <name>env.ACTIVATE_EMBEDDED_JETTY</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+    </profile>
+
     <profile>
       <id>native</id>
       <activation>
