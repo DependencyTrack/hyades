@@ -41,6 +41,15 @@ services:
       echo -e 'Creating topics now'
 
       /usr/bin/rpk topic create component-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create repo-meta-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create maven-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create npm-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create hex-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create pypi-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create golang-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create nuget-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create composer-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create gem-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-cpe --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-purl --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-purl-aggregate --brokers=redpanda:29092 --replicas=1 --partitions=3

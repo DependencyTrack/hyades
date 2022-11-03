@@ -66,19 +66,19 @@ public class SnykAnalyzer {
 
     private List<VulnerabilityResult> analyzeComponent(final Component component) {
         final PackageURL purl = component.getPurl();
-        QueryManager queryManager = new QueryManager();
-        final alpine.model.ConfigProperty apiTokenProperty = queryManager.getConfigProperty(
-                ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getGroupName(),
-                ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getPropertyName()
-        );
-        if (apiTokenProperty == null || apiTokenProperty.getPropertyValue() == null) {
-            LOGGER.error("Please provide API token for use with Snyk");
-        }
-        try {
-            apiToken = "token " + DataEncryption.decryptAsString(loadSecretKey(), apiTokenProperty.getPropertyValue());
-        }catch (Exception ex){
-            LOGGER.error("Error has occurred");
-        }
+//        QueryManager queryManager = new QueryManager();
+//        final alpine.model.ConfigProperty apiTokenProperty = queryManager.getConfigProperty(
+//                ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getGroupName(),
+//                ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getPropertyName()
+//        );
+//        if (apiTokenProperty == null || apiTokenProperty.getPropertyValue() == null) {
+//            LOGGER.error("Please provide API token for use with Snyk");
+//        }
+//        try {
+//            apiToken = "token " + DataEncryption.decryptAsString(loadSecretKey(), apiTokenProperty.getPropertyValue());
+//        }catch (Exception ex){
+//            LOGGER.error("Error has occurred");
+//        }
         final Supplier<Page<Issue>> rateLimitedRequest;
         if (purl.getNamespace() != null) {
             rateLimitedRequest = RateLimiter.decorateSupplier(rateLimiter,
