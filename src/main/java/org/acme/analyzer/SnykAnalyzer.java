@@ -1,5 +1,8 @@
 package org.acme.analyzer;
 
+import alpine.Config;
+import alpine.security.crypto.DataEncryption;
+import alpine.security.crypto.KeyManager;
 import com.github.packageurl.PackageURL;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import org.acme.client.snyk.Issue;
@@ -8,17 +11,27 @@ import org.acme.client.snyk.Page;
 import org.acme.client.snyk.PageData;
 import org.acme.client.snyk.SnykClient;
 import org.acme.model.Component;
+import org.acme.model.ConfigPropertyConstants;
 import org.acme.model.VulnerabilityResult;
 import org.acme.parser.common.resolver.CweResolver;
+import org.acme.persistence.QueryManager;
 import org.acme.tasks.scanners.AnalyzerIdentity;
+import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.SecretKey;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jdo.PersistenceManager;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +46,7 @@ public class SnykAnalyzer {
     private final SnykClient client;
     private final RateLimiter rateLimiter;
     private final CweResolver cweResolver;
-    private final String apiToken;
+    private String apiToken;
     private final String apiOrgId;
 
     @Inject
@@ -57,7 +70,19 @@ public class SnykAnalyzer {
 
     private List<VulnerabilityResult> analyzeComponent(final Component component) {
         final PackageURL purl = component.getPurl();
-
+        QueryManager queryManager = new QueryManager();
+        final alpine.model.ConfigProperty apiTokenProperty = queryManager.getConfigProperty(
+                ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getGroupName(),
+                ConfigPropertyConstants.SCANNER_SNYK_API_TOKEN.getPropertyName()
+        );
+        if (apiTokenProperty == null || apiTokenProperty.getPropertyValue() == null) {
+            LOGGER.error("Please provide API token for use with Snyk");
+        }
+        try {
+            apiToken = "token " + DataEncryption.decryptAsString(loadSecretKey(), apiTokenProperty.getPropertyValue());
+        }catch (Exception ex){
+            LOGGER.error("Error has occurred");
+        }
         final Supplier<Page<Issue>> rateLimitedRequest;
         if (purl.getNamespace() != null) {
             rateLimitedRequest = RateLimiter.decorateSupplier(rateLimiter,
@@ -92,5 +117,56 @@ public class SnykAnalyzer {
 
         return results;
     }
+    private File getKeyPath(SnykAnalyzer.KeyType keyType) {
+        //File var10002 = Config.getInstance().getDataDirectorty();
+        return new File("" + System.getProperty("user.home")+"/.dependency-track" + File.separator + "keys" + File.separator + keyType.name().toLowerCase() + ".key");
+    }
+    public SecretKey loadSecretKey()throws IOException, ClassNotFoundException {
+            File file = this.getKeyPath(SnykAnalyzer.KeyType.SECRET);
+            InputStream fis = Files.newInputStream(file.toPath());
 
+            SecretKey key;
+            try {
+                ObjectInputStream ois = new ObjectInputStream(fis);
+
+                try {
+                    key = (SecretKey)ois.readObject();
+                } catch (Throwable var9) {
+                    try {
+                        ois.close();
+                    } catch (Throwable var8) {
+                        var9.addSuppressed(var8);
+                    }
+
+                    throw var9;
+                }
+
+                ois.close();
+            } catch (Throwable var10) {
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (Throwable var7) {
+                        var10.addSuppressed(var7);
+                    }
+                }
+
+                throw var10;
+            }
+
+            if (fis != null) {
+                fis.close();
+            }
+
+            return key;
+
+    }
+    static enum KeyType {
+        PRIVATE,
+        PUBLIC,
+        SECRET;
+
+        private KeyType() {
+        }
+    }
 }

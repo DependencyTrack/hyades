@@ -18,11 +18,14 @@
  */
 package org.acme.parser.common.resolver;
 
+import org.acme.Main;
 import org.apache.commons.lang3.StringUtils;
 import org.acme.model.Cwe;
-import org.acme.persistence.QueryManager;
-import java.util.HashMap;
-import java.util.Map;
+import org.checkerframework.checker.units.qual.C;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 
 /**
  * Attempts to resolve an internal CWE object from a string
@@ -31,63 +34,48 @@ import java.util.Map;
  * @author Steve Springett
  * @since 3.0.0
  */
+@ApplicationScoped
 public class CweResolver {
 
-    private static final Map<Integer, String> CWE_DICTIONARY = new HashMap<>();
-    static {
-        try (final QueryManager qm = new QueryManager()) {
-            for (final Cwe cwe : qm.getAllCwes()) {
-                CWE_DICTIONARY.put(cwe.getCweId(), cwe.getName());
-            }
-        }
-    }
+    Cwe cwe = new Cwe();
     private static final CweResolver INSTANCE = new CweResolver();
-
     private CweResolver() { }
+    //private static final CweResolver INSTANCE = new CweResolver();
 
-    public static CweResolver getInstance() {
-        return INSTANCE;
+    /*private CweResolver() {
     }
+*/
+    //public static CweResolver getInstance() {
+    /*    return INSTANCE;
+    }*/
 
     /**
      * Lookups a CWE from the internal CWE dictionary. This method
      * does not query the database, but will return a Cwe object useful
      * for JSON serialization, but not for persistence.
+     *
      * @param cweString the string to lookup
      * @return a Cwe object
      * @since 4.5.0
      */
-    public Cwe lookup(final String cweString) {
-        final Integer cweId = parseCweString(cweString);
-        if (cweId != null) {
-            final String cweName = CWE_DICTIONARY.get(cweId);
-            if (cweName != null) {
-                final Cwe cwe = new Cwe();
-                cwe.setCweId(cweId);
-                cwe.setName(cweName);
-                return cwe;
-            }
-        }
-        return null;
-    }
-
     /**
      * Lookups a CWE from the internal CWE dictionary. This method
      * does not query the database, but will return a Cwe object useful
      * for JSON serialization, but not for persistence.
+     *
      * @param cweId the cwe id to lookup
      * @return a Cwe object
      * @since 4.5.0
      */
     public Cwe lookup(final Integer cweId) {
+        if(Main.cweInfo.isEmpty()){
+            return null;
+        }
         if (cweId != null) {
-            final String cweName = CWE_DICTIONARY.get(cweId);
-            if (cweName != null) {
-                final Cwe cwe = new Cwe();
-                cwe.setCweId(cweId);
-                cwe.setName(cweName);
-                return cwe;
-            }
+            String cweName = Main.cweInfo.get(cweId);
+            cwe.setCweId(cweId);
+            cwe.setName(cweName);
+            return cwe;
         }
         return null;
     }
@@ -96,17 +84,29 @@ public class CweResolver {
      * Resolves a CWE by its string representation.
      * This method performs a query against the database and
      * returns a persisted Cwe object.
+     *
      * @param cweString the string to resolve
      * @return a Cwe object
      * @since 3.0.0
      */
-    public Cwe resolve(final QueryManager qm, final String cweString) {
+    public Cwe resolve(final String cweString) {
         final Integer cweId = parseCweString(cweString);
-        return (cweId != null) ? qm.getCweById(cweId) : null;
+        if(Main.cweInfo.isEmpty()){
+            return null;
+        }
+        if (cweId != null) {
+            String cweName = Main.cweInfo.get(cweId);
+            cwe.setCweId(cweId);
+            cwe.setName(cweName);
+            return cwe;
+        } else {
+            return null;
+        }
     }
 
     /**
      * Parses a CWE string returning the CWE ID, or null.
+     *
      * @param cweString the string to parse
      * @return a Cwe object
      */
@@ -134,5 +134,8 @@ public class CweResolver {
             }
         }
         return null;
+    }
+    public static CweResolver getInstance() {
+        return INSTANCE;
     }
 }
