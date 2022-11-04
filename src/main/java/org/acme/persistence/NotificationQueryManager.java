@@ -31,6 +31,8 @@ import org.acme.notification.publisher.Publisher;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class NotificationQueryManager extends QueryManager {
 
@@ -67,7 +69,8 @@ public class NotificationQueryManager extends QueryManager {
         rule.setNotificationLevel(level);
         rule.setPublisher(publisher);
         rule.setEnabled(true);
-        return persist(rule);
+        rule.persist();
+        return rule;
     }
 
     /**
@@ -82,7 +85,8 @@ public class NotificationQueryManager extends QueryManager {
         rule.setNotificationLevel(transientRule.getNotificationLevel());
         rule.setPublisherConfig(transientRule.getPublisherConfig());
         rule.setNotifyOn(transientRule.getNotifyOn());
-        return persist(rule);
+        rule.persist();
+        return rule;
     }
 
     /**
@@ -100,6 +104,15 @@ public class NotificationQueryManager extends QueryManager {
             return execute(query, filterString);
         }
         return execute(query);
+    }
+
+    public List<NotificationRule> getNotificationRules(String notificationRuleName) {
+        try (Stream<NotificationRule> notificationRuleStream = NotificationRule.streamAll()) {
+            List<String> filtered = notificationRuleStream
+                    .map(p -> p.getName().toLowerCase() )
+                    .filter( n -> ! notificationRuleName.equals(n) )
+                    .collect(Collectors.toList());
+        }
     }
 
     /**

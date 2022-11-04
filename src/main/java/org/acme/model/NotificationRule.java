@@ -26,11 +26,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import org.apache.commons.collections4.CollectionUtils;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
 
 import javax.jdo.annotations.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -40,18 +43,15 @@ import java.util.*;
 
 /**
  * Defines a Model class for notification configurations.
- *
- * @author Steve Springett
- * @since 3.2.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NotificationRule implements Serializable {
+public class NotificationRule extends PanacheEntity {
 
     private static final long serialVersionUID = 2534439091019367263L;
 
-    @PrimaryKey
+    @Id
     @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
     @JsonIgnore
     private long id;
@@ -59,7 +59,6 @@ public class NotificationRule implements Serializable {
     /**
      * The String representation of the name of the notification.
      */
-    @Persistent
     @Column(name = "NAME", allowsNull = "false")
     @NotBlank
     @Size(min = 1, max = 255)
