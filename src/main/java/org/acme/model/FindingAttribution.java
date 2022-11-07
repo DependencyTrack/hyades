@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.acme.tasks.scanners.AnalyzerIdentity;
 
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -34,53 +34,47 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@PersistenceCapable
-@Index(name = "FINDINGATTRIBUTION_COMPOUND_IDX", members = {"component", "vulnerability"})
+@Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"UUID"}, name = "FINDINGATTRIBUTION_UUID_IDX")},
+        indexes = {@Index(name = "FINDINGATTRIBUTION_COMPOUND_IDX",  columnList="component, vulnerability")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FindingAttribution implements Serializable {
 
     private static final long serialVersionUID = -2609603709255246845L;
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "ATTRIBUTED_ON", allowsNull = "false")
+    @Column(name = "ATTRIBUTED_ON", nullable = false)
     @NotNull
     private Date attributedOn;
 
-    @Persistent
-    @Column(name = "ANALYZERIDENTITY", allowsNull = "false")
+    @Column(name = "ANALYZERIDENTITY", nullable = false)
     private AnalyzerIdentity analyzerIdentity;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "COMPONENT_ID", allowsNull = "false")
+    @Column(name = "COMPONENT_ID", nullable = false)
     @NotNull
     private Component component;
 
-    @Persistent(defaultFetchGroup = "false")
-    @Column(name = "PROJECT_ID", allowsNull = "false")
+    @Column(name = "PROJECT_ID", nullable = false)
     @NotNull
     private Project project;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "VULNERABILITY_ID", allowsNull = "false")
+
+    @Column(name = "VULNERABILITY_ID", nullable = false)
     @NotNull
     private Vulnerability vulnerability;
 
-    @Persistent
-    @Column(name = "ALT_ID", allowsNull = "true")
+    @Column(name = "ALT_ID", nullable = true)
     private String alternateIdentifier;
 
-    @Persistent
-    @Column(name = "REFERENCE_URL", allowsNull = "true")
+    @Column(name = "REFERENCE_URL", nullable = true)
     private String referenceUrl;
 
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "FINDINGATTRIBUTION_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false, unique = true)
     @NotNull
     private UUID uuid;
 

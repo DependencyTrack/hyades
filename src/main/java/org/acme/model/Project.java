@@ -152,19 +152,6 @@ public class Project implements Serializable {
     @JoinColumn(name = "PARENT_PROJECT_ID", referencedColumnName = "ID")
     private Project parent;
 
-    @Persistent(mappedBy = "parent")
-    private Collection<Project> children;
-
-    @Persistent(mappedBy = "project", defaultFetchGroup = "true")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "groupName ASC, propertyName ASC"))
-    private List<ProjectProperty> properties;
-
-    @Persistent(table = "PROJECTS_TAGS", defaultFetchGroup = "true", mappedBy = "projects")
-    @Join(column = "PROJECT_ID")
-    @Element(column = "TAG_ID")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
-    private List<Tag> tags;
-
     /**
      * Convenience field which will contain the date of the last entry in the {@link Bom} table
      */
@@ -187,9 +174,6 @@ public class Project implements Serializable {
     @JsonSerialize(nullsUsing = BooleanDefaultTrueSerializer.class)
     private Boolean active; // Added in v3.6. Existing records need to be nullable on upgrade.
 
-
-
-    private transient ProjectMetrics metrics;
 
     public long getId() {
         return id;
@@ -316,30 +300,6 @@ public class Project implements Serializable {
         this.parent = parent;
     }
 
-    public Collection<Project> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Collection<Project> children) {
-        this.children = children;
-    }
-
-    public List<ProjectProperty> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<ProjectProperty> properties) {
-        this.properties = properties;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
     public Date getLastBomImport() {
         return lastBomImport;
     }
@@ -370,23 +330,6 @@ public class Project implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public ProjectMetrics getMetrics() {
-        return metrics;
-    }
-
-    public void setMetrics(ProjectMetrics metrics) {
-        this.metrics = metrics;
-    }
-
-
-
-    public void addAccessTeam(Team accessTeam) {
-        if (this.accessTeams == null) {
-            this.accessTeams = new ArrayList<>();
-        }
-        this.accessTeams.add(accessTeam);
     }
 
     @Override
