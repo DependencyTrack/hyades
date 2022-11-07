@@ -50,7 +50,7 @@ public final class ModelConverter {
 
     private static Cwe convert(final CweResolver cweResolver, final Problem problem) {
         if ("CWE".equals(problem.source())) {
-         //   return cweResolver.resolve(problem.id());
+            return cweResolver.resolve(problem.id());
         }
         return null;
     }

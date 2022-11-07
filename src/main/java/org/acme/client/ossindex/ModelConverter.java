@@ -26,11 +26,10 @@ public final class ModelConverter {
 
         if (reportedVuln.cwe() != null) {
             CweResolver cweResolver = CweResolver.getInstance();
-            //Cwe cwe = cweResolver.resolve(reportedVuln.cwe());
-//            if (cwe != null) {
-//
-//                vulnerability.addCwe(cwe);
-//            }
+            Cwe cwe = cweResolver.resolve(reportedVuln.cwe());
+            if (cwe != null) {
+                vulnerability.addCwe(cwe);
+            }
         }
 
         final StringBuilder sb = new StringBuilder();
