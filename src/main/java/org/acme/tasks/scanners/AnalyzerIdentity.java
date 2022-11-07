@@ -26,7 +26,6 @@ package org.acme.tasks.scanners;
 public enum AnalyzerIdentity {
     INTERNAL_ANALYZER,
     OSSINDEX_ANALYZER,
-    NPM_AUDIT_ANALYZER,
     VULNDB_ANALYZER,
     SNYK_ANALYZER,
     NONE
