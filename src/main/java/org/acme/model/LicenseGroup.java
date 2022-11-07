@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -38,21 +38,20 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LicenseGroup implements Serializable {
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
     /**
      * The String representation of the license group name (i.e. Copyleft).
      */
-    @Persistent
-    @Column(name = "NAME", allowsNull = "false")
+    @Column(name = "NAME", nullable = false)
     @Index(name = "LICENSEGROUP_NAME_IDX")
     @NotBlank
     @Size(min = 1, max = 255)
@@ -71,7 +70,6 @@ public class LicenseGroup implements Serializable {
     /**
      * Specifies the weight of which risk is calculated.
      */
-    @Persistent
     @Column(name = "RISKWEIGHT")
     private int riskWeight;
 

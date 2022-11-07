@@ -24,12 +24,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.acme.common.IConfigProperty;
 import org.acme.common.TrimmedStringDeserializer;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-import javax.jdo.annotations.Unique;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -42,51 +37,47 @@ import java.io.Serializable;
  * @author Steve Springett
  * @since 3.0.0
  */
-@PersistenceCapable(table = "PROJECT_PROPERTY")
-@Unique(name="PROJECT_PROPERTY_KEYS_IDX", members={"project", "groupName", "propertyName"})
+@Entity
+@Table(name = "PROJECT_PROPERTY", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"project", "groupName", "propertyName"}, name = "PROJECT_PROPERTY_KEYS_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProjectProperty implements IConfigProperty, Serializable {
 
     private static final long serialVersionUID = 7394616773695958262L;
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "PROJECT_ID", allowsNull = "false")
+    @ManyToOne
+    @JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID", nullable = false)
     private Project project;
 
-    @Persistent
-    @Column(name = "GROUPNAME", allowsNull = "false")
+    @Column(name = "GROUPNAME", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = "[\\P{Cc}]+", message = "The groupName must not contain control characters")
     private String groupName;
 
-    @Persistent
-    @Column(name = "PROPERTYNAME", allowsNull = "false")
+    @Column(name = "PROPERTYNAME", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = "[\\P{Cc}]+", message = "The propertyName must not contain control characters")
     private String propertyName;
 
-    @Persistent
     @Column(name = "PROPERTYVALUE", length = 1024)
     @Size(min = 0, max = 1024)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = "[\\P{Cc}]+", message = "The propertyValue must not contain control characters")
     private String propertyValue;
 
-    @Persistent
-    @Column(name = "PROPERTYTYPE", jdbcType = "VARCHAR", allowsNull = "false")
+    @Column(name = "PROPERTYTYPE", columnDefinition = "VARCHAR", nullable = false)
     @NotNull
     private PropertyType propertyType;
 
-    @Persistent
     @Column(name = "DESCRIPTION")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)

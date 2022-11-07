@@ -19,14 +19,11 @@
 package org.acme.model;
 
 import alpine.common.validation.RegexSequence;
-//import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.acme.common.TrimmedStringDeserializer;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -38,25 +35,22 @@ import java.io.Serializable;
  * @author Steve Springett
  * @since 3.0.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
+@Table(name = "CWE", uniqueConstraints = {@UniqueConstraint(columnNames = {"CWEID"}, name = "CWE_CWEID_IDX")})
 public class Cwe implements Serializable {
 
     private static final long serialVersionUID = -2370075071951574877L;
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Unique(name = "CWE_CWEID_IDX")
-    @Column(name = "CWEID", allowsNull = "false")
+    @Column(name = "CWEID", nullable = false, unique = true)
     private int cweId;
 
-    @Persistent
-    @Column(name = "NAME", jdbcType = "VARCHAR", allowsNull = "false")
+    @Column(name = "NAME", columnDefinition = "VARCHAR", nullable = false)
     @Size(max = 255)
     @NotNull
     @JsonDeserialize(using = TrimmedStringDeserializer.class)

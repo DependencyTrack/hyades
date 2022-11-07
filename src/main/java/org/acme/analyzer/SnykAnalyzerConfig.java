@@ -10,7 +10,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import java.time.Duration;
 
-@Dependentpom
+@Dependent
 public class SnykAnalyzerConfig {
 
     @Produces

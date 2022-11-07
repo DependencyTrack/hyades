@@ -24,12 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-import javax.jdo.annotations.Unique;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -42,8 +37,10 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.6.0
  */
-@PersistenceCapable
-@Unique(name="COMPONENTANALYSISCACHE_COMPOSITE_IDX", members={"cacheType", "targetHost", "targetType", "target"})
+@Entity
+@Table(name = "COMPONENTANALYSISCACHE", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"cacheType", "targetHost", "targetType", "target"}, name = "COMPONENTANALYSISCACHE_COMPOSITE_IDX"),
+        @UniqueConstraint(columnNames = {"UUID"}, name = "COMPONENTANALYSISCACHE_UUID_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ComponentAnalysisCache implements Serializable {
 
@@ -54,43 +51,36 @@ public class ComponentAnalysisCache implements Serializable {
         VULNERABILITY
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "LAST_OCCURRENCE", allowsNull = "false")
+    @Column(name = "LAST_OCCURRENCE", nullable = false)
     @NotNull
     private Date lastOccurrence;
 
-    @Persistent
-    @Column(name = "CACHE_TYPE", allowsNull = "false")
+    @Column(name = "CACHE_TYPE", nullable = false)
     @NotNull
     private CacheType cacheType;
 
-    @Persistent
-    @Column(name = "TARGET_HOST", allowsNull = "false")
+    @Column(name = "TARGET_HOST", nullable = false)
     @NotNull
     private String targetHost;
 
-    @Persistent
-    @Column(name = "TARGET_TYPE", allowsNull = "false")
+    @Column(name = "TARGET_TYPE", nullable = false)
     @NotNull
     private String targetType;
 
-    @Persistent
-    @Column(name = "TARGET", allowsNull = "false")
+    @Column(name = "TARGET", nullable = false)
     @NotNull
     private String target;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "RESULT", allowsNull = "true", jdbcType = "CLOB")
+
+    @Column(name = "RESULT", nullable = true, columnDefinition = "CLOB")
     private String result;
 
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "COMPONENTANALYSISCACHE_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false)
     @NotNull
     private UUID uuid;
 
