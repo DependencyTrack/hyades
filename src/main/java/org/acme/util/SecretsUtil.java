@@ -22,10 +22,10 @@ public class SecretsUtil {
 
             try {
                 key = (SecretKey) ois.readObject();
-            } catch (Throwable var9) {
+            } catch (Exception var9) {
                 try {
                     ois.close();
-                } catch (Throwable var8) {
+                } catch (Exception var8) {
                     var9.addSuppressed(var8);
                 }
 
@@ -33,11 +33,11 @@ public class SecretsUtil {
             }
 
             ois.close();
-        } catch (Throwable var10) {
+        } catch (Exception var10) {
             if (fis != null) {
                 try {
                     fis.close();
-                } catch (Throwable var7) {
+                } catch (Exception var7) {
                     var10.addSuppressed(var7);
                 }
             }
@@ -53,7 +53,7 @@ public class SecretsUtil {
 
     }
 
-    static enum KeyType {
+    enum KeyType {
         PRIVATE,
         PUBLIC,
         SECRET;
