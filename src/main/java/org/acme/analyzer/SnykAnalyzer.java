@@ -1,7 +1,10 @@
 package org.acme.analyzer;
 
+<<<<<<< HEAD
 import alpine.security.crypto.DataEncryption;
 import com.github.packageurl.PackageURL;
+=======
+>>>>>>> 968bc810fc64597ff8ef85df85f0302919ce7ae2
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import org.acme.client.snyk.Issue;
 import org.acme.client.snyk.ModelConverter;
@@ -15,7 +18,6 @@ import org.acme.parser.common.resolver.CweResolver;
 import org.acme.persistence.QueryManager;
 import org.acme.tasks.scanners.AnalyzerIdentity;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,34 +32,39 @@ import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 @ApplicationScoped
-public class SnykAnalyzer {
+public class SnykAnalyzer implements Analyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SnykAnalyzer.class);
-    private static final String API_VERSION = "2022-09-15";
 
     private final SnykClient client;
     private final RateLimiter rateLimiter;
     private final CweResolver cweResolver;
+<<<<<<< HEAD
     private String apiToken;
     private final String apiOrgId;
+=======
+    private final boolean isEnabled;
+>>>>>>> 968bc810fc64597ff8ef85df85f0302919ce7ae2
 
     @Inject
-    public SnykAnalyzer(@RestClient final SnykClient client,
+    public SnykAnalyzer(final SnykClient client,
                         @Named("snykRateLimiter") final RateLimiter rateLimiter,
                         final CweResolver cweResolver,
-                        @ConfigProperty(name = "scanner.snyk.token") final Optional<String> apiToken,
-                        @ConfigProperty(name = "scanner.snyk.org.id") final Optional<String> apiOrgId) {
+                        @ConfigProperty(name = "scanner.snyk.enabled", defaultValue = "false") final boolean isEnabled) {
         this.client = client;
         this.rateLimiter = rateLimiter;
         this.cweResolver = cweResolver;
-        this.apiToken = apiToken.map(token -> "token " + token).orElse(null);
-        this.apiOrgId = apiOrgId.orElse(null);
+        this.isEnabled = isEnabled;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    @Override
     public List<VulnerabilityResult> analyze(final List<Component> components) {
         return components.stream()
                 .flatMap(component -> analyzeComponent(component).stream())
@@ -65,6 +72,7 @@ public class SnykAnalyzer {
     }
 
     private List<VulnerabilityResult> analyzeComponent(final Component component) {
+<<<<<<< HEAD
         final PackageURL purl = component.getPurl();
 //        QueryManager queryManager = new QueryManager();
 //        final alpine.model.ConfigProperty apiTokenProperty = queryManager.getConfigProperty(
@@ -86,9 +94,16 @@ public class SnykAnalyzer {
         } else {
             rateLimitedRequest = RateLimiter.decorateSupplier(rateLimiter,
                     () -> client.getIssues(apiToken, apiOrgId, purl.getType(), purl.getName(), purl.getVersion(), API_VERSION));
+=======
+        final Page<Issue> issuesPage;
+        try {
+            issuesPage = rateLimiter.executeCheckedSupplier(() -> client.getIssues(component.getPurl()));
+        } catch (Throwable e) {
+            // TODO: Handle analyzer errors properly
+            throw new RuntimeException(e);
+>>>>>>> 968bc810fc64597ff8ef85df85f0302919ce7ae2
         }
 
-        final Page<Issue> issuesPage = rateLimitedRequest.get();
         if (issuesPage.data() == null || issuesPage.data().isEmpty()) {
             final var result = new VulnerabilityResult();
             result.setComponent(component);
