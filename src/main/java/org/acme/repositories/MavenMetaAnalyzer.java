@@ -34,6 +34,7 @@ import org.acme.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
@@ -45,6 +46,8 @@ import java.io.InputStream;
  * @author Steve Springett
  * @since 3.1.0
  */
+
+@ApplicationScoped
 public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = Logger.getLogger(MavenMetaAnalyzer.class);

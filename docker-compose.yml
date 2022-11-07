@@ -41,6 +41,7 @@ services:
       echo -e 'Creating topics now'
 
       /usr/bin/rpk topic create component-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create repo-meta-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create maven-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create npm-meta-analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3

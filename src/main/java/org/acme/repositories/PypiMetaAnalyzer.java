@@ -27,6 +27,7 @@ import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +39,7 @@ import java.util.Date;
  * @author Steve Springett
  * @since 3.4.0
  */
+@ApplicationScoped
 public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = Logger.getLogger(PypiMetaAnalyzer.class);

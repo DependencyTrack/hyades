@@ -28,6 +28,7 @@ import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,6 +40,8 @@ import java.util.Date;
  * @author Steve Springett
  * @since 3.4.0
  */
+
+@ApplicationScoped
 public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
 
     public static final DateFormat[] SUPPORTED_DATE_FORMATS = new DateFormat[]{

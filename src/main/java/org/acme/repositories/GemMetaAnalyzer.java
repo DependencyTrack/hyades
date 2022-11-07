@@ -25,12 +25,16 @@ import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
+import javax.enterprise.context.ApplicationScoped;
+
 /**
  * An IMetaAnalyzer implementation that supports Ruby Gems.
  *
  * @author Steve Springett
  * @since 3.1.0
  */
+
+@ApplicationScoped
 public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = Logger.getLogger(GemMetaAnalyzer.class);

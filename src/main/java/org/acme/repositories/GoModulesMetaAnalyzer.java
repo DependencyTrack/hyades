@@ -27,6 +27,7 @@ import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -34,6 +35,7 @@ import java.text.SimpleDateFormat;
  * @see <a href="https://golang.org/ref/mod#goproxy-protocol">GOPROXY protocol</a>
  * @since 4.3.0
  */
+@ApplicationScoped
 public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = Logger.getLogger(GoModulesMetaAnalyzer.class);
