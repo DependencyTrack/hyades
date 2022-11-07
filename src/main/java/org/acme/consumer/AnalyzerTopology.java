@@ -260,6 +260,101 @@ public class AnalyzerTopology {
                             .with(Serdes.String(), vulnResultSerde)
                             .withName("produce_snyk_results_to_component-analysis-vuln_topic"));
         }
+        //--- repometaanalyzer code-- start
+        final KStream<String, Component> componentMetaAnalyzerStream = streamsBuilder
+                .stream("repo-meta-analysis", Consumed
+                        .with(Serdes.UUID(), componentSerde)
+                        .withName("consume_component_meta_analysis_topic"))
+                .peek((uuid, component) -> LOGGER.info("Received component for repo meta analyzer: {}", component),
+                        Named.as("log_components_repometa"))
+                .flatMap((projectUuid, component) -> {
+                    final var components = new ArrayList<KeyValue<String, Component>>();
+                    if (component.getPurl() != null) {
+                        components.add(KeyValue.pair(component.getPurl().getCoordinates(), component));
+                    }
+                    return components;
+                }, Named.as("re-key_components_from_uuid_to_identifiers_for_meta"))
+                .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier),
+                        Named.as("log_re-keyed_components_for_meta"));
+
+
+        componentMetaAnalyzerStream.split(Named.as("meta-analysis"))
+                .branch((key, component)->component.getPurl().getType().equalsIgnoreCase("maven"),
+                        Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven.peek((identifier, component) ->
+                                        LOGGER.info("Component sending to maven meta analyzer"),Named.as("maven_meta_analyzer"))
+                                .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
+                                        Named.as("re-keyed_string_identifier_to_component_uuid_for_maven")).
+                                to("maven-meta-analyzer", Produced
+                                        .with(Serdes.UUID(), componentSerde)
+                                        .withName("produce_component_on_maven_meta_analyzer"))
+                        ).withName("-maven-analyzer")
+                )
+                .branch((key, component)->component.getPurl().getType().equalsIgnoreCase("npm"),
+                        Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven.peek((identifier, component) ->
+                                        LOGGER.info("Component sending to maven meta analyzer"),Named.as("npm_meta_analyzer"))
+                                .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
+                                        Named.as("re-keyed_string_identifier_to_component_uuid_for_npm")).
+                                to("npm-meta-analyzer", Produced
+                                        .with(Serdes.UUID(), componentSerde)
+                                        .withName("produce_component_on_npm_meta_analyzer"))
+                        ).withName("-npm-analyzer")
+                )
+                .branch((key, component)->component.getPurl().getType().equalsIgnoreCase("hex"),
+                        Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven.peek((identifier, component) ->
+                                        LOGGER.info("Component sending to hex meta analyzer"),Named.as("hex_meta_analyzer"))
+                                .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
+                                        Named.as("re-keyed_string_identifier_to_component_uuid_for_hex")).
+                                to("hex-meta-analyzer", Produced
+                                        .with(Serdes.UUID(), componentSerde)
+                                        .withName("produce_component_on_hex_meta_analyzer"))
+                        ).withName("-hex-analyzer"))
+                .branch((key, component)->component.getPurl().getType().equalsIgnoreCase("pypi"),
+                        Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven.peek((identifier, component) ->
+                                        LOGGER.info("Component sending to pypi meta analyzer"),Named.as("pypi_meta_analyzer"))
+                                .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
+                                        Named.as("re-keyed_string_identifier_to_component_uuid_for_pypi")).
+                                to("pypi-meta-analyzer", Produced
+                                        .with(Serdes.UUID(), componentSerde)
+                                        .withName("produce_component_on_pypi_meta_analyzer"))
+                        ).withName("-pypi-analyzer"))
+                .branch((key, component)->component.getPurl().getType().equalsIgnoreCase("golang"),
+                        Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven.peek((identifier, component) ->
+                                        LOGGER.info("Component sending to golang meta analyzer"),Named.as("golang_meta_analyzer"))
+                                .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
+                                        Named.as("re-keyed_string_identifier_to_component_uuid_for_golang")).
+                                to("golang-meta-analyzer", Produced
+                                        .with(Serdes.UUID(), componentSerde)
+                                        .withName("produce_component_on_golang_meta_analyzer"))
+                        ).withName("-golang-analyzer"))
+                .branch((key, component)->component.getPurl().getType().equalsIgnoreCase("nuget"),
+                        Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven.peek((identifier, component) ->
+                                        LOGGER.info("Component sending to nuget meta analyzer"),Named.as("nuget_meta_analyzer"))
+                                .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
+                                        Named.as("re-keyed_string_identifier_to_component_uuid_for_nuget")).
+                                to("nuget-meta-analyzer", Produced
+                                        .with(Serdes.UUID(), componentSerde)
+                                        .withName("produce_component_on_nuget_meta_analyzer"))
+                        ).withName("-nuget-analyzer"))
+                .branch((key, component)->component.getPurl().getType().equalsIgnoreCase("composer"),
+                        Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven.peek((identifier, component) ->
+                                        LOGGER.info("Component sending to composer meta analyzer"),Named.as("composer_meta_analyzer"))
+                                .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
+                                        Named.as("re-keyed_string_identifier_to_component_uuid_for_composer")).
+                                to("composer-meta-analyzer", Produced
+                                        .with(Serdes.UUID(), componentSerde)
+                                        .withName("produce_component_on_composer_meta_analyzer"))
+                        ).withName("-composer-analyzer"))
+                .branch((key, component)->component.getPurl().getType().equalsIgnoreCase("gem"),
+                        Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven.peek((identifier, component) ->
+                                        LOGGER.info("Component sending to gem meta analyzer"),Named.as("gem_meta_analyzer"))
+                                .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
+                                        Named.as("re-keyed_string_identifier_to_component_uuid_for_gem")).
+                                to("gem-meta-analyzer", Produced
+                                        .with(Serdes.UUID(), componentSerde)
+                                        .withName("produce_component_on_gem_meta_analyzer"))
+                        ).withName("-gem-analyzer"));
+        // repometaanalyzer code end
+
 
         return streamsBuilder.build();
     }

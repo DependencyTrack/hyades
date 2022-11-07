@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.acme</groupId>
@@ -24,11 +23,8 @@
         <lib.unirest.version>3.13.12</lib.unirest.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>2.13.3.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.13.4.Final</quarkus.platform.version>
         <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
-        <lib.pebble.version>3.1.6</lib.pebble.version>
-        <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
-        <lib.lucene.version>8.11.2</lib.lucene.version>
 
         <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
         <skipITs>true</skipITs>
@@ -66,16 +62,16 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5-mockito</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -92,38 +88,8 @@
             <artifactId>quarkus-kafka-streams</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5-mockito</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-streams-test-utils</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.quarkus/quarkus-agroal -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-agroal</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.quarkus/quarkus-jdbc-postgresql -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jdbc-postgresql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.pebbletemplates</groupId>
-            <artifactId>pebble</artifactId>
-            <version>${lib.pebble.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>us.springett</groupId>
-            <artifactId>cpe-parser</artifactId>
-            <version>${lib.cpe-parser.version}</version>
-        </dependency>
-        <!--    adding alpine dependencies to work with event project and other structures-->
-        <dependency>
-            <groupId>us.springett</groupId>
-            <artifactId>alpine-common</artifactId>
-            <version>${lib.alpine.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -131,7 +97,12 @@
             <version>1.18.24</version>
             <scope>provided</scope>
         </dependency>
-
+        <!--    adding alpine dependencies to work with event project and other structures-->
+        <dependency>
+            <groupId>us.springett</groupId>
+            <artifactId>alpine-common</artifactId>
+            <version>${lib.alpine.version}</version>
+        </dependency>
         <dependency>
             <groupId>us.springett</groupId>
             <artifactId>alpine-model</artifactId>
@@ -141,35 +112,6 @@
             <groupId>us.springett</groupId>
             <artifactId>alpine-infra</artifactId>
             <version>${lib.alpine.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-undertow</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>${lib.lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
-            <version>${lib.lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-            <version>${lib.lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queries</artifactId>
-            <version>${lib.lucene.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-sandbox</artifactId>
-            <version>${lib.lucene.version}</version>
         </dependency>
         <dependency>
             <groupId>us.springett</groupId>
@@ -203,15 +145,14 @@
             <version>${lib.cyclonedx-java.version}</version>
         </dependency>
         <dependency>
+            <groupId>us.springett</groupId>
+            <artifactId>cpe-parser</artifactId>
+            <version>${lib.cpe-parser.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-ratelimiter</artifactId>
             <version>1.7.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-artifact</artifactId>
-            <version>3.8.6</version>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
@@ -219,7 +160,6 @@
             <version>2.12.2</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -279,7 +219,6 @@
                 <configuration>
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                        <maven.home>/opt/homebrew/Cellar/maven/3.8.3</maven.home>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -294,10 +233,8 @@
                         </goals>
                         <configuration>
                             <systemPropertyVariables>
-                                <native.image.path>${project.build.directory}/${project.build.finalName}-runner
-                                </native.image.path>
+                                <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                                <maven.home>/opt/homebrew/Cellar/maven/3.8.3</maven.home>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
