@@ -112,21 +112,6 @@
       <version>${lib.alpine.version}</version>
     </dependency>
     <dependency>
-      <groupId>us.springett</groupId>
-      <artifactId>alpine-model</artifactId>
-      <version>${lib.alpine.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>us.springett</groupId>
-      <artifactId>alpine-infra</artifactId>
-      <version>${lib.alpine.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>us.springett</groupId>
-      <artifactId>alpine-server</artifactId>
-      <version>${lib.alpine.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.konghq</groupId>
       <artifactId>unirest-java</artifactId>
       <version>${lib.unirest.version}</version>
@@ -166,7 +151,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-ratelimiter</artifactId>

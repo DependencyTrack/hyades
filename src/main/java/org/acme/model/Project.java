@@ -20,8 +20,6 @@ package org.acme.model;
  */
 
 import alpine.common.validation.RegexSequence;
-import alpine.model.Team;
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -31,6 +29,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
+import org.acme.common.TrimmedStringDeserializer;
 import org.acme.model.CustomPackageURLSerializer;
 
 import javax.jdo.annotations.Column;
@@ -234,12 +233,7 @@ public class Project implements Serializable {
     @JsonSerialize(nullsUsing = BooleanDefaultTrueSerializer.class)
     private Boolean active; // Added in v3.6. Existing records need to be nullable on upgrade.
 
-    @Persistent(table = "PROJECT_ACCESS_TEAMS", defaultFetchGroup = "true")
-    @Join(column = "PROJECT_ID")
-    @Element(column = "TEAM_ID")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
-    @JsonIgnore
-    private List<Team> accessTeams;
+
 
     private transient ProjectMetrics metrics;
 
@@ -432,13 +426,7 @@ public class Project implements Serializable {
         this.metrics = metrics;
     }
 
-    public List<Team> getAccessTeams() {
-        return accessTeams;
-    }
 
-    public void setAccessTeams(List<Team> accessTeams) {
-        this.accessTeams = accessTeams;
-    }
 
     public void addAccessTeam(Team accessTeam) {
         if (this.accessTeams == null) {

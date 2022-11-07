@@ -19,10 +19,10 @@
 package org.acme.model;
 
 import alpine.common.validation.RegexSequence;
-import alpine.server.json.TrimmedStringArrayDeserializer;
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.acme.common.TrimmedStringArrayDeserializer;
+import org.acme.common.TrimmedStringDeserializer;
 
 import javax.jdo.annotations.*;
 import javax.validation.constraints.NotBlank;
