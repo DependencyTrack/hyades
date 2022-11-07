@@ -106,15 +106,6 @@ public class NotificationQueryManager extends QueryManager {
         return execute(query);
     }
 
-    public List<NotificationRule> getNotificationRules(String notificationRuleName) {
-        try (Stream<NotificationRule> notificationRuleStream = NotificationRule.streamAll()) {
-            List<String> filtered = notificationRuleStream
-                    .map(p -> p.getName().toLowerCase() )
-                    .filter( n -> ! notificationRuleName.equals(n) )
-                    .collect(Collectors.toList());
-        }
-    }
-
     /**
      * Retrieves all NotificationPublishers.
      * This method if designed NOT to provide paginated results.

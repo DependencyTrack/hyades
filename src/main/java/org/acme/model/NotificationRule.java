@@ -31,14 +31,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
 
-import javax.jdo.annotations.*;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -47,77 +44,77 @@ import java.util.*;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Inheritance(strategy= InheritanceType.JOINED)
 public class NotificationRule extends PanacheEntity {
 
     private static final long serialVersionUID = 2534439091019367263L;
 
     @Id
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
     @JsonIgnore
     private long id;
 
     /**
      * The String representation of the name of the notification.
      */
-    @Column(name = "NAME", allowsNull = "false")
+    @Column(name = "NAME", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
     private String name;
 
-    @Persistent
     @Column(name = "ENABLED")
     private boolean enabled;
 
-    @Persistent
-    @Column(name = "NOTIFY_CHILDREN", allowsNull = "true") // New column, must allow nulls on existing data bases)
+    @Column(name = "NOTIFY_CHILDREN", nullable = true) // New column, must allow nulls on existing data bases)
     private boolean notifyChildren;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "SCOPE", jdbcType = "VARCHAR", allowsNull = "false")
+    @Column(name = "SCOPE", nullable = false)
     @NotNull
     private NotificationScope scope;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "NOTIFICATION_LEVEL", jdbcType = "VARCHAR")
+    @Column(name = "NOTIFICATION_LEVEL")
     private NotificationLevel notificationLevel;
 
-    @Persistent(table = "NOTIFICATIONRULE_PROJECTS", defaultFetchGroup = "true")
-    @Join(column = "NOTIFICATIONRULE_ID")
-    @Element(column = "PROJECT_ID")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC, version ASC"))
+//    @Join(column = "NOTIFICATIONRULE_ID")
+//    @Element(column = "PROJECT_ID")
+//    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC, version ASC"))
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "PROJECT",
+            joinColumns = @JoinColumn(name = "PROJECT_ID")
+    )
+    @OrderBy("name ASC, version ASC")
     private List<Project> projects;
 
-    @Persistent(table = "NOTIFICATIONRULE_TEAMS", defaultFetchGroup = "true")
-    @Join(column = "NOTIFICATIONRULE_ID")
-    @Element(column = "TEAM_ID")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
+//    @Join(column = "NOTIFICATIONRULE_ID")
+//    @Element(column = "TEAM_ID")
+//    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "Team",
+            joinColumns = @JoinColumn(name = "TEAM_ID")
+    )
+    @OrderBy("name ASC")
     private List<Team> teams;
 
-    @Persistent
     @Column(name = "NOTIFY_ON", length = 1024)
     private String notifyOn;
 
-    @Persistent
     @Column(name = "MESSAGE", length = 1024)
     @Size(max = 1024)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The message may only contain printable characters")
     private String message;
 
-    @Persistent(defaultFetchGroup = "true")
     @Column(name = "PUBLISHER")
     private NotificationPublisher publisher;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "PUBLISHER_CONFIG", jdbcType = "CLOB")
+    @Column(name = "PUBLISHER_CONFIG")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String publisherConfig;
 
-    @Persistent(defaultFetchGroup = "true", customValueStrategy = "uuid")
-    @Unique(name = "NOTIFICATIONRULE_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", length = 36, nullable = false, unique = true)
     @NotNull
     private UUID uuid;
 
