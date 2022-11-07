@@ -1,30 +1,70 @@
 package org.acme.client.snyk;
 
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.packageurl.PackageURL;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.WebApplicationException;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
-@RegisterRestClient
-public interface SnykClient {
+/**
+ * Client for the Snyk REST API.
+ * <p>
+ * Note: Using the MicroProfile RestClient does not work, because Snyk expects the PURL
+ * to be encoded differently than what the MP RestClient is doing (it expects ":" and "@"
+ * to be encoded, which is normally not necessary for URL path segments).
+ */
+@ApplicationScoped
+public class SnykClient {
 
-    @GET // Quarkus and Snyk disagree on how the purl should be encoded. Weird hack below.
-    @Path("/rest/orgs/{orgId}/packages/pkg%3A{purlType}%2F{purlNamespace}%2F{purlName}%40{purlVersion}/issues")
-    @Consumes("application/vnd.api+json")
-    Page<Issue> getIssues(@HeaderParam("Authorization") final String token, @PathParam("orgId") final String orgId,
-                          @PathParam("purlType") final String purlType, @PathParam("purlNamespace") final String purlNamespace,
-                          @PathParam("purlName") final String purlName, @PathParam("purlVersion") final String purlVersion,
-                          @QueryParam("version") final String version);
+    private final CloseableHttpClient httpClient;
+    private final ObjectMapper objectMapper;
+    private final String apiBaseUrl;
+    private final String apiOrgId;
+    private final String apiToken;
+    private final String apiVersion;
 
-    @GET // Quarkus and Snyk disagree on how the purl should be encoded. Weird hack below.
-    @Path("/rest/orgs/{orgId}/packages/pkg%3A{purlType}%2F{purlName}%40{purlVersion}/issues")
-    @Consumes("application/vnd.api+json")
-    Page<Issue> getIssues(@HeaderParam("Authorization") final String token, @PathParam("orgId") final String orgId,
-                          @PathParam("purlType") final String purlType, @PathParam("purlName") final String purlName,
-                          @PathParam("purlVersion") final String purlVersion, @QueryParam("version") final String version);
+    @Inject
+    public SnykClient(@Named("snykHttpClient") final CloseableHttpClient httpClient,
+                      @Named("snykObjectMapper") final ObjectMapper objectMapper,
+                      @ConfigProperty(name = "scanner.snyk.base.url") final Optional<String> apiBaseUrl,
+                      @ConfigProperty(name = "scanner.snyk.org.id") final Optional<String> apiOrgId,
+                      @ConfigProperty(name = "scanner.snyk.token") final Optional<String> apiToken,
+                      @ConfigProperty(name = "scanner.snyk.api.version", defaultValue = "2022-09-15") final String apiVersion) {
+        this.httpClient = httpClient;
+        this.objectMapper = objectMapper;
+        this.apiBaseUrl = apiBaseUrl.orElse(null);
+        this.apiOrgId = apiOrgId.orElse(null);
+        this.apiToken = apiToken.orElse(null);
+        this.apiVersion = apiVersion;
+    }
+
+    public Page<Issue> getIssues(final PackageURL purl) throws IOException {
+        final String encodedPurl = URLEncoder.encode(purl.getCoordinates(), StandardCharsets.UTF_8);
+        final var request = new HttpGet("%s/rest/orgs/%s/packages/%s/issues?version=%s".formatted(apiBaseUrl, apiOrgId, encodedPurl, apiVersion));
+        request.setHeader(HttpHeaders.AUTHORIZATION, "token " + apiToken);
+        request.setHeader(HttpHeaders.ACCEPT, "application/vnd.api+json");
+
+        try (final CloseableHttpResponse response = httpClient.execute(request)) {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                return objectMapper.readValue(response.getEntity().getContent(), new TypeReference<>() {
+                });
+            } else {
+                throw new WebApplicationException("Unexpected response status: " + response.getStatusLine().getStatusCode());
+            }
+        }
+    }
 
 }
