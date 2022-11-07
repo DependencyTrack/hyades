@@ -25,18 +25,21 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class OssIndexAnalyzer {
+public class OssIndexAnalyzer implements Analyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OssIndexAnalyzer.class);
 
     private final OssIndexClient client;
+    private final boolean isEnabled;
     private final String apiAuth;
 
     @Inject
     public OssIndexAnalyzer(@RestClient final OssIndexClient client,
+                            @ConfigProperty(name = "scanner.ossindex.enabled", defaultValue = "true") final boolean isEnabled,
                             @ConfigProperty(name = "scanner.ossindex.api.username") final Optional<String> apiUsername,
                             @ConfigProperty(name = "scanner.ossindex.api.token") final Optional<String> apiToken) {
         this.client = client;
+        this.isEnabled = isEnabled;
         if (apiUsername.isPresent() && apiToken.isPresent()) {
             final byte[] credentials = "%s:%s".formatted(apiUsername.get(), apiToken.get()).getBytes(StandardCharsets.UTF_8);
             this.apiAuth = "Basic " + Base64.getEncoder().encodeToString(credentials);
@@ -45,6 +48,12 @@ public class OssIndexAnalyzer {
         }
     }
 
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    @Override
     public List<VulnerabilityResult> analyze(final List<Component> components) {
         final var purlComponents = new MultivaluedHashMap<String, Component>();
         for (final Component component : components) {

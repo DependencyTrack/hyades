@@ -241,21 +241,25 @@ public class AnalyzerTopology {
                         .withName("suppress_aggregates_until_time_window_closes"))
                 .toStream(Named.as("stream_component_aggregates"));
 
-        // Perform the OSS Index analysis based on the PURL aggregates.
-        purlAggregateStream
-                .flatMap((window, components) -> analyzeOssIndex(components),
-                        Named.as("analyze_with_ossindex"))
-                .to("component-analysis-vuln", Produced
-                        .with(Serdes.String(), vulnResultSerde)
-                        .withName("produce_ossindex_results_to_component-analysis-vuln_topic"));
+        if (ossIndexAnalyzer.isEnabled()) {
+            // Perform the OSS Index analysis based on the PURL aggregates.
+            purlAggregateStream
+                    .flatMap((window, components) -> analyzeOssIndex(components),
+                            Named.as("analyze_with_ossindex"))
+                    .to("component-analysis-vuln", Produced
+                            .with(Serdes.String(), vulnResultSerde)
+                            .withName("produce_ossindex_results_to_component-analysis-vuln_topic"));
+        }
 
-        // Snyk does not benefit from batching yet, so consume from the non-aggregated stream directly.
-        purlComponentStream
-                .flatMap((purl, component) -> analyzeSnyk(component),
-                        Named.as("analyze_with_snyk"))
-                .to("component-analysis-vuln", Produced
-                        .with(Serdes.String(), vulnResultSerde)
-                        .withName("produce_snyk_results_to_component-analysis-vuln_topic"));
+        if (snykAnalyzer.isEnabled()) {
+            // Snyk does not benefit from batching yet, so consume from the non-aggregated stream directly.
+            purlComponentStream
+                    .flatMap((purl, component) -> analyzeSnyk(component),
+                            Named.as("analyze_with_snyk"))
+                    .to("component-analysis-vuln", Produced
+                            .with(Serdes.String(), vulnResultSerde)
+                            .withName("produce_snyk_results_to_component-analysis-vuln_topic"));
+        }
 
         return streamsBuilder.build();
     }
