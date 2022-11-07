@@ -23,7 +23,7 @@
     <lib.unirest.version>3.13.12</lib.unirest.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.13.3.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.13.4.Final</quarkus.platform.version>
     <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
 
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
