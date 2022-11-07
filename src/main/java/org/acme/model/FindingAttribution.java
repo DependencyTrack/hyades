@@ -55,17 +55,20 @@ public class FindingAttribution implements Serializable {
     @Column(name = "ANALYZERIDENTITY", nullable = false)
     private AnalyzerIdentity analyzerIdentity;
 
-    @Column(name = "COMPONENT_ID", nullable = false)
     @NotNull
+    @ManyToOne //TODO- need to check on relationship
+    @JoinColumn(name = "COMPONENT_ID", referencedColumnName = "ID")
     private Component component;
 
-    @Column(name = "PROJECT_ID", nullable = false)
     @NotNull
+    @ManyToOne //TODO- need to check on relationship
+    @JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID")
     private Project project;
 
 
-    @Column(name = "VULNERABILITY_ID", nullable = false)
     @NotNull
+    @ManyToOne //TODO- need to check on relationship
+    @JoinColumn(name = "VULNERABILITY_ID", referencedColumnName = "ID")
     private Vulnerability vulnerability;
 
     @Column(name = "ALT_ID", nullable = true)
