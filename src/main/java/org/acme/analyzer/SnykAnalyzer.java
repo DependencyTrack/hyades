@@ -1,7 +1,6 @@
 package org.acme.analyzer;
 
 import io.github.resilience4j.ratelimiter.RateLimiter;
-import org.acme.analyzer.Analyzer;
 import org.acme.client.snyk.Issue;
 import org.acme.client.snyk.ModelConverter;
 import org.acme.client.snyk.Page;
@@ -11,6 +10,7 @@ import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
 import org.acme.parser.common.resolver.CweResolver;
 import org.acme.tasks.scanners.AnalyzerIdentity;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
