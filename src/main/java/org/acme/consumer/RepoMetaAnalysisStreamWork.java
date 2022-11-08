@@ -35,7 +35,8 @@ public class RepoMetaAnalysisStreamWork {
                         .with(Serdes.UUID(), componentSerde)
                         .withName("consume_component_meta_analysis_topic"))
                 .peek((uuid, component) -> LOGGER.info("Received component for repo meta analyzer: {}", component),
-                        Named.as("log_components_repometa"))
+                        Named.as("log_components_repo_meta"))
+                .filter((uuid, component) -> component.getPurl() != null, Named.as("filter_components_for_not_null_purl"))
                 .flatMap((projectUuid, component) -> {
                     final var components = new ArrayList<KeyValue<String, Component>>();
                     //Check if purl is not null on producer (dt) side
@@ -45,6 +46,8 @@ public class RepoMetaAnalysisStreamWork {
                 }, Named.as("re-key_components_from_uuid_to_purl_for_meta"))
                 .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier),
                         Named.as("log_re-keyed_components_for_meta"));
+
+        //creating the branches needed for individual analysis
         String metaAnalysisResultTopic = "component-meta-analysis-result";
         componentMetaAnalyzerStream.split(Named.as("meta-analysis"))
                 .branch((key, component) -> component.getPurl().getType().equalsIgnoreCase("maven"),
