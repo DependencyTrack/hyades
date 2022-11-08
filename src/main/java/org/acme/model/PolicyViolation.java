@@ -40,8 +40,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Table(indexes = {
-        @Index(name = "POLICYVIOLATION_PROJECT_IDX", columnList = "project"),
-        @Index(name = "POLICYVIOLATION_COMPONENT_IDX", columnList = "component")
+        @Index(name = "POLICYVIOLATION_PROJECT_IDX", columnList = "PROJECT_ID"),
+        @Index(name = "POLICYVIOLATION_COMPONENT_IDX", columnList = "COMPONENT_ID")
 })
 public class PolicyViolation implements Serializable {
 

@@ -56,8 +56,8 @@ import java.util.UUID;
         @Index(name = "COMPONENT_PROJECT_ID_IDX", columnList="PROJECT_ID"),
         @Index(name = "COMPONENT_MD5_IDX", columnList = "md5"),
         @Index(name = "COMPONENT_SHA1_IDX", columnList = "sha1"),
-        @Index(name = "COMPONENT_SHA256_IDX", columnList = "sha256"),
-        @Index(name = "COMPONENT_SHA512_IDX", columnList = "sha512")},
+        @Index(name = "COMPONENT_SHA256_IDX", columnList = "SHA_256"),
+        @Index(name = "COMPONENT_SHA512_IDX", columnList = "SHA_512")},
         uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "COMPONENT_UUID_IDX")})
 public class Component implements Serializable {
 

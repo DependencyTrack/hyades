@@ -24,10 +24,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.acme.common.TrimmedStringDeserializer;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OrderBy;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -60,6 +57,7 @@ public class Tag implements Serializable {
 
     @JsonIgnore
     @OrderBy("name ASC")
+    @OneToMany
     private List<Project> projects;
 
     public long getId() {

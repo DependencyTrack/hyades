@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
@@ -42,7 +43,7 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Inheritance(strategy= InheritanceType.JOINED)
-public class NotificationRule extends PanacheEntity {
+public class NotificationRule extends PanacheEntityBase {
 
     private static final long serialVersionUID = 2534439091019367263L;
 

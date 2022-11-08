@@ -27,7 +27,7 @@ import org.acme.model.Project;
 import org.acme.notification.publisher.Publisher;
 import org.acme.notification.publisher.SendMailPublisher;
 import org.acme.notification.vo.*;
-import org.acme.persistence.QueryManager;
+//import org.acme.persistence.QueryManager;
 
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -45,7 +45,7 @@ public class NotificationRouter {
     private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
 
     public void inform(final Notification notification) {
-        for (final NotificationRule rule: resolveRules(notification)) {
+        for (final NotificationRule rule: new NotificationRule[2]){//resolveRules(notification)) {
 
             // Not all publishers need configuration (i.e. ConsolePublisher)
             JsonObject config = Json.createObjectBuilder().build();
@@ -112,7 +112,7 @@ public class NotificationRouter {
                 && rule.getProjects().size() > 0;
     }
 
-    List<NotificationRule> resolveRules(final Notification notification) {
+   /* List<NotificationRule> resolveRules(final Notification notification) {
         // The notification rules to process for this specific notification
         final List<NotificationRule> rules = new ArrayList<>();
 
@@ -188,12 +188,12 @@ public class NotificationRouter {
         }
         return rules;
     }
-    /**
+   */ /**
      * if the rule specified one or more projects as targets, reduce the execution
      * of the notification down to those projects that the rule matches and which
      * also match projects affected by the vulnerability.
      * */
-    private void limitToProject(final List<NotificationRule> applicableRules, final List<NotificationRule> rules,
+   /* private void limitToProject(final List<NotificationRule> applicableRules, final List<NotificationRule> rules,
                                 final Notification notification, final Project limitToProject) {
         for (final NotificationRule rule: rules) {
             if (rule.getNotifyOn().contains(NotificationGroup.valueOf(notification.getGroup()))) {
@@ -222,5 +222,5 @@ public class NotificationRouter {
             isChild = checkIfChildrenAreAffected(child, uuid);
         }
         return isChild;
-    }
+    }*/
 }

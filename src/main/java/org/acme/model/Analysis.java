@@ -74,6 +74,7 @@ public class Analysis implements Serializable {
 
 
     @OrderBy("timestamp ASC")
+    @OneToMany
     private List<AnalysisComment> analysisComments;
 
     @Column(name = "SUPPRESSED")

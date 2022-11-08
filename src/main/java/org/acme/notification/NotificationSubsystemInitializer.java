@@ -32,14 +32,14 @@ import javax.servlet.ServletContextListener;
  */
 public class NotificationSubsystemInitializer implements ServletContextListener {
 
-    private static final Logger LOGGER = Logger.getLogger(NotificationSubsystemInitializer.class);
+   /* private static final Logger LOGGER = Logger.getLogger(NotificationSubsystemInitializer.class);
 
     // Starts the NotificationService
     private static final NotificationService NOTIFICATION_SERVICE = NotificationService.getInstance();
 
-    /**
+    *//**
      * {@inheritDoc}
-     */
+     *//*
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         if (RequirementsVerifier.failedValidation()) {
@@ -49,12 +49,12 @@ public class NotificationSubsystemInitializer implements ServletContextListener 
         NOTIFICATION_SERVICE.subscribe(new Subscription(NotificationRouter.class));
     }
 
-    /**
+    *//**
      * {@inheritDoc}
-     */
+     *//*
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
         LOGGER.info("Shutting down notification service");
         NOTIFICATION_SERVICE.shutdown();
-    }
+    }*/
 }

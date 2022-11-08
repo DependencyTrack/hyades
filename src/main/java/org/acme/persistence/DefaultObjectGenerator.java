@@ -50,8 +50,8 @@ public class DefaultObjectGenerator implements ServletContextListener {
         if (RequirementsVerifier.failedValidation()) {
             return;
         }
-        loadDefaultConfigProperties();
-        loadDefaultNotificationPublishers();
+        /*loadDefaultConfigProperties();
+        loadDefaultNotificationPublishers();*/
 
         try {
             new CweImporter().processCweDefinitions();
@@ -71,7 +71,7 @@ public class DefaultObjectGenerator implements ServletContextListener {
     /**
      * Loads the default ConfigProperty objects
      */
-    private void loadDefaultConfigProperties() {
+    /*private void loadDefaultConfigProperties() {
         try (QueryManager qm = new QueryManager()) {
             LOGGER.info("Synchronizing config properties to datastore");
             for (final ConfigPropertyConstants cpc : ConfigPropertyConstants.values()) {
@@ -81,15 +81,15 @@ public class DefaultObjectGenerator implements ServletContextListener {
                 }
             }
             // dispatch a call to PoC configuration endpoint
-          /*  List<ConfigProperty> configProperties = qm.getConfigProperties();
-            KafkaServiceUtil.postConfig(configProperties);*/
+          *//*  List<ConfigProperty> configProperties = qm.getConfigProperties();
+            KafkaServiceUtil.postConfig(configProperties);*//*
         }
-    }
+    }*/
 
     /**
      * Loads the default notification publishers
      */
-    private void loadDefaultNotificationPublishers() {
+    /*private void loadDefaultNotificationPublishers() {
         try (QueryManager qm = new QueryManager()) {
             LOGGER.info("Synchronizing notification publishers to datastore");
             for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
@@ -100,5 +100,5 @@ public class DefaultObjectGenerator implements ServletContextListener {
                 }
             }
         }
-    }
+    }*/
 }

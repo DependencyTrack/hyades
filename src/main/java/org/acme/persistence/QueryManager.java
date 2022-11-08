@@ -15,7 +15,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
- */
+ *//*
+
 package org.acme.persistence;
 
 import alpine.common.util.BooleanUtil;
@@ -26,13 +27,15 @@ import org.acme.notification.publisher.Publisher;
 import java.util.List;
 import java.util.UUID;
 
+*/
 /**
  * This QueryManager provides a concrete extension of {@link AlpineQueryManager} by
  * providing methods that operate on the Dependency-Track specific models.
  *
  * @author Steve Springett
  * @since 3.0.0
- */
+ *//*
+
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public class QueryManager extends AlpineQueryManager {
 
@@ -40,48 +43,60 @@ public class QueryManager extends AlpineQueryManager {
     private NotificationQueryManager notificationQueryManager;
 
 
-    /**
+    */
+/**
      * Default constructor.
-     */
+     *//*
+
     public QueryManager() {
         super();
     }
 
-    /**
+    */
+/**
      * Constructs a new QueryManager.
      * @param pm a PersistenceManager object
-     */
+     *//*
+
     public QueryManager(final PersistenceManager pm) {
         super(pm);
     }
 
-    /**
+    */
+/**
      * Constructs a new QueryManager.
      * @param request an AlpineRequest object
-     */
+     *//*
+
     public QueryManager(final AlpineRequest request) {
         super(request);
         this.request = request;
     }
 
-    /**
+    */
+/**
      * Constructs a new QueryManager.
      * @param request an AlpineRequest object
-     */
+     *//*
+
     public QueryManager(final PersistenceManager pm, final AlpineRequest request) {
         super(pm, request);
         this.request = request;
     }
 
-    /**
+    */
+/**
      * Lazy instantiation of ProjectQueryManager.
      * @return a ProjectQueryManager object
-     */
+     *//*
 
-    /**
+
+    */
+/**
      * Lazy instantiation of NotificationQueryManager.
      * @return a NotificationQueryManager object
-     */
+     *//*
+
     private NotificationQueryManager getNotificationQueryManager() {
         if (notificationQueryManager == null) {
             notificationQueryManager = (request == null) ? new NotificationQueryManager(getPersistenceManager()) : new NotificationQueryManager(getPersistenceManager(), request);
@@ -135,11 +150,13 @@ public class QueryManager extends AlpineQueryManager {
         getNotificationQueryManager().removeTeamFromNotificationRules(team);
     }
 
-    /**
+    */
+/**
      * Determines if a config property is enabled or not.
      * @param configPropertyConstants the property to query
      * @return true if enabled, false if not
-     */
+     *//*
+
     public boolean isEnabled(final ConfigPropertyConstants configPropertyConstants) {
         final ConfigProperty property = getConfigProperty(
                 configPropertyConstants.getGroupName(), configPropertyConstants.getPropertyName()
@@ -150,7 +167,8 @@ public class QueryManager extends AlpineQueryManager {
         return false;
     }
 
-    /**
+    */
+/**
      * Fetch an object from the datastore by its {@link UUID}, using the provided fetch groups.
      * <p>
      * {@code fetchGroups} will override any other fetch groups set on the {@link PersistenceManager},
@@ -166,7 +184,8 @@ public class QueryManager extends AlpineQueryManager {
      * @param <T> Type of the object
      * @throws Exception When closing the query failed
      * @since 4.6.0
-     */
+     *//*
+
     public <T> T getObjectByUuid(final Class<T> clazz, final UUID uuid, final List<String> fetchGroups) throws Exception {
         try (final Query<T> query = pm.newQuery(clazz)) {
             query.setFilter("uuid == :uuid");
@@ -176,14 +195,16 @@ public class QueryManager extends AlpineQueryManager {
         }
     }
 
-    /**
+    */
+/**
      * Convenience method to execute a given {@link Runnable} within the context of a {@link Transaction}.
      * <p>
      * Eventually, this may be moved to {@link alpine.persistence.AbstractAlpineQueryManager}.
      *
      * @param runnable The {@link Runnable} to execute
      * @since 4.6.0
-     */
+     *//*
+
     public void runInTransaction(final Runnable runnable) {
         final Transaction trx = pm.currentTransaction();
         try {
@@ -198,3 +219,4 @@ public class QueryManager extends AlpineQueryManager {
     }
 
 }
+*/

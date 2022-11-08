@@ -22,7 +22,7 @@ import org.acme.model.*;
 import org.acme.notification.publisher.DefaultNotificationPublishers;
 import org.acme.notification.vo.*;
 import org.acme.parser.common.resolver.CweResolver;
-import org.acme.persistence.QueryManager;
+//import org.acme.persistence.QueryManager;
 import org.apache.commons.io.FileUtils;
 
 import javax.json.*;
@@ -264,7 +264,7 @@ public final class NotificationUtil {
         return builder.build();
     }
 
-    public static void loadDefaultNotificationPublishers(QueryManager qm) throws IOException {
+   /* public static void loadDefaultNotificationPublishers(QueryManager qm) throws IOException {
         for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
             File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
             // TODO QueryManager
@@ -297,5 +297,5 @@ public final class NotificationUtil {
             }
         }
     }
-
+*/
 }
