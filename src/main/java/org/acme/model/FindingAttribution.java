@@ -37,7 +37,7 @@ import java.util.UUID;
 @Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"UUID"}, name = "FINDINGATTRIBUTION_UUID_IDX")},
-        indexes = {@Index(name = "FINDINGATTRIBUTION_COMPOUND_IDX",  columnList="component, vulnerability")})
+        indexes = {@Index(name = "FINDINGATTRIBUTION_COMPOUND_IDX",  columnList="COMPONENT_ID, VULNERABILITY_ID")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FindingAttribution implements Serializable {
 

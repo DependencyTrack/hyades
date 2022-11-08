@@ -53,7 +53,7 @@ import java.util.UUID;
         @Index(name = "COMPONENT_PURL_IDX", columnList="purl"),
         @Index(name = "COMPONENT_PURL_COORDINATES_IDX", columnList="purlCoordinates"),
         @Index(name = "COMPONENT_SWID_TAGID_IDX", columnList="swidTagId"),
-        @Index(name = "COMPONENT_PROJECT_ID_IDX", columnList="project")},
+        @Index(name = "COMPONENT_PROJECT_ID_IDX", columnList="PROJECT_ID")},
         uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "COMPONENT_UUID_IDX")})
 public class Component implements Serializable {
 

@@ -61,9 +61,9 @@ import java.util.UUID;
         @Index(name = "PROJECT_CPE_IDX", columnList="cpe"),
         @Index(name = "PROJECT_PURL_IDX", columnList="purl"),
         @Index(name = "PROJECT_SWID_TAGID_IDX", columnList="swidTagId"),
-        @Index(name = "PROJECT_LAST_RISKSCORE_IDX", columnList="lastInheritedRiskScore"),
-        @Index(name = "PROJECT_LASTBOMIMPORT_FORMAT_IDX", columnList="lastBomImportFormat"),
-        @Index(name = "PROJECT_LASTBOMIMPORT_IDX", columnList="lastBomImport")},
+        @Index(name = "PROJECT_LAST_RISKSCORE_IDX", columnList="LAST_RISKSCORE"),
+        @Index(name = "PROJECT_LASTBOMIMPORT_FORMAT_IDX", columnList="LAST_BOM_IMPORTED_FORMAT"),
+        @Index(name = "PROJECT_LASTBOMIMPORT_IDX", columnList="LAST_BOM_IMPORTED")},
         uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "PROJECT_UUID_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Project implements Serializable {

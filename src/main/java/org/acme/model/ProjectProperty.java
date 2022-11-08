@@ -39,7 +39,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "PROJECT_PROPERTY", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"project", "groupName", "propertyName"}, name = "PROJECT_PROPERTY_KEYS_IDX")})
+        @UniqueConstraint(columnNames = {"PROJECT_ID", "GROUPNAME", "PROPERTYNAME"}, name = "PROJECT_PROPERTY_KEYS_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProjectProperty implements IConfigProperty, Serializable {
 

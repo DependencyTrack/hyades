@@ -19,9 +19,10 @@
 package org.acme.persistence;
 
 import alpine.common.logging.Logger;
-import org.acme.common.AttributeConverter;
+//import org.acme.common.AttributeConverter;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.AttributeConverter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -30,7 +31,7 @@ public class CollectionIntegerConverter implements AttributeConverter<Collection
 
     private static final Logger LOGGER = Logger.getLogger(CollectionIntegerConverter.class);
 
-    public String convertToDatastore(final Collection<Integer> attribute) {
+    public String convertToDatabaseColumn(final Collection<Integer> attribute) {
         if (attribute == null) {
             return null;
         }
@@ -45,7 +46,7 @@ public class CollectionIntegerConverter implements AttributeConverter<Collection
         return sb.toString();
     }
 
-    public Collection<Integer> convertToAttribute(final String columnValue) {
+    public Collection<Integer> convertToEntityAttribute(final String columnValue) {
         if (columnValue == null || StringUtils.isBlank(columnValue)) {
             return null;
         }

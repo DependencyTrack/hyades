@@ -39,9 +39,9 @@ import java.util.UUID;
 @Table(name = "VULNERABLE_SOFTWARE", indexes = {
         @Index(name = "VULNERABLESOFTWARE_CPE23_VERSION_RANGE_IDX", columnList = "cpe23, versionEndExcluding, versionEndIncluding, versionStartExcluding, versionStartIncluding"),
         @Index(name = "VULNERABLESOFTWARE_PART_VENDOR_PRODUCT_IDX", columnList = "part, vendor, product"),
-        @Index(name = "VULNERABLESOFTWARE_CPE_PURL_PARTS_IDX", columnList = "part, vendor, product, purlType, purlNamespace, purlName"),
+        @Index(name = "VULNERABLESOFTWARE_CPE_PURL_PARTS_IDX", columnList = "part, vendor, product, purl_Type, purl_Namespace, purl_Name"),
         @Index(name = "VULNERABLESOFTWARE_PURL_VERSION_RANGE_IDX", columnList = "purl, versionEndExcluding, versionEndIncluding, versionStartExcluding, versionStartIncluding"),
-        @Index(name = "VULNERABLESOFTWARE_PURL_TYPE_NS_NAME_IDX", columnList = "purlType, purlNamespace, purlName")})
+        @Index(name = "VULNERABLESOFTWARE_PURL_TYPE_NS_NAME_IDX", columnList = "purl_Type, purl_Namespace, purl_Name")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VulnerableSoftware implements ICpe, Serializable {
 

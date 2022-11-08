@@ -35,9 +35,9 @@ import java.util.Date;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "DEPENDENCYMETRICS",indexes = {
-        @Index(name = "DEPENDENCYMETRICS_COMPOSITE_IDX",  columnList="project, component"),
-        @Index(name = "DEPENDENCYMETRICS_FIRST_OCCURRENCE_IDX", columnList="firstOccurrence"),
-        @Index(name = "DEPENDENCYMETRICS_LAST_OCCURRENCE_IDX", columnList="lastOccurrence")})
+        @Index(name = "DEPENDENCYMETRICS_COMPOSITE_IDX",  columnList="PROJECT_ID, COMPONENT_ID"),
+        @Index(name = "DEPENDENCYMETRICS_FIRST_OCCURRENCE_IDX", columnList="FIRST_OCCURRENCE"),
+        @Index(name = "DEPENDENCYMETRICS_LAST_OCCURRENCE_IDX", columnList="LAST_OCCURRENCE")})
 public class DependencyMetrics implements Serializable {
 
     private static final long serialVersionUID = 5231823328085979791L;

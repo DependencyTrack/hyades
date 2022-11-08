@@ -30,7 +30,7 @@ import java.util.List;
  * Defines an event used to start an analysis via Snyk REST API.
  */
 @ApplicationScoped
-public class SnykAnalysisEvent extends VulnerabilityAnalysisEvent {
+public class SnykAnalysisEvent {
 
     public SnykAnalysisEvent() {
         super();

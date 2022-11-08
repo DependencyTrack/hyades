@@ -38,7 +38,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "COMPONENTANALYSISCACHE", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"cacheType", "targetHost", "targetType", "target"}, name = "COMPONENTANALYSISCACHE_COMPOSITE_IDX"),
+        @UniqueConstraint(columnNames = {"CACHE_TYPE", "TARGET_HOST", "TARGET_TYPE", "TARGET"}, name = "COMPONENTANALYSISCACHE_COMPOSITE_IDX"),
         @UniqueConstraint(columnNames = {"UUID"}, name = "COMPONENTANALYSISCACHE_UUID_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ComponentAnalysisCache implements Serializable {
