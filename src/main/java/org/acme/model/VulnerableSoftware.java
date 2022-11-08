@@ -21,8 +21,7 @@ package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,131 +35,107 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.6.0
  */
-@PersistenceCapable
+@Entity
+@Table(name = "VULNERABLE_SOFTWARE", indexes = {
+        @Index(name = "VULNERABLESOFTWARE_CPE23_VERSION_RANGE_IDX", columnList = "cpe23, versionEndExcluding, versionEndIncluding, versionStartExcluding, versionStartIncluding"),
+        @Index(name = "VULNERABLESOFTWARE_PART_VENDOR_PRODUCT_IDX", columnList = "part, vendor, product"),
+        @Index(name = "VULNERABLESOFTWARE_CPE_PURL_PARTS_IDX", columnList = "part, vendor, product, purlType, purlNamespace, purlName"),
+        @Index(name = "VULNERABLESOFTWARE_PURL_VERSION_RANGE_IDX", columnList = "purl, versionEndExcluding, versionEndIncluding, versionStartExcluding, versionStartIncluding"),
+        @Index(name = "VULNERABLESOFTWARE_PURL_TYPE_NS_NAME_IDX", columnList = "purlType, purlNamespace, purlName")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Index(name = "VULNERABLESOFTWARE_CPE23_VERSION_RANGE_IDX", members = {"cpe23", "versionEndExcluding", "versionEndIncluding", "versionStartExcluding", "versionStartIncluding"})
-@Index(name = "VULNERABLESOFTWARE_PART_VENDOR_PRODUCT_IDX", members = {"part", "vendor", "product"})
-@Index(name = "VULNERABLESOFTWARE_CPE_PURL_PARTS_IDX", members = {"part", "vendor", "product", "purlType", "purlNamespace", "purlName"})
-@Index(name = "VULNERABLESOFTWARE_PURL_VERSION_RANGE_IDX", members = {"purl", "versionEndExcluding", "versionEndIncluding", "versionStartExcluding", "versionStartIncluding"})
-@Index(name = "VULNERABLESOFTWARE_PURL_TYPE_NS_NAME_IDX", members = {"purlType", "purlNamespace", "purlName"})
 public class VulnerableSoftware implements ICpe, Serializable {
 
     private static final long serialVersionUID = -3987946408457131098L;
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "PURL", jdbcType = "VARCHAR")
+    @Column(name = "PURL")
     private String purl;
 
-    @Persistent
-    @Column(name = "PURL_TYPE", jdbcType = "VARCHAR")
+    @Column(name = "PURL_TYPE")
     private String purlType;
 
-    @Persistent
-    @Column(name = "PURL_NAMESPACE", jdbcType = "VARCHAR")
+    @Column(name = "PURL_NAMESPACE")
     private String purlNamespace;
 
-    @Persistent
-    @Column(name = "PURL_NAME", jdbcType = "VARCHAR")
+    @Column(name = "PURL_NAME")
     private String purlName;
 
-    @Persistent
-    @Column(name = "PURL_VERSION", jdbcType = "VARCHAR")
+    @Column(name = "PURL_VERSION")
     private String purlVersion;
 
-    @Persistent
-    @Column(name = "PURL_QUALIFIERS", jdbcType = "VARCHAR")
+    @Column(name = "PURL_QUALIFIERS")
     private String purlQualifiers;
 
-    @Persistent
-    @Column(name = "PURL_SUBPATH", jdbcType = "VARCHAR")
+    @Column(name = "PURL_SUBPATH")
     private String purlSubpath;
 
-    @Persistent
-    @Column(name = "CPE22", jdbcType = "VARCHAR")
+    @Column(name = "CPE22")
     private String cpe22;
 
-    @Persistent
-    @Column(name = "CPE23", jdbcType = "VARCHAR")
+    @Column(name = "CPE23")
     private String cpe23;
 
-    @Persistent
-    @Column(name = "PART", jdbcType = "VARCHAR")
+    @Column(name = "PART")
     private String part;
 
-    @Persistent
-    @Column(name = "VENDOR", jdbcType = "VARCHAR")
+    @Column(name = "VENDOR")
     private String vendor;
 
-    @Persistent
-    @Column(name = "PRODUCT", jdbcType = "VARCHAR")
+    @Column(name = "PRODUCT")
     private String product;
 
-    @Persistent
     private String version;
 
-    @Persistent
-    @Column(name = "UPDATE", jdbcType = "VARCHAR")
+    @Column(name = "UPDATE")
     private String update;
 
-    @Persistent
-    @Column(name = "EDITION", jdbcType = "VARCHAR")
+    @Column(name = "EDITION")
     private String edition;
 
-    @Persistent
-    @Column(name = "LANGUAGE", jdbcType = "VARCHAR")
+    @Column(name = "LANGUAGE")
     private String language;
 
-    @Persistent
-    @Column(name = "SWEDITION", jdbcType = "VARCHAR")
+    @Column(name = "SWEDITION")
     private String swEdition;
 
-    @Persistent
-    @Column(name = "TARGETSW", jdbcType = "VARCHAR")
+    @Column(name = "TARGETSW")
     private String targetSw;
 
-    @Persistent
-    @Column(name = "TARGETHW", jdbcType = "VARCHAR")
+    @Column(name = "TARGETHW")
     private String targetHw;
 
-    @Persistent
-    @Column(name = "OTHER", jdbcType = "VARCHAR")
+    @Column(name = "OTHER")
     private String other;
 
-    @Persistent
     @Column(name = "VERSIONENDEXCLUDING")
     private String versionEndExcluding;
 
-    @Persistent
     @Column(name = "VERSIONENDINCLUDING")
     private String versionEndIncluding;
 
-    @Persistent
     @Column(name = "VERSIONSTARTEXCLUDING")
     private String versionStartExcluding;
 
-    @Persistent
     @Column(name = "VERSIONSTARTINCLUDING")
     private String versionStartIncluding;
 
-    @Persistent
     @Column(name = "VULNERABLE")
     @JsonProperty(value = "isVulnerable")
     private boolean vulnerable;
 
-    @Persistent(table = "VULNERABLESOFTWARE_VULNERABILITIES", mappedBy = "vulnerableSoftware")
-    @Join(column = "VULNERABLESOFTWARE_ID")
-    @Element(column = "VULNERABILITY_ID", dependent = "false")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "id ASC"))
+    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinTable(
+//            name = "VULNERABLESOFTWARE_VULNERABILITIES",
+//            joinColumns = @JoinColumn(name = "VULNERABILITY_ID")
+//    )
+    @JoinColumn(name = "VULNERABLESOFTWARE_ID", referencedColumnName = "ID")
+    @OrderBy("id ASC")
     private List<Vulnerability> vulnerabilities;
 
-    @Persistent(defaultFetchGroup = "true", customValueStrategy = "uuid")
-    @Unique(name = "VULNERABLESOFTWARE_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", unique = true, length = 36, nullable = false)
     private UUID uuid;
 
     public long getId() {
