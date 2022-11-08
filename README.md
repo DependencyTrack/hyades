@@ -26,6 +26,14 @@ for more information about available configuration sources and the order in whic
 ### Verify if Cwe store contains values
 
 Get request to http://localhost:8089/cwe/data?id=178
+<br/>
+<br/>
+### Creating and using an externally created SecretKey
+It is now possible to generate a secret key externally using jar file created from [keyGeneration](https://github.com/mehab/KeyGeneration).
+This will create the secret key in the folder `~/.dependency-track` and will be used by the DT API server as well as this poc code. <br/>
+The usage with the poc code can happen once we have hibernate implementation complete then we can fetch secrets directly from DT database and decrypt it using the SecretsUtil added to this project. <br/>
+Create the jar of the keygeneration code using `./mvnw package` and then use the runnable jar created in the target folder of the keyGeneration app to generate the key. <br/>
+For this key to be effective, this step needs to be performed before starting off dependency track api server and quarkus application. And it is a manual step as of now. <br/>
 
 ### Testing
 
@@ -60,7 +68,8 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 
 ## Running this poc with Dependency Track
 Follow the below steps to run this poc in integration with dependency track for an end to end test. Currently, we have been able to implement sending of events from DT to a topic which is being polled by this poc application.
-- Use this branch of dependency track backend server from git: https://github.com/sahibamittal/dependency-track/tree/internal-dt-latest
+- If you want to share the secret key for data decryption between dependency track api server and this poc code, you need to generate the secret key using the steps mentioned in the section `Creating and using an externally created SecretKey`. This step needs to be performed prior to starting off DT api server and poc in that case.
+- Use this branch of dependency track backend server from git: `https://github.com/sahibamittal/dependency-track/tree/ingest-vuln-analysis-results`
 - Run the dependency track api server using provided maven <b>jetty profile</b>.
 - Use this branch of dependency track front end from git: `https://github.com/sahibamittal/dependency-track-frontend/tree/internal-dt-latest`
 - Run the frontend using `npm ci` and then `npm run serve`
