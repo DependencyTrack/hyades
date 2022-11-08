@@ -102,7 +102,7 @@ public class AnalyzerTopology {
                         .withName("consume_component-analysis_topic"))
                 .peek((uuid, component) -> LOGGER.info("Received component: {}", component),
                         Named.as("log_components"))
-                .flatMap((projectUuid, component) -> {
+                .flatMap((uuid, component) -> {
                     final var components = new ArrayList<KeyValue<String, Component>>();
                     if (component.getCpe() != null) {
                         // TODO: Canonicalize the CPE used as key, so that CPEs describing the same component end up in the same partition.
