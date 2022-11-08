@@ -27,9 +27,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import org.apache.commons.collections4.CollectionUtils;
+import org.acme.common.TrimmedStringDeserializer;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

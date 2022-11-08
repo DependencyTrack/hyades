@@ -19,10 +19,8 @@
 package org.acme.notification;
 
 import alpine.common.logging.Logger;
-import alpine.notification.Notification;
-import alpine.notification.NotificationLevel;
-import alpine.notification.Subscriber;
-import org.acme.exception.PublisherException;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
 import org.acme.model.NotificationPublisher;
 import org.acme.model.NotificationRule;
 import org.acme.model.Project;
@@ -30,13 +28,8 @@ import org.acme.notification.publisher.Publisher;
 import org.acme.notification.publisher.SendMailPublisher;
 import org.acme.notification.vo.*;
 import org.acme.persistence.QueryManager;
-//import org.acme.persistence.QueryManager;
 
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.management.Notification;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
