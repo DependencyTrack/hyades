@@ -76,6 +76,7 @@ public class ComponentAnalysisCache implements Serializable {
     private String target;
 
 
+    @Lob
     @Column(name = "RESULT", nullable = true, columnDefinition = "CLOB")
     private String result;
 

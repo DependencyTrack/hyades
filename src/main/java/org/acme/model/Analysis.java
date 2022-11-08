@@ -68,6 +68,7 @@ public class Analysis implements Serializable {
     @NotNull
     private AnalysisResponse analysisResponse;
 
+    @Lob
     @Column(name = "DETAILS", columnDefinition = "CLOB", nullable = true)
     @NotNull
     private String analysisDetails;

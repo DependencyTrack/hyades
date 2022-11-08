@@ -53,6 +53,7 @@ public class ViolationAnalysisComment implements Serializable {
     @NotNull
     private Date timestamp;
 
+    @Lob
     @Column(name = "COMMENT", columnDefinition = "CLOB", nullable = false)
     @NotNull
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
