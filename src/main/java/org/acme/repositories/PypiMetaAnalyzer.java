@@ -90,7 +90,7 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
                 handleRequestException(LOGGER, e);
             }
         }
-        return meta;
+        return successMeta;
     }
 
     private MetaModel processSuccessResponse(HttpResponse<JsonNode> response, MetaModel meta) {
