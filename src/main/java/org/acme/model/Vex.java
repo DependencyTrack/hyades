@@ -34,7 +34,7 @@ import java.util.UUID;
  * @since 4.5.0
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "VEX_UUID_IDX")})
+@Table(name = "VEX",uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "VEX_UUID_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Vex implements Serializable {
 
@@ -87,8 +87,9 @@ public class Vex implements Serializable {
     private String serialNumber;
 
 
-    @Column(name = "PROJECT_ID", nullable = false)
+    @JoinColumn(name = "PROJECT_ID", nullable = false)
     @NotNull
+    @ManyToOne
     private Project project;
 
     @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false, unique = true)

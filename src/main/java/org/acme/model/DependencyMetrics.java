@@ -47,12 +47,15 @@ public class DependencyMetrics implements Serializable {
     @JsonIgnore
     private long id;
 
-    @Column(name = "PROJECT_ID", nullable = false)
+    @JoinColumn(name = "PROJECT_ID", nullable = false)
     @NotNull
+    @ManyToOne
     private Project project;
 
-    @Column(name = "COMPONENT_ID", nullable = false)
+    @JoinColumn(
+            name = "COMPONENT_ID", nullable = false)
     @NotNull
+    @ManyToOne
     private Component component;
 
     @Column(name = "CRITICAL")

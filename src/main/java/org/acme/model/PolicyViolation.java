@@ -39,7 +39,7 @@ import java.util.UUID;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Table(indexes = {
+@Table(name = "POLICYVIOLATION",indexes = {
         @Index(name = "POLICYVIOLATION_PROJECT_IDX", columnList = "PROJECT_ID"),
         @Index(name = "POLICYVIOLATION_COMPONENT_IDX", columnList = "COMPONENT_ID")
 })
@@ -58,13 +58,16 @@ public class PolicyViolation implements Serializable {
     @Column(name = "TYPE", nullable = false)
     private Type type;
 
-    @Column(name = "PROJECT_ID", nullable = false)
+    @JoinColumn(name = "PROJECT_ID", nullable = false)
+    @ManyToOne
     private Project project;
 
-    @Column(name = "COMPONENT_ID", nullable = false)
+    @JoinColumn(name = "COMPONENT_ID", nullable = false)
+    @ManyToOne
     private Component component;
 
-    @Column(name = "POLICYCONDITION_ID", nullable = false)
+    @JoinColumn(name = "POLICYCONDITION_ID", nullable = false)
+    @ManyToOne
     private PolicyCondition policyCondition;
 
     @Column(name = "TIMESTAMP", nullable = false)
@@ -75,7 +78,8 @@ public class PolicyViolation implements Serializable {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The text may only contain printable characters")
     private String text;
 
-    private  ViolationAnalysis analysis;
+    @ManyToOne
+    private ViolationAnalysis analysis;
 
     /**
      * The unique identifier of the object.

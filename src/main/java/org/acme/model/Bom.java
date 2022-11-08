@@ -35,7 +35,7 @@ import java.util.UUID;
  */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"UPLOAD_TOKEN"}, name = "BOM_UPLOAD_TOKEN_IDX"),
+@Table(name = "BOM",uniqueConstraints = {@UniqueConstraint(columnNames = {"UPLOAD_TOKEN"}, name = "BOM_UPLOAD_TOKEN_IDX"),
                             @UniqueConstraint(columnNames = {"UUID"}, name = "BOM_UUID_IDX")})
 public class Bom implements Serializable {
 
@@ -83,8 +83,9 @@ public class Bom implements Serializable {
     @Column(name = "SERIAL_NUMBER")
     private String serialNumber;
 
-    @Column(name = "PROJECT_ID", nullable = false)
+    @JoinColumn(name = "PROJECT_ID", nullable = false)
     @NotNull
+    @ManyToOne
     private Project project;
 
     @Column(name = "UPLOAD_TOKEN", nullable = false)

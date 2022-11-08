@@ -42,7 +42,7 @@ import java.util.UUID;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Table(indexes = {
+@Table(name = "POLICY",indexes = {
         @Index(name = "POLICY_NAME_IDX", columnList = "name")})
 public class Policy implements Serializable {
 

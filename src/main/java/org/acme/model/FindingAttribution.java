@@ -35,7 +35,7 @@ import java.util.UUID;
  * @since 4.0.0
  */
 @Entity
-@Table(uniqueConstraints = {
+@Table(name = "FINDINGATTRIBUTION",uniqueConstraints = {
         @UniqueConstraint(columnNames = {"UUID"}, name = "FINDINGATTRIBUTION_UUID_IDX")},
         indexes = {@Index(name = "FINDINGATTRIBUTION_COMPOUND_IDX",  columnList="COMPONENT_ID, VULNERABILITY_ID")})
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -36,7 +36,7 @@ import java.util.UUID;
  * @since 3.6.0
  */
 @Entity
-@Table(name = "VULNERABLE_SOFTWARE", indexes = {
+@Table(name = "VULNERABLESOFTWARE", indexes = {
         @Index(name = "VULNERABLESOFTWARE_CPE23_VERSION_RANGE_IDX", columnList = "cpe23, versionEndExcluding, versionEndIncluding, versionStartExcluding, versionStartIncluding"),
         @Index(name = "VULNERABLESOFTWARE_PART_VENDOR_PRODUCT_IDX", columnList = "part, vendor, product"),
         @Index(name = "VULNERABLESOFTWARE_CPE_PURL_PARTS_IDX", columnList = "part, vendor, product, purl_Type, purl_Namespace, purl_Name"),

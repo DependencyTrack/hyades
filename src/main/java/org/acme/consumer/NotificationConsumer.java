@@ -43,10 +43,10 @@ public class NotificationConsumer  {
             return;
         }
         final var properties = new Properties();
-        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "");
-        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, Config.getInstance().getProperty(ConfigKey.NOTIFICATION_APPLICATION_ID));
+        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "notification");
         properties.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
-        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "applicationProperty.consumerOffset()");
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         Collection<String> topics = new ArrayList<>();
         topics.add(KafkaTopic.ANALYZER_NOTIFICATION.getName());
         topics.add(KafkaTopic.BOM_CONSUMED_NOTIFICATION.getName());
@@ -77,7 +77,7 @@ public class NotificationConsumer  {
 
         STREAMS = new KafkaStreams(streamsBuilder.build(), new StreamsConfig(properties));
 
-        if (Config.getInstance().getPropertyAsBoolean(Config.AlpineKey.METRICS_ENABLED)) {
+        if (true) {
             LOGGER.info("Registering Kafka streams metrics");
             STREAMS_METRICS = new KafkaStreamsMetrics(STREAMS);
             STREAMS_METRICS.bindTo(Metrics.getRegistry());

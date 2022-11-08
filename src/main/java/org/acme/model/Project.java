@@ -148,7 +148,7 @@ public class Project implements Serializable {
     private List<Tag> tags;
 
     @Lob
-    @Column(name = "DIRECT_DEPENDENCIES", columnDefinition = "CLOB")
+    @Column(name = "DIRECT_DEPENDENCIES", columnDefinition = "text")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String directDependencies; // This will be a JSON string
 

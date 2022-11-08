@@ -34,7 +34,7 @@ import java.util.List;
  * @since 3.0.0
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"PROJECT_ID", "COMPONENT_ID", "VULNERABILITY_ID"}, name = "ANALYSIS_COMPOSITE_IDX")})
+@Table(name = "ANALYSIS", uniqueConstraints = {@UniqueConstraint(columnNames = {"PROJECT_ID", "COMPONENT_ID", "VULNERABILITY_ID"}, name = "ANALYSIS_COMPOSITE_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Analysis implements Serializable {
 
@@ -69,7 +69,7 @@ public class Analysis implements Serializable {
     private AnalysisResponse analysisResponse;
 
     @Lob
-    @Column(name = "DETAILS", columnDefinition = "CLOB", nullable = true)
+    @Column(name = "DETAILS", columnDefinition = "text", nullable = true)
     @NotNull
     private String analysisDetails;
 

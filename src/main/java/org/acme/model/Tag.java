@@ -40,6 +40,7 @@ import java.util.Objects;
  */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table(name = "TAG")
 public class Tag implements Serializable {
 
     private static final long serialVersionUID = -7798359808664731988L;

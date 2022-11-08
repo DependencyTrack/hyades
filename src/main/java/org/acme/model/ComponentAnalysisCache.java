@@ -77,7 +77,7 @@ public class ComponentAnalysisCache implements Serializable {
 
 
     @Lob
-    @Column(name = "RESULT", nullable = true, columnDefinition = "CLOB")
+    @Column(name = "RESULT", nullable = true, columnDefinition = "text")
     private String result;
 
     @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false)

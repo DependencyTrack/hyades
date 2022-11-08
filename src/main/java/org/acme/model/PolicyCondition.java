@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -41,6 +42,7 @@ import java.util.UUID;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Table(name = "POLICYCONDITION")
 public class PolicyCondition implements Serializable {
 
     public enum Operator {

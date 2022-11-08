@@ -34,7 +34,7 @@ import java.util.List;
  * @since 4.0.0
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"PROJECT_ID", "COMPONENT_ID", "POLICYVIOLATION_ID"}, name = "VIOLATIONANALYSIS_COMPOSITE_IDX")})
+@Table(name = "VIOLATIONANALYSIS",uniqueConstraints = {@UniqueConstraint(columnNames = {"PROJECT_ID", "COMPONENT_ID", "POLICYVIOLATION_ID"}, name = "VIOLATIONANALYSIS_COMPOSITE_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ViolationAnalysis implements Serializable {
 
@@ -43,17 +43,20 @@ public class ViolationAnalysis implements Serializable {
     @JsonIgnore
     private long id;
 
-    @Column(name = "PROJECT_ID")
+    @JoinColumn(name = "PROJECT_ID")
     @JsonIgnore
+    @ManyToOne
     private Project project;
 
-    @Column(name = "COMPONENT_ID")
+    @JoinColumn(name = "COMPONENT_ID")
     @JsonIgnore
+    @ManyToOne
     private Component component;
 
-    @Column(name = "POLICYVIOLATION_ID", nullable = false)
+    @JoinColumn(name = "POLICYVIOLATION_ID", nullable = false)
     @NotNull
     @JsonIgnore
+    @ManyToOne
     private PolicyViolation policyViolation;
 
 

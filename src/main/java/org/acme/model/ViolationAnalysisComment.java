@@ -37,6 +37,7 @@ import java.util.Date;
  */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table(name = "VIOLATIONANALYSISCOMMENT")
 public class ViolationAnalysisComment implements Serializable {
 
     @Id
@@ -44,9 +45,10 @@ public class ViolationAnalysisComment implements Serializable {
     @JsonIgnore
     private long id;
 
-    @Column(name = "VIOLATIONANALYSIS_ID", nullable = false)
+    @JoinColumn(name = "VIOLATIONANALYSIS_ID", nullable = false)
     @NotNull
     @JsonIgnore
+    @ManyToOne
     private ViolationAnalysis violationAnalysis;
 
     @Column(name = "TIMESTAMP", nullable = false)
@@ -54,7 +56,7 @@ public class ViolationAnalysisComment implements Serializable {
     private Date timestamp;
 
     @Lob
-    @Column(name = "COMMENT", columnDefinition = "CLOB", nullable = false)
+    @Column(name = "COMMENT", columnDefinition = "text", nullable = false)
     @NotNull
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String comment;

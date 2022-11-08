@@ -36,6 +36,7 @@ import java.util.Date;
  * @since 3.0.0
  */
 @Entity
+@Table(name = "ANALYSISCOMMENT")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnalysisComment implements Serializable {
 
@@ -56,7 +57,7 @@ public class AnalysisComment implements Serializable {
     private Date timestamp;
 
     @Lob
-    @Column(name = "COMMENT", columnDefinition = "CLOB", nullable = false)
+    @Column(name = "COMMENT", columnDefinition = "text", nullable = false)
     @NotNull
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String comment;

@@ -43,6 +43,7 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Inheritance(strategy= InheritanceType.JOINED)
+@Table(name = "NOTIFICATIONRULE")
 public class NotificationRule extends PanacheEntityBase {
 
     private static final long serialVersionUID = 2534439091019367263L;
