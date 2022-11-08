@@ -33,6 +33,9 @@ import java.text.SimpleDateFormat;
 
 /**
  * @see <a href="https://golang.org/ref/mod#goproxy-protocol">GOPROXY protocol</a>
+ *  An IMetaAnalyzer implementation that supports Golang.
+ *
+ *  @author Steve Springett
  * @since 4.3.0
  */
 @ApplicationScoped

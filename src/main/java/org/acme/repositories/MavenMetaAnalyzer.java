@@ -31,6 +31,7 @@ import org.acme.model.RepositoryType;
 import org.acme.util.DateUtil;
 import org.acme.util.HttpUtil;
 import org.acme.util.XmlUtil;
+import org.apache.http.client.utils.URIBuilder;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -79,9 +80,11 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null) {
             final String mavenGavUrl = component.getPurl().getNamespace().replaceAll("\\.", "/") + "/" + component.getPurl().getName();
-            final String url = String.format(baseUrl, REPO_METADATA_URL, mavenGavUrl);
+            URIBuilder builder = new URIBuilder();
+            builder.setHost(baseUrl);
+            builder.setPath(REPO_METADATA_URL + '/' + mavenGavUrl);
             try {
-                final HttpUriRequest request = new HttpGet(url);
+                final HttpUriRequest request = new HttpGet(builder.toString());
 
                 if (username != null || password != null) {
                     request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
@@ -105,14 +108,14 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                                 final XPathExpression lastUpdatedExpression = xpath.compile("/metadata/versioning/lastUpdated");
                                 final String lastUpdated = (String) lastUpdatedExpression.evaluate(document, XPathConstants.STRING);
 
-                                meta.setLatestVersion(release != null ? release: latest);
+                                meta.setLatestVersion(release != null ? release : latest);
                                 if (lastUpdated != null) {
                                     meta.setPublishedTimestamp(DateUtil.parseDate(lastUpdated));
                                 }
                             }
                         }
                     } else {
-                        handleUnexpectedHttpResponse(LOGGER, url, status.getStatusCode(), status.getReasonPhrase(), component);
+                        handleUnexpectedHttpResponse(LOGGER, builder.toString(), status.getStatusCode(), status.getReasonPhrase(), component);
                     }
                 }
             } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {

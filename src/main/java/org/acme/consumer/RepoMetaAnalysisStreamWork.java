@@ -53,7 +53,7 @@ public class RepoMetaAnalysisStreamWork {
                                         LOGGER.info("Component sending to maven meta analyzer"), Named.as("maven_meta_analyzer"))
                                 .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
                                         Named.as("re-keyed_string_identifier_to_component_uuid_for_maven")).
-                                to("maven-meta-analyzer", Produced
+                                to("component-meta-analysis-maven", Produced
                                         .with(Serdes.UUID(), componentSerde)
                                         .withName("produce_component_on_maven_meta_analyzer"))
                         ).withName("-maven-analyzer")
@@ -63,7 +63,7 @@ public class RepoMetaAnalysisStreamWork {
                                         LOGGER.info("Component sending to maven meta analyzer"), Named.as("npm_meta_analyzer"))
                                 .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
                                         Named.as("re-keyed_string_identifier_to_component_uuid_for_npm")).
-                                to("npm-meta-analyzer", Produced
+                                to("component-meta-analysis-npm", Produced
                                         .with(Serdes.UUID(), componentSerde)
                                         .withName("produce_component_on_npm_meta_analyzer"))
                         ).withName("-npm-analyzer")
@@ -73,7 +73,7 @@ public class RepoMetaAnalysisStreamWork {
                                         LOGGER.info("Component sending to hex meta analyzer"), Named.as("hex_meta_analyzer"))
                                 .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
                                         Named.as("re-keyed_string_identifier_to_component_uuid_for_hex")).
-                                to("hex-meta-analyzer", Produced
+                                to("component-meta-analysis-hex", Produced
                                         .with(Serdes.UUID(), componentSerde)
                                         .withName("produce_component_on_hex_meta_analyzer"))
                         ).withName("-hex-analyzer"))
@@ -82,7 +82,7 @@ public class RepoMetaAnalysisStreamWork {
                                         LOGGER.info("Component sending to pypi meta analyzer"), Named.as("pypi_meta_analyzer"))
                                 .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
                                         Named.as("re-keyed_string_identifier_to_component_uuid_for_pypi")).
-                                to("pypi-meta-analyzer", Produced
+                                to("component-meta-analysis-pypi", Produced
                                         .with(Serdes.UUID(), componentSerde)
                                         .withName("produce_component_on_pypi_meta_analyzer"))
                         ).withName("-pypi-analyzer"))
@@ -91,7 +91,7 @@ public class RepoMetaAnalysisStreamWork {
                                         LOGGER.info("Component sending to golang meta analyzer"), Named.as("golang_meta_analyzer"))
                                 .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
                                         Named.as("re-keyed_string_identifier_to_component_uuid_for_golang")).
-                                to("golang-meta-analyzer", Produced
+                                to("component-meta-analysis-golang", Produced
                                         .with(Serdes.UUID(), componentSerde)
                                         .withName("produce_component_on_golang_meta_analyzer"))
                         ).withName("-golang-analyzer"))
@@ -100,7 +100,7 @@ public class RepoMetaAnalysisStreamWork {
                                         LOGGER.info("Component sending to nuget meta analyzer"), Named.as("nuget_meta_analyzer"))
                                 .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
                                         Named.as("re-keyed_string_identifier_to_component_uuid_for_nuget")).
-                                to("nuget-meta-analyzer", Produced
+                                to("component-meta-analysis-nuget", Produced
                                         .with(Serdes.UUID(), componentSerde)
                                         .withName("produce_component_on_nuget_meta_analyzer"))
                         ).withName("-nuget-analyzer"))
@@ -109,7 +109,7 @@ public class RepoMetaAnalysisStreamWork {
                                         LOGGER.info("Component sending to composer meta analyzer"), Named.as("composer_meta_analyzer"))
                                 .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
                                         Named.as("re-keyed_string_identifier_to_component_uuid_for_composer")).
-                                to("composer-meta-analyzer", Produced
+                                to("component-meta-analysis-composer", Produced
                                         .with(Serdes.UUID(), componentSerde)
                                         .withName("produce_component_on_composer_meta_analyzer"))
                         ).withName("-composer-analyzer"))
@@ -118,41 +118,41 @@ public class RepoMetaAnalysisStreamWork {
                                         LOGGER.info("Component sending to gem meta analyzer"), Named.as("gem_meta_analyzer"))
                                 .map((identifier, component) -> KeyValue.pair(component.getUuid(), component),
                                         Named.as("re-keyed_string_identifier_to_component_uuid_for_gem")).
-                                to("gem-meta-analyzer", Produced
+                                to("component-meta-analysis-gem", Produced
                                         .with(Serdes.UUID(), componentSerde)
                                         .withName("produce_component_on_gem_meta_analyzer"))
                         ).withName("-gem-analyzer"));
 
         final KStream<UUID, Component> mavenMetaAnalyzerStream = streamsBuilder
-                .stream("maven-meta-analyzer", Consumed
+                .stream("component-meta-analysis-maven", Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName("creating_maven_meta_analyzer_stream"));
         final KStream<UUID, Component> pypiMetaAnalyzerStream = streamsBuilder
-                .stream("pypi-meta-analyzer", Consumed
+                .stream("component-meta-analysis-pypi", Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName("creating_pypi_meta_analyzer_stream"));
         final KStream<UUID, Component> goMetaAnalysisStream = streamsBuilder
-                .stream("golang-meta-analyzer", Consumed
+                .stream("component-meta-analysis-golang", Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName("creating_go_meta_analyzer_stream"));
         final KStream<UUID, Component> nugetMetaAnalysisStream = streamsBuilder
-                .stream("nuget-meta-analyzer", Consumed
+                .stream("component-meta-analysis-nuget", Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName("creating_nuget_meta_analyzer_stream"));
         final KStream<UUID, Component> hexMetaAnalysisStream = streamsBuilder
-                .stream("hex-meta-analyzer", Consumed
+                .stream("component-meta-analysis-hex", Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName("creating_hex_meta_analyzer_stream"));
         final KStream<UUID, Component> gemMetaAnalysisStream = streamsBuilder
-                .stream("gem-meta-analyzer", Consumed
+                .stream("component-meta-analysis-gem", Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName("creating_gem_meta_analyzer_stream"));
         final KStream<UUID, Component> npmMetaAnalysisStream = streamsBuilder
-                .stream("npm-meta-analyzer", Consumed
+                .stream("component-meta-analysis-npm", Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName("creating_npm_meta_analyzer_stream"));
         final KStream<UUID, Component> composerMetaAnalysisStream = streamsBuilder
-                .stream("composer-meta-analyzer", Consumed
+                .stream("component-meta-analysis-composer", Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName("creating_composer_meta_analyzer_stream"));
 
