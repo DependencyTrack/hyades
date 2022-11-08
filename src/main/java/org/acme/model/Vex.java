@@ -21,7 +21,7 @@ package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -33,7 +33,8 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.5.0
  */
-@PersistenceCapable
+@Entity
+@Table(name = "COMPONENT", uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "VEX_UUID_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Vex implements Serializable {
 
@@ -59,40 +60,38 @@ public class Vex implements Serializable {
         }
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "IMPORTED", allowsNull = "false")
+
+    @Column(name = "IMPORTED", nullable = false)
     @NotNull
     private Date imported;
 
-    @Persistent
+
     @Column(name = "VEX_FORMAT")
     private String vexFormat;
 
-    @Persistent
+
     @Column(name = "SPEC_VERSION")
     private String specVersion;
 
-    @Persistent
+
     @Column(name = "VEX_VERSION")
     private Integer vexVersion;
 
-    @Persistent
+
     @Column(name = "SERIAL_NUMBER")
     private String serialNumber;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "PROJECT_ID", allowsNull = "false")
+
+    @Column(name = "PROJECT_ID", nullable = false)
     @NotNull
     private Project project;
 
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "VEX_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false, unique = true)
     @NotNull
     private UUID uuid;
 
