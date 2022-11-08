@@ -21,7 +21,7 @@ package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -33,8 +33,10 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.0.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"UPLOAD_TOKEN"}, name = "BOM_UPLOAD_TOKEN_IDX"),
+                            @UniqueConstraint(columnNames = {"UUID"}, name = "BOM_UUID_IDX")})
 public class Bom implements Serializable {
 
     private static final long serialVersionUID = -4378439983100141050L;
@@ -60,46 +62,36 @@ public class Bom implements Serializable {
         }
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "IMPORTED", allowsNull = "false")
+    @Column(name = "IMPORTED", nullable = false)
     @NotNull
     private Date imported;
 
-    @Persistent
     @Column(name = "BOM_FORMAT")
     private String bomFormat;
 
-    @Persistent
     @Column(name = "SPEC_VERSION")
     private String specVersion;
 
-    @Persistent
     @Column(name = "BOM_VERSION")
     private Integer bomVersion;
 
-    @Persistent
     @Column(name = "SERIAL_NUMBER")
     private String serialNumber;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "PROJECT_ID", allowsNull = "false")
+    @Column(name = "PROJECT_ID", nullable = false)
     @NotNull
     private Project project;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Unique(name = "BOM_UPLOAD_TOKEN_IDX")
-    @Column(name = "UPLOAD_TOKEN", allowsNull = "false")
+    @Column(name = "UPLOAD_TOKEN", nullable = false)
     @NotNull
     private UUID uploadToken;
 
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "BOM_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false)
     @NotNull
     private UUID uuid;
 

@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -33,42 +33,37 @@ import java.util.List;
  * @author Steve Springett
  * @since 4.0.0
  */
-@PersistenceCapable
-@Unique(name="VIOLATIONANALYSIS_COMPOSITE_IDX", members={"project", "component", "policyViolation"})
+@Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"PROJECT_ID", "COMPONENT_ID", "POLICYVIOLATION_ID"}, name = "VIOLATIONANALYSIS_COMPOSITE_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ViolationAnalysis implements Serializable {
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent(defaultFetchGroup = "true")
     @Column(name = "PROJECT_ID")
     @JsonIgnore
     private Project project;
 
-    @Persistent(defaultFetchGroup = "true")
     @Column(name = "COMPONENT_ID")
     @JsonIgnore
     private Component component;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "POLICYVIOLATION_ID", allowsNull = "false")
+    @Column(name = "POLICYVIOLATION_ID", nullable = false)
     @NotNull
     @JsonIgnore
     private PolicyViolation policyViolation;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "STATE", jdbcType = "VARCHAR", allowsNull = "false")
+
+    @Column(name = "STATE", columnDefinition = "VARCHAR", nullable = false)
     @NotNull
     private ViolationAnalysisState analysisState;
 
-    @Persistent(mappedBy = "violationAnalysis", defaultFetchGroup = "true")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "timestamp ASC"))
+    @OrderBy("timestamp ASC")
     private List<ViolationAnalysisComment> analysisComments;
 
-    @Persistent
     @Column(name = "SUPPRESSED")
     @JsonProperty(value = "isSuppressed")
     private boolean suppressed;

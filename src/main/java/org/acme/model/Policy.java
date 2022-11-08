@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -39,7 +39,7 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Policy implements Serializable {
@@ -55,16 +55,15 @@ public class Policy implements Serializable {
         FAIL
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
     /**
      * The String representation of the policy name.
      */
-    @Persistent
-    @Column(name = "NAME", allowsNull = "false")
+    @Column(name = "NAME", nullable = false)
     @Index(name = "POLICY_NAME_IDX")
     @NotBlank
     @Size(min = 1, max = 255)
@@ -74,8 +73,7 @@ public class Policy implements Serializable {
     /**
      * The operator to use when evaluating conditions.
      */
-    @Persistent
-    @Column(name = "OPERATOR", allowsNull = "false")
+    @Column(name = "OPERATOR", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The operator may only contain printable characters")
@@ -84,8 +82,7 @@ public class Policy implements Serializable {
     /**
      * The state the policy should trigger upon violation.
      */
-    @Persistent
-    @Column(name = "VIOLATIONSTATE", allowsNull = "false")
+    @Column(name = "VIOLATIONSTATE", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The operator may only contain printable characters")

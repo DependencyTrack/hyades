@@ -18,12 +18,12 @@
  */
 package org.acme.model;
 
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.acme.common.TrimmedStringDeserializer;
 
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -35,33 +35,29 @@ import java.util.Date;
  * @author Steve Springett
  * @since 4.0.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ViolationAnalysisComment implements Serializable {
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent(defaultFetchGroup = "true", dependent = "true")
-    @Column(name = "VIOLATIONANALYSIS_ID", allowsNull = "false")
+    @Column(name = "VIOLATIONANALYSIS_ID", nullable = false)
     @NotNull
     @JsonIgnore
     private ViolationAnalysis violationAnalysis;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "TIMESTAMP", allowsNull = "false")
+    @Column(name = "TIMESTAMP", nullable = false)
     @NotNull
     private Date timestamp;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "COMMENT", jdbcType = "CLOB", allowsNull = "false")
+    @Column(name = "COMMENT", columnDefinition = "CLOB", nullable = false)
     @NotNull
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String comment;
 
-    @Persistent(defaultFetchGroup = "true")
     @Column(name = "COMMENTER")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String commenter;

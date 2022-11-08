@@ -34,7 +34,7 @@ import java.util.UUID;
  * @since 4.5.0
  */
 @Entity
-@Table(name = "COMPONENT", uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "VEX_UUID_IDX")})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "VEX_UUID_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Vex implements Serializable {
 

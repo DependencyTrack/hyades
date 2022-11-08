@@ -21,8 +21,7 @@ package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -34,57 +33,49 @@ import java.util.List;
  * @author Steve Springett
  * @since 3.0.0
  */
-@PersistenceCapable
-@Unique(name="ANALYSIS_COMPOSITE_IDX", members={"project", "component", "vulnerability"})
+@Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"PROJECT_ID", "COMPONENT_ID", "VULNERABILITY_ID"}, name = "ANALYSIS_COMPOSITE_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Analysis implements Serializable {
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent(defaultFetchGroup = "true")
     @Column(name = "PROJECT_ID")
     @JsonIgnore
     private Project project;
 
-    @Persistent(defaultFetchGroup = "true")
     @Column(name = "COMPONENT_ID")
     @JsonIgnore
     private Component component;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "VULNERABILITY_ID", allowsNull = "false")
+    @Column(name = "VULNERABILITY_ID", nullable = false)
     @NotNull
     @JsonIgnore
     private Vulnerability vulnerability;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "STATE", jdbcType = "VARCHAR", allowsNull = "false")
+    @Column(name = "STATE", columnDefinition = "VARCHAR", nullable = false)
     @NotNull
     private AnalysisState analysisState;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "JUSTIFICATION", jdbcType = "VARCHAR", allowsNull = "true")
+    @Column(name = "JUSTIFICATION", columnDefinition = "VARCHAR", nullable = true)
     @NotNull
     private AnalysisJustification analysisJustification;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "RESPONSE", jdbcType = "VARCHAR", allowsNull = "true")
+    @Column(name = "RESPONSE", columnDefinition = "VARCHAR", nullable = true)
     @NotNull
     private AnalysisResponse analysisResponse;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "DETAILS", jdbcType = "CLOB", allowsNull = "true")
+    @Column(name = "DETAILS", columnDefinition = "CLOB", nullable = true)
     @NotNull
     private String analysisDetails;
 
-    @Persistent(mappedBy = "analysis", defaultFetchGroup = "true")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "timestamp ASC"))
+
+    @OrderBy("timestamp ASC")
     private List<AnalysisComment> analysisComments;
 
-    @Persistent
     @Column(name = "SUPPRESSED")
     @JsonProperty(value = "isSuppressed")
     private boolean suppressed;
