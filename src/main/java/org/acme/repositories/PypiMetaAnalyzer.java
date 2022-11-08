@@ -70,6 +70,7 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
     public MetaModel analyze(final Component component) {
         final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
+        MetaModel successMeta = new MetaModel(component);
         if (component.getPurl() != null) {
             final String url = String.format(baseUrl, API_URL, component.getPurl().getName());
             try {
@@ -81,34 +82,44 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
                 final HttpResponse<JsonNode> response = request.asJson();
 
                 if (response.getStatus() == 200) {
-                    if (response.getBody() != null && response.getBody().getObject() != null) {
-                        final JSONObject info = response.getBody().getObject().getJSONObject("info");
-                        final String latest = info.optString("version", null);
-                        if (latest != null) {
-                            meta.setLatestVersion(latest);
-                            final JSONObject releases = response.getBody().getObject().getJSONObject("releases");
-                            final JSONArray latestArray = releases.getJSONArray(latest);
-                            if (latestArray.length() > 0) {
-                                final JSONObject release = latestArray.getJSONObject(0);
-                                final String updateTime = release.optString("upload_time", null);
-                                if (updateTime != null) {
-                                    final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                                    try {
-                                        final Date published = dateFormat.parse(updateTime);
-                                        meta.setPublishedTimestamp(published);
-                                    } catch (ParseException e) {
-                                        LOGGER.warn("An error occurred while parsing upload time", e);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    successMeta = processSuccessResponse(response, meta);
                 } else {
                     handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
                 }
             } catch (UnirestException e) {
                 handleRequestException(LOGGER, e);
             }
+        }
+        return meta;
+    }
+
+    private MetaModel processSuccessResponse(HttpResponse<JsonNode> response, MetaModel meta) {
+        MetaModel updatedMeta = new MetaModel(meta.getComponent());
+        if (response.getBody() != null && response.getBody().getObject() != null) {
+            final JSONObject info = response.getBody().getObject().getJSONObject("info");
+            final String latest = info.optString("version", null);
+            if (latest != null) {
+                meta.setLatestVersion(latest);
+                final JSONObject releases = response.getBody().getObject().getJSONObject("releases");
+                final JSONArray latestArray = releases.getJSONArray(latest);
+                if (latestArray.length() > 0) {
+                    final JSONObject release = latestArray.getJSONObject(0);
+                    final String updateTime = release.optString("upload_time", null);
+                    if (updateTime != null) {
+                        updatedMeta = setTimeStamp(meta, updateTime);
+                    }
+                }
+            }
+        }
+        return updatedMeta;
+    }
+    private MetaModel setTimeStamp(MetaModel meta, String updateTime){
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            final Date published = dateFormat.parse(updateTime);
+            meta.setPublishedTimestamp(published);
+        } catch (ParseException e) {
+            LOGGER.warn("An error occurred while parsing upload time", e);
         }
         return meta;
     }

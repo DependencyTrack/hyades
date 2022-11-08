@@ -95,10 +95,8 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
      */
     public MetaModel analyze(final Component component) {
         final MetaModel meta = new MetaModel(component);
-        if (component.getPurl() != null) {
-            if (performVersionCheck(meta, component)) {
+        if (component.getPurl() != null && performVersionCheck(meta, component)) {
                 performLastPublishedCheck(meta, component);
-            }
         }
         return meta;
     }
