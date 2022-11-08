@@ -19,9 +19,6 @@
 package org.acme.notification.publisher;
 import alpine.Config;
 import alpine.common.logging.Logger;
-import alpine.model.*;
-import alpine.security.crypto.DataEncryption;
-import alpine.server.mail.SendMail;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.acme.common.ApplicationProperty;
@@ -33,35 +30,35 @@ import javax.json.JsonObject;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
+//TODO - needs to be implemented
 
 public class SendMailPublisher implements Publisher {
 
     private static final Logger LOGGER = Logger.getLogger(SendMailPublisher.class);
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
     @Inject
-    static ApplicationProperty applicationProperty;
+    //static ApplicationProperty applicationProperty;
 
     public void inform(final Notification notification, final JsonObject config) {
         if (config == null) {
             LOGGER.warn("No configuration found. Skipping notification.");
             return;
         }
-        final String[] destinations = parseDestination(config);
-        sendNotification(notification, config, destinations);
+        /*final String[] destinations = parseDestination(config);
+        sendNotification(notification, config, destinations);*/
     }
 
-    public void inform(final Notification notification, final JsonObject config, List<Team> teams) {
+    /*public void inform(final Notification notification, final JsonObject config, List<Team> teams) {
         if (config == null) {
             LOGGER.warn("No configuration found. Skipping notification.");
             return;
         }
         final String[] destinations = parseDestination(config, teams);
         sendNotification(notification, config, destinations);
-    }
+    }*/
 
     private void sendNotification(Notification notification, JsonObject config, String[] destinations) {
-        PebbleTemplate template = getTemplate(config);
+        /*PebbleTemplate template = getTemplate(config);
         String mimeType = getTemplateMimeType(config);
         final String content = prepareTemplate(notification, template);
         if (destinations == null || content == null) {
@@ -100,7 +97,7 @@ public class SendMailPublisher implements Publisher {
             sendMail.send();
         } catch (Exception e) {
             LOGGER.error("An error occurred sending output email notification", e);
-        }
+        }*/
   }
 
     @Override
@@ -116,7 +113,7 @@ public class SendMailPublisher implements Publisher {
         return destinationString.split(",");
     }
 
-    static String[] parseDestination(final JsonObject config, final List<Team> teams) {
+    /*static String[] parseDestination(final JsonObject config, final List<Team> teams) {
         String[] destination = teams.stream().flatMap(
                 team -> Stream.of(
                                 Arrays.stream(config.getString("destination").split(",")).filter(Predicate.not(String::isEmpty)),
@@ -130,6 +127,6 @@ public class SendMailPublisher implements Publisher {
                 .distinct()
                 .toArray(String[]::new);
         return destination.length == 0 ? null : destination;
-    }
+    }*/
 
 }

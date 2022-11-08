@@ -21,7 +21,6 @@ package org.acme.notification.publisher;
 import alpine.Config;
 import alpine.common.logging.Logger;
 import alpine.common.util.UrlUtil;
-import alpine.model.ConfigProperty;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.acme.common.ApplicationProperty;
@@ -32,8 +31,6 @@ import org.acme.model.Notification;
 import org.acme.notification.NotificationScope;
 import org.acme.notification.vo.*;
 import org.acme.util.NotificationUtil;
-
-import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.io.IOException;
 import java.io.StringWriter;

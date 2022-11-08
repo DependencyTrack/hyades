@@ -19,8 +19,6 @@
 package org.acme;
 
 import alpine.common.logging.Logger;
-import org.acme.exception.RequirementsException;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -45,13 +43,13 @@ public class RequirementsVerifier implements ServletContextListener {
             // Therefore, safely assume anything above 3.5GB available max memory is likely to be 4GB or higher.
             final String message = "Dependency-Track requires a minimum of 4GB RAM (heap). Cannot continue. To fix, specify -Xmx4G (or higher) when executing Java.";
             LOGGER.error(message);
-            throw new RequirementsException(message);
+            throw new org.dependencytrack.exception.RequirementsException(message);
         }
         if (Runtime.getRuntime().availableProcessors() < 2) {
             setFailedValidation(true);
             final String message = "Dependency-Track requires a minimum of 2 CPU cores. Cannot continue.";
             LOGGER.error(message);
-            throw new RequirementsException(message);
+            throw new org.dependencytrack.exception.RequirementsException(message);
         }
     }
 

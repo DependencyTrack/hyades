@@ -19,7 +19,6 @@
 package org.acme.persistence;
 
 import alpine.common.logging.Logger;
-import alpine.model.Permission;
 import org.acme.RequirementsVerifier;
 import org.acme.model.*;
 import org.acme.notification.publisher.DefaultNotificationPublishers;

@@ -4,13 +4,13 @@ import alpine.Config;
 import alpine.common.logging.Logger;
 import alpine.common.metrics.Metrics;
 import io.micrometer.core.instrument.binder.kafka.KafkaStreamsMetrics;
+import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import io.quarkus.runtime.StartupEvent;
 import org.acme.RequirementsVerifier;
 import org.acme.common.ApplicationProperty;
 import org.acme.common.ConfigKey;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Notification;
-import org.acme.serde.JacksonSerde;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -23,11 +23,6 @@ import org.apache.kafka.streams.kstream.KStream;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
@@ -69,9 +64,9 @@ public class NotificationConsumer  {
         topics.add(KafkaTopic.VEX_CONSUMED_NOTIFICATION.getName());
         topics.add(KafkaTopic.VEX_PROCESSED_NOTIFICATION.getName());
         final var streamsBuilder = new StreamsBuilder();
-
+        final var notificationSerde = new ObjectMapperSerde<>(Notification.class);
         KStream<String, Notification> kStreams = streamsBuilder.stream(topics,
-                        Consumed.with(Serdes.String(), new JacksonSerde<>(Notification.class)));
+                        Consumed.with(Serdes.String(), notificationSerde));
         kStreams.foreach(new ForeachAction<String, Notification>() {
             @Override
             public void apply(String s, Notification eventData) {
