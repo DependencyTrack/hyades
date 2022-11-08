@@ -22,8 +22,7 @@ import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.jdo.annotations.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -37,9 +36,13 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Table(indexes = {
+        @Index(name = "POLICYVIOLATION_PROJECT_IDX", columnList = "project"),
+        @Index(name = "POLICYVIOLATION_COMPONENT_IDX", columnList = "component")
+})
 public class PolicyViolation implements Serializable {
 
     public enum Type {
@@ -48,48 +51,36 @@ public class PolicyViolation implements Serializable {
         OPERATIONAL
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "TYPE", allowsNull = "false")
+    @Column(name = "TYPE", nullable = false)
     private Type type;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "PROJECT_ID", allowsNull = "false")
-    @Index(name = "POLICYVIOLATION_PROJECT_IDX")
+    @Column(name = "PROJECT_ID", nullable = false)
     private Project project;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "COMPONENT_ID", allowsNull = "false")
-    @Index(name = "POLICYVIOLATION_COMPONENT_IDX")
+    @Column(name = "COMPONENT_ID", nullable = false)
     private Component component;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "POLICYCONDITION_ID", allowsNull = "false")
+    @Column(name = "POLICYCONDITION_ID", nullable = false)
     private PolicyCondition policyCondition;
 
-    @Persistent
-    @Column(name = "TIMESTAMP", allowsNull = "false")
+    @Column(name = "TIMESTAMP", nullable = false)
     private Date timestamp;
 
-    @Persistent
     @Column(name = "TEXT")
     @Size(min = 1, max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The text may only contain printable characters")
     private String text;
 
-    @Persistent(mappedBy="policyViolation", defaultFetchGroup = "true")
     private  ViolationAnalysis analysis;
 
     /**
      * The unique identifier of the object.
      */
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "POLICYVIOLATION_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", unique = true, length = 36, nullable = false)
     @NotNull
     private UUID uuid;
 

@@ -42,6 +42,8 @@ import java.util.UUID;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Table(indexes = {
+        @Index(name = "POLICY_NAME_IDX", columnList = "name")})
 public class Policy implements Serializable {
 
     public enum Operator {
@@ -64,7 +66,6 @@ public class Policy implements Serializable {
      * The String representation of the policy name.
      */
     @Column(name = "NAME", nullable = false)
-    @Index(name = "POLICY_NAME_IDX")
     @NotBlank
     @Size(min = 1, max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
@@ -91,34 +92,31 @@ public class Policy implements Serializable {
     /**
      * A list of zero-to-n policy conditions.
      */
-    @Persistent(mappedBy = "policy", defaultFetchGroup = "true")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "id ASC"))
+    @OrderBy("id ASC")
     private List<PolicyCondition> policyConditions;
 
     /**
      * A list of zero-to-n projects
      */
-    @Persistent(table = "POLICY_PROJECTS", defaultFetchGroup = "true")
-    @Join(column = "POLICY_ID")
-    @Element(column = "PROJECT_ID")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC, version ASC"))
-    private List<Project> projects;
+//    @Persistent(table = "POLICY_PROJECTS", defaultFetchGroup = "true")
+//    @Join(column = "POLICY_ID")
+//    @Element(column = "PROJECT_ID")
+//    @OrderBy("name ASC, version ASC")
+//    private List<Project> projects;
 
     /**
      * A list of zero-to-n tags
      */
-    @Persistent(table = "POLICY_TAGS", defaultFetchGroup = "true")
-    @Join(column = "POLICY_ID")
-    @Element(column = "TAG_ID")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
-    private List<Tag> tags;
+//    @Persistent(table = "POLICY_TAGS", defaultFetchGroup = "true")
+//    @Join(column = "POLICY_ID")
+//    @Element(column = "TAG_ID")
+//    @OrderBy("name ASC")
+//    private List<Tag> tags;
 
     /**
      * The unique identifier of the object.
      */
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "POLICY_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", unique = true, length = 36, nullable = false)
     @NotNull
     private UUID uuid;
 
@@ -169,25 +167,17 @@ public class Policy implements Serializable {
         this.policyConditions.add(policyCondition);
     }
 
-    public List<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(List<Project> projects) {
-        this.projects = projects;
-    }
-
-    public boolean isGlobal() {
-        return (projects == null || projects.size() == 0) && (tags == null || tags.size() == 0);
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
+//    public List<Project> getProjects() {
+//        return projects;
+//    }
+//
+//    public void setProjects(List<Project> projects) {
+//        this.projects = projects;
+//    }
+//
+//    public boolean isGlobal() {
+//        return (projects == null || projects.size() == 0) && (tags == null || tags.size() == 0);
+//    }
 
     public UUID getUuid() {
         return uuid;

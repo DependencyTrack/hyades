@@ -22,8 +22,9 @@ import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.jdo.annotations.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -37,7 +38,7 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PolicyCondition implements Serializable {
@@ -74,31 +75,26 @@ public class PolicyCondition implements Serializable {
         CWE
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "POLICY_ID", allowsNull = "false")
+    @Column(name = "POLICY_ID", nullable = false)
     private Policy policy;
 
-    @Persistent
-    @Column(name = "OPERATOR", allowsNull = "false")
+    @Column(name = "OPERATOR", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The operator may only contain printable characters")
     private Operator operator;
 
-    @Persistent
-    @Column(name = "SUBJECT", allowsNull = "false")
+    @Column(name = "SUBJECT", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The subject may only contain printable characters")
     private Subject subject;
 
-    @Persistent
-    @Column(name = "VALUE", allowsNull = "false")
+    @Column(name = "VALUE", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The value may only contain printable characters")
@@ -107,9 +103,7 @@ public class PolicyCondition implements Serializable {
     /**
      * The unique identifier of the object.
      */
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "POLICYCONDITION_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    @Column(name = "UUID", unique = true, length = 36, nullable = false)
     @NotNull
     private UUID uuid;
 

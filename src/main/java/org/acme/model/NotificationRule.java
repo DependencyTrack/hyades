@@ -19,9 +19,6 @@
 package org.acme.model;
 
 import alpine.common.validation.RegexSequence;
-import alpine.model.Team;
-import alpine.notification.NotificationLevel;
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -30,7 +27,6 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
-import org.apache.commons.collections4.CollectionUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -91,13 +87,13 @@ public class NotificationRule extends PanacheEntity {
 //    @Join(column = "NOTIFICATIONRULE_ID")
 //    @Element(column = "TEAM_ID")
 //    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "Team",
-            joinColumns = @JoinColumn(name = "TEAM_ID")
-    )
-    @OrderBy("name ASC")
-    private List<Team> teams;
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinTable(
+//            name = "Team",
+//            joinColumns = @JoinColumn(name = "TEAM_ID")
+//    )
+//    @OrderBy("name ASC")
+//    private List<Team> teams;
 
     @Column(name = "NOTIFY_ON", length = 1024)
     private String notifyOn;
@@ -177,13 +173,13 @@ public class NotificationRule extends PanacheEntity {
         this.projects = projects;
     }
 
-    public List<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
-    }
+//    public List<Team> getTeams() {
+//        return teams;
+//    }
+//
+//    public void setTeams(List<Team> teams) {
+//        this.teams = teams;
+//    }
 
     public String getMessage() {
         return message;
@@ -205,7 +201,7 @@ public class NotificationRule extends PanacheEntity {
     }
 
     public void setNotifyOn(Set<NotificationGroup> groups) {
-        if (CollectionUtils.isEmpty(groups)) {
+        if (groups.isEmpty()) {
             this.notifyOn = null;
             return;
         }

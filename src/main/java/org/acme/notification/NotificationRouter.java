@@ -19,8 +19,8 @@
 package org.acme.notification;
 
 import alpine.common.logging.Logger;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
+import org.acme.exception.PublisherException;
+import org.acme.model.Notification;
 import org.acme.model.NotificationPublisher;
 import org.acme.model.NotificationRule;
 import org.acme.model.Project;
@@ -29,7 +29,9 @@ import org.acme.notification.publisher.SendMailPublisher;
 import org.acme.notification.vo.*;
 import org.acme.persistence.QueryManager;
 
-import javax.management.Notification;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.Json;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class NotificationRouter implements Subscriber {
+public class NotificationRouter {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
 
@@ -65,11 +67,12 @@ public class NotificationRouter implements Subscriber {
                                                                  .add(Publisher.CONFIG_TEMPLATE_KEY, notificationPublisher.getTemplate())
                                                                  .addAll(Json.createObjectBuilder(config))
                                                                          .build();
-                    if (publisherClass != SendMailPublisher.class || rule.getTeams().isEmpty() || rule.getTeams() == null){
-                        publisher.inform(restrictNotificationToRuleProjects(notification, rule), notificationPublisherConfig);
-                    } else {
-                        ((SendMailPublisher)publisher).inform(restrictNotificationToRuleProjects(notification, rule), notificationPublisherConfig, rule.getTeams());
-                    }
+                    // TODO
+//                    if (publisherClass != SendMailPublisher.class || rule.getTeams().isEmpty() || rule.getTeams() == null){
+//                        publisher.inform(restrictNotificationToRuleProjects(notification, rule), notificationPublisherConfig);
+//                    } else {
+//                        ((SendMailPublisher)publisher).inform(restrictNotificationToRuleProjects(notification, rule), notificationPublisherConfig, rule.getTeams());
+//                    }
 
 
                 } else {

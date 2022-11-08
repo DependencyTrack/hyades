@@ -18,14 +18,12 @@
  */
 package org.acme.util;
 
-import alpine.model.ConfigProperty;
 import org.acme.persistence.QueryManager;
 import org.apache.commons.io.FileUtils;
 import org.acme.model.*;
 import org.acme.notification.publisher.DefaultNotificationPublishers;
 import org.acme.notification.vo.*;
 import org.acme.parser.common.resolver.CweResolver;
-import javax.json.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
