@@ -59,13 +59,14 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
     @Override
     public MetaModel analyze(final Component component) {
         final var meta = new MetaModel(component);
+        var successMeta = new MetaModel(component);
 
         if (component.getPurl() == null || component.getPurl().getNamespace() == null) {
             return meta;
         }
 
         final UnirestInstance ui = UnirestFactory.getUnirestInstance();
-        final String url = String.format(baseUrl + API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
+        final String url = String.format(baseUrl, API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
 
         try {
             final HttpRequest<GetRequest> request = ui.get(url)
@@ -76,32 +77,41 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
             final HttpResponse<JsonNode> response = request.asJson();
 
             if (response.getStatus() == 200) {
-                if (response.getBody() != null && response.getBody().getObject() != null) {
-                    final JSONObject responseJson = response.getBody().getObject();
-                    meta.setLatestVersion(responseJson.getString("Version"));
-
-                    // Module versions are prefixed with "v" in the Go ecosystem.
-                    // Because some services (like OSS Index as of July 2021) do not support
-                    // versions with this prefix, components in DT may not be prefixed either.
-                    //
-                    // In order to make the versions comparable still, we strip the "v" prefix as well,
-                    // if it was done for the analyzed component.
-                    if (component.getVersion() != null && !component.getVersion().startsWith("v")) {
-                        meta.setLatestVersion(StringUtils.stripStart(meta.getLatestVersion(), "v"));
-                    }
-
-                    final String commitTimestamp = responseJson.getString("Time");
-                    if (StringUtils.isNotBlank(commitTimestamp)) { // Time is optional
-                        meta.setPublishedTimestamp(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(commitTimestamp));
-                    }
-                }
+                successMeta = processResponse(meta, response, component);
             } else {
                 handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
             }
-        } catch (UnirestException | ParseException e) {
+        } catch (UnirestException e) {
             handleRequestException(LOGGER, e);
         }
 
+        return successMeta;
+    }
+
+    private MetaModel processResponse(MetaModel meta, HttpResponse<JsonNode> response, Component component) {
+        try {
+            if (response.getBody() != null && response.getBody().getObject() != null) {
+                final JSONObject responseJson = response.getBody().getObject();
+                meta.setLatestVersion(responseJson.getString("Version"));
+
+                // Module versions are prefixed with "v" in the Go ecosystem.
+                // Because some services (like OSS Index as of July 2021) do not support
+                // versions with this prefix, components in DT may not be prefixed either.
+                //
+                // In order to make the versions comparable still, we strip the "v" prefix as well,
+                // if it was done for the analyzed component.
+                if (component.getVersion() != null && !component.getVersion().startsWith("v")) {
+                    meta.setLatestVersion(StringUtils.stripStart(meta.getLatestVersion(), "v"));
+                }
+
+                final String commitTimestamp = responseJson.getString("Time");
+                if (StringUtils.isNotBlank(commitTimestamp)) { // Time is optional
+                    meta.setPublishedTimestamp(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(commitTimestamp));
+                }
+            }
+        } catch (ParseException e) {
+            handleRequestException(LOGGER, e);
+        }
         return meta;
     }
 
