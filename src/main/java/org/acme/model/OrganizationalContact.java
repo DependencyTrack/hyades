@@ -18,9 +18,9 @@
  */
 package org.acme.model;
 
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.acme.common.TrimmedStringDeserializer;
 
 import java.io.Serializable;
 

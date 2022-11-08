@@ -19,9 +19,9 @@
 package org.acme.persistence;
 
 import alpine.common.logging.Logger;
+import org.acme.common.AttributeConverter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.jdo.AttributeConverter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;

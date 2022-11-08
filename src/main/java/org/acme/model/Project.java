@@ -20,8 +20,6 @@ package org.acme.model;
  */
 
 import alpine.common.validation.RegexSequence;
-import alpine.model.Team;
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -31,21 +29,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
-import org.acme.model.CustomPackageURLSerializer;
+import org.acme.common.TrimmedStringDeserializer;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.Element;
-import javax.jdo.annotations.Extension;
-import javax.jdo.annotations.FetchGroup;
-import javax.jdo.annotations.FetchGroups;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.Index;
-import javax.jdo.annotations.Join;
-import javax.jdo.annotations.Order;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-import javax.jdo.annotations.Unique;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -66,28 +52,19 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.0.0
  */
-@PersistenceCapable
-@FetchGroups({
-        @FetchGroup(name = "ALL", members = {
-                @Persistent(name = "name"),
-                @Persistent(name = "author"),
-                @Persistent(name = "publisher"),
-                @Persistent(name = "group"),
-                @Persistent(name = "name"),
-                @Persistent(name = "description"),
-                @Persistent(name = "version"),
-                @Persistent(name = "classifier"),
-                @Persistent(name = "cpe"),
-                @Persistent(name = "purl"),
-                @Persistent(name = "swidTagId"),
-                @Persistent(name = "uuid"),
-                @Persistent(name = "parent"),
-                @Persistent(name = "children"),
-                @Persistent(name = "properties"),
-                @Persistent(name = "tags"),
-                @Persistent(name = "accessTeams")
-        })
-})
+@Entity
+@Table(name = "PROJECT",indexes = {
+        @Index(name = "PROJECT_GROUP_IDX",  columnList="group"),
+        @Index(name = "PROJECT_NAME_IDX", columnList="name"),
+        @Index(name = "PROJECT_VERSION_IDX", columnList="version"),
+        @Index(name = "PROJECT_CLASSIFIER_IDX", columnList="classifier"),
+        @Index(name = "PROJECT_CPE_IDX", columnList="cpe"),
+        @Index(name = "PROJECT_PURL_IDX", columnList="purl"),
+        @Index(name = "PROJECT_SWID_TAGID_IDX", columnList="swidTagId"),
+        @Index(name = "PROJECT_LAST_RISKSCORE_IDX", columnList="lastInheritedRiskScore"),
+        @Index(name = "PROJECT_LASTBOMIMPORT_FORMAT_IDX", columnList="lastBomImportFormat"),
+        @Index(name = "PROJECT_LASTBOMIMPORT_IDX", columnList="lastBomImport")},
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "PROJECT_UUID_IDX")})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Project implements Serializable {
 
@@ -100,148 +77,103 @@ public class Project implements Serializable {
         ALL
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "AUTHOR", jdbcType = "VARCHAR")
+    @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The author may only contain printable characters")
     private String author;
 
-    @Persistent
-    @Column(name = "PUBLISHER", jdbcType = "VARCHAR")
+
+    @Column(name = "PUBLISHER", columnDefinition = "VARCHAR")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The publisher may only contain printable characters")
     private String publisher;
 
-    @Persistent
-    @Column(name = "GROUP", jdbcType = "VARCHAR")
-    @Index(name = "PROJECT_GROUP_IDX")
+    @Column(name = "GROUP", columnDefinition = "VARCHAR")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The group may only contain printable characters")
     private String group;
 
-    @Persistent
-    @Index(name = "PROJECT_NAME_IDX")
-    @Column(name = "NAME", jdbcType = "VARCHAR", allowsNull = "false")
+    @Column(name = "NAME", columnDefinition = "VARCHAR", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
     private String name;
 
-    @Persistent
-    @Column(name = "DESCRIPTION", jdbcType = "VARCHAR")
+    @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The description may only contain printable characters")
     private String description;
 
-    @Persistent
-    @Index(name = "PROJECT_VERSION_IDX")
-    @Column(name = "VERSION", jdbcType = "VARCHAR")
+    @Column(name = "VERSION", columnDefinition = "VARCHAR")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The version may only contain printable characters")
     private String version;
 
-    @Persistent
-    @Column(name = "CLASSIFIER", jdbcType = "VARCHAR")
-    @Index(name = "PROJECT_CLASSIFIER_IDX")
-    @Extension(vendorName = "datanucleus", key = "enum-check-constraint", value = "true")
+    @Column(name = "CLASSIFIER", columnDefinition = "VARCHAR")
+    //@Extension(vendorName = "datanucleus", key = "enum-check-constraint", value = "true")
     private Classifier classifier;
 
-    @Persistent
-    @Index(name = "PROJECT_CPE_IDX")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     //Patterns obtained from https://csrc.nist.gov/schema/cpe/2.3/cpe-naming_2.3.xsd
     @Pattern(regexp = "(cpe:2\\.3:[aho\\*\\-](:(((\\?*|\\*?)([a-zA-Z0-9\\-\\._]|(\\\\[\\\\\\*\\?!\"#$$%&'\\(\\)\\+,/:;<=>@\\[\\]\\^`\\{\\|}~]))+(\\?*|\\*?))|[\\*\\-])){5}(:(([a-zA-Z]{2,3}(-([a-zA-Z]{2}|[0-9]{3}))?)|[\\*\\-]))(:(((\\?*|\\*?)([a-zA-Z0-9\\-\\._]|(\\\\[\\\\\\*\\?!\"#$$%&'\\(\\)\\+,/:;<=>@\\[\\]\\^`\\{\\|}~]))+(\\?*|\\*?))|[\\*\\-])){4})|([c][pP][eE]:/[AHOaho]?(:[A-Za-z0-9\\._\\-~%]*){0,6})", message = "The CPE must conform to the CPE v2.2 or v2.3 specification defined by NIST")
     private String cpe;
 
-    @Persistent
-    @Index(name = "PROJECT_PURL_IDX")
     @Size(max = 255)
     @com.github.packageurl.validator.PackageURL
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String purl;
 
-    @Persistent
-    @Index(name = "PROJECT_SWID_TAGID_IDX")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The SWID tagId may only contain printable characters")
     private String swidTagId;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "DIRECT_DEPENDENCIES", jdbcType = "CLOB")
+    @Column(name = "DIRECT_DEPENDENCIES", columnDefinition = "CLOB")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String directDependencies; // This will be a JSON string
 
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "PROJECT_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
+    //@Persistent(customValueStrategy = "uuid")
+    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false, unique = true)
     @NotNull
     private UUID uuid;
 
-    @Persistent
-    @Column(name = "PARENT_PROJECT_ID")
+
+    @ManyToOne
+    @JoinColumn(name = "PARENT_PROJECT_ID", referencedColumnName = "ID")
     private Project parent;
-
-    @Persistent(mappedBy = "parent")
-    private Collection<Project> children;
-
-    @Persistent(mappedBy = "project", defaultFetchGroup = "true")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "groupName ASC, propertyName ASC"))
-    private List<ProjectProperty> properties;
-
-    @Persistent(table = "PROJECTS_TAGS", defaultFetchGroup = "true", mappedBy = "projects")
-    @Join(column = "PROJECT_ID")
-    @Element(column = "TAG_ID")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
-    private List<Tag> tags;
 
     /**
      * Convenience field which will contain the date of the last entry in the {@link Bom} table
      */
-    @Persistent
-    @Index(name = "PROJECT_LASTBOMIMPORT_IDX")
     @Column(name = "LAST_BOM_IMPORTED")
     private Date lastBomImport;
 
     /**
      * Convenience field which will contain the format of the last entry in the {@link Bom} table
      */
-    @Persistent
-    @Index(name = "PROJECT_LASTBOMIMPORT_FORMAT_IDX")
     @Column(name = "LAST_BOM_IMPORTED_FORMAT")
     private String lastBomImportFormat;
 
     /**
      * Convenience field which stores the Inherited Risk Score (IRS) of the last metric in the {@link ProjectMetrics} table
      */
-    @Persistent
-    @Index(name = "PROJECT_LAST_RISKSCORE_IDX")
-    @Column(name = "LAST_RISKSCORE", allowsNull = "true") // New column, must allow nulls on existing databases))
+    @Column(name = "LAST_RISKSCORE", nullable = true) // New column, must allow nulls on existing databases))
     private Double lastInheritedRiskScore;
 
-    @Persistent
     @Column(name = "ACTIVE")
     @JsonSerialize(nullsUsing = BooleanDefaultTrueSerializer.class)
     private Boolean active; // Added in v3.6. Existing records need to be nullable on upgrade.
 
-    @Persistent(table = "PROJECT_ACCESS_TEAMS", defaultFetchGroup = "true")
-    @Join(column = "PROJECT_ID")
-    @Element(column = "TEAM_ID")
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
-    @JsonIgnore
-    private List<Team> accessTeams;
-
-    private transient ProjectMetrics metrics;
 
     public long getId() {
         return id;
@@ -368,30 +300,6 @@ public class Project implements Serializable {
         this.parent = parent;
     }
 
-    public Collection<Project> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Collection<Project> children) {
-        this.children = children;
-    }
-
-    public List<ProjectProperty> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<ProjectProperty> properties) {
-        this.properties = properties;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
     public Date getLastBomImport() {
         return lastBomImport;
     }
@@ -422,29 +330,6 @@ public class Project implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public ProjectMetrics getMetrics() {
-        return metrics;
-    }
-
-    public void setMetrics(ProjectMetrics metrics) {
-        this.metrics = metrics;
-    }
-
-    public List<Team> getAccessTeams() {
-        return accessTeams;
-    }
-
-    public void setAccessTeams(List<Team> accessTeams) {
-        this.accessTeams = accessTeams;
-    }
-
-    public void addAccessTeam(Team accessTeam) {
-        if (this.accessTeams == null) {
-            this.accessTeams = new ArrayList<>();
-        }
-        this.accessTeams.add(accessTeam);
     }
 
     @Override
