@@ -38,8 +38,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -138,6 +136,17 @@ public class Project implements Serializable {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The SWID tagId may only contain printable characters")
     private String swidTagId;
 
+    //    @Persistent(table = "PROJECTS_TAGS", defaultFetchGroup = "true", mappedBy = "projects")
+//    @Join(column = "PROJECT_ID")
+//    @Element(column = "TAG_ID")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "PROJECT",
+            joinColumns = @JoinColumn(name = "PROJECT_ID")
+    )
+    @OrderBy("name ASC")
+    private List<Tag> tags;
+
     @Column(name = "DIRECT_DEPENDENCIES", columnDefinition = "CLOB")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String directDependencies; // This will be a JSON string
@@ -165,7 +174,7 @@ public class Project implements Serializable {
     private String lastBomImportFormat;
 
     /**
-     * Convenience field which stores the Inherited Risk Score (IRS) of the last metric in the {@link ProjectMetrics} table
+     * Convenience field which stores the Inherited Risk Score (IRS) of the last metric in the ProjectMetrics table
      */
     @Column(name = "LAST_RISKSCORE", nullable = true) // New column, must allow nulls on existing databases))
     private Double lastInheritedRiskScore;
@@ -318,6 +327,14 @@ public class Project implements Serializable {
 
     public Double getLastInheritedRiskScore() {
         return lastInheritedRiskScore;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
     public void setLastInheritedRiskScore(Double lastInheritedRiskScore) {

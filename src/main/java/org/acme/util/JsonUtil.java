@@ -18,7 +18,7 @@
  */
 package org.acme.util;
 
-import io.quarkus.vertx.http.runtime.devmode.Json;
+import javax.json.JsonObjectBuilder;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
@@ -31,30 +31,30 @@ public final class JsonUtil {
      */
     private JsonUtil() { }
 
-    public static Json.JsonObjectBuilder add(final Json.JsonObjectBuilder builder, final String key, final String value) {
+    public static JsonObjectBuilder add(final JsonObjectBuilder builder, final String key, final String value) {
         if (value != null) {
-            builder.put(key, value);
+            builder.add(key, value);
         }
         return builder;
     }
 
-    public static Json.JsonObjectBuilder add(final Json.JsonObjectBuilder builder, final String key, final BigInteger value) {
+    public static JsonObjectBuilder add(final JsonObjectBuilder builder, final String key, final BigInteger value) {
         if (value != null) {
-            builder.put(key, String.valueOf(value));
+            builder.add(key, value);
         }
         return builder;
     }
 
-    public static Json.JsonObjectBuilder add(final Json.JsonObjectBuilder builder, final String key, final BigDecimal value) {
+    public static JsonObjectBuilder add(final JsonObjectBuilder builder, final String key, final BigDecimal value) {
         if (value != null) {
-            builder.put(key, String.valueOf(value));
+            builder.add(key, value);
         }
         return builder;
     }
 
-    public static Json.JsonObjectBuilder add(final Json.JsonObjectBuilder builder, final String key, final Enum value) {
+    public static JsonObjectBuilder add(final JsonObjectBuilder builder, final String key, final Enum value) {
         if (value != null) {
-            builder.put(key, value.name());
+            builder.add(key, value.name());
         }
         return builder;
     }

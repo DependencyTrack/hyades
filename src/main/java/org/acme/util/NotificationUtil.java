@@ -18,17 +18,17 @@
  */
 package org.acme.util;
 
-import org.acme.persistence.QueryManager;
-import org.apache.commons.io.FileUtils;
 import org.acme.model.*;
 import org.acme.notification.publisher.DefaultNotificationPublishers;
 import org.acme.notification.vo.*;
 import org.acme.parser.common.resolver.CweResolver;
+import org.acme.persistence.QueryManager;
+import org.apache.commons.io.FileUtils;
+
+import javax.json.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -267,16 +267,17 @@ public final class NotificationUtil {
     public static void loadDefaultNotificationPublishers(QueryManager qm) throws IOException {
         for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
             File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
-            if (qm.isEnabled(ConfigPropertyConstants.NOTIFICATION_TEMPLATE_DEFAULT_OVERRIDE_ENABLED)) {
-                ConfigProperty templateBaseDir = qm.getConfigProperty(
-                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getGroupName(),
-                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getPropertyName()
-                );
-                File userProvidedTemplateFile = new File(Path.of(templateBaseDir.getPropertyValue(), publisher.getPublisherTemplateFile()).toUri());
-                if (userProvidedTemplateFile.exists()) {
-                    templateFile = userProvidedTemplateFile;
-                }
-            }
+            // TODO QueryManager
+//            if (qm.isEnabled(ConfigPropertyConstants.NOTIFICATION_TEMPLATE_DEFAULT_OVERRIDE_ENABLED)) {
+//                ConfigProperty templateBaseDir = qm.getConfigProperty(
+//                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getGroupName(),
+//                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getPropertyName()
+//                );
+//                File userProvidedTemplateFile = new File(Path.of(templateBaseDir.getPropertyValue(), publisher.getPublisherTemplateFile()).toUri());
+//                if (userProvidedTemplateFile.exists()) {
+//                    templateFile = userProvidedTemplateFile;
+//                }
+//            }
             final String templateContent = FileUtils.readFileToString(templateFile, UTF_8);
             final NotificationPublisher existingPublisher = qm.getDefaultNotificationPublisher(publisher.getPublisherClass());
             if (existingPublisher == null) {

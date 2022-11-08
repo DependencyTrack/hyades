@@ -1,10 +1,10 @@
 package org.acme.model;
 
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import org.acme.common.TrimmedStringDeserializer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

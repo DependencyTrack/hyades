@@ -53,7 +53,11 @@ import java.util.UUID;
         @Index(name = "COMPONENT_PURL_IDX", columnList="purl"),
         @Index(name = "COMPONENT_PURL_COORDINATES_IDX", columnList="purlCoordinates"),
         @Index(name = "COMPONENT_SWID_TAGID_IDX", columnList="swidTagId"),
-        @Index(name = "COMPONENT_PROJECT_ID_IDX", columnList="PROJECT_ID")},
+        @Index(name = "COMPONENT_PROJECT_ID_IDX", columnList="PROJECT_ID"),
+        @Index(name = "COMPONENT_MD5_IDX", columnList = "md5"),
+        @Index(name = "COMPONENT_SHA1_IDX", columnList = "sha1"),
+        @Index(name = "COMPONENT_SHA256_IDX", columnList = "sha256"),
+        @Index(name = "COMPONENT_SHA512_IDX", columnList = "sha512")},
         uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "COMPONENT_UUID_IDX")})
 public class Component implements Serializable {
 
@@ -153,6 +157,22 @@ public class Component implements Serializable {
     @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false, unique = true)
     @NotNull
     private UUID uuid;
+
+    @Column(name = "MD5", length = 32)
+    @Pattern(regexp = "^[0-9a-fA-F]{32}$", message = "The MD5 hash must be a valid 32 character HEX number")
+    private String md5;
+
+    @Column(name = "SHA1", length = 40)
+    @Pattern(regexp = "^[0-9a-fA-F]{40}$", message = "The SHA1 hash must be a valid 40 character HEX number")
+    private String sha1;
+
+    @Column(name = "SHA_256", length = 64)
+    @Pattern(regexp = "^[0-9a-fA-F]{64}$", message = "The SHA-256 hash must be a valid 64 character HEX number")
+    private String sha256;
+
+    @Column(name = "SHA_512", length = 128)
+    @Pattern(regexp = "^[0-9a-fA-F]{128}$", message = "The SHA-512 hash must be a valid 128 character HEX number")
+    private String sha512;
 
     private transient String bomRef;
     private transient int usedBy;
@@ -289,6 +309,38 @@ public class Component implements Serializable {
 
     public void setInternal(boolean internal) {
         this.internal = internal;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
+
+    public String getSha1() {
+        return sha1;
+    }
+
+    public void setSha1(String sha1) {
+        this.sha1 = sha1;
+    }
+
+    public String getSha256() {
+        return sha256;
+    }
+
+    public void setSha256(String sha256) {
+        this.sha256 = sha256;
+    }
+
+    public String getSha512() {
+        return sha512;
+    }
+
+    public void setSha512(String sha512) {
+        this.sha512 = sha512;
     }
 
     public String getDescription() {
