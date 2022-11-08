@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
-import org.acme.model.CustomPackageURLSerializer;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Element;
