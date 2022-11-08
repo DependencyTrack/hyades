@@ -42,7 +42,7 @@ public class RepoMetaAnalysisStreamWork {
                     components.add(KeyValue.pair(component.getPurl().getCoordinates(), component));
 
                     return components;
-                }, Named.as("re-key_components_from_uuid_to_identifiers_for_meta"))
+                }, Named.as("re-key_components_from_uuid_to_purl_for_meta"))
                 .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier),
                         Named.as("log_re-keyed_components_for_meta"));
 
