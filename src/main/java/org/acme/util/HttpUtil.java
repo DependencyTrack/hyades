@@ -39,7 +39,7 @@ public final class HttpUtil {
         return "Basic " +
                 Base64.getEncoder().encodeToString(
                         String.format("%s:%s", Objects.toString(username, ""), Objects.toString(password, ""))
-                                .getBytes()
+                                .getBytes(Charset.defaultCharset())
                 );
     }
 }
