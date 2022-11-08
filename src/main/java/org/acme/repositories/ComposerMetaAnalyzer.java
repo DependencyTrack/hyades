@@ -27,6 +27,7 @@ import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,6 +38,8 @@ import java.text.SimpleDateFormat;
  * @author Szabolcs (Szasza) Palmer
  * @since 4.1.0
  */
+
+@ApplicationScoped
 public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = Logger.getLogger(ComposerMetaAnalyzer.class);
