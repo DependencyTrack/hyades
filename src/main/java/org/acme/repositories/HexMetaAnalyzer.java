@@ -70,6 +70,7 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
     public MetaModel analyze(final Component component) {
         final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
+        MetaModel successMeta = new MetaModel(component);
         if (component.getPurl() != null) {
 
             final String packageName;
@@ -79,7 +80,7 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
                 packageName = component.getPurl().getName();
             }
 
-            final String url = String.format(baseUrl + API_URL, packageName);
+            final String url = String.format(baseUrl, API_URL, packageName);
             try {
                 final HttpRequest<GetRequest> request = ui.get(url)
                         .header("accept", "application/json");
@@ -89,30 +90,35 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
                 final HttpResponse<JsonNode> response = request.asJson();
 
                 if (response.getStatus() == 200) {
-                    if (response.getBody() != null && response.getBody().getObject() != null) {
-                        final JSONArray releasesArray = response.getBody().getObject().getJSONArray("releases");
-                        if (releasesArray.length() > 0) {
-                            // The first one in the array is always the latest version
-                            final JSONObject release = releasesArray.getJSONObject(0);
-                            final String latest = release.optString("version", null);
-                            meta.setLatestVersion(latest);
-                            final String insertedAt = release.optString("inserted_at", null);
-                            if (insertedAt != null) {
-                                final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                                try {
-                                    final Date published = dateFormat.parse(insertedAt);
-                                    meta.setPublishedTimestamp(published);
-                                } catch (ParseException e) {
-                                    LOGGER.warn("An error occurred while parsing published time", e);
-                                }
-                            }
-                        }
-                    }
+                    successMeta = processResponse(meta, response);
                 } else {
                     handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
                 }
             } catch (UnirestException e) {
                 handleRequestException(LOGGER, e);
+            }
+        }
+        return successMeta;
+    }
+
+    private MetaModel processResponse(MetaModel meta, HttpResponse<JsonNode> response) {
+        if (response.getBody() != null && response.getBody().getObject() != null) {
+            final JSONArray releasesArray = response.getBody().getObject().getJSONArray("releases");
+            if (releasesArray.length() > 0) {
+                // The first one in the array is always the latest version
+                final JSONObject release = releasesArray.getJSONObject(0);
+                final String latest = release.optString("version", null);
+                meta.setLatestVersion(latest);
+                final String insertedAt = release.optString("inserted_at", null);
+                if (insertedAt != null) {
+                    final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    try {
+                        final Date published = dateFormat.parse(insertedAt);
+                        meta.setPublishedTimestamp(published);
+                    } catch (ParseException e) {
+                        LOGGER.warn("An error occurred while parsing published time", e);
+                    }
+                }
             }
         }
         return meta;

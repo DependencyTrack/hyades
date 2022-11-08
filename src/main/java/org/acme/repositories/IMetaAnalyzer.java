@@ -18,7 +18,6 @@
  */
 package org.acme.repositories;
 
-import com.github.packageurl.PackageURL;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
@@ -68,83 +67,5 @@ public interface IMetaAnalyzer {
      * @since 3.1.0
      */
     MetaModel analyze(Component component);
-
-    /**
-     * Convenience factory method that creates an IMetaAnalyzer implementation suitable
-     * to analyze the specified component.
-     * @param component the component to analyze
-     * @return an IMetaAnalyzer implementation
-     * @since 3.1.0
-     */
-    static IMetaAnalyzer build(Component component) {
-        if (component.getPurl() != null) {
-            if (PackageURL.StandardTypes.MAVEN.equals(component.getPurl().getType())) {
-                IMetaAnalyzer analyzer = new MavenMetaAnalyzer();
-                if (analyzer.isApplicable(component)) {
-                    return analyzer;
-                }
-            } else if (PackageURL.StandardTypes.NPM.equals(component.getPurl().getType())) {
-                IMetaAnalyzer analyzer = new NpmMetaAnalyzer();
-                if (analyzer.isApplicable(component)) {
-                    return analyzer;
-                }
-            } else if (PackageURL.StandardTypes.GEM.equals(component.getPurl().getType())) {
-                IMetaAnalyzer analyzer = new GemMetaAnalyzer();
-                if (analyzer.isApplicable(component)) {
-                    return analyzer;
-                }
-            } else if (PackageURL.StandardTypes.NUGET.equals(component.getPurl().getType())) {
-                IMetaAnalyzer analyzer = new NugetMetaAnalyzer();
-                if (analyzer.isApplicable(component)) {
-                    return analyzer;
-                }
-            } else if (PackageURL.StandardTypes.PYPI.equals(component.getPurl().getType())) {
-                IMetaAnalyzer analyzer = new PypiMetaAnalyzer();
-                if (analyzer.isApplicable(component)) {
-                    return analyzer;
-                }
-            } else if (PackageURL.StandardTypes.COMPOSER.equals(component.getPurl().getType())) {
-                IMetaAnalyzer analyzer = new ComposerMetaAnalyzer();
-                if (analyzer.isApplicable(component)) {
-                    return analyzer;
-                }
-            } else if (PackageURL.StandardTypes.HEX.equals(component.getPurl().getType())) {
-                IMetaAnalyzer analyzer = new HexMetaAnalyzer();
-                if (analyzer.isApplicable(component)) {
-                    return analyzer;
-                }
-            } else if (PackageURL.StandardTypes.GOLANG.equals(component.getPurl().getType())) {
-                IMetaAnalyzer analyzer = new GoModulesMetaAnalyzer();
-                if (analyzer.isApplicable(component)) {
-                    return analyzer;
-                }
-            }
-        }
-
-        return new IMetaAnalyzer() {
-            @Override
-            public void setRepositoryBaseUrl(String baseUrl) {
-            }
-
-            @Override
-            public void setRepositoryUsernameAndPassword(String username, String password) {
-
-            }
-
-            @Override
-            public boolean isApplicable(Component component) {
-                return false;
-            }
-
-            public RepositoryType supportedRepositoryType() {
-                return RepositoryType.UNSUPPORTED;
-            }
-
-            @Override
-            public MetaModel analyze(Component component) {
-                return new MetaModel(component);
-            }
-        };
-    }
 
 }
