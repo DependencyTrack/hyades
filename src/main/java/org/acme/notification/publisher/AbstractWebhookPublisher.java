@@ -19,11 +19,11 @@
 package org.acme.notification.publisher;
 
 import alpine.common.logging.Logger;
-import alpine.notification.Notification;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import kong.unirest.HttpResponse;
 import kong.unirest.UnirestInstance;
 import org.acme.common.UnirestFactory;
+import org.acme.model.Notification;
 
 import javax.json.JsonObject;
 

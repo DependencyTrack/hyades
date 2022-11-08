@@ -20,13 +20,13 @@ package org.acme.notification.publisher;
 import alpine.Config;
 import alpine.common.logging.Logger;
 import alpine.model.*;
-import alpine.notification.Notification;
 import alpine.security.crypto.DataEncryption;
 import alpine.server.mail.SendMail;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.acme.common.ApplicationProperty;
 import org.acme.common.ConfigKey;
+import org.acme.model.Notification;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;

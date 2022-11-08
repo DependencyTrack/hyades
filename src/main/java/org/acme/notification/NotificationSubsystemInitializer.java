@@ -19,8 +19,6 @@
 package org.acme.notification;
 
 import alpine.common.logging.Logger;
-import alpine.notification.NotificationService;
-import alpine.notification.Subscription;
 import org.acme.RequirementsVerifier;
 
 import javax.servlet.ServletContextEvent;

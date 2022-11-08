@@ -19,9 +19,9 @@
 package org.acme.notification.publisher;
 
 import alpine.common.logging.Logger;
-import alpine.notification.Notification;
-import alpine.notification.NotificationLevel;
 import com.mitchellbosecke.pebble.PebbleEngine;
+import org.acme.model.Notification;
+import org.acme.model.NotificationLevel;
 
 import javax.json.JsonObject;
 import java.io.PrintStream;

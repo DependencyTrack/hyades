@@ -16,23 +16,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.notification.publisher;
-import com.mitchellbosecke.pebble.PebbleEngine;
-import org.acme.model.Notification;
+package org.dependencytrack.exception;
 
-import javax.json.JsonObject;
+public class RequirementsException extends RuntimeException {
 
-public class CsWebexPublisher extends AbstractWebhookPublisher implements Publisher {
-
-    private static final PebbleEngine ENGINE = new PebbleEngine.Builder().defaultEscapingStrategy("json").build();
-    
-    public void inform(final Notification notification, final JsonObject config) {
-        publish(DefaultNotificationPublishers.CS_WEBEX.getPublisherName(), getTemplate(config), notification, config);
+    public RequirementsException(String message) {
+        super(message);
     }
-
-    @Override
-    public PebbleEngine getTemplateEngine() {
-        return ENGINE;
-    }
-
 }
