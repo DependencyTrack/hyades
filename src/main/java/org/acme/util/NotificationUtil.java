@@ -23,6 +23,7 @@ import org.acme.notification.publisher.DefaultNotificationPublishers;
 import org.acme.notification.vo.*;
 import org.acme.parser.common.resolver.CweResolver;
 //import org.acme.persistence.QueryManager;
+import org.acme.persistence.NotificationHibernateManager;
 import org.apache.commons.io.FileUtils;
 
 import javax.json.*;
@@ -264,38 +265,37 @@ public final class NotificationUtil {
         return builder.build();
     }
 
-   /* public static void loadDefaultNotificationPublishers(QueryManager qm) throws IOException {
-        for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
-            File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
-            // TODO QueryManager
-//            if (qm.isEnabled(ConfigPropertyConstants.NOTIFICATION_TEMPLATE_DEFAULT_OVERRIDE_ENABLED)) {
-//                ConfigProperty templateBaseDir = qm.getConfigProperty(
-//                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getGroupName(),
-//                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getPropertyName()
+//   public static void loadDefaultNotificationPublishers(NotificationHibernateManager hibernateManager) throws IOException {
+//        for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
+//            File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
+//            // TODO QueryManager
+////            if (qm.isEnabled(ConfigPropertyConstants.NOTIFICATION_TEMPLATE_DEFAULT_OVERRIDE_ENABLED)) {
+////                ConfigProperty templateBaseDir = qm.getConfigProperty(
+////                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getGroupName(),
+////                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getPropertyName()
+////                );
+////                File userProvidedTemplateFile = new File(Path.of(templateBaseDir.getPropertyValue(), publisher.getPublisherTemplateFile()).toUri());
+////                if (userProvidedTemplateFile.exists()) {
+////                    templateFile = userProvidedTemplateFile;
+////                }
+////            }
+//            final String templateContent = FileUtils.readFileToString(templateFile, UTF_8);
+//            final NotificationPublisher existingPublisher = hibernateManager.getDefaultNotificationPublisher(publisher.getPublisherClass());
+//            if (existingPublisher == null) {
+//                hibernateManager.createNotificationPublisher(
+//                        publisher.getPublisherName(), publisher.getPublisherDescription(),
+//                        publisher.getPublisherClass(), templateContent, publisher.getTemplateMimeType(),
+//                        publisher.isDefaultPublisher()
 //                );
-//                File userProvidedTemplateFile = new File(Path.of(templateBaseDir.getPropertyValue(), publisher.getPublisherTemplateFile()).toUri());
-//                if (userProvidedTemplateFile.exists()) {
-//                    templateFile = userProvidedTemplateFile;
-//                }
+//            } else {
+//                existingPublisher.setName(publisher.getPublisherName());
+//                existingPublisher.setDescription(publisher.getPublisherDescription());
+//                existingPublisher.setPublisherClass(publisher.getPublisherClass().getCanonicalName());
+//                existingPublisher.setTemplate(templateContent);
+//                existingPublisher.setTemplateMimeType(publisher.getTemplateMimeType());
+//                existingPublisher.setDefaultPublisher(publisher.isDefaultPublisher());
+//                qm.updateNotificationPublisher(existingPublisher);
 //            }
-            final String templateContent = FileUtils.readFileToString(templateFile, UTF_8);
-            final NotificationPublisher existingPublisher = qm.getDefaultNotificationPublisher(publisher.getPublisherClass());
-            if (existingPublisher == null) {
-                qm.createNotificationPublisher(
-                        publisher.getPublisherName(), publisher.getPublisherDescription(),
-                        publisher.getPublisherClass(), templateContent, publisher.getTemplateMimeType(),
-                        publisher.isDefaultPublisher()
-                );
-            } else {
-                existingPublisher.setName(publisher.getPublisherName());
-                existingPublisher.setDescription(publisher.getPublisherDescription());
-                existingPublisher.setPublisherClass(publisher.getPublisherClass().getCanonicalName());
-                existingPublisher.setTemplate(templateContent);
-                existingPublisher.setTemplateMimeType(publisher.getTemplateMimeType());
-                existingPublisher.setDefaultPublisher(publisher.isDefaultPublisher());
-                qm.updateNotificationPublisher(existingPublisher);
-            }
-        }
-    }
-*/
+//        }
+//    }
 }
