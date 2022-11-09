@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import org.acme.persistence.CacheTypeConverter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -53,14 +55,15 @@ public class ComponentAnalysisCache implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
-    private long id;
+    private int id;
 
     @Column(name = "LAST_OCCURRENCE", nullable = false)
     @NotNull
     private Date lastOccurrence;
 
-    @Column(name = "CACHE_TYPE", nullable = false)
+    @Column(name = "CACHE_TYPE", columnDefinition = "varchar",nullable = false)
     @NotNull
+    @Convert(converter = CacheTypeConverter.class)
     private CacheType cacheType;
 
     @Column(name = "TARGET_HOST", nullable = false)
@@ -75,9 +78,7 @@ public class ComponentAnalysisCache implements Serializable {
     @NotNull
     private String target;
 
-
-    @Lob
-    @Column(name = "RESULT", nullable = true, columnDefinition = "text")
+    @Column(name = "RESULT", nullable = true, columnDefinition = "varchar")
     private String result;
 
     @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false)
@@ -85,11 +86,11 @@ public class ComponentAnalysisCache implements Serializable {
     private UUID uuid;
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

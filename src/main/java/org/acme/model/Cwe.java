@@ -45,7 +45,7 @@ public class Cwe implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
-    private long id;
+    private int id;
 
     @Column(name = "CWEID", nullable = false, unique = true)
     private int cweId;
@@ -57,11 +57,11 @@ public class Cwe implements Serializable {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
     private String name;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

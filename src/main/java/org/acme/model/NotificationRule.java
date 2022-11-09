@@ -28,6 +28,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
+import org.acme.persistence.NotificationLevelConverter;
+import org.acme.persistence.NotificationScopeConverter;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -52,7 +54,8 @@ public class NotificationRule extends PanacheEntityBase {
 
     @Id
     @JsonIgnore
-    private long id;
+    @Column(name = "ID")
+    private int id;
 
     /**
      * The String representation of the name of the notification.
@@ -67,14 +70,13 @@ public class NotificationRule extends PanacheEntityBase {
     @Column(name = "ENABLED")
     private boolean enabled;
 
-    @Column(name = "NOTIFY_CHILDREN", nullable = true) // New column, must allow nulls on existing data bases)
-    private boolean notifyChildren;
-
-    @Column(name = "SCOPE", nullable = false)
+    @Column(name = "SCOPE", nullable = false, columnDefinition = "varchar")
     @NotNull
+    @Convert(converter = NotificationScopeConverter.class)
     private NotificationScope scope;
 
-    @Column(name = "NOTIFICATION_LEVEL")
+    @Column(name = "NOTIFICATION_LEVEL", columnDefinition = "varchar")
+    @Convert(converter = NotificationLevelConverter.class)
     private NotificationLevel notificationLevel;
 
 //    @Join(column = "NOTIFICATIONRULE_ID")
@@ -108,7 +110,8 @@ public class NotificationRule extends PanacheEntityBase {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The message may only contain printable characters")
     private String message;
 
-    @Column(name = "PUBLISHER")
+    @JoinColumn(name = "PUBLISHER")
+    @ManyToOne(cascade = CascadeType.ALL)
     private NotificationPublisher publisher;
 
     @Column(name = "PUBLISHER_CONFIG")
@@ -119,11 +122,11 @@ public class NotificationRule extends PanacheEntityBase {
     @NotNull
     private UUID uuid;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -142,14 +145,6 @@ public class NotificationRule extends PanacheEntityBase {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public boolean isNotifyChildren() {
-        return notifyChildren;
-    }
-
-    public void setNotifyChildren(boolean notifyChildren) {
-        this.notifyChildren = notifyChildren;
     }
 
     @NotNull
