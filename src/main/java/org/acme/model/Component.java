@@ -47,15 +47,15 @@ import java.util.UUID;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "COMPONENT", indexes = {
-        @Index(name = "COMPONENT_GROUP_IDX",  columnList="group"),
-        @Index(name = "COMPONENT_NAME_IDX", columnList="name"),
-        @Index(name = "COMPONENT_CPE_IDX", columnList="cpe"),
-        @Index(name = "COMPONENT_PURL_IDX", columnList="purl"),
-        @Index(name = "COMPONENT_PURL_COORDINATES_IDX", columnList="purlCoordinates"),
-        @Index(name = "COMPONENT_SWID_TAGID_IDX", columnList="swidTagId"),
+        @Index(name = "COMPONENT_GROUP_IDX",  columnList="\"GROUP\""),
+        @Index(name = "COMPONENT_NAME_IDX", columnList="NAME"),
+        @Index(name = "COMPONENT_CPE_IDX", columnList="CPE"),
+        @Index(name = "COMPONENT_PURL_IDX", columnList="PURL"),
+        @Index(name = "COMPONENT_PURL_COORDINATES_IDX", columnList="PURLCOORDINATES"),
+        @Index(name = "COMPONENT_SWID_TAGID_IDX", columnList="SWIDTAGID"),
         @Index(name = "COMPONENT_PROJECT_ID_IDX", columnList="PROJECT_ID"),
-        @Index(name = "COMPONENT_MD5_IDX", columnList = "md5"),
-        @Index(name = "COMPONENT_SHA1_IDX", columnList = "sha1"),
+        @Index(name = "COMPONENT_MD5_IDX", columnList = "MD5"),
+        @Index(name = "COMPONENT_SHA1_IDX", columnList = "SHA1"),
         @Index(name = "COMPONENT_SHA256_IDX", columnList = "SHA_256"),
         @Index(name = "COMPONENT_SHA512_IDX", columnList = "SHA_512")},
         uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "COMPONENT_UUID_IDX")})
@@ -75,22 +75,22 @@ public class Component implements Serializable {
     @JsonIgnore
     private long id;
 
-    @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
+    @Column(name = "AUTHOR", columnDefinition = "VARCHAR", length = 255)
     @Size(max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The author may only contain printable characters")
     private String author;
 
-    @Column(name = "PUBLISHER", columnDefinition = "VARCHAR")
+    @Column(name = "PUBLISHER", columnDefinition = "VARCHAR", length = 255)
     @Size(max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The publisher may only contain printable characters")
     private String publisher;
 
-    @Column(name = "GROUP", columnDefinition = "VARCHAR")
+    @Column(name = "\"GROUP\"", columnDefinition = "VARCHAR", length = 255)
     @Size(max = 255)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The group may only contain printable characters")
     private String group;
 
-    @Column(name = "NAME", columnDefinition = "VARCHAR", nullable = false)
+    @Column(name = "NAME", columnDefinition = "VARCHAR", length = 255, nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)

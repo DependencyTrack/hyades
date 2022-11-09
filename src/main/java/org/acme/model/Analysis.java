@@ -75,7 +75,7 @@ public class Analysis implements Serializable {
 
 
     @OrderBy("timestamp ASC")
-    @OneToMany
+    @OneToMany(mappedBy = "id")
     private List<AnalysisComment> analysisComments;
 
     @Column(name = "SUPPRESSED")

@@ -30,6 +30,7 @@ import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -44,6 +45,7 @@ import java.util.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Inheritance(strategy= InheritanceType.JOINED)
 @Table(name = "NOTIFICATIONRULE")
+@Transactional
 public class NotificationRule extends PanacheEntityBase {
 
     private static final long serialVersionUID = 2534439091019367263L;

@@ -5,10 +5,12 @@ import org.acme.model.NotificationPublisher;
 import org.acme.model.NotificationRule;
 import org.acme.notification.publisher.Publisher;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Transactional
 public class NotificationHibernateManager {
 
     public PanacheQuery<NotificationRule> getAllNotificationRules() {

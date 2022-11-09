@@ -52,7 +52,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "PROJECT",indexes = {
-        @Index(name = "PROJECT_GROUP_IDX",  columnList="group"),
+        @Index(name = "PROJECT_GROUP_IDX",  columnList="\"GROUP\""),
         @Index(name = "PROJECT_NAME_IDX", columnList="name"),
         @Index(name = "PROJECT_VERSION_IDX", columnList="version"),
         @Index(name = "PROJECT_CLASSIFIER_IDX", columnList="classifier"),
@@ -93,7 +93,7 @@ public class Project implements Serializable {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The publisher may only contain printable characters")
     private String publisher;
 
-    @Column(name = "GROUP", columnDefinition = "VARCHAR")
+    @Column(name = "\"GROUP\"", columnDefinition = "VARCHAR")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The group may only contain printable characters")
