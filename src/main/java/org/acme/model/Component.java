@@ -30,7 +30,15 @@ import com.github.packageurl.PackageURL;
 import com.google.gson.JsonObject;
 import org.acme.common.TrimmedStringDeserializer;
 import org.apache.commons.lang3.StringUtils;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -46,19 +54,7 @@ import java.util.UUID;
  */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(name = "COMPONENT", indexes = {
-        @Index(name = "COMPONENT_GROUP_IDX",  columnList="\"GROUP\""),
-        @Index(name = "COMPONENT_NAME_IDX", columnList="NAME"),
-        @Index(name = "COMPONENT_CPE_IDX", columnList="CPE"),
-        @Index(name = "COMPONENT_PURL_IDX", columnList="PURL"),
-        @Index(name = "COMPONENT_PURL_COORDINATES_IDX", columnList="PURLCOORDINATES"),
-        @Index(name = "COMPONENT_SWID_TAGID_IDX", columnList="SWIDTAGID"),
-        @Index(name = "COMPONENT_PROJECT_ID_IDX", columnList="PROJECT_ID"),
-        @Index(name = "COMPONENT_MD5_IDX", columnList = "MD5"),
-        @Index(name = "COMPONENT_SHA1_IDX", columnList = "SHA1"),
-        @Index(name = "COMPONENT_SHA256_IDX", columnList = "SHA_256"),
-        @Index(name = "COMPONENT_SHA512_IDX", columnList = "SHA_512")},
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "COMPONENT_UUID_IDX")})
+@Table(name = "COMPONENT")
 public class Component implements Serializable {
 
     private static final long serialVersionUID = 6841650046433674702L;
@@ -73,6 +69,7 @@ public class Component implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
+    @Column(name = "ID")
     private long id;
 
     @Column(name = "AUTHOR", columnDefinition = "VARCHAR", length = 255)

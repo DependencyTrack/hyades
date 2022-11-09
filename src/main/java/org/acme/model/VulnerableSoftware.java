@@ -21,7 +21,15 @@ package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.persistence.*;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +44,7 @@ import java.util.UUID;
  * @since 3.6.0
  */
 @Entity
-@Table(name = "VULNERABLESOFTWARE", indexes = {
-        @Index(name = "VULNERABLESOFTWARE_CPE23_VERSION_RANGE_IDX", columnList = "cpe23, versionEndExcluding, versionEndIncluding, versionStartExcluding, versionStartIncluding"),
-        @Index(name = "VULNERABLESOFTWARE_PART_VENDOR_PRODUCT_IDX", columnList = "part, vendor, product"),
-        @Index(name = "VULNERABLESOFTWARE_CPE_PURL_PARTS_IDX", columnList = "part, vendor, product, purl_Type, purl_Namespace, purl_Name"),
-        @Index(name = "VULNERABLESOFTWARE_PURL_VERSION_RANGE_IDX", columnList = "purl, versionEndExcluding, versionEndIncluding, versionStartExcluding, versionStartIncluding"),
-        @Index(name = "VULNERABLESOFTWARE_PURL_TYPE_NS_NAME_IDX", columnList = "purl_Type, purl_Namespace, purl_Name")})
+@Table(name = "VULNERABLESOFTWARE")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VulnerableSoftware implements ICpe, Serializable {
 
@@ -49,6 +52,7 @@ public class VulnerableSoftware implements ICpe, Serializable {
 
     @Id
     @JsonIgnore
+    @Column(name = "ID")
     private long id;
 
     @Column(name = "PURL")

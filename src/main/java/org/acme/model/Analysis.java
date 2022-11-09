@@ -21,7 +21,17 @@ package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -41,7 +51,8 @@ public class Analysis implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
-    private long id;
+    @Column(name = "ID")
+    private int id;
 
     @Column(name = "PROJECT_ID")
     @JsonIgnore
@@ -82,11 +93,11 @@ public class Analysis implements Serializable {
     @JsonProperty(value = "isSuppressed")
     private boolean suppressed;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

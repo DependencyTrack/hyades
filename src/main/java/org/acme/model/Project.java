@@ -31,7 +31,19 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import org.acme.common.TrimmedStringDeserializer;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -51,18 +63,7 @@ import java.util.UUID;
  * @since 3.0.0
  */
 @Entity
-@Table(name = "PROJECT",indexes = {
-        @Index(name = "PROJECT_GROUP_IDX",  columnList="\"GROUP\""),
-        @Index(name = "PROJECT_NAME_IDX", columnList="name"),
-        @Index(name = "PROJECT_VERSION_IDX", columnList="version"),
-        @Index(name = "PROJECT_CLASSIFIER_IDX", columnList="classifier"),
-        @Index(name = "PROJECT_CPE_IDX", columnList="cpe"),
-        @Index(name = "PROJECT_PURL_IDX", columnList="purl"),
-        @Index(name = "PROJECT_SWID_TAGID_IDX", columnList="swidTagId"),
-        @Index(name = "PROJECT_LAST_RISKSCORE_IDX", columnList="LAST_RISKSCORE"),
-        @Index(name = "PROJECT_LASTBOMIMPORT_FORMAT_IDX", columnList="LAST_BOM_IMPORTED_FORMAT"),
-        @Index(name = "PROJECT_LASTBOMIMPORT_IDX", columnList="LAST_BOM_IMPORTED")},
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "PROJECT_UUID_IDX")})
+@Table(name = "PROJECT")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Project implements Serializable {
 
@@ -78,6 +79,7 @@ public class Project implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
+    @Column(name = "ID")
     private long id;
 
     @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
