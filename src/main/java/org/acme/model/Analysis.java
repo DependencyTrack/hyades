@@ -19,19 +19,7 @@
 package org.acme.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -43,54 +31,25 @@ import java.util.List;
  * @author Steve Springett
  * @since 3.0.0
  */
-@Entity
-@Table(name = "ANALYSIS", uniqueConstraints = {@UniqueConstraint(columnNames = {"PROJECT_ID", "COMPONENT_ID", "VULNERABILITY_ID"}, name = "ANALYSIS_COMPOSITE_IDX")})
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Analysis implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
-    @Column(name = "ID")
     private int id;
-
-    @Column(name = "PROJECT_ID")
-    @JsonIgnore
     private Project project;
 
-    @Column(name = "COMPONENT_ID")
-    @JsonIgnore
     private Component component;
 
-    @Column(name = "VULNERABILITY_ID", nullable = false)
-    @NotNull
-    @JsonIgnore
     private Vulnerability vulnerability;
 
-    @Column(name = "STATE", columnDefinition = "VARCHAR", nullable = false)
-    @NotNull
     private AnalysisState analysisState;
 
-    @Column(name = "JUSTIFICATION", columnDefinition = "VARCHAR", nullable = true)
-    @NotNull
     private AnalysisJustification analysisJustification;
 
-    @Column(name = "RESPONSE", columnDefinition = "VARCHAR", nullable = true)
-    @NotNull
     private AnalysisResponse analysisResponse;
 
-    @Lob
-    @Column(name = "DETAILS", columnDefinition = "text", nullable = true)
-    @NotNull
     private String analysisDetails;
 
-
-    @OrderBy("timestamp ASC")
-    @OneToMany(mappedBy = "id")
     private List<AnalysisComment> analysisComments;
 
-    @Column(name = "SUPPRESSED")
-    @JsonProperty(value = "isSuppressed")
     private boolean suppressed;
 
     public int getId() {

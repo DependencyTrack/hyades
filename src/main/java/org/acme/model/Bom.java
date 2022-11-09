@@ -20,8 +20,6 @@ package org.acme.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -33,10 +31,6 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.0.0
  */
-@Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(name = "BOM",uniqueConstraints = {@UniqueConstraint(columnNames = {"UPLOAD_TOKEN"}, name = "BOM_UPLOAD_TOKEN_IDX"),
-                            @UniqueConstraint(columnNames = {"UUID"}, name = "BOM_UUID_IDX")})
 public class Bom implements Serializable {
 
     private static final long serialVersionUID = -4378439983100141050L;
@@ -62,38 +56,22 @@ public class Bom implements Serializable {
         }
     }
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
     private long id;
 
-    @Column(name = "IMPORTED", nullable = false)
-    @NotNull
     private Date imported;
 
-    @Column(name = "BOM_FORMAT")
     private String bomFormat;
 
-    @Column(name = "SPEC_VERSION")
     private String specVersion;
 
-    @Column(name = "BOM_VERSION")
     private Integer bomVersion;
 
-    @Column(name = "SERIAL_NUMBER")
     private String serialNumber;
 
-    @JoinColumn(name = "PROJECT_ID", nullable = false)
-    @NotNull
-    @ManyToOne
     private Project project;
 
-    @Column(name = "UPLOAD_TOKEN", nullable = false)
-    @NotNull
     private UUID uploadToken;
 
-    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false)
-    @NotNull
     private UUID uuid;
 
     public long getId() {

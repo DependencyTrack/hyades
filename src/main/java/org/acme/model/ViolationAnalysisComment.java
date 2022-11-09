@@ -35,34 +35,16 @@ import java.util.Date;
  * @author Steve Springett
  * @since 4.0.0
  */
-@Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(name = "VIOLATIONANALYSISCOMMENT")
 public class ViolationAnalysisComment implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
     private long id;
 
-    @JoinColumn(name = "VIOLATIONANALYSIS_ID", nullable = false)
-    @NotNull
-    @JsonIgnore
-    @ManyToOne
     private ViolationAnalysis violationAnalysis;
 
-    @Column(name = "TIMESTAMP", nullable = false)
-    @NotNull
     private Date timestamp;
 
-    @Lob
-    @Column(name = "COMMENT", columnDefinition = "text", nullable = false)
-    @NotNull
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String comment;
 
-    @Column(name = "COMMENTER")
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String commenter;
 
     public long getId() {

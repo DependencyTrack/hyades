@@ -29,16 +29,11 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.google.gson.JsonObject;
 import org.acme.common.TrimmedStringDeserializer;
+import org.acme.persistence.CollectionIntegerConverter;
+import org.acme.persistence.UUIDConverter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -70,7 +65,7 @@ public class Component implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     @Column(name = "ID")
-    private long id;
+    private int id;
 
     @Column(name = "AUTHOR", columnDefinition = "VARCHAR", length = 255)
     @Size(max = 255)
@@ -151,8 +146,9 @@ public class Component implements Serializable {
     @JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID", nullable = false)
     private Project project;
 
-    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false, unique = true)
+    @Column(name = "UUID", columnDefinition = "varchar", length = 36, nullable = false, unique = true)
     @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
     @Column(name = "MD5", length = 32)
@@ -177,11 +173,11 @@ public class Component implements Serializable {
     @JsonIgnore
     private transient JsonObject cacheResult;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -20,8 +20,6 @@ package org.acme.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -32,116 +30,70 @@ import java.util.Date;
  * @author Steve Springett
  * @since 3.1.0
  */
-@Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(name = "DEPENDENCYMETRICS",indexes = {
-        @Index(name = "DEPENDENCYMETRICS_COMPOSITE_IDX",  columnList="PROJECT_ID, COMPONENT_ID"),
-        @Index(name = "DEPENDENCYMETRICS_FIRST_OCCURRENCE_IDX", columnList="FIRST_OCCURRENCE"),
-        @Index(name = "DEPENDENCYMETRICS_LAST_OCCURRENCE_IDX", columnList="LAST_OCCURRENCE")})
 public class DependencyMetrics implements Serializable {
 
     private static final long serialVersionUID = 5231823328085979791L;
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
     private long id;
 
-    @JoinColumn(name = "PROJECT_ID", nullable = false)
-    @NotNull
-    @ManyToOne
     private Project project;
 
-    @JoinColumn(
-            name = "COMPONENT_ID", nullable = false)
-    @NotNull
-    @ManyToOne
     private Component component;
 
-    @Column(name = "CRITICAL")
     private int critical;
 
-    @Column(name = "HIGH")
     private int high;
 
-    @Column(name = "MEDIUM")
     private int medium;
 
-    @Column(name = "LOW")
     private int low;
 
-    @Column(name = "UNASSIGNED_SEVERITY", nullable = true) // New column, must allow nulls on existing databases)
     private Integer unassigned;
 
-    @Column(name = "VULNERABILITIES")
     private int vulnerabilities;
 
-    @Column(name = "SUPPRESSED")
     private int suppressed;
 
-    @Column(name = "FINDINGS_TOTAL", nullable = true) // New column, must allow nulls on existing databases)
     private Integer findingsTotal;
 
-    @Column(name = "FINDINGS_AUDITED", nullable = true) // New column, must allow nulls on existing databases)
     private Integer findingsAudited;
 
-    @Column(name = "FINDINGS_UNAUDITED", nullable = true) // New column, must allow nulls on existing databases)
     private Integer findingsUnaudited;
 
-    @Column(name = "RISKSCORE")
     private double inheritedRiskScore;
 
-    @Column(name = "POLICYVIOLATIONS_FAIL", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsFail;
 
-    @Column(name = "POLICYVIOLATIONS_WARN", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsWarn;
 
-    @Column(name = "POLICYVIOLATIONS_INFO", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsInfo;
 
-    @Column(name = "POLICYVIOLATIONS_TOTAL", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsTotal;
 
-    @Column(name = "POLICYVIOLATIONS_AUDITED", nullable = true) // New column, must allow nulls on existing databases)
     private Integer policyViolationsAudited;
 
-    @Column(name = "POLICYVIOLATIONS_UNAUDITED", nullable = true) // New column, must allow nulls on existing databases)
     private Integer policyViolationsUnaudited;
 
-    @Column(name = "POLICYVIOLATIONS_SECURITY_TOTAL", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsSecurityTotal;
 
-    @Column(name = "POLICYVIOLATIONS_SECURITY_AUDITED", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsSecurityAudited;
 
-    @Column(name = "POLICYVIOLATIONS_SECURITY_UNAUDITED", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsSecurityUnaudited;
 
-    @Column(name = "POLICYVIOLATIONS_LICENSE_TOTAL", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsLicenseTotal;
 
-    @Column(name = "POLICYVIOLATIONS_LICENSE_AUDITED", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsLicenseAudited;
 
-    @Column(name = "POLICYVIOLATIONS_LICENSE_UNAUDITED", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsLicenseUnaudited;
 
-    @Column(name = "POLICYVIOLATIONS_OPERATIONAL_TOTAL", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsOperationalTotal;
 
-    @Column(name = "POLICYVIOLATIONS_OPERATIONAL_AUDITED", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsOperationalAudited;
 
-    @Column(name = "POLICYVIOLATIONS_OPERATIONAL_UNAUDITED", nullable = true) // New column, must allow nulls on existing data bases)
     private Integer policyViolationsOperationalUnaudited;
 
-    @Column(name = "FIRST_OCCURRENCE", nullable = true)
-    @NotNull
     private Date firstOccurrence;
 
-    @Column(name = "LAST_OCCURRENCE", nullable = true)
-    @NotNull
     private Date lastOccurrence;
 
     public long getId() {

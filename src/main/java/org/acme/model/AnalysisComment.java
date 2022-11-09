@@ -22,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.acme.common.TrimmedStringDeserializer;
-
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -35,35 +33,16 @@ import java.util.Date;
  * @author Steve Springett
  * @since 3.0.0
  */
-@Entity
-@Table(name = "ANALYSISCOMMENT")
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnalysisComment implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
     private long id;
 
-
-    @Column(name = "ANALYSIS_ID", nullable = false)
-    @NotNull
-    @JsonIgnore
     private Analysis analysis;
 
-
-    @Column(name = "TIMESTAMP", nullable = false)
-    @NotNull
     private Date timestamp;
 
-    @Lob
-    @Column(name = "COMMENT", columnDefinition = "text", nullable = false)
-    @NotNull
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String comment;
 
-    @Column(name = "COMMENTER")
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String commenter;
 
     public long getId() {

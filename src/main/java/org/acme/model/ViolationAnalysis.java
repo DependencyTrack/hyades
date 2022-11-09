@@ -21,8 +21,6 @@ package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -33,43 +31,19 @@ import java.util.List;
  * @author Steve Springett
  * @since 4.0.0
  */
-@Entity
-@Table(name = "VIOLATIONANALYSIS",uniqueConstraints = {@UniqueConstraint(columnNames = {"PROJECT_ID", "COMPONENT_ID", "POLICYVIOLATION_ID"}, name = "VIOLATIONANALYSIS_COMPOSITE_IDX")})
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ViolationAnalysis implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
     private long id;
 
-    @JoinColumn(name = "PROJECT_ID")
-    @JsonIgnore
-    @ManyToOne
     private Project project;
 
-    @JoinColumn(name = "COMPONENT_ID")
-    @JsonIgnore
-    @ManyToOne
     private Component component;
 
-    @JoinColumn(name = "POLICYVIOLATION_ID", nullable = false)
-    @NotNull
-    @JsonIgnore
-    @ManyToOne
     private PolicyViolation policyViolation;
 
-
-    @Column(name = "STATE", columnDefinition = "VARCHAR", nullable = false)
-    @NotNull
     private ViolationAnalysisState analysisState;
-
-    @OrderBy("timestamp ASC")
-    @OneToMany(mappedBy = "id")
     private List<ViolationAnalysisComment> analysisComments;
 
-    @Column(name = "SUPPRESSED")
-    @JsonProperty(value = "isSuppressed")
     private boolean suppressed;
 
     public long getId() {

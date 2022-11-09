@@ -20,12 +20,6 @@ package org.acme.model;
 
 import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -36,13 +30,6 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Table(name = "POLICYVIOLATION",indexes = {
-        @Index(name = "POLICYVIOLATION_PROJECT_IDX", columnList = "PROJECT_ID"),
-        @Index(name = "POLICYVIOLATION_COMPONENT_IDX", columnList = "COMPONENT_ID")
-})
 public class PolicyViolation implements Serializable {
 
     public enum Type {
@@ -51,41 +38,25 @@ public class PolicyViolation implements Serializable {
         OPERATIONAL
     }
 
-    @Id
-    @JsonIgnore
     private long id;
 
-    @Column(name = "TYPE", nullable = false)
     private Type type;
 
-    @JoinColumn(name = "PROJECT_ID", nullable = false)
-    @ManyToOne
     private Project project;
 
-    @JoinColumn(name = "COMPONENT_ID", nullable = false)
-    @ManyToOne
     private Component component;
 
-    @JoinColumn(name = "POLICYCONDITION_ID", nullable = false)
-    @ManyToOne
     private PolicyCondition policyCondition;
 
-    @Column(name = "TIMESTAMP", nullable = false)
     private Date timestamp;
 
-    @Column(name = "TEXT")
-    @Size(min = 1, max = 255)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The text may only contain printable characters")
     private String text;
 
-    @ManyToOne
     private ViolationAnalysis analysis;
 
     /**
      * The unique identifier of the object.
      */
-    @Column(name = "UUID", unique = true, length = 36, nullable = false)
-    @NotNull
     private UUID uuid;
 
     public long getId() {

@@ -18,12 +18,7 @@
  */
 package org.acme.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.acme.tasks.scanners.AnalyzerIdentity;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -34,51 +29,25 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@Entity
-@Table(name = "FINDINGATTRIBUTION",uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"UUID"}, name = "FINDINGATTRIBUTION_UUID_IDX")},
-        indexes = {@Index(name = "FINDINGATTRIBUTION_COMPOUND_IDX",  columnList="COMPONENT_ID, VULNERABILITY_ID")})
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FindingAttribution implements Serializable {
 
     private static final long serialVersionUID = -2609603709255246845L;
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
     private long id;
 
-    @Column(name = "ATTRIBUTED_ON", nullable = false)
-    @NotNull
     private Date attributedOn;
 
-    @Column(name = "ANALYZERIDENTITY", nullable = false)
     private AnalyzerIdentity analyzerIdentity;
 
-    @NotNull
-    @ManyToOne //TODO- need to check on relationship
-    @JoinColumn(name = "COMPONENT_ID", referencedColumnName = "ID")
     private Component component;
 
-    @NotNull
-    @ManyToOne //TODO- need to check on relationship
-    @JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID")
     private Project project;
 
-
-    @NotNull
-    @ManyToOne //TODO- need to check on relationship
-    @JoinColumn(name = "VULNERABILITY_ID", referencedColumnName = "ID")
     private Vulnerability vulnerability;
 
-    @Column(name = "ALT_ID", nullable = true)
     private String alternateIdentifier;
 
-    @Column(name = "REFERENCE_URL", nullable = true)
     private String referenceUrl;
 
-    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false, unique = true)
-    @NotNull
     private UUID uuid;
 
     public FindingAttribution() {}
