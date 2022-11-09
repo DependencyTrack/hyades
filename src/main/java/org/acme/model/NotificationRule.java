@@ -23,11 +23,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
+import org.acme.persistence.LongToIntConverter;
 import org.acme.persistence.NotificationLevelConverter;
 import org.acme.persistence.NotificationScopeConverter;
 

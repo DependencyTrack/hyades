@@ -35,26 +35,13 @@ import java.io.Serializable;
  * @author Steve Springett
  * @since 3.0.0
  */
-@Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(name = "CWE", uniqueConstraints = {@UniqueConstraint(columnNames = {"CWEID"}, name = "CWE_CWEID_IDX")})
 public class Cwe implements Serializable {
 
     private static final long serialVersionUID = -2370075071951574877L;
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
     private int id;
 
-    @Column(name = "CWEID", nullable = false, unique = true)
     private int cweId;
 
-    @Column(name = "NAME", columnDefinition = "VARCHAR", nullable = false)
-    @Size(max = 255)
-    @NotNull
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
     private String name;
 
     public int getId() {

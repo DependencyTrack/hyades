@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.acme.common.TrimmedStringDeserializer;
+import org.acme.persistence.LongToIntConverter;
+import org.acme.persistence.UUIDConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -35,7 +37,8 @@ public class NotificationPublisher extends PanacheEntityBase implements Serializ
     @GeneratedValue(strategy=GenerationType.AUTO)
     @JsonIgnore
     @Column(name="ID")
-    private int id;
+    @Convert(converter = LongToIntConverter.class)
+    private long id;
 
     //@Persistent(defaultFetchGroup = "true")
     //@Column(lenght = "NAME", allowsNull = "false")
@@ -69,15 +72,16 @@ public class NotificationPublisher extends PanacheEntityBase implements Serializ
     @Column(name = "DEFAULT_PUBLISHER")
     private boolean defaultPublisher;
 
-    @Column(name = "UUID", length = 36, nullable = false, unique = true)
+    @Column(name = "UUID", columnDefinition = "varchar", length = 36, nullable = false, unique = true)
     @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
