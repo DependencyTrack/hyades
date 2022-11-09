@@ -84,9 +84,10 @@ public class NotificationRule extends PanacheEntityBase {
 //    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC, version ASC"))
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "PROJECT",
-            joinColumns = @JoinColumn(name = "PROJECT_ID")
+            name = "NOTIFICATIONRULE_PROJECTS",
+            joinColumns = @JoinColumn(name = "NOTIFICATIONRULE_ID")
     )
+    @JoinColumn(name = "PROJECT_ID")
     @OrderBy("name ASC, version ASC")
     private List<Project> projects;
 
@@ -110,7 +111,7 @@ public class NotificationRule extends PanacheEntityBase {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The message may only contain printable characters")
     private String message;
 
-    @JoinColumn(name = "PUBLISHER")
+    @JoinColumn(name = "PUBLISHER", columnDefinition = "bigint")
     @ManyToOne(cascade = CascadeType.ALL)
     private NotificationPublisher publisher;
 

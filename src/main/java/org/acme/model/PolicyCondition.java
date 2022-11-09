@@ -18,16 +18,6 @@
  */
 package org.acme.model;
 
-import alpine.common.validation.RegexSequence;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -37,10 +27,6 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Table(name = "POLICYCONDITION")
 public class PolicyCondition implements Serializable {
 
     public enum Operator {
@@ -75,37 +61,19 @@ public class PolicyCondition implements Serializable {
         CWE
     }
 
-    @Id
-    @JsonIgnore
     private long id;
 
-    @JoinColumn(name = "POLICY_ID", nullable = false)
-    @ManyToOne
     private Policy policy;
 
-    @Column(name = "OPERATOR", nullable = false)
-    @NotBlank
-    @Size(min = 1, max = 255)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The operator may only contain printable characters")
     private Operator operator;
 
-    @Column(name = "SUBJECT", nullable = false)
-    @NotBlank
-    @Size(min = 1, max = 255)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The subject may only contain printable characters")
     private Subject subject;
 
-    @Column(name = "VALUE", nullable = false)
-    @NotBlank
-    @Size(min = 1, max = 255)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The value may only contain printable characters")
     private String value;
 
     /**
      * The unique identifier of the object.
      */
-    @Column(name = "UUID", unique = true, length = 36, nullable = false)
-    @NotNull
     private UUID uuid;
 
     public long getId() {

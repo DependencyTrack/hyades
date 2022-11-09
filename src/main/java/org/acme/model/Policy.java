@@ -22,19 +22,6 @@ import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +33,6 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Table(name = "POLICY")
 public class Policy implements Serializable {
 
     public enum Operator {
@@ -63,43 +46,26 @@ public class Policy implements Serializable {
         FAIL
     }
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
-    private long id;
+    private int id;
 
     /**
      * The String representation of the policy name.
      */
-    @Column(name = "NAME", nullable = false)
-    @NotBlank
-    @Size(min = 1, max = 255)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
     private String name;
 
     /**
      * The operator to use when evaluating conditions.
      */
-    @Column(name = "OPERATOR", nullable = false)
-    @NotBlank
-    @Size(min = 1, max = 255)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The operator may only contain printable characters")
     private Operator operator;
 
     /**
      * The state the policy should trigger upon violation.
      */
-    @Column(name = "VIOLATIONSTATE", nullable = false)
-    @NotBlank
-    @Size(min = 1, max = 255)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The operator may only contain printable characters")
     private ViolationState violationState;
 
     /**
      * A list of zero-to-n policy conditions.
      */
-    @OrderBy("id ASC")
-    @OneToMany(mappedBy = "policy")
     private List<PolicyCondition> policyConditions;
 
     /**
@@ -123,15 +89,13 @@ public class Policy implements Serializable {
     /**
      * The unique identifier of the object.
      */
-    @Column(name = "UUID", unique = true, length = 36, nullable = false)
-    @NotNull
     private UUID uuid;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -143,13 +107,7 @@ public class Policy implements Serializable {
         this.name = name;
     }
 
-    public Operator getOperator() {
-        return operator;
-    }
 
-    public void setOperator(Operator operator) {
-        this.operator = operator;
-    }
 
     public ViolationState getViolationState() {
         return violationState;

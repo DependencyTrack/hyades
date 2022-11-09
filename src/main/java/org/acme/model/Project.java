@@ -30,20 +30,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import org.acme.common.TrimmedStringDeserializer;
+import org.acme.persistence.ClassifierToStringConverter;
+import org.acme.persistence.UUIDConverter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -80,7 +70,7 @@ public class Project implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonIgnore
     @Column(name = "ID")
-    private long id;
+    private int id;
 
     @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
     @Size(max = 255)
@@ -119,6 +109,7 @@ public class Project implements Serializable {
     private String version;
 
     @Column(name = "CLASSIFIER", columnDefinition = "VARCHAR")
+    @Convert(converter = ClassifierToStringConverter.class)
     //@Extension(vendorName = "datanucleus", key = "enum-check-constraint", value = "true")
     private Classifier classifier;
 
@@ -138,31 +129,20 @@ public class Project implements Serializable {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The SWID tagId may only contain printable characters")
     private String swidTagId;
 
-    //    @Persistent(table = "PROJECTS_TAGS", defaultFetchGroup = "true", mappedBy = "projects")
-//    @Join(column = "PROJECT_ID")
-//    @Element(column = "TAG_ID")
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "PROJECT",
-            joinColumns = @JoinColumn(name = "PROJECT_ID")
-    )
+    @JoinColumn(name = "TAG_ID")
     @OrderBy("name ASC")
     private List<Tag> tags;
 
-    @Lob
-    @Column(name = "DIRECT_DEPENDENCIES", columnDefinition = "text")
+    @Column(name = "DIRECT_DEPENDENCIES", columnDefinition = "varchar")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String directDependencies; // This will be a JSON string
 
     //@Persistent(customValueStrategy = "uuid")
     @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false, unique = true)
     @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
-
-
-    @ManyToOne
-    @JoinColumn(name = "PARENT_PROJECT_ID", referencedColumnName = "ID")
-    private Project parent;
 
     /**
      * Convenience field which will contain the date of the last entry in the {@link Bom} table
@@ -187,11 +167,11 @@ public class Project implements Serializable {
     private Boolean active; // Added in v3.6. Existing records need to be nullable on upgrade.
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -302,14 +282,6 @@ public class Project implements Serializable {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    public Project getParent() {
-        return parent;
-    }
-
-    public void setParent(Project parent) {
-        this.parent = parent;
     }
 
     public Date getLastBomImport() {

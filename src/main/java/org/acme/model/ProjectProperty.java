@@ -37,51 +37,23 @@ import java.io.Serializable;
  * @author Steve Springett
  * @since 3.0.0
  */
-@Entity
-@Table(name = "PROJECT_PROPERTY", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"PROJECT_ID", "GROUPNAME", "PROPERTYNAME"}, name = "PROJECT_PROPERTY_KEYS_IDX")})
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProjectProperty implements IConfigProperty, Serializable {
 
     private static final long serialVersionUID = 7394616773695958262L;
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
+
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID", nullable = false)
     private Project project;
 
-    @Column(name = "GROUPNAME", nullable = false)
-    @NotBlank
-    @Size(min = 1, max = 255)
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = "[\\P{Cc}]+", message = "The groupName must not contain control characters")
     private String groupName;
 
-    @Column(name = "PROPERTYNAME", nullable = false)
-    @NotBlank
-    @Size(min = 1, max = 255)
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = "[\\P{Cc}]+", message = "The propertyName must not contain control characters")
     private String propertyName;
 
-    @Column(name = "PROPERTYVALUE", length = 1024)
-    @Size(min = 0, max = 1024)
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = "[\\P{Cc}]+", message = "The propertyValue must not contain control characters")
     private String propertyValue;
 
-    @Column(name = "PROPERTYTYPE", columnDefinition = "VARCHAR", nullable = false)
-    @NotNull
     private PropertyType propertyType;
 
-    @Column(name = "DESCRIPTION")
-    @Size(max = 255)
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = "[\\P{Cc}]+", message = "The description must not contain control characters")
     private String description;
 
     public long getId() {

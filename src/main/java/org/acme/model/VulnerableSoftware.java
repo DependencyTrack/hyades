@@ -18,18 +18,6 @@
  */
 package org.acme.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,103 +31,64 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.6.0
  */
-@Entity
-@Table(name = "VULNERABLESOFTWARE")
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VulnerableSoftware implements ICpe, Serializable {
 
     private static final long serialVersionUID = -3987946408457131098L;
 
-    @Id
-    @JsonIgnore
-    @Column(name = "ID")
     private long id;
 
-    @Column(name = "PURL")
     private String purl;
 
-    @Column(name = "PURL_TYPE")
     private String purlType;
 
-    @Column(name = "PURL_NAMESPACE")
     private String purlNamespace;
 
-    @Column(name = "PURL_NAME")
     private String purlName;
 
-    @Column(name = "PURL_VERSION")
     private String purlVersion;
 
-    @Column(name = "PURL_QUALIFIERS")
     private String purlQualifiers;
 
-    @Column(name = "PURL_SUBPATH")
     private String purlSubpath;
 
-    @Column(name = "CPE22")
     private String cpe22;
 
-    @Column(name = "CPE23")
     private String cpe23;
 
-    @Column(name = "PART")
     private String part;
 
-    @Column(name = "VENDOR")
     private String vendor;
 
-    @Column(name = "PRODUCT")
     private String product;
 
     private String version;
 
-    @Column(name = "UPDATE")
     private String update;
 
-    @Column(name = "EDITION")
     private String edition;
 
-    @Column(name = "LANGUAGE")
     private String language;
 
-    @Column(name = "SWEDITION")
     private String swEdition;
 
-    @Column(name = "TARGETSW")
     private String targetSw;
 
-    @Column(name = "TARGETHW")
     private String targetHw;
 
-    @Column(name = "OTHER")
     private String other;
 
-    @Column(name = "VERSIONENDEXCLUDING")
     private String versionEndExcluding;
 
-    @Column(name = "VERSIONENDINCLUDING")
     private String versionEndIncluding;
 
-    @Column(name = "VERSIONSTARTEXCLUDING")
     private String versionStartExcluding;
 
-    @Column(name = "VERSIONSTARTINCLUDING")
     private String versionStartIncluding;
 
-    @Column(name = "VULNERABLE")
-    @JsonProperty(value = "isVulnerable")
     private boolean vulnerable;
 
-    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinTable(
-//            name = "VULNERABLESOFTWARE_VULNERABILITIES",
-//            joinColumns = @JoinColumn(name = "VULNERABILITY_ID")
-//    )
-    @JoinColumn(name = "VULNERABLESOFTWARE_ID", referencedColumnName = "ID")
-    @OrderBy("id ASC")
     private List<Vulnerability> vulnerabilities;
 
-    @Column(name = "UUID", unique = true, length = 36, nullable = false)
     private UUID uuid;
 
     public long getId() {
