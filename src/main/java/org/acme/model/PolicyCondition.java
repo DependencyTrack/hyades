@@ -22,10 +22,8 @@ import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -81,7 +79,8 @@ public class PolicyCondition implements Serializable {
     @JsonIgnore
     private long id;
 
-    @Column(name = "POLICY_ID", nullable = false)
+    @JoinColumn(name = "POLICY_ID", nullable = false)
+    @ManyToOne
     private Policy policy;
 
     @Column(name = "OPERATOR", nullable = false)

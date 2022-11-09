@@ -58,7 +58,7 @@ public class Tag implements Serializable {
 
     @JsonIgnore
     @OrderBy("name ASC")
-    @OneToMany
+    @OneToMany(mappedBy = "id")
     private List<Project> projects;
 
     public long getId() {

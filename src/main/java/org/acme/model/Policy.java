@@ -93,7 +93,7 @@ public class Policy implements Serializable {
      * A list of zero-to-n policy conditions.
      */
     @OrderBy("id ASC")
-    @OneToMany
+    @OneToMany(mappedBy = "policy")
     private List<PolicyCondition> policyConditions;
 
     /**

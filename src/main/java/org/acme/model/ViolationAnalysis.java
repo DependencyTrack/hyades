@@ -65,7 +65,7 @@ public class ViolationAnalysis implements Serializable {
     private ViolationAnalysisState analysisState;
 
     @OrderBy("timestamp ASC")
-    @OneToMany
+    @OneToMany(mappedBy = "id")
     private List<ViolationAnalysisComment> analysisComments;
 
     @Column(name = "SUPPRESSED")
