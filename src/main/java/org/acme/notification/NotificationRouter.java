@@ -44,7 +44,7 @@ public class NotificationRouter {
     private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
 
     public void inform(final Notification notification) {
-        for (final NotificationRule rule: new NotificationRule[2]){//resolveRules(notification)) {
+        for (final NotificationRule rule: resolveRules(notification)) {
 
             // Not all publishers need configuration (i.e. ConsolePublisher)
             JsonObject config = Json.createObjectBuilder().build();

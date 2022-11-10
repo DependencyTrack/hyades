@@ -50,8 +50,8 @@ public class DefaultObjectGenerator implements ServletContextListener {
         if (RequirementsVerifier.failedValidation()) {
             return;
         }
-        /*loadDefaultConfigProperties();
-        loadDefaultNotificationPublishers();*/
+        //loadDefaultConfigProperties();
+        loadDefaultNotificationPublishers();
 
         try {
             new CweImporter().processCweDefinitions();
@@ -93,7 +93,8 @@ public class DefaultObjectGenerator implements ServletContextListener {
         NotificationHibernateManager nm = new NotificationHibernateManager();
             LOGGER.info("Synchronizing notification publishers to datastore");
             for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
-                nm.getDefaultNotificationPublisher(publisher.getPublisherClass());
+                System.out.println(nm.getDefaultNotificationPublisher(publisher.getPublisherClass()));
+
             }
     }
 }
