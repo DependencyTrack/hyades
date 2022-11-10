@@ -19,6 +19,7 @@
 package org.acme.notification;
 
 import alpine.common.logging.Logger;
+import io.quarkus.runtime.Startup;
 import org.acme.exception.PublisherException;
 import org.acme.model.*;
 import org.acme.notification.publisher.Publisher;
@@ -27,6 +28,8 @@ import org.acme.notification.vo.*;
 import org.acme.persistence.NotificationHibernateManager;
 //import org.acme.persistence.QueryManager;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.control.ActivateRequestContext;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.Json;
@@ -40,6 +43,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@ApplicationScoped
+@ActivateRequestContext
 public class NotificationRouter {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
