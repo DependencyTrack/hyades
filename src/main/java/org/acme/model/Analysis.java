@@ -18,9 +18,6 @@
  */
 package org.acme.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 

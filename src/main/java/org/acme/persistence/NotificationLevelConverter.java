@@ -1,13 +1,8 @@
 package org.acme.persistence;
 
-import org.acme.model.ComponentAnalysisCache;
-import org.acme.model.Notification;
 import org.acme.model.NotificationLevel;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.UUID;
-
 import static java.util.Optional.ofNullable;
 
 @Converter(autoApply = true)

@@ -55,6 +55,7 @@ public class NotificationRule extends PanacheEntityBase {
     @Id
     @JsonIgnore
     @Column(name = "ID")
+    //@Convert(converter = LongToIntConverter.class)
     private int id;
 
     /**
@@ -82,12 +83,14 @@ public class NotificationRule extends PanacheEntityBase {
 //    @Join(column = "NOTIFICATIONRULE_ID")
 //    @Element(column = "PROJECT_ID")
 //    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC, version ASC"))
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany()
     @JoinTable(
             name = "NOTIFICATIONRULE_PROJECTS",
-            joinColumns = @JoinColumn(name = "NOTIFICATIONRULE_ID")
+            joinColumns=
+            @JoinColumn(name="NOTIFICATIONRULE_ID", referencedColumnName="ID"),
+            inverseJoinColumns=
+            @JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
     )
-    @JoinColumn(name = "PROJECT_ID")
     @OrderBy("name ASC, version ASC")
     private List<Project> projects;
 

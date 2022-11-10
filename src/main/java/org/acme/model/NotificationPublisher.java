@@ -37,7 +37,6 @@ public class NotificationPublisher extends PanacheEntityBase implements Serializ
     @GeneratedValue(strategy=GenerationType.AUTO)
     @JsonIgnore
     @Column(name="ID")
-    @Convert(converter = LongToIntConverter.class)
     private int id;
 
     //@Persistent(defaultFetchGroup = "true")

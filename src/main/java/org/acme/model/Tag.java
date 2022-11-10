@@ -47,7 +47,8 @@ public class Tag implements Serializable {
 
     @Id
     @JsonIgnore
-    private long id;
+    @Column(name = "ID")
+    private int id;
 
     @Column(name = "NAME", nullable = false)
     @NotBlank
@@ -61,11 +62,11 @@ public class Tag implements Serializable {
     @OneToMany(mappedBy = "id")
     private List<Project> projects;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
