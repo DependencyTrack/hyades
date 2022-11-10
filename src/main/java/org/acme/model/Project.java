@@ -109,6 +109,9 @@ public class Project implements Serializable {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The version may only contain printable characters")
     private String version;
 
+    @ManyToOne
+    @JoinColumn(name = "PARENT_PROJECT_ID")
+    private Project parent;
     @OneToMany(mappedBy = "parent")
     private Collection<Project> children;
 
