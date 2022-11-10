@@ -18,11 +18,6 @@
  */
 package org.acme.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.acme.common.TrimmedStringDeserializer;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 

@@ -129,8 +129,14 @@ public class Project implements Serializable {
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The SWID tagId may only contain printable characters")
     private String swidTagId;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "TAG_ID")
+    @OneToMany()
+    @JoinTable(
+            name = "PROJECTS_TAGS",
+            joinColumns=
+            @JoinColumn(name="PROJECT_ID", referencedColumnName="ID"),
+            inverseJoinColumns=
+            @JoinColumn(name="TAG_ID", referencedColumnName="ID")
+    )
     @OrderBy("name ASC")
     private List<Tag> tags;
 

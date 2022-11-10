@@ -18,15 +18,8 @@
  */
 
 package org.acme.model;
-
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import org.acme.persistence.CacheTypeConverter;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -38,11 +31,6 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.6.0
  */
-@Entity
-@Table(name = "COMPONENTANALYSISCACHE", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"CACHE_TYPE", "TARGET_HOST", "TARGET_TYPE", "TARGET"}, name = "COMPONENTANALYSISCACHE_COMPOSITE_IDX"),
-        @UniqueConstraint(columnNames = {"UUID"}, name = "COMPONENTANALYSISCACHE_UUID_IDX")})
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ComponentAnalysisCache implements Serializable {
 
     private static final long serialVersionUID = 1189261128713368621L;
@@ -52,37 +40,20 @@ public class ComponentAnalysisCache implements Serializable {
         VULNERABILITY
     }
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @JsonIgnore
     private int id;
 
-    @Column(name = "LAST_OCCURRENCE", nullable = false)
-    @NotNull
     private Date lastOccurrence;
 
-    @Column(name = "CACHE_TYPE", columnDefinition = "varchar",nullable = false)
-    @NotNull
-    @Convert(converter = CacheTypeConverter.class)
     private CacheType cacheType;
 
-    @Column(name = "TARGET_HOST", nullable = false)
-    @NotNull
     private String targetHost;
 
-    @Column(name = "TARGET_TYPE", nullable = false)
-    @NotNull
     private String targetType;
 
-    @Column(name = "TARGET", nullable = false)
-    @NotNull
     private String target;
 
-    @Column(name = "RESULT", nullable = true, columnDefinition = "varchar")
     private String result;
 
-    @Column(name = "UUID", columnDefinition = "VARCHAR", length = 36, nullable = false)
-    @NotNull
     private UUID uuid;
 
 

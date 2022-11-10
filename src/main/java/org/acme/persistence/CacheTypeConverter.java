@@ -4,8 +4,6 @@ import org.acme.model.ComponentAnalysisCache;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.UUID;
-
 import static java.util.Optional.ofNullable;
 
 @Converter(autoApply = true)
