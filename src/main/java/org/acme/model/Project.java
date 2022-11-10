@@ -40,6 +40,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -107,6 +108,9 @@ public class Project implements Serializable {
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The version may only contain printable characters")
     private String version;
+
+    @OneToMany(mappedBy = "parent")
+    private Collection<Project> children;
 
     @Column(name = "CLASSIFIER", columnDefinition = "VARCHAR")
     @Convert(converter = ClassifierToStringConverter.class)
@@ -328,6 +332,14 @@ public class Project implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Collection<Project> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Collection<Project> children) {
+        this.children = children;
     }
 
     @Override
