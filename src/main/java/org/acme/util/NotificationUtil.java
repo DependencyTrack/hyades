@@ -265,20 +265,23 @@ public final class NotificationUtil {
         return builder.build();
     }
 
-//   public static void loadDefaultNotificationPublishers(NotificationHibernateManager hibernateManager) throws IOException {
-//        for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
-//            File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
-//            // TODO QueryManager
-////            if (qm.isEnabled(ConfigPropertyConstants.NOTIFICATION_TEMPLATE_DEFAULT_OVERRIDE_ENABLED)) {
-////                ConfigProperty templateBaseDir = qm.getConfigProperty(
-////                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getGroupName(),
-////                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getPropertyName()
-////                );
-////                File userProvidedTemplateFile = new File(Path.of(templateBaseDir.getPropertyValue(), publisher.getPublisherTemplateFile()).toUri());
-////                if (userProvidedTemplateFile.exists()) {
-////                    templateFile = userProvidedTemplateFile;
-////                }
-////            }
+   public static void loadDefaultNotificationPublishers(NotificationHibernateManager hibernateManager) throws IOException {
+        for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
+            File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
+            // TODO QueryManager
+//            if (qm.isEnabled(ConfigPropertyConstants.NOTIFICATION_TEMPLATE_DEFAULT_OVERRIDE_ENABLED)) {
+//                ConfigProperty templateBaseDir = qm.getConfigProperty(
+//                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getGroupName(),
+//                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getPropertyName()
+//                );
+//                File userProvidedTemplateFile = new File(Path.of(templateBaseDir.getPropertyValue(), publisher.getPublisherTemplateFile()).toUri());
+//                if (userProvidedTemplateFile.exists()) {
+//                    templateFile = userProvidedTemplateFile;
+//                }
+//            }
+
+            // @TODO do we need update and create queries below?
+
 //            final String templateContent = FileUtils.readFileToString(templateFile, UTF_8);
 //            final NotificationPublisher existingPublisher = hibernateManager.getDefaultNotificationPublisher(publisher.getPublisherClass());
 //            if (existingPublisher == null) {
@@ -296,6 +299,6 @@ public final class NotificationUtil {
 //                existingPublisher.setDefaultPublisher(publisher.isDefaultPublisher());
 //                qm.updateNotificationPublisher(existingPublisher);
 //            }
-//        }
-//    }
+        }
+    }
 }

@@ -126,6 +126,9 @@ public class NotificationRule extends PanacheEntityBase {
     @NotNull
     private UUID uuid;
 
+    @Column(name = "NOTIFY_CHILDREN") // New column, must allow nulls on existing data bases
+    private boolean notifyChildren;
+
     public int getId() {
         return id;
     }
@@ -166,6 +169,14 @@ public class NotificationRule extends PanacheEntityBase {
 
     public void setNotificationLevel(NotificationLevel notificationLevel) {
         this.notificationLevel = notificationLevel;
+    }
+
+    public boolean isNotifyChildren() {
+        return notifyChildren;
+    }
+
+    public void setNotifyChildren(boolean notifyChildren) {
+        this.notifyChildren = notifyChildren;
     }
 
     public List<Project> getProjects() {

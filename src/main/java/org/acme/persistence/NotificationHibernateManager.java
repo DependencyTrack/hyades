@@ -52,25 +52,25 @@ public class NotificationHibernateManager {
         return filtered.get(0);
     }
 
-    /**
-     * Creates a NotificationPublisher object.
-     * @param name The name of the NotificationPublisher
-     * @return a NotificationPublisher
-     */
-    public NotificationPublisher createNotificationPublisher(final String name, final String description,
-                                                             final Class<Publisher> publisherClass, final String templateContent,
-                                                             final String templateMimeType, final boolean defaultPublisher) {
-        final NotificationPublisher publisher = new NotificationPublisher();
-        publisher.setName(name);
-        publisher.setDescription(description);
-        publisher.setPublisherClass(publisherClass.getName());
-        publisher.setTemplate(templateContent);
-        publisher.setTemplateMimeType(templateMimeType);
-        publisher.setDefaultPublisher(defaultPublisher);
-        // all modifications are automatically persisted on transaction commit.
-        publisher.persist();
-        // TODO -> pm.getFetchPlan().addGroup(NotificationPublisher.FetchGroup.ALL.name());
-        return NotificationPublisher.findById(publisher.getId());
-    }
+//    /**
+//     * Creates a NotificationPublisher object.
+//     * @param name The name of the NotificationPublisher
+//     * @return a NotificationPublisher
+//     */
+//    public NotificationPublisher createNotificationPublisher(final String name, final String description,
+//                                                             final Class<Publisher> publisherClass, final String templateContent,
+//                                                             final String templateMimeType, final boolean defaultPublisher) {
+//        final NotificationPublisher publisher = new NotificationPublisher();
+//        publisher.setName(name);
+//        publisher.setDescription(description);
+//        publisher.setPublisherClass(publisherClass.getName());
+//        publisher.setTemplate(templateContent);
+//        publisher.setTemplateMimeType(templateMimeType);
+//        publisher.setDefaultPublisher(defaultPublisher);
+//        // all modifications are automatically persisted on transaction commit.
+//        publisher.persist();
+//        // TODO -> pm.getFetchPlan().addGroup(NotificationPublisher.FetchGroup.ALL.name());
+//        return NotificationPublisher.findById(publisher.getId());
+//    }
 
 }
