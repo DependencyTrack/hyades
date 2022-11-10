@@ -11,6 +11,7 @@ import org.acme.common.ApplicationProperty;
 import org.acme.common.ConfigKey;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Notification;
+import org.acme.notification.NotificationRouter;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -42,9 +43,10 @@ public class NotificationConsumer  {
             LOGGER.warn("System requirements not satisfied, skipping");
             return;
         }
+        NotificationRouter router = new NotificationRouter();
         final var properties = new Properties();
-        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "notification");
+        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.bootstrapServer());
+        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.notificationApplicationId());
         properties.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         Collection<String> topics = new ArrayList<>();
@@ -69,9 +71,9 @@ public class NotificationConsumer  {
                         Consumed.with(Serdes.String(), notificationSerde));
         kStreams.foreach(new ForeachAction<String, Notification>() {
             @Override
-            public void apply(String s, Notification eventData) {
+            public void apply(String s, Notification notification) {
                 System.out.println("notification recd");
-                Notification.dispatch(eventData);
+                router.inform(notification);
             }
         });
 
@@ -85,7 +87,5 @@ public class NotificationConsumer  {
 
         STREAMS.start();
     }
-
-
 
 }
