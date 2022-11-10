@@ -12,6 +12,7 @@ import org.acme.common.ConfigKey;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Notification;
 import org.acme.notification.NotificationRouter;
+import org.acme.serde.JacksonSerde;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -24,6 +25,7 @@ import org.apache.kafka.streams.kstream.KStream;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
@@ -37,7 +39,8 @@ public class NotificationConsumer  {
     @Inject
     ApplicationProperty applicationProperty;
 
-    void onStart(@Observes StartupEvent event){
+    @Transactional
+    public void onStart(@Observes StartupEvent event){
         LOGGER.info("Initializing Notification Kafka streams Consumer");
         if (RequirementsVerifier.failedValidation()) {
             LOGGER.warn("System requirements not satisfied, skipping");
@@ -66,11 +69,12 @@ public class NotificationConsumer  {
         topics.add(KafkaTopic.VEX_CONSUMED_NOTIFICATION.getName());
         topics.add(KafkaTopic.VEX_PROCESSED_NOTIFICATION.getName());
         final var streamsBuilder = new StreamsBuilder();
-        final var notificationSerde = new ObjectMapperSerde<>(Notification.class);
+        final var notificationSerde = new JacksonSerde<>(Notification.class);
         KStream<String, Notification> kStreams = streamsBuilder.stream(topics,
                         Consumed.with(Serdes.String(), notificationSerde));
         kStreams.foreach(new ForeachAction<String, Notification>() {
             @Override
+            @Transactional
             public void apply(String s, Notification notification) {
                 System.out.println("notification recd");
                 router.inform(notification);

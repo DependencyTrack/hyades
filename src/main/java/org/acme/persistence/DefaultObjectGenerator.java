@@ -73,18 +73,18 @@ public class DefaultObjectGenerator implements ServletContextListener {
      * Loads the default ConfigProperty objects
      */
     /*private void loadDefaultConfigProperties() {
-        try (QueryManager qm = new QueryManager()) {
+       *//* try (QueryManager qm = new QueryManager()) {
             LOGGER.info("Synchronizing config properties to datastore");
             for (final ConfigPropertyConstants cpc : ConfigPropertyConstants.values()) {
                 LOGGER.debug("Creating config property: " + cpc.getGroupName() + " / " + cpc.getPropertyName());
                 if (qm.getConfigProperty(cpc.getGroupName(), cpc.getPropertyName()) == null) {
                     qm.createConfigProperty(cpc.getGroupName(), cpc.getPropertyName(), cpc.getDefaultPropertyValue(), cpc.getPropertyType(), cpc.getDescription());
                 }
-            }
+            }*//*
             // dispatch a call to PoC configuration endpoint
-          *//*  List<ConfigProperty> configProperties = qm.getConfigProperties();
-            KafkaServiceUtil.postConfig(configProperties);*//*
-        }
+            //List<ConfigProperty> configProperties = qm.getConfigProperties();
+            KafkaServiceUtil.postConfig(configProperties);
+
     }*/
 
     /**

@@ -30,6 +30,7 @@ import org.acme.persistence.NotificationHibernateManager;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.Json;
+import javax.transaction.Transactional;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class NotificationRouter {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
 
+    @Transactional
     public void inform(final Notification notification) {
         for (final NotificationRule rule: resolveRules(notification)) {
 
@@ -110,8 +112,8 @@ public class NotificationRouter {
                 rule.getProjects() != null
                 && rule.getProjects().size() > 0;
     }
-
-   List<NotificationRule> resolveRules(final Notification notification) {
+    @Transactional
+    public List<NotificationRule> resolveRules(final Notification notification) {
 
         // The notification rules to process for this specific notification
         List<NotificationRule> rules = new ArrayList<>();
