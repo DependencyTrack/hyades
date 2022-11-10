@@ -10,7 +10,8 @@
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <lib.alpine.version>2.1.0</lib.alpine.version>
+<!--    hardcoding the version of alpine. Need to check this later in poc-->
+    <lib.alpine.version>${project.parent.version}</lib.alpine.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <lib.cyclonedx-java.version>7.2.1</lib.cyclonedx-java.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
@@ -161,8 +162,27 @@
     </dependency>
     <dependency>
       <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-all</artifactId>
+      <version>1.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-cache</artifactId>
+      <version>1.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-ratelimiter</artifactId>
       <version>1.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>jcache</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>

@@ -156,8 +156,7 @@ public class AnalyzerTopology {
         componentCacheJoinStream
                 .split(Named.as("vuln-result-cache"))
                 .branch(
-                        (identifier, vulnResultAggregate) -> vulnResultAggregate.getVulnerabilityResults() != null
-                                && vulnResultAggregate.getVulnerabilityResults().size() > 0,
+                        (identifier, vulnResultAggregate) -> false,
                         Branched.<String, VulnerabilityResultAggregate>withConsumer(vulnResultAggregateStream -> vulnResultAggregateStream
                                 .peek((identifier, vulnResultAggregate) -> LOGGER.info("Cache hit: {}", identifier),
                                         Named.as("log_cache_hit"))
