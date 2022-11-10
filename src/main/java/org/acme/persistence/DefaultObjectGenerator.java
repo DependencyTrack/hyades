@@ -19,6 +19,7 @@
 package org.acme.persistence;
 
 import alpine.common.logging.Logger;
+import io.quarkus.arc.deployment.SyntheticBeansProcessor;
 import org.acme.RequirementsVerifier;
 import org.acme.model.*;
 import org.acme.notification.publisher.DefaultNotificationPublishers;
@@ -51,7 +52,7 @@ public class DefaultObjectGenerator implements ServletContextListener {
             return;
         }
         //loadDefaultConfigProperties();
-        loadDefaultNotificationPublishers();
+        //loadDefaultNotificationPublishers();
 
         try {
             new CweImporter().processCweDefinitions();

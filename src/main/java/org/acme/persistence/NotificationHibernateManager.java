@@ -1,16 +1,22 @@
 package org.acme.persistence;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import io.quarkus.runtime.Startup;
 import org.acme.model.NotificationPublisher;
 import org.acme.model.NotificationRule;
 import org.acme.notification.publisher.Publisher;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Transactional
+@ApplicationScoped
+@Startup
 public class NotificationHibernateManager {
 
     public PanacheQuery<NotificationRule> getAllNotificationRules() {
@@ -32,6 +38,7 @@ public class NotificationHibernateManager {
      * @param clazz The Class of the NotificationPublisher
      * @return a NotificationPublisher
      */
+    @Transactional
     public NotificationPublisher getDefaultNotificationPublisher(final Class<Publisher> clazz) {
         return getDefaultNotificationPublisher(clazz.getCanonicalName());
     }
@@ -41,6 +48,7 @@ public class NotificationHibernateManager {
      * @param clazz The Class of the NotificationPublisher
      * @return a NotificationPublisher
      */
+    @Transactional
     private NotificationPublisher getDefaultNotificationPublisher(final String clazz) {
         List<NotificationPublisher> filtered;
         try (Stream<NotificationPublisher> notificationPublishers = NotificationPublisher.streamAll()) {
