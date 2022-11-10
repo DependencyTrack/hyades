@@ -61,7 +61,8 @@ public class SnykAnalyzer implements Analyzer {
     private List<VulnerabilityResult> analyzeComponent(final Component component) {
         final Page<Issue> issuesPage;
         try {
-            issuesPage = Decorators.ofCheckedSupplier(() -> client.getIssues(component.getPurl().getCoordinates()))
+            issuesPage = Decorators
+                    .ofCheckedSupplier(() -> client.getIssues(component.getPurl().getCoordinates()))
                     .withCache(io.github.resilience4j.cache.Cache.of(cache))
                     .withRateLimiter(rateLimiter)
                     .apply(component.getPurl().getCoordinates());
