@@ -34,12 +34,15 @@ class NotificationRouterTest {
     @Test
     @TestTransaction
     void testConsolePublisher() {
-        entityManager.createNativeQuery("""
+        final int publisherId = (int) entityManager.createNativeQuery("""
                 INSERT INTO "NOTIFICATIONPUBLISHER" ("DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID") VALUES
-                    (true, 'foo', 'org.acme.notification.publisher.ConsolePublisher', 'template','text/plain', '1781db56-51a8-462a-858c-6030a2341dfc');                 
+                    (true, 'foo', 'org.acme.notification.publisher.ConsolePublisher', 'template','text/plain', '1781db56-51a8-462a-858c-6030a2341dfc')
+                RETURNING "ID";
+                """).getSingleResult();
+        entityManager.createNativeQuery("""            
                 INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
-                    (true, 'foo', 1, 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
-                """).executeUpdate();
+                    (true, 'foo', :publisherId, 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
+                """).setParameter("publisherId", publisherId).executeUpdate();
 
         final var notification = new Notification()
                 .scope(NotificationScope.PORTFOLIO)
