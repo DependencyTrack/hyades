@@ -9,11 +9,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.UUID;
 
 @QuarkusTest
 class NotificationRuleRepositoryTest {
+
+    @Inject
+    EntityManager entityManager;
 
     @Inject
     NotificationRuleRepository repository;
@@ -21,7 +24,10 @@ class NotificationRuleRepositoryTest {
     @Test
     @TestTransaction
     public void testRuleLevelEqual() {
-        createRule(NotificationScope.PORTFOLIO, NotificationLevel.WARNING);
+        entityManager.createNativeQuery("""
+                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
+                                    (true, 'foo', 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
+                """).executeUpdate();
 
         final List<NotificationRule> rules = repository
                 .findByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.WARNING);
@@ -31,7 +37,10 @@ class NotificationRuleRepositoryTest {
     @Test
     @TestTransaction
     public void testRuleLevelBelow() {
-        createRule(NotificationScope.PORTFOLIO, NotificationLevel.WARNING);
+        entityManager.createNativeQuery("""
+                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
+                                    (true, 'foo', 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
+                """).executeUpdate();
 
         final List<NotificationRule> rules = repository
                 .findByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.ERROR);
@@ -41,21 +50,14 @@ class NotificationRuleRepositoryTest {
     @Test
     @TestTransaction
     public void testRuleLevelAbove() {
-        createRule(NotificationScope.PORTFOLIO, NotificationLevel.WARNING);
+        entityManager.createNativeQuery("""
+                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
+                                    (true, 'foo', 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
+                """).executeUpdate();
 
         final List<NotificationRule> rules = repository
                 .findByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL);
         Assertions.assertEquals(0, rules.size());
-    }
-
-    private void createRule(final NotificationScope scope, final NotificationLevel level) {
-        final var rule = new NotificationRule();
-        rule.setUuid(UUID.randomUUID());
-        rule.setName("Test Rule");
-        rule.setScope(scope);
-        rule.setNotificationLevel(level);
-        //rule.setNotifyOn(Set.of(NotificationGroup.NEW_VULNERABILITY));
-        repository.persist(rule);
     }
 
 }

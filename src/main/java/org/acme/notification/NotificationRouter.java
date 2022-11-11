@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.CDI;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -104,7 +105,7 @@ public class NotificationRouter {
                 } else {
                     LOGGER.error("The defined notification publisher is not assignable from " + Publisher.class.getCanonicalName());
                 }
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException | UnsatisfiedResolutionException e) {
                 LOGGER.error("An error occurred while instantiating a notification publisher", e);
             } catch (PublisherException publisherException) {
                 LOGGER.error("An error occured during the publication of the notification", publisherException);
