@@ -27,17 +27,30 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.notification.NotificationGroup;
 import org.acme.notification.NotificationScope;
-import org.acme.persistence.LongToIntConverter;
 import org.acme.persistence.NotificationLevelConverter;
 import org.acme.persistence.NotificationScopeConverter;
 
-import javax.persistence.*;
-import javax.transaction.Transactional;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
 
 /**
  * Defines a Model class for notification configurations.
@@ -45,9 +58,7 @@ import java.util.*;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Inheritance(strategy= InheritanceType.JOINED)
 @Table(name = "NOTIFICATIONRULE")
-@Transactional
 public class NotificationRule extends PanacheEntityBase {
 
     private static final long serialVersionUID = 2534439091019367263L;
@@ -55,7 +66,6 @@ public class NotificationRule extends PanacheEntityBase {
     @Id
     @JsonIgnore
     @Column(name = "ID")
-    //@Convert(converter = LongToIntConverter.class)
     private int id;
 
     /**
@@ -80,16 +90,16 @@ public class NotificationRule extends PanacheEntityBase {
     @Convert(converter = NotificationLevelConverter.class)
     private NotificationLevel notificationLevel;
 
-//    @Join(column = "NOTIFICATIONRULE_ID")
+    //    @Join(column = "NOTIFICATIONRULE_ID")
 //    @Element(column = "PROJECT_ID")
 //    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC, version ASC"))
     @OneToMany()
     @JoinTable(
             name = "NOTIFICATIONRULE_PROJECTS",
-            joinColumns=
-            @JoinColumn(name="NOTIFICATIONRULE_ID", referencedColumnName="ID"),
-            inverseJoinColumns=
-            @JoinColumn(name="PROJECT_ID", referencedColumnName="ID")
+            joinColumns =
+            @JoinColumn(name = "NOTIFICATIONRULE_ID", referencedColumnName = "ID"),
+            inverseJoinColumns =
+            @JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID")
     )
     @OrderBy("name ASC, version ASC")
     private List<Project> projects;
@@ -207,7 +217,7 @@ public class NotificationRule extends PanacheEntityBase {
         Set<NotificationGroup> result = new TreeSet<>();
         if (notifyOn != null) {
             String[] groups = notifyOn.split(",");
-            for (String s: groups) {
+            for (String s : groups) {
                 result.add(NotificationGroup.valueOf(s.trim()));
             }
         }
@@ -222,9 +232,9 @@ public class NotificationRule extends PanacheEntityBase {
         StringBuilder sb = new StringBuilder();
         List<NotificationGroup> list = new ArrayList<>(groups);
         Collections.sort(list);
-        for (int i=0; i<list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             sb.append(list.get(i));
-            if (i+1 < list.size()) {
+            if (i + 1 < list.size()) {
                 sb.append(",");
             }
         }
