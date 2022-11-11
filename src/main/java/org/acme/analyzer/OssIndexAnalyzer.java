@@ -79,7 +79,7 @@ public class OssIndexAnalyzer implements Analyzer {
                         results.addAll(processReport(report, entry.getValue()));
                         iterator.remove(); // Do not query OSS Index for these coordinates anymore
                     },
-                    () -> LOGGER.debug("Cache miss for {}", entry.getKey())
+                    () -> LOGGER.info("Cache miss for {}", entry.getKey())
             );
         }
         if (purlComponents.isEmpty()) {

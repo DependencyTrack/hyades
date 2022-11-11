@@ -1,5 +1,6 @@
 package org.acme.analyzer;
 
+import io.github.resilience4j.cache.Cache;
 import io.github.resilience4j.decorators.Decorators;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import org.acme.client.snyk.Issue;
@@ -15,7 +16,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,22 +28,27 @@ public class SnykAnalyzer implements Analyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(SnykAnalyzer.class);
 
     private final SnykClient client;
-    private final Cache<String, Page<Issue>> cache;
+    private final Cache<String, Page<Issue>> cacheCtx;
     private final RateLimiter rateLimiter;
     private final CweResolver cweResolver;
     private final boolean isEnabled;
 
+
     @Inject
     public SnykAnalyzer(final SnykClient client,
-                        @Named("snykCache") final Cache<String, Page<Issue>> cache,
+                        @Named("snykCache") final javax.cache.Cache<String, Page<Issue>> cache,
                         @Named("snykRateLimiter") final RateLimiter rateLimiter,
                         final CweResolver cweResolver,
                         @ConfigProperty(name = "scanner.snyk.enabled", defaultValue = "false") final boolean isEnabled) {
         this.client = client;
-        this.cache = cache;
+        this.cacheCtx = io.github.resilience4j.cache.Cache.of(cache);
         this.rateLimiter = rateLimiter;
         this.cweResolver = cweResolver;
         this.isEnabled = isEnabled;
+
+        this.cacheCtx.getEventPublisher()
+                .onCacheHit(event -> LOGGER.info("Cache Hit for {}", event.getCacheKey()))
+                .onCacheMiss(event -> LOGGER.info("Cache Miss for {}", event.getCacheKey()));
     }
 
     @Override
@@ -63,7 +68,7 @@ public class SnykAnalyzer implements Analyzer {
         try {
             issuesPage = Decorators
                     .ofCheckedSupplier(() -> client.getIssues(component.getPurl().getCoordinates()))
-                    .withCache(io.github.resilience4j.cache.Cache.of(cache))
+                    .withCache(cacheCtx)
                     .withRateLimiter(rateLimiter)
                     .apply(component.getPurl().getCoordinates());
         } catch (Throwable e) {
