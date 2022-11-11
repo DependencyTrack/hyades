@@ -6,29 +6,21 @@
   <artifactId>kafka-poc</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <parent>
-    <groupId>us.springett</groupId>
-    <artifactId>alpine-parent</artifactId>
-    <version>2.1.0</version>
-  </parent>
   <properties>
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<!--    hardcoding the version of alpine. Need to check this later in poc-->
-    <lib.alpine.version>${project.parent.version}</lib.alpine.version>
+    <lib.alpine.version>2.1.0</lib.alpine.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <lib.cyclonedx-java.version>7.2.0</lib.cyclonedx-java.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.unirest.version>3.13.12</lib.unirest.version>
     <lib.pebble.version>3.1.6</lib.pebble.version>
-    <lib.lucene.version>8.11.2</lib.lucene.version>
     <lib.jdbc-driver.postgresql.version>42.5.0</lib.jdbc-driver.postgresql.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.13.4.Final</quarkus.platform.version>
     <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
-
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
@@ -211,7 +203,6 @@
   </dependencies>
   <build>
     <plugins>
-
         <plugin>
           <groupId>org.cyclonedx</groupId>
           <artifactId>cyclonedx-maven-plugin</artifactId>
@@ -273,18 +264,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>10.0.12</version>
-        <configuration>
-          <webApp>
-            <contextPath>/</contextPath>
-          </webApp>
-          <reload>manual</reload>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
         <executions>
@@ -305,18 +284,6 @@
     </plugins>
   </build>
   <profiles>
-
-    <profile>
-      <id>embedded-jetty</id>
-      <activation>
-        <property>
-          <name>env.ACTIVATE_EMBEDDED_JETTY</name>
-          <value>true</value>
-        </property>
-      </activation>
-
-    </profile>
-
     <profile>
       <id>native</id>
       <activation>
