@@ -19,9 +19,14 @@
 package org.acme.notification.publisher;
 
 import alpine.common.logging.Logger;
+import alpine.common.util.BooleanUtil;
 import com.mitchellbosecke.pebble.PebbleEngine;
+import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import org.acme.model.ConfigProperty;
+import org.acme.model.ConfigPropertyConstants;
 import org.acme.model.Notification;
 import org.acme.model.Team;
+import org.acme.persistence.ConfigPropertyRepository;
 import org.acme.persistence.ManagedUserRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,6 +36,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import io.quarkus.mailer.Mail;
+import io.quarkus.mailer.Mailer;
 //TODO - needs to be implemented
 
 @ApplicationScoped
@@ -41,9 +48,13 @@ public class SendMailPublisher implements Publisher {
 
     private final ManagedUserRepository managedUserRepository;
 
+    private final ConfigPropertyRepository configPropertyRepository;
+
     @Inject
-    public SendMailPublisher(final ManagedUserRepository managedUserRepository) {
+    Mailer mailer;
+    public SendMailPublisher(final ManagedUserRepository managedUserRepository, final ConfigPropertyRepository configPropertyRepository) {
         this.managedUserRepository = managedUserRepository;
+        this.configPropertyRepository = configPropertyRepository;
     }
 
     public void inform(final Notification notification, final JsonObject config) {
@@ -65,7 +76,7 @@ public class SendMailPublisher implements Publisher {
     }
 
     private void sendNotification(Notification notification, JsonObject config, String[] destinations) {
-        /*PebbleTemplate template = getTemplate(config);
+        PebbleTemplate template = getTemplate(config);
         String mimeType = getTemplateMimeType(config);
         final String content = prepareTemplate(notification, template);
         if (destinations == null || content == null) {
@@ -73,38 +84,18 @@ public class SendMailPublisher implements Publisher {
             return;
         }
         try {
-            final boolean smtpEnabled = Boolean.valueOf(Config.getInstance().getProperty(ConfigKey.SMTP_ENABLED));
-            final String smtpFrom = Config.getInstance().getProperty(ConfigKey.SMTP_FROM_ADDRESS);
-            final String smtpHostname = Config.getInstance().getProperty(ConfigKey.SMTP_SERVER_HOSTNAME);
-            final int smtpPort = Integer.valueOf(Config.getInstance().getProperty(ConfigKey.SMTP_SERVER_PORT));
-            final String smtpUser = Config.getInstance().getProperty(ConfigKey.SMTP_USERNAME);
-            final String smtpPassword = Config.getInstance().getProperty(ConfigKey.SMTP_PASSWORD);
-            final boolean smtpSslTls = Boolean.valueOf(Config.getInstance().getProperty(ConfigKey.SMTP_SSLTLS));
-            final boolean smtpTrustCert = Boolean.valueOf(Config.getInstance().getProperty(ConfigKey.SMTP_TRUSTCERT));
-
+            ConfigProperty smtpEnabledConfig = configPropertyRepository.findByGroupAndName(ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getGroupName(), ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getPropertyName());
+            boolean smtpEnabled = BooleanUtil.valueOf(smtpEnabledConfig.getPropertyValue());
             if (!smtpEnabled) {
                 LOGGER.warn("SMTP is not enabled");
                 return; // smtp is not enabled
             }
-            final boolean smtpAuth = (smtpUser != null && smtpPassword != null);
-            final String password = (smtpPassword != null) ? DataEncryption.decryptAsString(smtpPassword) : null;
-            final SendMail sendMail = new SendMail()
-                    .from(smtpFrom)
-                    .to(destinations)
-                    .subject("[Dependency-Track] " + notification.getTitle())
-                    .body(content)
-                    .bodyMimeType(mimeType)
-                    .host(smtpHostname)
-                    .port(Integer.valueOf(smtpPort))
-                    .username(smtpUser)
-                    .password(password)
-                    .smtpauth(smtpAuth)
-                    .useStartTLS(smtpSslTls)
-                    .trustCert(smtpTrustCert);
-            sendMail.send();
+            for (String destination: destinations){
+                mailer.send(Mail.withText(destination, "\"[Dependency-Track] \" + notification.getTitle()", content));
+            }
         } catch (Exception e) {
             LOGGER.error("An error occurred sending output email notification", e);
-        }*/
+        }
     }
 
     @Override
