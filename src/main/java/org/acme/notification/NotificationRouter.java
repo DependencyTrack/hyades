@@ -45,7 +45,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.transaction.Transactional;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

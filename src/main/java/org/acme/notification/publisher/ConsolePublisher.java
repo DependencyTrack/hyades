@@ -20,12 +20,16 @@ package org.acme.notification.publisher;
 
 import alpine.common.logging.Logger;
 import com.mitchellbosecke.pebble.PebbleEngine;
+import io.quarkus.runtime.Startup;
 import org.acme.model.Notification;
 import org.acme.model.NotificationLevel;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
 import java.io.PrintStream;
 
+@ApplicationScoped
+@Startup // Force bean creation even though no direct injection points exist
 public class ConsolePublisher implements Publisher {
 
     private static final Logger LOGGER = Logger.getLogger(ConsolePublisher.class);
