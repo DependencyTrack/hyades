@@ -1,18 +1,11 @@
 package org.acme.consumer;
 
-import alpine.Config;
-import alpine.common.logging.Logger;
-import alpine.common.metrics.Metrics;
-import io.micrometer.core.instrument.binder.kafka.KafkaStreamsMetrics;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import io.quarkus.runtime.StartupEvent;
-import org.acme.RequirementsVerifier;
 import org.acme.common.ApplicationProperty;
-import org.acme.common.ConfigKey;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Notification;
 import org.acme.notification.NotificationRouter;
-import org.acme.serde.JacksonSerde;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -20,11 +13,8 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.ForeachAction;
 import org.apache.kafka.streams.kstream.KStream;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.control.ActivateRequestContext;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -32,24 +22,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
-public class NotificationConsumer  {
+public class NotificationConsumer {
 
-    private static final Logger LOGGER = Logger.getLogger(NotificationConsumer.class);
-
-    private static KafkaStreams STREAMS;
-    private static KafkaStreamsMetrics STREAMS_METRICS;
     @Inject
     ApplicationProperty applicationProperty;
     @Inject
     NotificationRouter router;
 
     @Transactional
-    public void onStart(@Observes StartupEvent event){
-        LOGGER.info("Initializing Notification Kafka streams Consumer");
-        if (RequirementsVerifier.failedValidation()) {
-            LOGGER.warn("System requirements not satisfied, skipping");
-            return;
-        }
+    public void onStart(@Observes StartupEvent event) {
         final var properties = new Properties();
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.bootstrapServer());
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.notificationApplicationId());
@@ -72,26 +53,15 @@ public class NotificationConsumer  {
         topics.add(KafkaTopic.VEX_CONSUMED_NOTIFICATION.getName());
         topics.add(KafkaTopic.VEX_PROCESSED_NOTIFICATION.getName());
         final var streamsBuilder = new StreamsBuilder();
-        final var notificationSerde = new JacksonSerde<>(Notification.class);
+        final var notificationSerde = new ObjectMapperSerde<>(Notification.class);
         KStream<String, Notification> kStreams = streamsBuilder.stream(topics,
-                        Consumed.with(Serdes.String(), notificationSerde));
-        kStreams.foreach(new ForeachAction<String, Notification>() {
-            @Override
-            public void apply(String s, Notification notification) {
-                System.out.println("notification recd");
-                router.inform(notification);
-            }
-        });
+                Consumed.with(Serdes.String(), notificationSerde));
+        kStreams.foreach((key, notification) -> router.inform(notification));
 
-        STREAMS = new KafkaStreams(streamsBuilder.build(), new StreamsConfig(properties));
-
-        if (true) {
-            LOGGER.info("Registering Kafka streams metrics");
-            STREAMS_METRICS = new KafkaStreamsMetrics(STREAMS);
-            STREAMS_METRICS.bindTo(Metrics.getRegistry());
-        }
-
-        STREAMS.start();
+        final var streams = new KafkaStreams(streamsBuilder.build(), new StreamsConfig(properties));
+        streams.start();
     }
+
+
 
 }
