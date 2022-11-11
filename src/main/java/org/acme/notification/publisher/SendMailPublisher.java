@@ -17,45 +17,52 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.acme.notification.publisher;
-import alpine.Config;
+
 import alpine.common.logging.Logger;
 import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import org.acme.common.ApplicationProperty;
-import org.acme.common.ConfigKey;
 import org.acme.model.Notification;
+import org.acme.model.Team;
+import org.acme.persistence.ManagedUserRepository;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 //TODO - needs to be implemented
 
+@ApplicationScoped
 public class SendMailPublisher implements Publisher {
 
     private static final Logger LOGGER = Logger.getLogger(SendMailPublisher.class);
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
+
+    private final ManagedUserRepository managedUserRepository;
+
     @Inject
-    //static ApplicationProperty applicationProperty;
+    public SendMailPublisher(final ManagedUserRepository managedUserRepository) {
+        this.managedUserRepository = managedUserRepository;
+    }
 
     public void inform(final Notification notification, final JsonObject config) {
         if (config == null) {
             LOGGER.warn("No configuration found. Skipping notification.");
             return;
         }
-        /*final String[] destinations = parseDestination(config);
-        sendNotification(notification, config, destinations);*/
+        final String[] destinations = parseDestination(config);
+        sendNotification(notification, config, destinations);
     }
 
-    /*public void inform(final Notification notification, final JsonObject config, List<Team> teams) {
+    public void inform(final Notification notification, final JsonObject config, List<Team> teams) {
         if (config == null) {
             LOGGER.warn("No configuration found. Skipping notification.");
             return;
         }
         final String[] destinations = parseDestination(config, teams);
         sendNotification(notification, config, destinations);
-    }*/
+    }
 
     private void sendNotification(Notification notification, JsonObject config, String[] destinations) {
         /*PebbleTemplate template = getTemplate(config);
@@ -98,7 +105,7 @@ public class SendMailPublisher implements Publisher {
         } catch (Exception e) {
             LOGGER.error("An error occurred sending output email notification", e);
         }*/
-  }
+    }
 
     @Override
     public PebbleEngine getTemplateEngine() {
@@ -108,25 +115,27 @@ public class SendMailPublisher implements Publisher {
     static String[] parseDestination(final JsonObject config) {
         String destinationString = config.getString("destination");
         if ((destinationString == null) || destinationString.isEmpty()) {
-          return null;
+            return null;
         }
         return destinationString.split(",");
     }
 
-    /*static String[] parseDestination(final JsonObject config, final List<Team> teams) {
+    String[] parseDestination(final JsonObject config, final List<Team> teams) {
         String[] destination = teams.stream().flatMap(
-                team -> Stream.of(
-                                Arrays.stream(config.getString("destination").split(",")).filter(Predicate.not(String::isEmpty)),
-                                Optional.ofNullable(team.getManagedUsers()).orElseGet(Collections::emptyList).stream().map(ManagedUser::getEmail).filter(Objects::nonNull),
-                                Optional.ofNullable(team.getLdapUsers()).orElseGet(Collections::emptyList).stream().map(LdapUser::getEmail).filter(Objects::nonNull),
-                                Optional.ofNullable(team.getOidcUsers()).orElseGet(Collections::emptyList).stream().map(OidcUser::getEmail).filter(Objects::nonNull)
-                        )
-                        .reduce(Stream::concat)
-                        .orElseGet(Stream::empty)
+                        team -> Stream.of(
+                                        Arrays.stream(config.getString("destination").split(",")).filter(Predicate.not(String::isEmpty)),
+                                        managedUserRepository.findEmailsByTeam(team.getId()).stream()
+                                        // FIXME: The email field of LdapUser and OidcUser is transient and not persisted in the DB
+                                        // Maybe this was always a no-op and can safely be removed.
+                                        //Optional.ofNullable(team.getLdapUsers()).orElseGet(Collections::emptyList).stream().map(LdapUser::getEmail).filter(Objects::nonNull),
+                                        //Optional.ofNullable(team.getOidcUsers()).orElseGet(Collections::emptyList).stream().map(OidcUser::getEmail).filter(Objects::nonNull)
+                                )
+                                .reduce(Stream::concat)
+                                .orElseGet(Stream::empty)
                 )
                 .distinct()
                 .toArray(String[]::new);
         return destination.length == 0 ? null : destination;
-    }*/
+    }
 
 }
