@@ -11,6 +11,7 @@ import org.acme.analyzer.SnykAnalyzer;
 import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
 import org.acme.model.VulnerabilityResultAggregate;
+import org.acme.notification.NotificationRouter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -50,12 +51,15 @@ public class AnalyzerTopology {
 
     private final OssIndexAnalyzer ossIndexAnalyzer;
     private final SnykAnalyzer snykAnalyzer;
+    private final NotificationRouter notificationRouter;
 
     @Inject
     public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer,
-                            final SnykAnalyzer snykAnalyzer) {
+                            final SnykAnalyzer snykAnalyzer,
+                            final NotificationRouter notificationRouter) {
         this.ossIndexAnalyzer = ossIndexAnalyzer;
         this.snykAnalyzer = snykAnalyzer;
+        this.notificationRouter = notificationRouter;
     }
 
     @Produces
@@ -260,6 +264,9 @@ public class AnalyzerTopology {
                             .with(Serdes.String(), vulnResultSerde)
                             .withName("produce_snyk_results_to_component-analysis-vuln_topic"));
         }
+
+        // FIXME: Modularize the application, move the notification topology to it's own Quarkus app
+        NotificationTopologyBuilder.buildTopology(streamsBuilder, notificationRouter);
 
         return streamsBuilder.build();
     }

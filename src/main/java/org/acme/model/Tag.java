@@ -1,4 +1,3 @@
-package org.acme.model;
 /*
  * This file is part of Dependency-Track.
  *
@@ -17,20 +16,15 @@ package org.acme.model;
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
+package org.acme.model;
 
 import alpine.common.validation.RegexSequence;
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.acme.common.TrimmedStringDeserializer;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.Extension;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.Order;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -44,35 +38,35 @@ import java.util.Objects;
  * @author Steve Springett
  * @since 3.0.0
  */
-@PersistenceCapable
+@Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Table(name = "TAG")
 public class Tag implements Serializable {
 
     private static final long serialVersionUID = -7798359808664731988L;
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+    @Id
     @JsonIgnore
-    private long id;
+    @Column(name = "ID")
+    private int id;
 
-    @Persistent
-    @Column(name = "NAME", allowsNull = "false")
+    @Column(name = "NAME", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
     @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
     private String name;
 
-    @Persistent
     @JsonIgnore
-    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
+    @OrderBy("name ASC")
+    @OneToMany(mappedBy = "id")
     private List<Project> projects;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

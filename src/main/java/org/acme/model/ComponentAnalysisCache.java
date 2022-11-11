@@ -18,19 +18,8 @@
  */
 
 package org.acme.model;
-
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
-
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-import javax.jdo.annotations.Unique;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -42,9 +31,6 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.6.0
  */
-@PersistenceCapable
-@Unique(name="COMPONENTANALYSISCACHE_COMPOSITE_IDX", members={"cacheType", "targetHost", "targetType", "target"})
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ComponentAnalysisCache implements Serializable {
 
     private static final long serialVersionUID = 1189261128713368621L;
@@ -54,52 +40,28 @@ public class ComponentAnalysisCache implements Serializable {
         VULNERABILITY
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
-    @JsonIgnore
-    private long id;
+    private int id;
 
-    @Persistent
-    @Column(name = "LAST_OCCURRENCE", allowsNull = "false")
-    @NotNull
     private Date lastOccurrence;
 
-    @Persistent
-    @Column(name = "CACHE_TYPE", allowsNull = "false")
-    @NotNull
     private CacheType cacheType;
 
-    @Persistent
-    @Column(name = "TARGET_HOST", allowsNull = "false")
-    @NotNull
     private String targetHost;
 
-    @Persistent
-    @Column(name = "TARGET_TYPE", allowsNull = "false")
-    @NotNull
     private String targetType;
 
-    @Persistent
-    @Column(name = "TARGET", allowsNull = "false")
-    @NotNull
     private String target;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "RESULT", allowsNull = "true", jdbcType = "CLOB")
     private String result;
 
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "COMPONENTANALYSISCACHE_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
-    @NotNull
     private UUID uuid;
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

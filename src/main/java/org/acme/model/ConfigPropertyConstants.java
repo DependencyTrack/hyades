@@ -18,7 +18,8 @@
  */
 package org.acme.model;
 
-import alpine.model.IConfigProperty.PropertyType;
+
+import org.acme.common.IConfigProperty.PropertyType;
 import org.apache.commons.lang3.SystemUtils;
 
 public enum
