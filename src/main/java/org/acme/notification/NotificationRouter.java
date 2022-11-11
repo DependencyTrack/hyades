@@ -43,13 +43,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 @ApplicationScoped
-@ActivateRequestContext
 public class NotificationRouter {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
 
-    @Transactional
     public void inform(final Notification notification) {
         for (final NotificationRule rule: resolveRules(notification)) {
 
@@ -129,11 +128,14 @@ public class NotificationRouter {
             final NotificationHibernateManager nm = new NotificationHibernateManager();
             final NotificationLevel level = notification.getLevel();
 
-           try (Stream<NotificationRule> notificationRules = NotificationRule.streamAll()) {
+           Stream<NotificationRule> notificationRules = NotificationRule.streamAll();
 
-               rules = notificationRules
+              /* rules = notificationRules
                        .filter( n -> n.getScope().equals(notification.getScope()))
                        .collect(Collectors.toList());
+
+*/
+               notificationRules = notificationRules.filter( n -> n.getScope().equals(notification.getScope()));
 
                if (NotificationLevel.INFORMATIONAL == level) {
                    rules = notificationRules
@@ -154,7 +156,7 @@ public class NotificationRouter {
                                || "ERROR".equals(n.getNotificationLevel())))
                        .collect(Collectors.toList());
                }
-           }
+
             if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())
                     && notification.getSubject() instanceof final NewVulnerabilityIdentified subject) {
                 // If the rule specified one or more projects as targets, reduce the execution

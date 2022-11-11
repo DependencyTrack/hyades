@@ -40,6 +40,8 @@ public class NotificationConsumer  {
     private static KafkaStreamsMetrics STREAMS_METRICS;
     @Inject
     ApplicationProperty applicationProperty;
+    @Inject
+    NotificationRouter router;
 
     @Transactional
     public void onStart(@Observes StartupEvent event){
@@ -48,7 +50,6 @@ public class NotificationConsumer  {
             LOGGER.warn("System requirements not satisfied, skipping");
             return;
         }
-        NotificationRouter router = new NotificationRouter();
         final var properties = new Properties();
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, applicationProperty.bootstrapServer());
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationProperty.notificationApplicationId());
