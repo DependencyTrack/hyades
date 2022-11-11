@@ -39,6 +39,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.transaction.Transactional;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class NotificationRouter {
         this.ruleRepository = ruleRepository;
     }
 
+    @Transactional
     public void inform(final Notification notification) {
         for (final NotificationRule rule: resolveRules(notification)) {
 
