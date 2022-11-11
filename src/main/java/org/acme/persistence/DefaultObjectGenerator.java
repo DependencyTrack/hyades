@@ -19,17 +19,11 @@
 package org.acme.persistence;
 
 import alpine.common.logging.Logger;
-import io.quarkus.arc.deployment.SyntheticBeansProcessor;
 import org.acme.RequirementsVerifier;
-import org.acme.model.*;
-import org.acme.notification.publisher.DefaultNotificationPublishers;
-import org.acme.util.NotificationUtil;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Creates default objects on an empty database.
@@ -51,8 +45,6 @@ public class DefaultObjectGenerator implements ServletContextListener {
         if (RequirementsVerifier.failedValidation()) {
             return;
         }
-        //loadDefaultConfigProperties();
-        //loadDefaultNotificationPublishers();
 
         try {
             new CweImporter().processCweDefinitions();
@@ -69,33 +61,5 @@ public class DefaultObjectGenerator implements ServletContextListener {
     public void contextDestroyed(final ServletContextEvent event) {
         /* Intentionally blank to satisfy interface */
     }
-    /**
-     * Loads the default ConfigProperty objects
-     */
-    /*private void loadDefaultConfigProperties() {
-       *//* try (QueryManager qm = new QueryManager()) {
-            LOGGER.info("Synchronizing config properties to datastore");
-            for (final ConfigPropertyConstants cpc : ConfigPropertyConstants.values()) {
-                LOGGER.debug("Creating config property: " + cpc.getGroupName() + " / " + cpc.getPropertyName());
-                if (qm.getConfigProperty(cpc.getGroupName(), cpc.getPropertyName()) == null) {
-                    qm.createConfigProperty(cpc.getGroupName(), cpc.getPropertyName(), cpc.getDefaultPropertyValue(), cpc.getPropertyType(), cpc.getDescription());
-                }
-            }*//*
-            // dispatch a call to PoC configuration endpoint
-            //List<ConfigProperty> configProperties = qm.getConfigProperties();
-            KafkaServiceUtil.postConfig(configProperties);
 
-    }*/
-
-    /**
-     * Loads the default notification publishers
-     */
-    private void loadDefaultNotificationPublishers() {
-        NotificationHibernateManager nm = new NotificationHibernateManager();
-            LOGGER.info("Synchronizing notification publishers to datastore");
-            for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
-                System.out.println(nm.getDefaultNotificationPublisher(publisher.getPublisherClass()));
-
-            }
-    }
 }
