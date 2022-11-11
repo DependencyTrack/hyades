@@ -124,7 +124,7 @@
     <dependency>
       <groupId>us.springett</groupId>
       <artifactId>alpine-common</artifactId>
-      <version>${lib.alpine.version}</version>
+      <version>2.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.konghq</groupId>
