@@ -18,21 +18,29 @@
  */
 package org.acme.util;
 
-import org.acme.model.*;
-import org.acme.notification.publisher.DefaultNotificationPublishers;
-import org.acme.notification.vo.*;
+import org.acme.model.Analysis;
+import org.acme.model.Component;
+import org.acme.model.Cwe;
+import org.acme.model.Policy;
+import org.acme.model.PolicyCondition;
+import org.acme.model.PolicyViolation;
+import org.acme.model.Project;
+import org.acme.model.Tag;
+import org.acme.model.Vulnerability;
+import org.acme.notification.vo.AnalysisDecisionChange;
+import org.acme.notification.vo.BomConsumedOrProcessed;
+import org.acme.notification.vo.NewVulnerabilityIdentified;
+import org.acme.notification.vo.NewVulnerableDependency;
+import org.acme.notification.vo.PolicyViolationIdentified;
+import org.acme.notification.vo.VexConsumedOrProcessed;
 import org.acme.parser.common.resolver.CweResolver;
-//import org.acme.persistence.QueryManager;
-import org.acme.persistence.NotificationHibernateManager;
-import org.apache.commons.io.FileUtils;
 
-import javax.json.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URLDecoder;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class NotificationUtil {
 
@@ -265,40 +273,4 @@ public final class NotificationUtil {
         return builder.build();
     }
 
-   public static void loadDefaultNotificationPublishers(NotificationHibernateManager hibernateManager) throws IOException {
-        for (final DefaultNotificationPublishers publisher : DefaultNotificationPublishers.values()) {
-            File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
-            // TODO QueryManager
-//            if (qm.isEnabled(ConfigPropertyConstants.NOTIFICATION_TEMPLATE_DEFAULT_OVERRIDE_ENABLED)) {
-//                ConfigProperty templateBaseDir = qm.getConfigProperty(
-//                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getGroupName(),
-//                        ConfigPropertyConstants.NOTIFICATION_TEMPLATE_BASE_DIR.getPropertyName()
-//                );
-//                File userProvidedTemplateFile = new File(Path.of(templateBaseDir.getPropertyValue(), publisher.getPublisherTemplateFile()).toUri());
-//                if (userProvidedTemplateFile.exists()) {
-//                    templateFile = userProvidedTemplateFile;
-//                }
-//            }
-
-            // @TODO do we need update and create queries below?
-
-//            final String templateContent = FileUtils.readFileToString(templateFile, UTF_8);
-//            final NotificationPublisher existingPublisher = hibernateManager.getDefaultNotificationPublisher(publisher.getPublisherClass());
-//            if (existingPublisher == null) {
-//                hibernateManager.createNotificationPublisher(
-//                        publisher.getPublisherName(), publisher.getPublisherDescription(),
-//                        publisher.getPublisherClass(), templateContent, publisher.getTemplateMimeType(),
-//                        publisher.isDefaultPublisher()
-//                );
-//            } else {
-//                existingPublisher.setName(publisher.getPublisherName());
-//                existingPublisher.setDescription(publisher.getPublisherDescription());
-//                existingPublisher.setPublisherClass(publisher.getPublisherClass().getCanonicalName());
-//                existingPublisher.setTemplate(templateContent);
-//                existingPublisher.setTemplateMimeType(publisher.getTemplateMimeType());
-//                existingPublisher.setDefaultPublisher(publisher.isDefaultPublisher());
-//                qm.updateNotificationPublisher(existingPublisher);
-//            }
-        }
-    }
 }
