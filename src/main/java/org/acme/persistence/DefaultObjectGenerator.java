@@ -19,7 +19,6 @@
 package org.acme.persistence;
 
 import alpine.common.logging.Logger;
-import org.acme.RequirementsVerifier;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -42,9 +41,6 @@ public class DefaultObjectGenerator implements ServletContextListener {
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         LOGGER.info("Initializing default object generator");
-        if (RequirementsVerifier.failedValidation()) {
-            return;
-        }
 
         try {
             new CweImporter().processCweDefinitions();

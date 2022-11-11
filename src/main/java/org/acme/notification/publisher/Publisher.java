@@ -18,12 +18,10 @@
  */
 package org.acme.notification.publisher;
 
-import alpine.Config;
 import alpine.common.logging.Logger;
 import alpine.common.util.UrlUtil;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import org.acme.common.ConfigKey;
 import org.acme.exception.PublisherException;
 import org.acme.model.Notification;
 import org.acme.notification.NotificationScope;
@@ -75,7 +73,7 @@ public interface Publisher {
 
     default String prepareTemplate(final Notification notification, final PebbleTemplate template) {
 
-            String baseUrl = Config.getInstance().getProperty(ConfigKey.GENERAL_BASE_URL);
+            String baseUrl = ""; // FIXME: Load from DB
 
             final Map<String, Object> context = new HashMap<>();
             final long epochSecond = notification.getTimestamp().toEpochSecond(
