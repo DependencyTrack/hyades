@@ -7,6 +7,7 @@ import org.acme.client.snyk.Issue;
 import org.acme.client.snyk.ModelConverter;
 import org.acme.client.snyk.Page;
 import org.acme.client.snyk.PageData;
+import org.acme.client.snyk.SeveritySource;
 import org.acme.client.snyk.SnykClient;
 import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
@@ -32,6 +33,7 @@ public class SnykAnalyzer implements Analyzer {
     private final RateLimiter rateLimiter;
     private final CweResolver cweResolver;
     private final boolean isEnabled;
+    private final SeveritySource severitySource;
 
 
     @Inject
@@ -39,12 +41,14 @@ public class SnykAnalyzer implements Analyzer {
                         @Named("snykCache") final javax.cache.Cache<String, Page<Issue>> cache,
                         @Named("snykRateLimiter") final RateLimiter rateLimiter,
                         final CweResolver cweResolver,
-                        @ConfigProperty(name = "scanner.snyk.enabled", defaultValue = "false") final boolean isEnabled) {
+                        @ConfigProperty(name = "scanner.snyk.enabled", defaultValue = "false") final boolean isEnabled,
+                        @ConfigProperty(name = "scanner.snyk.severity.source") final SeveritySource severitySource) {
         this.client = client;
         this.cacheCtx = io.github.resilience4j.cache.Cache.of(cache);
         this.rateLimiter = rateLimiter;
         this.cweResolver = cweResolver;
         this.isEnabled = isEnabled;
+        this.severitySource = severitySource;
 
         this.cacheCtx.getEventPublisher()
                 .onCacheHit(event -> LOGGER.info("Cache Hit for {}", event.getCacheKey()))
@@ -94,7 +98,7 @@ public class SnykAnalyzer implements Analyzer {
             final var result = new VulnerabilityResult();
             result.setComponent(component);
             result.setIdentity(AnalyzerIdentity.SNYK_ANALYZER);
-            result.setVulnerability(ModelConverter.convert(cweResolver, data.attributes()));
+            result.setVulnerability(ModelConverter.convert(cweResolver, severitySource, data.attributes()));
             results.add(result);
         }
 
