@@ -46,7 +46,6 @@ services:
       /usr/bin/rpk topic create component-analysis-swid --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-vuln --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000 
       /usr/bin/rpk topic create component-vuln-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create vuln-result --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create configuration-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       /usr/bin/rpk topic create datasource_mirroring-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       /usr/bin/rpk topic create repository-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000

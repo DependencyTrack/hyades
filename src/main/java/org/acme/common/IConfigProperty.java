@@ -1,9 +1,9 @@
 package org.acme.common;
 
 public interface IConfigProperty {
-    long getId();
+    int getId();
 
-    void setId(long var1);
+    void setId(int var1);
 
     String getGroupName();
 
