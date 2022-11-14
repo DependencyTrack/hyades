@@ -149,7 +149,7 @@ public class AnalyzerTopology {
                 // Because most records will have different identifiers as key, we re-key
                 // the stream to the partition ID the records are in.
                 // This allows us to aggregate all records within the partition(s) we're consuming from.
-                .process(PartitionIdReKeyProcessor::new, Named.as("re-key_components_from_purl_to_partition_id"))
+                .process(() -> new PartitionIdReKeyProcessor<>(), Named.as("re-key_components_from_purl_to_partition_id"))
                 .process(() -> new BatchProcessor<>("purl_component_batches", componentsBatchInterval, componentsBatchMaxSize),
                         Named.as("batch_components"), "purl_component_batches");
 
