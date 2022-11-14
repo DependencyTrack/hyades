@@ -301,6 +301,7 @@ public class AnalyzerTopology {
         // repometaanalyzer code end
         // FIXME: Modularize the application, move the notification topology to it's own Quarkus app
         NotificationTopologyBuilder.buildTopology(streamsBuilder, notificationRouter);
+
         return streamsBuilder.build();
     }
 
