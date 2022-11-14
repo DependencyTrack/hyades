@@ -12,6 +12,7 @@ import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
 import org.acme.model.VulnerabilityResultAggregate;
 import org.acme.repositories.*;
+import org.acme.notification.NotificationRouter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -51,6 +52,7 @@ public class AnalyzerTopology {
 
     private final OssIndexAnalyzer ossIndexAnalyzer;
     private final SnykAnalyzer snykAnalyzer;
+    private final NotificationRouter notificationRouter;
 
     private final MavenMetaAnalyzer mavenMetaAnalyzer;
     private final GoModulesMetaAnalyzer goModulesMetaAnalyzer;
@@ -68,7 +70,8 @@ public class AnalyzerTopology {
 
     @Inject
     public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer,
-                            final SnykAnalyzer snykAnalyzer, final MavenMetaAnalyzer mavenMetaAnalyzer, final GoModulesMetaAnalyzer goModulesMetaAnalyzer, final HexMetaAnalyzer hexMetaAnalyzer, final NpmMetaAnalyzer npmMetaAnalyzer, final NugetMetaAnalyzer nugetMetaAnalyzer, final PypiMetaAnalyzer pypiMetaAnalyzer, final GemMetaAnalyzer gemMetaAnalyzer, final ComposerMetaAnalyzer composerMetaAnalyzer) {
+                            final SnykAnalyzer snykAnalyzer, final NotificationRouter notificationRouter,
+                            final MavenMetaAnalyzer mavenMetaAnalyzer, final GoModulesMetaAnalyzer goModulesMetaAnalyzer, final HexMetaAnalyzer hexMetaAnalyzer, final NpmMetaAnalyzer npmMetaAnalyzer, final NugetMetaAnalyzer nugetMetaAnalyzer, final PypiMetaAnalyzer pypiMetaAnalyzer, final GemMetaAnalyzer gemMetaAnalyzer, final ComposerMetaAnalyzer composerMetaAnalyzer) {
         this.ossIndexAnalyzer = ossIndexAnalyzer;
         this.snykAnalyzer = snykAnalyzer;
         this.mavenMetaAnalyzer = mavenMetaAnalyzer;
@@ -79,6 +82,7 @@ public class AnalyzerTopology {
         this.pypiMetaAnalyzer = pypiMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
         this.composerMetaAnalyzer = composerMetaAnalyzer;
+        this.notificationRouter = notificationRouter;
     }
 
     @Produces
@@ -295,8 +299,8 @@ public class AnalyzerTopology {
                 this.gemMetaAnalyzer,
                 this.composerMetaAnalyzer);
         // repometaanalyzer code end
-
-
+        // FIXME: Modularize the application, move the notification topology to it's own Quarkus app
+        NotificationTopologyBuilder.buildTopology(streamsBuilder, notificationRouter);
         return streamsBuilder.build();
     }
 

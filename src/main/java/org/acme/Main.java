@@ -25,7 +25,6 @@ public class Main {
         @Override
         public int run(String... args) {
             try {
-
                 Map<Integer, String> cweList = new CweImporter().processCweDefinitions();
                 for (Map.Entry<Integer, String> entry : cweList.entrySet()) {
                     if (entry != null) {
@@ -39,5 +38,6 @@ public class Main {
             Quarkus.waitForExit();
             return 0;
         }
+
     }
 }

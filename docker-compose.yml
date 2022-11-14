@@ -2,7 +2,7 @@ version: "3"
 
 services:
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v22.2.7
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.1
     container_name: redpanda
     command:
       - redpanda
@@ -31,7 +31,7 @@ services:
       - "127.0.0.1:28082:8082"
     restart: unless-stopped
   init:
-    image: docker.redpanda.com/vectorized/redpanda:v22.2.7
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.1
     depends_on:
       - redpanda
     entrypoint: [ '/bin/sh', '-c' ]
@@ -39,7 +39,6 @@ services:
       "
       /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
       echo -e 'Creating topics now'
-
       /usr/bin/rpk topic create component-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-meta-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create repo-meta-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
@@ -57,10 +56,25 @@ services:
       /usr/bin/rpk topic create component-analysis-swid --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-vuln --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000 
       /usr/bin/rpk topic create component-vuln-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create configuration-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create datasource_mirroring-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create repository-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create integration-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create analyzer-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create bom_consumed-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create bom_processed-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create file_system-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create indexing_service-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create new_vulnerability-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create new_vulnerable_dependency-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create policy_violation-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create project_audit_change-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create vex_consumed-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create vex_processed-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+
       "
     ports:
       - "8093:8093"
-
   redpanda-console:
     image: docker.redpanda.com/vectorized/console:v2.0.3
     container_name: redpanda-console

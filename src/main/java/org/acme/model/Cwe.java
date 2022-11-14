@@ -19,13 +19,11 @@
 package org.acme.model;
 
 import alpine.common.validation.RegexSequence;
-import alpine.server.json.TrimmedStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.jdo.annotations.*;
+import org.acme.common.TrimmedStringDeserializer;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -37,36 +35,20 @@ import java.io.Serializable;
  * @author Steve Springett
  * @since 3.0.0
  */
-@PersistenceCapable
-@JsonInclude(JsonInclude.Include.NON_NULL)
-
 public class Cwe implements Serializable {
 
     private static final long serialVersionUID = -2370075071951574877L;
+    private int id;
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
-    @JsonIgnore
-    private long id;
-
-    @Persistent
-    @Unique(name = "CWE_CWEID_IDX")
-    @Column(name = "CWEID", allowsNull = "false")
     private int cweId;
 
-    @Persistent
-    @Column(name = "NAME", jdbcType = "VARCHAR", allowsNull = "false")
-    @Size(max = 255)
-    @NotNull
-    @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
     private String name;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

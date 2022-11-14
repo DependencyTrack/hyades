@@ -18,11 +18,6 @@
  */
 package org.acme.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import javax.jdo.annotations.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -33,8 +28,6 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.0.0
  */
-@PersistenceCapable
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Bom implements Serializable {
 
     private static final long serialVersionUID = -4378439983100141050L;
@@ -60,41 +53,22 @@ public class Bom implements Serializable {
         }
     }
 
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
-    @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "IMPORTED", allowsNull = "false")
-    @NotNull
     private Date imported;
 
-    @Persistent
-    @Column(name = "BOM_FORMAT")
     private String bomFormat;
 
-    @Persistent
-    @Column(name = "SPEC_VERSION")
     private String specVersion;
 
-    @Persistent
-    @Column(name = "BOM_VERSION")
     private Integer bomVersion;
 
-    @Persistent
-    @Column(name = "SERIAL_NUMBER")
     private String serialNumber;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "PROJECT_ID", allowsNull = "false")
-    @NotNull
     private Project project;
 
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "BOM_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
-    @NotNull
+    private UUID uploadToken;
+
     private UUID uuid;
 
     public long getId() {
@@ -151,6 +125,14 @@ public class Bom implements Serializable {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public UUID getUploadToken() {
+        return uploadToken;
+    }
+
+    public void setUploadToken(UUID uploadToken) {
+        this.uploadToken = uploadToken;
     }
 
     public UUID getUuid() {

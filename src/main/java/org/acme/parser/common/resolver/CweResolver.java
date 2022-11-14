@@ -21,11 +21,7 @@ package org.acme.parser.common.resolver;
 import org.acme.Main;
 import org.apache.commons.lang3.StringUtils;
 import org.acme.model.Cwe;
-import org.checkerframework.checker.units.qual.C;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 
 /**
  * Attempts to resolve an internal CWE object from a string

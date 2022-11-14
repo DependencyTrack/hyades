@@ -18,12 +18,7 @@
  */
 package org.acme.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.acme.tasks.scanners.AnalyzerIdentity;
-
-import javax.jdo.annotations.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -34,54 +29,25 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
-@PersistenceCapable
-@Index(name = "FINDINGATTRIBUTION_COMPOUND_IDX", members = {"component", "vulnerability"})
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FindingAttribution implements Serializable {
 
     private static final long serialVersionUID = -2609603709255246845L;
-
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
-    @JsonIgnore
     private long id;
 
-    @Persistent
-    @Column(name = "ATTRIBUTED_ON", allowsNull = "false")
-    @NotNull
     private Date attributedOn;
 
-    @Persistent
-    @Column(name = "ANALYZERIDENTITY", allowsNull = "false")
     private AnalyzerIdentity analyzerIdentity;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "COMPONENT_ID", allowsNull = "false")
-    @NotNull
     private Component component;
 
-    @Persistent(defaultFetchGroup = "false")
-    @Column(name = "PROJECT_ID", allowsNull = "false")
-    @NotNull
     private Project project;
 
-    @Persistent(defaultFetchGroup = "true")
-    @Column(name = "VULNERABILITY_ID", allowsNull = "false")
-    @NotNull
     private Vulnerability vulnerability;
 
-    @Persistent
-    @Column(name = "ALT_ID", allowsNull = "true")
     private String alternateIdentifier;
 
-    @Persistent
-    @Column(name = "REFERENCE_URL", allowsNull = "true")
     private String referenceUrl;
 
-    @Persistent(customValueStrategy = "uuid")
-    @Unique(name = "FINDINGATTRIBUTION_UUID_IDX")
-    @Column(name = "UUID", jdbcType = "VARCHAR", length = 36, allowsNull = "false")
-    @NotNull
     private UUID uuid;
 
     public FindingAttribution() {}
