@@ -25,6 +25,7 @@ import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.apache.kafka.streams.state.Stores;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,14 +45,20 @@ public class AnalyzerTopology {
     private final OssIndexAnalyzer ossIndexAnalyzer;
     private final SnykAnalyzer snykAnalyzer;
     private final NotificationRouter notificationRouter;
+    private final int componentsBatchMaxSize;
+    private final Duration componentsBatchInterval;
 
     @Inject
     public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer,
                             final SnykAnalyzer snykAnalyzer,
-                            final NotificationRouter notificationRouter) {
+                            final NotificationRouter notificationRouter,
+                            @ConfigProperty(name = "scanner.batch.max.size") final int componentsBatchMaxSize,
+                            @ConfigProperty(name = "scanner.batch.interval") final Duration componentsBatchInterval) {
         this.ossIndexAnalyzer = ossIndexAnalyzer;
         this.snykAnalyzer = snykAnalyzer;
         this.notificationRouter = notificationRouter;
+        this.componentsBatchMaxSize = componentsBatchMaxSize;
+        this.componentsBatchInterval = componentsBatchInterval;
     }
 
     @Produces
@@ -143,7 +150,7 @@ public class AnalyzerTopology {
                 // the stream to the partition ID the records are in.
                 // This allows us to aggregate all records within the partition(s) we're consuming from.
                 .process(PartitionIdReKeyProcessor::new, Named.as("re-key_components_from_purl_to_partition_id"))
-                .process(() -> new BatchProcessor<>("purl_component_batches", Duration.ofSeconds(3), 128),
+                .process(() -> new BatchProcessor<>("purl_component_batches", componentsBatchInterval, componentsBatchMaxSize),
                         Named.as("batch_components"), "purl_component_batches");
 
         if (ossIndexAnalyzer.isEnabled()) {
