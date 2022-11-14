@@ -29,6 +29,7 @@ import org.apache.kafka.streams.kstream.Suppressed;
 import org.apache.kafka.streams.kstream.Suppressed.BufferConfig;
 import org.apache.kafka.streams.kstream.TimeWindows;
 import org.apache.kafka.streams.kstream.Windowed;
+import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.apache.kafka.streams.state.WindowStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,7 +132,11 @@ public class AnalyzerTopology {
         final KStream<String, Component> purlComponentStream = streamsBuilder
                 .stream("component-analysis-purl", Consumed
                         .with(Serdes.String(), componentSerde)
-                        .withName("consume_from_component-analysis-purl_topic"));
+                        .withName("consume_from_component-analysis-purl_topic")
+                        // For the windowed aggregation of PURLs we need the event timestamp to
+                        // not be "stream time", otherwise we'll drop event when one stream task
+                        // is consuming from multiple partitions.
+                        .withTimestampExtractor(new WallclockTimestampExtractor()));
 
         // Perform a time window based aggregation of components with PURLs.
         // TODO: Repeat this for CPE and SWID Tag ID
