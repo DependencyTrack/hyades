@@ -10,27 +10,21 @@ import org.acme.analyzer.OssIndexAnalyzer;
 import org.acme.analyzer.SnykAnalyzer;
 import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
-import org.acme.model.VulnerabilityResultAggregate;
 import org.acme.notification.NotificationRouter;
+import org.acme.processor.BatchProcessor;
+import org.acme.processor.PartitionIdReKeyProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Branched;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.kstream.Suppressed;
-import org.apache.kafka.streams.kstream.Suppressed.BufferConfig;
-import org.apache.kafka.streams.kstream.TimeWindows;
-import org.apache.kafka.streams.kstream.Windowed;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
-import org.apache.kafka.streams.state.WindowStore;
+import org.apache.kafka.streams.state.Stores;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,36 +132,19 @@ public class AnalyzerTopology {
                         // is consuming from multiple partitions.
                         .withTimestampExtractor(new WallclockTimestampExtractor()));
 
-        // Perform a time window based aggregation of components with PURLs.
+        streamsBuilder.addStateStore(Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore("purl_component_batches"), Serdes.Integer(), componentsSerde));
+
+        // Aggregate components with PURLs in batches of up to 128.
         // TODO: Repeat this for CPE and SWID Tag ID
-        final KStream<Windowed<Integer>, List<Component>> purlAggregateStream = purlComponentStream
-                // Windowing and aggregation requires records to have the same key.
+        final KStream<Integer, List<Component>> purlAggregateStream = purlComponentStream
+                // Batching requires records to have the same key.
                 // Because most records will have different identifiers as key, we re-key
                 // the stream to the partition ID the records are in.
                 // This allows us to aggregate all records within the partition(s) we're consuming from.
-                .transform(PartitionIdReKeyTransformer::new, Named.as("re-key_components_from_purl_to_partition_id"))
-                .groupByKey(Grouped.with(Serdes.Integer(), componentSerde)
-                        .withName("group_by_partition_id"))
-                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofSeconds(3), Duration.ofSeconds(1))) // TODO: Tweak this?
-                .aggregate(ArrayList::new,
-                        (partition, component, aggregate) -> {
-                            aggregate.add(component);
-                            return aggregate;
-                        }, Named.as("aggregate_components_with_purl"),
-                        Materialized.<Integer, List<Component>, WindowStore<Bytes, byte[]>>as("aggregated_components_with_purl")
-                                .withKeySerde(Serdes.Integer())
-                                .withValueSerde(componentsSerde))
-                // We're only interested in the final aggregation result of the window
-                // when it closes. Per default though, all updates to the aggregate are
-                // streamed to the changelog topic, causing too many and largely duplicated
-                // "batches":
-                //  --> [A]
-                //  --> [A B]
-                //  --> [A B C]
-                // Instead, we suppress all updates to the changelog topic until the window closed.
-                .suppress(Suppressed.untilWindowCloses(BufferConfig.unbounded())
-                        .withName("suppress_aggregates_until_time_window_closes"))
-                .toStream(Named.as("stream_component_aggregates"));
+                .process(PartitionIdReKeyProcessor::new, Named.as("re-key_components_from_purl_to_partition_id"))
+                .process(() -> new BatchProcessor<>("purl_component_batches", Duration.ofSeconds(3), 128),
+                        Named.as("batch_components"), "purl_component_batches");
 
         if (ossIndexAnalyzer.isEnabled()) {
             purlAggregateStream
