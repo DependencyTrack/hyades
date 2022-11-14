@@ -10,8 +10,7 @@
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<!--    hardcoding the version of alpine. Need to check this later in poc-->
-    <lib.alpine.version>${project.parent.version}</lib.alpine.version>
+    <lib.alpine.version>2.1.0</lib.alpine.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <lib.cyclonedx-java.version>7.2.1</lib.cyclonedx-java.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
@@ -23,7 +22,6 @@
     <quarkus.platform.version>2.14.0.Final</quarkus.platform.version>
     <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
     <lib.resilience4j.version>1.7.1</lib.resilience4j.version>
-
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
@@ -124,7 +122,7 @@
     <dependency>
       <groupId>us.springett</groupId>
       <artifactId>alpine-common</artifactId>
-      <version>2.1.0</version>
+      <version>${lib.alpine.version}</version>
     </dependency>
     <dependency>
       <groupId>com.konghq</groupId>
