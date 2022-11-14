@@ -16,6 +16,8 @@ public enum ConfigKey implements Config.Key{
     NOTIFICATION_APPLICATION_ID("notification.application.id", "notification");
 
     private final String propertyName;
+
+    @SuppressWarnings("Immutable")
     private final Object defaultValue;
 
     ConfigKey(final String propertyName, final Object defaultValue) {
