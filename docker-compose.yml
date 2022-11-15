@@ -66,7 +66,7 @@ services:
     ports:
       - "8093:8093"
   redpanda-console:
-    image: docker.redpanda.com/vectorized/console:v2.0.3
+    image: docker.redpanda.com/vectorized/console:v2.1.0
     container_name: redpanda-console
     depends_on:
       - redpanda
