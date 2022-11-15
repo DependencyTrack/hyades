@@ -2,7 +2,7 @@ version: "3"
 
 services:
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v22.2.7
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.1
     container_name: redpanda
     command:
       - redpanda
@@ -31,7 +31,7 @@ services:
       - "127.0.0.1:28082:8082"
     restart: unless-stopped
   init:
-    image: docker.redpanda.com/vectorized/redpanda:v22.2.7
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.1
     depends_on:
       - redpanda
     entrypoint: [ '/bin/sh', '-c' ]
@@ -61,7 +61,6 @@ services:
       /usr/bin/rpk topic create notification.project_audit_change --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       /usr/bin/rpk topic create notification.vex_consumed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       /usr/bin/rpk topic create notification.vex_processed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-
       "
     ports:
       - "8093:8093"
