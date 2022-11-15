@@ -19,8 +19,8 @@
 package org.acme.repositories;
 
 import alpine.common.logging.Logger;
-import alpine.notification.Notification;
-import alpine.notification.NotificationLevel;
+import org.acme.model.Notification;
+import org.acme.model.NotificationLevel;
 import org.apache.commons.lang3.StringUtils;
 import org.acme.model.Component;
 import org.acme.notification.NotificationConstants;
