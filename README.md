@@ -1,6 +1,6 @@
 # DT-Kafka-POC
 
-## What is this?
+## What is this? 🤔
 
 This project is a proof-of-concept for decoupling responsibilities from [Dependency-Track]'s monolithic API server
 into separate, *scalable* services. We're using [Kafka] (or Kafka-compatible brokers like [Redpanda]) for communicating 
@@ -18,30 +18,16 @@ We're planning to expand its set of capabilities further by:
 
 An overview of the architecture can be found [here](https://excalidraw.com/#room=fba0103fa2642574be40,NomXwyHw3jvoy0yr6JxCJw).
 
-## Great, can I try it?
+## Great, can I try it? 🙌
 
-Yes! We prepared demo setup that you can use to play around with the PoC. Check out [`DEMO.md`](DEMO.md) for details!
+Yes! We prepared demo setup that you can use to play around with the PoC.  
+Check out 👉 [`DEMO.md`](DEMO.md) 👈 for details!
 
-## Setup
+## Technical Documentation 💻
 
-### Set config properties:
+### Configuration 📝
 
-In order to provide configuration to this application, you would need to modify the
-[`application.properties`](src/main/resources/application.properties) file, or export the following environment variables:
-
-- SCANNER_OSSINDEX_ENABLED=true
-- SCANNER_OSSINDEX_API_USERNAME=username
-- SCANNER_OSSINDEX_API_TOKEN=token
-- SCANNER_SNYK_ENABLED=true
-- SCANNER_SNYK_ORG_ID=orgid
-- SCANNER_SNYK_TOKEN=token
-- SCANNER_CACHE_VALIDITY_PERIOD=6666
-
-> **Note**
-> The OSS Index analyzer is enabled per default for unauthenticated use.
-
-Refer to the [Quarkus Configuration Reference](https://quarkus.io/guides/config-reference#configuration-sources)
-for more information about available configuration sources and the order in which they're loaded.
+See [`CONFIGURATION.md`](CONFIGURATION.md).
 
 ### Verify if Cwe store contains values
 
@@ -55,9 +41,11 @@ The usage with the poc code can happen once we have hibernate implementation com
 Create the jar of the keygeneration code using `./mvnw package` and then use the runnable jar created in the target folder of the keyGeneration app to generate the key. <br/>
 For this key to be effective, this step needs to be performed before starting off dependency track api server and quarkus application. And it is a manual step as of now. <br/>
 
-### Testing
+### Testing 🤞
 
-The `test.sh` script can be used to test the analyzer.  
+### Vulnerability Analysis 💀
+
+The `test.sh` script can be used to test the vulnerability analyzer.  
 It publishes an event to the `component-analysis` topic for each component with a
 PURL in a given CycloneDX BOM, thus emulating the API server after a BOM was uploaded to it.
 
