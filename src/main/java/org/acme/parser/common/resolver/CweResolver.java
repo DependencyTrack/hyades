@@ -35,7 +35,7 @@ public class CweResolver {
 
     Cwe cwe = new Cwe();
     private static final CweResolver INSTANCE = new CweResolver();
-    private CweResolver() { }
+    public CweResolver() { }
     //private static final CweResolver INSTANCE = new CweResolver();
 
     /*private CweResolver() {
