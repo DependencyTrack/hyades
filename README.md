@@ -1,6 +1,26 @@
 # DT-Kafka-POC
 
-Implement the design mentioned here: https://excalidraw.com/#room=fba0103fa2642574be40,NomXwyHw3jvoy0yr6JxCJw
+## What is this?
+
+This project is a proof-of-concept for decoupling responsibilities from [Dependency-Track]'s monolithic API server
+into separate, *scalable* services. We're using [Kafka] (or Kafka-compatible brokers like [Redpanda]) for communicating 
+between API server and the PoC applications.
+
+As of now, the PoC is capable of:
+
+* Performing vulnerability analysis using OSS Index and Snyk
+* Sending notifications via all channels supported by the original API server (E-Mail, Webhook, etc.)
+
+We're planning to expand its set of capabilities further by:
+
+* Performing component meta analysis (fetching latest versions from remote repositories)
+* ...
+
+An overview of the architecture can be found [here](https://excalidraw.com/#room=fba0103fa2642574be40,NomXwyHw3jvoy0yr6JxCJw).
+
+## Great, can I try it?
+
+Yes! We prepared demo setup that you can use to play around with the PoC. Check out [`DEMO.md`](DEMO.md) for details!
 
 ## Setup
 
@@ -79,3 +99,7 @@ Follow the below steps to run this poc in integration with dependency track for 
 - Login to dependency track application running locally on the port pointed by the front end code
 - Create a project and load an sbom into dependency track
 - You should be able to see events appearing in the event new topic in the redpanda console. You should also be able to see logs in the quarkus application as it analyzes the components on the posted bom components in the topic. The latter would be based on the configuration you used to start the poc application.
+
+[Dependency-Track]: https://github.com/DependencyTrack/dependency-track
+[Kafka]: https://kafka.apache.org/
+[Redpanda]: https://redpanda.com/

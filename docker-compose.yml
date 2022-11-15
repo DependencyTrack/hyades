@@ -1,8 +1,56 @@
 version: "3"
 
 services:
+  poc:
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile.demo
+    container_name: dt-kafka-poc
+    depends_on:
+      - postgres
+      - redpanda
+    environment:
+      QUARKUS_KAFKASTREAMS_BOOTSTRAPSERVERS: "dt-redpanda:29092"
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      QUARKUS_DATASOURCE_USERNAME: "dtrack"
+      QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+      # KAFKASTREAMS_NUM_STREAM_THREADS: "12"
+      SCANNER_OSSINDEX_ENABLED: "true"
+      # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
+      # SCANNER_OSSINDEX_API_TOKEN: "your-token"
+      # SCANNER_SNYK_ENABLED: "true"
+      # SCANNER_SNYK_ORG_ID: "your-org-id"
+      # SCANNER_SNYK_TOKEN: "your-token"
+    profiles:
+      - demo
+    restart: unless-stopped
+
+  apiserver:
+    build:
+      context: ../dependency-track
+      dockerfile: src/main/docker/Dockerfile.demo
+    container_name: dt-apiserver
+    depends_on:
+      - postgres
+      - redpanda
+    environment:
+      ALPINE_DATABASE_MODE: "external"
+      ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      ALPINE_DATABASE_DRIVER: "org.postgresql.Driver"
+      ALPINE_DATABASE_USERNAME: "dtrack"
+      ALPINE_DATABASE_PASSWORD: "dtrack"
+      KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
+    ports:
+      - "127.0.0.1:8080:8080"
+    profiles:
+      - demo
+    volumes:
+      - "apiserver-data:/data"
+    restart: unless-stopped
+
   postgres:
     image: postgres:14-alpine
+    container_name: dt-postgres
     environment:
       POSTGRES_DB: "dtrack"
       POSTGRES_USER: "dtrack"
@@ -10,11 +58,13 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
+      - "postgres-data:/var/lib/postgresql/data"
       - "./commons/src/main/resources/migrations/postgres/V0.0.1__API-Server-4.7.0-SNAPSHOT.sql:/docker-entrypoint-initdb.d/001-init.sql"
     restart: unless-stopped
+
   redpanda:
     image: docker.redpanda.com/vectorized/redpanda:v22.3.4
-    container_name: redpanda
+    container_name: dt-redpanda
     command:
       - redpanda
       - start
@@ -28,21 +78,25 @@ services:
       - --kafka-addr
       - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
       - --advertise-kafka-addr
-      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+      - PLAINTEXT://dt-redpanda:29092,OUTSIDE://localhost:9092
       - --pandaproxy-addr
       - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
       - --advertise-pandaproxy-addr
-      - PLAINTEXT://redpanda:28082,OUTSIDE://localhost:8082
+      - PLAINTEXT://dt-redpanda:28082,OUTSIDE://localhost:8082
     ports:
       # Kafka API
       - "127.0.0.1:9092:9092"
-      # Schema Registry
-      - "127.0.0.1:28081:8081"
-      # Pandaproxy (REST API)
-      - "127.0.0.1:28082:8082"
+      # Schema Registry (currently not used)
+      # - "127.0.0.1:28081:8081"
+      # Pandaproxy (REST API, currently not used)
+      # - "127.0.0.1:28082:8082"
+    volumes:
+      - "redpanda-data:/var/lib/redpanda/data"
     restart: unless-stopped
-  init:
+
+  redpanda-init:
     image: docker.redpanda.com/vectorized/redpanda:v22.3.4
+    container_name: dt-redpanda-init
     depends_on:
       - redpanda
     entrypoint: [ '/bin/sh', '-c' ]
@@ -82,11 +136,11 @@ services:
       /usr/bin/rpk topic create notification.vex_consumed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       /usr/bin/rpk topic create notification.vex_processed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       "
-    ports:
-      - "8093:8093"
+    restart: on-failure
+
   redpanda-console:
     image: docker.redpanda.com/vectorized/console:v2.1.0
-    container_name: redpanda-console
+    container_name: dt-redpanda-console
     depends_on:
       - redpanda
     environment:
@@ -94,3 +148,8 @@ services:
     ports:
       - "127.0.0.1:28080:8080"
     restart: unless-stopped
+
+volumes:
+  apiserver-data: {}
+  postgres-data: {}
+  redpanda-data: {}
