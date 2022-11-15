@@ -23,6 +23,7 @@ import com.mitchellbosecke.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
 import org.acme.model.Notification;
 import org.acme.model.NotificationLevel;
+import org.acme.persistence.ConfigPropertyRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
@@ -35,8 +36,14 @@ public class ConsolePublisher implements Publisher {
     private static final Logger LOGGER = Logger.getLogger(ConsolePublisher.class);
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
 
+    final ConfigPropertyRepository configPropertyRepository;
+
+    public ConsolePublisher(final ConfigPropertyRepository configPropertyRepository){
+        this.configPropertyRepository = configPropertyRepository;
+    }
+
     public void inform(final Notification notification, final JsonObject config) {
-        final String content = prepareTemplate(notification, getTemplate(config));
+        final String content = prepareTemplate(notification, getTemplate(config), configPropertyRepository);
         if (content == null) {
             LOGGER.warn("A template was not found. Skipping notification");
             return;
