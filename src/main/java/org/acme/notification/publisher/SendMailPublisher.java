@@ -38,7 +38,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
-//TODO - needs to be implemented
 
 @ApplicationScoped
 public class SendMailPublisher implements Publisher {
@@ -78,7 +77,7 @@ public class SendMailPublisher implements Publisher {
     private void sendNotification(Notification notification, JsonObject config, String[] destinations) {
         PebbleTemplate template = getTemplate(config);
         String mimeType = getTemplateMimeType(config);
-        final String content = prepareTemplate(notification, template);
+        final String content = prepareTemplate(notification, template, configPropertyRepository);
         if (destinations == null || content == null) {
             LOGGER.warn("A destination or template was not found. Skipping notification");
             return;

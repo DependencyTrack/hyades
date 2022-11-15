@@ -19,15 +19,24 @@
 package org.acme.notification.publisher;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import org.acme.model.Notification;
+import org.acme.persistence.ConfigPropertyRepository;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
 
+@ApplicationScoped
 public class MattermostPublisher extends AbstractWebhookPublisher implements Publisher {
+
+    private final ConfigPropertyRepository configPropertyRepository;
+
+    public MattermostPublisher(final ConfigPropertyRepository configPropertyRepository){
+        this.configPropertyRepository = configPropertyRepository;
+    }
 
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().defaultEscapingStrategy("json").build();
 
     public void inform(final Notification notification, final JsonObject config) {
-        publish(DefaultNotificationPublishers.MATTERMOST.getPublisherName(), getTemplate(config), notification, config);
+        publish(DefaultNotificationPublishers.MATTERMOST.getPublisherName(), getTemplate(config), notification, config, configPropertyRepository);
     }
 
     @Override

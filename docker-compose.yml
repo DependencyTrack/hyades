@@ -56,22 +56,21 @@ services:
       /usr/bin/rpk topic create component-analysis-swid --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-vuln --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000 
       /usr/bin/rpk topic create component-vuln-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create configuration-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create datasource_mirroring-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create repository-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create integration-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create analyzer-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create bom_consumed-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create bom_processed-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create file_system-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create indexing_service-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create new_vulnerability-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create new_vulnerable_dependency-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create policy_violation-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create project_audit_change-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create vex_consumed-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create vex_processed-notification --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-
+      /usr/bin/rpk topic create notification.configuration --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.datasource_mirroring --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.repository --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.integration --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.bom_consumed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.bom_processed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.file_system --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.indexing_service --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.new_vulnerability --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.new_vulnerable_dependency --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.policy_violation --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.project_audit_change --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.vex_consumed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
+      /usr/bin/rpk topic create notification.vex_processed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
       "
     ports:
       - "8093:8093"

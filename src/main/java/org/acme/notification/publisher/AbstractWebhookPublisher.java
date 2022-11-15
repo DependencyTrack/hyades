@@ -24,12 +24,14 @@ import kong.unirest.HttpResponse;
 import kong.unirest.UnirestInstance;
 import org.acme.common.UnirestFactory;
 import org.acme.model.Notification;
+import org.acme.persistence.ConfigPropertyRepository;
 
 import javax.json.JsonObject;
 
 public abstract class AbstractWebhookPublisher implements Publisher {
 
-    public void publish(final String publisherName, final PebbleTemplate template, final Notification notification, final JsonObject config) {
+
+    public void publish(final String publisherName, final PebbleTemplate template, final Notification notification, final JsonObject config, final ConfigPropertyRepository configPropertyRepository) {
         final Logger logger = Logger.getLogger(this.getClass());
         logger.debug("Preparing to publish notification");
         if (config == null) {
@@ -37,7 +39,7 @@ public abstract class AbstractWebhookPublisher implements Publisher {
             return;
         }
         final String destination = config.getString("destination");
-        final String content = prepareTemplate(notification, template);
+        final String content = prepareTemplate(notification, template, configPropertyRepository);
         if (destination == null || content == null) {
             logger.warn("A destination or template was not found. Skipping notification");
             return;
