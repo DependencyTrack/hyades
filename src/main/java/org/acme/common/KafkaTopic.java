@@ -3,21 +3,21 @@ package org.acme.common;
 public enum KafkaTopic {
 
 
-    CONFIGURATION_NOTIFICATION("configuration-notification"),
-    DATASOURCE_MIRRORING_NOTIFICATION("datasource_mirroring-notification"),
-    REPOSITORY_NOTIFICATION("repository-notification"),
-    INTEGRATION_NOTIFICATION("integration-notification"),
-    ANALYZER_NOTIFICATION("analyzer-notification"),
-    BOM_CONSUMED_NOTIFICATION("bom_consumed-notification"),
-    BOM_PROCESSED_NOTIFICATION("bom_processed-notification"),
-    FILE_SYSTEM_NOTIFICATION("file_system-notification"),
-    INDEXING_SERVICE_NOTIFICATION("indexing_service-notification"),
-    NEW_VULNERABILITY_NOTIFICATION("new_vulnerability-notification"),
-    NEW_VULNERABLE_DEPENDENCY_NOTIFICATION("new_vulnerable_dependency-notification"),
-    POLICY_VIOLATION_NOTIFICATION("policy_violation-notification"),
-    PROJECT_AUDIT_CHANGE_NOTIFICATION("project_audit_change-notification"),
-    VEX_CONSUMED_NOTIFICATION("vex_consumed-notification"),
-    VEX_PROCESSED_NOTIFICATION("vex_processed-notification");
+    CONFIGURATION_NOTIFICATION("notification.configuration"),
+    DATASOURCE_MIRRORING_NOTIFICATION("notification.datasource_mirroring"),
+    REPOSITORY_NOTIFICATION("notification.repository"),
+    INTEGRATION_NOTIFICATION("notification.integration"),
+    ANALYZER_NOTIFICATION("notification.analyzer"),
+    BOM_CONSUMED_NOTIFICATION("notification.bom_consumed"),
+    BOM_PROCESSED_NOTIFICATION("notification.bom_processed"),
+    FILE_SYSTEM_NOTIFICATION("notification.file_system"),
+    INDEXING_SERVICE_NOTIFICATION("notification.indexing_service"),
+    NEW_VULNERABILITY_NOTIFICATION("notification.new_vulnerability"),
+    NEW_VULNERABLE_DEPENDENCY_NOTIFICATION("notification.new_vulnerable_dependency"),
+    POLICY_VIOLATION_NOTIFICATION("notification.policy_violation"),
+    PROJECT_AUDIT_CHANGE_NOTIFICATION("notification.project_audit_change"),
+    VEX_CONSUMED_NOTIFICATION("notification.vex_consumed"),
+    VEX_PROCESSED_NOTIFICATION("notification.vex_processed");
 
 
     private final String name;
