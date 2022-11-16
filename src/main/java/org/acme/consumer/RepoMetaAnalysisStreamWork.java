@@ -135,7 +135,7 @@ public class RepoMetaAnalysisStreamWork {
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(mavenMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    mavenMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), repository.getPassword()); //TODO- Decrypt password
+                    mavenMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }
@@ -156,7 +156,7 @@ public class RepoMetaAnalysisStreamWork {
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(pypiMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    pypiMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), repository.getPassword()); //TODO- Decrypt password
+                    pypiMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }
@@ -176,7 +176,7 @@ public class RepoMetaAnalysisStreamWork {
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(goModulesMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    goModulesMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), repository.getPassword()); //TODO- Decrypt password
+                    goModulesMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }
@@ -196,7 +196,7 @@ public class RepoMetaAnalysisStreamWork {
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(nugetMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    nugetMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), repository.getPassword()); //TODO- Decrypt password
+                    nugetMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }
@@ -216,7 +216,7 @@ public class RepoMetaAnalysisStreamWork {
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(npmMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    npmMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), repository.getPassword()); //TODO- Decrypt password
+                    npmMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }
@@ -236,7 +236,7 @@ public class RepoMetaAnalysisStreamWork {
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(hexMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    hexMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), repository.getPassword()); //TODO- Decrypt password
+                    hexMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }
@@ -256,7 +256,7 @@ public class RepoMetaAnalysisStreamWork {
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(gemMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    gemMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), repository.getPassword()); //TODO- Decrypt password
+                    gemMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }
@@ -276,7 +276,7 @@ public class RepoMetaAnalysisStreamWork {
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(composerMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    composerMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), repository.getPassword()); //TODO- Decrypt password
+                    composerMetaAnalyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }
@@ -290,5 +290,4 @@ public class RepoMetaAnalysisStreamWork {
         }
         return metaModels;
     }
-
 }
