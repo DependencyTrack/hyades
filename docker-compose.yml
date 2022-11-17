@@ -10,11 +10,11 @@ services:
       - postgres
       - redpanda
     environment:
-      QUARKUS_KAFKASTREAMS_BOOTSTRAPSERVERS: "dt-redpanda:29092"
+      QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
-      # KAFKASTREAMS_NUM_STREAM_THREADS: "12"
+      # KAFKA_STREAMS_NUM_STREAM_THREADS: "12"
       SCANNER_OSSINDEX_ENABLED: "true"
       # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
       # SCANNER_OSSINDEX_API_TOKEN: "your-token"

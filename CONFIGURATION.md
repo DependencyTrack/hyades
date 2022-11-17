@@ -8,8 +8,8 @@ options that are expected to be changed by users.
 
 | Environment Variable                          | Description | Default          |       Required       |
 |:----------------------------------------------|:------------|:-----------------|:--------------------:|
-| `QUARKUS_KAFKASTREAMS_BOOTSTRAPSERVERS`       |             | `localhost:9092` |          ✅           |
-| `KAFKASTREAMS_NUM_STREAM_THREADS`             |             | `3`              |          ❌           |
+| `QUARKUS_KAFKAS_TREAMS_BOOTSTRAP_SERVERS`     |             | `localhost:9092` |          ✅           |
+| `KAFKA_STREAMS_NUM_STREAM_THREADS`            |             | `3`              |          ❌           |
 | `SCANNER_OSSINDEX_ENABLED`                    |             | `true`           |          ❌           |
 | `SCANNER_OSSINDEX_API_USERNAME`               |             | -                |          ❌           |
 | `SCANNER_OSSINDEX_API_TOKEN`                  |             | -                |          ❌           |
