@@ -6,13 +6,11 @@ import org.acme.model.ConfigProperty;
 import org.acme.model.ConfigPropertyConstants;
 import org.acme.model.NotificationLevel;
 import org.acme.model.NotificationRule;
-import org.acme.notification.NotificationScope;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.util.List;
 
 @QuarkusTest
 class ConfigPropertyRepositoryTest {
