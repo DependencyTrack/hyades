@@ -44,7 +44,20 @@ Once completed, the following services will be available:
 
 ## Testing 🤞
 
-TBD: Login, upload BOM, view messages in Redpanda console, view analysis results in DT, include screenshots
+1. In a web browser, navigate to http://localhost:8080 and login (username: `admin`, password: `admin`)
+2. Navigate to the [projects view](http://localhost:8080/projects) and click *Create Project*
+3. Provide an arbitrary project name and click *Create*
+4. Select the project you just created from the project list
+5. Navigate to the *Components* tab and click *Upload BOM*
+6. Upload any (S)BOM you like. If you don't have one handy, here are some to try:
+  * [Dependency-Track API Server 4.6.2](https://github.com/DependencyTrack/dependency-track/releases/download/4.6.2/bom.json)
+  * [Dependency-Track Frontend 4.6.1](https://github.com/DependencyTrack/frontend/releases/download/4.6.1/bom.json)
+  * [CycloneDX SBOM examples](https://github.com/CycloneDX/bom-examples/tree/master/SBOM)
+7. Now navigate to the *Audit Vulnerabilities* tab and hit the 🔄 button to the top right of the table a few times
+  * You should see the table being populated with vulnerability data
+
+Overall, this should behave just like what you're used to from Dependency-Track.  
+However in this case, the vulnerability analysis is being performed by an external services.
 
 ## Scaling up 📈
 
@@ -52,18 +65,34 @@ One of the goals of this PoC is to achieve scalability, remember? Well, we're de
 that there are multiple ways to scale! If you're interested, you can find out more about the parallelism model 
 at play [here](https://docs.confluent.io/platform/current/streams/architecture.html#parallelism-model).
 
+Per default, when opening the [Consumer Groups view](http://localhost:28080/groups) in Redpanda Console, 
+you'll see a total of two groups:
+
+![Consumer Groups in Redpanda Console as per default configuration](.github/images/demo_redpanda-console_consumer-groups_default.png)
+
+The *Members* column shows the number of stream threads in each group.  
+Clicking on the [*dtrack-vuln-analyzer* group](http://localhost:28080/groups/dtrack-vuln-analyzer) will reveal a more detailed view:
+
+![Detailed view of the dtrack-vuln-analyzer consumer group](.github/images/demo_redpanda-console_consumer-groups_default-detailed.png)
+
+Each stream thread got assigned 20 partitions. 20 partitions are a lot to take care of, so being limited to just three
+stream threads will not yield the best performance.
+
 ### Scaling a single instance 🚀
 
-Arguably the easiest option is to simply increase the number of worker threads used by a service instance.
-By modifying the `KAFKASTREAMS_NUM_STREAM_THREADS` environment variable in `docker-compose.yml`, the number of worker
+Arguably the easiest option is to simply increase the number of stream threads used by a service instance.
+By modifying the `KAFKA_STREAMS_NUM_STREAM_THREADS` environment variable in `docker-compose.yml`, the number of worker
 threads can be tweaked.
 
-We set it to `3` per default, but it can be increased to about `12`. Beyond that, there's no benefit anymore.
+Let's change it to `12` and see what happens!  
+To do this, remove the comment (`#`) from the `# KAFKA_STREAMS_NUM_STREAM_THREADS: "12"` line in `docker-compose.yml`,
+and recreate the container with `docker compose up -d poc`.
 
 ### Scaling to multiple instances 🚀🚀🚀
 
 Putting more load on a single service instance is not always desirable, so oftentimes simply increasing the replica 
-count is the preferable route. In reality this may be done via Kubernetes manifests, but we can do it in Docker Compose, too:
+count is the preferable route. In reality this may be done via Kubernetes manifests, but we can do it in Docker Compose, too.
+Let's scale up to three instances:
 
 ```shell
 docker compose --profile demo up -d --scale poc=3
