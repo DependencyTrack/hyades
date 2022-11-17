@@ -19,7 +19,7 @@
     <lib.jdbc-driver.postgresql.version>42.5.0</lib.jdbc-driver.postgresql.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.14.0.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.14.1.Final</quarkus.platform.version>
     <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <skipITs>true</skipITs>
