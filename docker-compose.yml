@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: src/main/docker/Dockerfile.demo
-    container_name: dt-kafka-poc
     depends_on:
       - postgres
       - redpanda
