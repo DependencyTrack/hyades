@@ -13,6 +13,7 @@ import org.acme.model.Component;
 import org.acme.model.VulnerabilityResult;
 import org.acme.parser.common.resolver.CweResolver;
 import org.acme.tasks.scanners.AnalyzerIdentity;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,5 +105,4 @@ public class SnykAnalyzer implements Analyzer {
 
         return results;
     }
-
 }

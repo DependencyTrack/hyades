@@ -49,6 +49,9 @@ public class AnalyzerTopology {
     private final Duration componentsBatchInterval;
 
     @Inject
+    RepoMetaAnalysisTopologyBuilder repoMetaAnalysisTopologyBuilder;
+
+    @Inject
     public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer,
                             final SnykAnalyzer snykAnalyzer,
                             final NotificationRouter notificationRouter,
@@ -185,6 +188,9 @@ public class AnalyzerTopology {
                         .withName("produce_to_component-vuln-analysis-result_topic"));
 
         // FIXME: Modularize the application, move the notification topology to it's own Quarkus app
+         //--- repometaanalyzer code-- start
+        repoMetaAnalysisTopologyBuilder.buildTopology(streamsBuilder);
+        // repometaanalyzer code end
         NotificationTopologyBuilder.buildTopology(streamsBuilder, notificationRouter);
 
         return streamsBuilder.build();

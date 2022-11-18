@@ -46,7 +46,7 @@ public class CustomPackageURLSerializer extends StdSerializer<PackageURL> {
 
     @Override
     public void serialize(PackageURL purl, JsonGenerator gen, SerializerProvider arg2)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         gen.writeString(purl.canonicalize());
     }
 

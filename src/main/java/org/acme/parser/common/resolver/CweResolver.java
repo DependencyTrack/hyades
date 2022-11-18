@@ -34,6 +34,8 @@ import javax.enterprise.context.ApplicationScoped;
 public class CweResolver {
 
     Cwe cwe = new Cwe();
+    private static final CweResolver INSTANCE = new CweResolver();
+    public CweResolver() { }
     //private static final CweResolver INSTANCE = new CweResolver();
 
     /*private CweResolver() {
@@ -128,5 +130,8 @@ public class CweResolver {
             }
         }
         return null;
+    }
+    public static CweResolver getInstance() {
+        return INSTANCE;
     }
 }
