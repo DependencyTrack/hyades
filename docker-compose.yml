@@ -22,6 +22,8 @@ services:
       # SCANNER_SNYK_TOKEN: "your-token"
     profiles:
       - demo
+    volumes:
+      - "./secret.key:/data/.dependency-track/keys/secret.key:ro"
     restart: unless-stopped
 
   apiserver:
@@ -45,6 +47,7 @@ services:
       - demo
     volumes:
       - "apiserver-data:/data"
+      - "./secret.key:/data/.dependency-track/keys/secret.key:ro"
     restart: unless-stopped
 
   postgres:
