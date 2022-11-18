@@ -10,17 +10,20 @@ import org.acme.model.* ;
 import org.apache.kafka.streams.kstream.KStream;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import java.util.regex.Pattern;
 @ApplicationScoped
-
 class NotificationTopologyBuilder {
 
     private final NotificationRouter router;
 
+    @Inject
     public NotificationTopologyBuilder(final NotificationRouter notificationRouter){
         this.router = notificationRouter;
     }
 
+    @Produces
     public Topology topology() {
         final var streamsBuilder = new StreamsBuilder();
         final var notificationSerde = new ObjectMapperSerde<>(Notification.class);

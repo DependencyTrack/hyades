@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.parser.common.resolver;
+package org.acme.resolver;
 
 import org.acme.Main;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +31,8 @@ import javax.enterprise.context.ApplicationScoped;
  * @since 3.0.0
  */
 @ApplicationScoped
-public class CweResolver {
+public class
+CweResolver {
 
     Cwe cwe = new Cwe();
     private static final CweResolver INSTANCE = new CweResolver();
