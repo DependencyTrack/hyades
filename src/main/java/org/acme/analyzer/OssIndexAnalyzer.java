@@ -15,13 +15,17 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.cache.Cache;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.core.MultivaluedHashMap;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -30,15 +34,18 @@ public class OssIndexAnalyzer implements Analyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(OssIndexAnalyzer.class);
 
     private final OssIndexClient client;
+    private final Cache<String, ComponentReport> cache;
     private final boolean isEnabled;
     private final String apiAuth;
 
     @Inject
     public OssIndexAnalyzer(@RestClient final OssIndexClient client,
+                            @Named("ossIndexCache") final Cache<String, ComponentReport> cache,
                             @ConfigProperty(name = "scanner.ossindex.enabled", defaultValue = "true") final boolean isEnabled,
                             @ConfigProperty(name = "scanner.ossindex.api.username") final Optional<String> apiUsername,
                             @ConfigProperty(name = "scanner.ossindex.api.token") final Optional<String> apiToken) {
         this.client = client;
+        this.cache = cache;
         this.isEnabled = isEnabled;
         if (apiUsername.isPresent() && apiToken.isPresent()) {
             final byte[] credentials = "%s:%s".formatted(apiUsername.get(), apiToken.get()).getBytes(StandardCharsets.UTF_8);
@@ -62,6 +69,23 @@ public class OssIndexAnalyzer implements Analyzer {
 
         final var results = new ArrayList<VulnerabilityResult>();
 
+        // Populate results from cache where possible
+        final Iterator<Map.Entry<String, List<Component>>> iterator = purlComponents.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final Map.Entry<String, List<Component>> entry = iterator.next();
+            Optional.ofNullable(cache.get(entry.getKey())).ifPresentOrElse(
+                    report -> {
+                        LOGGER.info("Cache hit for {}", entry.getKey());
+                        results.addAll(processReport(report, entry.getValue()));
+                        iterator.remove(); // Do not query OSS Index for these coordinates anymore
+                    },
+                    () -> LOGGER.info("Cache miss for {}", entry.getKey())
+            );
+        }
+        if (purlComponents.isEmpty()) {
+            return results;
+        }
+
         final Pageable<String> paginatedPurls = new Pageable<>(128, new ArrayList<>(purlComponents.keySet()));
         while (!paginatedPurls.isPaginationComplete()) {
             final List<ComponentReport> reports;
@@ -78,31 +102,41 @@ public class OssIndexAnalyzer implements Analyzer {
                     continue;
                 }
 
-                if (report.vulnerabilities().isEmpty()) {
-                    for (final Component component : affectedComponents) {
-                        final var result = new VulnerabilityResult();
-                        result.setComponent(component);
-                        result.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
-                        result.setVulnerability(null);
-                        results.add(result);
-                    }
-                    continue;
-                }
-
-                for (final ComponentReportVulnerability reportedVuln : report.vulnerabilities()) {
-                    final Vulnerability vuln = ModelConverter.convert(reportedVuln);
-
-                    for (final Component component : affectedComponents) {
-                        final var result = new VulnerabilityResult();
-                        result.setComponent(component);
-                        result.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
-                        result.setVulnerability(vuln);
-                        results.add(result);
-                    }
-                }
+                results.addAll(processReport(report, affectedComponents));
+                cache.put(report.coordinates(), report);
             }
 
             paginatedPurls.nextPage();
+        }
+
+        return results;
+    }
+
+    private List<VulnerabilityResult> processReport(final ComponentReport report, final List<Component> components) {
+        final var results = new ArrayList<VulnerabilityResult>();
+
+        if (report.vulnerabilities().isEmpty()) {
+            for (final Component component : components) {
+                final var result = new VulnerabilityResult();
+                result.setComponent(component);
+                result.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
+                result.setVulnerability(null);
+                results.add(result);
+            }
+
+            return results;
+        }
+
+        for (final ComponentReportVulnerability reportedVuln : report.vulnerabilities()) {
+            final Vulnerability vuln = ModelConverter.convert(reportedVuln);
+
+            for (final Component component : components) {
+                final var result = new VulnerabilityResult();
+                result.setComponent(component);
+                result.setIdentity(AnalyzerIdentity.OSSINDEX_ANALYZER);
+                result.setVulnerability(vuln);
+                results.add(result);
+            }
         }
 
         return results;
