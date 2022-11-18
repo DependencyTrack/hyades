@@ -22,21 +22,32 @@ import java.util.UUID;
 public class RepoMetaAnalysisTopologyBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(RepoMetaAnalysisTopologyBuilder.class);
     private final RepoEntityRepository repoEntityRepository;
+    private final MavenMetaAnalyzer mavenMetaAnalyzer;
+    private final GoModulesMetaAnalyzer goModulesMetaAnalyzer;
+    private final HexMetaAnalyzer hexMetaAnalyzer;
+    private final NpmMetaAnalyzer npmMetaAnalyzer;
+    private final NugetMetaAnalyzer nugetMetaAnalyzer;
+    private final PypiMetaAnalyzer pypiMetaAnalyzer;
 
-    public RepoMetaAnalysisTopologyBuilder(RepoEntityRepository repoEntityRepository){
+    private final GemMetaAnalyzer gemMetaAnalyzer;
+
+    private final ComposerMetaAnalyzer composerMetaAnalyzer;
+
+
+    public RepoMetaAnalysisTopologyBuilder(final RepoEntityRepository repoEntityRepository, final MavenMetaAnalyzer mavenMetaAnalyzer, final GoModulesMetaAnalyzer goModulesMetaAnalyzer, final HexMetaAnalyzer hexMetaAnalyzer, final NpmMetaAnalyzer npmMetaAnalyzer, final NugetMetaAnalyzer nugetMetaAnalyzer, final PypiMetaAnalyzer pypiMetaAnalyzer, final GemMetaAnalyzer gemMetaAnalyzer, final ComposerMetaAnalyzer composerMetaAnalyzer){
         this.repoEntityRepository = repoEntityRepository;
+        this.mavenMetaAnalyzer = mavenMetaAnalyzer;
+        this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
+        this.hexMetaAnalyzer = hexMetaAnalyzer;
+        this.npmMetaAnalyzer = npmMetaAnalyzer;
+        this.nugetMetaAnalyzer = nugetMetaAnalyzer;
+        this.pypiMetaAnalyzer = pypiMetaAnalyzer;
+        this.gemMetaAnalyzer = gemMetaAnalyzer;
+        this.composerMetaAnalyzer = composerMetaAnalyzer;
     }
 
 
-    public void buildTopology(StreamsBuilder streamsBuilder, MavenMetaAnalyzer mavenMetaAnalyzer,
-                                GoModulesMetaAnalyzer goModulesMetaAnalyzer,
-                                HexMetaAnalyzer hexMetaAnalyzer,
-                                NpmMetaAnalyzer npmMetaAnalyzer,
-                                NugetMetaAnalyzer nugetMetaAnalyzer,
-                                PypiMetaAnalyzer pypiMetaAnalyzer,
-                                GemMetaAnalyzer gemMetaAnalyzer,
-
-                                ComposerMetaAnalyzer composerMetaAnalyzer) {
+    public void buildTopology(StreamsBuilder streamsBuilder) {
         final var componentSerde = new ObjectMapperSerde<>(Component.class);
         final var metaModelSerde = new ObjectMapperSerde<>(MetaModel.class);
         final KStream<String, Component> componentMetaAnalyzerStream = streamsBuilder

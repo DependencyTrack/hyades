@@ -54,34 +54,14 @@ public class AnalyzerTopology {
     private final SnykAnalyzer snykAnalyzer;
     private final NotificationRouter notificationRouter;
 
-    private final MavenMetaAnalyzer mavenMetaAnalyzer;
-    private final GoModulesMetaAnalyzer goModulesMetaAnalyzer;
-    private final HexMetaAnalyzer hexMetaAnalyzer;
-    private final NpmMetaAnalyzer npmMetaAnalyzer;
-    private final NugetMetaAnalyzer nugetMetaAnalyzer;
-    private final PypiMetaAnalyzer pypiMetaAnalyzer;
-
-    private final GemMetaAnalyzer gemMetaAnalyzer;
-
-    private final ComposerMetaAnalyzer composerMetaAnalyzer;
-
     @Inject
     RepoMetaAnalysisTopologyBuilder repoMetaAnalysisTopologyBuilder;
 
     @Inject
     public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer,
-                            final SnykAnalyzer snykAnalyzer, final NotificationRouter notificationRouter,
-                            final MavenMetaAnalyzer mavenMetaAnalyzer, final GoModulesMetaAnalyzer goModulesMetaAnalyzer, final HexMetaAnalyzer hexMetaAnalyzer, final NpmMetaAnalyzer npmMetaAnalyzer, final NugetMetaAnalyzer nugetMetaAnalyzer, final PypiMetaAnalyzer pypiMetaAnalyzer, final GemMetaAnalyzer gemMetaAnalyzer, final ComposerMetaAnalyzer composerMetaAnalyzer) {
+                            final SnykAnalyzer snykAnalyzer, final NotificationRouter notificationRouter) {
         this.ossIndexAnalyzer = ossIndexAnalyzer;
         this.snykAnalyzer = snykAnalyzer;
-        this.mavenMetaAnalyzer = mavenMetaAnalyzer;
-        this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
-        this.hexMetaAnalyzer = hexMetaAnalyzer;
-        this.npmMetaAnalyzer = npmMetaAnalyzer;
-        this.nugetMetaAnalyzer = nugetMetaAnalyzer;
-        this.pypiMetaAnalyzer = pypiMetaAnalyzer;
-        this.gemMetaAnalyzer = gemMetaAnalyzer;
-        this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.notificationRouter = notificationRouter;
     }
 
@@ -289,15 +269,7 @@ public class AnalyzerTopology {
         }
 
         //--- repometaanalyzer code-- start
-        repoMetaAnalysisTopologyBuilder.buildTopology(streamsBuilder,
-                this.mavenMetaAnalyzer,
-                this.goModulesMetaAnalyzer,
-                this.hexMetaAnalyzer,
-                this.npmMetaAnalyzer,
-                this.nugetMetaAnalyzer,
-                this.pypiMetaAnalyzer,
-                this.gemMetaAnalyzer,
-                this.composerMetaAnalyzer);
+        repoMetaAnalysisTopologyBuilder.buildTopology(streamsBuilder);
         // repometaanalyzer code end
         // FIXME: Modularize the application, move the notification topology to it's own Quarkus app
         NotificationTopologyBuilder.buildTopology(streamsBuilder, notificationRouter);
