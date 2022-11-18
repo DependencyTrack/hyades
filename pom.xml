@@ -1,19 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.acme</groupId>
   <artifactId>kafka-poc</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-
-  <modules>
-    <module>commons</module>
-    <module>notification</module>
-    <module>vulnerability-analysis</module>
-  </modules>
-
+  <packaging>jar</packaging>
   <properties>
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
@@ -29,23 +21,35 @@
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.14.1.Final</quarkus.platform.version>
     <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
+    <lib.resilience4j.version>1.7.1</lib.resilience4j.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
   </properties>
-
   <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <artifactId>${quarkus.platform.artifact-id}</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>${quarkus.platform.artifact-id}</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
   <dependencies>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.12.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-artifact -->
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>4.0.0-alpha-2</version>
+        </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jackson</artifactId>
@@ -69,18 +73,6 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-panache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-postgresql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
     </dependency>
     <dependency>
@@ -92,6 +84,18 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm-panache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -125,6 +129,7 @@
       <version>1.18.24</version>
       <scope>provided</scope>
     </dependency>
+<!--    adding alpine dependencies to work with event project and other structures-->
     <dependency>
       <groupId>us.springett</groupId>
       <artifactId>alpine-common</artifactId>
@@ -140,6 +145,7 @@
       <artifactId>json</artifactId>
       <version>20220924</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.github.package-url/packageurl-java -->
     <dependency>
       <groupId>com.github.package-url</groupId>
       <artifactId>packageurl-java</artifactId>
@@ -167,8 +173,27 @@
     </dependency>
     <dependency>
       <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-all</artifactId>
+      <version>${lib.resilience4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-cache</artifactId>
+      <version>${lib.resilience4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-ratelimiter</artifactId>
-      <version>1.7.1</version>
+      <version>${lib.resilience4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>jcache</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -184,41 +209,36 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-mailer</artifactId>
     </dependency>
-
   </dependencies>
-
   <build>
-
     <plugins>
-      <plugin>
-        <groupId>org.cyclonedx</groupId>
-        <artifactId>cyclonedx-maven-plugin</artifactId>
-        <version>2.7.3</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>makeAggregateBom</goal>
-            </goals>
-          </execution>
-        </executions>
-
-        <configuration>
-          <projectType>library</projectType>
-          <schemaVersion>1.4</schemaVersion>
-          <includeBomSerialNumber>true</includeBomSerialNumber>
-          <includeCompileScope>true</includeCompileScope>
-          <includeProvidedScope>true</includeProvidedScope>
-          <includeRuntimeScope>true</includeRuntimeScope>
-          <includeSystemScope>true</includeSystemScope>
-          <includeTestScope>true</includeTestScope>
-          <includeLicenseText>false</includeLicenseText>
-          <outputReactorProjects>true</outputReactorProjects>
-          <outputFormat>all</outputFormat>
-          <outputName>bom</outputName>
-        </configuration>
-      </plugin>
-
+        <plugin>
+          <groupId>org.cyclonedx</groupId>
+          <artifactId>cyclonedx-maven-plugin</artifactId>
+          <version>2.7.3</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>makeAggregateBom</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <projectType>library</projectType>
+            <schemaVersion>1.4</schemaVersion>
+            <includeBomSerialNumber>true</includeBomSerialNumber>
+            <includeCompileScope>true</includeCompileScope>
+            <includeProvidedScope>true</includeProvidedScope>
+            <includeRuntimeScope>true</includeRuntimeScope>
+            <includeSystemScope>true</includeSystemScope>
+            <includeTestScope>true</includeTestScope>
+            <includeLicenseText>false</includeLicenseText>
+            <outputReactorProjects>true</outputReactorProjects>
+            <outputFormat>all</outputFormat>
+            <outputName>bom</outputName>
+          </configuration>
+        </plugin>
       <plugin>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
@@ -234,7 +254,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
@@ -244,7 +263,6 @@
           </compilerArgs>
         </configuration>
       </plugin>
-
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
@@ -254,7 +272,6 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
@@ -275,7 +292,6 @@
       </plugin>
     </plugins>
   </build>
-  
   <profiles>
     <profile>
       <id>native</id>
@@ -290,5 +306,4 @@
       </properties>
     </profile>
   </profiles>
-
 </project>

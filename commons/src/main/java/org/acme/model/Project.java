@@ -32,7 +32,6 @@ import com.github.packageurl.PackageURL;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.ClassifierToStringConverter;
 import org.acme.persistence.UUIDConverter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

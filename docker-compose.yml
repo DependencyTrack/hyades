@@ -40,9 +40,18 @@ services:
       /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
       echo -e 'Creating topics now'
       /usr/bin/rpk topic create component-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create repo-meta-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-maven --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-npm --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-hex --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-pypi --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-golang --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-nuget --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-composer --brokers=redpanda:29092 --replicas=1 --partitions=3
+      /usr/bin/rpk topic create component-meta-analysis-gem --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-cpe --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-purl --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-analysis-purl-aggregate --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-swid --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-vuln --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000 
       /usr/bin/rpk topic create component-vuln-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3

@@ -25,10 +25,9 @@ public final class ModelConverter {
         vulnerability.setDescription(reportedVuln.description());
 
         if (reportedVuln.cwe() != null) {
-            CweResolver cweResolver = new CweResolver();
+            CweResolver cweResolver = CweResolver.getInstance();
             Cwe cwe = cweResolver.resolve(reportedVuln.cwe());
             if (cwe != null) {
-
                 vulnerability.addCwe(cwe);
             }
         }
