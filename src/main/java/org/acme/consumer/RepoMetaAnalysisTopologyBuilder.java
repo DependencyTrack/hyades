@@ -1,7 +1,6 @@
 package org.acme.consumer;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
-import io.vavr.collection.Stream;
 import org.acme.model.Component;
 import org.acme.model.Repository;
 import org.acme.persistence.RepoEntityRepository;
@@ -16,21 +15,20 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
-public class RepoMetaAnalysisStreamWork {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RepoMetaAnalysisStreamWork.class);
+public class RepoMetaAnalysisTopologyBuilder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepoMetaAnalysisTopologyBuilder.class);
     private final RepoEntityRepository repoEntityRepository;
 
-    public RepoMetaAnalysisStreamWork(RepoEntityRepository repoEntityRepository){
+    public RepoMetaAnalysisTopologyBuilder(RepoEntityRepository repoEntityRepository){
         this.repoEntityRepository = repoEntityRepository;
     }
 
 
-    public void createStructure(StreamsBuilder streamsBuilder, MavenMetaAnalyzer mavenMetaAnalyzer,
+    public void buildTopology(StreamsBuilder streamsBuilder, MavenMetaAnalyzer mavenMetaAnalyzer,
                                 GoModulesMetaAnalyzer goModulesMetaAnalyzer,
                                 HexMetaAnalyzer hexMetaAnalyzer,
                                 NpmMetaAnalyzer npmMetaAnalyzer,
@@ -48,12 +46,8 @@ public class RepoMetaAnalysisStreamWork {
                 .peek((uuid, component) -> LOGGER.info("Received component for repo meta analyzer: {}", component),
                         Named.as("log_components_repo_meta"))
                 .filter((uuid, component) -> component.getPurl() != null, Named.as("filter_components_for_not_null_purl"))
-                .flatMap((projectUuid, component) -> {
-                    final var components = new ArrayList<KeyValue<String, Component>>();
-                    //Check if purl is not null on producer (dt) side
-                    components.add(KeyValue.pair(component.getPurl().getCoordinates(), component));
-
-                    return components;
+                .map((projectUuid, component) -> {
+                    return KeyValue.pair(component.getPurl().getCoordinates(), component);
                 }, Named.as("re-key_components_from_uuid_to_purl_for_meta"))
                 .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier),
                         Named.as("log_re-keyed_components_for_meta"));

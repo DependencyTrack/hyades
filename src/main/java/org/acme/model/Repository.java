@@ -36,7 +36,7 @@ import java.util.UUID;
  * @since 3.1.0
  */
 @Entity
-@Table(name = "REPOSITORY", uniqueConstraints =  {@UniqueConstraint(columnNames = {"TYPE", "IDENTIFIER"}, name = "REPOSITORY_COMPOUND_IDX")})
+@Table(name = "REPOSITORY")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Repository implements Serializable {
 

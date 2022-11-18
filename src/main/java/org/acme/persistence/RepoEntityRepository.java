@@ -6,13 +6,15 @@ import org.acme.model.Repository;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class RepoEntityRepository implements PanacheRepository<Repository> {
 
     public List<Repository> findRepositoryByRepositoryType(RepositoryType type){
-        return list("type = :type",
+        return list("type = :type order by resolutionOrder asc",
                 Parameters.with("type", type));
     }
 

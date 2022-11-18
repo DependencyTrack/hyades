@@ -66,7 +66,7 @@ public class AnalyzerTopology {
     private final ComposerMetaAnalyzer composerMetaAnalyzer;
 
     @Inject
-        RepoMetaAnalysisStreamWork repoMetaAnalysisStreamWork;
+    RepoMetaAnalysisTopologyBuilder repoMetaAnalysisTopologyBuilder;
 
     @Inject
     public AnalyzerTopology(final OssIndexAnalyzer ossIndexAnalyzer,
@@ -289,7 +289,7 @@ public class AnalyzerTopology {
         }
 
         //--- repometaanalyzer code-- start
-         repoMetaAnalysisStreamWork.createStructure(streamsBuilder,
+        repoMetaAnalysisTopologyBuilder.buildTopology(streamsBuilder,
                 this.mavenMetaAnalyzer,
                 this.goModulesMetaAnalyzer,
                 this.hexMetaAnalyzer,

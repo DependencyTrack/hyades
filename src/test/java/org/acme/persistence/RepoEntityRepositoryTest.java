@@ -26,12 +26,17 @@ class RepoEntityRepositoryTest {
 
         entityManager.createNativeQuery("""
                 INSERT INTO "REPOSITORY" ("ID", "ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL") VALUES
-                                    (1, 'true', 'central', 'false', 'null', 1, 'MAVEN', 'https://repo1.maven.org/maven2/');
+                                    (1, 'true', 'central', 'false', 'null', 2, 'MAVEN', 'https://repo1.maven.org/maven2/');
+                """).executeUpdate();
+        entityManager.createNativeQuery("""
+                INSERT INTO "REPOSITORY" ("ID", "ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL") VALUES
+                                    (2, 'true', 'central2', 'false', 'null', 1, 'MAVEN', 'https://repo1.maven.org/maven2/123');
                 """).executeUpdate();
         final List<Repository> config= repository
                 .findRepositoryByRepositoryType(RepositoryType.MAVEN);
-        Assertions.assertEquals(1, config.size());
-        Assertions.assertEquals(RepositoryType.MAVEN, config.get(0).getType());
+        Assertions.assertEquals(2, config.size());
+        Assertions.assertEquals(1, config.get(0).getResolutionOrder());
+        Assertions.assertEquals(2, config.get(1).getResolutionOrder());
     }
 
 
