@@ -2,7 +2,7 @@ version: "3"
 
 services:
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v22.3.1
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.3
     container_name: redpanda
     command:
       - redpanda
@@ -31,7 +31,7 @@ services:
       - "127.0.0.1:28082:8082"
     restart: unless-stopped
   init:
-    image: docker.redpanda.com/vectorized/redpanda:v22.3.1
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.3
     depends_on:
       - redpanda
     entrypoint: [ '/bin/sh', '-c' ]
@@ -52,7 +52,6 @@ services:
       /usr/bin/rpk topic create component-meta-analysis-gem --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-cpe --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-purl --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-analysis-purl-aggregate --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-swid --brokers=redpanda:29092 --replicas=1 --partitions=3
       /usr/bin/rpk topic create component-analysis-vuln --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000 
       /usr/bin/rpk topic create component-vuln-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
@@ -75,7 +74,7 @@ services:
     ports:
       - "8093:8093"
   redpanda-console:
-    image: docker.redpanda.com/vectorized/console:v2.0.3
+    image: docker.redpanda.com/vectorized/console:v2.1.0
     container_name: redpanda-console
     depends_on:
       - redpanda

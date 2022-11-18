@@ -2,7 +2,6 @@ package org.acme.client.snyk;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.packageurl.PackageURL;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -51,8 +50,8 @@ public class SnykClient {
         this.apiVersion = apiVersion;
     }
 
-    public Page<Issue> getIssues(final PackageURL purl) throws IOException {
-        final String encodedPurl = URLEncoder.encode(purl.getCoordinates(), StandardCharsets.UTF_8);
+    public Page<Issue> getIssues(final String coordinates) throws IOException {
+        final String encodedPurl = URLEncoder.encode(coordinates, StandardCharsets.UTF_8);
         final var request = new HttpGet("%s/rest/orgs/%s/packages/%s/issues?version=%s".formatted(apiBaseUrl, apiOrgId, encodedPurl, apiVersion));
         request.setHeader(HttpHeaders.AUTHORIZATION, "token " + apiToken);
         request.setHeader(HttpHeaders.ACCEPT, "application/vnd.api+json");

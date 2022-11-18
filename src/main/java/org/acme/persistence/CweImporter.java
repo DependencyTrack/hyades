@@ -23,12 +23,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.*;
-import java.io.File;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 /**
@@ -44,8 +50,12 @@ public class CweImporter {
     private static final Map<Integer, String> CWE_MAPPINGS = new TreeMap<>();
 
     public Map<Integer, String> processCweDefinitions() {
-        try {
-            File file = new File("./src/main/resources/cwec_v4.6.xml");
+        final URL cweDictionaryUrl = getClass().getClassLoader().getResource("cwec_v4.6.xml");
+        if (cweDictionaryUrl == null) {
+            throw new NoSuchElementException("CWE dictionary was not found in classpath");
+        }
+
+        try (final InputStream cweDictionaryInputStream = cweDictionaryUrl.openStream()) {
             LOGGER.info("Synchronizing CWEs with datastore");
 
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -57,7 +67,7 @@ public class CweImporter {
             factory.setExpandEntityReferences(false);
             final DocumentBuilder builder = factory.newDocumentBuilder();
 
-            final Document doc = builder.parse(file);
+            final Document doc = builder.parse(cweDictionaryInputStream);
             final XPathFactory xPathfactory = XPathFactory.newInstance();
             final XPath xpath = xPathfactory.newXPath();
 
