@@ -6,7 +6,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.acme.model.* ;
+import org.acme.model.Notification ;
 import org.apache.kafka.streams.kstream.KStream;
 
 import javax.enterprise.context.ApplicationScoped;

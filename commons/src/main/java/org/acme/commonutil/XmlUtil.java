@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.util;
+package org.acme.commonutil;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;

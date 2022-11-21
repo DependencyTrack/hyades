@@ -18,8 +18,12 @@
  */
 package org.acme.notification;
 
-import org.acme.exception.*;
-import org.acme.model.*;
+import org.acme.exception.PublisherException;
+import org.acme.model.Notification;
+import org.acme.model.NotificationPublisher;
+import org.acme.model.NotificationRule;
+import org.acme.model.Project;
+import org.acme.model.Team;
 import org.acme.notification.publisher.Publisher;
 import org.acme.notification.publisher.SendMailPublisher;
 import org.acme.notification.vo.AnalysisDecisionChange;

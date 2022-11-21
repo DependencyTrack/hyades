@@ -29,6 +29,7 @@ import org.acme.commonnotification.NotificationGroup;
 import org.acme.commonnotification.NotificationScope;
 import org.acme.persistence.NotificationLevelConverter;
 import org.acme.persistence.NotificationScopeConverter;
+import org.acme.persistence.UUIDConverter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -134,6 +135,7 @@ public class NotificationRule extends PanacheEntityBase {
 
     @Column(name = "UUID", length = 36, nullable = false, unique = true)
     @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
     @Column(name = "NOTIFY_CHILDREN") // New column, must allow nulls on existing data bases

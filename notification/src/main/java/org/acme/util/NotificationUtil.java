@@ -17,13 +17,21 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.acme.util;
+import org.acme.model.Analysis;
+import org.acme.model.Component;
+import org.acme.model.Cwe;
+import org.acme.model.Policy;
+import org.acme.model.PolicyCondition;
+import org.acme.model.PolicyViolation;
+import org.acme.model.Project;
+import org.acme.model.Tag;
+import org.acme.model.Vulnerability;
 import org.acme.notification.vo.AnalysisDecisionChange;
 import org.acme.notification.vo.BomConsumedOrProcessed;
 import org.acme.notification.vo.NewVulnerabilityIdentified;
 import org.acme.notification.vo.NewVulnerableDependency;
 import org.acme.notification.vo.PolicyViolationIdentified;
 import org.acme.notification.vo.VexConsumedOrProcessed;
-import org.acme.model.*;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
