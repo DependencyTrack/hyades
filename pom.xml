@@ -21,7 +21,7 @@
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.14.1.Final</quarkus.platform.version>
     <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
-    <lib.resilience4j.version>1.7.1</lib.resilience4j.version>
+    <lib.resilience4j.version>2.0.0</lib.resilience4j.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
