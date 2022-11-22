@@ -1,23 +1,35 @@
 package org.acme.consumer;
 
+import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
+import org.acme.commonutil.SecretsUtil;
+import org.acme.model.Component;
 import org.acme.model.Repository;
 import org.acme.persistence.RepoEntityRepository;
-import org.acme.repositories.*;
-import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
-import org.acme.model.Component;
-import org.acme.repositories.*;
-import org.acme.commonutil.SecretsUtil;
+import org.acme.repositories.ComposerMetaAnalyzer;
+import org.acme.repositories.GemMetaAnalyzer;
+import org.acme.repositories.GoModulesMetaAnalyzer;
+import org.acme.repositories.HexMetaAnalyzer;
+import org.acme.repositories.MavenMetaAnalyzer;
+import org.acme.repositories.MetaModel;
+import org.acme.repositories.NpmMetaAnalyzer;
+import org.acme.repositories.NugetMetaAnalyzer;
+import org.acme.repositories.PypiMetaAnalyzer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.Branched;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Named;
+import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -144,7 +156,8 @@ public class RepoMetaAnalysisTopologyBuilder {
 
     }
 
-    private List<KeyValue<UUID, MetaModel>> mavenMetaAnalysis(final Component component, MavenMetaAnalyzer mavenMetaAnalyzer) {
+    @Transactional
+    List<KeyValue<UUID, MetaModel>> mavenMetaAnalysis(final Component component, MavenMetaAnalyzer mavenMetaAnalyzer) {
         List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(mavenMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
@@ -165,7 +178,8 @@ public class RepoMetaAnalysisTopologyBuilder {
 
     }
 
-    private List<KeyValue<UUID, MetaModel>> pypiMetaAnalysis(final Component component, PypiMetaAnalyzer pypiMetaAnalyzer) {
+    @Transactional
+    List<KeyValue<UUID, MetaModel>> pypiMetaAnalysis(final Component component, PypiMetaAnalyzer pypiMetaAnalyzer) {
         List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(pypiMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
@@ -185,7 +199,8 @@ public class RepoMetaAnalysisTopologyBuilder {
         return metaModels;
     }
 
-    private List<KeyValue<UUID, MetaModel>> goMetaAnalysis(final Component component, GoModulesMetaAnalyzer goModulesMetaAnalyzer) {
+    @Transactional
+    List<KeyValue<UUID, MetaModel>> goMetaAnalysis(final Component component, GoModulesMetaAnalyzer goModulesMetaAnalyzer) {
         List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(goModulesMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
@@ -205,7 +220,8 @@ public class RepoMetaAnalysisTopologyBuilder {
         return metaModels;
     }
 
-    private List<KeyValue<UUID, MetaModel>> nugetMetaAnalysis(final Component component, NugetMetaAnalyzer nugetMetaAnalyzer) {
+    @Transactional
+    List<KeyValue<UUID, MetaModel>> nugetMetaAnalysis(final Component component, NugetMetaAnalyzer nugetMetaAnalyzer) {
         List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(nugetMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
@@ -225,7 +241,8 @@ public class RepoMetaAnalysisTopologyBuilder {
         return metaModels;
     }
 
-    private List<KeyValue<UUID, MetaModel>> npmMetaAnalysis(final Component component, NpmMetaAnalyzer npmMetaAnalyzer) {
+    @Transactional
+    List<KeyValue<UUID, MetaModel>> npmMetaAnalysis(final Component component, NpmMetaAnalyzer npmMetaAnalyzer) {
         List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(npmMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
@@ -245,7 +262,8 @@ public class RepoMetaAnalysisTopologyBuilder {
         return metaModels;
     }
 
-    private List<KeyValue<UUID, MetaModel>> hexMetaAnalysis(final Component component, HexMetaAnalyzer hexMetaAnalyzer) {
+    @Transactional
+    List<KeyValue<UUID, MetaModel>> hexMetaAnalysis(final Component component, HexMetaAnalyzer hexMetaAnalyzer) {
         List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(hexMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
@@ -265,7 +283,8 @@ public class RepoMetaAnalysisTopologyBuilder {
         return metaModels;
     }
 
-    private List<KeyValue<UUID, MetaModel>> gemMetaAnalysis(final Component component, GemMetaAnalyzer gemMetaAnalyzer) {
+    @Transactional
+    List<KeyValue<UUID, MetaModel>> gemMetaAnalysis(final Component component, GemMetaAnalyzer gemMetaAnalyzer) {
         List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(gemMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
@@ -285,7 +304,8 @@ public class RepoMetaAnalysisTopologyBuilder {
         return metaModels;
     }
 
-    private List<KeyValue<UUID, MetaModel>> composerMetaAnalysis(final Component component, ComposerMetaAnalyzer composerMetaAnalyzer) {
+    @Transactional
+    List<KeyValue<UUID, MetaModel>> composerMetaAnalysis(final Component component, ComposerMetaAnalyzer composerMetaAnalyzer) {
         List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
         for(Repository repository : repoEntityRepository.findRepositoryByRepositoryType(composerMetaAnalyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
