@@ -9,9 +9,9 @@
     
   <modules>
     <module>commons</module>
-    <module>notification</module>
-    <module>repo-meta-analyzers</module>
-    <module>vulnerability-analysis</module>
+    <module>notification-publisher</module>
+    <module>repository-meta-analyzer</module>
+    <module>vulnerability-analyzer</module>
   </modules>
     
   <properties>
