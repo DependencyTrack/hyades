@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.acme</groupId>
@@ -26,12 +27,12 @@
     <lib.caffeine.version>3.1.1</lib.caffeine.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
-    <lib.cyclonedx-java.version>7.2.1</lib.cyclonedx-java.version>
+    <lib.cyclonedx-java.version>7.3.0</lib.cyclonedx-java.version>
     <lib.maven-artifact.version>4.0.0-alpha-2</lib.maven-artifact.version>
     <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
     <lib.pebble.version>3.1.6</lib.pebble.version>
-    <lib.resilience4j.version>1.7.1</lib.resilience4j.version>
-    <lib.unirest.version>3.13.12</lib.unirest.version>
+    <lib.resilience4j.version>2.0.0</lib.resilience4j.version>
+    <lib.unirest.version>3.13.13</lib.unirest.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>2.14.1.Final</quarkus.platform.version>
 
