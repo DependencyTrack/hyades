@@ -18,10 +18,12 @@
  */
 package org.acme.resolver;
 
-import org.acme.Main;
-import org.apache.commons.lang3.StringUtils;
 import org.acme.model.Cwe;
-import javax.enterprise.context.ApplicationScoped;
+import org.acme.persistence.CweImporter;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Attempts to resolve an internal CWE object from a string
@@ -30,31 +32,21 @@ import javax.enterprise.context.ApplicationScoped;
  * @author Steve Springett
  * @since 3.0.0
  */
-@ApplicationScoped
-public class
-CweResolver {
+public class CweResolver {
 
-    Cwe cwe = new Cwe();
-    private static final CweResolver INSTANCE = new CweResolver();
-    public CweResolver() { }
-    //private static final CweResolver INSTANCE = new CweResolver();
-
-    /*private CweResolver() {
+    private static final Map<Integer, String> CWE_DICTIONARY = new HashMap<>();
+    static {
+        CWE_DICTIONARY.putAll(CweImporter.processCweDefinitions());
     }
-*/
-    //public static CweResolver getInstance() {
-    /*    return INSTANCE;
-    }*/
 
-    /**
-     * Lookups a CWE from the internal CWE dictionary. This method
-     * does not query the database, but will return a Cwe object useful
-     * for JSON serialization, but not for persistence.
-     *
-     * @param cweString the string to lookup
-     * @return a Cwe object
-     * @since 4.5.0
-     */
+    private static final CweResolver INSTANCE = new CweResolver();
+
+    private CweResolver() { }
+
+    public static CweResolver getInstance() {
+        return INSTANCE;
+    }
+
     /**
      * Lookups a CWE from the internal CWE dictionary. This method
      * does not query the database, but will return a Cwe object useful
@@ -65,14 +57,14 @@ CweResolver {
      * @since 4.5.0
      */
     public Cwe lookup(final Integer cweId) {
-        if(Main.cweInfo.isEmpty()){
-            return null;
-        }
         if (cweId != null) {
-            String cweName = Main.cweInfo.get(cweId);
-            cwe.setCweId(cweId);
-            cwe.setName(cweName);
-            return cwe;
+            final String cweName = CWE_DICTIONARY.get(cweId);
+            if (cweName != null) {
+                final var cwe = new Cwe();
+                cwe.setCweId(cweId);
+                cwe.setName(cweName);
+                return cwe;
+            }
         }
         return null;
     }
@@ -88,17 +80,16 @@ CweResolver {
      */
     public Cwe resolve(final String cweString) {
         final Integer cweId = parseCweString(cweString);
-        if(Main.cweInfo.isEmpty()){
-            return null;
-        }
         if (cweId != null) {
-            String cweName = Main.cweInfo.get(cweId);
-            cwe.setCweId(cweId);
-            cwe.setName(cweName);
-            return cwe;
-        } else {
-            return null;
+            final String cweName =CWE_DICTIONARY.get(cweId);
+            if (cweName != null) {
+                final var cwe = new Cwe();
+                cwe.setCweId(cweId);
+                cwe.setName(cweName);
+                return cwe;
+            }
         }
+        return null;
     }
 
     /**
@@ -132,7 +123,5 @@ CweResolver {
         }
         return null;
     }
-    public static CweResolver getInstance() {
-        return INSTANCE;
-    }
+
 }

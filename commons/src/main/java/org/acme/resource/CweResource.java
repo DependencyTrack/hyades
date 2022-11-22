@@ -1,14 +1,18 @@
 package org.acme.resource;
 
+import org.acme.model.Cwe;
+import org.acme.resolver.CweResolver;
+import org.jboss.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.acme.Main;
-import org.jboss.logging.Logger;
 
 @ApplicationScoped
 @Path("/cwe")
@@ -20,18 +24,13 @@ public class CweResource {
     @GET
     @Path("/data")
     public Response getCweData(@QueryParam("id") int id) {
-        if (Main.cweInfo.isEmpty()) {
-            return Response.status(Status.NOT_FOUND.getStatusCode(),
-                    "Cwe values have not been loaded into application on startup. Please check. ").build();
+        Cwe result = CweResolver.getInstance().lookup(id);
+        logger.info("Printing result here: " + result);
+        if (result != null) {
+            return Response.ok(result).build();
         } else {
-            String result = Main.cweInfo.get(id);
-            logger.info("Printing result here: " + result);
-            if (result != null) {
-                return Response.ok(result).build();
-            } else {
-                return Response.status(Status.NOT_FOUND.getStatusCode(),
-                        "Cwe with this id not found " + id).build();
-            }
+            return Response.status(Status.NOT_FOUND.getStatusCode(),
+                    "Cwe with this id not found " + id).build();
         }
     }
 

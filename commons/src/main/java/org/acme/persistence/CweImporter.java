@@ -49,8 +49,8 @@ public class CweImporter {
     private static final Logger LOGGER = Logger.getLogger(CweImporter.class);
     private static final Map<Integer, String> CWE_MAPPINGS = new TreeMap<>();
 
-    public Map<Integer, String> processCweDefinitions() {
-        final URL cweDictionaryUrl = getClass().getClassLoader().getResource("cwec_v4.6.xml");
+    public static Map<Integer, String> processCweDefinitions() {
+        final URL cweDictionaryUrl = CweImporter.class.getClassLoader().getResource("cwec_v4.6.xml");
         if (cweDictionaryUrl == null) {
             throw new NoSuchElementException("CWE dictionary was not found in classpath");
         }
