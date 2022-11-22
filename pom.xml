@@ -10,27 +10,31 @@
   <modules>
     <module>commons</module>
     <module>notification</module>
-    <module>vulnerability-analysis</module>
     <module>repo-meta-analyzers</module>
+    <module>vulnerability-analysis</module>
   </modules>
     
   <properties>
+    <!-- General Project Properties -->
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <lib.alpine.version>2.1.0</lib.alpine.version>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <lib.cyclonedx-java.version>7.2.1</lib.cyclonedx-java.version>
+
+    <!-- Dependency Versions -->
+    <lib.alpine.version>2.1.0</lib.alpine.version>
+    <lib.caffeine.version>3.1.1</lib.caffeine.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
-    <lib.unirest.version>3.13.12</lib.unirest.version>
-    <lib.pebble.version>3.1.6</lib.pebble.version>
-    <lib.jdbc-driver.postgresql.version>42.5.0</lib.jdbc-driver.postgresql.version>
-    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-    <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.14.1.Final</quarkus.platform.version>
-    <lib.jaxb.runtime.version>4.0.1</lib.jaxb.runtime.version>
-    <lib.resilience4j.version>1.7.1</lib.resilience4j.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
+    <lib.cyclonedx-java.version>7.2.1</lib.cyclonedx-java.version>
+    <lib.maven-artifact.version>4.0.0-alpha-2</lib.maven-artifact.version>
+    <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
+    <lib.pebble.version>3.1.6</lib.pebble.version>
+    <lib.resilience4j.version>1.7.1</lib.resilience4j.version>
+    <lib.unirest.version>3.13.12</lib.unirest.version>
+    <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
+    <quarkus.platform.version>2.14.1.Final</quarkus.platform.version>
+
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
   </properties>
@@ -38,270 +42,176 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <artifactId>${quarkus.platform.artifact-id}</artifactId>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
         <version>${quarkus.platform.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.acme.kafka-poc</groupId>
+        <artifactId>commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>us.springett</groupId>
+        <artifactId>alpine-common</artifactId>
+        <version>${lib.alpine.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>us.springett</groupId>
+        <artifactId>cpe-parser</artifactId>
+        <version>${lib.cpe-parser.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-core-java</artifactId>
+        <version>${lib.cyclonedx-java.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-all</artifactId>
+        <version>${lib.resilience4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-cache</artifactId>
+        <version>${lib.resilience4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-ratelimiter</artifactId>
+        <version>${lib.resilience4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>jcache</artifactId>
+        <version>${lib.caffeine.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.pebbletemplates</groupId>
+        <artifactId>pebble</artifactId>
+        <version>${lib.pebble.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>${lib.xercesimpl.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${lib.maven-artifact.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.package-url</groupId>
+        <artifactId>packageurl-java</artifactId>
+        <version>${lib.packageurl-java.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.konghq</groupId>
+        <artifactId>unirest-java</artifactId>
+        <version>${lib.unirest.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>us.springett</groupId>
+        <artifactId>cvss-calculator</artifactId>
+        <version>${lib.cvss-calculator.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
-    
-  <dependencies>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.12.2</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-artifact -->
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-      <version>4.0.0-alpha-2</version>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.14.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-agroal</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-flyway</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-panache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-postgresql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5-mockito</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>${lib.jaxb.runtime.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jsonb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-kafka-streams</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-streams-test-utils</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.24</version>
-      <scope>provided</scope>
-    </dependency>
-    <!--    adding alpine dependencies to work with event project and other structures-->
-    <dependency>
-      <groupId>us.springett</groupId>
-      <artifactId>alpine-common</artifactId>
-      <version>${lib.alpine.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.konghq</groupId>
-      <artifactId>unirest-java</artifactId>
-      <version>${lib.unirest.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20220924</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.github.package-url/packageurl-java -->
-    <dependency>
-      <groupId>com.github.package-url</groupId>
-      <artifactId>packageurl-java</artifactId>
-      <version>1.4.1</version>
-    </dependency>
-    <dependency>
-      <groupId>us.springett</groupId>
-      <artifactId>cvss-calculator</artifactId>
-      <version>${lib.cvss-calculator.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>${lib.jdbc-driver.postgresql.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.cyclonedx</groupId>
-      <artifactId>cyclonedx-core-java</artifactId>
-      <version>${lib.cyclonedx-java.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>us.springett</groupId>
-      <artifactId>cpe-parser</artifactId>
-      <version>${lib.cpe-parser.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.resilience4j</groupId>
-      <artifactId>resilience4j-all</artifactId>
-      <version>${lib.resilience4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.resilience4j</groupId>
-      <artifactId>resilience4j-cache</artifactId>
-      <version>${lib.resilience4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.resilience4j</groupId>
-      <artifactId>resilience4j-ratelimiter</artifactId>
-      <version>${lib.resilience4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.ben-manes.caffeine</groupId>
-      <artifactId>jcache</artifactId>
-      <version>3.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.json</groupId>
-      <artifactId>javax.json-api</artifactId>
-      <version>1.1.4</version>
-    </dependency>
-    <dependency>
-      <groupId>io.pebbletemplates</groupId>
-      <artifactId>pebble</artifactId>
-      <version>${lib.pebble.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-mailer</artifactId>
-    </dependency>
-  </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.cyclonedx</groupId>
-        <artifactId>cyclonedx-maven-plugin</artifactId>
-        <version>2.7.3</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>makeAggregateBom</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <projectType>library</projectType>
-          <schemaVersion>1.4</schemaVersion>
-          <includeBomSerialNumber>true</includeBomSerialNumber>
-          <includeCompileScope>true</includeCompileScope>
-          <includeProvidedScope>true</includeProvidedScope>
-          <includeRuntimeScope>true</includeRuntimeScope>
-          <includeSystemScope>true</includeSystemScope>
-          <includeTestScope>true</includeTestScope>
-          <includeLicenseText>false</includeLicenseText>
-          <outputReactorProjects>true</outputReactorProjects>
-          <outputFormat>all</outputFormat>
-          <outputName>bom</outputName>
-        </configuration>
-      </plugin>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${compiler-plugin.version}</version>
+          <configuration>
+            <compilerArgs>
+              <arg>-parameters</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
 
-      <plugin>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-              <goal>generate-code</goal>
-              <goal>generate-code-tests</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
-        <configuration>
-          <compilerArgs>
-            <arg>-parameters</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
-        <configuration>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-            <configuration>
-              <systemPropertyVariables>
-                <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-              </systemPropertyVariables>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+        <plugin>
+          <groupId>io.smallrye</groupId>
+          <artifactId>jandex-maven-plugin</artifactId>
+          <version>3.0.3</version>
+          <executions>
+            <execution>
+              <id>make-index</id>
+              <goals>
+                <goal>jandex</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>io.quarkus.platform</groupId>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${quarkus.platform.version}</version>
+          <extensions>true</extensions>
+          <executions>
+            <execution>
+              <goals>
+                <goal>build</goal>
+                <goal>generate-code</goal>
+                <goal>generate-code-tests</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-container-image-docker</artifactId>
+          <version>${quarkus.platform.version}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire-plugin.version}</version>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${surefire-plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <systemPropertyVariables>
+                  <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                  <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                </systemPropertyVariables>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <profiles>

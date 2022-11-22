@@ -69,7 +69,7 @@ public class ConfigProperty implements IConfigProperty {
     )
     @Convert(converter = PropertyTypeConverter.class)
     @NotNull
-    private IConfigProperty.@NotNull PropertyType propertyType;
+    private PropertyType propertyType;
 
     @Column(
             name = "DESCRIPTION"
