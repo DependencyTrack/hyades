@@ -22,6 +22,7 @@ import alpine.common.logging.Logger;
 import alpine.common.util.BooleanUtil;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.quarkus.runtime.Startup;
 import org.acme.model.ConfigProperty;
 import org.acme.model.ConfigPropertyConstants;
 import org.acme.model.Notification;
@@ -40,6 +41,7 @@ import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 
 @ApplicationScoped
+@Startup // Force bean creation even though no direct injection points exist
 public class SendMailPublisher implements Publisher {
 
     private static final Logger LOGGER = Logger.getLogger(SendMailPublisher.class);
