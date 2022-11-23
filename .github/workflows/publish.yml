@@ -7,7 +7,7 @@ on:
 jobs:
   publish-container-image:
     name: Publish Container Images
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
