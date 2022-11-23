@@ -9,7 +9,7 @@
   </parent>
 
   <groupId>org.acme.kafka-poc</groupId>
-  <artifactId>repository-meta-analyzers</artifactId>
+  <artifactId>repository-meta-analyzer</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
   <dependencies>
