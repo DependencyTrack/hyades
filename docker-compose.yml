@@ -1,10 +1,36 @@
 version: "3"
 
 services:
-  poc:
-    build:
-      context: .
-      dockerfile: src/main/docker/Dockerfile.demo
+  notification-publisher:
+    image: ghcr.io/mehab/notification-publisher:latest
+    depends_on:
+      - postgres
+      - redpanda
+    environment:
+      QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      QUARKUS_DATASOURCE_USERNAME: "dtrack"
+      QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+    profiles:
+      - demo
+    restart: unless-stopped
+
+  repo-meta-analyzer:
+    image: ghcr.io/mehab/repository-meta-analyzer:latest
+    depends_on:
+      - postgres
+      - redpanda
+    environment:
+      QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      QUARKUS_DATASOURCE_USERNAME: "dtrack"
+      QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+    profiles:
+      - demo
+    restart: unless-stopped
+
+  vuln-analyzer:
+    image: ghcr.io/mehab/vulnerability-analyzer:latest
     depends_on:
       - postgres
       - redpanda
@@ -22,8 +48,6 @@ services:
       # SCANNER_SNYK_TOKEN: "your-token"
     profiles:
       - demo
-    volumes:
-      - "./secret.key:/data/.dependency-track/keys/secret.key:ro"
     restart: unless-stopped
 
   apiserver:
@@ -46,8 +70,16 @@ services:
     profiles:
       - demo
     volumes:
-      - "apiserver-data:/data"
+      - "./apiserver-data:/data"
       - "./secret.key:/data/.dependency-track/keys/secret.key:ro"
+    restart: unless-stopped
+
+  frontend:
+    image: dependencytrack/frontend:snapshot
+    environment:
+      API_BASE_URL: "http://localhost:8080"
+    ports:
+      - "127.0.0.1:8081:8080"
     restart: unless-stopped
 
   postgres:
