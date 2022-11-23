@@ -13,7 +13,7 @@ services:
       - "./commons/src/main/resources/migrations/postgres/V0.0.1__API-Server-4.7.0-SNAPSHOT.sql:/docker-entrypoint-initdb.d/001-init.sql"
     restart: unless-stopped
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v22.3.3
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.4
     container_name: redpanda
     command:
       - redpanda
@@ -42,7 +42,7 @@ services:
       - "127.0.0.1:28082:8082"
     restart: unless-stopped
   init:
-    image: docker.redpanda.com/vectorized/redpanda:v22.3.3
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.4
     depends_on:
       - redpanda
     entrypoint: [ '/bin/sh', '-c' ]
