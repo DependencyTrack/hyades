@@ -18,6 +18,7 @@
  */
 package org.acme.notification.publisher;
 import com.mitchellbosecke.pebble.PebbleEngine;
+import io.quarkus.runtime.Startup;
 import org.acme.model.Notification;
 import org.acme.persistence.ConfigPropertyRepository;
 
@@ -25,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
 
 @ApplicationScoped
+@Startup // Force bean creation even though no direct injection points exist
 public class MattermostPublisher extends AbstractWebhookPublisher implements Publisher {
 
     private final ConfigPropertyRepository configPropertyRepository;
