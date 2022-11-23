@@ -18,8 +18,27 @@ git clone https://github.com/mehab/DTKafkaPOC.git
 git clone --branch internal-dt-latest https://github.com/sahibamittal/dependency-track.git
 ```
   * Alternatively, should you not have Git installed, you can download the repositories [here](https://github.com/mehab/DTKafkaPOC/archive/refs/heads/main.zip)
-    and [here](https://github.com/sahibamittal/dependency-track/archive/refs/heads/internal-dt-latest.zip)
-3. Pull and build all required container images, and finally start them:
+    and [here](https://github.com/sahibamittal/dependency-track/archive/refs/heads/kafka-poc.zip)
+3. Temporary step \#1: Create the directory where the API server container can store its data:
+```shell
+mkdir -p ./apiserver-data/.dependency-track/keys
+chown -R 1000:1000 ./apiserver-data
+```
+  * This is required because the secret key (see step 4.) has to be mounted into another mount
+  * If creation of the directories is left to Docker, they'll be owned by user `root`, preventing the API server from writing to them
+  * A PR has been raised already to make the key path configurable: https://github.com/stevespringett/Alpine/pull/437
+4. Temporary Step \#2: Generate a secret key used for encryption and decryption of credentials in the database:
+```shell
+# In case you have JDK >= 11 installed
+jshell ./scripts/gen-secret-key.jsh -R"-Dsecret.key.destination=secret.key"
+
+# Otherwise, use Docker
+docker run -it --rm -v "$(pwd):/tmp/work" -u "$(id -u):$(id -g)" \
+  eclipse-temurin:17-jdk-alpine jshell -R"-Dsecret.key.destination=/tmp/work/secret.key" /tmp/work/scripts/gen-secret-key.jsh
+```
+  * Using Java is required here due to the key format expected by the API server
+  * A PR has been raised already to accept generic bytes as key format: https://github.com/stevespringett/Alpine/pull/437
+5. Pull and build all required container images, and finally start them:
 ```shell
 cd DTKafkaPOC
 docker compose --profile demo pull
@@ -27,16 +46,17 @@ docker compose --profile demo build
 docker compose --profile demo up -d
 ```
   * Make sure you include the `--profile demo` flag!
-  * Building the images may take a few minutes
+  * Building and the images may take a few minutes
 
 Once completed, the following services will be available:
 
-| Service                  | URL                    |
-|:-------------------------|:-----------------------|
-| Dependency-Track         | http://localhost:8080  |
-| Redpanda Console         | http://localhost:28080 |
-| PostgreSQL               | `localhost:5432`       |
-| Redpanda Kafka API       | `localhost:9092`       |
+| Service                     | URL                    |
+|:----------------------------|:-----------------------|
+| Dependency-Track API Server | http://localhost:8080  |
+| Dependency-Track Frontend   | http://localhost:8081  |
+| Redpanda Console            | http://localhost:28080 |
+| PostgreSQL                  | `localhost:5432`       |
+| Redpanda Kafka API          | `localhost:9092`       |
 
 > **Note**
 > You'll not need to interact with PostgreSQL or the Kafka API directly to try out the PoC,
@@ -44,8 +64,8 @@ Once completed, the following services will be available:
 
 ## Testing 🤞
 
-1. In a web browser, navigate to http://localhost:8080 and login (username: `admin`, password: `admin`)
-2. Navigate to the [projects view](http://localhost:8080/projects) and click *Create Project*
+1. In a web browser, navigate to http://localhost:8081 and login (username: `admin`, password: `admin`)
+2. Navigate to the [projects view](http://localhost:8081/projects) and click *Create Project*
 3. Provide an arbitrary project name and click *Create*
 4. Select the project you just created from the project list
 5. Navigate to the *Components* tab and click *Upload BOM*
