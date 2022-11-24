@@ -2,7 +2,8 @@
 
 ## Setup 💻
 
-All you need is [Docker], [Docker Compose] and a somewhat capable machine.
+All you need is [Docker], [Docker Compose] and a somewhat capable machine.  
+A UNIX-based system is strongly recommended. In case you're bound to Windows, please use WSL.
 
 > **Note**
 > A >4 core CPU and >=16GB RAM are recommended for a smooth experience.
@@ -15,19 +16,21 @@ mkdir demo
 ```shell
 cd demo
 git clone https://github.com/mehab/DTKafkaPOC.git
-git clone --branch internal-dt-latest https://github.com/sahibamittal/dependency-track.git
+git clone --branch kafka-poc https://github.com/sahibamittal/dependency-track.git
 ```
   * Alternatively, should you not have Git installed, you can download the repositories [here](https://github.com/mehab/DTKafkaPOC/archive/refs/heads/main.zip)
     and [here](https://github.com/sahibamittal/dependency-track/archive/refs/heads/kafka-poc.zip)
-3. Temporary step \#1: Create the directory where the API server container can store its data:
+3. 🚧 **Temporary step \#1**: Create the directory where the API server container can store its data:
 ```shell
+cd DTKafkaPOC
 mkdir -p ./apiserver-data/.dependency-track/keys
 chown -R 1000:1000 ./apiserver-data
 ```
-  * This is required because the secret key (see step 4.) has to be mounted into another mount
+  * This is required because the secret key (see step 4.) currently has to be injected using a nested mount
+  * `1000:1000` is the user ID and group ID of the user running the API server process
   * If creation of the directories is left to Docker, they'll be owned by user `root`, preventing the API server from writing to them
   * A PR has been raised already to make the key path configurable: https://github.com/stevespringett/Alpine/pull/437
-4. Temporary Step \#2: Generate a secret key used for encryption and decryption of credentials in the database:
+4. 🚧 **Temporary Step \#2**: Generate a secret key used for encryption and decryption of credentials in the database:
 ```shell
 # In case you have JDK >= 11 installed
 jshell ./scripts/gen-secret-key.jsh -R"-Dsecret.key.destination=secret.key"
@@ -36,8 +39,9 @@ jshell ./scripts/gen-secret-key.jsh -R"-Dsecret.key.destination=secret.key"
 docker run -it --rm -v "$(pwd):/tmp/work" -u "$(id -u):$(id -g)" \
   eclipse-temurin:17-jdk-alpine jshell -R"-Dsecret.key.destination=/tmp/work/secret.key" /tmp/work/scripts/gen-secret-key.jsh
 ```
-  * Using Java is required here due to the key format expected by the API server
+  * Using Java is required currently due to the key format expected by the API server
   * A PR has been raised already to accept generic bytes as key format: https://github.com/stevespringett/Alpine/pull/437
+  * 👆 Once merged, it will be possible to generate keys with common tools, e.g. `openssl rand 32`
 5. Pull and build all required container images, and finally start them:
 ```shell
 cd DTKafkaPOC
@@ -58,9 +62,27 @@ Once completed, the following services will be available:
 | PostgreSQL                  | `localhost:5432`       |
 | Redpanda Kafka API          | `localhost:9092`       |
 
-> **Note**
+> **Note**  
 > You'll not need to interact with PostgreSQL or the Kafka API directly to try out the PoC,
 > but if you're curious 🕵️ of course you can!
+
+### Common Issues
+
+#### Postgres container fails to start
+
+If the `dt-postgres` container fails to start with messages like:
+
+```
+ls: can't open '/docker-entrypoint-initdb.d/': Permission denied
+```
+
+It's likely that the local directory mounted into `/docker-entrypoint-initdb.d` is not accessible by the postgres process.
+To fix, make the local directory readable by everyone, and restart the `dt-postgres` container:
+
+```shell
+chmod -R o+r ./commons/src/main/resources/migrations/postgres
+docker restart dt-postgres
+```
 
 ## Testing 🤞
 
@@ -89,6 +111,10 @@ individually scalable services.
 
 ## Scaling up 📈
 
+> **Warning**  
+> This section is still a work in progress and does not necessarily show
+> the current state of the setup.
+
 One of the goals of this PoC is to achieve scalability, remember? Well, we're delighted to report
 that there are multiple ways to scale! If you're interested, you can find out more about the parallelism model 
 at play [here](https://docs.confluent.io/platform/current/streams/architecture.html#parallelism-model).
@@ -112,9 +138,9 @@ Arguably the easiest option is to simply increase the number of stream threads u
 By modifying the `KAFKA_STREAMS_NUM_STREAM_THREADS` environment variable in `docker-compose.yml`, the number of worker
 threads can be tweaked.
 
-Let's change it to `12` and see what happens!  
-To do this, remove the comment (`#`) from the `# KAFKA_STREAMS_NUM_STREAM_THREADS: "12"` line in `docker-compose.yml`,
-and recreate the container with `docker compose up -d poc`.
+Let's change it to `3` and see what happens!  
+To do this, remove the comment (`#`) from the `# KAFKA_STREAMS_NUM_STREAM_THREADS: "3"` line in `docker-compose.yml`,
+and recreate the container with `docker compose up -d vulnerability-analyzer`.
 
 ### Scaling to multiple instances 🚀🚀🚀
 
@@ -123,7 +149,7 @@ count is the preferable route. In reality this may be done via Kubernetes manife
 Let's scale up to three instances:
 
 ```shell
-docker compose --profile demo up -d --scale poc=3
+docker compose --profile demo up -d --scale vulnerability-analyzer=3
 ```
 
 [Docker]: https://docs.docker.com/engine/
