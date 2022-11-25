@@ -34,7 +34,7 @@
     <lib.resilience4j.version>2.0.0</lib.resilience4j.version>
     <lib.unirest.version>3.13.13</lib.unirest.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>2.14.1.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.14.2.Final</quarkus.platform.version>
 
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
