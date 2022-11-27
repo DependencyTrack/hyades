@@ -193,11 +193,13 @@ public class RepositoryMetaAnalyzerTopology {
             analyzer.setRepositoryBaseUrl(repository.getUrl());
 
             LOGGER.info("Performing meta analysis on component: {}", component);
-            MetaModel model = analyzer.analyze(component);
-            return KeyValue.pair(component.getUuid(), model);
+            final MetaModel model = analyzer.analyze(component);
+            if (model.getLatestVersion() != null) {
+                return KeyValue.pair(component.getUuid(), model);
+            }
         }
 
-        // Produce "empty" result in case no repository was found
+        // Produce "empty" result in case no repository did yield a satisfactory result
         return KeyValue.pair(component.getUuid(), new MetaModel(component));
     }
 
