@@ -3,7 +3,7 @@
 set -euxo pipefail
 
 function create_topic() {
-  if ! output=$(rpk topic create "$1" --partitions "$2" --topic-config "retention.hours=$3"); then
+  if ! output=$(rpk topic create "$1" --partitions "$2" --topic-config "retention.ms=$3"); then
     # Don't fail the script when the rpk command failed because the topic already exists.
     if [[ "$output" != *"TOPIC_ALREADY_EXISTS"* ]]; then
       exit 2
@@ -33,7 +33,7 @@ notification_topics=(
   "dtrack.notification.vex-processed"
 )
 for topic_name in "${notification_topics[@]}"; do
-  create_topic "$topic_name" "$NOTIFICATION_TOPICS_PARTITIONS" "$NOTIFICATION_TOPICS_RETENTION_HOURS"
+  create_topic "$topic_name" "$NOTIFICATION_TOPICS_PARTITIONS" "$NOTIFICATION_TOPICS_RETENTION_MS"
 done
 
 repo_meta_analysis_topics=(
@@ -41,7 +41,7 @@ repo_meta_analysis_topics=(
   "dtrack.repo-meta-analysis.result"
 )
 for topic_name in "${repo_meta_analysis_topics[@]}"; do
-  create_topic "$topic_name" "$REPO_META_ANALYSIS_TOPICS_PARTITIONS" "$REPO_META_ANALYSIS_TOPICS_RETENTION_HOURS"
+  create_topic "$topic_name" "$REPO_META_ANALYSIS_TOPICS_PARTITIONS" "$REPO_META_ANALYSIS_TOPICS_RETENTION_MS"
 done
 
 vuln_analysis_topics=(
@@ -53,5 +53,5 @@ vuln_analysis_topics=(
   "dtrack.vuln-analysis.result"
 )
 for topic_name in "${vuln_analysis_topics[@]}"; do
-  create_topic "$topic_name" "$VULN_ANALYSIS_TOPICS_PARTITIONS" "$VULN_ANALYSIS_TOPICS_RETENTION_HOURS"
+  create_topic "$topic_name" "$VULN_ANALYSIS_TOPICS_PARTITIONS" "$VULN_ANALYSIS_TOPICS_RETENTION_MS"
 done
