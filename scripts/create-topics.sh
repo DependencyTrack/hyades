@@ -38,14 +38,6 @@ done
 
 repo_meta_analysis_topics=(
   "dtrack.repo-meta-analysis.component"
-  "dtrack.repo-meta-analysis.component.composer"
-  "dtrack.repo-meta-analysis.component.gem"
-  "dtrack.repo-meta-analysis.component.golang"
-  "dtrack.repo-meta-analysis.component.hex"
-  "dtrack.repo-meta-analysis.component.maven"
-  "dtrack.repo-meta-analysis.component.npm"
-  "dtrack.repo-meta-analysis.component.nuget"
-  "dtrack.repo-meta-analysis.component.pypi"
   "dtrack.repo-meta-analysis.result"
 )
 for topic_name in "${repo_meta_analysis_topics[@]}"; do
