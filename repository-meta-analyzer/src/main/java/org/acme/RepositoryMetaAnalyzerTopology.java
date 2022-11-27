@@ -33,8 +33,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameConsume;
@@ -98,74 +96,74 @@ public class RepositoryMetaAnalyzerTopology {
         componentMetaAnalyzerStream.split(Named.as("meta-analysis"))
                 .branch((purl, component) -> PackageURL.StandardTypes.MAVEN.equals(component.getPurl().getType()),
                         Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven
-                                .flatMap((uuid, component) -> performMetaAnalysis(mavenMetaAnalyzer, component),
+                                .map((purl, component) -> performMetaAnalysis(mavenMetaAnalyzer, component),
                                         Named.as("perform_maven_meta_analysis"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(Serdes.UUID(), metaModelSerde)
-                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "maven_results")))
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "maven_result")))
                         ).withName("-maven")
                 )
                 .branch((purl, component) -> PackageURL.StandardTypes.NPM.equals(component.getPurl().getType()),
                         Branched.<String, Component>withConsumer(componentStreamNpm -> componentStreamNpm
-                                .flatMap((purl, component) -> performMetaAnalysis(npmMetaAnalyzer, component),
+                                .map((purl, component) -> performMetaAnalysis(npmMetaAnalyzer, component),
                                         Named.as("perform_npm_meta_analysis"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(Serdes.UUID(), metaModelSerde)
-                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "npm_results")))
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "npm_result")))
                         ).withName("-npm")
                 )
                 .branch((purl, component) -> PackageURL.StandardTypes.HEX.equals(component.getPurl().getType()),
                         Branched.<String, Component>withConsumer(componentStreamHex -> componentStreamHex
-                                .flatMap((purl, component) -> performMetaAnalysis(hexMetaAnalyzer, component),
+                                .map((purl, component) -> performMetaAnalysis(hexMetaAnalyzer, component),
                                         Named.as("perform_hex_meta_analysis"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(Serdes.UUID(), metaModelSerde)
-                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "hex_results")))
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "hex_result")))
                         ).withName("-hex")
                 )
                 .branch((key, component) -> PackageURL.StandardTypes.PYPI.equals(component.getPurl().getType()),
                         Branched.<String, Component>withConsumer(componentStreamPypi -> componentStreamPypi
-                                .flatMap((uuid, component) -> performMetaAnalysis(pypiMetaAnalyzer, component),
+                                .map((uuid, component) -> performMetaAnalysis(pypiMetaAnalyzer, component),
                                         Named.as("perform_pypi_meta_analysis"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(Serdes.UUID(), metaModelSerde)
-                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "pypi_results")))
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "pypi_result")))
                         ).withName("-pypi")
                 )
                 .branch((purl, component) -> PackageURL.StandardTypes.GOLANG.equals(component.getPurl().getType()),
                         Branched.<String, Component>withConsumer(componentStreamGolang -> componentStreamGolang
-                                .flatMap((purl, component) -> performMetaAnalysis(goModulesMetaAnalyzer, component),
+                                .map((purl, component) -> performMetaAnalysis(goModulesMetaAnalyzer, component),
                                         Named.as("perform_golang_meta_analysis"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(Serdes.UUID(), metaModelSerde)
-                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "golang_results")))
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "golang_result")))
                         ).withName("-golang")
                 )
                 .branch((purl, component) -> PackageURL.StandardTypes.NUGET.equals(component.getPurl().getType()),
                         Branched.<String, Component>withConsumer(componentStreamNuget -> componentStreamNuget
-                                .flatMap((purl, component) -> performMetaAnalysis(nugetMetaAnalyzer, component),
+                                .map((purl, component) -> performMetaAnalysis(nugetMetaAnalyzer, component),
                                         Named.as("perform_nuget_meta_analysis"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(Serdes.UUID(), metaModelSerde)
-                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "nuget_results")))
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "nuget_result")))
                         ).withName("-nuget")
                 )
                 .branch((purl, component) -> PackageURL.StandardTypes.COMPOSER.equals(component.getPurl().getType()),
                         Branched.<String, Component>withConsumer(componentStreamComposer -> componentStreamComposer
-                                .flatMap((purl, component) -> performMetaAnalysis(composerMetaAnalyzer, component),
+                                .map((purl, component) -> performMetaAnalysis(composerMetaAnalyzer, component),
                                         Named.as("perform_composer_meta_analysis"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(Serdes.UUID(), metaModelSerde)
-                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "composer_results")))
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "composer_result")))
                         ).withName("-composer")
                 )
                 .branch((purl, component) -> component.getPurl().getType().equalsIgnoreCase("gem"),
                         Branched.<String, Component>withConsumer(componentStreamGem -> componentStreamGem
-                                .flatMap((purl, component) -> performMetaAnalysis(gemMetaAnalyzer, component),
+                                .map((purl, component) -> performMetaAnalysis(gemMetaAnalyzer, component),
                                         Named.as("perform_gem_meta_analysis"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(Serdes.UUID(), metaModelSerde)
-                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "gem_results")))
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "gem_result")))
                         ).withName("-gem")
                 )
                 .defaultBranch(Branched.<String, Component>withConsumer(componentsStreamUnknown -> componentsStreamUnknown
@@ -182,9 +180,7 @@ public class RepositoryMetaAnalyzerTopology {
     }
 
     @Transactional
-    List<KeyValue<UUID, MetaModel>> performMetaAnalysis(final IMetaAnalyzer analyzer, final Component component) {
-        final List<KeyValue<UUID, MetaModel>> metaModels = new ArrayList<>();
-
+    KeyValue<UUID, MetaModel> performMetaAnalysis(final IMetaAnalyzer analyzer, final Component component) {
         for (Repository repository : repoEntityRepository.findRepositoryByRepositoryType(analyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
@@ -198,10 +194,11 @@ public class RepositoryMetaAnalyzerTopology {
 
             LOGGER.info("Performing meta analysis on component: {}", component);
             MetaModel model = analyzer.analyze(component);
-            metaModels.add(KeyValue.pair(component.getUuid(), model));
+            return KeyValue.pair(component.getUuid(), model);
         }
 
-        return metaModels;
+        // Produce "empty" result in case no repository was found
+        return KeyValue.pair(component.getUuid(), new MetaModel(component));
     }
 
 }
