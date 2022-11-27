@@ -1,4 +1,4 @@
-package org.acme.consumer;
+package org.acme;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.acme.model.Notification;
@@ -15,14 +15,14 @@ import javax.inject.Inject;
 import java.util.regex.Pattern;
 
 @ApplicationScoped
-class NotificationTopologyBuilder {
+class NotificationPublisherTopology {
 
     private static final Pattern NOTIFICATION_TOPICS_PATTERN = Pattern.compile("dtrack\\.notification\\..+");
 
     private final NotificationRouter router;
 
     @Inject
-    public NotificationTopologyBuilder(final NotificationRouter router) {
+    public NotificationPublisherTopology(final NotificationRouter router) {
         this.router = router;
     }
 

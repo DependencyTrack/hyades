@@ -1,4 +1,4 @@
-package org.acme.consumer;
+package org.acme;
 
 import com.github.packageurl.PackageURL;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
@@ -41,9 +41,9 @@ import static org.acme.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameProduce;
 
 @ApplicationScoped
-public class RepoMetaAnalysisTopologyBuilder {
+public class RepositoryMetaAnalyzerTopology {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RepoMetaAnalysisTopologyBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryMetaAnalyzerTopology.class);
 
     private final ComposerMetaAnalyzer composerMetaAnalyzer;
     private final GemMetaAnalyzer gemMetaAnalyzer;
@@ -56,15 +56,15 @@ public class RepoMetaAnalysisTopologyBuilder {
     private final RepoEntityRepository repoEntityRepository;
 
     @Inject
-    public RepoMetaAnalysisTopologyBuilder(final ComposerMetaAnalyzer composerMetaAnalyzer,
-                                           final GemMetaAnalyzer gemMetaAnalyzer,
-                                           final GoModulesMetaAnalyzer goModulesMetaAnalyzer,
-                                           final HexMetaAnalyzer hexMetaAnalyzer,
-                                           final MavenMetaAnalyzer mavenMetaAnalyzer,
-                                           final NpmMetaAnalyzer npmMetaAnalyzer,
-                                           final NugetMetaAnalyzer nugetMetaAnalyzer,
-                                           final PypiMetaAnalyzer pypiMetaAnalyzer,
-                                           final RepoEntityRepository repoEntityRepository) {
+    public RepositoryMetaAnalyzerTopology(final ComposerMetaAnalyzer composerMetaAnalyzer,
+                                          final GemMetaAnalyzer gemMetaAnalyzer,
+                                          final GoModulesMetaAnalyzer goModulesMetaAnalyzer,
+                                          final HexMetaAnalyzer hexMetaAnalyzer,
+                                          final MavenMetaAnalyzer mavenMetaAnalyzer,
+                                          final NpmMetaAnalyzer npmMetaAnalyzer,
+                                          final NugetMetaAnalyzer nugetMetaAnalyzer,
+                                          final PypiMetaAnalyzer pypiMetaAnalyzer,
+                                          final RepoEntityRepository repoEntityRepository) {
         this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
         this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
@@ -77,7 +77,7 @@ public class RepoMetaAnalysisTopologyBuilder {
     }
 
     @Produces
-    public Topology buildTopology() {
+    public Topology topology() {
         final var streamsBuilder = new StreamsBuilder();
         final var componentSerde = new ObjectMapperSerde<>(Component.class);
         final var metaModelSerde = new ObjectMapperSerde<>(MetaModel.class);
