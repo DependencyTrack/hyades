@@ -38,7 +38,7 @@ fi
 for purl in $(jq -r '.components[].purl' $1); do
   uuid="$(uuidgen | awk '{print tolower($0)}')"
   echo "{\"uuid\":\"$uuid\",\"purl\":\"$purl\"}" | rpk \
-    topic produce repo-meta-analysis \
+    topic produce "dtrack.repo-meta-analysis.component" \
     --brokers 127.0.0.1:9092 \
     --key "$uuid" \
     --acks 0
