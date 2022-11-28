@@ -18,23 +18,14 @@
  */
 package org.acme.commonutil;
 
-import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Objects;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public final class HttpUtil {
+public class HttpUtilTest {
 
-    /**
-     * Private constructor.
-     */
-    private HttpUtil() {
+    @Test
+    public void testBasicAuthHeaderValue() {
+        String authvalue = HttpUtil.basicAuthHeaderValue("username", "password");
+        Assertions.assertEquals("Basic dXNlcm5hbWU6cGFzc3dvcmQ=", authvalue);
     }
-
-    public static String basicAuthHeaderValue(final String username, final String password) {
-        return "Basic " +
-                Base64.getEncoder().encodeToString(
-                        String.format("%s:%s", Objects.toString(username, ""), Objects.toString(password, ""))
-                                .getBytes(Charset.defaultCharset())
-                );
-    }
-}
+} 

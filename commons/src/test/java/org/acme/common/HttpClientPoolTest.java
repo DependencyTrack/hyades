@@ -16,11 +16,18 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.exception;
+package org.acme.common;
 
-public class RequirementsException extends RuntimeException {
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-    public RequirementsException(String message) {
-        super(message);
+public class HttpClientPoolTest {
+
+    @Test
+    public void getClientTest() {
+        CloseableHttpClient client = HttpClientPool.getClient();
+        Assertions.assertNotNull(client);
     }
+
 }

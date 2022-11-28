@@ -18,28 +18,29 @@
  */
 package org.acme.model;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.acme.commonutil.DateUtil;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.util.Date;
+public class CweTest {
 
-public class Iso8601DateSerializer extends StdSerializer<Date> {
-
-    public Iso8601DateSerializer() {
-        this(null);
+    @Test
+    public void testId() {
+        Cwe cwe = new Cwe();
+        cwe.setId(111);
+        Assertions.assertEquals(111, cwe.getId());
     }
 
-    public Iso8601DateSerializer(Class<Date> t) {
-        super(t);
+    @Test
+    public void testCweId() {
+        Cwe cwe = new Cwe();
+        cwe.setCweId(79);
+        Assertions.assertEquals(79, cwe.getCweId());
     }
 
-    @Override
-    public void serialize (Date value, JsonGenerator gen, SerializerProvider arg2)
-            throws IOException, JsonProcessingException {
-        gen.writeString(DateUtil.toISO8601(value));
+    @Test
+    public void testName() {
+        Cwe cwe = new Cwe();
+        cwe.setName("Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')");
+        Assertions.assertEquals("Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')", cwe.getName());
     }
-}
+} 
