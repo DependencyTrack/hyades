@@ -36,6 +36,9 @@
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>2.14.2.Final</quarkus.platform.version>
 
+    <!-- Plugin Versions -->
+    <plugin.jacoco.version>0.8.8</plugin.jacoco.version>
+
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
   </properties>
@@ -207,6 +210,25 @@
                   <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                   <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                 </systemPropertyVariables>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${plugin.jacoco.version}</version>
+          <executions>
+            <execution>
+              <id>default-prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+              <configuration>
+                <exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
+                <destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
+                <append>true</append>
               </configuration>
             </execution>
           </executions>
