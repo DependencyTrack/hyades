@@ -18,21 +18,13 @@
  */
 package org.acme.commonutil;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@QuarkusTest
-public class HttpUtilTest { 
+public class HttpUtilTest {
 
     @Test
-    public void testBasicAuthHeader() throws Exception {
-        String header = HttpUtil.basicAuthHeader("username", "password");
-        Assertions.assertEquals("Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=", header);
-    } 
-
-    @Test
-    public void testBasicAuthHeaderValue() throws Exception {
+    public void testBasicAuthHeaderValue() {
         String authvalue = HttpUtil.basicAuthHeaderValue("username", "password");
         Assertions.assertEquals("Basic dXNlcm5hbWU6cGFzc3dvcmQ=", authvalue);
     }

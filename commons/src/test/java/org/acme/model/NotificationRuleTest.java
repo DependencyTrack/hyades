@@ -18,7 +18,6 @@
  */
 package org.acme.model;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.acme.commonnotification.NotificationGroup;
 import org.acme.commonnotification.NotificationScope;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@QuarkusTest
 public class NotificationRuleTest {
 
     @Test

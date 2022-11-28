@@ -1,12 +1,9 @@
 package org.acme.persistence;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.acme.model.NotificationLevel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
-@QuarkusTest
 public class NotificationLevelConverterTest {
 
     @Test

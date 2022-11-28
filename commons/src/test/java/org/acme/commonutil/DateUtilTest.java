@@ -18,31 +18,18 @@
  */
 package org.acme.commonutil;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 
-@QuarkusTest
 public class DateUtilTest {
 
     @Test
-    public void testParseShortDate() throws Exception {
-        Date date = DateUtil.parseShortDate("20191231");
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Assertions.assertEquals(Month.DECEMBER, localDate.getMonth());
-        Assertions.assertEquals(31, localDate.getDayOfMonth());
-        Assertions.assertEquals(2019, localDate.getYear());
-    }
-
-    @Test
-    public void testParseDate() throws Exception {
+    public void testParseDate() {
         Date date = DateUtil.parseDate("20191231153012");
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         Assertions.assertEquals(Month.DECEMBER, localDateTime.getMonth());
@@ -51,14 +38,6 @@ public class DateUtilTest {
         Assertions.assertEquals(15, localDateTime.getHour());
         Assertions.assertEquals(30, localDateTime.getMinute());
         Assertions.assertEquals(12, localDateTime.getSecond());
-    }
-
-    @Test
-    public void testDiff() {
-        LocalDate d1 =  LocalDate.of(2019, Month.JANUARY, 1);
-        LocalDate d2 =  LocalDate.of(2017, Month.JANUARY, 1);
-        long diff = DateUtil.diff(java.sql.Date.valueOf(d2), java.sql.Date.valueOf(d1));
-        Assertions.assertEquals(730, diff);
     }
 
     @Test

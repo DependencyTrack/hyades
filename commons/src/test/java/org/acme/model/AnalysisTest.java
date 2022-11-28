@@ -18,13 +18,11 @@
  */
 package org.acme.model;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import java.util.ArrayList;
 import java.util.List;
 
-@QuarkusTest
 public class AnalysisTest {
 
     @Test

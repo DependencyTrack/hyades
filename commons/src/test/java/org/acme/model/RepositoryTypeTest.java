@@ -19,11 +19,9 @@
 package org.acme.model;
 
 import com.github.packageurl.PackageURL;
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@QuarkusTest
 public class RepositoryTypeTest {
 
     @Test

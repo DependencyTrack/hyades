@@ -19,14 +19,12 @@
 
 package org.acme.common;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@QuarkusTest
 public class ManagedHttpClientTest {
 
     @Test

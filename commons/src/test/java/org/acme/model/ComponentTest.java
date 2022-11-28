@@ -20,14 +20,10 @@ package org.acme.model;
 
 import com.github.packageurl.PackageURL;
 import com.github.packageurl.PackageURLBuilder;
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 
-@QuarkusTest
 public class ComponentTest {
 
     @Test

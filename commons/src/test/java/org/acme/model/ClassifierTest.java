@@ -17,11 +17,9 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.acme.model;
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
-@QuarkusTest
 public class ClassifierTest {
 
     @Test

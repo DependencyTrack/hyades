@@ -18,14 +18,10 @@
  */
 package org.acme.model;
 
-
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.util.UUID;
 
-@QuarkusTest
 public class VulnerableSoftwareTest {
 
     @Test

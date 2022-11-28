@@ -18,13 +18,11 @@
  */
 package org.acme.model;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import java.util.Date;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 
-@QuarkusTest
 public class BomTest {
 
     @Test

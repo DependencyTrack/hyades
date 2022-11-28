@@ -20,11 +20,9 @@ package org.acme.model;
 
 
 import java.util.Date;
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
-@QuarkusTest
 public class AnalysisCommentTest {
 
     @Test
