@@ -16,25 +16,20 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.commonutil;
+package org.acme.model;
 
-import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Objects;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
-public final class HttpUtil {
+public class AnalysisStateTest { 
 
-    /**
-     * Private constructor.
-     */
-    private HttpUtil() {
+    @Test
+    public void testEnums() {
+        Assertions.assertEquals("NOT_SET", AnalysisState.NOT_SET.name());
+        Assertions.assertEquals("IN_TRIAGE", AnalysisState.IN_TRIAGE.name());
+        Assertions.assertEquals("NOT_AFFECTED", AnalysisState.NOT_AFFECTED.name());
+        Assertions.assertEquals("FALSE_POSITIVE", AnalysisState.FALSE_POSITIVE.name());
+        Assertions.assertEquals("NOT_AFFECTED", AnalysisState.NOT_AFFECTED.name());
     }
 
-    public static String basicAuthHeaderValue(final String username, final String password) {
-        return "Basic " +
-                Base64.getEncoder().encodeToString(
-                        String.format("%s:%s", Objects.toString(username, ""), Objects.toString(password, ""))
-                                .getBytes(Charset.defaultCharset())
-                );
-    }
-}
+} 

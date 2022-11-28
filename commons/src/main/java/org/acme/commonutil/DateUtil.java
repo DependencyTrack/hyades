@@ -23,27 +23,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 public final class DateUtil {
 
     private DateUtil() {
-    }
-
-    /**
-     * Convenience method that parses a date in yyyyMMdd format and
-     * returns a Date object. If the parsing fails, null is returned.
-     * @param yyyyMMdd the date string to parse
-     * @return a Date object
-     * @since 3.0.0
-     */
-    public static Date parseShortDate(final String yyyyMMdd) {
-        final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        try {
-            return format.parse(yyyyMMdd);
-        } catch (ParseException e) {
-            return null;
-        }
     }
 
     /**
@@ -63,20 +46,6 @@ public final class DateUtil {
     }
 
     /**
-     * Convenience method that returns the difference (in days) between
-     * two dates.
-     * @param start the first date
-     * @param end   the second date
-     * @return the difference in days
-     * @since 3.0.0
-     */
-    public static long diff(final Date start, final Date end) {
-        final long diff = end.getTime() - start.getTime();
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-    }
-
-
-    /**
      * Formats a Date object into ISO 8601 format.
      * @param date the Date object to convert
      * @return a String representation of an ISO 8601 date
@@ -87,12 +56,5 @@ public final class DateUtil {
         final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
         df.setTimeZone(tz);
         return df.format(date);
-    }
-
-    public static Date fromISO8601(final String dateString) {
-        if (dateString == null) {
-            return null;
-        }
-        return javax.xml.bind.DatatypeConverter.parseDateTime(dateString).getTime();
     }
 }

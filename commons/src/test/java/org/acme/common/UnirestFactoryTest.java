@@ -16,25 +16,24 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.commonutil;
+package org.acme.common;
 
-import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Objects;
+import kong.unirest.UnirestInstance;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public final class HttpUtil {
+public class UnirestFactoryTest {
 
-    /**
-     * Private constructor.
-     */
-    private HttpUtil() {
+    @Test
+    public void instanceTest() {
+        UnirestInstance ui1 = UnirestFactory.getUnirestInstance();
+        UnirestInstance ui2 = UnirestFactory.getUnirestInstance();
+        Assertions.assertSame(ui1, ui2);
     }
 
-    public static String basicAuthHeaderValue(final String username, final String password) {
-        return "Basic " +
-                Base64.getEncoder().encodeToString(
-                        String.format("%s:%s", Objects.toString(username, ""), Objects.toString(password, ""))
-                                .getBytes(Charset.defaultCharset())
-                );
+    @Test
+    public void httpClientTest() {
+        UnirestInstance ui = UnirestFactory.getUnirestInstance();
+        Assertions.assertNotSame(ui.config().getClient().getClient(), ManagedHttpClientFactory.newManagedHttpClient());
     }
 }

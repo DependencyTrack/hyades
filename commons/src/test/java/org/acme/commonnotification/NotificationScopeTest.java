@@ -16,25 +16,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.commonutil;
+package org.acme.commonnotification;
 
-import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Objects;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public final class HttpUtil {
+public class NotificationScopeTest {
 
-    /**
-     * Private constructor.
-     */
-    private HttpUtil() {
-    }
-
-    public static String basicAuthHeaderValue(final String username, final String password) {
-        return "Basic " +
-                Base64.getEncoder().encodeToString(
-                        String.format("%s:%s", Objects.toString(username, ""), Objects.toString(password, ""))
-                                .getBytes(Charset.defaultCharset())
-                );
+    @Test
+    public void testEnums() {
+        Assertions.assertEquals("SYSTEM", NotificationScope.SYSTEM.name());
+        Assertions.assertEquals("PORTFOLIO", NotificationScope.PORTFOLIO.name());
     }
 }
