@@ -138,43 +138,19 @@ services:
     container_name: dt-redpanda-init
     depends_on:
       - redpanda
-    entrypoint: [ '/bin/sh', '-c' ]
-    command: |
-      "
-      /usr/bin/rpk cluster health --watch --brokers=redpanda:29092
-      echo -e 'Creating topics now'
-      /usr/bin/rpk topic create component-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create repo-meta-analysis --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-maven --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-npm --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-hex --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-pypi --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-golang --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-nuget --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-composer --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-meta-analysis-gem --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-analysis-cpe --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-analysis-purl --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-analysis-swid --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create component-analysis-vuln --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000 
-      /usr/bin/rpk topic create component-vuln-analysis-result --brokers=redpanda:29092 --replicas=1 --partitions=3
-      /usr/bin/rpk topic create notification.configuration --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.datasource_mirroring --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.repository --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.integration --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.analyzer --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.bom_consumed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.bom_processed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.file_system --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.indexing_service --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.new_vulnerability --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.new_vulnerable_dependency --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.policy_violation --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.project_audit_change --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.vex_consumed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      /usr/bin/rpk topic create notification.vex_processed --brokers=redpanda:29092 --replicas=1 --partitions=3 --topic-config retention.ms=86400000
-      "
+    entrypoint: "/bin/bash"
+    command: "/tmp/create-topics.sh"
+    user: "0" # Ensure user can read create-topics.sh
+    environment:
+      REDPANDA_BROKERS: "dt-redpanda:29092"
+      NOTIFICATION_TOPICS_PARTITIONS: "3"
+      NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
+      REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
+      REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+      VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
+      VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+    volumes:
+      - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro"
     restart: on-failure
 
   redpanda-console:
@@ -189,6 +165,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  apiserver-data: {}
   postgres-data: {}
   redpanda-data: {}
