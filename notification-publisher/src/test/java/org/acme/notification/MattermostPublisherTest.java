@@ -46,12 +46,12 @@ public class MattermostPublisherTest {
     EntityManager entityManager;
 
     @BeforeAll
-    public void beforeClass() {
+    public static void beforeClass() {
         mockServer = startClientAndServer(1090);
     }
 
     @AfterAll
-    public void afterClass() {
+    public static void afterClass() {
         mockServer.stop();
     }
 

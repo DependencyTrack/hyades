@@ -59,12 +59,12 @@ public class SlackPublisherTest {
     private static ClientAndServer mockServer;
 
     @BeforeAll
-    public void beforeClass() {
+    public static void beforeClass() {
         mockServer = startClientAndServer(1070);
     }
 
     @AfterAll
-    public void afterClass() {
+    public static void afterClass() {
         mockServer.stop();
     }
 
