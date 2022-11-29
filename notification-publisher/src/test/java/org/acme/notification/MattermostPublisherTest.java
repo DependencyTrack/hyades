@@ -45,7 +45,7 @@ public class MattermostPublisherTest {
 
     @BeforeEach
     public void beforeClass() {
-        mockServer = startClientAndServer(1080);
+        mockServer = startClientAndServer(1090);
     }
 
     @AfterEach
@@ -56,7 +56,7 @@ public class MattermostPublisherTest {
     @Test
     @TestTransaction
     public void testPublish() throws IOException {
-        new MockServerClient("localhost", 1080)
+        new MockServerClient("localhost", 1090)
                 .when(
                         request()
                                 .withMethod("POST")
@@ -70,10 +70,10 @@ public class MattermostPublisherTest {
 
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    (1, 'mattermost', 'general', 'STRING', 'base.url', 'http://localhost:1080/mychannel');
+                                    (1, 'mattermost', 'general', 'STRING', 'base.url', 'http://localhost:1090/mychannel');
                 """).executeUpdate();
 
-        JsonObject config = getConfig(DefaultNotificationPublishers.MATTERMOST, "http://localhost:1080/mychannel");
+        JsonObject config = getConfig(DefaultNotificationPublishers.MATTERMOST, "http://localhost:1090/mychannel");
         Notification notification = new Notification();
         notification.setScope(NotificationScope.PORTFOLIO.name());
         notification.setGroup(NotificationGroup.NEW_VULNERABILITY.name());

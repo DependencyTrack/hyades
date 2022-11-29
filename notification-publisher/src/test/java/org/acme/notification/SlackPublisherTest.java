@@ -58,7 +58,7 @@ public class SlackPublisherTest {
 
     @BeforeEach
     public void beforeClass() {
-        mockServer = startClientAndServer(1080);
+        mockServer = startClientAndServer(1070);
     }
 
     @AfterEach
@@ -75,7 +75,7 @@ public class SlackPublisherTest {
     @Test
     @TestTransaction
     public void testPublish() throws IOException {
-        new MockServerClient("localhost", 1080)
+        new MockServerClient("localhost", 1070)
                 .when(
                         request()
                                 .withMethod("POST")
@@ -89,9 +89,9 @@ public class SlackPublisherTest {
 
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    (1, 'slack', 'general', 'STRING', 'base.url', 'http://localhost:1080/mychannel');
+                                    (1, 'slack', 'general', 'STRING', 'base.url', 'http://localhost:1070/mychannel');
                 """).executeUpdate();
-        JsonObject config = getConfig(DefaultNotificationPublishers.SLACK, "http://localhost:1080/mychannel");
+        JsonObject config = getConfig(DefaultNotificationPublishers.SLACK, "http://localhost:1070/mychannel");
         Notification notification = new Notification();
         notification.setScope(NotificationScope.PORTFOLIO.name());
         notification.setGroup(NotificationGroup.NEW_VULNERABILITY.name());

@@ -1,37 +1,43 @@
 package org.acme;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.client.WireMock.*;
-import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
+import org.acme.common.KafkaTopic;
 import org.acme.commonnotification.NotificationGroup;
 import org.acme.commonnotification.NotificationScope;
 import org.acme.model.Notification;
 import org.acme.model.NotificationLevel;
 import org.acme.notification.NotificationRouter;
-import org.acme.notification.publisher.WebhookPublisher;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-
-@WireMockTest
 @QuarkusTest
 public class WireMockNotificationPublisher {
 
+    private static WireMockServer wireMockServer;
     @Inject
     EntityManager entityManager;
     @Inject
@@ -41,20 +47,36 @@ public class WireMockNotificationPublisher {
     private TestInputTopic<String, Notification> inputTopic;
     private NotificationRouter routerMock;
 
+    @BeforeAll
+    static void beforeAll() {
+        wireMockServer = new WireMockServer(WireMockConfiguration.options().dynamicPort());
+        wireMockServer.start();
+        WireMock.configureFor(wireMockServer.port());
+    }
+
     @BeforeEach
     void beforeEach() {
-        routerMock = Mockito.mock(NotificationRouter.class);
-        QuarkusMock.installMockForType(routerMock, NotificationRouter.class);
-
         testDriver = new TopologyTestDriver(topology);
-        inputTopic = testDriver.createInputTopic("dtrack.notification.new_vulnerability", new StringSerializer(), new ObjectMapperSerializer<>());
+        inputTopic = testDriver.createInputTopic(KafkaTopic.NOTIFICATION_NEW_VULNERABILITY.getName(),
+                new StringSerializer(), new ObjectMapperSerializer<>());
+    }
 
+    @AfterEach
+    void afterEach() {
+        WireMock.reset();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        if (wireMockServer != null) {
+            wireMockServer.stop();
+        }
     }
 
 
     @TestTransaction
     @Test
-    public void testPublisher(WireMockRuntimeInfo wmRuntimeInfo){
+    public void testPublisher(){
 
         final var notification = new Notification()
                 .scope(NotificationScope.PORTFOLIO)
@@ -62,14 +84,9 @@ public class WireMockNotificationPublisher {
                 .group(NotificationGroup.NEW_VULNERABILITY.name())
                 .content("content");
 
-        stubFor(get("/static-dsl").willReturn(ok()));
-        // Instance DSL can be obtained from the runtime info parameter
-        WireMock wireMock = wmRuntimeInfo.getWireMock();
-        wireMock.register(get("/instance-dsl").willReturn(ok()));
-        System.out.print("mock url" +wmRuntimeInfo.getHttpsBaseUrl());
-        String wireMockDestination = wmRuntimeInfo.getHttpsBaseUrl();
 
-        String publisherConfig = "{\"destination\":\"" + wireMockDestination + "\"}";
+        WireMock.stubFor(get("/instance-dsl").willReturn(ok()));
+        String publisherConfig = "{\"destination\":\"" + wireMockServer.url("/instance-dsl") + "\"}";
 
         final int publisherId = (int) entityManager.createNativeQuery("""
                 INSERT INTO "NOTIFICATIONPUBLISHER" ("DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID") VALUES
@@ -80,8 +97,14 @@ public class WireMockNotificationPublisher {
                 INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID", "PUBLISHER_CONFIG") VALUES
                     (true, 'foo', :publisherId, 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62', :publisherConfig);
                 """).setParameter("publisherId", publisherId).setParameter("publisherConfig", publisherConfig).executeUpdate();
+        entityManager.createNativeQuery("""
+                INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
+                                    (1, 'mattermost', 'general', 'STRING', 'base.url', 'http://localhost:1080/mychannel');
+                """).executeUpdate();
 
-        verify(1, postRequestedFor(urlEqualTo(wireMockDestination)));
+        inputTopic.pipeInput(notification);
+        System.out.print(wireMockServer.baseUrl());
+        verify(1, postRequestedFor(urlMatching("/instance-dsl")));
 
     }
 
