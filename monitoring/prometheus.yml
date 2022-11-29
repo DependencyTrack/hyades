@@ -1,0 +1,35 @@
+---
+scrape_configs:
+- job_name: redpanda
+  scrape_interval: 5s
+  scheme: http
+  static_configs:
+  - targets:
+    - redpanda:9644
+- job_name: apiserver
+  scrape_interval: 5s
+  scheme: http
+  static_configs:
+  - targets:
+    - apiserver:8080
+- job_name: notification-publisher
+  scrape_interval: 5s
+  scheme: http
+  metrics_path: /q/metrics
+  static_configs:
+  - targets:
+    - notification-publisher:8090
+- job_name: repo-meta-analyzer
+  scrape_interval: 5s
+  scheme: http
+  metrics_path: /q/metrics
+  static_configs:
+  - targets:
+    - repo-meta-analyzer:8091
+- job_name: vuln-analyzer
+  scrape_interval: 5s
+  scheme: http
+  metrics_path: /q/metrics
+  static_configs:
+  - targets:
+    - vuln-analyzer:8092
