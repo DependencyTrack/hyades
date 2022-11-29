@@ -66,7 +66,7 @@ public class MsTeamsPublisherTest{
 
     @BeforeAll
     public static void beforeClass() {
-        mockServer = startClientAndServer(1080);
+        mockServer = startClientAndServer(1060);
     }
 
     @AfterAll
@@ -77,7 +77,7 @@ public class MsTeamsPublisherTest{
     @Test
     @TestTransaction
     public void testPublish() throws IOException {
-        new MockServerClient("localhost", 1080)
+        new MockServerClient("localhost", 1060)
                 .when(
                         request()
                                 .withMethod("POST")
@@ -90,10 +90,10 @@ public class MsTeamsPublisherTest{
                 );
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    (1, 'msteams', 'general', 'STRING', 'base.url', 'http://localhost:1080/mychannel');
+                                    (1, 'msteams', 'general', 'STRING', 'base.url', 'http://localhost:1060/mychannel');
                 """).executeUpdate();
 
-        JsonObject config = getConfig(DefaultNotificationPublishers.MS_TEAMS, "http://localhost:1080/mychannel");
+        JsonObject config = getConfig(DefaultNotificationPublishers.MS_TEAMS, "http://localhost:1060/mychannel");
         Notification notification = new Notification();
         notification.setScope(NotificationScope.PORTFOLIO.name());
         notification.setGroup(NotificationGroup.NEW_VULNERABILITY.name());

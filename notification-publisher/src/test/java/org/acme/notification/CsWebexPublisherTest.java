@@ -65,7 +65,7 @@ public class CsWebexPublisherTest  {
 
     @BeforeAll
     public static void beforeClass() {
-        mockServer = startClientAndServer(1080);
+        mockServer = startClientAndServer(1040);
     }
 
     @AfterAll
@@ -76,7 +76,7 @@ public class CsWebexPublisherTest  {
     @Test
     @TestTransaction
     public void testPublish() throws IOException {
-        new MockServerClient("localhost", 1080)
+        new MockServerClient("localhost", 1040)
                 .when(
                         request()
                                 .withMethod("POST")
@@ -89,10 +89,10 @@ public class CsWebexPublisherTest  {
                 );
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    (1, 'cswebex', 'general', 'STRING', 'base.url', 'http://localhost:1080/mychannel');
+                                    (1, 'cswebex', 'general', 'STRING', 'base.url', 'http://localhost:1040/mychannel');
                 """).executeUpdate();
 
-        JsonObject config = getConfig(DefaultNotificationPublishers.CS_WEBEX, "http://localhost:1080/mychannel");
+        JsonObject config = getConfig(DefaultNotificationPublishers.CS_WEBEX, "http://localhost:1040/mychannel");
         Notification notification = new Notification();
         notification.setScope(NotificationScope.PORTFOLIO.name());
         notification.setGroup(NotificationGroup.NEW_VULNERABILITY.name());
