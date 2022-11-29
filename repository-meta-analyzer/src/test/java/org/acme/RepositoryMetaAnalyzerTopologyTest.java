@@ -27,7 +27,6 @@ import org.apache.kafka.streams.TopologyTestDriver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.UUID;
