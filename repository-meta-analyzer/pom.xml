@@ -54,11 +54,17 @@
       <artifactId>quarkus-flyway</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-streams-test-utils</artifactId>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jacoco</artifactId>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>org.apache.kafka</groupId>
+          <artifactId>kafka-streams-test-utils</artifactId>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 
   <build>
