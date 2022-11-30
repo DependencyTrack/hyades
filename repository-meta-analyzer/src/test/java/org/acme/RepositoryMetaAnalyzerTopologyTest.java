@@ -7,7 +7,6 @@ import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Component;
-import org.acme.model.VulnerabilityResult;
 import org.acme.persistence.RepoEntityRepository;
 import org.acme.repositories.ComposerMetaAnalyzer;
 import org.acme.repositories.GemMetaAnalyzer;
@@ -18,7 +17,6 @@ import org.acme.repositories.MetaModel;
 import org.acme.repositories.NpmMetaAnalyzer;
 import org.acme.repositories.NugetMetaAnalyzer;
 import org.acme.repositories.PypiMetaAnalyzer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.apache.kafka.streams.KeyValue;
@@ -29,10 +27,8 @@ import org.apache.kafka.streams.TopologyTestDriver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;

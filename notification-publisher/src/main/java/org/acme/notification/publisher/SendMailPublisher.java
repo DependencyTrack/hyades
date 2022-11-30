@@ -104,7 +104,7 @@ public class SendMailPublisher implements Publisher {
         return ENGINE;
     }
 
-    static String[] parseDestination(final JsonObject config) {
+    public static String[] parseDestination(final JsonObject config) {
         String destinationString = config.getString("destination");
         if ((destinationString == null) || destinationString.isEmpty()) {
             return null;
