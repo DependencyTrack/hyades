@@ -73,7 +73,7 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
                 packageName = component.getPurl().getName();
             }
 
-            final String url = String.format(baseUrl, API_URL, packageName);
+            final String url = String.format(baseUrl + API_URL, packageName);
             try {
                 final HttpRequest<GetRequest> request = ui.get(url)
                         .header("accept", "application/json");
