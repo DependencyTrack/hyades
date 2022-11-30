@@ -66,7 +66,7 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
         final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null) {
-            final String url = String.format(baseUrl, API_URL, component.getPurl().getName());
+            final String url = String.format(baseUrl + API_URL, component.getPurl().getName());
             try {
                 final HttpRequest<GetRequest> request = ui.get(url)
                         .header("accept", "application/json");

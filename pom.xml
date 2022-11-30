@@ -29,6 +29,7 @@
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.0</lib.cyclonedx-java.version>
     <lib.maven-artifact.version>4.0.0-alpha-2</lib.maven-artifact.version>
+    <lib.mockserver-netty.version>5.14.0</lib.mockserver-netty.version>
     <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
     <lib.pebble.version>3.1.6</lib.pebble.version>
     <lib.resilience4j.version>2.0.0</lib.resilience4j.version>
@@ -147,6 +148,12 @@
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock-jre8-standalone</artifactId>
         <version>${lib.wiremock.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-netty</artifactId>
+        <version>${lib.mockserver-netty.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
