@@ -36,7 +36,7 @@ import java.text.SimpleDateFormat;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public class ComposerMetaAnalyzerTest {
+class ComposerMetaAnalyzerTest {
 
     private static ClientAndServer mockServer;
 

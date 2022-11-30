@@ -24,7 +24,7 @@ import org.acme.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class NpmMetaAnalyzerTest {
+class NpmMetaAnalyzerTest {
 
     @Test
     void testAnalyzer() throws Exception {

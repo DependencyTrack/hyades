@@ -35,7 +35,7 @@ import java.nio.file.Paths;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public class NugetMetaAnalyzerTest {
+class NugetMetaAnalyzerTest {
 
     private static ClientAndServer mockServer;
 

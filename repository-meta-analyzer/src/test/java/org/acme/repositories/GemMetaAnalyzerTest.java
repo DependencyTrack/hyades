@@ -24,7 +24,7 @@ import org.acme.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class GemMetaAnalyzerTest {
+class GemMetaAnalyzerTest {
 
     @Test
     void testAnalyzer() throws Exception {
