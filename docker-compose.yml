@@ -169,7 +169,7 @@ services:
     restart: on-failure
 
   redpanda-console:
-    image: docker.redpanda.com/vectorized/console:v2.1.0
+    image: docker.redpanda.com/vectorized/console:v2.1.1
     container_name: dt-redpanda-console
     depends_on:
       - redpanda
