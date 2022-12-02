@@ -103,7 +103,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:14-alpine
+    image: postgres:15-alpine
     container_name: dt-postgres
     environment:
       POSTGRES_DB: "dtrack"
