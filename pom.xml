@@ -33,7 +33,7 @@
     <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
     <lib.pebble.version>3.1.6</lib.pebble.version>
     <lib.resilience4j.version>2.0.1</lib.resilience4j.version>
-    <lib.unirest.version>3.14.0</lib.unirest.version>
+    <lib.unirest.version>3.14.1</lib.unirest.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>2.14.2.Final</quarkus.platform.version>
