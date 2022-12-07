@@ -130,7 +130,7 @@ public class VulnerableSoftware  extends PanacheEntityBase implements ICpe, Seri
     @Column(name = "VULNERABLE")
     private boolean vulnerable;
 
-    @ManyToMany(mappedBy = "vulnerableSoftware")
+    @ManyToMany
     @JoinTable(
             name = "VULNERABLESOFTWARE_VULNERABILITIES",
             joinColumns =
