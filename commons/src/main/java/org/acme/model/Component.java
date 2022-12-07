@@ -22,11 +22,25 @@ package org.acme.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.google.gson.JsonObject;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import org.acme.common.TrimmedStringDeserializer;
+import org.acme.persistence.UUIDConverter;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -36,7 +50,9 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.0.0
  */
-public class Component implements Serializable {
+@Entity
+@Table(name = "COMPONENT")
+public class Component extends PanacheEntityBase implements Serializable {
 
     private static final long serialVersionUID = 6841650046433674702L;
 
@@ -48,46 +64,83 @@ public class Component implements Serializable {
     }
 
 
+    @Id
+    @Column(name = "ID")
     private int id;
 
+    @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
     private String author;
 
+    @Column(name = "PUBLISHER", columnDefinition = "VARCHAR")
     private String publisher;
 
+    @Column(name = "GROUP", columnDefinition = "VARCHAR")
     private String group;
 
+    @Column(name = "NAME", columnDefinition = "VARCHAR", nullable = false)
+    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String name;
 
+    @Column(name = "VERSION", columnDefinition = "VARCHAR")
+    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String version;
 
+    @Column(name = "FILENAME", columnDefinition = "VARCHAR")
+    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String filename;
 
+    @Column(name = "CPE")
     private String cpe;
 
+    @Column(name = "PURL")
+    @com.github.packageurl.validator.PackageURL
+    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String purl;
 
+    @Column(name = "PURLCOORDINATES")
+    @com.github.packageurl.validator.PackageURL
+    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String purlCoordinates; // Field should contain only type, namespace, name, and version. Everything up to the qualifiers
 
+    @Column(name = "SWIDTAGID")
     private String swidTagId;
 
+    @Column(name = "INTERNAL", nullable = true)
+    @JsonProperty("isInternal")
     private Boolean internal;
 
+    @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR", length = 1024)
+    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String description;
 
+    @Column(name = "COPYRIGHT", columnDefinition = "VARCHAR", length = 1024)
+    @Size(max = 1024)
+    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String copyright;
 
+    @Column(name = "LICENSE", columnDefinition = "VARCHAR")
+    @JsonDeserialize(using = TrimmedStringDeserializer.class)
     private String license;
 
+    @ManyToOne
+    @Column(name = "PROJECT_ID", nullable = false)
     private Project project;
 
+    @Column(name = "UUID", length = 36, nullable = false, unique = true)
+    @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
+    @Column(name = "MD5", columnDefinition = "VARCHAR", length = 32)
     private String md5;
 
+    @Column(name = "SHA1", columnDefinition = "VARCHAR", length = 40)
     private String sha1;
 
+    @Column(name = "SHA_256", columnDefinition = "VARCHAR", length = 64)
     private String sha256;
 
+    @Column(name = "SHA_512", columnDefinition = "VARCHAR", length = 128)
     private String sha512;
 
     private transient String bomRef;
