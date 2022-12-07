@@ -1,5 +1,11 @@
 # DT-Kafka-POC
 
+[![Build Status](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml/badge.svg)](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
+
 ## What is this? 🤔
 
 This project is a proof-of-concept for decoupling responsibilities from [Dependency-Track]'s monolithic API server
@@ -51,28 +57,41 @@ docker run -it --rm -v "$(pwd):/tmp/work" -u "$(id -u):$(id -g)" \
 
 ### Testing 🤞
 
-#### Vulnerability Analysis 💀
+#### Load Testing 🚀
 
-The `test.sh` script can be used to test the vulnerability analyzer independent of the API server.  
-It publishes an event to the `component-analysis` topic for each component with a
-PURL in a given CycloneDX BOM in JSON format, thus emulating the API server after a BOM was uploaded to it.
+See [`load-tests`](load-tests).
+
+### Monitoring
+
+#### Metrics
+
+A basic metrics monitoring stack is provided, consisting of Prometheus and Grafana.  
+To start both services, run:
 
 ```shell
-./test.sh bom.json
+docker compose --profile monitoring up -d grafana
 ```
 
-> **Note**
-> The script requires `jq` and `rpk` to be installed.  
-> They can be installed using Homebrew:
-> ```shell
-> brew install jq
-> brew install redpanda-data/tap/redpanda
-> ```
+The services will be available locally at the following locations:
 
-Analysis results that are intended for consumption by the API server will be
-published to the `component-vuln-analysis-result` topic.
+* Prometheus: http://localhost:9090
+* Grafana: http://localhost:3000
 
-### Redpanda Console 🐼
+Prometheus is [configured](monitoring/prometheus.yml) to scrape metrics from the following services in 5s intervals:
+
+* Redpanda Broker
+* API Server
+* Notification Publisher
+* Repository Meta Analyzer
+* Vulnerability Analyzer
+
+The Grafana instance will be automatically [provisioned](monitoring/grafana/provisioning) to use Prometheus as
+data source. Additionally, dashboards for the following services are automatically set up:
+
+* Redpanda Broker
+* API Server
+
+#### Redpanda Console 🐼
 
 The provided `docker-compose.yml` includes an instance of [Redpanda Console](https://github.com/redpanda-data/console)
 to aid with gaining insight into what's happening in the message broker. Among many other things, it can be used to

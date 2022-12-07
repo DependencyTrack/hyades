@@ -69,7 +69,7 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
         }
 
         final UnirestInstance ui = UnirestFactory.getUnirestInstance();
-        final String url = String.format(baseUrl, API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
+        final String url = String.format(baseUrl + API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
 
         try {
             final HttpRequest<GetRequest> request = ui.get(url)

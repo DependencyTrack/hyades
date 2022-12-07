@@ -24,10 +24,12 @@ import java.util.Date;
 
 public class MetaModel {
 
-    private final Component component;
+    private Component component;
     private String latestVersion;
     private Date publishedTimestamp;
 
+    public MetaModel(){
+    }
     public MetaModel(final Component component) {
         this.component = component;
     }
