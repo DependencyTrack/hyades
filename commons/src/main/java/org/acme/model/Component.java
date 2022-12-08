@@ -33,11 +33,13 @@ import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.UUIDConverter;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -76,7 +78,7 @@ public class Component extends PanacheEntityBase implements Serializable {
     @Column(name = "PUBLISHER", columnDefinition = "VARCHAR")
     private String publisher;
 
-    @Column(name = "GROUP", columnDefinition = "VARCHAR")
+    @Column(name = "\"GROUP\"", columnDefinition = "VARCHAR")
     private String group;
 
     @Column(name = "NAME", columnDefinition = "VARCHAR", nullable = false)
