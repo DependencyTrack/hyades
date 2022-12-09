@@ -92,6 +92,7 @@ public class VulnerableSoftware  extends PanacheEntityBase implements ICpe, Seri
     @Column(name = "PRODUCT", columnDefinition = "VARCHAR")
     private String product;
 
+    @Column(name = "VERSION")
     private String version;
 
     @Column(name = "UPDATE", columnDefinition = "VARCHAR")

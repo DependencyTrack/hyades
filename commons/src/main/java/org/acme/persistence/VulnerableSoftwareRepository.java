@@ -15,7 +15,7 @@ public class VulnerableSoftwareRepository implements PanacheRepository<Vulnerabl
     public List<VulnerableSoftware> getAllVulnerableSoftware(final String part, final String vendor, final String product, final PackageURL purl) {
         boolean cpeSpecified = (part != null && vendor != null && product != null);
         if (cpeSpecified && purl != null) {
-            return list("part == :part && vendor == :vendor && product == :product || purlType == :purlType && purlNamespace == :purlNamespace && purlName == :purlName",
+            return list("part = :part and vendor = :vendor and product = :product or (purlType = :purlType and purlNamespace = :purlNamespace and purlName = :purlName)",
                     Parameters.with("part", part)
                             .and("vendor", vendor)
                             .and("product", product)
@@ -24,13 +24,13 @@ public class VulnerableSoftwareRepository implements PanacheRepository<Vulnerabl
                             .and("purlName", purl.getName()));
         }
         else if (cpeSpecified) {
-            return list("part == :part && vendor == :vendor && product == :product",
+            return list("part = :part and vendor = :vendor and product = :product",
                     Parameters.with("part", part)
                             .and("vendor", vendor)
                             .and("product", product));
         }
         else if (purl != null) {
-            return list("purlType == :purlType && purlNamespace == :purlNamespace && purlName == :purlName",
+            return list("purlType = :purlType and purlNamespace = :purlNamespace and purlName = :purlName",
                     Parameters.with("purlType", purl.getType())
                             .and("purlNamespace", purl.getNamespace())
                             .and("purlName", purl.getName()));
