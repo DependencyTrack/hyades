@@ -35,7 +35,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameProduce;
@@ -198,8 +200,22 @@ public class RepositoryMetaAnalyzerTopology {
             analyzer.setRepositoryBaseUrl(repository.getUrl());
 
             LOGGER.info("Performing meta analysis on component: {}", component);
-            final MetaModel model = analyzer.analyze(component);
             final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer, component.getPurl());
+
+            // Populate results from cache
+            AtomicReference<MetaModel> cacheModel = null;
+            Optional.ofNullable(cache.get(metaAnalyzerCacheKey)).ifPresentOrElse(
+                    report -> {
+                        LOGGER.info("Cache hit for analyzer {} for purl {}", analyzer, component.getPurl());
+                        cacheModel.set(report);
+                    },
+                    () -> LOGGER.info("Cache miss for analyzer {} for purl {}", analyzer, component.getPurl())
+            );
+
+            if (cacheModel != null) {
+                return KeyValue.pair(component.getUuid(), cacheModel.get());
+            }
+            final MetaModel model = analyzer.analyze(component);
             cache.put(metaAnalyzerCacheKey, model);
             if (model.getLatestVersion() != null) {
                 return KeyValue.pair(component.getUuid(), model);
