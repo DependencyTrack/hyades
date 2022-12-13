@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.repositories;
+package org.acme.model;
 
 import org.acme.model.Component;
 

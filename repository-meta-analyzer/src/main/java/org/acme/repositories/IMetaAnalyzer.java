@@ -19,6 +19,7 @@
 package org.acme.repositories;
 
 import org.acme.model.Component;
+import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 
 /**

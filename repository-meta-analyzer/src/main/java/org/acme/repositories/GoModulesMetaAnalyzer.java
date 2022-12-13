@@ -22,6 +22,7 @@ import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
 import kong.unirest.*;
 import kong.unirest.json.JSONObject;
+import org.acme.model.MetaModel;
 import org.apache.commons.lang3.StringUtils;
 import org.acme.common.UnirestFactory;
 import org.acme.model.Component;

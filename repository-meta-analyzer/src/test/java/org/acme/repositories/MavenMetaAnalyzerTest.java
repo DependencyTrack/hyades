@@ -20,6 +20,7 @@ package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
 import org.acme.model.Component;
+import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

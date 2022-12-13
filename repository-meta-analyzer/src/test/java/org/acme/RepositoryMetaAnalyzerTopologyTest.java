@@ -7,13 +7,14 @@ import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Component;
+import org.acme.model.MetaAnalyzerCacheKey;
 import org.acme.persistence.RepoEntityRepository;
 import org.acme.repositories.ComposerMetaAnalyzer;
 import org.acme.repositories.GemMetaAnalyzer;
 import org.acme.repositories.GoModulesMetaAnalyzer;
 import org.acme.repositories.HexMetaAnalyzer;
 import org.acme.repositories.MavenMetaAnalyzer;
-import org.acme.repositories.MetaModel;
+import org.acme.model.MetaModel;
 import org.acme.repositories.NpmMetaAnalyzer;
 import org.acme.repositories.NugetMetaAnalyzer;
 import org.acme.repositories.PypiMetaAnalyzer;
@@ -27,7 +28,10 @@ import org.apache.kafka.streams.TopologyTestDriver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+
+import javax.cache.Cache;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import java.util.UUID;
 
@@ -38,6 +42,10 @@ import org.mockito.Mockito;
 public class RepositoryMetaAnalyzerTopologyTest {
     @Inject
     Topology topology;
+
+    @Inject
+    @Named("metaAnalyzerCache")
+    Cache<MetaAnalyzerCacheKey, MetaModel> cache;
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<UUID, Component> inputTopic;
@@ -102,6 +110,15 @@ public class RepositoryMetaAnalyzerTopologyTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    void testTopology() {
+        var analyzerTopology = new RepositoryMetaAnalyzerTopology(composerMetaAnalyzerMock, gemMetaAnalyzerMock,
+                goModulesMetaAnalyzerMock, hexMetaAnalyzerMock, mavenMetaAnalyzerMock, npmMetaAnalyzerMock,
+                nugetMetaAnalyzerMock, pypiMetaAnalyzerMock, repoEntityRepositoryMock, Mockito.mock(Cache.class));
+        Assertions.assertNotNull(analyzerTopology.topology());
+    }
+
+    @Test
     void testPerformMetaAnalysis(){
         final var component = new Component();
         final UUID uuid = UUID.randomUUID();
@@ -147,5 +164,6 @@ public class RepositoryMetaAnalyzerTopologyTest {
     @AfterEach
     void afterEach() {
         testDriver.close();
+        cache.clear();
     }
 }

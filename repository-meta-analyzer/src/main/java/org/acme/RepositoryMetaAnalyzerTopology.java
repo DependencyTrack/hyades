@@ -14,7 +14,7 @@ import org.acme.repositories.GoModulesMetaAnalyzer;
 import org.acme.repositories.HexMetaAnalyzer;
 import org.acme.repositories.IMetaAnalyzer;
 import org.acme.repositories.MavenMetaAnalyzer;
-import org.acme.repositories.MetaModel;
+import org.acme.model.MetaModel;
 import org.acme.repositories.NpmMetaAnalyzer;
 import org.acme.repositories.NugetMetaAnalyzer;
 import org.acme.repositories.PypiMetaAnalyzer;
@@ -66,7 +66,7 @@ public class RepositoryMetaAnalyzerTopology {
                                           final NugetMetaAnalyzer nugetMetaAnalyzer,
                                           final PypiMetaAnalyzer pypiMetaAnalyzer,
                                           final RepoEntityRepository repoEntityRepository,
-                                          @javax.inject.Named("abstractMetaCache") final Cache<MetaAnalyzerCacheKey, MetaModel> cache) {
+                                          @javax.inject.Named("metaAnalyzerCache") final Cache<MetaAnalyzerCacheKey, MetaModel> cache) {
         this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
         this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
