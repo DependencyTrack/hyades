@@ -5,6 +5,7 @@ import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.acme.common.KafkaTopic;
 import org.acme.commonutil.SecretsUtil;
 import org.acme.model.Component;
+import org.acme.model.MetaAnalyzerCacheKey;
 import org.acme.model.Repository;
 import org.acme.persistence.RepoEntityRepository;
 import org.acme.repositories.ComposerMetaAnalyzer;
@@ -29,6 +30,7 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.cache.Cache;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -52,6 +54,7 @@ public class RepositoryMetaAnalyzerTopology {
     private final NugetMetaAnalyzer nugetMetaAnalyzer;
     private final PypiMetaAnalyzer pypiMetaAnalyzer;
     private final RepoEntityRepository repoEntityRepository;
+    private final Cache<MetaAnalyzerCacheKey, MetaModel> cache;
 
     @Inject
     public RepositoryMetaAnalyzerTopology(final ComposerMetaAnalyzer composerMetaAnalyzer,
@@ -62,7 +65,8 @@ public class RepositoryMetaAnalyzerTopology {
                                           final NpmMetaAnalyzer npmMetaAnalyzer,
                                           final NugetMetaAnalyzer nugetMetaAnalyzer,
                                           final PypiMetaAnalyzer pypiMetaAnalyzer,
-                                          final RepoEntityRepository repoEntityRepository) {
+                                          final RepoEntityRepository repoEntityRepository,
+                                          @javax.inject.Named("abstractMetaCache") final Cache<MetaAnalyzerCacheKey, MetaModel> cache) {
         this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
         this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
@@ -72,6 +76,7 @@ public class RepositoryMetaAnalyzerTopology {
         this.nugetMetaAnalyzer = nugetMetaAnalyzer;
         this.pypiMetaAnalyzer = pypiMetaAnalyzer;
         this.repoEntityRepository = repoEntityRepository;
+        this.cache = cache;
     }
 
     @Produces
@@ -194,6 +199,8 @@ public class RepositoryMetaAnalyzerTopology {
 
             LOGGER.info("Performing meta analysis on component: {}", component);
             final MetaModel model = analyzer.analyze(component);
+            final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer, component.getPurl());
+            cache.put(metaAnalyzerCacheKey, model);
             if (model.getLatestVersion() != null) {
                 return KeyValue.pair(component.getUuid(), model);
             }

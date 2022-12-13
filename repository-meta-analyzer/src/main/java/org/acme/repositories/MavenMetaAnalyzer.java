@@ -31,7 +31,6 @@ import org.acme.model.RepositoryType;
 import org.acme.commonutil.DateUtil;
 import org.acme.commonutil.HttpUtil;
 import org.acme.commonutil.XmlUtil;
-import org.apache.http.client.utils.URIBuilder;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
