@@ -203,7 +203,7 @@ public class RepositoryMetaAnalyzerTopology {
             final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer, component.getPurl());
 
             // Populate results from cache
-            AtomicReference<MetaModel> cacheModel = null;
+            AtomicReference<MetaModel> cacheModel = new AtomicReference<>();
             Optional.ofNullable(cache.get(metaAnalyzerCacheKey)).ifPresentOrElse(
                     report -> {
                         LOGGER.info("Cache hit for analyzer {} for purl {}", analyzer, component.getPurl());
@@ -212,7 +212,7 @@ public class RepositoryMetaAnalyzerTopology {
                     () -> LOGGER.info("Cache miss for analyzer {} for purl {}", analyzer, component.getPurl())
             );
 
-            if (cacheModel != null) {
+            if (cacheModel.get() != null) {
                 return KeyValue.pair(component.getUuid(), cacheModel.get());
             }
             final MetaModel model = analyzer.analyze(component);
