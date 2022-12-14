@@ -5,10 +5,10 @@ import org.acme.repositories.IMetaAnalyzer;
 
 public class MetaAnalyzerCacheKey {
 
-    private IMetaAnalyzer analyzer;
-    private PackageURL purl;
+    private final IMetaAnalyzer analyzer;
+    private final PackageURL purl;
 
-    public MetaAnalyzerCacheKey(IMetaAnalyzer analyzer, PackageURL purl) {
+    public MetaAnalyzerCacheKey(final IMetaAnalyzer analyzer, final PackageURL purl) {
         this.analyzer = analyzer;
         this.purl = purl;
     }

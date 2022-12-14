@@ -18,8 +18,6 @@
  */
 package org.acme.model;
 
-import org.acme.model.Component;
-
 import java.util.Date;
 
 public class MetaModel {
