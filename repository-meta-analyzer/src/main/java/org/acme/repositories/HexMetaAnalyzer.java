@@ -127,6 +127,6 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
 
     @Override
     public String getName() {
-        return this.getName();
+        return this.getClass().getSimpleName();
     }
 }

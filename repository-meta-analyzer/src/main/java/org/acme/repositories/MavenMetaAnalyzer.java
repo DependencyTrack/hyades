@@ -125,6 +125,6 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
 
     @Override
     public String getName() {
-        return this.getName();
+        return this.getClass().getSimpleName();
     }
 }
