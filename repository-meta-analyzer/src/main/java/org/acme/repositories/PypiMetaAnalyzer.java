@@ -124,4 +124,9 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
         }
         return meta;
     }
+
+    @Override
+    public String getName() {
+        return this.getName();
+    }
 }

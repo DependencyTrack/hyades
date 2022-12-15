@@ -90,4 +90,9 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
         }
         return meta;
     }
+
+    @Override
+    public String getName() {
+        return this.getName();
+    }
 }

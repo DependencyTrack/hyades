@@ -69,4 +69,6 @@ public interface IMetaAnalyzer {
      */
     MetaModel analyze(Component component);
 
+    String getName();
+
 }

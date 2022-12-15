@@ -135,6 +135,11 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
         return meta;
     }
 
+    @Override
+    public String getName() {
+        return this.getName();
+    }
+
     private static String stripLeadingV(String s) {
         return s.startsWith("v")
                 ? s.substring(1)

@@ -2,7 +2,6 @@ package org.acme;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
-import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.acme.common.KafkaTopic;
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.BeforeEach;
 import javax.cache.Cache;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,11 +62,8 @@ public class RepositoryMetaAnalyzerTopologyTest {
     private NugetMetaAnalyzer nugetMetaAnalyzerMock;
     private PypiMetaAnalyzer pypiMetaAnalyzerMock;
     private RepoEntityRepository repoEntityRepositoryMock;
-    @Inject
-    private EntityManager entityManagerMock;
 
     @BeforeEach
-    @TestTransaction
     void beforeEach() {
         composerMetaAnalyzerMock = Mockito.mock(ComposerMetaAnalyzer.class);
         QuarkusMock.installMockForType(composerMetaAnalyzerMock, ComposerMetaAnalyzer.class);
@@ -97,22 +92,12 @@ public class RepositoryMetaAnalyzerTopologyTest {
         repoEntityRepositoryMock = Mockito.mock(RepoEntityRepository.class);
         QuarkusMock.installMockForType(repoEntityRepositoryMock, RepoEntityRepository.class);
 
-//        entityManagerMock.createNativeQuery("""
-//                INSERT INTO "REPOSITORY" ("ID", "ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL") VALUES
-//                                    (1, 'true', 'central', 'false', 'null', 2, 'MAVEN', 'https://repo1.maven.org/maven2/');
-//                """).executeUpdate();
-//        entityManagerMock.createNativeQuery("""
-//                INSERT INTO "REPOSITORY" ("ID", "ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL") VALUES
-//                                    (2, 'true', 'central2', 'false', 'null', 1, 'MAVEN', 'https://repo1.maven.org/maven2/123');
-//                """).executeUpdate();
-
         testDriver = new TopologyTestDriver(topology);
         inputTopic = testDriver.createInputTopic(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), new UUIDSerializer(), new ObjectMapperSerializer<>());
         outputTopic = testDriver.createOutputTopic(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), new UUIDDeserializer(), new ObjectMapperDeserializer<>(MetaModel.class));
     }
 
     @Test
-    @TestTransaction
     @SuppressWarnings("unchecked")
     void testAnalyzerCacheMiss() {
 
@@ -135,11 +120,10 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Mockito.when(mavenMetaAnalyzerMock.analyze(any())).thenReturn(outputMetaModel);
 
         inputTopic.pipeInput(uuid, component);
-        Assertions.assertNotNull(cache.get(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getClass().getName(), component.getPurl().canonicalize())));
+        Assertions.assertNotNull(cache.get(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize())));
     }
 
     @Test
-    @TestTransaction
     @SuppressWarnings("unchecked")
     void testAnalyzerCacheHit() {
 
@@ -160,8 +144,8 @@ public class RepositoryMetaAnalyzerTopologyTest {
         final MetaModel outputMetaModel = new MetaModel();
         outputMetaModel.setLatestVersion("test");
 
-        // populate the cache
-        cache.put(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getClass().getName(), component.getPurl().canonicalize()), outputMetaModel);
+        // populate the cache to hit the match
+        cache.put(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize()), outputMetaModel);
 
         inputTopic.pipeInput(uuid, component);
         final KeyValue<UUID, MetaModel> record = outputTopic.readKeyValue();

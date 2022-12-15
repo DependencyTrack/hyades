@@ -100,4 +100,8 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
         return meta;
     }
 
+    @Override
+    public String getName() {
+        return this.getName();
+    }
 }

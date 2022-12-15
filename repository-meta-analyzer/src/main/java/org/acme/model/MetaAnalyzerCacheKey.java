@@ -2,15 +2,7 @@ package org.acme.model;
 
 import java.io.Serializable;
 
-public class MetaAnalyzerCacheKey implements Serializable {
-
-    private transient String analyzer;
-    private transient String purl;
-
-    public MetaAnalyzerCacheKey(final String analyzer, final String purl) {
-        this.analyzer = analyzer;
-        this.purl = purl;
-    }
+public record MetaAnalyzerCacheKey(String analyzer, String purl) implements Serializable {
 
     public String getAnalyzer() {
         return analyzer;

@@ -216,4 +216,9 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
 
         return null;
     }
+
+    @Override
+    public String getName() {
+        return this.getName();
+    }
 }

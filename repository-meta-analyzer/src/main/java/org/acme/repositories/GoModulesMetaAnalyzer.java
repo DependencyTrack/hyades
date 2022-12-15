@@ -131,4 +131,8 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
         return modulePath.replaceAll("([A-Z])", "!$1").toLowerCase();
     }
 
+    @Override
+    public String getName() {
+        return this.getName();
+    }
 }

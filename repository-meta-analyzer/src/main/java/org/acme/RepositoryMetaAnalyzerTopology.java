@@ -200,7 +200,7 @@ public class RepositoryMetaAnalyzerTopology {
             analyzer.setRepositoryBaseUrl(repository.getUrl());
 
             LOGGER.info("Performing meta analysis on component: {}", component);
-            final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer.getClass().getName(), component.getPurl().canonicalize());
+            final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), component.getPurl().canonicalize());
 
             // Populate results from cache
             AtomicReference<MetaModel> cacheModel = new AtomicReference<>();
