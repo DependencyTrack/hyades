@@ -200,11 +200,11 @@ public class RepositoryMetaAnalyzerTopology {
             analyzer.setRepositoryBaseUrl(repository.getUrl());
 
             LOGGER.info("Performing meta analysis on component: {}", component);
-            final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer, component.getPurl());
+            final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer.getClass().getName(), component.getPurl().canonicalize());
 
             // Populate results from cache
             AtomicReference<MetaModel> cacheModel = new AtomicReference<>();
-            Optional.ofNullable(cache.get(metaAnalyzerCacheKey)).ifPresentOrElse(
+            Optional.ofNullable(this.cache.get(metaAnalyzerCacheKey)).ifPresentOrElse(
                     report -> {
                         LOGGER.info("Cache hit for analyzer {} for purl {}", analyzer, component.getPurl());
                         cacheModel.set(report);
@@ -216,7 +216,7 @@ public class RepositoryMetaAnalyzerTopology {
                 return KeyValue.pair(component.getUuid(), cacheModel.get());
             }
             final MetaModel model = analyzer.analyze(component);
-            cache.put(metaAnalyzerCacheKey, model);
+            this.cache.put(metaAnalyzerCacheKey, model);
             if (model.getLatestVersion() != null) {
                 return KeyValue.pair(component.getUuid(), model);
             }

@@ -8,6 +8,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Component;
 import org.acme.model.MetaAnalyzerCacheKey;
+import org.acme.model.Repository;
 import org.acme.persistence.RepoEntityRepository;
 import org.acme.repositories.ComposerMetaAnalyzer;
 import org.acme.repositories.GemMetaAnalyzer;
@@ -33,13 +34,16 @@ import javax.cache.Cache;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.any;
 
 @QuarkusTest
 public class RepositoryMetaAnalyzerTopologyTest {
+
     @Inject
     Topology topology;
 
@@ -93,16 +97,14 @@ public class RepositoryMetaAnalyzerTopologyTest {
         repoEntityRepositoryMock = Mockito.mock(RepoEntityRepository.class);
         QuarkusMock.installMockForType(repoEntityRepositoryMock, RepoEntityRepository.class);
 
-
-
-        entityManagerMock.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("ID", "ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL") VALUES
-                                    (1, 'true', 'central', 'false', 'null', 2, 'MAVEN', 'https://repo1.maven.org/maven2/');
-                """).executeUpdate();
-        entityManagerMock.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("ID", "ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL") VALUES
-                                    (2, 'true', 'central2', 'false', 'null', 1, 'MAVEN', 'https://repo1.maven.org/maven2/123');
-                """).executeUpdate();
+//        entityManagerMock.createNativeQuery("""
+//                INSERT INTO "REPOSITORY" ("ID", "ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL") VALUES
+//                                    (1, 'true', 'central', 'false', 'null', 2, 'MAVEN', 'https://repo1.maven.org/maven2/');
+//                """).executeUpdate();
+//        entityManagerMock.createNativeQuery("""
+//                INSERT INTO "REPOSITORY" ("ID", "ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL") VALUES
+//                                    (2, 'true', 'central2', 'false', 'null', 1, 'MAVEN', 'https://repo1.maven.org/maven2/123');
+//                """).executeUpdate();
 
         testDriver = new TopologyTestDriver(topology);
         inputTopic = testDriver.createInputTopic(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), new UUIDSerializer(), new ObjectMapperSerializer<>());
@@ -110,13 +112,62 @@ public class RepositoryMetaAnalyzerTopologyTest {
     }
 
     @Test
+    @TestTransaction
     @SuppressWarnings("unchecked")
-    void testTopology() {
-        var analyzerTopology = new RepositoryMetaAnalyzerTopology(composerMetaAnalyzerMock, gemMetaAnalyzerMock,
-                goModulesMetaAnalyzerMock, hexMetaAnalyzerMock, mavenMetaAnalyzerMock, npmMetaAnalyzerMock,
-                nugetMetaAnalyzerMock, pypiMetaAnalyzerMock, repoEntityRepositoryMock, Mockito.mock(Cache.class));
-        Assertions.assertNotNull(analyzerTopology.topology());
+    void testAnalyzerCacheMiss() {
+
+        final var component = new Component();
+        final UUID uuid = UUID.randomUUID();
+        component.setUuid(uuid);
+        component.setCpe("cpe:/a:acme:application:9.1.1");
+        component.setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2");
+        component.setSwidTagId("PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8");
+
+        // mock repository data
+        Repository repository = new Repository();
+        repository.setInternal(false);
+        repository.setUrl("https://repo1.maven.org/maven2/");
+        Mockito.when(repoEntityRepositoryMock.findRepositoryByRepositoryType(any())).thenReturn(List.of(repository));
+
+        // mock maven analyzer analyze method
+        final MetaModel outputMetaModel = new MetaModel();
+        outputMetaModel.setLatestVersion("test");
+        Mockito.when(mavenMetaAnalyzerMock.analyze(any())).thenReturn(outputMetaModel);
+
+        inputTopic.pipeInput(uuid, component);
+        Assertions.assertNotNull(cache.get(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getClass().getName(), component.getPurl().canonicalize())));
     }
+
+    @Test
+    @TestTransaction
+    @SuppressWarnings("unchecked")
+    void testAnalyzerCacheHit() {
+
+        final var component = new Component();
+        final UUID uuid = UUID.randomUUID();
+        component.setUuid(uuid);
+        component.setCpe("cpe:/a:acme:application:9.1.1");
+        component.setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2");
+        component.setSwidTagId("PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8");
+
+        // mock repository data
+        Repository repository = new Repository();
+        repository.setInternal(false);
+        repository.setUrl("https://repo1.maven.org/maven2/");
+        Mockito.when(repoEntityRepositoryMock.findRepositoryByRepositoryType(any())).thenReturn(List.of(repository));
+
+        // mock maven analyzer analyze method
+        final MetaModel outputMetaModel = new MetaModel();
+        outputMetaModel.setLatestVersion("test");
+
+        // populate the cache
+        cache.put(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getClass().getName(), component.getPurl().canonicalize()), outputMetaModel);
+
+        inputTopic.pipeInput(uuid, component);
+        final KeyValue<UUID, MetaModel> record = outputTopic.readKeyValue();
+        Assertions.assertEquals("test", record.value.getLatestVersion());
+    }
+
 
     @Test
     void testPerformMetaAnalysis(){
@@ -167,3 +218,4 @@ public class RepositoryMetaAnalyzerTopologyTest {
         cache.clear();
     }
 }
+

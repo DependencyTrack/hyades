@@ -1,23 +1,22 @@
 package org.acme.model;
 
-import com.github.packageurl.PackageURL;
-import org.acme.repositories.IMetaAnalyzer;
+import java.io.Serializable;
 
-public class MetaAnalyzerCacheKey {
+public class MetaAnalyzerCacheKey implements Serializable {
 
-    private IMetaAnalyzer analyzer;
-    private PackageURL purl;
+    private transient String analyzer;
+    private transient String purl;
 
-    public MetaAnalyzerCacheKey(final IMetaAnalyzer analyzer, final PackageURL purl) {
+    public MetaAnalyzerCacheKey(final String analyzer, final String purl) {
         this.analyzer = analyzer;
         this.purl = purl;
     }
 
-    public IMetaAnalyzer getAnalyzer() {
+    public String getAnalyzer() {
         return analyzer;
     }
 
-    public PackageURL getPurl() {
+    public String getPurl() {
         return purl;
     }
 }

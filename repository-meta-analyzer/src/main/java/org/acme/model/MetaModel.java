@@ -18,9 +18,10 @@
  */
 package org.acme.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MetaModel {
+public class MetaModel implements Serializable {
 
     private Component component;
     private String latestVersion;

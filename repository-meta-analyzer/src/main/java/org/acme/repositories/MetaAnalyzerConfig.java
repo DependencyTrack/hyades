@@ -17,7 +17,7 @@ import javax.inject.Named;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-@Dependent
+@ApplicationScoped
 class MetaAnalyzerConfig {
 
     @Produces
