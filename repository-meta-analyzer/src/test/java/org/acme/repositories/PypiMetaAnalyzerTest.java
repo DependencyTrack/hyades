@@ -33,6 +33,7 @@ class PypiMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:pypi/Flask@1.0.0"));
 
         PypiMetaAnalyzer analyzer = new PypiMetaAnalyzer();
+        Assertions.assertEquals("PypiMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.PYPI, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

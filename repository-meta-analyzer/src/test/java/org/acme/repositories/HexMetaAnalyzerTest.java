@@ -33,6 +33,7 @@ class HexMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:hex/phoenix@1.4.10"));
 
         HexMetaAnalyzer analyzer = new HexMetaAnalyzer();
+        Assertions.assertEquals("HexMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.HEX, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

@@ -33,6 +33,7 @@ class GemMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:gem/test-unit@3.2.0"));
 
         GemMetaAnalyzer analyzer = new GemMetaAnalyzer();
+        Assertions.assertEquals("GemMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.GEM, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

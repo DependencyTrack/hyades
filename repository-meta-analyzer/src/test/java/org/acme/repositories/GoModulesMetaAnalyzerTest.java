@@ -34,6 +34,7 @@ class GoModulesMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:golang/github.com/CycloneDX/cyclonedx-go@v0.3.0"));
 
         final var analyzer = new GoModulesMetaAnalyzer();
+        Assertions.assertEquals("GoModulesMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.GO_MODULES, analyzer.supportedRepositoryType());
 

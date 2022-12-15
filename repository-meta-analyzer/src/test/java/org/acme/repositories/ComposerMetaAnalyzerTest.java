@@ -57,6 +57,7 @@ class ComposerMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:composer/phpunit/phpunit@1.0.0"));
 
         ComposerMetaAnalyzer analyzer = new ComposerMetaAnalyzer();
+        Assertions.assertEquals("ComposerMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.COMPOSER, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

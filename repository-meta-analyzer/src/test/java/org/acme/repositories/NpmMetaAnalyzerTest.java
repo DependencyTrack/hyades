@@ -33,6 +33,7 @@ class NpmMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:npm/qunit@2.7.0"));
 
         NpmMetaAnalyzer analyzer = new NpmMetaAnalyzer();
+        Assertions.assertEquals("NpmMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.NPM, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

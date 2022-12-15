@@ -55,7 +55,7 @@ class NugetMetaAnalyzerTest {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnit@3.8.0"));
         NugetMetaAnalyzer analyzer = new NugetMetaAnalyzer();
-
+        Assertions.assertEquals("NugetMetaAnalyzer", analyzer.getName());
         analyzer.setRepositoryBaseUrl("https://api.nuget.org");
         MetaModel metaModel = analyzer.analyze(component);
 
