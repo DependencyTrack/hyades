@@ -23,6 +23,7 @@ import com.github.packageurl.PackageURL;
 import kong.unirest.*;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
+import org.acme.model.MetaModel;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
@@ -214,5 +215,10 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
         }
 
         return null;
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
     }
 }

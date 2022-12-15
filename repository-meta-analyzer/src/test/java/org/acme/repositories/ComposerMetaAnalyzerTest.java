@@ -20,6 +20,7 @@ package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
 import org.acme.model.Component;
+import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.AfterAll;
@@ -56,6 +57,7 @@ class ComposerMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:composer/phpunit/phpunit@1.0.0"));
 
         ComposerMetaAnalyzer analyzer = new ComposerMetaAnalyzer();
+        Assertions.assertEquals("ComposerMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.COMPOSER, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

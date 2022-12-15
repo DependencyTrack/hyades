@@ -25,6 +25,7 @@ import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
+import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -122,5 +123,10 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
             LOGGER.warn("An error occurred while parsing upload time", e);
         }
         return meta;
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
     }
 }

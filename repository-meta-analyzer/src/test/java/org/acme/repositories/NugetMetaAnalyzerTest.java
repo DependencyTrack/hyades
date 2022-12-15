@@ -20,6 +20,7 @@ package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
 import org.acme.model.Component;
+import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.AfterAll;
@@ -54,7 +55,7 @@ class NugetMetaAnalyzerTest {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnit@3.8.0"));
         NugetMetaAnalyzer analyzer = new NugetMetaAnalyzer();
-
+        Assertions.assertEquals("NugetMetaAnalyzer", analyzer.getName());
         analyzer.setRepositoryBaseUrl("https://api.nuget.org");
         MetaModel metaModel = analyzer.analyze(component);
 
