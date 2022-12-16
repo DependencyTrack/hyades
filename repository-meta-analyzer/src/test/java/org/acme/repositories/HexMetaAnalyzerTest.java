@@ -20,6 +20,7 @@ package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
 import org.acme.model.Component;
+import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ class HexMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:hex/phoenix@1.4.10"));
 
         HexMetaAnalyzer analyzer = new HexMetaAnalyzer();
+        Assertions.assertEquals("HexMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.HEX, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

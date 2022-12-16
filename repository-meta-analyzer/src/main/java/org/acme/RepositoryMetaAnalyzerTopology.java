@@ -5,6 +5,7 @@ import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.acme.common.KafkaTopic;
 import org.acme.commonutil.SecretsUtil;
 import org.acme.model.Component;
+import org.acme.model.MetaAnalyzerCacheKey;
 import org.acme.model.Repository;
 import org.acme.persistence.RepoEntityRepository;
 import org.acme.repositories.ComposerMetaAnalyzer;
@@ -13,7 +14,7 @@ import org.acme.repositories.GoModulesMetaAnalyzer;
 import org.acme.repositories.HexMetaAnalyzer;
 import org.acme.repositories.IMetaAnalyzer;
 import org.acme.repositories.MavenMetaAnalyzer;
-import org.acme.repositories.MetaModel;
+import org.acme.model.MetaModel;
 import org.acme.repositories.NpmMetaAnalyzer;
 import org.acme.repositories.NugetMetaAnalyzer;
 import org.acme.repositories.PypiMetaAnalyzer;
@@ -29,11 +30,14 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.cache.Cache;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameProduce;
@@ -52,6 +56,7 @@ public class RepositoryMetaAnalyzerTopology {
     private final NugetMetaAnalyzer nugetMetaAnalyzer;
     private final PypiMetaAnalyzer pypiMetaAnalyzer;
     private final RepoEntityRepository repoEntityRepository;
+    private final Cache<MetaAnalyzerCacheKey, MetaModel> cache;
 
     @Inject
     public RepositoryMetaAnalyzerTopology(final ComposerMetaAnalyzer composerMetaAnalyzer,
@@ -62,7 +67,8 @@ public class RepositoryMetaAnalyzerTopology {
                                           final NpmMetaAnalyzer npmMetaAnalyzer,
                                           final NugetMetaAnalyzer nugetMetaAnalyzer,
                                           final PypiMetaAnalyzer pypiMetaAnalyzer,
-                                          final RepoEntityRepository repoEntityRepository) {
+                                          final RepoEntityRepository repoEntityRepository,
+                                          @javax.inject.Named("metaAnalyzerCache") final Cache<MetaAnalyzerCacheKey, MetaModel> cache) {
         this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
         this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
@@ -72,6 +78,7 @@ public class RepositoryMetaAnalyzerTopology {
         this.nugetMetaAnalyzer = nugetMetaAnalyzer;
         this.pypiMetaAnalyzer = pypiMetaAnalyzer;
         this.repoEntityRepository = repoEntityRepository;
+        this.cache = cache;
     }
 
     @Produces
@@ -193,7 +200,23 @@ public class RepositoryMetaAnalyzerTopology {
             analyzer.setRepositoryBaseUrl(repository.getUrl());
 
             LOGGER.info("Performing meta analysis on component: {}", component);
+            final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), component.getPurl().canonicalize());
+
+            // Populate results from cache
+            AtomicReference<MetaModel> cacheModel = new AtomicReference<>();
+            Optional.ofNullable(this.cache.get(metaAnalyzerCacheKey)).ifPresentOrElse(
+                    report -> {
+                        LOGGER.info("Cache hit for analyzer {} for purl {}", analyzer, component.getPurl());
+                        cacheModel.set(report);
+                    },
+                    () -> LOGGER.info("Cache miss for analyzer {} for purl {}", analyzer, component.getPurl())
+            );
+
+            if (cacheModel.get() != null) {
+                return KeyValue.pair(component.getUuid(), cacheModel.get());
+            }
             final MetaModel model = analyzer.analyze(component);
+            this.cache.put(metaAnalyzerCacheKey, model);
             if (model.getLatestVersion() != null) {
                 return KeyValue.pair(component.getUuid(), model);
             }

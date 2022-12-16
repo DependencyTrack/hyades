@@ -20,6 +20,7 @@ package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
 import org.acme.model.Component;
+import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ class MavenMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:maven/junit/junit@4.12"));
 
         MavenMetaAnalyzer analyzer = new MavenMetaAnalyzer();
+        Assertions.assertEquals("MavenMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.MAVEN, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

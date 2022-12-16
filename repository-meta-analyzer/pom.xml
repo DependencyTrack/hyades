@@ -71,6 +71,11 @@
       <artifactId>mockserver-netty</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

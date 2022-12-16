@@ -20,6 +20,7 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
+import org.acme.model.MetaModel;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -31,7 +32,6 @@ import org.acme.model.RepositoryType;
 import org.acme.commonutil.DateUtil;
 import org.acme.commonutil.HttpUtil;
 import org.acme.commonutil.XmlUtil;
-import org.apache.http.client.utils.URIBuilder;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -121,5 +121,10 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
             }
         }
         return meta;
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
     }
 }

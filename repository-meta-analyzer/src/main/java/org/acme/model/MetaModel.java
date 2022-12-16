@@ -16,13 +16,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.acme.repositories;
+package org.acme.model;
 
-import org.acme.model.Component;
-
+import java.io.Serializable;
 import java.util.Date;
 
-public class MetaModel {
+public class MetaModel implements Serializable {
 
     private Component component;
     private String latestVersion;
