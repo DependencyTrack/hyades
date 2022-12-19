@@ -84,6 +84,10 @@
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>jcache</artifactId>
     </dependency>
+      <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-cache</artifactId>
+      </dependency>
   </dependencies>
 
   <build>
