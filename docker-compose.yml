@@ -139,7 +139,7 @@ services:
       - PLAINTEXT://dt-redpanda:28082,OUTSIDE://localhost:8082
     ports:
       # Kafka API
-      - "127.0.0.1:9092:9092"
+      - "9092:9092"
       # Schema Registry (currently not used)
       # - "127.0.0.1:28081:8081"
       # Pandaproxy (REST API, currently not used)
