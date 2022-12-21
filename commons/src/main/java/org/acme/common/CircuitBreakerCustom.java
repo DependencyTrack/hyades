@@ -26,9 +26,16 @@ public class CircuitBreakerCustom {
                 CircuitBreakerRegistry.of(circuitBreakerConfig);
     }
 
-    public static CircuitBreaker getCircuitBreaker() {
+    public CircuitBreaker getCircuitBreaker() {
         // TODO: different instances with different custom config for different clients?
         return circuitBreakerRegistry
-                .circuitBreaker("circuitBreakerInstance");
+                .circuitBreaker("circuitBreakerInstance", circuitBreakerConfig);
+    }
+
+    public CircuitBreaker getCircuitBreaker(CircuitBreakerConfig config) {
+        CircuitBreakerRegistry circuitBreakerRegistry
+                = CircuitBreakerRegistry.ofDefaults();
+        return circuitBreakerRegistry
+                .circuitBreaker("circuitBreakerDefault", config);
     }
 }
