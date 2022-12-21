@@ -9,7 +9,7 @@ import java.time.Duration;
 public class CircuitBreakerCustom {
 
     private CircuitBreakerConfig circuitBreakerConfig;
-    private static CircuitBreakerRegistry circuitBreakerRegistry;
+    private CircuitBreakerRegistry circuitBreakerRegistry;
 
     public CircuitBreakerCustom() {
         circuitBreakerConfig = CircuitBreakerConfig.custom()
