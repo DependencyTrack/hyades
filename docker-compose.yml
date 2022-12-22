@@ -180,7 +180,7 @@ services:
     restart: unless-stopped
 
   prometheus:
-    image: prom/prometheus:v2.40.7
+    image: prom/prometheus:v2.41.0
     container_name: dt-prometheus
     ports:
       - "127.0.0.1:9090:9090"
