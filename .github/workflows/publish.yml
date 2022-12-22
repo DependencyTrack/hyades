@@ -2,7 +2,7 @@ name: Publish
 
 on:
   push:
-    branches: [ "feature/helmCharts" ]
+    branches: [ "main" ]
 
 jobs:
   publish-container-image:

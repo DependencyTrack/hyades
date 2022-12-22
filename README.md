@@ -107,3 +107,27 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 [OSS Index]: https://ossindex.sonatype.org/
 [Redpanda]: https://redpanda.com/
 [Snyk]: https://snyk.io/
+
+#### Deploying vulnerability-analyzer using minkube 
+
+To de able to deploy the vulnerability-analyzer you would need minikube, kubectl and helm installed on the target machine. An example deployment.yaml is available in ``deploymentCharts/vulnerability-analyzer/deployment.yaml``.<br/>
+This module now has quarkus-helm and quarkus-kubernetes extensions installed so when the project is build using `mvn clean install` it would also create a deployment.yaml inside ./target/helm/kubernetes/<chart-name>/templates/deployment.yaml<br/>
+In addition a values.yaml will be created in ./target/helm/kubernetes/<chart-name>/values.yaml. Upon doing `mvn clean install` the values.yaml will contain these values:
+```yaml
+---
+app:
+  serviceType: ClusterIP
+  image: <local path to image>
+  envs:
+    QUARKUS_DATASOURCE_USERNAME: test
+    QUARKUS_DATASOURCE_JDBC_URL: test
+    QUARKUS_DATASOURCE_PASSWORD: test
+```
+The image needs to be updated to the image path in the github repository. The sha of the image that has been tested with and works is here: dd6ba6cc67c021e42ece308b42f9d9d0ab0e312eddbbb922a8650181cfa4dd0d . And the database credentials need to be updated to valid db credentials. These updates can be done either manually or by upgrading the helm chart using helm commands. Once these updates are done, you need to navigate to the module directory in the machine and execute the command below:
+```shell
+helm install vulnerability-analyzer-helm ./target/helm/kubernetes/vulnerability-analyzer
+```
+This will start off the deployment. You can view it by launching the minikube dashboard:
+```shell
+minikube dashboard
+```
