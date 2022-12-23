@@ -109,8 +109,18 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 [Snyk]: https://snyk.io/
 
 #### Deploying vulnerability-analyzer using minkube 
+##### Prerequisites
+* minikube installation on target machine
+* kubectl installation on target machine
+* helm installation on target machine
+* Before running a new chart deployment you need to make sure that:
+  * local instance of postgres is running that the minikube deployment can connect to.
+  * redpanda broker running
+  * Topics needed by the vulnerability-analyzer module created 
+  * redpanda console running to view any information about the broker, topic and messages. <br/>
+    (All the items in this sublist can be started using the docker-compose file of this project located here: ./docker-compose.yml)<br/>
 
-To de able to deploy the vulnerability-analyzer you would need minikube, kubectl and helm installed on the target machine. An example deployment.yaml is available in ``deploymentCharts/vulnerability-analyzer/deployment.yaml``.<br/>
+An example deployment.yaml is available in ``deploymentCharts/vulnerability-analyzer/deployment.yaml``.<br/>
 This module now has quarkus-helm and quarkus-kubernetes extensions installed so when the project is build using `mvn clean install` it would also create a deployment.yaml inside ./target/helm/kubernetes/<chart-name>/templates/deployment.yaml<br/>
 In addition a values.yaml will be created in ./target/helm/kubernetes/<chart-name>/values.yaml. Upon doing `mvn clean install` the values.yaml will contain these values:
 ```yaml
