@@ -1,6 +1,9 @@
 package org.acme;
 
 import com.github.packageurl.PackageURL;
+import io.quarkus.cache.Cache;
+import io.quarkus.cache.CacheName;
+import io.quarkus.cache.CaffeineCache;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.acme.common.KafkaTopic;
 import org.acme.commonutil.SecretsUtil;
@@ -30,13 +33,12 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameConsume;
@@ -56,7 +58,9 @@ public class RepositoryMetaAnalyzerTopology {
     private final NugetMetaAnalyzer nugetMetaAnalyzer;
     private final PypiMetaAnalyzer pypiMetaAnalyzer;
     private final RepoEntityRepository repoEntityRepository;
-    private final Cache<MetaAnalyzerCacheKey, MetaModel> cache;
+    @Inject
+    @CacheName("metaAnalyzer")
+    Cache cache;
 
     @Inject
     public RepositoryMetaAnalyzerTopology(final ComposerMetaAnalyzer composerMetaAnalyzer,
@@ -67,8 +71,9 @@ public class RepositoryMetaAnalyzerTopology {
                                           final NpmMetaAnalyzer npmMetaAnalyzer,
                                           final NugetMetaAnalyzer nugetMetaAnalyzer,
                                           final PypiMetaAnalyzer pypiMetaAnalyzer,
-                                          final RepoEntityRepository repoEntityRepository,
-                                          @javax.inject.Named("metaAnalyzerCache") final Cache<MetaAnalyzerCacheKey, MetaModel> cache) {
+                                          final RepoEntityRepository repoEntityRepository
+                                          //  @javax.inject.Named("metaAnalyzerCache") final Cache<MetaAnalyzerCacheKey, MetaModel> cache
+    ) {
         this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
         this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
@@ -78,7 +83,6 @@ public class RepositoryMetaAnalyzerTopology {
         this.nugetMetaAnalyzer = nugetMetaAnalyzer;
         this.pypiMetaAnalyzer = pypiMetaAnalyzer;
         this.repoEntityRepository = repoEntityRepository;
-        this.cache = cache;
     }
 
     @Produces
@@ -187,7 +191,7 @@ public class RepositoryMetaAnalyzerTopology {
     }
 
     @Transactional
-    KeyValue<UUID, MetaModel> performMetaAnalysis(final IMetaAnalyzer analyzer, final Component component) {
+    KeyValue<UUID, MetaModel> performMetaAnalysis(final IMetaAnalyzer analyzer, final Component component)  {
         for (Repository repository : repoEntityRepository.findRepositoryByRepositoryType(analyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
@@ -204,19 +208,19 @@ public class RepositoryMetaAnalyzerTopology {
 
             // Populate results from cache
             AtomicReference<MetaModel> cacheModel = new AtomicReference<>();
-            Optional.ofNullable(this.cache.get(metaAnalyzerCacheKey)).ifPresentOrElse(
-                    report -> {
-                        LOGGER.info("Cache hit for analyzer {} for purl {}", analyzer, component.getPurl());
-                        cacheModel.set(report);
-                    },
-                    () -> LOGGER.info("Cache miss for analyzer {} for purl {}", analyzer, component.getPurl())
-            );
+            if (cache.as(CaffeineCache.class).getIfPresent(metaAnalyzerCacheKey) != null) {
+                LOGGER.info("Cache hit for analyzer {} for purl {}", analyzer, component.getPurl());
+                MetaModel result = (MetaModel) cache.as(CaffeineCache.class).getIfPresent(metaAnalyzerCacheKey).join();
+                cacheModel.set(result);
+            }else{
+                LOGGER.info("Cache miss for analyzer {} for purl {}", analyzer, component.getPurl());
+            }
 
             if (cacheModel.get() != null) {
                 return KeyValue.pair(component.getUuid(), cacheModel.get());
             }
             final MetaModel model = analyzer.analyze(component);
-            this.cache.put(metaAnalyzerCacheKey, model);
+            cache.as(CaffeineCache.class).put(metaAnalyzerCacheKey, CompletableFuture.completedFuture(model));
             if (model.getLatestVersion() != null) {
                 return KeyValue.pair(component.getUuid(), model);
             }
