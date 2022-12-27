@@ -7,7 +7,7 @@ public class AnalyzersConfig implements Serializable {
     private boolean OSSEnabled;
     private boolean internalAnalyzerEnabled;
 
-    public AnalyzersConfig(boolean snykEnabled, boolean OSSEnvuabled, boolean internalAnalyzerEnabled) {
+    public AnalyzersConfig(boolean snykEnabled, boolean OSSEnabled, boolean internalAnalyzerEnabled) {
         this.snykEnabled = snykEnabled;
         this.OSSEnabled = OSSEnabled;
         this.internalAnalyzerEnabled = internalAnalyzerEnabled;
