@@ -27,7 +27,7 @@ public class VulnerableSoftwareTest {
     @Test
     public void testId() {
         VulnerableSoftware vs = new VulnerableSoftware();
-        vs.setId(111L);
+        vs.setId(111);
         Assertions.assertEquals(111L, vs.getId());
     }
 

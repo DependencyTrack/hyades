@@ -18,6 +18,20 @@
  */
 package org.acme.model;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import org.acme.persistence.UUIDConverter;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,71 +45,113 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.6.0
  */
-public class VulnerableSoftware implements ICpe, Serializable {
+
+@Entity
+@Table(name = "VULNERABLESOFTWARE")
+public class VulnerableSoftware  extends PanacheEntityBase implements ICpe, Serializable{
 
     private static final long serialVersionUID = -3987946408457131098L;
 
-    private long id;
+    @Id
+    @Column(name = "ID")
+    private int id;
 
+    @Column(name = "PURL", columnDefinition = "VARCHAR")
     private String purl;
 
+    @Column(name = "PURL_TYPE", columnDefinition = "VARCHAR")
     private String purlType;
 
+    @Column(name = "PURL_NAMESPACE", columnDefinition = "VARCHAR")
     private String purlNamespace;
 
+    @Column(name = "PURL_NAME", columnDefinition = "VARCHAR")
     private String purlName;
 
+    @Column(name = "PURL_VERSION", columnDefinition = "VARCHAR")
     private String purlVersion;
 
+    @Column(name = "PURL_QUALIFIERS", columnDefinition = "VARCHAR")
     private String purlQualifiers;
 
+    @Column(name = "PURL_SUBPATH", columnDefinition = "VARCHAR")
     private String purlSubpath;
 
+    @Column(name = "CPE22", columnDefinition = "VARCHAR")
     private String cpe22;
 
+    @Column(name = "CPE23", columnDefinition = "VARCHAR")
     private String cpe23;
 
+    @Column(name = "PART", columnDefinition = "VARCHAR")
     private String part;
 
+    @Column(name = "VENDOR", columnDefinition = "VARCHAR")
     private String vendor;
 
+    @Column(name = "PRODUCT", columnDefinition = "VARCHAR")
     private String product;
 
+    @Column(name = "VERSION")
     private String version;
 
+    @Column(name = "UPDATE", columnDefinition = "VARCHAR")
     private String update;
 
+    @Column(name = "EDITION", columnDefinition = "VARCHAR")
     private String edition;
 
+    @Column(name = "LANGUAGE", columnDefinition = "VARCHAR")
     private String language;
 
+    @Column(name = "SWEDITION", columnDefinition = "VARCHAR")
     private String swEdition;
 
+    @Column(name = "TARGETSW", columnDefinition = "VARCHAR")
     private String targetSw;
 
+    @Column(name = "TARGETHW", columnDefinition = "VARCHAR")
     private String targetHw;
 
+    @Column(name = "OTHER", columnDefinition = "VARCHAR")
     private String other;
 
+    @Column(name = "VERSIONENDEXCLUDING")
     private String versionEndExcluding;
 
+    @Column(name = "VERSIONENDINCLUDING")
     private String versionEndIncluding;
 
+    @Column(name = "VERSIONSTARTEXCLUDING")
     private String versionStartExcluding;
 
+    @Column(name = "VERSIONSTARTINCLUDING")
     private String versionStartIncluding;
 
+    @Column(name = "VULNERABLE")
     private boolean vulnerable;
 
+    @ManyToMany
+    @JoinTable(
+            name = "VULNERABLESOFTWARE_VULNERABILITIES",
+            joinColumns =
+            @JoinColumn(name = "VULNERABLESOFTWARE_ID", referencedColumnName = "ID"),
+            inverseJoinColumns =
+            @JoinColumn(name = "VULNERABILITY_ID", referencedColumnName = "ID")
+    )
+    @OrderBy("id ASC")
     private List<Vulnerability> vulnerabilities;
 
+    @Column(name = "UUID", length = 36, nullable = false, unique = true)
+    @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
