@@ -132,13 +132,14 @@ services:
       - --kafka-addr
       - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
       - --advertise-kafka-addr
-      - PLAINTEXT://dt-redpanda:29092,OUTSIDE://host.minikube.internal:9092
+      - PLAINTEXT://dt-redpanda:29092,OUTSIDE://localhost:9092,OUTSIDE://host.minikube.internal:9091
       - --pandaproxy-addr
       - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
       - --advertise-pandaproxy-addr
       - PLAINTEXT://dt-redpanda:28082,OUTSIDE://localhost:8082
     ports:
       # Kafka API
+      - "9091:9091"
       - "9092:9092"
       # Schema Registry (currently not used)
       # - "127.0.0.1:28081:8081"
