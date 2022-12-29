@@ -55,6 +55,18 @@ docker run -it --rm -v "$(pwd):/tmp/work" -u "$(id -u):$(id -g)" \
   eclipse-temurin:17-jdk-alpine jshell -R"-Dsecret.key.destination=/tmp/work/secret.key" /tmp/work/scripts/gen-secret-key.jsh
 ```
 
+### Development
+To develop the application, you need to run:
+```shell
+docker-compose --profile dev up
+```
+to start off the docker containers. And then need to run:
+```shell
+
+quarkus dev
+```
+to run the application in dev mode.
+
 ### Testing 🤞
 
 #### Load Testing 🚀
@@ -119,7 +131,7 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 * helm installation on target machine
 * ```shell
   cd vulnerability-analyzer
-  docker-compose -f docker-compose-kubernetes.yml up
+  docker-compose --profile demokube up
   ```
 
 An example deployment.yaml is available in ``deploymentCharts/vulnerability-analyzer/deployment.yaml``.<br/>

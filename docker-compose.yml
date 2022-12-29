@@ -154,7 +154,7 @@ services:
   redpanda-kube:
     image: docker.redpanda.com/vectorized/redpanda:v22.3.8
     profiles:
-      - kubernetes
+      - demokube
     container_name: dt-redpanda-kubernetes
     command:
       - redpanda
@@ -184,7 +184,7 @@ services:
       image: docker.redpanda.com/vectorized/redpanda:v22.3.8
       container_name: dt-redpanda-init-kubernetes
       profiles:
-        - kubernetes
+        - demokube
       depends_on:
         - redpanda-kube
       entrypoint: "/bin/bash"
@@ -206,7 +206,7 @@ services:
       image: docker.redpanda.com/vectorized/console:v2.1.1
       container_name: dt-redpanda-console-kubernetes
       profiles:
-        - kubernetes
+        - demokube
       depends_on:
         - redpanda
       environment:
@@ -236,6 +236,8 @@ services:
     volumes:
       - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro"
     restart: on-failure
+    profiles:
+      - dev
 
   redpanda-console:
     image: docker.redpanda.com/vectorized/console:v2.1.1
@@ -247,6 +249,8 @@ services:
     ports:
       - "127.0.0.1:28080:8080"
     restart: unless-stopped
+    profiles:
+      - dev
 
   prometheus:
     image: prom/prometheus:v2.41.0
