@@ -180,6 +180,42 @@ services:
     volumes:
       - "redpanda-data:/var/lib/redpanda/data"
     restart: unless-stopped
+  redpanda-init-kube:
+      image: docker.redpanda.com/vectorized/redpanda:v22.3.8
+      container_name: dt-redpanda-init-kubernetes
+      profiles:
+        - kubernetes
+      depends_on:
+        - redpanda-kube
+      entrypoint: "/bin/bash"
+      command: "/tmp/create-topics.sh"
+      user: "0" # Ensure user can read create-topics.sh
+      environment:
+        REDPANDA_BROKERS: "dt-redpanda-kubernetes:29092"
+        NOTIFICATION_TOPICS_PARTITIONS: "3"
+        NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
+        REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
+        REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+        VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
+        VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+      volumes:
+        - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro"
+      restart: on-failure
+
+  redpanda-console-kube:
+      image: docker.redpanda.com/vectorized/console:v2.1.1
+      container_name: dt-redpanda-console-kubernetes
+      profiles:
+        - kubernetes
+      depends_on:
+        - redpanda
+      environment:
+        KAFKA_BROKERS: "dt-redpanda-kubernetes:29092"
+      ports:
+        - "127.0.0.1:28080:8080"
+      restart: unless-stopped
+
+
 
   redpanda-init:
     image: docker.redpanda.com/vectorized/redpanda:v22.3.9
