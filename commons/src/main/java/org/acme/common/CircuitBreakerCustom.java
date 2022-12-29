@@ -15,7 +15,7 @@ public class CircuitBreakerCustom {
         circuitBreakerConfig = CircuitBreakerConfig.custom()
                 .failureRateThreshold(50)
                 .slowCallRateThreshold(50)
-                .waitDurationInOpenState(Duration.ofMillis(1000))
+                .waitDurationInOpenState(Duration.ofSeconds(1))
                 .slowCallDurationThreshold(Duration.ofSeconds(2))
                 .permittedNumberOfCallsInHalfOpenState(5)
                 .minimumNumberOfCalls(10)
