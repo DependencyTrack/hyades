@@ -72,7 +72,6 @@ public class RepositoryMetaAnalyzerTopology {
                                           final NugetMetaAnalyzer nugetMetaAnalyzer,
                                           final PypiMetaAnalyzer pypiMetaAnalyzer,
                                           final RepoEntityRepository repoEntityRepository
-                                          //  @javax.inject.Named("metaAnalyzerCache") final Cache<MetaAnalyzerCacheKey, MetaModel> cache
     ) {
         this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
