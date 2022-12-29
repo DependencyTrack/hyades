@@ -27,7 +27,7 @@
     <lib.caffeine.version>3.1.2</lib.caffeine.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
-    <lib.cyclonedx-java.version>7.3.0</lib.cyclonedx-java.version>
+    <lib.cyclonedx-java.version>7.3.1</lib.cyclonedx-java.version>
     <lib.maven-artifact.version>4.0.0-alpha-3</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.14.0</lib.mockserver-netty.version>
     <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
@@ -36,7 +36,7 @@
     <lib.unirest.version>3.14.1</lib.unirest.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>2.14.2.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.15.1.Final</quarkus.platform.version>
 
     <!-- Plugin Versions -->
     <plugin.jacoco.version>0.8.8</plugin.jacoco.version>

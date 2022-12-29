@@ -1,5 +1,8 @@
 package org.acme;
 
+import io.quarkus.cache.Cache;
+import io.quarkus.cache.CacheName;
+import io.quarkus.cache.CaffeineCache;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import io.quarkus.test.junit.QuarkusMock;
@@ -29,11 +32,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
-import javax.cache.Cache;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -46,8 +49,8 @@ public class RepositoryMetaAnalyzerTopologyTest {
     Topology topology;
 
     @Inject
-    @Named("metaAnalyzerCache")
-    Cache<MetaAnalyzerCacheKey, MetaModel> cache;
+    @CacheName("metaAnalyzer")
+    Cache cache;
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<UUID, Component> inputTopic;
@@ -120,7 +123,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Mockito.when(mavenMetaAnalyzerMock.analyze(any())).thenReturn(outputMetaModel);
 
         inputTopic.pipeInput(uuid, component);
-        Assertions.assertNotNull(cache.get(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize())));
+        Assertions.assertNotNull(cache.as(CaffeineCache.class).getIfPresent(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize())));
     }
 
     @Test
@@ -145,7 +148,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         outputMetaModel.setLatestVersion("test");
 
         // populate the cache to hit the match
-        cache.put(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize()), outputMetaModel);
+        cache.as(CaffeineCache.class).put(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize()), CompletableFuture.completedFuture(outputMetaModel));
 
         inputTopic.pipeInput(uuid, component);
         final KeyValue<UUID, MetaModel> record = outputTopic.readKeyValue();
@@ -199,7 +202,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
     @AfterEach
     void afterEach() {
         testDriver.close();
-        cache.clear();
+        cache.invalidateAll();
     }
 }
 

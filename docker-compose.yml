@@ -117,8 +117,11 @@ services:
     restart: unless-stopped
 
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v22.3.8
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.9
     container_name: dt-redpanda
+    profiles:
+      - demo
+      - dev
     command:
       - redpanda
       - start
@@ -148,8 +151,38 @@ services:
       - "redpanda-data:/var/lib/redpanda/data"
     restart: unless-stopped
 
-  redpanda-init:
+  redpanda-kube:
     image: docker.redpanda.com/vectorized/redpanda:v22.3.8
+    profiles:
+      - kubernetes
+    container_name: dt-redpanda-kubernetes
+    command:
+      - redpanda
+      - start
+      - --smp
+      - '1'
+      - --reserve-memory
+      - 0M
+      - --overprovisioned
+      - --node-id
+      - '0'
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://dt-redpanda-kubernetes:29092,OUTSIDE://host.minikube.internal:9092
+      - --pandaproxy-addr
+      - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
+      - --advertise-pandaproxy-addr
+      - PLAINTEXT://dt-redpanda-kubernetes:28082,OUTSIDE://localhost:8082
+    ports:
+      # Kafka API
+      - "9092:9092"
+    volumes:
+      - "redpanda-data:/var/lib/redpanda/data"
+    restart: unless-stopped
+
+  redpanda-init:
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.9
     container_name: dt-redpanda-init
     depends_on:
       - redpanda
@@ -180,7 +213,7 @@ services:
     restart: unless-stopped
 
   prometheus:
-    image: prom/prometheus:v2.40.7
+    image: prom/prometheus:v2.41.0
     container_name: dt-prometheus
     ports:
       - "127.0.0.1:9090:9090"
