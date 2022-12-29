@@ -75,15 +75,9 @@
       <scope>test</scope>
     </dependency>
       <dependency>
-          <groupId>javax.cache</groupId>
-          <artifactId>cache-api</artifactId>
-          <version>1.1.1</version>
-          <scope>compile</scope>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-cache</artifactId>
       </dependency>
-    <dependency>
-      <groupId>com.github.ben-manes.caffeine</groupId>
-      <artifactId>jcache</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

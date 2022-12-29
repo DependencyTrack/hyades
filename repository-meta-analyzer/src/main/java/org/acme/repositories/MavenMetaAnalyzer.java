@@ -20,6 +20,10 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
+import io.quarkus.cache.Cache;
+import io.quarkus.cache.CacheKey;
+import io.quarkus.cache.CacheName;
+import io.quarkus.cache.CaffeineCache;
 import org.acme.model.MetaModel;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
@@ -36,10 +40,12 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An IMetaAnalyzer implementation that supports Maven repositories (including Maven Central).
@@ -120,7 +126,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                 handleRequestException(LOGGER, e);
             }
         }
-        return meta;
+       return meta;
     }
 
     @Override

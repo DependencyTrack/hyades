@@ -27,6 +27,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-container-image-docker</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-cache</artifactId>
+    </dependency>
     <dependency> <!-- Required for Dev UI -->
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
