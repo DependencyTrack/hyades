@@ -30,10 +30,12 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and Push
       run: |-
-        mvn clean install -DskipTests \
+        mvn clean package -Pnative -DskipTests \
           -Dquarkus.container-image.build=true \
+          -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 \
           -Dquarkus.container-image.push=true \
           -Dquarkus.container-image.registry=ghcr.io \
           -Dquarkus.container-image.group=${{ github.repository_owner }} \
           -Dquarkus.container-image.additional-tags=latest \
           -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
+
