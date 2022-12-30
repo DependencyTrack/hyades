@@ -13,6 +13,7 @@ jobs:
     - name: Set up JDK 17
       uses: graalvm/setup-graalvm@v1
       with:
+        version: 'latest'
         java-version: '17'
         components: 'native-image'
         cache: maven
