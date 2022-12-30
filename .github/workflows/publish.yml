@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: graalvm/setup-graalvm@v1
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -28,14 +28,19 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Example step
+      run: |-
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          gu --version
+          native-image --version
     - name: Build and Push
       run: |-
         mvn clean package -Pnative -DskipTests \
           -Dquarkus.container-image.build=true \
-          -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 \
           -Dquarkus.container-image.push=true \
           -Dquarkus.container-image.registry=ghcr.io \
           -Dquarkus.container-image.group=${{ github.repository_owner }} \
           -Dquarkus.container-image.additional-tags=latest \
           -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
-
