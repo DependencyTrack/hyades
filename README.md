@@ -130,8 +130,14 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 * kubectl installation on target machine
 * helm installation on target machine
 * ```shell
-  cd vulnerability-analyzer
   docker-compose --profile demokube up
+  ```
+
+##### Deployment Steps
+
+* ```shell
+  cd vulnerability-analyzer
+  mvn clean install
   ```
 
 An example deployment.yaml is available in ``deploymentCharts/vulnerability-analyzer/deployment.yaml``.<br/>
@@ -160,3 +166,19 @@ This will start off the deployment. You can view it by launching the minikube da
 ```shell
 minikube dashboard
 ```
+
+##### Testing the minikube deployment
+* To send a new event to the dtrack.vuln-analysis.component topic, open http://localhost:28080/topics/dtrack.vuln-analysis.component?o=-1&p=-1&q&s=50#messages
+  * Publish a new message by using Actions>> Publish Message
+    * An example message value is:
+    ```json
+    {
+    "name": "test3",
+    "purl": "pkg:maven/cyclonedx-core-java@7.1.3",
+    "group": "g1",
+    "uuid": "438232c4-3b43-4c12-ad3c-eae522c6d158",
+    "author": "test3"
+    }
+    ```
+    * The corresponding key to set would be 438232c4-3b43-4c12-ad3c-eae522c6d158
+  * Once the message is sent, you can go to the dtrack.vuln-analysis.component.purl topic in the redpanda console and would be able to see a corresponding message that has been processed by the vulnerability analyzer that was deployed using minikube

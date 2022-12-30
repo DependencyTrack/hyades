@@ -208,7 +208,7 @@ services:
       profiles:
         - demokube
       depends_on:
-        - redpanda
+        - redpanda-kube
       environment:
         KAFKA_BROKERS: "dt-redpanda-kubernetes:29092"
       ports:
