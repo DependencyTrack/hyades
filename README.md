@@ -42,17 +42,10 @@ Those credentials are AES256 encrypted, using a secret key that has historically
 the API server first launches. Now, with multiple services requiring access to the encrypted data, 
 it is necessary to share this secret among them.
 
-To generate the secret key, the `gen-secret-key.jsh` JShell script can be used:
+To generate the secret key, `openssl` may be used:
 
 ```shell
-jshell -R"-Dsecret.key.destination=secret.key" ./scripts/gen-secret-key.jsh
-```
-
-Alternatively, should no JDK with JShell be installed on your system, you can do it with Docker as follows:
-
-```shell
-docker run -it --rm -v "$(pwd):/tmp/work" -u "$(id -u):$(id -g)" \
-  eclipse-temurin:17-jdk-alpine jshell -R"-Dsecret.key.destination=/tmp/work/secret.key" /tmp/work/scripts/gen-secret-key.jsh
+openssl rand 32 > secret.key
 ```
 
 ### Development

@@ -6,9 +6,10 @@ import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CaffeineCache;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.acme.common.KafkaTopic;
-import org.acme.commonutil.SecretsUtil;
+import org.acme.common.SecretDecryptor;
 import org.acme.model.Component;
 import org.acme.model.MetaAnalyzerCacheKey;
+import org.acme.model.MetaModel;
 import org.acme.model.Repository;
 import org.acme.persistence.RepoEntityRepository;
 import org.acme.repositories.ComposerMetaAnalyzer;
@@ -17,7 +18,6 @@ import org.acme.repositories.GoModulesMetaAnalyzer;
 import org.acme.repositories.HexMetaAnalyzer;
 import org.acme.repositories.IMetaAnalyzer;
 import org.acme.repositories.MavenMetaAnalyzer;
-import org.acme.model.MetaModel;
 import org.acme.repositories.NpmMetaAnalyzer;
 import org.acme.repositories.NugetMetaAnalyzer;
 import org.acme.repositories.PypiMetaAnalyzer;
@@ -58,6 +58,7 @@ public class RepositoryMetaAnalyzerTopology {
     private final NugetMetaAnalyzer nugetMetaAnalyzer;
     private final PypiMetaAnalyzer pypiMetaAnalyzer;
     private final RepoEntityRepository repoEntityRepository;
+    private final SecretDecryptor secretDecryptor;
     @Inject
     @CacheName("metaAnalyzer")
     Cache cache;
@@ -71,7 +72,8 @@ public class RepositoryMetaAnalyzerTopology {
                                           final NpmMetaAnalyzer npmMetaAnalyzer,
                                           final NugetMetaAnalyzer nugetMetaAnalyzer,
                                           final PypiMetaAnalyzer pypiMetaAnalyzer,
-                                          final RepoEntityRepository repoEntityRepository
+                                          final RepoEntityRepository repoEntityRepository,
+                                          final SecretDecryptor secretDecryptor
     ) {
         this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
@@ -82,6 +84,7 @@ public class RepositoryMetaAnalyzerTopology {
         this.nugetMetaAnalyzer = nugetMetaAnalyzer;
         this.pypiMetaAnalyzer = pypiMetaAnalyzer;
         this.repoEntityRepository = repoEntityRepository;
+        this.secretDecryptor = secretDecryptor;
     }
 
     @Produces
@@ -194,7 +197,7 @@ public class RepositoryMetaAnalyzerTopology {
         for (Repository repository : repoEntityRepository.findRepositoryByRepositoryType(analyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
-                    analyzer.setRepositoryUsernameAndPassword(repository.getUsername(), SecretsUtil.decryptAsString(repository.getPassword()));
+                    analyzer.setRepositoryUsernameAndPassword(repository.getUsername(), secretDecryptor.decryptAsString(repository.getPassword()));
                 } catch (Exception e) {
                     LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
                 }

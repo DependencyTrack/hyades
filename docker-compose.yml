@@ -33,12 +33,15 @@ services:
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+      SECRET_KEY_PATH: "/var/run/secrets/secret.key"
     ports:
       # Dynamic host port binding to allow for scaling of the service.
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8091"
     profiles:
       - demo
+    volumes:
+      - "./secret.key:/var/run/secrets/secret.key:ro"
     restart: unless-stopped
 
   vuln-analyzer:
@@ -82,12 +85,13 @@ services:
       ALPINE_DATABASE_USERNAME: "dtrack"
       ALPINE_DATABASE_PASSWORD: "dtrack"
       ALPINE_METRICS_ENABLED: "true"
+      ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - "./apiserver-data:/data"
-      - "./secret.key:/data/.dependency-track/keys/secret.key:ro"
+      - "apiserver-data:/data"
+      - "./secret.key:/var/run/secrets/secret.key:ro"
     profiles:
       - demo
     restart: unless-stopped
@@ -283,6 +287,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  apiserver-data: {}
   postgres-data: {}
   redpanda-data: {}
   grafana-data: {}
