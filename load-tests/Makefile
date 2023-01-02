@@ -22,3 +22,7 @@ install-xk6-kafka:
 	mkdir -p ./bin
 	xk6 build --with github.com/mostafa/xk6-kafka@latest --output ./bin/k6
 .PHONY: install-xk6-kafka
+
+generate-fixtures:
+	./fixtures/generate.sh
+.PHONY: generate-fixtures

@@ -44,3 +44,6 @@ secret.key
 
 # Host volume mount for demo
 apiserver-data/
+
+# Generated test fixtures
+load-tests/fixtures/generated
