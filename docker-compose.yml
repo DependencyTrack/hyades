@@ -60,8 +60,8 @@ services:
       # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
       # SCANNER_OSSINDEX_API_TOKEN: "your-token"
       # SCANNER_SNYK_ENABLED: "true"
-      # SCANNER_SNYK_ORG_ID: "your-org-id"
-      # SCANNER_SNYK_TOKEN: "your-token"
+      # SCANNER_SNYK_API_ORG_ID: "your-org-id"
+      # SCANNER_SNYK_API_TOKENS: "your-token-1,your-token-2"
     ports:
       # Dynamic host port binding to allow for scaling of the service.
       # Scaling with Compose doesn't work when assigning static host ports.
