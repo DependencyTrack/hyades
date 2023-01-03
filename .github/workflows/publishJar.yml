@@ -1,4 +1,4 @@
-name: Publish
+name: Publish Jar
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish-container-image:
-    name: Publish Container Images
+    name: Publish Jar based Container Images
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
