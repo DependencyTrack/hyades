@@ -42,6 +42,7 @@ jobs:
             -Dquarkus.container-image.build=false \
             -Dquarkus.container-image.tag=latest-test \
             -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.name=vulnerability-analyzer-1.0.0-runner:latest-test \
+            -Dquarkus.container-image.name=vulnerability-analyzer-1.0.0-runner \
+            -Dquarkus.container-image.image=vulnerability-analyzer-1.0.0-runner \
             -Dquarkus.container-image.registry=ghcr.io \
             -Dquarkus.container-image.group=${{ github.repository_owner }} 
