@@ -1,6 +1,5 @@
 package org.acme.client;
 
-import alpine.common.logging.Logger;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpStatus;
@@ -17,8 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,26 +27,17 @@ import java.util.Optional;
  */
 @ApplicationScoped
 public class OsvClient {
-
-    private static final Logger LOGGER = Logger.getLogger(OsvClient.class);
     private final CloseableHttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final String apiBaseUrl;
-    private final List<String> ecosystems;
 
     @Inject
     public OsvClient(@Named("osvHttpClient") final CloseableHttpClient httpClient,
                      @Named("osvObjectMapper") final ObjectMapper objectMapper,
-                     @ConfigProperty(name = "mirror.osv.base.url") final Optional<String> apiBaseUrl,
-                     @ConfigProperty(name = "mirror.osv.ecosystems") final Optional<String> ecosystems) {
+                     @ConfigProperty(name = "mirror.osv.base.url") final Optional<String> apiBaseUrl) {
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
         this.apiBaseUrl = apiBaseUrl.orElse(null);
-        this.ecosystems = ecosystems.isPresent() ? Arrays.stream(ecosystems.get().split(";")).map(String::trim).toList() : null;
-    }
-
-    public List<String> getEcosystems() {
-        return this.ecosystems;
     }
 
     public InputStream getEcosystemZip(String ecosystem) throws IOException {

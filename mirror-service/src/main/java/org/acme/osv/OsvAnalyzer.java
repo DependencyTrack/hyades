@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -38,10 +39,10 @@ public class OsvAnalyzer {
         return this.isEnabled;
     }
 
-    public List<OsvAdvisory> performMirror() {
-        List<String> ecosystems = client.getEcosystems();
-        if (ecosystems != null && !ecosystems.isEmpty()) {
-            for (String ecosystem : ecosystems) {
+    public List<OsvAdvisory> performMirror(String ecosystems) {
+        List<String> enabledEcosystems = Arrays.stream(ecosystems.split(";")).map(String::trim).toList();
+        if (enabledEcosystems != null && !enabledEcosystems.isEmpty()) {
+            for (String ecosystem : enabledEcosystems) {
                 try (InputStream inputStream = client.getEcosystemZip(ecosystem);
                      ZipInputStream zipInput = new ZipInputStream(inputStream)) {
                     unzipFolder(zipInput);
