@@ -21,7 +21,6 @@ package org.acme.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -34,15 +33,12 @@ import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.UUIDConverter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -56,8 +52,8 @@ import java.util.UUID;
  * @since 3.0.0
  */
 @Entity
-@Table(name = "COMPONENT")
 @RegisterForReflection
+@Table(name = "COMPONENT")
 public class Component extends PanacheEntityBase implements Serializable {
 
     private static final long serialVersionUID = 6841650046433674702L;

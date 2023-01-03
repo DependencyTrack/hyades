@@ -24,10 +24,12 @@
 
     <!-- Dependency Versions -->
     <lib.alpine.version>2.2.0</lib.alpine.version>
+    <lib.assertj.version>3.23.1</lib.assertj.version>
     <lib.caffeine.version>3.1.2</lib.caffeine.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.1</lib.cyclonedx-java.version>
+    <lib.json-unit.version>2.36.0</lib.json-unit.version>
     <lib.maven-artifact.version>4.0.0-alpha-3</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.14.0</lib.mockserver-netty.version>
     <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
@@ -98,6 +100,11 @@
       </dependency>
       <dependency>
         <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-micrometer</artifactId>
+        <version>${lib.resilience4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.resilience4j</groupId>
         <artifactId>resilience4j-ratelimiter</artifactId>
         <version>${lib.resilience4j.version}</version>
       </dependency>
@@ -154,6 +161,17 @@
         <groupId>org.mock-server</groupId>
         <artifactId>mockserver-netty</artifactId>
         <version>${lib.mockserver-netty.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${lib.assertj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-assertj</artifactId>
+        <version>${lib.json-unit.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
