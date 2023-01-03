@@ -28,10 +28,17 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and publish native binary for vulnerability analyzer
+      - name: Build native binary
         run: |-
           mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
-            -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 \
+            -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17
+      - name: Build container image of native binary
+        run: |-
           docker build -f src/main/docker/Dockerfile.native -t quarkus/code-with-quarkus
+      - name: Tag container image
+        run: |-
           docker tag quarkus/code-with-quarkus ghcr.io/mehab/vulnerability-analyzer-1.0.0-runner:latest-test
+      - name: Push container image
+        run: |-
           docker push ghcr.io/mehab/vulnerability-analyzer-1.0.0-runner:latest-test
+      
