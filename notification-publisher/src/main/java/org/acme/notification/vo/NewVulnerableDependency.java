@@ -18,11 +18,13 @@
  */
 package org.acme.notification.vo;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.model.Component;
 import org.acme.model.Vulnerability;
 
 import java.util.List;
 
+@RegisterForReflection
 public class NewVulnerableDependency {
 
     private final List<Vulnerability> vulnerabilities;

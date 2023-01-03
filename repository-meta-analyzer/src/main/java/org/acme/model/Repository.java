@@ -21,6 +21,7 @@ package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.persistence.RepositoryTypeConverter;
 
 import javax.persistence.*;
@@ -37,6 +38,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "REPOSITORY")
+@RegisterForReflection
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Repository implements Serializable {
 

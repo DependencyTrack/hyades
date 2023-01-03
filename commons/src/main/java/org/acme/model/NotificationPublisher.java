@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.UUIDConverter;
 
@@ -28,6 +29,7 @@ import java.util.UUID;
  */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@RegisterForReflection
 @Table(name = "NOTIFICATIONPUBLISHER", uniqueConstraints = {@UniqueConstraint(columnNames = {"UUID"}, name = "NOTIFICATIONPUBLISHER_UUID_IDX")})
 public class NotificationPublisher extends PanacheEntityBase implements Serializable {
 

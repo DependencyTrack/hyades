@@ -29,6 +29,7 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.google.gson.JsonObject;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.UUIDConverter;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +57,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "COMPONENT")
+@RegisterForReflection
 public class Component extends PanacheEntityBase implements Serializable {
 
     private static final long serialVersionUID = 6841650046433674702L;

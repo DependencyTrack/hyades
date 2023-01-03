@@ -18,9 +18,10 @@
  */
 package org.acme.notification.vo;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.model.Bom;
 import org.acme.model.Project;
-
+@RegisterForReflection
 public class BomConsumedOrProcessed {
 
     private Project project;

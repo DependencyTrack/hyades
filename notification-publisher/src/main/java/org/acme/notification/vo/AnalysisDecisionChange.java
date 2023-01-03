@@ -18,11 +18,12 @@
  */
 package org.acme.notification.vo;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.model.Analysis;
 import org.acme.model.Component;
 import org.acme.model.Project;
 import org.acme.model.Vulnerability;
-
+@RegisterForReflection
 public class AnalysisDecisionChange {
 
     private final Vulnerability vulnerability;

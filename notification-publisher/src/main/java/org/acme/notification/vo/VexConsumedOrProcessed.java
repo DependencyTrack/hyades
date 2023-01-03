@@ -18,9 +18,11 @@
  */
 package org.acme.notification.vo;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.model.Project;
 import org.acme.model.Vex;
 
+@RegisterForReflection
 public class VexConsumedOrProcessed {
 
     private Project project;

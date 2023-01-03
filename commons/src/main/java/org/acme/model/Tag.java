@@ -22,6 +22,7 @@ import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.common.TrimmedStringDeserializer;
 
 import javax.persistence.*;
@@ -41,6 +42,7 @@ import java.util.Objects;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "TAG")
+@RegisterForReflection
 public class Tag implements Serializable {
 
     private static final long serialVersionUID = -7798359808664731988L;
