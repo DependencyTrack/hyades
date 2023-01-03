@@ -2,7 +2,7 @@ name: Publish Native Binary
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/trygraal" ]
 
 jobs:
   publish-container-image:
