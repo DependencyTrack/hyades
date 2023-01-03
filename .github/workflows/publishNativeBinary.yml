@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish-container-image:
-    name: Publish Native Container Images
+    name: Publish Container Images
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
