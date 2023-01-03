@@ -46,8 +46,8 @@ jobs:
             -Dquarkus.container-image.additional-tags=latest \
             -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
       - name: Build and publish native binary for vulnerability analyzer
-          run: |-
-            mvn clean package -Pnative -pl vulnerability-analyzer -DskipTests \
+        run: |-
+          mvn clean package -Pnative -pl vulnerability-analyzer -DskipTests \
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.registry=ghcr.io \
