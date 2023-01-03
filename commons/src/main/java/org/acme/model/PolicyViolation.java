@@ -18,6 +18,8 @@
  */
 package org.acme.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -28,6 +30,8 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
+
+@RegisterForReflection
 public class PolicyViolation implements Serializable {
 
     public enum Type {

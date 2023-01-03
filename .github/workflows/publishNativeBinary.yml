@@ -1,0 +1,46 @@
+name: Publish Native Binary
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  publish-container-image:
+    name: Publish Native Binary based Container Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          components: 'native-image'
+          cache: maven
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.2.1
+        with:
+          install: true
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Example step
+        run: |-
+          echo "GRAALVM_HOME: $GRAALVM_HOME"
+          echo "JAVA_HOME: $JAVA_HOME"
+          java --version
+          gu --version
+          native-image --version
+      - name: Build and publish native binary for vulnerability analyzer
+        run: |-
+          mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
+            -Dquarkus.container-image.build=true \
+            -Dquarkus.container-image.push=true \
+            -Dquarkus.container-image.registry=ghcr.io \
+            -Dquarkus.container-image.group=${{ github.repository_owner }} \
+            -Dquarkus.container-image.additional-tags=latest

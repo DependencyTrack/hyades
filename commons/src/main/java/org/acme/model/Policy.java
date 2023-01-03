@@ -18,6 +18,8 @@
  */
 package org.acme.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,8 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
+
+@RegisterForReflection
 public class Policy implements Serializable {
 
     public enum Operator {

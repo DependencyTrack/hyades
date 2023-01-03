@@ -18,9 +18,12 @@
  */
 package org.acme.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@RegisterForReflection
 public class MetaModel implements Serializable {
 
     private Component component;

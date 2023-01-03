@@ -18,6 +18,7 @@
  */
 package org.acme.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.model.AnalyzerIdentity;
 import java.io.Serializable;
 import java.util.Date;
@@ -29,6 +30,8 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 4.0.0
  */
+
+@RegisterForReflection
 public class FindingAttribution implements Serializable {
 
     private static final long serialVersionUID = -2609603709255246845L;

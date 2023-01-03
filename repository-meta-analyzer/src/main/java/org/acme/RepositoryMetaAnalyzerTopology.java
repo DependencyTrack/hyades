@@ -30,8 +30,7 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -47,7 +46,7 @@ import static org.acme.commonutil.KafkaStreamsUtil.processorNameProduce;
 @ApplicationScoped
 public class RepositoryMetaAnalyzerTopology {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryMetaAnalyzerTopology.class);
+    private static final Logger LOGGER = Logger.getLogger(RepositoryMetaAnalyzerTopology.class);
 
     private final ComposerMetaAnalyzer composerMetaAnalyzer;
     private final GemMetaAnalyzer gemMetaAnalyzer;
@@ -97,13 +96,13 @@ public class RepositoryMetaAnalyzerTopology {
                 .stream(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), Consumed
                         .with(Serdes.UUID(), componentSerde)
                         .withName(processorNameConsume(KafkaTopic.REPO_META_ANALYSIS_COMPONENT)))
-                .peek((uuid, component) -> LOGGER.info("Received component for repo meta analyzer: {}", component),
+                .peek((uuid, component) -> LOGGER.info("Received component for repo meta analyzer:" + component),
                         Named.as("log_component"))
                 .filter((uuid, component) -> component.getPurl() != null,
                         Named.as("filter_component_without_purl"))
                 .map((projectUuid, component) -> KeyValue.pair(component.getPurl().getCoordinates(), component),
                         Named.as("re-key_component_from_uuid_to_purl"))
-                .peek((identifier, component) -> LOGGER.info("Re-keyed component: {} -> {}", component.getUuid(), identifier),
+                .peek((identifier, component) -> LOGGER.info("Re-keyed component: " + component.getUuid() + " -> " + identifier),
                         Named.as("log_re-keyed_component"));
 
         componentMetaAnalyzerStream.split(Named.as("meta-analysis"))
@@ -193,7 +192,7 @@ public class RepositoryMetaAnalyzerTopology {
     }
 
     @Transactional
-    KeyValue<UUID, MetaModel> performMetaAnalysis(final IMetaAnalyzer analyzer, final Component component)  {
+    KeyValue<UUID, MetaModel> performMetaAnalysis(final IMetaAnalyzer analyzer, final Component component) {
         for (Repository repository : repoEntityRepository.findRepositoryByRepositoryType(analyzer.supportedRepositoryType())) {
             if (repository.isInternal()) {
                 try {
@@ -205,17 +204,17 @@ public class RepositoryMetaAnalyzerTopology {
 
             analyzer.setRepositoryBaseUrl(repository.getUrl());
 
-            LOGGER.info("Performing meta analysis on component: {}", component);
+            LOGGER.info("Performing meta analysis on component: " + component);
             final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), component.getPurl().canonicalize());
 
             // Populate results from cache
             AtomicReference<MetaModel> cacheModel = new AtomicReference<>();
             if (cache.as(CaffeineCache.class).getIfPresent(metaAnalyzerCacheKey) != null) {
-                LOGGER.info("Cache hit for analyzer {} for purl {}", analyzer, component.getPurl());
+                LOGGER.info("Cache hit for analyzer " + analyzer + " for purl "+component.getPurl());
                 MetaModel result = (MetaModel) cache.as(CaffeineCache.class).getIfPresent(metaAnalyzerCacheKey).join();
                 cacheModel.set(result);
-            }else{
-                LOGGER.info("Cache miss for analyzer {} for purl {}", analyzer, component.getPurl());
+            } else {
+                LOGGER.info("Cache miss for analyzer "+analyzer+" for purl "+component.getPurl());
             }
 
             if (cacheModel.get() != null) {
