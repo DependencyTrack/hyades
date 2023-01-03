@@ -28,13 +28,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Example step
-        run: |-
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
-          java --version
-          gu --version
-          native-image --version
       - name: Build and publish native binary for vulnerability analyzer
         run: |-
           mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
