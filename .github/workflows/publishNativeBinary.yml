@@ -41,6 +41,7 @@ jobs:
           mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
+            -Dquarkus.docker.executable-name=vulnerability-analyzer-1.0.0-SNAPSHOT-runner\
             -Dquarkus.container-image.registry=ghcr.io \
             -Dquarkus.container-image.group=${{ github.repository_owner }} \
             -Dquarkus.container-image.additional-tags=latest
