@@ -11,11 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
-        uses: graalvm/setup-graalvm@v1
+        uses: actions/setup-java@v3
         with:
-          version: 'latest'
           java-version: '17'
-          components: 'native-image'
+          distribution: 'temurin'
           cache: maven
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.1.0
@@ -29,18 +28,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Example step
-        run: |-
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
-          java --version
-          gu --version
-          native-image --version
-      - name: Build and publish native binary for vulnerability analyzer
+      - name: Build native binary
         run: |-
           mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
-            -Dquarkus.container-image.build=true \
-            -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.registry=ghcr.io \
-            -Dquarkus.container-image.group=${{ github.repository_owner }} \
-            -Dquarkus.container-image.additional-tags=latest
+            -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17
+      - name: Build container image of native binary
+        run: |-
+          docker build src/main/docker/Dockerfile.native --tag=quarkus/code-with-quarkus
+      - name: Tag container image
+        run: |-
+          docker tag quarkus/code-with-quarkus ghcr.io/mehab/vulnerability-analyzer-1.0.0-runner:latest-test
+      - name: Push container image
+        run: |-
+          docker push ghcr.io/mehab/vulnerability-analyzer-1.0.0-runner:latest-test
