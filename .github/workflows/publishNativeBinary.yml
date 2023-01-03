@@ -34,7 +34,7 @@ jobs:
             -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17
       - name: Build container image of native binary
         run: |-
-          docker buildx build --file src/main/docker/Dockerfile.native --tag quarkus/code-with-quarkus
+          docker buildx build --file=src/main/docker/Dockerfile.native --tag=quarkus/code-with-quarkus
       - name: Tag container image
         run: |-
           docker tag quarkus/code-with-quarkus ghcr.io/mehab/vulnerability-analyzer-1.0.0-runner:latest-test
