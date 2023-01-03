@@ -33,7 +33,6 @@ jobs:
           mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
             -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 \
             -Dquarkus.container-image.build=true \
-            -Dquarkus.container-image.tag=latest-test \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.name=vulnerability-analyzer-1.0.0-runner \
             -Dquarkus.container-image.registry=ghcr.io \
