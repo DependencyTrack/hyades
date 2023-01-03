@@ -11,19 +11,16 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import java.util.List;
 
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameProduce;
 
 @ApplicationScoped
 public class MirrorServiceTopology {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MirrorServiceTopology.class);
 
     private final OsvAnalyzer osvAnalyzer;
 
@@ -43,7 +40,7 @@ public class MirrorServiceTopology {
 
         if (osvAnalyzer.isEnabled()) {
             mirrorInitStream
-                    .map((key, value) -> mirrorOsv(), Named.as("mirror_osv_vulnerability"))
+                    .flatMap((key, value) -> mirrorOsv(), Named.as("mirror_osv_vulnerabilities"))
                     .to(KafkaTopic.MIRRORED_VULNERABILITY.getName(), Produced
                             .with(Serdes.String(), osvAdvisorySerde)
                             .withName(processorNameProduce(KafkaTopic.MIRRORED_VULNERABILITY, "osv_vulnerability")));
@@ -51,9 +48,9 @@ public class MirrorServiceTopology {
         return streamsBuilder.build();
     }
 
-    KeyValue<String, OsvAdvisory> mirrorOsv() {
-        // TODO: instead of returning, performMirror should publish directly for each vuln
-        OsvAdvisory osvAdvisory = osvAnalyzer.performMirror();
-        return KeyValue.pair(osvAdvisory.getId(), osvAdvisory);
+    List<KeyValue<String, OsvAdvisory>> mirrorOsv() {
+        return osvAnalyzer.performMirror().stream()
+                .map(vulnerability -> KeyValue.pair(vulnerability.getId(), vulnerability))
+                .toList();
     }
 }

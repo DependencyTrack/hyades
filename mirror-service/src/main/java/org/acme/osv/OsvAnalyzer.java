@@ -1,6 +1,5 @@
 package org.acme.osv;
 
-import javassist.bytecode.analysis.Analyzer;
 import kong.unirest.json.JSONObject;
 import org.acme.client.OsvClient;
 import org.acme.model.OsvAdvisory;
@@ -14,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -26,8 +24,8 @@ public class OsvAnalyzer {
 
     @Inject
     private final OsvClient client;
-
     private final boolean isEnabled;
+    List<OsvAdvisory> osvAdvisories;
 
     @Inject
     public OsvAnalyzer(final OsvClient client,
@@ -40,18 +38,22 @@ public class OsvAnalyzer {
         return this.isEnabled;
     }
 
-    public void performMirror() throws IOException {
+    public List<OsvAdvisory> performMirror() {
         List<String> ecosystems = client.getEcosystems();
         if (ecosystems != null && !ecosystems.isEmpty()) {
             for (String ecosystem : ecosystems) {
                 try (InputStream inputStream = client.getEcosystemZip(ecosystem);
                      ZipInputStream zipInput = new ZipInputStream(inputStream)) {
                     unzipFolder(zipInput);
+                    return osvAdvisories;
+                } catch (IOException e) {
+                    LOGGER.error("Exception found while reading from OSV: " +e.getMessage());
                 }
             }
         } else {
             LOGGER.info("Google OSV mirroring is disabled. No ecosystem selected.");
         }
+        return osvAdvisories;
     }
 
     private void unzipFolder(ZipInputStream zipIn) throws IOException {
@@ -69,7 +71,7 @@ public class OsvAnalyzer {
             JSONObject json = new JSONObject(out.toString());
             final OsvAdvisory osvAdvisory = parser.parse(json);
             if (osvAdvisory != null) {
-                // TODO: publish each advisory to topic dtrack.vulnerability from here?
+                osvAdvisories.add(osvAdvisory);
             }
             zipEntry = zipIn.getNextEntry();
             reader = new BufferedReader(new InputStreamReader(zipIn));
