@@ -2,7 +2,7 @@ name: Publish
 
 on:
   push:
-    branches: [ "feature/trygraal" ]
+    branches: [ "main" ]
 
 jobs:
   publish-container-image:
@@ -36,9 +36,9 @@ jobs:
           java --version
           gu --version
           native-image --version
-      - name: Build and publish native binary for vulnerability analyzer
+      - name: Build and Push
         run: |-
-          mvn clean package -Pnative -pl vulnerability-analyzer -DskipTests \
+          mvn clean package -Pnative -DskipTests \
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.registry=ghcr.io \
