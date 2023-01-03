@@ -38,7 +38,7 @@ jobs:
           native-image --version
       - name: Build and Push
         run: |-
-          mvn clean package -Pnative -DskipTests \
+          mvn clean package install -DskipTests \
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.registry=ghcr.io \
