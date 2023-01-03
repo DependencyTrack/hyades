@@ -9,6 +9,7 @@ jobs:
     name: Publish Container Images
     runs-on: ubuntu-latest
     steps:
+<<<<<<< HEAD
       - uses: actions/checkout@v3
       - name: Set up JDK 17
         uses: graalvm/setup-graalvm@v1
@@ -36,6 +37,7 @@ jobs:
           java --version
           gu --version
           native-image --version
+<<<<<<< HEAD
       - name: Build and Push
         run: |-
           mvn clean install -DskipTests \

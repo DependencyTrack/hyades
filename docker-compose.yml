@@ -33,12 +33,15 @@ services:
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+      SECRET_KEY_PATH: "/var/run/secrets/secret.key"
     ports:
       # Dynamic host port binding to allow for scaling of the service.
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8091"
     profiles:
       - demo
+    volumes:
+      - "./secret.key:/var/run/secrets/secret.key:ro"
     restart: unless-stopped
 
   vuln-analyzer:
@@ -82,12 +85,13 @@ services:
       ALPINE_DATABASE_USERNAME: "dtrack"
       ALPINE_DATABASE_PASSWORD: "dtrack"
       ALPINE_METRICS_ENABLED: "true"
+      ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - "./apiserver-data:/data"
-      - "./secret.key:/data/.dependency-track/keys/secret.key:ro"
+      - "apiserver-data:/data"
+      - "./secret.key:/var/run/secrets/secret.key:ro"
     profiles:
       - demo
     restart: unless-stopped
@@ -119,6 +123,9 @@ services:
   redpanda:
     image: docker.redpanda.com/vectorized/redpanda:v22.3.9
     container_name: dt-redpanda
+    profiles:
+      - demo
+      - dev
     command:
       - redpanda
       - start
@@ -139,7 +146,7 @@ services:
       - PLAINTEXT://dt-redpanda:28082,OUTSIDE://localhost:8082
     ports:
       # Kafka API
-      - "127.0.0.1:9092:9092"
+      - "9092:9092"
       # Schema Registry (currently not used)
       # - "127.0.0.1:28081:8081"
       # Pandaproxy (REST API, currently not used)
@@ -147,6 +154,72 @@ services:
     volumes:
       - "redpanda-data:/var/lib/redpanda/data"
     restart: unless-stopped
+
+  redpanda-kube:
+    image: docker.redpanda.com/vectorized/redpanda:v22.3.8
+    profiles:
+      - demokube
+    container_name: dt-redpanda-kubernetes
+    command:
+      - redpanda
+      - start
+      - --smp
+      - '1'
+      - --reserve-memory
+      - 0M
+      - --overprovisioned
+      - --node-id
+      - '0'
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://dt-redpanda-kubernetes:29092,OUTSIDE://host.minikube.internal:9092
+      - --pandaproxy-addr
+      - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
+      - --advertise-pandaproxy-addr
+      - PLAINTEXT://dt-redpanda-kubernetes:28082,OUTSIDE://localhost:8082
+    ports:
+      # Kafka API
+      - "9092:9092"
+    volumes:
+      - "redpanda-data:/var/lib/redpanda/data"
+    restart: unless-stopped
+  redpanda-init-kube:
+      image: docker.redpanda.com/vectorized/redpanda:v22.3.8
+      container_name: dt-redpanda-init-kubernetes
+      profiles:
+        - demokube
+      depends_on:
+        - redpanda-kube
+      entrypoint: "/bin/bash"
+      command: "/tmp/create-topics.sh"
+      user: "0" # Ensure user can read create-topics.sh
+      environment:
+        REDPANDA_BROKERS: "dt-redpanda-kubernetes:29092"
+        NOTIFICATION_TOPICS_PARTITIONS: "3"
+        NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
+        REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
+        REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+        VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
+        VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+      volumes:
+        - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro"
+      restart: on-failure
+
+  redpanda-console-kube:
+      image: docker.redpanda.com/vectorized/console:v2.1.1
+      container_name: dt-redpanda-console-kubernetes
+      profiles:
+        - demokube
+      depends_on:
+        - redpanda-kube
+      environment:
+        KAFKA_BROKERS: "dt-redpanda-kubernetes:29092"
+      ports:
+        - "127.0.0.1:28080:8080"
+      restart: unless-stopped
+
+
 
   redpanda-init:
     image: docker.redpanda.com/vectorized/redpanda:v22.3.9
@@ -167,6 +240,8 @@ services:
     volumes:
       - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro"
     restart: on-failure
+    profiles:
+      - dev
 
   redpanda-console:
     image: docker.redpanda.com/vectorized/console:v2.1.1
@@ -178,6 +253,8 @@ services:
     ports:
       - "127.0.0.1:28080:8080"
     restart: unless-stopped
+    profiles:
+      - dev
 
   prometheus:
     image: prom/prometheus:v2.41.0
@@ -210,6 +287,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  apiserver-data: {}
   postgres-data: {}
   redpanda-data: {}
   grafana-data: {}
