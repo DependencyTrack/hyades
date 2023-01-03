@@ -11,11 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
-        uses: graalvm/setup-graalvm@v1
+        uses: actions/setup-java@v3
         with:
-          version: 'latest'
           java-version: '17'
-          components: 'native-image'
+          distribution: 'temurin'
           cache: maven
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.1.0
@@ -39,10 +38,10 @@ jobs:
       - name: Build and publish native binary for vulnerability analyzer
         run: |-
           mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
-            -Dquarkus.container-image.build=false \
+            -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 \
+            -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.tag=latest-test \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.name=vulnerability-analyzer-1.0.0-runner \
-            -Dquarkus.container-image.image=vulnerability-analyzer-1.0.0-runner \
             -Dquarkus.container-image.registry=ghcr.io \
             -Dquarkus.container-image.group=${{ github.repository_owner }} 
