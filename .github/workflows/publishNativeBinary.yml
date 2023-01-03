@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish-container-image:
-    name: Publish Container Images
+    name: Publish Native Binary based Container Images
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -43,5 +43,4 @@ jobs:
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.registry=ghcr.io \
             -Dquarkus.container-image.group=${{ github.repository_owner }} \
-            -Dquarkus.container-image.additional-tags=latest \
-            -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
+            -Dquarkus.container-image.additional-tags=latest
