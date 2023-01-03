@@ -2,7 +2,7 @@ name: Publish Jar
 
 on:
   push:
-    branches: [ "feature/trygraal" ]
+    branches: [ "main" ]
 
 jobs:
   publish-container-image:
