@@ -54,7 +54,6 @@ import java.util.UUID;
 @Entity
 @RegisterForReflection
 @Table(name = "COMPONENT")
-@RegisterForReflection
 public class Component extends PanacheEntityBase implements Serializable {
 
     private static final long serialVersionUID = 6841650046433674702L;
