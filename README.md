@@ -119,7 +119,11 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 * ```shell
   minikube start
     ```
-* If running in prod mode, Export the environment variables: QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS=host.minikube.internal:9092 and export KAFKA_BOOTSTRAP_SERVERS=host.minikube.internal:9092
+* If running in prod mode, Export the environment variables: 
+  * ```shell
+    export QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS=host.minikube.internal:9092
+    export KAFKA_BOOTSTRAP_SERVERS=host.minikube.internal:9092
+  ```
 * kubectl installation on target machine
 * helm installation on target machine
 * ```shell
