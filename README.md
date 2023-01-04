@@ -119,10 +119,6 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 * ```shell
   minikube start
     ```
-* If running in prod mode, Export the environment variables: 
-  * ```shell
-    export QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS=host.minikube.internal:9092
-    export KAFKA_BOOTSTRAP_SERVERS=host.minikube.internal:9092
   ```
 * kubectl installation on target machine
 * helm installation on target machine
@@ -146,11 +142,19 @@ app:
   serviceType: ClusterIP
   image: <local path to image>
   envs:
+    KAFKA_BOOTSTRAP_SERVERS: test
+    SCANNER_SNYK_ENABLED: "true"
     QUARKUS_DATASOURCE_USERNAME: test
+    SCANNER_OSSINDEX_ENABLED: "false"
     QUARKUS_DATASOURCE_JDBC_URL: test
+    SCANNER_OSSINDEX_API_TOKEN: test
+    SCANNER_OSSINDEX_API_USERNAME: test
     QUARKUS_DATASOURCE_PASSWORD: test
+    SCANNER_SNYK_API_ORG_ID: test
+    QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: test
+    SCANNER_SNYK_API_TOKENS: test
 ```
-The image can be updated to any image path. The value populated by default is via these properties:
+These values can be updated as per requirement. The value populated by default are coming from the application.properties. For example:
 ```properties
 quarkus.helm.values.image-name.property=image
 quarkus.helm.values.image-name.value=ghcr.io/mehab/vulnerability-analyzer:1.0.0-snapshot
