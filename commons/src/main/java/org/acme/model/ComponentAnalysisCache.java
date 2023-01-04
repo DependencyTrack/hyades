@@ -20,6 +20,8 @@
 package org.acme.model;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -31,6 +33,8 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.6.0
  */
+
+@RegisterForReflection
 public class ComponentAnalysisCache implements Serializable {
 
     private static final long serialVersionUID = 1189261128713368621L;

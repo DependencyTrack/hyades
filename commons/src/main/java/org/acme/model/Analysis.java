@@ -18,6 +18,8 @@
  */
 package org.acme.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import java.util.List;
  * @author Steve Springett
  * @since 3.0.0
  */
+@RegisterForReflection
 public class Analysis implements Serializable {
 
     private int id;

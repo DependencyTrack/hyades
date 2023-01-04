@@ -18,6 +18,8 @@
  */
 package org.acme.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -28,6 +30,8 @@ import java.util.UUID;
  * @author Steve Springett
  * @since 3.0.0
  */
+
+@RegisterForReflection
 public class Bom implements Serializable {
 
     private static final long serialVersionUID = -4378439983100141050L;

@@ -53,6 +53,7 @@ vuln_analysis_topics=(
   "dtrack.vuln-analysis.result"
   "dtrack.mirror.osv"
   "dtrack.vulnerability"
+  "dtrack.vuln-analysis.info"
 )
 for topic_name in "${vuln_analysis_topics[@]}"; do
   create_topic "$topic_name" "$VULN_ANALYSIS_TOPICS_PARTITIONS" "$VULN_ANALYSIS_TOPICS_RETENTION_MS"

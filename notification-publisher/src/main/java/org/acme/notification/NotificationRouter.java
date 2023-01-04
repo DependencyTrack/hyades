@@ -35,8 +35,7 @@ import org.acme.notification.vo.VexConsumedOrProcessed;
 import org.acme.notification.vo.ViolationAnalysisDecisionChange;
 import org.acme.persistence.NotificationRuleRepository;
 import org.acme.persistence.TeamRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
@@ -56,7 +55,7 @@ import org.acme.commonnotification.*;
 @ApplicationScoped
 public class NotificationRouter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationRouter.class);
+    private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
 
     private final NotificationRuleRepository ruleRepository;
     private final TeamRepository teamRepository;

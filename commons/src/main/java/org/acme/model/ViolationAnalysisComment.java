@@ -18,6 +18,8 @@
  */
 package org.acme.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,6 +30,8 @@ import java.util.Date;
  * @author Steve Springett
  * @since 4.0.0
  */
+
+@RegisterForReflection
 public class ViolationAnalysisComment implements Serializable {
 
     private long id;

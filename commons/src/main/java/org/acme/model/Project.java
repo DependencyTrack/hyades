@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.ClassifierToStringConverter;
 import org.acme.persistence.UUIDConverter;
@@ -55,6 +56,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "PROJECT")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@RegisterForReflection
 public class Project implements Serializable {
 
     private static final long serialVersionUID = -7592438796591673355L;

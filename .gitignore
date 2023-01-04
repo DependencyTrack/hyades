@@ -41,6 +41,11 @@ nb-configuration.xml
 
 # Secret key
 secret.key
+!commons/src/test/resources/secret.key
+!repository-meta-analyzer/src/test/resources/secret.key
 
 # Host volume mount for demo
 apiserver-data/
+
+# Generated test fixtures
+load-tests/fixtures/generated

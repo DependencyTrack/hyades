@@ -22,6 +22,7 @@ import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.common.TrimmedStringDeserializer;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -35,6 +36,7 @@ import java.io.Serializable;
  * @author Steve Springett
  * @since 3.0.0
  */
+@RegisterForReflection
 public class Cwe implements Serializable {
 
     private static final long serialVersionUID = -2370075071951574877L;
