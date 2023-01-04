@@ -8,7 +8,6 @@ import org.acme.model.OsvAdvisory;
 import org.acme.osv.OsvAnalyzer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
@@ -20,9 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 public class MirrorServiceTopologyTest {
@@ -30,7 +30,7 @@ public class MirrorServiceTopologyTest {
     @Inject
     Topology topology;
     private TopologyTestDriver testDriver;
-    private TestInputTopic<UUID, String> inputTopic;
+    private TestInputTopic<String, String> inputTopic;
     private TestOutputTopic<String, OsvAdvisory> outputTopic;
     private OsvAnalyzer osvAnalyzerMock;
 
@@ -39,7 +39,7 @@ public class MirrorServiceTopologyTest {
         osvAnalyzerMock = Mockito.mock(OsvAnalyzer.class);
         QuarkusMock.installMockForType(osvAnalyzerMock, OsvAnalyzer.class);
         testDriver = new TopologyTestDriver(topology);
-        inputTopic = testDriver.createInputTopic(KafkaTopic.MIRROR_OSV.getName(), new UUIDSerializer(), new StringSerializer());
+        inputTopic = testDriver.createInputTopic(KafkaTopic.MIRROR_OSV.getName(), new StringSerializer(), new StringSerializer());
         outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(), new StringDeserializer(), new ObjectMapperDeserializer<>(OsvAdvisory.class));
     }
 
@@ -49,11 +49,10 @@ public class MirrorServiceTopologyTest {
     }
 
     @Test
-    void testNoEcosystems() {
+    void testNoAdvisories() {
         Mockito.when(osvAnalyzerMock.isEnabled()).thenReturn(true);
-        final UUID uuid = UUID.randomUUID();
-        // empty string for enabled ecosystems
-        inputTopic.pipeInput(uuid, "");
+        Mockito.when(osvAnalyzerMock.performMirror(Mockito.anyString())).thenReturn(Collections.emptyList());
+        inputTopic.pipeInput("Maven", "");
         Assertions.assertTrue(outputTopic.isEmpty());
     }
 
@@ -63,8 +62,7 @@ public class MirrorServiceTopologyTest {
         osvAdvisory.setId("test-id");
         Mockito.when(osvAnalyzerMock.isEnabled()).thenReturn(true);
         Mockito.when(osvAnalyzerMock.performMirror(Mockito.anyString())).thenReturn(List.of(osvAdvisory));
-        final UUID uuid = UUID.randomUUID();
-        inputTopic.pipeInput(uuid, "test");
+        inputTopic.pipeInput("Go", "");
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
         assertThat(outputTopic.readRecord()).satisfies(record -> {
             assertThat(record.key()).isEqualTo("OSV/test-id");

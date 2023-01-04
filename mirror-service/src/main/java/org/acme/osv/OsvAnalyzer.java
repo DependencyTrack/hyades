@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -39,20 +38,13 @@ public class OsvAnalyzer {
         return this.isEnabled;
     }
 
-    public List<OsvAdvisory> performMirror(String ecosystems) {
-        List<String> enabledEcosystems = Arrays.stream(ecosystems.split(";")).map(String::trim).toList();
-        if (enabledEcosystems != null && !enabledEcosystems.isEmpty()) {
-            for (String ecosystem : enabledEcosystems) {
-                try (InputStream inputStream = client.getEcosystemZip(ecosystem);
-                     ZipInputStream zipInput = new ZipInputStream(inputStream)) {
-                    unzipFolder(zipInput);
-                    return osvAdvisories;
-                } catch (IOException e) {
-                    LOGGER.error("Exception found while reading from OSV: " +e.getMessage());
-                }
-            }
-        } else {
-            LOGGER.info("Google OSV mirroring is disabled. No ecosystem selected.");
+    public List<OsvAdvisory> performMirror(String ecosystem) {
+        try (InputStream inputStream = client.getEcosystemZip(ecosystem);
+             ZipInputStream zipInput = new ZipInputStream(inputStream)) {
+            unzipFolder(zipInput);
+            return osvAdvisories;
+        } catch (IOException e) {
+            LOGGER.error("Exception found while reading from OSV: " +e.getMessage());
         }
         return osvAdvisories;
     }

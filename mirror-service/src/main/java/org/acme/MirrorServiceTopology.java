@@ -41,12 +41,12 @@ public class MirrorServiceTopology {
 
         // OSV mirroring stream
         // (K,V) to be consumed as (event uuid, list of ecosystems)
-        final KStream<UUID, String> mirrorOsv = streamsBuilder
+        final KStream<String, String> mirrorOsv = streamsBuilder
                 .stream(KafkaTopic.MIRROR_OSV.getName(), Consumed
-                .with(Serdes.UUID(), Serdes.String())
+                .with(Serdes.String(), Serdes.String())
                 .withName(processorNameConsume(KafkaTopic.MIRROR_OSV)));
         mirrorOsv
-                .flatMap((eventId, ecosystems) -> mirrorOsv(ecosystems), Named.as("mirror_osv_vulnerabilities"))
+                .flatMap((ecosystem, value) -> mirrorOsv(ecosystem), Named.as("mirror_osv_vulnerabilities"))
                 .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
                         .with(Serdes.String(), osvAdvisorySerde)
                         .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "osv_vulnerability")));
@@ -54,8 +54,8 @@ public class MirrorServiceTopology {
         return streamsBuilder.build();
     }
 
-    List<KeyValue<String, OsvAdvisory>> mirrorOsv(String ecosystems) {
-        return osvAnalyzer.performMirror(ecosystems).stream()
+    List<KeyValue<String, OsvAdvisory>> mirrorOsv(String ecosystem) {
+        return osvAnalyzer.performMirror(ecosystem).stream()
                 .map(vulnerability -> KeyValue.pair(Vulnerability.Source.OSV.name() + "/" + vulnerability.getId(), vulnerability))
                 .toList();
     }
