@@ -27,7 +27,8 @@ public enum KafkaTopic {
     VULN_ANALYSIS_RESULT("dtrack.vuln-analysis.result"),
     VULN_ANALYSIS_INFO("dtrack.vuln-analysis.info"),
     MIRROR_OSV("dtrack.mirror.osv"),
-    NEW_VULNERABILITY("dtrack.vulnerability");
+    NEW_VULNERABILITY("dtrack.vulnerability"),
+    VULN_ANALYSIS_INFO("dtrack.vuln-analysis.info");
 
     private final String name;
 
