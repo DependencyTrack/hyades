@@ -3,6 +3,7 @@ package org.acme;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.acme.common.KafkaTopic;
 import org.acme.model.OsvAdvisory;
+import org.acme.model.Vulnerability;
 import org.acme.osv.OsvAnalyzer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
@@ -38,6 +39,7 @@ public class MirrorServiceTopology {
         final var streamsBuilder = new StreamsBuilder();
         final var osvAdvisorySerde = new ObjectMapperSerde<>(OsvAdvisory.class);
 
+        // OSV mirroring stream
         // (K,V) to be consumed as (event uuid, list of ecosystems)
         final KStream<UUID, String> mirrorOsv = streamsBuilder
                 .stream(KafkaTopic.MIRROR_OSV.getName(), Consumed
@@ -54,7 +56,7 @@ public class MirrorServiceTopology {
 
     List<KeyValue<String, OsvAdvisory>> mirrorOsv(String ecosystems) {
         return osvAnalyzer.performMirror(ecosystems).stream()
-                .map(vulnerability -> KeyValue.pair(vulnerability.getId(), vulnerability))
+                .map(vulnerability -> KeyValue.pair(Vulnerability.Source.OSV.name() + "/" + vulnerability.getId(), vulnerability))
                 .toList();
     }
 }
