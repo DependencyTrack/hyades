@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class MirrorServiceTopologyTest {
     }
 
     @Test
-    void testNoAdvisories() {
+    void testNoAdvisories() throws IOException {
         Mockito.when(osvAnalyzerMock.isEnabled()).thenReturn(true);
         Mockito.when(osvAnalyzerMock.performMirror(Mockito.anyString())).thenReturn(Collections.emptyList());
         inputTopic.pipeInput("Maven", "");
@@ -57,7 +58,7 @@ public class MirrorServiceTopologyTest {
     }
 
     @Test
-    void testOsvMirroring() {
+    void testOsvMirroring() throws IOException {
         OsvAdvisory osvAdvisory = new OsvAdvisory();
         osvAdvisory.setId("test-id");
         Mockito.when(osvAnalyzerMock.isEnabled()).thenReturn(true);

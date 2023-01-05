@@ -1,7 +1,7 @@
 package org.acme.client;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -12,11 +12,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Optional;
+
+import static org.acme.util.FileUtil.getTempFileLocation;
 
 /**
  * Client for the Snyk REST API.
@@ -40,16 +44,25 @@ public class OsvClient {
         this.apiBaseUrl = apiBaseUrl.orElse(null);
     }
 
-    public InputStream getEcosystemZip(String ecosystem) throws IOException {
-        final var request = new HttpGet(this.apiBaseUrl + URLEncoder.encode(ecosystem, StandardCharsets.UTF_8).replace("+", "%20")
+    public Path downloadEcosystemZip(String ecosystem) throws IOException {
+        final var request = new HttpGet(this.apiBaseUrl + "/" + URLEncoder.encode(ecosystem, StandardCharsets.UTF_8).replace("+", "%20")
                 + "/all.zip");
         try (final CloseableHttpResponse response = httpClient.execute(request)) {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                return objectMapper.readValue(response.getEntity().getContent(), new TypeReference<>() {
-                });
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    Path tempFileLocation = getTempFileLocation(ecosystem, ".zip");
+                    try (FileOutputStream outstream = new FileOutputStream(tempFileLocation.toFile())) {
+                        entity.writeTo(outstream);
+                        return tempFileLocation;
+                    }
+                }
             } else {
-                throw new WebApplicationException("Unexpected response status: " + response.getStatusLine().getStatusCode());
+                throw new WebApplicationException(
+                        "Unexpected response status: " + response.getStatusLine().getStatusCode(),
+                        Response.status(response.getStatusLine().getStatusCode()).build());
             }
         }
+        return null;
     }
 }

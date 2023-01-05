@@ -10,12 +10,17 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static org.acme.util.FileUtil.deleteFileAndDir;
 
 @ApplicationScoped
 public class OsvAnalyzer {
@@ -32,19 +37,22 @@ public class OsvAnalyzer {
                         @ConfigProperty(name = "mirror.osv.enabled", defaultValue = "false") final boolean isEnabled) {
         this.client = client;
         this.isEnabled = isEnabled;
+        this.osvAdvisories = new ArrayList<>();
     }
 
     public boolean isEnabled() {
         return this.isEnabled;
     }
 
-    public List<OsvAdvisory> performMirror(String ecosystem) {
-        try (InputStream inputStream = client.getEcosystemZip(ecosystem);
+    public List<OsvAdvisory> performMirror(String ecosystem) throws IOException {
+        Path ecosystemZip = client.downloadEcosystemZip(ecosystem);
+        try (InputStream inputStream = new FileInputStream(ecosystemZip.toFile());
              ZipInputStream zipInput = new ZipInputStream(inputStream)) {
             unzipFolder(zipInput);
+            deleteFileAndDir(ecosystemZip);
             return osvAdvisories;
         } catch (IOException e) {
-            LOGGER.error("Exception found while reading from OSV: " +e.getMessage());
+            LOGGER.error("Exception found while reading from OSV: ", e);
         }
         return osvAdvisories;
     }

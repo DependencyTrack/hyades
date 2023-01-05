@@ -17,6 +17,7 @@ import org.apache.kafka.streams.kstream.Produced;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,7 +47,13 @@ public class MirrorServiceTopology {
                 .with(Serdes.String(), Serdes.String())
                 .withName(processorNameConsume(KafkaTopic.MIRROR_OSV)));
         mirrorOsv
-                .flatMap((ecosystem, value) -> mirrorOsv(ecosystem), Named.as("mirror_osv_vulnerabilities"))
+                .flatMap((ecosystem, value) -> {
+                    try {
+                        return mirrorOsv(ecosystem);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, Named.as("mirror_osv_vulnerabilities"))
                 .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
                         .with(Serdes.String(), osvAdvisorySerde)
                         .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "osv_vulnerability")));
@@ -54,7 +61,7 @@ public class MirrorServiceTopology {
         return streamsBuilder.build();
     }
 
-    List<KeyValue<String, OsvAdvisory>> mirrorOsv(String ecosystem) {
+    List<KeyValue<String, OsvAdvisory>> mirrorOsv(String ecosystem) throws IOException {
         return osvAnalyzer.performMirror(ecosystem).stream()
                 .map(vulnerability -> KeyValue.pair(Vulnerability.Source.OSV.name() + "/" + vulnerability.getId(), vulnerability))
                 .toList();
