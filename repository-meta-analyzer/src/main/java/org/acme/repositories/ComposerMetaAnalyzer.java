@@ -20,15 +20,25 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
-import kong.unirest.json.JSONObject;
+import org.acme.common.ManagedHttpClient;
+import org.acme.common.ManagedHttpClientFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.json.JSONObject;
+import org.acme.commonutil.HttpUtil;
 import org.acme.model.MetaModel;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.acme.common.UnirestFactory;
+//import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +52,9 @@ import java.text.SimpleDateFormat;
 
 @ApplicationScoped
 public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
+
+    @Inject
+    ManagedHttpClientFactory managedHttpClientFactory;
 
     private static final Logger LOGGER = Logger.getLogger(ComposerMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://repo.packagist.org";
@@ -68,8 +81,73 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
     /**
      * {@inheritDoc}
      */
+//    public MetaModel analyze(final Component component) {
+//        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
+//        final MetaModel meta = new MetaModel(component);
+//        if (component.getPurl() == null) {
+//            return meta;
+//        }
+//
+//        final String url = String.format(baseUrl + API_URL, component.getPurl().getNamespace(), component.getPurl().getName());
+//        try {
+//            final HttpRequest<GetRequest> request = ui.get(url)
+//                    .header("accept", "application/json");
+//            if (username != null || password != null) {
+//                request.basicAuth(username, password);
+//            }
+//            final HttpResponse<JsonNode> response = request.asJson();
+//
+//            if (response.getStatus() != 200) {
+//                handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
+//                return meta;
+//            }
+//
+//            if (response.getBody() == null || response.getBody().getObject() == null) {
+//                return meta;
+//            }
+//
+//            final JSONObject composerPackage = response
+//                    .getBody()
+//                    .getObject()
+//                    .getJSONObject("packages")
+//                    .getJSONObject(component.getPurl().getNamespace() + "/" + component.getPurl().getName());
+//
+//            final ComparableVersion latestVersion = new ComparableVersion(stripLeadingV(component.getPurl().getVersion()));
+//            final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+//
+//            composerPackage.names().forEach(key_ -> {
+//                String key = (String) key_;
+//                if (key.startsWith("dev-") || key.endsWith("-dev")) {
+//                    // dev versions are excluded, since they are not pinned but a VCS-branch.
+//                    return;
+//                }
+//
+//                final String version_normalized = composerPackage.getJSONObject(key).getString("version_normalized");
+//                ComparableVersion currentComparableVersion = new ComparableVersion(version_normalized);
+//                if ( currentComparableVersion.compareTo(latestVersion) < 0)
+//                {
+//                    // smaller version can be skipped
+//                    return;
+//                }
+//
+//                final String version = composerPackage.getJSONObject(key).getString("version");
+//                latestVersion.parseVersion(stripLeadingV(version_normalized));
+//                meta.setLatestVersion(version);
+//
+//                final String published = composerPackage.getJSONObject(key).getString("time");
+//                try {
+//                    meta.setPublishedTimestamp(dateFormat.parse(published));
+//                } catch (ParseException e) {
+//                    LOGGER.warn("An error occurred while parsing upload time", e);
+//                }
+//            });
+//        } catch (UnirestException e) {
+//            handleRequestException(LOGGER, e);
+//        }
+//
+//        return meta;
+//    }
     public MetaModel analyze(final Component component) {
-        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() == null) {
             return meta;
@@ -77,58 +155,59 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
 
         final String url = String.format(baseUrl + API_URL, component.getPurl().getNamespace(), component.getPurl().getName());
         try {
-            final HttpRequest<GetRequest> request = ui.get(url)
-                    .header("accept", "application/json");
+            final HttpUriRequest request = new HttpGet(url);
+            request.setHeader("accept", "application/json");
             if (username != null || password != null) {
-                request.basicAuth(username, password);
+                request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
             }
-            final HttpResponse<JsonNode> response = request.asJson();
+            final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
+            CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
+            try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
+                if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK) {
+                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
+                    return meta;
+                }
+                String jsonString = EntityUtils.toString(response.getEntity());
+                if (jsonString == null) {
+                    return meta;
+                }
+                JSONObject jsonObject = new JSONObject(jsonString);
+                final JSONObject composerPackage = jsonObject
+                        .getJSONObject("packages")
+                        .getJSONObject(component.getPurl().getNamespace() + "/" + component.getPurl().getName());
 
-            if (response.getStatus() != 200) {
-                handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
-                return meta;
+                final ComparableVersion latestVersion = new ComparableVersion(stripLeadingV(component.getPurl().getVersion()));
+                final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
+                composerPackage.names().forEach(key_ -> {
+                    String key = (String) key_;
+                    if (key.startsWith("dev-") || key.endsWith("-dev")) {
+                        // dev versions are excluded, since they are not pinned but a VCS-branch.
+                        return;
+                    }
+
+                    final String version_normalized = composerPackage.getJSONObject(key).getString("version_normalized");
+                    ComparableVersion currentComparableVersion = new ComparableVersion(version_normalized);
+                    if (currentComparableVersion.compareTo(latestVersion) < 0) {
+                        // smaller version can be skipped
+                        return;
+                    }
+
+                    final String version = composerPackage.getJSONObject(key).getString("version");
+                    latestVersion.parseVersion(stripLeadingV(version_normalized));
+                    meta.setLatestVersion(version);
+
+                    final String published = composerPackage.getJSONObject(key).getString("time");
+                    try {
+                        meta.setPublishedTimestamp(dateFormat.parse(published));
+                    } catch (ParseException e) {
+                        LOGGER.warn("An error occurred while parsing upload time", e);
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-
-            if (response.getBody() == null || response.getBody().getObject() == null) {
-                return meta;
-            }
-
-            final JSONObject composerPackage = response
-                    .getBody()
-                    .getObject()
-                    .getJSONObject("packages")
-                    .getJSONObject(component.getPurl().getNamespace() + "/" + component.getPurl().getName());
-
-            final ComparableVersion latestVersion = new ComparableVersion(stripLeadingV(component.getPurl().getVersion()));
-            final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-
-            composerPackage.names().forEach(key_ -> {
-                String key = (String) key_;
-                if (key.startsWith("dev-") || key.endsWith("-dev")) {
-                    // dev versions are excluded, since they are not pinned but a VCS-branch.
-                    return;
-                }
-
-                final String version_normalized = composerPackage.getJSONObject(key).getString("version_normalized");
-                ComparableVersion currentComparableVersion = new ComparableVersion(version_normalized);
-                if ( currentComparableVersion.compareTo(latestVersion) < 0)
-                {
-                    // smaller version can be skipped
-                    return;
-                }
-
-                final String version = composerPackage.getJSONObject(key).getString("version");
-                latestVersion.parseVersion(stripLeadingV(version_normalized));
-                meta.setLatestVersion(version);
-
-                final String published = composerPackage.getJSONObject(key).getString("time");
-                try {
-                    meta.setPublishedTimestamp(dateFormat.parse(published));
-                } catch (ParseException e) {
-                    LOGGER.warn("An error occurred while parsing upload time", e);
-                }
-            });
-        } catch (UnirestException e) {
+        } catch (org.apache.http.ParseException e){
             handleRequestException(LOGGER, e);
         }
 

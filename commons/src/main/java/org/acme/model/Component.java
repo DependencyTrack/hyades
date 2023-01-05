@@ -33,6 +33,7 @@ import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.UUIDConverter;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -53,6 +54,7 @@ import java.util.UUID;
  */
 @Entity
 @RegisterForReflection
+@ApplicationScoped
 @Table(name = "COMPONENT")
 public class Component extends PanacheEntityBase implements Serializable {
 

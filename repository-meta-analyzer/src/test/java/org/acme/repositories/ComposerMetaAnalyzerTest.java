@@ -19,6 +19,9 @@
 package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
+import org.acme.common.ManagedHttpClientFactory;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
@@ -30,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
@@ -37,8 +41,11 @@ import java.text.SimpleDateFormat;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
+@QuarkusTest
 class ComposerMetaAnalyzerTest {
 
+    @InjectMock
+    ManagedHttpClientFactory managedHttpClientFactory;
     private static ClientAndServer mockServer;
 
     @BeforeAll
@@ -55,7 +62,6 @@ class ComposerMetaAnalyzerTest {
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/phpunit/phpunit@1.0.0"));
-
         ComposerMetaAnalyzer analyzer = new ComposerMetaAnalyzer();
         Assertions.assertEquals("ComposerMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
@@ -67,9 +73,9 @@ class ComposerMetaAnalyzerTest {
 
     @Test
     void testAnalyzerFindsVersionWithLeadingV() throws Exception {
-        Component component = new Component();
-        ComposerMetaAnalyzer analyzer = new ComposerMetaAnalyzer();
 
+        ComposerMetaAnalyzer analyzer = new ComposerMetaAnalyzer();
+        Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/typo3/class-alias-loader@v1.1.0"));
         final File packagistFile = getResourceFile("typo3", "class-alias-loader");
 

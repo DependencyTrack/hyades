@@ -20,15 +20,23 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
-import org.acme.common.UnirestFactory;
+import org.acme.common.ManagedHttpClient;
+import org.acme.common.ManagedHttpClientFactory;
+import org.acme.commonutil.HttpUtil;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+import  org.json.JSONArray;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +50,9 @@ import java.util.Date;
  */
 @ApplicationScoped
 public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
+
+    @Inject
+    ManagedHttpClientFactory managedHttpClientFactory;
 
     private static final Logger LOGGER = Logger.getLogger(PypiMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://pypi.org";
@@ -69,39 +80,43 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
-        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
         MetaModel successMeta = new MetaModel(component);
         if (component.getPurl() != null) {
             final String url = String.format(baseUrl + API_URL, component.getPurl().getName());
             try {
-                final HttpRequest<GetRequest> request = ui.get(url)
-                        .header("accept", "application/json");
+                final HttpUriRequest request = new HttpGet(url);
+                request.setHeader("accept", "application/json");
                 if (username != null || password != null) {
-                    request.basicAuth(username, password);
+                    request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
                 }
-                final HttpResponse<JsonNode> response = request.asJson();
-
-                if (response.getStatus() == 200) {
-                    successMeta = processSuccessResponse(response, meta);
-                } else {
-                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
+                final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
+                CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
+                try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
+                    if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                        successMeta = processSuccessResponse(response, meta);
+                    }
+                    else {
+                        handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
+                    }
                 }
-            } catch (UnirestException e) {
+            } catch (IOException e) {
                 handleRequestException(LOGGER, e);
             }
         }
         return successMeta;
     }
 
-    private MetaModel processSuccessResponse(HttpResponse<JsonNode> response, MetaModel meta) {
+    private MetaModel processSuccessResponse(CloseableHttpResponse response, MetaModel meta) throws IOException {
         MetaModel updatedMeta = new MetaModel(meta.getComponent());
-        if (response.getBody() != null && response.getBody().getObject() != null) {
-            final JSONObject info = response.getBody().getObject().getJSONObject("info");
+        String responseString = EntityUtils.toString(response.getEntity());
+        if(responseString!=null){
+        JSONObject jsonResponse = new JSONObject(responseString);
+            final JSONObject info = jsonResponse.getJSONObject("info");
             final String latest = info.optString("version", null);
             if (latest != null) {
                 meta.setLatestVersion(latest);
-                final JSONObject releases = response.getBody().getObject().getJSONObject("releases");
+                final JSONObject releases = jsonResponse.getJSONObject("releases");
                 final JSONArray latestArray = releases.getJSONArray(latest);
                 if (latestArray.length() > 0) {
                     final JSONObject release = latestArray.getJSONObject(0);

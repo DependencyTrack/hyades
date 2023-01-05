@@ -20,15 +20,24 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
-import kong.unirest.json.JSONObject;
+import org.acme.common.ManagedHttpClient;
+import org.acme.common.ManagedHttpClientFactory;
+import org.acme.commonutil.HttpUtil;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.acme.model.MetaModel;
 import org.apache.commons.lang3.StringUtils;
-import org.acme.common.UnirestFactory;
+//import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -41,7 +50,8 @@ import java.text.SimpleDateFormat;
  */
 @ApplicationScoped
 public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
-
+    @Inject
+    ManagedHttpClientFactory managedHttpClientFactory;
     private static final Logger LOGGER = Logger.getLogger(GoModulesMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://proxy.golang.org";
     private static final String API_URL = "/%s/%s/@latest";
@@ -61,6 +71,37 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
+//    public MetaModel analyze(final Component component) {
+//        final var meta = new MetaModel(component);
+//        var successMeta = new MetaModel(component);
+//
+//        if (component.getPurl() == null || component.getPurl().getNamespace() == null) {
+//            return meta;
+//        }
+//
+//        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
+//        final String url = String.format(baseUrl + API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
+//
+//        try {
+//            final HttpRequest<GetRequest> request = ui.get(url)
+//                    .header("accept", "application/json");
+//            if (username != null || password != null) {
+//                request.basicAuth(username, password);
+//            }
+//            final HttpResponse<JsonNode> response = request.asJson();
+//
+//            if (response.getStatus() == 200) {
+//                successMeta = processResponse(meta, response, component);
+//            } else {
+//                handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
+//            }
+//        } catch (UnirestException e) {
+//            handleRequestException(LOGGER, e);
+//        }
+//
+//        return successMeta;
+//    }
+
     public MetaModel analyze(final Component component) {
         final var meta = new MetaModel(component);
         var successMeta = new MetaModel(component);
@@ -69,34 +110,37 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
             return meta;
         }
 
-        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final String url = String.format(baseUrl + API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
 
         try {
-            final HttpRequest<GetRequest> request = ui.get(url)
-                    .header("accept", "application/json");
+            final HttpUriRequest request = new HttpGet(url);
+            request.setHeader("accept", "application/json");
             if (username != null || password != null) {
-                request.basicAuth(username, password);
+                request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
             }
-            final HttpResponse<JsonNode> response = request.asJson();
-
-            if (response.getStatus() == 200) {
-                successMeta = processResponse(meta, response, component);
-            } else {
-                handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
+            final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
+            CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
+            try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
+                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                    successMeta = processResponse(meta, response, component);
+                }
+                else {
+                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
+                }
             }
-        } catch (UnirestException e) {
+        } catch (org.apache.http.ParseException | IOException e) {
             handleRequestException(LOGGER, e);
         }
 
         return successMeta;
     }
 
-    private MetaModel processResponse(MetaModel meta, HttpResponse<JsonNode> response, Component component) {
+    private MetaModel processResponse(MetaModel meta, CloseableHttpResponse response, Component component) {
         try {
-            if (response.getBody() != null && response.getBody().getObject() != null) {
-                final JSONObject responseJson = response.getBody().getObject();
-                meta.setLatestVersion(responseJson.getString("Version"));
+            String jsonString = EntityUtils.toString(response.getEntity());
+            JSONObject jsonObject = new JSONObject(jsonString);
+            if(response.getEntity()!=null) {
+                meta.setLatestVersion(jsonObject.getString("Version"));
 
                 // Module versions are prefixed with "v" in the Go ecosystem.
                 // Because some services (like OSS Index as of July 2021) do not support
@@ -108,13 +152,15 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
                     meta.setLatestVersion(StringUtils.stripStart(meta.getLatestVersion(), "v"));
                 }
 
-                final String commitTimestamp = responseJson.getString("Time");
+                final String commitTimestamp = jsonObject.getString("Time");
                 if (StringUtils.isNotBlank(commitTimestamp)) { // Time is optional
                     meta.setPublishedTimestamp(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(commitTimestamp));
                 }
             }
         } catch (ParseException e) {
             handleRequestException(LOGGER, e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return meta;
     }

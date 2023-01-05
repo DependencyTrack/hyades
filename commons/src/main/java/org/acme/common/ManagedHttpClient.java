@@ -17,20 +17,24 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.acme.common;
-
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class ManagedHttpClient {
 
     private CloseableHttpClient httpClient;
     private PoolingHttpClientConnectionManager connectionManager;
 
-    public ManagedHttpClient(CloseableHttpClient httpClient, PoolingHttpClientConnectionManager connectionManager) {
+    public void setHttpClient(CloseableHttpClient httpClient){
         this.httpClient = httpClient;
-        this.connectionManager = connectionManager;
     }
 
+    public void setConnectionManager(PoolingHttpClientConnectionManager connectionManager){
+        this.connectionManager = connectionManager;
+    }
     public CloseableHttpClient getHttpClient() {
         return httpClient;
     }

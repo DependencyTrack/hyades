@@ -20,24 +20,23 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import io.quarkus.cache.Cache;
-import io.quarkus.cache.CacheKey;
-import io.quarkus.cache.CacheName;
-import io.quarkus.cache.CaffeineCache;
+import org.acme.common.ManagedHttpClient;
+import org.acme.common.ManagedHttpClientFactory;
 import org.acme.model.MetaModel;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.acme.common.HttpClientPool;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 import org.acme.commonutil.DateUtil;
 import org.acme.commonutil.HttpUtil;
 import org.acme.commonutil.XmlUtil;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -45,7 +44,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * An IMetaAnalyzer implementation that supports Maven repositories (including Maven Central).
@@ -56,7 +54,8 @@ import java.util.concurrent.CompletableFuture;
 
 @ApplicationScoped
 public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
-
+    @Inject
+    ManagedHttpClientFactory managedHttpClientFactory;
     private static final Logger LOGGER = Logger.getLogger(MavenMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://repo1.maven.org/maven2";
     private static final String REPO_METADATA_URL = "/%s/maven-metadata.xml";
@@ -89,12 +88,13 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
             final String url = String.format(baseUrl + REPO_METADATA_URL, mavenGavUrl);
             try {
                 final HttpUriRequest request = new HttpGet(url);
-
+                request.setHeader("accept", "application/json");
                 if (username != null || password != null) {
                     request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
                 }
-
-                try (final CloseableHttpResponse response = HttpClientPool.getClient().execute(request)) {
+                final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
+                CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
+                try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
                     final StatusLine status = response.getStatusLine();
                     if (status.getStatusCode() == 200) {
                         final HttpEntity entity = response.getEntity();

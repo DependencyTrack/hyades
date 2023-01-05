@@ -54,6 +54,8 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.net.ssl.SSLContext;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -65,7 +67,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Map;
 
-public final class ManagedHttpClientFactory {
+@ApplicationScoped
+public class ManagedHttpClientFactory {
+
+    @Inject
+    ManagedHttpClient managedHttpClient;
 
     private static final String PROXY_ADDRESS = Config.getInstance().getProperty(Config.AlpineKey.HTTP_PROXY_ADDRESS);
     private static int PROXY_PORT;
@@ -93,7 +99,7 @@ public final class ManagedHttpClientFactory {
                 + Config.getInstance().getSystemUuid();
     }
 
-    private ManagedHttpClientFactory() { }
+//    public ManagedHttpClientFactory() { }
 
     public static String getUserAgent() {
         return USER_AGENT;
@@ -106,7 +112,7 @@ public final class ManagedHttpClientFactory {
      * for 'https_proxy', 'http_proxy' and 'no_proxy'.
      * @return a PooledHttpClient object with optional proxy settings
      */
-    public static ManagedHttpClient newManagedHttpClient() {
+    public ManagedHttpClient newManagedHttpClient() {
         PoolingHttpClientConnectionManager connectionManager = null;
         final RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(TIMEOUT_CONNECTION * 1000)
@@ -177,7 +183,9 @@ public final class ManagedHttpClientFactory {
         clientBuilder.setDefaultAuthSchemeRegistry(authProviders);
         clientBuilder.disableCookieManagement();
         clientBuilder.setRedirectStrategy(LaxRedirectStrategy.INSTANCE);
-        return new ManagedHttpClient(clientBuilder.build(), connectionManager);
+        managedHttpClient.setHttpClient(clientBuilder.build());
+        managedHttpClient.setConnectionManager(connectionManager);
+        return managedHttpClient;
     }
 
     /**

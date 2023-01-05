@@ -39,6 +39,12 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kafka-streams</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/io.quarkus/quarkus-apache-httpclient -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-apache-httpclient</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
@@ -80,6 +86,13 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.json/json -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20220924</version>
+    </dependency>
+
   </dependencies>
 
   <build>
