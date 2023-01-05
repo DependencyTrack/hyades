@@ -20,7 +20,6 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-//import org.acme.common.UnirestFactory;
 import org.acme.common.ManagedHttpClient;
 import org.acme.common.ManagedHttpClientFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -33,8 +32,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.util.EntityUtils;
-import org.xml.sax.SAXException;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.IOException;
@@ -79,7 +76,6 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
-//        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
         MetaModel successMeta = new MetaModel(component);
         if (component.getPurl() != null) {
@@ -95,11 +91,6 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
             try {
                 final HttpUriRequest request = new HttpGet(url);
                 request.setHeader("accept", "application/json");
-//                final HttpRequest<GetRequest> request = ui.get(url)
-//                        .header("accept", "application/json");
-//                if (username != null || password != null) {
-//                    request.basicAuth(username, password);
-//                }
                 if (username != null || password != null) {
                     request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
                 }
@@ -118,42 +109,12 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
                 catch (IOException e) {
                     handleRequestException(LOGGER, e);
                 }
-//                final HttpResponse<JsonNode> response = request.asJson();
-//
-//                if (response.getStatus() == 200) {
-//                    successMeta = processResponse(meta, response);
-//                } else {
-//                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
-//                }
             } catch (org.apache.http.ParseException e) {
                 handleRequestException(LOGGER, e);
             }
         }
         return successMeta;
     }
-
-//    private MetaModel processResponse(MetaModel meta, HttpResponse<JsonNode> response) {
-//        if (response.getBody() != null && response.getBody().getObject() != null) {
-//            final JSONArray releasesArray = response.getBody().getObject().getJSONArray("releases");
-//            if (releasesArray.length() > 0) {
-//                // The first one in the array is always the latest version
-//                final JSONObject release = releasesArray.getJSONObject(0);
-//                final String latest = release.optString("version", null);
-//                meta.setLatestVersion(latest);
-//                final String insertedAt = release.optString("inserted_at", null);
-//                if (insertedAt != null) {
-//                    final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-//                    try {
-//                        final Date published = dateFormat.parse(insertedAt);
-//                        meta.setPublishedTimestamp(published);
-//                    } catch (ParseException e) {
-//                        LOGGER.warn("An error occurred while parsing published time", e);
-//                    }
-//                }
-//            }
-//        }
-//        return meta;
-//    }
 
     private MetaModel processResponse(MetaModel meta, JSONObject response) {
         if(response!=null){

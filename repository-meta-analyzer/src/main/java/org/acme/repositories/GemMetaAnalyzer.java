@@ -36,7 +36,6 @@ import org.apache.http.util.EntityUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.Id;
 import java.io.IOException;
 
 /**
@@ -75,33 +74,6 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
     /**
      * {@inheritDoc}
      */
-//    public MetaModel analyze(final Component component) {
-//        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
-//        final MetaModel meta = new MetaModel(component);
-//        if (component.getPurl() != null) {
-//            final String url = String.format(baseUrl + API_URL, component.getPurl().getName());
-//            try {
-//                final HttpRequest<GetRequest> request = ui.get(url)
-//                        .header("accept", "application/json");
-//                if (username != null || password != null) {
-//                    request.basicAuth(username, password);
-//                }
-//                final HttpResponse<JsonNode> response = request.asJson();
-//
-//                if (response.getStatus() == 200) {
-//                    if (response.getBody() != null && response.getBody().getObject() != null) {
-//                        final String latest = response.getBody().getObject().getString("version");
-//                        meta.setLatestVersion(latest);
-//                    }
-//                } else {
-//                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
-//                }
-//            } catch (UnirestException e) {
-//                handleRequestException(LOGGER, e);
-//            }
-//        }
-//        return meta;
-//    }
     public MetaModel analyze(final Component component) {
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null) {

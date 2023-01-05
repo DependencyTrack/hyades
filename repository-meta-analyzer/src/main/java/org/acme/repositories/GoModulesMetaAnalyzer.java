@@ -31,7 +31,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.acme.model.MetaModel;
 import org.apache.commons.lang3.StringUtils;
-//import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
@@ -71,37 +70,6 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
-//    public MetaModel analyze(final Component component) {
-//        final var meta = new MetaModel(component);
-//        var successMeta = new MetaModel(component);
-//
-//        if (component.getPurl() == null || component.getPurl().getNamespace() == null) {
-//            return meta;
-//        }
-//
-//        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
-//        final String url = String.format(baseUrl + API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
-//
-//        try {
-//            final HttpRequest<GetRequest> request = ui.get(url)
-//                    .header("accept", "application/json");
-//            if (username != null || password != null) {
-//                request.basicAuth(username, password);
-//            }
-//            final HttpResponse<JsonNode> response = request.asJson();
-//
-//            if (response.getStatus() == 200) {
-//                successMeta = processResponse(meta, response, component);
-//            } else {
-//                handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
-//            }
-//        } catch (UnirestException e) {
-//            handleRequestException(LOGGER, e);
-//        }
-//
-//        return successMeta;
-//    }
-
     public MetaModel analyze(final Component component) {
         final var meta = new MetaModel(component);
         var successMeta = new MetaModel(component);

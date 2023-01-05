@@ -26,7 +26,6 @@ import org.acme.commonutil.HttpUtil;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -75,43 +74,6 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
     /**
      * {@inheritDoc}
      */
-//    public MetaModel analyze(final Component component) {
-//        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
-//        final MetaModel meta = new MetaModel(component);
-//        if (component.getPurl() != null) {
-//
-//            final String packageName;
-//            if (component.getPurl().getNamespace() != null) {
-//                packageName = component.getPurl().getNamespace().replace("@", "%40") + "%2F" + component.getPurl().getName();
-//            } else {
-//                packageName = component.getPurl().getName();
-//            }
-//
-//            final String url = String.format(baseUrl + API_URL, packageName);
-//            try {
-//                final HttpRequest<GetRequest> request = ui.get(url)
-//                        .header("accept", "application/json");
-//                if (username != null || password != null) {
-//                    request.basicAuth(username, password);
-//                }
-//                final HttpResponse<JsonNode> response = request.asJson();
-//
-//                if (response.getStatus() == 200) {
-//                    if (response.getBody() != null && response.getBody().getObject() != null) {
-//                        final String latest = response.getBody().getObject().optString("latest");
-//                        if (latest != null) {
-//                            meta.setLatestVersion(latest);
-//                        }
-//                    }
-//                } else {
-//                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
-//                }
-//            } catch (UnirestException e) {
-//                handleRequestException(LOGGER, e);
-//            }
-//        }
-//        return meta;
-//    }
     public MetaModel analyze(final Component component) {
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null) {
