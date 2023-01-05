@@ -26,9 +26,7 @@ import static org.acme.util.FileUtil.deleteFileAndDir;
 public class OsvAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvAnalyzer.class);
-
-    @Inject
-    private final OsvClient client;
+    private OsvClient client;
     private final boolean isEnabled;
     List<OsvAdvisory> osvAdvisories;
 
