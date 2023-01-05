@@ -2,7 +2,7 @@ name: Publish Native Binary
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/repoMetaNative" ]
 
 jobs:
   publish-container-image:
@@ -30,7 +30,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build native binary
         run: |-
-          mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
+          mvn clean package -Pnative -pl commons,vulnerability-analyzer,repository-meta-analyzer,notification-publisher -DskipTests \
             -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17
       - name: Build and push container image
         uses: docker/build-push-action@v3

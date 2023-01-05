@@ -21,6 +21,7 @@ package org.acme.notification;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import org.acme.common.ManagedHttpClientFactory;
 import org.acme.commonnotification.NotificationGroup;
 import org.acme.commonnotification.NotificationScope;
 import org.acme.model.Notification;
@@ -65,6 +66,9 @@ public class WebhookPublisherTest {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    ManagedHttpClientFactory managedHttpClientFactory;
+
     @BeforeAll
     public static void beforeClass() {
         mockServer = startClientAndServer(1080);
@@ -95,6 +99,7 @@ public class WebhookPublisherTest {
                 """).executeUpdate();
         JsonObject config = getConfig(DefaultNotificationPublishers.WEBHOOK, "http://localhost:1080/mychannel");
         Notification notification = new Notification();
+        managedHttpClientFactory.newManagedHttpClient();
         notification.setScope(NotificationScope.PORTFOLIO.name());
         notification.setGroup(NotificationGroup.NEW_VULNERABILITY.name());
         notification.setLevel(NotificationLevel.INFORMATIONAL);

@@ -43,9 +43,6 @@ import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
 class ComposerMetaAnalyzerTest {
-
-    @InjectMock
-    ManagedHttpClientFactory managedHttpClientFactory;
     private static ClientAndServer mockServer;
 
     @BeforeAll
