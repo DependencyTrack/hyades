@@ -3,7 +3,6 @@ package org.acme.osv;
 import kong.unirest.json.JSONObject;
 import org.acme.client.OsvClient;
 import org.acme.model.OsvAdvisory;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,19 +26,12 @@ public class OsvAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvAnalyzer.class);
     private OsvClient client;
-    private final boolean isEnabled;
     List<OsvAdvisory> osvAdvisories;
 
     @Inject
-    public OsvAnalyzer(final OsvClient client,
-                        @ConfigProperty(name = "mirror.osv.enabled", defaultValue = "false") final boolean isEnabled) {
+    public OsvAnalyzer(final OsvClient client) {
         this.client = client;
-        this.isEnabled = isEnabled;
         this.osvAdvisories = new ArrayList<>();
-    }
-
-    public boolean isEnabled() {
-        return this.isEnabled;
     }
 
     public List<OsvAdvisory> performMirror(String ecosystem) throws IOException {

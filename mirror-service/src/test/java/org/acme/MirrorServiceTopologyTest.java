@@ -51,7 +51,6 @@ public class MirrorServiceTopologyTest {
 
     @Test
     void testNoAdvisories() throws IOException {
-        Mockito.when(osvAnalyzerMock.isEnabled()).thenReturn(true);
         Mockito.when(osvAnalyzerMock.performMirror(Mockito.anyString())).thenReturn(Collections.emptyList());
         inputTopic.pipeInput("Maven", "");
         Assertions.assertTrue(outputTopic.isEmpty());
@@ -61,7 +60,6 @@ public class MirrorServiceTopologyTest {
     void testOsvMirroring() throws IOException {
         OsvAdvisory osvAdvisory = new OsvAdvisory();
         osvAdvisory.setId("test-id");
-        Mockito.when(osvAnalyzerMock.isEnabled()).thenReturn(true);
         Mockito.when(osvAnalyzerMock.performMirror(Mockito.anyString())).thenReturn(List.of(osvAdvisory));
         inputTopic.pipeInput("Go", "");
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
