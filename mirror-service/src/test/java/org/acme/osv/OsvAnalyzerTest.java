@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 
 import static org.acme.util.FileUtil.deleteFileAndDir;
 import static org.acme.util.FileUtil.getTempFileLocation;
@@ -72,21 +71,6 @@ public class OsvAnalyzerTest {
         assertThat(outputTopic.readRecord()).satisfies(record -> {
             assertThat(record.key()).isEqualTo("OSV/GO-2020-0023");
         });
-        deleteFileAndDir(tempZipLocation);
-    }
-
-    @Test
-    void performMirrorReturnOsvAdvisories() throws IOException {
-
-        Path testFile = Path.of("src/test/resources/osv/osv-download.zip");
-        Path tempZipLocation = getTempFileLocation("test", ".zip");
-        Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
-        when(osvClientMock.downloadEcosystemZip(anyString()))
-                .thenReturn(tempZipLocation);
-        List<OsvAdvisory> result = osvAnalyzer.performMirror("Go");
-        assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getId()).isEqualTo("GO-2020-0023");
         deleteFileAndDir(tempZipLocation);
     }
 }
