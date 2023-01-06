@@ -75,7 +75,7 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
                 packageName = component.getPurl().getName();
             }
 
-            final String url = String.format(baseUrl, API_URL, packageName);
+            final String url = String.format(baseUrl + API_URL, packageName);
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String responseString = EntityUtils.toString(response.getEntity());

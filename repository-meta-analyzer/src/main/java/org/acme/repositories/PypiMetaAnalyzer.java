@@ -73,7 +73,7 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
         final MetaModel meta = new MetaModel(component);
         MetaModel successMeta = new MetaModel(component);
         if (component.getPurl() != null) {
-            final String url = String.format(baseUrl, API_URL, component.getPurl().getName());
+            final String url = String.format(baseUrl+API_URL, component.getPurl().getName());
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     successMeta = processSuccessResponse(response, meta);

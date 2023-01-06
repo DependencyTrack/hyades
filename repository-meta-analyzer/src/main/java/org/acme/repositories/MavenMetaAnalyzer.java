@@ -77,7 +77,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null) {
             final String mavenGavUrl = component.getPurl().getNamespace().replaceAll("\\.", "/") + "/" + component.getPurl().getName();
-            final String url = String.format(baseUrl, REPO_METADATA_URL, mavenGavUrl);
+            final String url = String.format(baseUrl + REPO_METADATA_URL, mavenGavUrl);
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 final StatusLine status = response.getStatusLine();
                 if (status.getStatusCode() == 200) {

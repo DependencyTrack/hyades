@@ -79,7 +79,7 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
                 packageName = component.getPurl().getName();
             }
 
-            final String url = String.format(baseUrl, API_URL, packageName);
+            final String url = String.format(baseUrl + API_URL, packageName);
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 String jsonString = EntityUtils.toString(response.getEntity());
                 JSONObject jsonObject = new JSONObject(jsonString);
