@@ -51,6 +51,8 @@ vuln_analysis_topics=(
   "dtrack.vuln-analysis.component.swid"
   "dtrack.vuln-analysis.vulnerability"
   "dtrack.vuln-analysis.result"
+  "dtrack.vulnerability.mirror.osv"
+  "dtrack.vulnerability"
   "dtrack.vuln-analysis.info"
 )
 for topic_name in "${vuln_analysis_topics[@]}"; do

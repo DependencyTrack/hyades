@@ -70,6 +70,22 @@ services:
       - demo
     restart: unless-stopped
 
+  mirror-service:
+    image: ghcr.io/mehab/mirror-service:latest
+    depends_on:
+      - postgres
+      - redpanda
+    environment:
+      QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "1"
+    ports:
+      # Dynamic host port binding to allow for scaling of the service.
+      # Scaling with Compose doesn't work when assigning static host ports.
+      - "8093"
+    profiles:
+      - demo
+    restart: unless-stopped
+
   apiserver:
     build:
       context: ../dependency-track
@@ -218,8 +234,6 @@ services:
       ports:
         - "127.0.0.1:28080:8080"
       restart: unless-stopped
-
-
 
   redpanda-init:
     image: docker.redpanda.com/vectorized/redpanda:v22.3.9
