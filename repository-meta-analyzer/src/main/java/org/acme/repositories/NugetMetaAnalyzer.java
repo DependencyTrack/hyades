@@ -20,13 +20,7 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import org.acme.common.ManagedHttpClient;
-import org.acme.common.ManagedHttpClientFactory;
-import org.acme.commonutil.HttpUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -52,9 +46,6 @@ import java.util.Date;
 
 @ApplicationScoped
 public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
-
-    @Inject
-    ManagedHttpClientFactory managedHttpClientFactory;
 
     public static final DateFormat[] SUPPORTED_DATE_FORMATS = new DateFormat[]{
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
@@ -115,16 +106,6 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
         return meta;
     }
 
-    public CloseableHttpResponse processHttpRequest(String url) throws IOException {
-        final HttpUriRequest request = new HttpGet(url);
-        request.addHeader("accept", "application/json");
-        if (username != null || password != null) {
-            request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
-        }
-        final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-        CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
-        return threadSafeClient.execute(request);
-    }
     private boolean performVersionCheck(final MetaModel meta, final Component component) {
         final String url = String.format(versionQueryUrl, component.getPurl().getName().toLowerCase());
         try (final CloseableHttpResponse response = processHttpRequest(url)) {

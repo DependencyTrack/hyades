@@ -20,20 +20,14 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import org.acme.common.ManagedHttpClient;
-import org.acme.common.ManagedHttpClientFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.json.JSONObject;
-import org.acme.commonutil.HttpUtil;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.util.EntityUtils;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,8 +42,6 @@ import java.util.Date;
  */
 @ApplicationScoped
 public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
-    @Inject
-    ManagedHttpClientFactory managedHttpClientFactory;
     private static final Logger LOGGER = Logger.getLogger(HexMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://hex.pm";
     private static final String API_URL = "/api/packages/%s";
@@ -87,29 +79,16 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
                 packageName = component.getPurl().getName();
             }
 
-            final String url = String.format(baseUrl + API_URL, packageName);
-            try {
-                final HttpUriRequest request = new HttpGet(url);
-                request.setHeader("accept", "application/json");
-                if (username != null || password != null) {
-                    request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
+            final String url = String.format(baseUrl, API_URL, packageName);
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+                String jsonString = EntityUtils.toString(response.getEntity());
+                JSONObject jsonObject = new JSONObject(jsonString);
+                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                    successMeta = processResponse(meta, jsonObject);
+                } else {
+                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                 }
-                final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-                CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
-                try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
-                    String jsonString = EntityUtils.toString(response.getEntity());
-                    JSONObject jsonObject = new JSONObject(jsonString);
-                    if(response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK){
-                        successMeta = processResponse(meta, jsonObject);
-                    }
-                    else {
-                        handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
-                    }
-                }
-                catch (IOException e) {
-                    handleRequestException(LOGGER, e);
-                }
-            } catch (org.apache.http.ParseException e) {
+            } catch (IOException | org.apache.http.ParseException e) {
                 handleRequestException(LOGGER, e);
             }
         }
@@ -117,8 +96,8 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     private MetaModel processResponse(MetaModel meta, JSONObject response) {
-        if(response!=null){
-            if(response.optJSONArray("releases")!=null && response.optJSONArray("releases").length()>0){
+        if (response != null) {
+            if (response.optJSONArray("releases") != null && response.optJSONArray("releases").length() > 0) {
                 final JSONObject release = response.optJSONArray("releases").getJSONObject(0);
                 final String latest = release.optString("version", null);
                 meta.setLatestVersion(latest);

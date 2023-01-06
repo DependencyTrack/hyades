@@ -20,13 +20,7 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import org.acme.common.ManagedHttpClient;
-import org.acme.common.ManagedHttpClientFactory;
-import org.acme.commonutil.HttpUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.acme.model.MetaModel;
@@ -35,22 +29,18 @@ import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
+ * @author Steve Springett
  * @see <a href="https://golang.org/ref/mod#goproxy-protocol">GOPROXY protocol</a>
- *  An IMetaAnalyzer implementation that supports Golang.
- *
- *  @author Steve Springett
+ * An IMetaAnalyzer implementation that supports Golang.
  * @since 4.3.0
  */
 @ApplicationScoped
 public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
-    @Inject
-    ManagedHttpClientFactory managedHttpClientFactory;
     private static final Logger LOGGER = Logger.getLogger(GoModulesMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://proxy.golang.org";
     private static final String API_URL = "/%s/%s/@latest";
@@ -78,23 +68,13 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
             return meta;
         }
 
-        final String url = String.format(baseUrl + API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
+        final String url = String.format(baseUrl, API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
 
-        try {
-            final HttpUriRequest request = new HttpGet(url);
-            request.setHeader("accept", "application/json");
-            if (username != null || password != null) {
-                request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
-            }
-            final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-            CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
-            try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
-                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
-                    successMeta = processResponse(meta, response, component);
-                }
-                else {
-                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
-                }
+        try (final CloseableHttpResponse response = processHttpRequest(url)) {
+            if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                successMeta = processResponse(meta, response, component);
+            } else {
+                handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
             }
         } catch (org.apache.http.ParseException | IOException e) {
             handleRequestException(LOGGER, e);
@@ -107,7 +87,7 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
         try {
             String jsonString = EntityUtils.toString(response.getEntity());
             JSONObject jsonObject = new JSONObject(jsonString);
-            if(response.getEntity()!=null) {
+            if (response.getEntity() != null) {
                 meta.setLatestVersion(jsonObject.getString("Version"));
 
                 // Module versions are prefixed with "v" in the Go ecosystem.

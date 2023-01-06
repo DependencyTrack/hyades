@@ -20,21 +20,14 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import org.acme.common.ManagedHttpClient;
-import org.acme.common.ManagedHttpClientFactory;
-import org.acme.commonutil.HttpUtil;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -53,9 +46,6 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
     NpmMetaAnalyzer() {
         this.baseUrl = DEFAULT_BASE_URL;
     }
-
-    @Inject
-    ManagedHttpClientFactory managedHttpClientFactory;
 
     /**
      * {@inheritDoc}
@@ -85,31 +75,21 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
                 packageName = component.getPurl().getName();
             }
 
-            final String url = String.format(baseUrl + API_URL, packageName);
-            try {
-                final HttpUriRequest request = new HttpGet(url);
-                request.setHeader("accept", "application/json");
-                if (username != null || password != null) {
-                    request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
-                }
-                final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-                CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
-                try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
-                    if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
-                        String responseString = EntityUtils.toString(response.getEntity());
-                        JSONObject jsonResponse = new JSONObject(responseString);
-                        if (responseString != null && jsonResponse != null) {
-                            final String latest = jsonResponse.optString("latest");
-                            if (latest != null) {
-                                meta.setLatestVersion(latest);
-                            }
+            final String url = String.format(baseUrl, API_URL, packageName);
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                    String responseString = EntityUtils.toString(response.getEntity());
+                    JSONObject jsonResponse = new JSONObject(responseString);
+                    if (responseString != null && jsonResponse != null) {
+                        final String latest = jsonResponse.optString("latest");
+                        if (latest != null) {
+                            meta.setLatestVersion(latest);
                         }
-                    } else {
-                        handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                     }
+                } else {
+                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                 }
-
-            } catch ( IOException e) {
+            } catch (IOException e) {
                 handleRequestException(LOGGER, e);
             }
         }

@@ -19,6 +19,9 @@
 package org.acme.repositories;
 
 import alpine.common.logging.Logger;
+import org.acme.common.ManagedHttpClient;
+import org.acme.common.ManagedHttpClientFactory;
+import org.acme.commonutil.HttpUtil;
 import org.acme.model.Notification;
 import org.acme.model.NotificationLevel;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +29,14 @@ import org.acme.model.Component;
 import org.acme.commonnotification.NotificationConstants;
 import org.acme.commonnotification.NotificationGroup;
 import org.acme.commonnotification.NotificationScope;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.IOException;
 
 /**
  * Base abstract class that all IMetaAnalyzer implementations should likely extend.
@@ -33,7 +44,12 @@ import org.acme.commonnotification.NotificationScope;
  * @author Steve Springett
  * @since 3.1.0
  */
+
+@ApplicationScoped
 public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
+
+    @Inject
+    ManagedHttpClientFactory managedHttpClientFactory;
 
     protected String baseUrl;
 
@@ -82,6 +98,17 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
                 .content("An error occurred while communicating with an " + supportedRepositoryType().name() + " repository. Check log for details. " + e.getMessage())
                 .level(NotificationLevel.ERROR)
         );
+    }
+
+    protected CloseableHttpResponse processHttpRequest(String url) throws IOException {
+        final HttpUriRequest request = new HttpGet(url);
+        request.addHeader("accept", "application/json");
+        if (username != null || password != null) {
+            request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
+        }
+        final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
+        CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
+        return threadSafeClient.execute(request);
     }
 
 }
