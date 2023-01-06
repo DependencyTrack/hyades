@@ -60,6 +60,9 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
     };
+
+    @Inject
+    MetaModel meta;
     private static final Logger LOGGER = Logger.getLogger(NugetMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://api.nuget.org";
 
@@ -106,7 +109,6 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
-        final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null && performVersionCheck(meta, component)) {
                 performLastPublishedCheck(meta, component);
         }
@@ -116,9 +118,8 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     private boolean performVersionCheck(final MetaModel meta, final Component component) {
         final String url = String.format(versionQueryUrl, component.getPurl().getName().toLowerCase());
         final HttpUriRequest request = new HttpGet(url);
-        request.setHeader("accept", "application/json");
         if (username != null || password != null) {
-            request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
+            request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
         }
         final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
         CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
