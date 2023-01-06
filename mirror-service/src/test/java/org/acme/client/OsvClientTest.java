@@ -25,7 +25,6 @@ import java.nio.file.Paths;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.http.Body.fromJsonBytes;
 import static org.acme.util.FileUtil.deleteFileAndDir;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -56,8 +55,8 @@ class OsvClientTest {
         // Have the OSV API return one zip with one file for the provided ecosystem
         wireMockServer.stubFor(get(anyUrl())
                 .willReturn(aResponse()
-                        .withStatus(HttpStatus.SC_OK)
-                        .withResponseBody(fromJsonBytes(getOsvTestZipData("osv-vuln.json")))));
+                        .withBody(getOsvTestZipData("osv-vuln.json"))
+                        .withStatus(HttpStatus.SC_OK)));
         final Path osvZipFilePath = osvClient.downloadEcosystemZip("Go");
         assertThat(osvZipFilePath).isNotNull();
         deleteFileAndDir(osvZipFilePath);
