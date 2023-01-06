@@ -1,35 +1,40 @@
 ---
 scrape_configs:
 - job_name: redpanda
-  scrape_interval: 5s
+  scrape_interval: 15s
   scheme: http
-  static_configs:
-  - targets:
-    - redpanda:9644
+  dns_sd_configs:
+  - names: [ "redpanda" ]
+    type: A
+    port: 9644
 - job_name: apiserver
-  scrape_interval: 5s
+  scrape_interval: 15s
   scheme: http
-  static_configs:
-  - targets:
-    - apiserver:8080
+  dns_sd_configs:
+  - names: [ "apiserver" ]
+    type: A
+    port: 8080
 - job_name: notification-publisher
-  scrape_interval: 5s
+  scrape_interval: 15s
   scheme: http
   metrics_path: /q/metrics
-  static_configs:
-  - targets:
-    - notification-publisher:8090
+  dns_sd_configs:
+  - names: [ "notification-publisher" ]
+    type: A
+    port: 8090
 - job_name: repo-meta-analyzer
-  scrape_interval: 5s
+  scrape_interval: 15s
   scheme: http
   metrics_path: /q/metrics
-  static_configs:
-  - targets:
-    - repo-meta-analyzer:8091
+  dns_sd_configs:
+  - names: [ "repo-meta-analyzer" ]
+    type: A
+    port: 8091
 - job_name: vuln-analyzer
-  scrape_interval: 5s
+  scrape_interval: 15s
   scheme: http
   metrics_path: /q/metrics
-  static_configs:
-  - targets:
-    - vuln-analyzer:8092
+  dns_sd_configs:
+  - names: [ "vuln-analyzer" ]
+    type: A
+    port: 8092
