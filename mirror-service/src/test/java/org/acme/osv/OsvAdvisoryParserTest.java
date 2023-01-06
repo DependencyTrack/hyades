@@ -1,7 +1,7 @@
 package org.acme.osv;
 
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
+import org.json.JSONObject;
+import org.json.JSONArray;
 import org.acme.model.OsvAdvisory;
 import org.acme.model.OsvAffectedPackage;
 import org.junit.jupiter.api.Assertions;

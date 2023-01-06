@@ -1,6 +1,6 @@
 package org.acme.osv;
 
-import kong.unirest.json.JSONObject;
+import org.json.JSONObject;
 import org.acme.client.OsvClient;
 import org.acme.model.OsvAdvisory;
 import org.slf4j.Logger;

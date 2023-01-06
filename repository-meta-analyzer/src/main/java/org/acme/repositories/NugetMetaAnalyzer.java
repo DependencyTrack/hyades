@@ -115,6 +115,15 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
         return meta;
     }
 
+    public CloseableHttpResponse processHttpRequest(String url) throws IOException {
+        final HttpUriRequest request = new HttpGet(url);
+        if (username != null || password != null) {
+            request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
+        }
+        final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
+        CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
+        return threadSafeClient.execute(request);
+    }
     private boolean performVersionCheck(final MetaModel meta, final Component component) {
         final String url = String.format(versionQueryUrl, component.getPurl().getName().toLowerCase());
         final HttpUriRequest request = new HttpGet(url);
