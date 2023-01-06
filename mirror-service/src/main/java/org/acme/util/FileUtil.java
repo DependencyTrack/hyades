@@ -15,7 +15,10 @@ public class FileUtil {
         try {
             boolean fileDeleted = filePath.toFile().delete();
             if (fileDeleted) {
-                filePath.getParent().toFile().delete();
+                boolean dirDeleted = filePath.getParent().toFile().delete();
+                if (!dirDeleted) {
+                    LOGGER.info("Error while deleting the directory path %s", filePath.getParent().getFileName().toString());
+                }
             }
         } catch (Exception e) {
             LOGGER.info("Error while deleting the file path %s : %s", filePath.getFileName().toString(), e);
