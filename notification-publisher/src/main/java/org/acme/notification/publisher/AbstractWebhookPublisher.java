@@ -65,10 +65,6 @@ public abstract class AbstractWebhookPublisher implements Publisher {
             StringEntity entity = new StringEntity(content);
             request.setEntity(entity);
             final CloseableHttpResponse response = threadSafeClient.execute(request);
-//                .header("content-type", mimeType)
-//                .header("accept", mimeType)
-//                .body(content)
-//                .asEmpty();
 
             if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {
                 logger.error("An error was encountered publishing notification to " + publisherName);
