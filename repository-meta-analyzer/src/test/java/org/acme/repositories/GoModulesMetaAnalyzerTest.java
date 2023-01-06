@@ -19,13 +19,19 @@
 package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
+import io.quarkus.test.junit.QuarkusTest;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
+
+@QuarkusTest
 class GoModulesMetaAnalyzerTest {
+    @Inject
+    GoModulesMetaAnalyzer analyzer;
 
     @Test
     void testAnalyzer() throws Exception {
@@ -33,7 +39,6 @@ class GoModulesMetaAnalyzerTest {
         component.setVersion("v0.1.0");
         component.setPurl(new PackageURL("pkg:golang/github.com/CycloneDX/cyclonedx-go@v0.3.0"));
 
-        final var analyzer = new GoModulesMetaAnalyzer();
         Assertions.assertEquals("GoModulesMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.GO_MODULES, analyzer.supportedRepositoryType());

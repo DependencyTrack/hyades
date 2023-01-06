@@ -26,6 +26,7 @@ import org.acme.model.NotificationLevel;
 import org.acme.persistence.ConfigPropertyRepository;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.io.PrintStream;
 
@@ -38,6 +39,7 @@ public class ConsolePublisher implements Publisher {
 
     final ConfigPropertyRepository configPropertyRepository;
 
+    @Inject
     public ConsolePublisher(final ConfigPropertyRepository configPropertyRepository){
         this.configPropertyRepository = configPropertyRepository;
     }

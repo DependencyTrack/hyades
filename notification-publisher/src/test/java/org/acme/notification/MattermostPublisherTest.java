@@ -45,6 +45,9 @@ public class MattermostPublisherTest {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    MattermostPublisher publisher;
+
     @BeforeAll
     public static void beforeClass() {
         mockServer = startClientAndServer(1090);
@@ -82,7 +85,6 @@ public class MattermostPublisherTest {
         notification.setLevel(NotificationLevel.INFORMATIONAL);
         notification.setTitle("Test Notification");
         notification.setContent("This is only a test");
-        MattermostPublisher publisher = new MattermostPublisher(configPropertyRepository);
         publisher.inform(notification, config);
     }
 

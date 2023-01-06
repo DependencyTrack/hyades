@@ -44,7 +44,8 @@ import static org.mockserver.model.HttpResponse.response;
 @QuarkusTest
 class ComposerMetaAnalyzerTest {
     private static ClientAndServer mockServer;
-
+    @Inject
+    ComposerMetaAnalyzer analyzer;
     @BeforeAll
     public static void beforeClass() {
         mockServer = ClientAndServer.startClientAndServer(1080);
@@ -59,7 +60,6 @@ class ComposerMetaAnalyzerTest {
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/phpunit/phpunit@1.0.0"));
-        ComposerMetaAnalyzer analyzer = new ComposerMetaAnalyzer();
         Assertions.assertEquals("ComposerMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.COMPOSER, analyzer.supportedRepositoryType());
@@ -70,8 +70,6 @@ class ComposerMetaAnalyzerTest {
 
     @Test
     void testAnalyzerFindsVersionWithLeadingV() throws Exception {
-
-        ComposerMetaAnalyzer analyzer = new ComposerMetaAnalyzer();
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/typo3/class-alias-loader@v1.1.0"));
         final File packagistFile = getResourceFile("typo3", "class-alias-loader");

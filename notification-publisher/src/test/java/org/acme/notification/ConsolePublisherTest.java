@@ -51,6 +51,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @QuarkusTest
 public class ConsolePublisherTest {
 
+    @Inject
+    ConsolePublisher publisher;
+
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -90,7 +93,6 @@ public class ConsolePublisherTest {
         notification.setLevel(NotificationLevel.INFORMATIONAL);
         notification.setTitle("Test Notification");
         notification.setContent("This is only a test");
-        ConsolePublisher publisher = new ConsolePublisher(configPropertyRepository);
         publisher.inform(notification, getConfig(DefaultNotificationPublishers.CONSOLE, ""));
         Assertions.assertTrue(outContent.toString().contains(expectedResult(notification)));
     }
@@ -109,7 +111,6 @@ public class ConsolePublisherTest {
         notification.setLevel(NotificationLevel.ERROR);
         notification.setTitle("Test Notification");
         notification.setContent("This is only a test");
-        ConsolePublisher publisher = new ConsolePublisher(configPropertyRepository);
         publisher.inform(notification, getConfig(DefaultNotificationPublishers.CONSOLE, ""));
         Assertions.assertTrue(errContent.toString().contains(expectedResult(notification)));
     }

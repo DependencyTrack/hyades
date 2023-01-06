@@ -58,6 +58,9 @@ import static org.mockserver.model.HttpResponse.response;
 @QuarkusTest
 public class WebhookPublisherTest {
 
+    @Inject
+    WebhookPublisher publisher;
+
     private static ClientAndServer mockServer;
 
     @Inject
@@ -65,9 +68,6 @@ public class WebhookPublisherTest {
 
     @Inject
     EntityManager entityManager;
-
-    @Inject
-    ManagedHttpClientFactory managedHttpClientFactory;
 
     @BeforeAll
     public static void beforeClass() {
@@ -99,13 +99,11 @@ public class WebhookPublisherTest {
                 """).executeUpdate();
         JsonObject config = getConfig(DefaultNotificationPublishers.WEBHOOK, "http://localhost:1080/mychannel");
         Notification notification = new Notification();
-        managedHttpClientFactory.newManagedHttpClient();
         notification.setScope(NotificationScope.PORTFOLIO.name());
         notification.setGroup(NotificationGroup.NEW_VULNERABILITY.name());
         notification.setLevel(NotificationLevel.INFORMATIONAL);
         notification.setTitle("Test Notification");
         notification.setContent("This is only a test");
-        WebhookPublisher publisher = new WebhookPublisher(configPropertyRepository);
         publisher.inform(notification, config);
     }
 

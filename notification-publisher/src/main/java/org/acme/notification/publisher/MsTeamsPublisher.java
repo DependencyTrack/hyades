@@ -24,6 +24,7 @@ import org.acme.model.Notification;
 import org.acme.persistence.ConfigPropertyRepository;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.json.JsonObject;
 
 @ApplicationScoped
@@ -32,6 +33,7 @@ public class MsTeamsPublisher extends AbstractWebhookPublisher implements Publis
 
     private final ConfigPropertyRepository configPropertyRepository;
 
+    @Inject
     public MsTeamsPublisher(final ConfigPropertyRepository configPropertyRepository){
         this.configPropertyRepository = configPropertyRepository;
     }

@@ -74,6 +74,9 @@ public class SlackPublisherTest {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    SlackPublisher publisher;
+
     @Test
     @TestTransaction
     public void testPublish() throws IOException {
@@ -100,7 +103,6 @@ public class SlackPublisherTest {
         notification.setLevel(NotificationLevel.INFORMATIONAL);
         notification.setTitle("Test Notification");
         notification.setContent("This is only a test");
-        SlackPublisher publisher = new SlackPublisher(configPropertyRepository);
         publisher.inform(notification, config);
     }
 

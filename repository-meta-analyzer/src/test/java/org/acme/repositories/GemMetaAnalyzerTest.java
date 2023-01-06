@@ -19,20 +19,26 @@
 package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
+import io.quarkus.test.junit.QuarkusTest;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
+
+@QuarkusTest
 class GemMetaAnalyzerTest {
 
+    @Inject
+    GemMetaAnalyzer analyzer;
     @Test
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:gem/test-unit@3.2.0"));
 
-        GemMetaAnalyzer analyzer = new GemMetaAnalyzer();
+       // GemMetaAnalyzer analyzer = new GemMetaAnalyzer();
         Assertions.assertEquals("GemMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.GEM, analyzer.supportedRepositoryType());
