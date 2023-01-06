@@ -117,6 +117,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
 
     public CloseableHttpResponse processHttpRequest(String url) throws IOException {
         final HttpUriRequest request = new HttpGet(url);
+        request.addHeader("accept", "application/json");
         if (username != null || password != null) {
             request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
         }
@@ -126,13 +127,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     }
     private boolean performVersionCheck(final MetaModel meta, final Component component) {
         final String url = String.format(versionQueryUrl, component.getPurl().getName().toLowerCase());
-        final HttpUriRequest request = new HttpGet(url);
-        if (username != null || password != null) {
-            request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
-        }
-        final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-        CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
-        try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
+        try (final CloseableHttpResponse response = processHttpRequest(url)) {
             if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                 String responseString = EntityUtils.toString(response.getEntity());
                 JSONObject jsonResponse = new JSONObject(responseString);
@@ -172,14 +167,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     private boolean performLastPublishedCheck(final MetaModel meta, final Component component) {
         final String url = String.format(registrationUrl, component.getPurl().getName().toLowerCase(), meta.getLatestVersion());
         try {
-            final HttpUriRequest request = new HttpGet(url);
-            request.setHeader("accept", "application/json");
-            if (username != null || password != null) {
-                request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
-            }
-            final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-            CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
-            try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String stringResponse = EntityUtils.toString(response.getEntity());
                     if(stringResponse!=null){
@@ -206,14 +194,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     private void initializeEndpoints() {
         final String url = baseUrl + INDEX_URL;
         try {
-            final HttpUriRequest request = new HttpGet(url);
-            request.setHeader("accept", "application/json");
-            if (username != null || password != null) {
-                request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
-            }
-            final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-            CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
-            try (final CloseableHttpResponse response = threadSafeClient.execute(request)) {
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String responseString = EntityUtils.toString(response.getEntity());
                     if(responseString!=null){
