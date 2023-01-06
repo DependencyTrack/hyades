@@ -10,6 +10,7 @@
     
   <modules>
     <module>commons</module>
+    <module>mirror-service</module>
     <module>notification-publisher</module>
     <module>repository-meta-analyzer</module>
     <module>vulnerability-analyzer</module>
