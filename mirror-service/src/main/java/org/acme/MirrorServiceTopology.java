@@ -4,7 +4,7 @@ import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.acme.common.KafkaTopic;
 import org.acme.model.OsvAdvisory;
 import org.acme.model.Vulnerability;
-import org.acme.osv.OsvAnalyzer;
+import org.acme.osv.OsvMirrorHandler;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -19,7 +19,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.acme.commonutil.KafkaStreamsUtil.processorNameProduce;
@@ -27,11 +26,11 @@ import static org.acme.commonutil.KafkaStreamsUtil.processorNameProduce;
 @ApplicationScoped
 public class MirrorServiceTopology {
 
-    private final OsvAnalyzer osvAnalyzer;
+    private final OsvMirrorHandler osvMirrorHandler;
 
     @Inject
-    public MirrorServiceTopology(final OsvAnalyzer osvAnalyzer) {
-        this.osvAnalyzer = osvAnalyzer;
+    public MirrorServiceTopology(final OsvMirrorHandler osvMirrorHandler) {
+        this.osvMirrorHandler = osvMirrorHandler;
     }
 
     @Produces
@@ -62,7 +61,7 @@ public class MirrorServiceTopology {
     }
 
     List<KeyValue<String, OsvAdvisory>> mirrorOsv(String ecosystem) throws IOException {
-        return osvAnalyzer.performMirror(ecosystem).stream()
+        return osvMirrorHandler.performMirror(ecosystem).stream()
                 .map(vulnerability -> KeyValue.pair(Vulnerability.Source.OSV.name() + "/" + vulnerability.getId(), vulnerability))
                 .toList();
     }

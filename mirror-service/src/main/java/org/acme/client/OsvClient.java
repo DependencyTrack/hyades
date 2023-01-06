@@ -23,11 +23,7 @@ import java.util.Optional;
 import static org.acme.util.FileUtil.getTempFileLocation;
 
 /**
- * Client for the Snyk REST API.
- * <p>
- * Note: Using the MicroProfile RestClient does not work, because Snyk expects the PURL
- * to be encoded differently than what the MP RestClient is doing (it expects ":" and "@"
- * to be encoded, which is normally not necessary for URL path segments).
+ * Client for the OSV REST API.
  */
 @ApplicationScoped
 public class OsvClient {

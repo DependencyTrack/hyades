@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-public class OsvAnalyzerTest {
+public class OsvMirrorHandlerTest {
 
     @Inject
     Topology topology;
@@ -38,11 +38,12 @@ public class OsvAnalyzerTest {
     OsvClient osvClientMock;
 
     @Inject
-    OsvAnalyzer osvAnalyzer;
+    OsvMirrorHandler osvMirrorHandler;
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, String> inputTopic;
     private TestOutputTopic<String, OsvAdvisory> outputTopic;
+    private Path tempZipLocation;
 
     @BeforeEach
     void beforeEach() {
@@ -55,6 +56,7 @@ public class OsvAnalyzerTest {
 
     @AfterEach
     void afterEach() {
+        deleteFileAndDir(tempZipLocation);
         testDriver.close();
     }
 
@@ -62,7 +64,7 @@ public class OsvAnalyzerTest {
     void performMirrorFromTopic() throws IOException {
 
         Path testFile = Path.of("src/test/resources/osv/osv-download.zip");
-        Path tempZipLocation = getTempFileLocation("test", ".zip");
+        tempZipLocation = getTempFileLocation("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         when(osvClientMock.downloadEcosystemZip(anyString()))
                 .thenReturn(tempZipLocation);
@@ -71,6 +73,5 @@ public class OsvAnalyzerTest {
         assertThat(outputTopic.readRecord()).satisfies(record -> {
             assertThat(record.key()).isEqualTo("OSV/GO-2020-0023");
         });
-        deleteFileAndDir(tempZipLocation);
     }
 }

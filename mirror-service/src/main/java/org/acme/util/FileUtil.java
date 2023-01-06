@@ -26,9 +26,7 @@ public class FileUtil {
     }
 
     public static Path getTempFileLocation(String dirName, String fileSuffix) throws IOException {
-        final String ROOT = "src/main/resources";
-        Path root = Paths.get(ROOT);
-        Path tempDir = Files.createTempDirectory(root, dirName);
+        Path tempDir = Files.createTempDirectory(dirName);
         Path tempFile = Files.createTempFile(tempDir, "", fileSuffix);
         return tempFile;
     }

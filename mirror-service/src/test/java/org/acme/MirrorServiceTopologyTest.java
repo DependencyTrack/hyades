@@ -5,7 +5,7 @@ import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.acme.common.KafkaTopic;
 import org.acme.model.OsvAdvisory;
-import org.acme.osv.OsvAnalyzer;
+import org.acme.osv.OsvMirrorHandler;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.TestInputTopic;
@@ -33,12 +33,12 @@ public class MirrorServiceTopologyTest {
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, String> inputTopic;
     private TestOutputTopic<String, OsvAdvisory> outputTopic;
-    private OsvAnalyzer osvAnalyzerMock;
+    private OsvMirrorHandler osvMirrorHandlerMock;
 
     @BeforeEach
     void beforeEach() {
-        osvAnalyzerMock = Mockito.mock(OsvAnalyzer.class);
-        QuarkusMock.installMockForType(osvAnalyzerMock, OsvAnalyzer.class);
+        osvMirrorHandlerMock = Mockito.mock(OsvMirrorHandler.class);
+        QuarkusMock.installMockForType(osvMirrorHandlerMock, OsvMirrorHandler.class);
         testDriver = new TopologyTestDriver(topology);
         inputTopic = testDriver.createInputTopic(KafkaTopic.MIRROR_OSV.getName(), new StringSerializer(), new StringSerializer());
         outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(), new StringDeserializer(), new ObjectMapperDeserializer<>(OsvAdvisory.class));
@@ -51,7 +51,7 @@ public class MirrorServiceTopologyTest {
 
     @Test
     void testNoAdvisories() throws IOException {
-        Mockito.when(osvAnalyzerMock.performMirror(Mockito.anyString())).thenReturn(Collections.emptyList());
+        Mockito.when(osvMirrorHandlerMock.performMirror(Mockito.anyString())).thenReturn(Collections.emptyList());
         inputTopic.pipeInput("Maven", "");
         Assertions.assertTrue(outputTopic.isEmpty());
     }
@@ -60,7 +60,7 @@ public class MirrorServiceTopologyTest {
     void testOsvMirroring() throws IOException {
         OsvAdvisory osvAdvisory = new OsvAdvisory();
         osvAdvisory.setId("test-id");
-        Mockito.when(osvAnalyzerMock.performMirror(Mockito.anyString())).thenReturn(List.of(osvAdvisory));
+        Mockito.when(osvMirrorHandlerMock.performMirror(Mockito.anyString())).thenReturn(List.of(osvAdvisory));
         inputTopic.pipeInput("Go", "");
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
         assertThat(outputTopic.readRecord()).satisfies(record -> {

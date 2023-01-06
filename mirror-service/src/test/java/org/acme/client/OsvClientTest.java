@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusTest;
-import org.acme.osv.OsvAnalyzer;
+import org.acme.osv.OsvMirrorHandler;
 import org.acme.util.WireMockTestResource;
 import org.acme.util.WireMockTestResource.InjectWireMock;
 import org.apache.http.HttpStatus;
@@ -44,7 +44,7 @@ class OsvClientTest {
     OsvClient osvClient;
 
     @Inject
-    OsvAnalyzer osvAnalyzer;
+    OsvMirrorHandler osvMirrorHandler;
 
     @AfterEach
     void afterEach() {

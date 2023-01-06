@@ -22,14 +22,14 @@ import java.util.zip.ZipInputStream;
 import static org.acme.util.FileUtil.deleteFileAndDir;
 
 @ApplicationScoped
-public class OsvAnalyzer {
+public class OsvMirrorHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OsvAnalyzer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OsvMirrorHandler.class);
     private OsvClient client;
     List<OsvAdvisory> osvAdvisories;
 
     @Inject
-    public OsvAnalyzer(final OsvClient client) {
+    public OsvMirrorHandler(final OsvClient client) {
         this.client = client;
         this.osvAdvisories = new ArrayList<>();
     }

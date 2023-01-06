@@ -51,7 +51,7 @@ vuln_analysis_topics=(
   "dtrack.vuln-analysis.component.swid"
   "dtrack.vuln-analysis.vulnerability"
   "dtrack.vuln-analysis.result"
-  "dtrack.mirror.osv"
+  "dtrack.vulnerability.mirror.osv"
   "dtrack.vulnerability"
   "dtrack.vuln-analysis.info"
 )
