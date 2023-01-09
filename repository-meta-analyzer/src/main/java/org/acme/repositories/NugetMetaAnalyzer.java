@@ -30,7 +30,6 @@ import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -51,9 +50,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
     };
-
-    @Inject
-    MetaModel meta;
+    MetaModel meta = new MetaModel();
     private static final Logger LOGGER = Logger.getLogger(NugetMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://api.nuget.org";
 

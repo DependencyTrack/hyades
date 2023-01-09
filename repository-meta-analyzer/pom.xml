@@ -39,7 +39,7 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kafka-streams</artifactId>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/io.quarkus/quarkus-apache-httpclient -->
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-apache-httpclient</artifactId>

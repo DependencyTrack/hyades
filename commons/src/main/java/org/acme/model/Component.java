@@ -26,14 +26,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
-import com.google.gson.JsonObject;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.UUIDConverter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.json.JsonObject;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -54,7 +53,6 @@ import java.util.UUID;
  */
 @Entity
 @RegisterForReflection
-@ApplicationScoped
 @Table(name = "COMPONENT")
 public class Component extends PanacheEntityBase implements Serializable {
 
@@ -347,6 +345,7 @@ public class Component extends PanacheEntityBase implements Serializable {
     public void setProject(Project project) {
         this.project = project;
     }
+
     public UUID getUuid() {
         return uuid;
     }

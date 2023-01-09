@@ -20,12 +20,10 @@ package org.acme.model;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.io.Serializable;
 import java.util.Date;
 
 @RegisterForReflection
-@ApplicationScoped
 public class MetaModel implements Serializable {
 
     private Component component;

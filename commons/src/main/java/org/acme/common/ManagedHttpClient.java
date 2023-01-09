@@ -20,10 +20,6 @@ package org.acme.common;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-@ApplicationScoped
 public class ManagedHttpClient {
 
     private CloseableHttpClient httpClient;
