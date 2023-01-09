@@ -108,13 +108,13 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
         try (final CloseableHttpResponse response = processHttpRequest(url)) {
             if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                 String responseString = EntityUtils.toString(response.getEntity());
-                JSONObject jsonResponse = new JSONObject(responseString);
-                if (responseString != null && jsonResponse != null) {
+                if (!responseString.equalsIgnoreCase("") && !responseString.equalsIgnoreCase("{}")) {
+                    JSONObject jsonResponse = new JSONObject(responseString);
                     final JSONArray versions = jsonResponse.getJSONArray("versions");
                     final String latest = findLatestVersion(versions); // get the last version in the array
                     meta.setLatestVersion(latest);
+                    return true;
                 }
-                return true;
             }
             else {
                 handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
@@ -144,18 +144,15 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private boolean performLastPublishedCheck(final MetaModel meta, final Component component) {
         final String url = String.format(registrationUrl, component.getPurl().getName().toLowerCase(), meta.getLatestVersion());
-        try {
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String stringResponse = EntityUtils.toString(response.getEntity());
-                    if(stringResponse!=null){
+                    if(!stringResponse.equalsIgnoreCase("") && !stringResponse.equalsIgnoreCase("{}")){
                         JSONObject jsonResponse = new JSONObject(stringResponse);
-                        if(jsonResponse!=null){
                             final String updateTime = jsonResponse.optString("published", null);
                             if (updateTime != null) {
                                 meta.setPublishedTimestamp(parseUpdateTime(updateTime));
                             }
-                        }
                         return true;
                     }
                 }
@@ -163,7 +160,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
                     handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                 }
             }
-        } catch (IOException e) {
+         catch (IOException e) {
             handleRequestException(LOGGER, e);
         }
         return false;

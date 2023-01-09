@@ -71,7 +71,7 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String jsonString = EntityUtils.toString(response.getEntity());
-                    if (jsonString == null) {
+                    if (jsonString.equalsIgnoreCase("") || jsonString.equalsIgnoreCase("{}")) {
                         handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                     } else {
                         JSONObject jsonObject = new JSONObject(jsonString);

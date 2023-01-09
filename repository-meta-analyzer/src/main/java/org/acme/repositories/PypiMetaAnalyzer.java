@@ -90,7 +90,7 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
     private MetaModel processSuccessResponse(CloseableHttpResponse response, MetaModel meta) throws IOException {
         MetaModel updatedMeta = new MetaModel(meta.getComponent());
         String responseString = EntityUtils.toString(response.getEntity());
-        if (responseString != null) {
+        if (!responseString.equalsIgnoreCase("") && !responseString.equalsIgnoreCase("{}")) {
             JSONObject jsonResponse = new JSONObject(responseString);
             final JSONObject info = jsonResponse.getJSONObject("info");
             final String latest = info.optString("version", null);

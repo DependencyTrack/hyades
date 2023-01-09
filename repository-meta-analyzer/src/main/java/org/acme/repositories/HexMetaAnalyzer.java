@@ -82,9 +82,11 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
             final String url = String.format(baseUrl + API_URL, packageName);
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 String jsonString = EntityUtils.toString(response.getEntity());
-                JSONObject jsonObject = new JSONObject(jsonString);
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
-                    successMeta = processResponse(meta, jsonObject);
+                    if(!jsonString.equalsIgnoreCase("") && !jsonString.equalsIgnoreCase("{}")) {
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        successMeta = processResponse(meta, jsonObject);
+                    }
                 } else {
                     handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                 }

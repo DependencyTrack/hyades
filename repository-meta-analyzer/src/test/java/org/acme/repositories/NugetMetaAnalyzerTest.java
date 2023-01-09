@@ -24,7 +24,6 @@ import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.apache.http.HttpHeaders;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -126,7 +125,6 @@ class NugetMetaAnalyzerTest {
         analyzer.setRepositoryUsernameAndPassword(null, "password");
         analyzer.setRepositoryBaseUrl("http://localhost:1080");
         MetaModel metaModel = analyzer.analyze(component);
-        metaModel.getLatestVersion();
         Assertions.assertEquals("5.0.2", metaModel.getLatestVersion());
         Assertions.assertNotNull(metaModel.getPublishedTimestamp());
     }
