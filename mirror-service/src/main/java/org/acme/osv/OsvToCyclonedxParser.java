@@ -1,5 +1,7 @@
 package org.acme.osv;
 
+import com.github.packageurl.MalformedPackageURLException;
+import com.github.packageurl.PackageURL;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import org.acme.resolver.CweResolver;
@@ -9,6 +11,8 @@ import org.cyclonedx.model.Component;
 import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.model.OrganizationalContact;
 import org.cyclonedx.model.vulnerability.Vulnerability;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import us.springett.cvss.Cvss;
 
 import java.sql.Date;
@@ -22,16 +26,19 @@ import static org.acme.model.Vulnerability.Source.OSV;
 
 public class OsvToCyclonedxParser {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
+    Bom cyclonedxBom;
+    PackageURL componentPurl;
+
     public Bom parse(final JSONObject object) {
 
-        Bom cyclonedxBom = null;
+        cyclonedxBom = new Bom();
 
         // initial check if advisory is valid or withdrawn
         String withdrawn = object.optString("withdrawn", null);
 
         if(object != null && withdrawn == null) {
 
-            cyclonedxBom = new Bom();
             Vulnerability vulnerability = new Vulnerability();
             vulnerability.setId(object.optString("id", null));
             vulnerability.setDescription(trimSummary(object.optString("summary", null)));
@@ -83,7 +90,7 @@ public class OsvToCyclonedxParser {
                 // SEVERITY
                 String osvSeverity = databaseSpecific.optString("severity", null);
                 if (osvSeverity != null) {
-                    severity = Vulnerability.Rating.Severity.valueOf(osvSeverity.toLowerCase());
+                    severity = Vulnerability.Rating.Severity.fromString(osvSeverity.toLowerCase());
                 }
 
                 // CWEs
@@ -104,8 +111,14 @@ public class OsvToCyclonedxParser {
                 final JSONObject cpeObj = osvAffected.optJSONObject("package");
                 if (cpeObj != null) {
                     Component component = new Component();
+                    String purl = cpeObj.optString("purl", null);
+                    try {
+                        componentPurl = new PackageURL(purl);
+                    } catch (MalformedPackageURLException ex) {
+                        LOGGER.info("Error while parsing purl %s : %s", componentPurl, ex);
+                    }
                     component.setName(cpeObj.optString("name", null));
-                    component.setPurl(cpeObj.optString("purl", null));
+                    component.setPurl(purl);
                     cyclonedxBom.setComponents(List.of(component));
                 }
 
@@ -118,7 +131,7 @@ public class OsvToCyclonedxParser {
         return cyclonedxBom;
     }
 
-    private List<Vulnerability.Affect> parseAffectedRanges(JSONArray osvAffectedArray) {
+    public List<Vulnerability.Affect> parseAffectedRanges(JSONArray osvAffectedArray) {
 
         List<Vulnerability.Affect> affects = new ArrayList<>();
         for(int i=0; i<osvAffectedArray.length(); i++) {
@@ -134,14 +147,14 @@ public class OsvToCyclonedxParser {
             if (rangesObj != null) {
                 for (int j=0; j<rangesObj.length(); j++) {
                     Vulnerability.Version versionRange = new Vulnerability.Version();
-                    versionRange.setRange(generateRangeSpecifier(osvAffectedObj, rangesObj.getJSONObject(j), "purlType"));
-                    versionRanges.add(versionRange);
+//                    versionRange.setRange(generateRangeSpecifier(osvAffectedObj, rangesObj.getJSONObject(j)));
+                    versionRanges.addAll(generateRangeSpecifier(osvAffectedObj, rangesObj.getJSONObject(j)));
                 }
             }
             // if ranges are not available or only commit hash range is available, look for versions
             if (versions != null && versions.length() > 0) {
                 Vulnerability.Version versionRange = new Vulnerability.Version();
-                versionRange.setVersion(generateVersionSpecifier(versions, "purlType"));
+                versionRange.setVersion(generateVersionSpecifier(versions));
                 versionRanges.add(versionRange);
             }
             versionRangeAffected.setVersions(versionRanges);
@@ -150,18 +163,22 @@ public class OsvToCyclonedxParser {
         return affects;
     }
 
-    private String generateVersionSpecifier(JSONArray versions, String purlType) {
-
-        String version = "vers:" + purlType + "/";
-        for (int i=0; i<versions.length(); i++) {
-            version += versions.getString(i) + "|";
+    private String generateVersionSpecifier(JSONArray versions) {
+        String uniVersionRange = "vers:";
+        if (componentPurl != null) {
+            uniVersionRange += componentPurl.getType();
         }
-        return version;
+        uniVersionRange += "/";
+
+        for (int i=0; i<versions.length(); i++) {
+            uniVersionRange += versions.getString(i) + "|";
+        }
+        return StringUtils.chop(uniVersionRange);
     }
 
-    private String generateRangeSpecifier(JSONObject affectedRange, JSONObject range, String purlType) {
+    private List<Vulnerability.Version> generateRangeSpecifier(JSONObject affectedRange, JSONObject range) {
 
-        String uniVersionRange = null;
+        List<Vulnerability.Version> versionRanges = new ArrayList<>();
 
         final String rangeType = range.optString("type");
         if (!"ECOSYSTEM".equalsIgnoreCase(rangeType) && !"SEMVER".equalsIgnoreCase(rangeType)) {
@@ -172,18 +189,17 @@ public class OsvToCyclonedxParser {
             // We're also implicitly excluding ranges of types that we don't yet know of.
             // This is a tradeoff of potentially missing new data vs. flooding our users'
             // database with junk data.
-            return uniVersionRange;
+            return List.of();
         }
 
         final JSONArray rangeEvents = range.optJSONArray("events");
         if (rangeEvents == null) {
-            return uniVersionRange;
+            return List.of();
         }
 
         for (int i = 0; i < rangeEvents.length(); i++) {
-            uniVersionRange += "vers:"+purlType+"/";
-            JSONObject event = rangeEvents.getJSONObject(i);
 
+            JSONObject event = rangeEvents.getJSONObject(i);
             final String introduced = event.optString("introduced", null);
             if (introduced == null) {
                 // "introduced" is required for every range. But events are not guaranteed to be sorted,
@@ -194,7 +210,14 @@ public class OsvToCyclonedxParser {
                 // that aren't.
                 continue;
             }
+            final Vulnerability.Version versionRange = new Vulnerability.Version();
+            String uniVersionRange = "vers:";
+            if (componentPurl != null) {
+                uniVersionRange += componentPurl.getType();
+            }
+            uniVersionRange += "/";
             uniVersionRange += ">=" + introduced + "|";
+
             if (i + 1 < rangeEvents.length()) {
                 event = rangeEvents.getJSONObject(i + 1);
                 final String fixed = event.optString("fixed", null);
@@ -221,8 +244,10 @@ public class OsvToCyclonedxParser {
                     uniVersionRange += lastAffectedRange;
                 }
             }
+            versionRange.setRange(StringUtils.chop(uniVersionRange));
+            versionRanges.add(versionRange);
         }
-        return uniVersionRange;
+        return versionRanges;
     }
 
     private Vulnerability.Credits parseCredits(JSONArray creditsObj) {
