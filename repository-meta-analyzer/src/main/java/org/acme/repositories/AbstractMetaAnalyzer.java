@@ -19,8 +19,6 @@
 package org.acme.repositories;
 
 import alpine.common.logging.Logger;
-import org.acme.common.ManagedHttpClient;
-import org.acme.common.ManagedHttpClientFactory;
 import org.acme.commonutil.HttpUtil;
 import org.acme.model.Notification;
 import org.acme.model.NotificationLevel;
@@ -36,6 +34,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 
 /**
@@ -49,7 +48,8 @@ import java.io.IOException;
 public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
 
     @Inject
-    ManagedHttpClientFactory managedHttpClientFactory;
+    @Named("httpClient")
+    CloseableHttpClient httpClient;
 
     protected String baseUrl;
 
@@ -106,9 +106,7 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
         if (username != null || password != null) {
             request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
         }
-        final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-        CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
-        return threadSafeClient.execute(request);
+        return httpClient.execute(request);
     }
 
 }

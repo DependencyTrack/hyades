@@ -20,8 +20,6 @@ package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
-import org.acme.common.ManagedHttpClientFactory;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;

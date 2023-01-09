@@ -20,8 +20,6 @@ package org.acme.notification.publisher;
 
 import alpine.common.logging.Logger;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import org.acme.common.ManagedHttpClient;
-import org.acme.common.ManagedHttpClientFactory;
 import org.acme.commonnotification.NotificationConstants;
 import org.acme.commonnotification.NotificationGroup;
 import org.acme.commonnotification.NotificationScope;
@@ -34,13 +32,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.json.JsonObject;
 import java.io.IOException;
 
 public abstract class AbstractWebhookPublisher implements Publisher {
     private static final Logger LOGGER = Logger.getLogger(AbstractWebhookPublisher.class);
     @Inject
-    ManagedHttpClientFactory managedHttpClientFactory;
+    @Named("httpClient")
+    CloseableHttpClient httpClient;
 
     public void publish(final String publisherName, final PebbleTemplate template, final Notification notification, final JsonObject config, final ConfigPropertyRepository configPropertyRepository) {
         final Logger logger = Logger.getLogger(this.getClass());
@@ -58,13 +58,11 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         try {
             final HttpPost request = new HttpPost(destination);
             final String mimeType = getTemplateMimeType(config);
-            final ManagedHttpClient pooledHttpClient = managedHttpClientFactory.newManagedHttpClient();
-            CloseableHttpClient threadSafeClient = pooledHttpClient.getHttpClient();
             request.addHeader("content-type", mimeType);
             request.addHeader("accept", mimeType);
             StringEntity entity = new StringEntity(content);
             request.setEntity(entity);
-            final CloseableHttpResponse response = threadSafeClient.execute(request);
+            final CloseableHttpResponse response = httpClient.execute(request);
 
             if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {
                 logger.error("An error was encountered publishing notification to " + publisherName);

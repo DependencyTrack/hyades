@@ -1,26 +1,8 @@
-/*
- * This file is part of Dependency-Track.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * SPDX-License-Identifier: Apache-2.0
- * Copyright (c) Steve Springett. All Rights Reserved.
- */
 package org.acme.common;
 
 import alpine.Config;
 import alpine.common.logging.Logger;
-import alpine.common.util.SystemUtil;
+import io.micrometer.core.instrument.binder.httpcomponents.PoolingHttpClientConnectionManagerMetricsBinder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
@@ -45,17 +27,15 @@ import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.auth.BasicSchemeFactory;
 import org.apache.http.impl.auth.DigestSchemeFactory;
 import org.apache.http.impl.auth.NTLMSchemeFactory;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.impl.client.ProxyAuthenticationStrategy;
+import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 import javax.net.ssl.SSLContext;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -67,12 +47,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Map;
 
-@ApplicationScoped
-public class ManagedHttpClientFactory {
 
-    @Inject
-    ManagedHttpClient managedHttpClient;
-
+public class MetaAnalyzerConfiguration {
     private static final String PROXY_ADDRESS = Config.getInstance().getProperty(Config.AlpineKey.HTTP_PROXY_ADDRESS);
     private static int PROXY_PORT;
     static {
@@ -86,34 +62,14 @@ public class ManagedHttpClientFactory {
     private static final int TIMEOUT_CONNECTION = Config.getInstance().getPropertyAsInt(Config.AlpineKey.HTTP_TIMEOUT_CONNECTION);
     private static final int TIMEOUT_POOL = Config.getInstance().getPropertyAsInt(Config.AlpineKey.HTTP_TIMEOUT_POOL);
     private static final int TIMEOUT_SOCKET = Config.getInstance().getPropertyAsInt(Config.AlpineKey.HTTP_TIMEOUT_SOCKET);
-    private static final Logger LOGGER = Logger.getLogger(ManagedHttpClientFactory.class);
-    private static final String USER_AGENT;
-    static {
-        USER_AGENT = Config.getInstance().getApplicationName()
-                + " v" + Config.getInstance().getApplicationVersion()
-                + " ("
-                + SystemUtil.getOsArchitecture() + "; "
-                + SystemUtil.getOsName() + "; "
-                + SystemUtil.getOsVersion()
-                + ") ManagedHttpClient/"
-                + Config.getInstance().getSystemUuid();
-    }
+    private static final Logger LOGGER = Logger.getLogger(MetaAnalyzerConfiguration.class);
 
-//    public ManagedHttpClientFactory() { }
-
-    public static String getUserAgent() {
-        return USER_AGENT;
-    }
-
-    /**
-     * Factory method that create a PooledHttpClient object. This method will attempt to use
-     * proxy settings defined in application.properties first. If they are not set,
-     * this method will attempt to use proxy settings from the environment by looking
-     * for 'https_proxy', 'http_proxy' and 'no_proxy'.
-     * @return a PooledHttpClient object with optional proxy settings
-     */
-    public ManagedHttpClient newManagedHttpClient() {
-        PoolingHttpClientConnectionManager connectionManager = null;
+    @Produces
+    @ApplicationScoped
+    @Named("httpClient")
+    CloseableHttpClient httpClient() {
+        var connectionManager = new PoolingHttpClientConnectionManager();
+        new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, "metaAnalyzer");
         final RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(TIMEOUT_CONNECTION * 1000)
                 .setConnectionRequestTimeout(TIMEOUT_POOL * 1000)
@@ -183,52 +139,9 @@ public class ManagedHttpClientFactory {
         clientBuilder.setDefaultAuthSchemeRegistry(authProviders);
         clientBuilder.disableCookieManagement();
         clientBuilder.setRedirectStrategy(LaxRedirectStrategy.INSTANCE);
-        managedHttpClient.setHttpClient(clientBuilder.build());
-        managedHttpClient.setConnectionManager(connectionManager);
-        return managedHttpClient;
+        return clientBuilder.build();
     }
 
-    /**
-     * Determines if proxy should be used or not for a given URL
-     * @param noProxyList list of URLs to be exempted from proxy
-     * @param host the URL that is being called by this application
-     * @return true if proxy is to be be used, false if not
-     */
-    public static boolean isProxy(String[] noProxyList, HttpHost host) {
-        if (noProxyList == null) {
-            return true;
-        }
-        if (Arrays.equals(noProxyList, new String[]{"*"})) {
-            return false;
-        }
-        String hostname = host.getHostName();
-        int hostPort = host.getPort();
-        for (String bypassURL: noProxyList) {
-            String[] bypassURLList = bypassURL.split(":");
-            String byPassHost = bypassURLList[0];
-            int byPassPort = -1;
-            if (bypassURLList.length == 2) {
-                byPassPort = Integer.parseInt(bypassURLList[1]);
-            }
-            if (hostPort == byPassPort || byPassPort == -1) {
-                if (hostname.equalsIgnoreCase(byPassHost)) {
-                    return false;
-                }
-                int hl = hostname.length();
-                int bl = byPassHost.length();
-                if (hl > bl && hostname.substring(hl - bl - 1).equalsIgnoreCase("." + byPassHost)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Attempt to use application specific proxy settings if they exist.
-     * Otherwise, attempt to use environment variables if they exist.
-     * @return ProxyInfo object, or null if proxy is not configured
-     */
     public static ProxyInfo createProxyInfo() {
         ProxyInfo proxyInfo = fromConfig();
         if (proxyInfo == null) {
@@ -237,12 +150,8 @@ public class ManagedHttpClientFactory {
         return proxyInfo;
     }
 
-    /**
-     * Creates a ProxyInfo object from the application.properties configuration.
-     * @return a ProxyInfo object, or null if proxy is not configured
-     */
     private static ProxyInfo fromConfig() {
-        ProxyInfo proxyInfo = null;
+        MetaAnalyzerConfiguration.ProxyInfo proxyInfo = null;
         if (PROXY_ADDRESS != null) {
             proxyInfo = new ProxyInfo();
             proxyInfo.host = StringUtils.trimToNull(PROXY_ADDRESS);
@@ -285,14 +194,66 @@ public class ManagedHttpClientFactory {
         return proxyInfo;
     }
 
-    /**
-     * Retrieves and parses the https_proxy and http_proxy settings. This method ignores the
-     * case of the variables in the environment.
-     * @param variable the name of the environment variable
-     * @return a ProxyInfo object, or null if proxy is not defined
-     * @throws MalformedURLException if the URL of the proxy setting cannot be parsed
-     * @throws SecurityException if the environment variable cannot be retrieved
-     */
+    public static boolean isProxy(String[] noProxyList, HttpHost host) {
+        if (noProxyList == null) {
+            return true;
+        }
+        if (Arrays.equals(noProxyList, new String[]{"*"})) {
+            return false;
+        }
+        String hostname = host.getHostName();
+        int hostPort = host.getPort();
+        for (String bypassURL: noProxyList) {
+            String[] bypassURLList = bypassURL.split(":");
+            String byPassHost = bypassURLList[0];
+            int byPassPort = -1;
+            if (bypassURLList.length == 2) {
+                byPassPort = Integer.parseInt(bypassURLList[1]);
+            }
+            if (hostPort == byPassPort || byPassPort == -1) {
+                if (hostname.equalsIgnoreCase(byPassHost)) {
+                    return false;
+                }
+                int hl = hostname.length();
+                int bl = byPassHost.length();
+                if (hl > bl && hostname.substring(hl - bl - 1).equalsIgnoreCase("." + byPassHost)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static class ProxyInfo {
+        private String host;
+        private int port;
+        private String domain;
+        private String username;
+        private String password;
+        private String[] noProxy;
+
+        public String getHost() {
+            return host;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public String getDomain() {
+            return domain;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public String[] getNoProxy() { return noProxy; }
+    }
     private static ProxyInfo buildfromEnvironment(final String variable)
             throws MalformedURLException, SecurityException, UnsupportedEncodingException {
 
@@ -328,12 +289,6 @@ public class ManagedHttpClientFactory {
         return proxyInfo;
     }
 
-    /**
-     * Optionally parses usernames if they are NTLM formatted.
-     * @param proxyInfo The ProxyInfo object to update from the result of parsing
-     * @param username The username to parse
-     */
-    @SuppressWarnings("deprecation")
     private static void parseProxyUsername(final ProxyInfo proxyInfo, final String username) {
         if (username.contains("\\")) {
             proxyInfo.domain = username.substring(0, username.indexOf("\\"));
@@ -342,39 +297,4 @@ public class ManagedHttpClientFactory {
             proxyInfo.username = username;
         }
     }
-
-    /**
-     * A simple holder class for proxy configuration.
-     */
-    public static class ProxyInfo {
-        private String host;
-        private int port;
-        private String domain;
-        private String username;
-        private String password;
-        private String[] noProxy;
-
-        public String getHost() {
-            return host;
-        }
-
-        public int getPort() {
-            return port;
-        }
-
-        public String getDomain() {
-            return domain;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public String[] getNoProxy() { return noProxy; }
-    }
-
 }

@@ -21,7 +21,6 @@ package org.acme.notification;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import org.acme.common.ManagedHttpClientFactory;
 import org.acme.commonnotification.NotificationGroup;
 import org.acme.commonnotification.NotificationScope;
 import org.acme.model.Notification;
