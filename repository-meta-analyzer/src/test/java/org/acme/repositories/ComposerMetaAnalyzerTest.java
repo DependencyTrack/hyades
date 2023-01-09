@@ -86,13 +86,87 @@ class ComposerMetaAnalyzerTest {
                                 .withBody(getTestData(packagistFile))
                 );
 
-        analyzer.analyze(component);
-
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertEquals("v1.1.3", metaModel.getLatestVersion());
         Assertions.assertEquals(
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss XXX").parse("2020-05-24 13:03:22 Z"),
+                metaModel.getPublishedTimestamp()
+        );
+    }
+
+    @Test
+    void testAnalyzerDoesNotFindResult() throws Exception {
+        Component component = new Component();
+        component.setPurl(new PackageURL("pkg:composer/typo3/package-does-not-exist@v1.2.0"));
+       analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(404)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                .withBody("Not found")
+                );
+
+        MetaModel metaModel = analyzer.analyze(component);
+
+        Assertions.assertNull(metaModel.getLatestVersion());
+        Assertions.assertNull(
+                metaModel.getPublishedTimestamp()
+        );
+    }
+
+    @Test
+    void testAnalyzerReturnEmptyResult() throws Exception {
+        Component component = new Component();
+        component.setPurl(new PackageURL("pkg:composer/typo3/package-empty-result@v1.2.0"));
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/p/typo3/package-empty-result.json")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                );
+
+        MetaModel metaModel = analyzer.analyze(component);
+
+        Assertions.assertNull(metaModel.getLatestVersion());
+        Assertions.assertNull(
+                metaModel.getPublishedTimestamp()
+        );
+    }
+
+    @Test
+    void testAnalyzerReturnEmptyResultWithBraces() throws Exception {
+        Component component = new Component();
+        component.setPurl(new PackageURL("pkg:composer/typo3/package-empty-result@v1.2.0"));
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/p/typo3/package-empty-result.json")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                .withBody("{}")
+                );
+
+        MetaModel metaModel = analyzer.analyze(component);
+
+        Assertions.assertNull(metaModel.getLatestVersion());
+        Assertions.assertNull(
                 metaModel.getPublishedTimestamp()
         );
     }

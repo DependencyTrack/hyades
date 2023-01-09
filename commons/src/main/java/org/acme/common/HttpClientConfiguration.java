@@ -48,7 +48,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 
-public class MetaAnalyzerConfiguration {
+public class HttpClientConfiguration {
     private static final String PROXY_ADDRESS = Config.getInstance().getProperty(Config.AlpineKey.HTTP_PROXY_ADDRESS);
     private static int PROXY_PORT;
     static {
@@ -62,7 +62,7 @@ public class MetaAnalyzerConfiguration {
     private static final int TIMEOUT_CONNECTION = Config.getInstance().getPropertyAsInt(Config.AlpineKey.HTTP_TIMEOUT_CONNECTION);
     private static final int TIMEOUT_POOL = Config.getInstance().getPropertyAsInt(Config.AlpineKey.HTTP_TIMEOUT_POOL);
     private static final int TIMEOUT_SOCKET = Config.getInstance().getPropertyAsInt(Config.AlpineKey.HTTP_TIMEOUT_SOCKET);
-    private static final Logger LOGGER = Logger.getLogger(MetaAnalyzerConfiguration.class);
+    private static final Logger LOGGER = Logger.getLogger(HttpClientConfiguration.class);
 
     @Produces
     @ApplicationScoped
@@ -70,6 +70,7 @@ public class MetaAnalyzerConfiguration {
     CloseableHttpClient httpClient() {
         var connectionManager = new PoolingHttpClientConnectionManager();
         new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, "metaAnalyzer");
+     //   new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, "metaAnalyzer").bindTo(meterRegistry);
         final RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(TIMEOUT_CONNECTION * 1000)
                 .setConnectionRequestTimeout(TIMEOUT_POOL * 1000)
@@ -151,7 +152,7 @@ public class MetaAnalyzerConfiguration {
     }
 
     private static ProxyInfo fromConfig() {
-        MetaAnalyzerConfiguration.ProxyInfo proxyInfo = null;
+        HttpClientConfiguration.ProxyInfo proxyInfo = null;
         if (PROXY_ADDRESS != null) {
             proxyInfo = new ProxyInfo();
             proxyInfo.host = StringUtils.trimToNull(PROXY_ADDRESS);

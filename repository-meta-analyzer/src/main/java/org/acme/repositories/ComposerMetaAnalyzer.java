@@ -82,7 +82,10 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
                 return meta;
             }
             String jsonString = EntityUtils.toString(response.getEntity());
-            if (jsonString == null) {
+            if (jsonString.equalsIgnoreCase("")) {
+                return meta;
+            }
+            if (jsonString.equalsIgnoreCase( "{}")) {
                 return meta;
             }
             JSONObject jsonObject = new JSONObject(jsonString);
