@@ -50,7 +50,6 @@ public class OsvMirrorHandler {
     private void unzipFolder(ZipInputStream zipIn, String ecosystem) throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipIn));
-        int fileCount = 0;
         ZipEntry zipEntry = zipIn.getNextEntry();
         while (zipEntry != null) {
 
@@ -64,12 +63,11 @@ public class OsvMirrorHandler {
             final Bom osvAdvisory = parser.parse(json);
             if (osvAdvisory != null) {
                 osvAdvisories.add(osvAdvisory);
-                fileCount++;
             }
             zipEntry = zipIn.getNextEntry();
             reader = new BufferedReader(new InputStreamReader(zipIn));
         }
         reader.close();
-        LOGGER.info(fileCount +" advisories mirrored successfully for ecosystem: "+ ecosystem);
+        LOGGER.info(osvAdvisories.size() +" advisories mirrored successfully for ecosystem: "+ ecosystem);
     }
 }
