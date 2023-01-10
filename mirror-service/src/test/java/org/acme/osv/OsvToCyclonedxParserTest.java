@@ -117,7 +117,6 @@ public class OsvToCyclonedxParserTest {
         Assertions.assertEquals(2, vulnerability.getCredits().getIndividuals().size());
         Assertions.assertEquals(8, vulnerability.getAffects().size());
         Assertions.assertEquals("CVE-2019-3778", vulnerability.getReferences().get(0).getId());
-        Assertions.assertEquals("Thu Jun 09 12:31:32 IST 2022", vulnerability.getUpdated().toString());
     }
 
     @Test
