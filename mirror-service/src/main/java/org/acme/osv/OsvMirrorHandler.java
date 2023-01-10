@@ -40,7 +40,7 @@ public class OsvMirrorHandler {
              ZipInputStream zipInput = new ZipInputStream(inputStream)) {
             unzipFolder(zipInput, ecosystem);
             deleteFileAndDir(ecosystemZip);
-            LOGGER.info("OSV mirroring completed for ecosystem: %s", ecosystem);
+            LOGGER.info("OSV mirroring completed for ecosystem: " + ecosystem);
         } catch (IOException e) {
             LOGGER.error("Exception found while reading from OSV: ", e);
         }
@@ -70,6 +70,6 @@ public class OsvMirrorHandler {
             reader = new BufferedReader(new InputStreamReader(zipIn));
         }
         reader.close();
-        LOGGER.info("%d advisories mirrored successfully for ecosystem %s", fileCount, ecosystem);
+        LOGGER.info(fileCount +" advisories mirrored successfully for ecosystem: "+ ecosystem);
     }
 }
