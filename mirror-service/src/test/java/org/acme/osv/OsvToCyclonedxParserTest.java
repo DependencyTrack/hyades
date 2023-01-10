@@ -1,7 +1,6 @@
 package org.acme.osv;
 
 import com.github.packageurl.MalformedPackageURLException;
-import com.github.packageurl.PackageURL;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
 import org.cyclonedx.model.Bom;
@@ -58,18 +57,22 @@ public class OsvToCyclonedxParserTest {
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         JSONObject jsonObject = new JSONObject(jsonString);
         final JSONArray affected = jsonObject.optJSONArray("affected");
-        parser.componentPurl = new PackageURL("pkg:maven/org.springframework.security.oauth/spring-security-oauth2");
         List<Vulnerability.Affect> affectedPackages = parser.parseAffectedRanges(affected);
         Assertions.assertNotNull(affectedPackages);
         Assertions.assertEquals(7, affectedPackages.size());
 
-        Vulnerability.Affect affectedPackage = affectedPackages.get(1);
+        List<Component> components = parser.cyclonedxBom.getComponents();
+        Assertions.assertNotNull(components);
+        Assertions.assertEquals(2, components.size());
+
+        Vulnerability.Affect affectedPackage = affectedPackages.get(0);
+        Assertions.assertEquals(components.get(0).getBomRef(), affectedPackage.getRef());
         List<Vulnerability.Version> versionRanges = affectedPackage.getVersions();
         Assertions.assertNotNull(versionRanges);
-        Assertions.assertEquals("vers:maven/>=0|<2.0.17", versionRanges.get(0).getRange());
-        Assertions.assertEquals("vers:maven/1.0.0.RELEASE|2.0.9.RELEASE", versionRanges.get(1).getVersion());
+        Assertions.assertEquals("vers:maven/1.0.0.RELEASE|1.0.1.RELEASE", versionRanges.get(0).getVersion());
 
         affectedPackage = affectedPackages.get(3);
+        Assertions.assertEquals(components.get(1).getBomRef(), affectedPackage.getRef());
         versionRanges = affectedPackage.getVersions();
         Assertions.assertNotNull(versionRanges);
         Assertions.assertEquals("vers:maven/>=3", versionRanges.get(0).getRange());

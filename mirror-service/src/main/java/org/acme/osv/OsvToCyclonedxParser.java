@@ -18,6 +18,8 @@ import us.springett.cvss.Cvss;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.acme.commonutil.JsonUtil.jsonStringToTimestamp;
 import static org.acme.model.Vulnerability.Source.GITHUB;
@@ -27,12 +29,15 @@ import static org.acme.model.Vulnerability.Source.OSV;
 public class OsvToCyclonedxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
-    Bom cyclonedxBom;
-    PackageURL componentPurl;
+    final Bom cyclonedxBom;
+    String ecosystem;
+
+    public OsvToCyclonedxParser() {
+        this.cyclonedxBom = new Bom();
+        this.ecosystem = null;
+    }
 
     public Bom parse(final JSONObject object) {
-
-        cyclonedxBom = new Bom();
 
         // initial check if advisory is valid or withdrawn
         String withdrawn = object.optString("withdrawn", null);
@@ -68,7 +73,7 @@ public class OsvToCyclonedxParser {
                     }
                 }
                 vulnerability.setAdvisories(advisories);
-                cyclonedxBom.setExternalReferences(externalReferences);
+                this.cyclonedxBom.setExternalReferences(externalReferences);
             }
 
             // CREDITS
@@ -107,28 +112,13 @@ public class OsvToCyclonedxParser {
             if (osvAffectedArray != null) {
 
                 // CPE
-                JSONObject osvAffected = osvAffectedArray.getJSONObject(0);
-                final JSONObject cpeObj = osvAffected.optJSONObject("package");
-                if (cpeObj != null) {
-                    Component component = new Component();
-                    String purl = cpeObj.optString("purl", null);
-                    try {
-                        componentPurl = new PackageURL(purl);
-                    } catch (MalformedPackageURLException ex) {
-                        LOGGER.info("Error while parsing purl %s : %s", componentPurl, ex);
-                    }
-                    component.setName(cpeObj.optString("name", null));
-                    component.setPurl(purl);
-                    cyclonedxBom.setComponents(List.of(component));
-                }
-
                 // AFFECTED PACKAGES AND VERSIONS
                 vulnerability.setAffects(parseAffectedRanges(osvAffectedArray));
             }
-            cyclonedxBom.setVulnerabilities(List.of(vulnerability));
+            this.cyclonedxBom.setVulnerabilities(List.of(vulnerability));
         }
 
-        return cyclonedxBom;
+        return this.cyclonedxBom;
     }
 
     public List<Vulnerability.Affect> parseAffectedRanges(JSONArray osvAffectedArray) {
@@ -137,17 +127,19 @@ public class OsvToCyclonedxParser {
         for(int i=0; i<osvAffectedArray.length(); i++) {
 
             JSONObject osvAffectedObj = osvAffectedArray.getJSONObject(i);
+
+            // CPE for each affected package
+            String bomReference = parseCpe(osvAffectedObj);
+
+            // RANGES and VERSIONS for each affected package
             final JSONArray rangesObj = osvAffectedObj.optJSONArray("ranges");
             final JSONArray versions = osvAffectedObj.optJSONArray("versions");
             Vulnerability.Affect versionRangeAffected = new Vulnerability.Affect();
+            versionRangeAffected.setRef(bomReference);
             List<Vulnerability.Version> versionRanges = new ArrayList<>();
-
-            // TODO: set bom ref for each versionRange
 
             if (rangesObj != null) {
                 for (int j=0; j<rangesObj.length(); j++) {
-                    Vulnerability.Version versionRange = new Vulnerability.Version();
-//                    versionRange.setRange(generateRangeSpecifier(osvAffectedObj, rangesObj.getJSONObject(j)));
                     versionRanges.addAll(generateRangeSpecifier(osvAffectedObj, rangesObj.getJSONObject(j)));
                 }
             }
@@ -163,10 +155,38 @@ public class OsvToCyclonedxParser {
         return affects;
     }
 
+    private String parseCpe(JSONObject osvAffectedObj) {
+        final JSONObject cpeObj = osvAffectedObj.optJSONObject("package");
+        if (cpeObj != null) {
+            String purl = cpeObj.optString("purl", null);
+            try {
+                PackageURL packageURL = new PackageURL(purl);
+                ecosystem = packageURL.getType();
+            } catch (MalformedPackageURLException ex) {
+                LOGGER.info("Error while parsing purl %s : %s", purl, ex);
+            }
+            if (this.cyclonedxBom.getComponents() != null) {
+                Optional<Component> existingComponent = this.cyclonedxBom.getComponents().stream().filter(c ->
+                        c.getPurl().equalsIgnoreCase(purl)).findFirst();
+                if (existingComponent.isPresent()) {
+                    return existingComponent.get().getBomRef();
+                }
+            }
+            final Component component = new Component();
+            final UUID uuid = UUID.randomUUID();
+            component.setBomRef(uuid.toString());
+            component.setName(cpeObj.optString("name", null));
+            component.setPurl(purl);
+            this.cyclonedxBom.addComponent(component);
+            return uuid.toString();
+        }
+        return null;
+    }
+
     private String generateVersionSpecifier(JSONArray versions) {
         String uniVersionRange = "vers:";
-        if (componentPurl != null) {
-            uniVersionRange += componentPurl.getType();
+        if (ecosystem != null) {
+            uniVersionRange += ecosystem;
         }
         uniVersionRange += "/";
 
@@ -212,8 +232,8 @@ public class OsvToCyclonedxParser {
             }
             final Vulnerability.Version versionRange = new Vulnerability.Version();
             String uniVersionRange = "vers:";
-            if (componentPurl != null) {
-                uniVersionRange += componentPurl.getType();
+            if (ecosystem != null) {
+                uniVersionRange += ecosystem;
             }
             uniVersionRange += "/";
             uniVersionRange += ">=" + introduced + "|";
