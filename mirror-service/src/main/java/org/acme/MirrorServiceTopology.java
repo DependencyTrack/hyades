@@ -2,7 +2,6 @@ package org.acme;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.acme.common.KafkaTopic;
-import org.acme.model.OsvAdvisory;
 import org.acme.model.Vulnerability;
 import org.acme.osv.OsvMirrorHandler;
 import org.apache.kafka.common.serialization.Serdes;
@@ -13,6 +12,7 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
+import org.cyclonedx.model.Bom;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -37,7 +37,7 @@ public class MirrorServiceTopology {
     public Topology topology() {
 
         final var streamsBuilder = new StreamsBuilder();
-        final var osvAdvisorySerde = new ObjectMapperSerde<>(OsvAdvisory.class);
+        final var osvCyclonedxSerde = new ObjectMapperSerde<>(Bom.class);
 
         // OSV mirroring stream
         // (K,V) to be consumed as (event uuid, list of ecosystems)
@@ -54,15 +54,15 @@ public class MirrorServiceTopology {
                     }
                 }, Named.as("mirror_osv_vulnerabilities"))
                 .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
-                        .with(Serdes.String(), osvAdvisorySerde)
+                        .with(Serdes.String(), osvCyclonedxSerde)
                         .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "osv_vulnerability")));
 
         return streamsBuilder.build();
     }
 
-    List<KeyValue<String, OsvAdvisory>> mirrorOsv(String ecosystem) throws IOException {
+    List<KeyValue<String, Bom>> mirrorOsv(String ecosystem) throws IOException {
         return osvMirrorHandler.performMirror(ecosystem).stream()
-                .map(vulnerability -> KeyValue.pair(Vulnerability.Source.OSV.name() + "/" + vulnerability.getId(), vulnerability))
+                .map(bom -> KeyValue.pair(Vulnerability.Source.OSV.name() + "/" + bom.getVulnerabilities().get(0).getId(), bom))
                 .toList();
     }
 }

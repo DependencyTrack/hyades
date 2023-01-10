@@ -2,7 +2,7 @@ package org.acme.osv;
 
 import kong.unirest.json.JSONObject;
 import org.acme.client.OsvClient;
-import org.acme.model.OsvAdvisory;
+import org.cyclonedx.model.Bom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ public class OsvMirrorHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvMirrorHandler.class);
     private OsvClient client;
-    List<OsvAdvisory> osvAdvisories;
+    List<Bom> osvAdvisories;
 
     @Inject
     public OsvMirrorHandler(final OsvClient client) {
@@ -34,23 +34,23 @@ public class OsvMirrorHandler {
         this.osvAdvisories = new ArrayList<>();
     }
 
-    public List<OsvAdvisory> performMirror(String ecosystem) throws IOException {
+    public List<Bom> performMirror(String ecosystem) throws IOException {
         Path ecosystemZip = client.downloadEcosystemZip(ecosystem);
         try (InputStream inputStream = new FileInputStream(ecosystemZip.toFile());
              ZipInputStream zipInput = new ZipInputStream(inputStream)) {
-            unzipFolder(zipInput);
+            unzipFolder(zipInput, ecosystem);
             deleteFileAndDir(ecosystemZip);
-            return osvAdvisories;
+            LOGGER.info("OSV mirroring completed for ecosystem: %s", ecosystem);
         } catch (IOException e) {
             LOGGER.error("Exception found while reading from OSV: ", e);
         }
         return osvAdvisories;
     }
 
-    private void unzipFolder(ZipInputStream zipIn) throws IOException {
+    private void unzipFolder(ZipInputStream zipIn, String ecosystem) throws IOException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipIn));
-        OsvAdvisoryParser parser = new OsvAdvisoryParser();
+        int fileCount = 0;
         ZipEntry zipEntry = zipIn.getNextEntry();
         while (zipEntry != null) {
 
@@ -60,13 +60,16 @@ public class OsvMirrorHandler {
                 out.append(line);
             }
             JSONObject json = new JSONObject(out.toString());
-            final OsvAdvisory osvAdvisory = parser.parse(json);
+            final OsvToCyclonedxParser parser = new OsvToCyclonedxParser();
+            final Bom osvAdvisory = parser.parse(json);
             if (osvAdvisory != null) {
                 osvAdvisories.add(osvAdvisory);
+                fileCount++;
             }
             zipEntry = zipIn.getNextEntry();
             reader = new BufferedReader(new InputStreamReader(zipIn));
         }
         reader.close();
+        LOGGER.info("%d advisories mirrored successfully for ecosystem %s", fileCount, ecosystem);
     }
 }

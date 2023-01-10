@@ -4,7 +4,6 @@ import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.acme.common.KafkaTopic;
-import org.acme.model.OsvAdvisory;
 import org.acme.osv.OsvMirrorHandler;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -12,6 +11,8 @@ import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
+import org.cyclonedx.model.Bom;
+import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,7 @@ public class MirrorServiceTopologyTest {
     Topology topology;
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, String> inputTopic;
-    private TestOutputTopic<String, OsvAdvisory> outputTopic;
+    private TestOutputTopic<String, Bom> outputTopic;
     private OsvMirrorHandler osvMirrorHandlerMock;
 
     @BeforeEach
@@ -41,7 +42,7 @@ public class MirrorServiceTopologyTest {
         QuarkusMock.installMockForType(osvMirrorHandlerMock, OsvMirrorHandler.class);
         testDriver = new TopologyTestDriver(topology);
         inputTopic = testDriver.createInputTopic(KafkaTopic.MIRROR_OSV.getName(), new StringSerializer(), new StringSerializer());
-        outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(), new StringDeserializer(), new ObjectMapperDeserializer<>(OsvAdvisory.class));
+        outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(), new StringDeserializer(), new ObjectMapperDeserializer<>(Bom.class));
     }
 
     @AfterEach
@@ -58,8 +59,10 @@ public class MirrorServiceTopologyTest {
 
     @Test
     void testOsvMirroring() throws IOException {
-        OsvAdvisory osvAdvisory = new OsvAdvisory();
-        osvAdvisory.setId("test-id");
+        Bom osvAdvisory = new Bom();
+        Vulnerability vulnerability = new Vulnerability();
+        vulnerability.setId("test-id");
+        osvAdvisory.setVulnerabilities(List.of(vulnerability));
         Mockito.when(osvMirrorHandlerMock.performMirror(Mockito.anyString())).thenReturn(List.of(osvAdvisory));
         inputTopic.pipeInput("Go", "");
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
