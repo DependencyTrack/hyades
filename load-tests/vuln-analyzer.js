@@ -9,24 +9,34 @@ const writer = new Writer({
 
 const schemaRegistry = new SchemaRegistry();
 
-const bomFile = open("fixtures/boms/bloated.bom.json");
-const bom = JSON.parse(bomFile);
+const extractComponents = (file) => {
+    const bom = JSON.parse(open(file));
+    return bom.components
+        .filter(component => component.purl !== null)
+        .map(component => {
+            return {
+                uuid: uuidv4(),
+                purl: component.purl
+            }
+        });
+}
+
+// Globbing is not supported by xk6, so we need to read all BOM file paths
+// from an index file instead.
+const components = JSON.parse(open("fixtures/generated/index.json")).boms
+    .flatMap(bomFilePath => extractComponents(bomFilePath));
 
 export default function () {
-    for (let i = 0; i < bom.components.length; i++) {
-        const key = uuidv4();
+    for (let i = 0; i < components.length; i++) {
         writer.produce({
             messages: [
                 {
                     key: schemaRegistry.serialize({
-                        data: key,
+                        data: components[i].uuid,
                         schemaType: SCHEMA_TYPE_STRING
                     }),
                     value: schemaRegistry.serialize({
-                        data: {
-                            "uuid": key,
-                            "purl": bom.components[i].purl
-                        },
+                        data: components[i],
                         schemaType: SCHEMA_TYPE_JSON
                     })
                 }
