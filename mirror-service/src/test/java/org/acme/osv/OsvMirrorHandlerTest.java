@@ -5,13 +5,13 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.acme.client.OsvClient;
 import org.acme.common.KafkaTopic;
-import org.acme.model.OsvAdvisory;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
+import org.cyclonedx.model.Bom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ public class OsvMirrorHandlerTest {
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, String> inputTopic;
-    private TestOutputTopic<String, OsvAdvisory> outputTopic;
+    private TestOutputTopic<String, Bom> outputTopic;
     private Path tempZipLocation;
 
     @BeforeEach
@@ -51,7 +51,7 @@ public class OsvMirrorHandlerTest {
         inputTopic = testDriver.createInputTopic(KafkaTopic.MIRROR_OSV.getName(),
                 new StringSerializer(), new StringSerializer());
         outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(),
-                new StringDeserializer(), new ObjectMapperDeserializer<>(OsvAdvisory.class));
+                new StringDeserializer(), new ObjectMapperDeserializer<>(Bom.class));
     }
 
     @AfterEach
