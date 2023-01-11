@@ -57,14 +57,23 @@ class GemMetaAnalyzerTest {
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:gem/test-unit@3.2.0"));
-
-       // GemMetaAnalyzer analyzer = new GemMetaAnalyzer();
         Assertions.assertEquals("GemMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.GEM, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);
         Assertions.assertNotNull(metaModel.getLatestVersion());
         //Assert.assertNotNull(metaModel.getPublishedTimestamp()); // todo: not yet supported
+    }
+
+    @Test
+    void testAnalyzerInvalidComponentVersion() throws Exception {
+        Component component = new Component();
+        component.setPurl(new PackageURL("pkg:gem/test3-unit@3.2.0"));
+        Assertions.assertEquals("GemMetaAnalyzer", analyzer.getName());
+        Assertions.assertTrue(analyzer.isApplicable(component));
+        Assertions.assertEquals(RepositoryType.GEM, analyzer.supportedRepositoryType());
+        MetaModel metaModel = analyzer.analyze(component);
+        Assertions.assertNull(metaModel.getLatestVersion());
     }
 
     @Test

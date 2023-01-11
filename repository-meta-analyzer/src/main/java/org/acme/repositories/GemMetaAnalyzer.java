@@ -71,7 +71,7 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String jsonString = EntityUtils.toString(response.getEntity());
-                    if (jsonString.equalsIgnoreCase("") || jsonString.equalsIgnoreCase("{}")) {
+                    if (jsonString.equalsIgnoreCase("") || jsonString.equalsIgnoreCase("{}") || jsonString.equalsIgnoreCase("{\"version\":\"unknown\"}")) {
                         handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                     } else {
                         JSONObject jsonObject = new JSONObject(jsonString);
@@ -80,7 +80,7 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
                     }
                 }
 
-            } catch (IOException | org.apache.http.ParseException e) {
+            } catch (IOException e) {
                 handleRequestException(LOGGER, e);
             }
         }
