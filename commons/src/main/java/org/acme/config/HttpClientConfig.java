@@ -1,6 +1,5 @@
 package org.acme.config;
 
-import alpine.Config;
 import io.smallrye.config.ConfigMapping;
 
 import java.util.Optional;

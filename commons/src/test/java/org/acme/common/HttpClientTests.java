@@ -30,7 +30,9 @@ import static org.mockserver.model.HttpResponse.response;
 @SelectClasses(value = {
         HttpClientTests.HttpClientConfigurationTest.class,
         HttpClientTests.HttpClientConfigWithProxyTest.class,
-        HttpClientTests.HttpClientConfigWithNoProxyTest.class
+        HttpClientTests.HttpClientConfigWithNoProxyTest.class,
+        HttpClientTests.HttpClientConfigWithNoProxyStarTest.class,
+        HttpClientTests.HttpClientConfigWithNoProxyDomainTest.class
 })
 public class HttpClientTests {
     @QuarkusTest
@@ -178,6 +180,131 @@ public class HttpClientTests {
                         "client.http.config.proxy-address", "http://localhost",
                         "client.http.config.proxy-port", "1080",
                         "client.http.config.no-proxy", "http://localhost:8080,*"
+                );
+            }
+        }
+
+        @Inject
+        HttpClientConfiguration configuration;
+        @Inject
+        MeterRegistry meterRegistry;
+        private static ClientAndServer mockServer;
+
+        @BeforeAll
+        public static void beforeClass() {
+            mockServer = ClientAndServer.startClientAndServer(1080);
+        }
+
+        @AfterAll
+        public static void afterClass() {
+            mockServer.stop();
+        }
+
+        @Test
+        void clientCreatedWithProxyInfoTest() {
+            CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry);
+            new MockServerClient("localhost", mockServer.getPort())
+                    .when(
+                            request()
+                                    .withMethod("GET")
+                                    .withPath("/hello")
+                    )
+                    .respond(
+                            response()
+                                    .withStatusCode(200)
+                                    .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                    .withBody("hello test")
+                    );
+            HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
+            try {
+                CloseableHttpResponse response = client.execute(request);
+                Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+                String stringResponse = EntityUtils.toString(response.getEntity());
+                Assertions.assertEquals("hello test", stringResponse);
+            } catch (IOException ex) {
+                System.out.println("exception occurred: " + ex.getMessage());
+            }
+        }
+
+    }
+
+    @QuarkusTest
+    @TestProfile(HttpClientConfigWithNoProxyStarTest.TestProfile.class)
+    public static class HttpClientConfigWithNoProxyStarTest{
+        public static class TestProfile implements QuarkusTestProfile {
+            @Override
+            public Map<String, String> getConfigOverrides() {
+                return Map.of(
+                        "client.http.config.proxy-timeout-connection", "20",
+                        "client.http.config.proxy-timeout-pool", "40",
+                        "client.http.config.proxy-timeout-socket", "20",
+                        "client.http.config.proxy-username", "test",
+                        "client.http.config.proxy-password", "test",
+                        "client.http.config.proxy-address", "http://localhost",
+                        "client.http.config.proxy-port", "1080",
+                        "client.http.config.no-proxy", "*"
+                );
+            }
+        }
+
+        @Inject
+        HttpClientConfiguration configuration;
+        @Inject
+        MeterRegistry meterRegistry;
+        private static ClientAndServer mockServer;
+
+        @BeforeAll
+        public static void beforeClass() {
+            mockServer = ClientAndServer.startClientAndServer(1080);
+        }
+
+        @AfterAll
+        public static void afterClass() {
+            mockServer.stop();
+        }
+
+        @Test
+        void clientCreatedWithProxyInfoTest() {
+            CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry);
+            new MockServerClient("localhost", mockServer.getPort())
+                    .when(
+                            request()
+                                    .withMethod("GET")
+                                    .withPath("/hello")
+                    )
+                    .respond(
+                            response()
+                                    .withStatusCode(200)
+                                    .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                    .withBody("hello test")
+                    );
+            HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
+            try {
+                CloseableHttpResponse response = client.execute(request);
+                Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+                String stringResponse = EntityUtils.toString(response.getEntity());
+                Assertions.assertEquals("hello test", stringResponse);
+            } catch (IOException ex) {
+                System.out.println("exception occurred: " + ex.getMessage());
+            }
+        }
+
+    }
+
+    @QuarkusTest
+    @TestProfile(HttpClientConfigWithNoProxyDomainTest.TestProfile.class)
+    public static class HttpClientConfigWithNoProxyDomainTest{
+        public static class TestProfile implements QuarkusTestProfile {
+            @Override
+            public Map<String, String> getConfigOverrides() {
+                return Map.of(
+                        "client.http.config.proxy-timeout-connection", "20",
+                        "client.http.config.proxy-timeout-pool", "40",
+                        "client.http.config.proxy-timeout-socket", "20",
+                        "client.http.config.proxy-username", "domain\test",
+                        "client.http.config.proxy-password", "domain#test",
+                        "client.http.config.proxy-address", "http://localhost",
+                        "client.http.config.proxy-port", "1080"
                 );
             }
         }

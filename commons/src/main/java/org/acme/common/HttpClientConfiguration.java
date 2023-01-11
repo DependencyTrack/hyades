@@ -66,6 +66,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 @ApplicationScoped
 public final class HttpClientConfiguration {
@@ -104,29 +105,29 @@ public final class HttpClientConfiguration {
         final ProxyInfo proxyInfo = createProxyInfo();
 
         if (proxyInfo != null) {
-            HttpRoutePlanner routePlanner = new DefaultProxyRoutePlanner(new HttpHost(proxyInfo.host, proxyInfo.port)) {
+            HttpRoutePlanner routePlanner = new DefaultProxyRoutePlanner(new HttpHost(proxyInfo.getHost(), proxyInfo.getPort())) {
                 @Override
                 public HttpRoute determineRoute(
                         final HttpHost host,
                         final HttpRequest request,
                         final HttpContext context) throws HttpException {
-                    if (isProxy(proxyInfo.noProxy, host)) {
+                    if (isProxy(proxyInfo.getNoProxy(), host)) {
                         return super.determineRoute(host, request, context);
                     }
                     return new HttpRoute(host);
                 }
             };
             clientBuilder.setRoutePlanner(routePlanner);
-            if (StringUtils.isNotBlank(proxyInfo.username) && StringUtils.isNotBlank(proxyInfo.password)) {
-                if (proxyInfo.domain != null) {
-                    credsProvider.setCredentials(AuthScope.ANY, new NTCredentials(proxyInfo.username, proxyInfo.password, proxyInfo.domain, null));
+            if (StringUtils.isNotBlank(proxyInfo.getUsername()) && StringUtils.isNotBlank(proxyInfo.getPassword())) {
+                if (proxyInfo.getDomain() != null) {
+                    credsProvider.setCredentials(AuthScope.ANY, new NTCredentials(proxyInfo.getUsername(), proxyInfo.getPassword(), proxyInfo.getDomain(), null));
                 } else {
-                    credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxyInfo.username, proxyInfo.password));
+                    credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxyInfo.getUsername(), proxyInfo.getPassword()));
                 }
             }
         }
         // When a proxy is enabled, turn off certificate chain of trust validation and hostname verification
-        if (proxyInfo != null && proxyInfo.noProxy == null) {
+        if (proxyInfo != null && proxyInfo.getNoProxy() == null) {
             try {
                 final SSLContext sslContext = SSLContextBuilder
                         .create()
@@ -227,18 +228,20 @@ public final class HttpClientConfiguration {
         ProxyInfo proxyInfo = null;
         if (httpClientConfig.proxyAddress().isPresent()) {
             proxyInfo = new ProxyInfo();
-            proxyInfo.host = StringUtils.trimToNull(httpClientConfig.proxyAddress().toString());
-            if (httpClientConfig.proxyPort().isPresent()) {
-                proxyInfo.port = httpClientConfig.proxyPort().get();
+            proxyInfo.setHost(StringUtils.trimToNull(httpClientConfig.proxyAddress().toString()));
+            Optional<Integer> proxyPort = httpClientConfig.proxyPort();
+            if (proxyPort.isPresent()) {
+                proxyInfo.setPort(proxyPort.get());
             }
             if (httpClientConfig.proxyUsername().isPresent()) {
                 parseProxyUsername(proxyInfo, httpClientConfig.proxyUsername().toString());
             }
             if (httpClientConfig.proxyPassword().isPresent()) {
-                proxyInfo.password = StringUtils.trimToNull(httpClientConfig.proxyPassword().toString());
+                proxyInfo.setPassword(StringUtils.trimToNull(httpClientConfig.proxyPassword().toString()));
             }
-            if (httpClientConfig.noProxy().isPresent()) {
-                proxyInfo.noProxy = httpClientConfig.noProxy().get().split(",");
+            Optional<String> noProxy = httpClientConfig.noProxy();
+            if (noProxy.isPresent()) {
+                proxyInfo.setNoProxy(noProxy.get().split(","));
             }
         }
         return proxyInfo;
@@ -262,7 +265,7 @@ public final class HttpClientConfiguration {
         if (proxyInfo != null) {
             for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
                 if ("NO_PROXY".equals(entry.getKey().toUpperCase())) {
-                    proxyInfo.noProxy = System.getenv(entry.getKey()).split(",");
+                    proxyInfo.setNoProxy(System.getenv(entry.getKey()).split(","));
                     break;
                 }
             }
@@ -298,8 +301,8 @@ public final class HttpClientConfiguration {
         if (proxy != null) {
             final URL proxyUrl = new URL(proxy);
             proxyInfo = new ProxyInfo();
-            proxyInfo.host = proxyUrl.getHost();
-            proxyInfo.port = proxyUrl.getPort();
+            proxyInfo.setHost(proxyUrl.getHost());
+            proxyInfo.setPort(proxyUrl.getPort());
             if (proxyUrl.getUserInfo() != null) {
                 final String[] credentials = proxyUrl.getUserInfo().split(":");
                 if (credentials.length > 0) {
@@ -307,7 +310,7 @@ public final class HttpClientConfiguration {
                     parseProxyUsername(proxyInfo, username);
                 }
                 if (credentials.length == 2) {
-                    proxyInfo.password = URLDecoder.decode(credentials[1], "UTF-8");
+                    proxyInfo.setPassword(URLDecoder.decode(credentials[1], "UTF-8"));
                 }
             }
         }
@@ -323,47 +326,16 @@ public final class HttpClientConfiguration {
     @SuppressWarnings("deprecation")
     private static void parseProxyUsername(final ProxyInfo proxyInfo, final String username) {
         if (username.contains("\\")) {
-            proxyInfo.domain = username.substring(0, username.indexOf("\\"));
-            proxyInfo.username = username.substring(username.indexOf("\\") + 1);
+            proxyInfo.setDomain(username.substring(0, username.indexOf("\\")));
+            proxyInfo.setUsername(username.substring(username.indexOf("\\") + 1));
         } else {
-            proxyInfo.username = username;
+            proxyInfo.setUsername(username);
         }
     }
 
     /**
      * A simple holder class for proxy configuration.
      */
-    public static class ProxyInfo {
-        private String host;
-        private int port;
-        private String domain;
-        private String username;
-        private String password;
-        private String[] noProxy;
 
-        public String getHost() {
-            return host;
-        }
-
-        public int getPort() {
-            return port;
-        }
-
-        public String getDomain() {
-            return domain;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public String[] getNoProxy() {
-            return noProxy;
-        }
-    }
 
 }
