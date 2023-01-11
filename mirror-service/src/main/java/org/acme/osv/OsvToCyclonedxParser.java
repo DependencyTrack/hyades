@@ -22,6 +22,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.acme.commonutil.JsonUtil.jsonStringToTimestamp;
+import static org.acme.commonutil.VulnerabilityUtil.normalizedCvssV2Score;
+import static org.acme.commonutil.VulnerabilityUtil.normalizedCvssV3Score;
 import static org.acme.model.Vulnerability.Source.GITHUB;
 import static org.acme.model.Vulnerability.Source.NVD;
 import static org.acme.model.Vulnerability.Source.OSV;
@@ -316,15 +318,19 @@ public class OsvToCyclonedxParser {
                 Cvss cvss = Cvss.fromVector(vector);
 
                 Vulnerability.Rating rating = new Vulnerability.Rating();
-                rating.setSeverity(severity);
+                final double score = cvss.calculateScore().getBaseScore();
                 rating.setVector(vector);
-                rating.setScore(cvss.calculateScore().getBaseScore());
+                rating.setScore(score);
                 final String type = cvssObj.optString("type", null);
                 if (type.equalsIgnoreCase("CVSS_V3")) {
                     rating.setMethod(Vulnerability.Rating.Method.CVSSV3);
+                    rating.setSeverity(Vulnerability.Rating.Severity.fromString(
+                            String.valueOf(normalizedCvssV3Score(score)).toLowerCase()));
                 }
                 else {
                     rating.setMethod(Vulnerability.Rating.Method.CVSSV2);
+                    rating.setSeverity(Vulnerability.Rating.Severity.fromString(
+                            String.valueOf(normalizedCvssV2Score(score)).toLowerCase()));
                 }
                 ratings.add(rating);
             }

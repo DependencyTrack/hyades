@@ -107,7 +107,7 @@ public class OsvToCyclonedxParserTest {
         List<Vulnerability.Rating> ratings = vulnerability.getRatings();
         Assertions.assertNotNull(ratings);
         Vulnerability.Rating rating = ratings.get(0);
-        Assertions.assertEquals(Vulnerability.Rating.Severity.LOW, rating.getSeverity());
+        Assertions.assertEquals(Vulnerability.Rating.Severity.CRITICAL, rating.getSeverity());
         Assertions.assertEquals(9.0, rating.getScore());
         Assertions.assertEquals(Vulnerability.Rating.Method.CVSSV3, rating.getMethod());
         Assertions.assertEquals("CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H", rating.getVector());
