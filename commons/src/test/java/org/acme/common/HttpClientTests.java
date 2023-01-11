@@ -301,7 +301,7 @@ public class HttpClientTests {
                         "client.http.config.proxy-timeout-connection", "20",
                         "client.http.config.proxy-timeout-pool", "40",
                         "client.http.config.proxy-timeout-socket", "20",
-                        "client.http.config.proxy-username", "domain\test",
+                        "client.http.config.proxy-username", "domain\\test",
                         "client.http.config.proxy-password", "domain#test",
                         "client.http.config.proxy-address", "http://localhost",
                         "client.http.config.proxy-port", "1080"

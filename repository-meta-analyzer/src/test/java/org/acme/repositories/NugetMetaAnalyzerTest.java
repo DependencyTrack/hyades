@@ -59,6 +59,44 @@ class NugetMetaAnalyzerTest {
     }
 
     @Test
+    void testPerformVersionCheck() throws Exception {
+        String mockIndexResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v4-index1.json");
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/v4/index1.json")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                .withBody(mockIndexResponse)
+                );
+        String encodedBasicHeader = "Basic OnBhc3N3b3Jk";
+
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/v4/flat2/nunitprivate/index1.json")
+                                .withHeader("Authorization", encodedBasicHeader)
+                )
+                .respond(
+                        response()
+                                .withStatusCode(404)
+                );
+
+
+        component.setPurl(new PackageURL("pkg:nuget/NUnitPrivate@2.0.1"));
+        analyzer.setRepositoryUsernameAndPassword(null, "password");
+        analyzer.setRepositoryBaseUrl("http://localhost:1080");
+        MetaModel metaModel = analyzer.analyze(component);
+        Assertions.assertNull(metaModel.getComponent());
+    }
+
+
+    @Test
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnit@3.8.0"));
@@ -128,6 +166,7 @@ class NugetMetaAnalyzerTest {
         Assertions.assertEquals("5.0.2", metaModel.getLatestVersion());
         Assertions.assertNotNull(metaModel.getPublishedTimestamp());
     }
+
 
     private String readResourceFileToString(String fileName) throws Exception {
         return Files.readString(Paths.get(getClass().getResource(fileName).toURI()));
