@@ -55,7 +55,7 @@ public class OsvClient {
                 }
             } else {
                 throw new WebApplicationException(
-                        "Unexpected response status: " + response.getStatusLine().getStatusCode(),
+                        "Unexpected response status: " + response.getStatusLine().getStatusCode() + " for ecosystem: " + ecosystem,
                         Response.status(response.getStatusLine().getStatusCode()).build());
             }
         }
