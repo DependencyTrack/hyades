@@ -217,11 +217,13 @@ public class OsvToCyclonedxParser {
         final JSONObject cpeObj = osvAffectedObj.optJSONObject("package");
         if (cpeObj != null) {
             String purl = cpeObj.optString("purl", null);
-            try {
-                PackageURL packageURL = new PackageURL(purl);
-                ecosystem = packageURL.getType();
-            } catch (MalformedPackageURLException ex) {
-                LOGGER.info("Error while parsing purl %s : %s", purl, ex);
+            if (purl != null && !purl.isBlank()) {
+                try {
+                    PackageURL packageURL = new PackageURL(purl);
+                    ecosystem = packageURL.getType();
+                } catch (MalformedPackageURLException ex) {
+                    LOGGER.info("Error while parsing purl %s : %s", purl, ex);
+                }
             }
             if (this.cyclonedxBom.getComponents() != null) {
                 Optional<Component> existingComponent = this.cyclonedxBom.getComponents().stream().filter(c ->
