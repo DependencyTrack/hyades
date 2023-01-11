@@ -4,6 +4,7 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
+import org.acme.model.Severity;
 import org.acme.resolver.CweResolver;
 import org.apache.commons.lang3.StringUtils;
 import org.cyclonedx.model.Bom;
@@ -14,9 +15,12 @@ import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.springett.cvss.Cvss;
+import us.springett.cvss.Score;
 
 import java.sql.Date;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +28,7 @@ import java.util.UUID;
 import static org.acme.commonutil.JsonUtil.jsonStringToTimestamp;
 import static org.acme.commonutil.VulnerabilityUtil.normalizedCvssV2Score;
 import static org.acme.commonutil.VulnerabilityUtil.normalizedCvssV3Score;
+import static org.acme.model.Severity.getSeverityByLevel;
 import static org.acme.model.Vulnerability.Source.GITHUB;
 import static org.acme.model.Vulnerability.Source.NVD;
 import static org.acme.model.Vulnerability.Source.OSV;
@@ -33,6 +38,7 @@ public class OsvToCyclonedxParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
     final Bom cyclonedxBom;
     String ecosystem;
+    Vulnerability.Rating.Severity severity = Vulnerability.Rating.Severity.UNKNOWN;
 
     public OsvToCyclonedxParser() {
         this.cyclonedxBom = new Bom();
@@ -50,10 +56,14 @@ public class OsvToCyclonedxParser {
             vulnerability.setId(object.optString("id", null));
             vulnerability.setDescription(trimSummary(object.optString("summary", null)));
             vulnerability.setDetail(object.optString("details", null));
-            vulnerability.setPublished(Date.from(
-                    jsonStringToTimestamp(object.optString("published", null)).toInstant()));
-            vulnerability.setUpdated(Date.from(
-                    jsonStringToTimestamp(object.optString("modified", null)).toInstant()));
+            ZonedDateTime published = jsonStringToTimestamp(object.optString("published", null));
+            if (published != null) {
+                vulnerability.setPublished(Date.from(published.toInstant()));
+            }
+            ZonedDateTime modified = jsonStringToTimestamp(object.optString("modified", null));
+            if (modified != null) {
+                vulnerability.setUpdated(Date.from(modified.toInstant()));
+            }
 
             // ADVISORY link and external references
             final JSONArray references = object.optJSONArray("references");
@@ -90,11 +100,19 @@ public class OsvToCyclonedxParser {
                 vulnerability.setReferences(parseAliases(aliases));
             }
 
-            Vulnerability.Rating.Severity severity = Vulnerability.Rating.Severity.UNKNOWN;
+            final JSONArray osvAffectedArray = object.optJSONArray("affected");
+            if (osvAffectedArray != null) {
+
+                // CPE
+                // AFFECTED PACKAGES AND VERSIONS
+                // LOW-PRIORITY SEVERITY ASSIGNMENT
+                vulnerability.setAffects(parseAffectedRanges(osvAffectedArray));
+            }
+
             final JSONObject databaseSpecific = object.optJSONObject("database_specific");
             if (databaseSpecific != null) {
 
-                // SEVERITY
+                // HIGH-PRIORITY SEVERITY ASSIGNMENT
                 String osvSeverity = databaseSpecific.optString("severity", null);
                 if (osvSeverity != null) {
                     severity = Vulnerability.Rating.Severity.fromString(osvSeverity.toLowerCase());
@@ -110,13 +128,6 @@ public class OsvToCyclonedxParser {
             // CVSS ratings
             vulnerability.setRatings(parseCvssRatings(object, severity));
 
-            final JSONArray osvAffectedArray = object.optJSONArray("affected");
-            if (osvAffectedArray != null) {
-
-                // CPE
-                // AFFECTED PACKAGES AND VERSIONS
-                vulnerability.setAffects(parseAffectedRanges(osvAffectedArray));
-            }
             this.cyclonedxBom.setVulnerabilities(List.of(vulnerability));
         }
 
@@ -126,12 +137,20 @@ public class OsvToCyclonedxParser {
     public List<Vulnerability.Affect> parseAffectedRanges(JSONArray osvAffectedArray) {
 
         List<Vulnerability.Affect> affects = new ArrayList<>();
+        List<Integer> osvAffectedPackageSeverities = new ArrayList<>();
+
         for(int i=0; i<osvAffectedArray.length(); i++) {
 
             JSONObject osvAffectedObj = osvAffectedArray.getJSONObject(i);
 
             // CPE for each affected package
             String bomReference = parseCpe(osvAffectedObj);
+
+            // Extract affected package severity
+            final JSONObject ecosystemSpecific = osvAffectedObj.optJSONObject("ecosystem_specific");
+            final JSONObject databaseSpecific = osvAffectedObj.optJSONObject("database_specific");
+            osvAffectedPackageSeverities.add(
+                    parseAffectedPackageSeverity(ecosystemSpecific, databaseSpecific).getLevel());
 
             // RANGES and VERSIONS for each affected package
             final JSONArray rangesObj = osvAffectedObj.optJSONArray("ranges");
@@ -154,7 +173,44 @@ public class OsvToCyclonedxParser {
             versionRangeAffected.setVersions(versionRanges);
             affects.add(versionRangeAffected);
         }
+
+        Collections.sort(osvAffectedPackageSeverities);
+        Collections.reverse(osvAffectedPackageSeverities);
+        severity = Vulnerability.Rating.Severity.fromString(
+                String.valueOf(getSeverityByLevel(osvAffectedPackageSeverities.get(0))).toLowerCase());
+
         return affects;
+    }
+
+    private Severity parseAffectedPackageSeverity(JSONObject ecosystemSpecific, JSONObject databaseSpecific) {
+
+        String severity = null;
+
+        if (databaseSpecific != null) {
+            String cvssVector = databaseSpecific.optString("cvss", null);
+            if (cvssVector != null) {
+                Cvss cvss = Cvss.fromVector(cvssVector);
+                Score score = cvss.calculateScore();
+                severity = String.valueOf(normalizedCvssV3Score(score.getBaseScore()));
+            }
+        }
+
+        if(severity == null && ecosystemSpecific != null) {
+            severity = ecosystemSpecific.optString("severity", null);
+        }
+
+        if (severity != null) {
+            if (severity.equalsIgnoreCase("CRITICAL")) {
+                return Severity.CRITICAL;
+            } else if (severity.equalsIgnoreCase("HIGH")) {
+                return Severity.HIGH;
+            } else if (severity.equalsIgnoreCase("MODERATE") || severity.equalsIgnoreCase("MEDIUM")) {
+                return Severity.MEDIUM;
+            } else if (severity.equalsIgnoreCase("LOW")) {
+                return Severity.LOW;
+            }
+        }
+        return Severity.UNASSIGNED;
     }
 
     private String parseCpe(JSONObject osvAffectedObj) {
