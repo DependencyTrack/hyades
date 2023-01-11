@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -44,6 +45,7 @@ class ComposerMetaAnalyzerTest {
     private static ClientAndServer mockServer;
     @Inject
     ComposerMetaAnalyzer analyzer;
+
     @BeforeAll
     public static void beforeClass() {
         mockServer = ClientAndServer.startClientAndServer(1080);
@@ -99,7 +101,7 @@ class ComposerMetaAnalyzerTest {
     void testAnalyzerDoesNotFindResult() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/typo3/package-does-not-exist@v1.2.0"));
-       analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
         new MockServerClient("localhost", mockServer.getPort())
                 .when(
                         request()
@@ -171,7 +173,7 @@ class ComposerMetaAnalyzerTest {
         );
     }
 
-    private static File getResourceFile(String namespace, String name) throws Exception{
+    private static File getResourceFile(String namespace, String name) throws Exception {
         return new File(
                 Thread.currentThread().getContextClassLoader()
                         .getResource(String.format(

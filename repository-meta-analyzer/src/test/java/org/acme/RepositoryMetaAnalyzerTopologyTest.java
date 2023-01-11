@@ -5,7 +5,6 @@ import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CaffeineCache;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
-import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.acme.common.KafkaTopic;
@@ -34,7 +33,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
