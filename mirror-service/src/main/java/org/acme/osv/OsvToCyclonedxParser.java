@@ -222,7 +222,7 @@ public class OsvToCyclonedxParser {
                     PackageURL packageURL = new PackageURL(purl);
                     ecosystem = packageURL.getType();
                 } catch (MalformedPackageURLException ex) {
-                    LOGGER.info("Error while parsing purl %s : %s", purl, ex);
+                    LOGGER.info("Error while parsing purl: " + purl, ex);
                 }
             }
             if (this.cyclonedxBom.getComponents() != null) {
