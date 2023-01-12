@@ -23,6 +23,7 @@ import org.acme.model.Notification;
 import org.acme.persistence.ConfigPropertyRepository;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.json.JsonObject;
 
 @ApplicationScoped
@@ -31,6 +32,7 @@ public class CsWebexPublisher extends AbstractWebhookPublisher implements Publis
 
     private final ConfigPropertyRepository configPropertyRepository;
 
+    @Inject
     public CsWebexPublisher(final ConfigPropertyRepository configPropertyRepository){
         this.configPropertyRepository = configPropertyRepository;
     }

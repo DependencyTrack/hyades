@@ -56,6 +56,9 @@ import static org.mockserver.model.HttpResponse.response;
 @QuarkusTest
 public class MsTeamsPublisherTest{
 
+    @Inject
+    MsTeamsPublisher publisher;
+
     private static ClientAndServer mockServer;
 
     @Inject
@@ -100,7 +103,6 @@ public class MsTeamsPublisherTest{
         notification.setLevel(NotificationLevel.INFORMATIONAL);
         notification.setTitle("Test Notification");
         notification.setContent("This is only a test");
-        MsTeamsPublisher publisher = new MsTeamsPublisher(configPropertyRepository);
         publisher.inform(notification, config);
     }
 

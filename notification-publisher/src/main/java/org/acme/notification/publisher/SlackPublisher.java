@@ -23,6 +23,7 @@ import org.acme.model.Notification;
 import org.acme.persistence.ConfigPropertyRepository;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.json.JsonObject;
 
 @ApplicationScoped
@@ -31,6 +32,7 @@ public class SlackPublisher extends AbstractWebhookPublisher implements Publishe
 
     private final ConfigPropertyRepository configPropertyRepository;
 
+    @Inject
     public SlackPublisher(final ConfigPropertyRepository configPropertyRepository){
         this.configPropertyRepository = configPropertyRepository;
     }

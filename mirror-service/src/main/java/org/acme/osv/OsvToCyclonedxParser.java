@@ -2,8 +2,8 @@ package org.acme.osv;
 
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.acme.model.Severity;
 import org.acme.resolver.CweResolver;
 import org.apache.commons.lang3.StringUtils;

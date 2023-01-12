@@ -20,15 +20,16 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
-import kong.unirest.json.JSONObject;
+import org.json.JSONObject;
 import org.acme.model.MetaModel;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,33 +70,26 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
-        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() == null) {
             return meta;
         }
 
         final String url = String.format(baseUrl + API_URL, component.getPurl().getNamespace(), component.getPurl().getName());
-        try {
-            final HttpRequest<GetRequest> request = ui.get(url)
-                    .header("accept", "application/json");
-            if (username != null || password != null) {
-                request.basicAuth(username, password);
-            }
-            final HttpResponse<JsonNode> response = request.asJson();
-
-            if (response.getStatus() != 200) {
-                handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
+        try (final CloseableHttpResponse response = processHttpRequest(url)) {
+            if (response.getStatusLine().getStatusCode() != org.apache.http.HttpStatus.SC_OK) {
+                handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                 return meta;
             }
-
-            if (response.getBody() == null || response.getBody().getObject() == null) {
+            String jsonString = EntityUtils.toString(response.getEntity());
+            if (jsonString.equalsIgnoreCase("")) {
                 return meta;
             }
-
-            final JSONObject composerPackage = response
-                    .getBody()
-                    .getObject()
+            if (jsonString.equalsIgnoreCase( "{}")) {
+                return meta;
+            }
+            JSONObject jsonObject = new JSONObject(jsonString);
+            final JSONObject composerPackage = jsonObject
                     .getJSONObject("packages")
                     .getJSONObject(component.getPurl().getNamespace() + "/" + component.getPurl().getName());
 
@@ -111,8 +105,7 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
 
                 final String version_normalized = composerPackage.getJSONObject(key).getString("version_normalized");
                 ComparableVersion currentComparableVersion = new ComparableVersion(version_normalized);
-                if ( currentComparableVersion.compareTo(latestVersion) < 0)
-                {
+                if (currentComparableVersion.compareTo(latestVersion) < 0) {
                     // smaller version can be skipped
                     return;
                 }
@@ -128,7 +121,7 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
                     LOGGER.warn("An error occurred while parsing upload time", e);
                 }
             });
-        } catch (UnirestException e) {
+        } catch (IOException | org.apache.http.ParseException e) {
             handleRequestException(LOGGER, e);
         }
 

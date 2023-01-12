@@ -19,6 +19,7 @@
 package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
+import io.quarkus.test.junit.QuarkusTest;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
@@ -30,13 +31,20 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
+import javax.inject.Inject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
+@QuarkusTest
 class NugetMetaAnalyzerTest {
+
+    @Inject
+    NugetMetaAnalyzer analyzer;
+
+    Component component = new Component();
 
     private static ClientAndServer mockServer;
 
@@ -51,10 +59,47 @@ class NugetMetaAnalyzerTest {
     }
 
     @Test
+    void testPerformVersionCheck() throws Exception {
+        String mockIndexResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v4-index1.json");
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/v4/index1.json")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                .withBody(mockIndexResponse)
+                );
+        String encodedBasicHeader = "Basic OnBhc3N3b3Jk";
+
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/v4/flat2/nunitprivate/index1.json")
+                                .withHeader("Authorization", encodedBasicHeader)
+                )
+                .respond(
+                        response()
+                                .withStatusCode(404)
+                );
+
+
+        component.setPurl(new PackageURL("pkg:nuget/NUnitPrivate@2.0.1"));
+        analyzer.setRepositoryUsernameAndPassword(null, "password");
+        analyzer.setRepositoryBaseUrl("http://localhost:1080");
+        MetaModel metaModel = analyzer.analyze(component);
+        Assertions.assertNull(metaModel.getComponent());
+    }
+
+
+    @Test
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnit@3.8.0"));
-        NugetMetaAnalyzer analyzer = new NugetMetaAnalyzer();
         Assertions.assertEquals("NugetMetaAnalyzer", analyzer.getName());
         analyzer.setRepositoryBaseUrl("https://api.nuget.org");
         MetaModel metaModel = analyzer.analyze(component);
@@ -80,8 +125,8 @@ class NugetMetaAnalyzerTest {
                                 .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                                 .withBody(mockIndexResponse)
                 );
+        String encodedBasicHeader = "Basic OnBhc3N3b3Jk";
 
-        String encodedBasicHeader = "Basic bnVsbDpwYXNzd29yZA==";
         String mockVersionResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3-flat2" +
                 "-nunitprivate-index.json");
         new MockServerClient("localhost", mockServer.getPort())
@@ -114,16 +159,14 @@ class NugetMetaAnalyzerTest {
                                 .withBody(mockRegistrationResponse)
                 );
 
-        Component component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnitPrivate@5.0.1"));
-        NugetMetaAnalyzer analyzer = new NugetMetaAnalyzer();
         analyzer.setRepositoryUsernameAndPassword(null, "password");
         analyzer.setRepositoryBaseUrl("http://localhost:1080");
         MetaModel metaModel = analyzer.analyze(component);
-
         Assertions.assertEquals("5.0.2", metaModel.getLatestVersion());
         Assertions.assertNotNull(metaModel.getPublishedTimestamp());
     }
+
 
     private String readResourceFileToString(String fileName) throws Exception {
         return Files.readString(Paths.get(getClass().getResource(fileName).toURI()));

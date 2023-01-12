@@ -1,13 +1,28 @@
 package org.acme.common;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.util.Map;
+
 
 @QuarkusTest
+@TestProfile(SecretDecryptorTest.TestProfile.class)
 class SecretDecryptorTest {
+    public static class TestProfile implements QuarkusTestProfile {
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.of(
+                    "client.http.config.proxy-timeout-connection", "20",
+                    "client.http.config.proxy-timeout-pool", "40",
+                    "client.http.config.proxy-timeout-socket", "20"
+            );
+        }
+    }
 
     @Inject
     SecretDecryptor secretDecryptor;
