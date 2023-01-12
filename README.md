@@ -22,7 +22,9 @@ We're planning to expand its set of capabilities further by:
 * Performing component meta analysis (e.g. fetching latest versions from remote repositories)
 * ...
 
-An overview of the architecture can be found [here](https://excalidraw.com/#room=fba0103fa2642574be40,NomXwyHw3jvoy0yr6JxCJw).
+Here's a rough overview of the architecture:
+
+![Architecture Overview](docs/architecture-overview.png)
 
 ## Great, can I try it? 🙌
 
