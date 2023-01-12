@@ -32,7 +32,7 @@
     <lib.cyclonedx-java.version>7.3.1</lib.cyclonedx-java.version>
     <lib.json-unit.version>2.36.0</lib.json-unit.version>
     <lib.maven-artifact.version>4.0.0-alpha-3</lib.maven-artifact.version>
-    <lib.mockserver-netty.version>5.14.0</lib.mockserver-netty.version>
+    <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
     <lib.pebble.version>3.1.6</lib.pebble.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
