@@ -22,6 +22,7 @@ public enum KafkaTopic {
     VULN_ANALYSIS_SCANNER_INTERNAL("dtrack.vuln-analysis.scanner.internal"),
     VULN_ANALYSIS_SCANNER_OSSINDEX("dtrack.vuln-analysis.scanner.ossindex"),
     VULN_ANALYSIS_SCANNER_SNYK("dtrack.vuln-analysis.scanner.snyk"),
+    VULN_ANALYSIS_SCANNER_RESULT("dtrack.vuln-analysis.scanner.result"),
     VULN_ANALYSIS_COMPONENT("dtrack.vuln-analysis.component"),
     VULN_ANALYSIS_COMPONENT_CPE("dtrack.vuln-analysis.component.cpe"),
     VULN_ANALYSIS_COMPONENT_PURL("dtrack.vuln-analysis.component.purl"),
