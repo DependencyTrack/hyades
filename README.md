@@ -51,7 +51,7 @@ openssl rand 32 > secret.key
 ### Development
 To develop the application, you need to run:
 ```shell
-docker-compose --profile dev up
+docker-compose up
 ```
 to start off the docker containers. And then need to run:
 ```shell
@@ -123,7 +123,7 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 * kubectl installation on target machine
 * helm installation on target machine
 * ```shell
-  docker-compose --profile demokube up
+  docker-compose up
   ```
 
 ##### Deployment Steps

@@ -9,7 +9,6 @@ services:
     environment:
       QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_STREAMS_NUM_STREAM_THREADS: "1"
-      # KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
@@ -29,7 +28,6 @@ services:
     environment:
       QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_STREAMS_NUM_STREAM_THREADS: "1"
-      # KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
@@ -52,7 +50,6 @@ services:
     environment:
       QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_STREAMS_NUM_STREAM_THREADS: "1"
-      # KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
