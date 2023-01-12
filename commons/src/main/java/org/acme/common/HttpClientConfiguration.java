@@ -153,7 +153,7 @@ public final class HttpClientConfiguration {
             }
         } else {
             connectionManager = new PoolingHttpClientConnectionManager();
-            new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, "metaAnalyzer").bindTo(meterRegistry);
+            new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, applicationName).bindTo(meterRegistry);
             connectionManager.setMaxTotal(200);
             connectionManager.setDefaultMaxPerRoute(20);
             clientBuilder.setConnectionManager(connectionManager);
