@@ -50,6 +50,7 @@ import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -87,6 +88,9 @@ public final class HttpClientConfiguration {
     }
 
     private static final Logger LOGGER = Logger.getLogger(HttpClientConfiguration.class);
+
+    @ConfigProperty(name = "quarkus.application.name")
+    String applicationName;
 
     @Produces
     @ApplicationScoped
@@ -138,7 +142,7 @@ public final class HttpClientConfiguration {
                         .register("https", new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
                         .build();
                 connectionManager = new PoolingHttpClientConnectionManager(registry);
-                new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, "metaAnalyzer").bindTo(meterRegistry);
+                new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, applicationName).bindTo(meterRegistry);
 
                 connectionManager.setMaxTotal(200);
                 connectionManager.setDefaultMaxPerRoute(20);
