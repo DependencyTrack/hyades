@@ -57,6 +57,9 @@ import static org.mockserver.model.HttpResponse.response;
 @QuarkusTest
 public class WebhookPublisherTest {
 
+    @Inject
+    WebhookPublisher publisher;
+
     private static ClientAndServer mockServer;
 
     @Inject
@@ -100,7 +103,6 @@ public class WebhookPublisherTest {
         notification.setLevel(NotificationLevel.INFORMATIONAL);
         notification.setTitle("Test Notification");
         notification.setContent("This is only a test");
-        WebhookPublisher publisher = new WebhookPublisher(configPropertyRepository);
         publisher.inform(notification, config);
     }
 

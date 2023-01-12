@@ -5,8 +5,8 @@ import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CaffeineCache;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
-import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Component;
 import org.acme.model.MetaAnalyzerCacheKey;
@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -56,45 +55,33 @@ public class RepositoryMetaAnalyzerTopologyTest {
     private TestInputTopic<UUID, Component> inputTopic;
     private TestOutputTopic<UUID, MetaModel> outputTopic;
 
+    @InjectMock
     private ComposerMetaAnalyzer composerMetaAnalyzerMock;
+    @InjectMock
     private GemMetaAnalyzer gemMetaAnalyzerMock;
+    @InjectMock
     private GoModulesMetaAnalyzer goModulesMetaAnalyzerMock;
+
+    @InjectMock
     private HexMetaAnalyzer hexMetaAnalyzerMock;
+
+    @InjectMock
     private MavenMetaAnalyzer mavenMetaAnalyzerMock;
+
+    @InjectMock
     private NpmMetaAnalyzer npmMetaAnalyzerMock;
+
+    @InjectMock
     private NugetMetaAnalyzer nugetMetaAnalyzerMock;
+
+    @InjectMock
     private PypiMetaAnalyzer pypiMetaAnalyzerMock;
+
+    @InjectMock
     private RepoEntityRepository repoEntityRepositoryMock;
 
     @BeforeEach
     void beforeEach() {
-        composerMetaAnalyzerMock = Mockito.mock(ComposerMetaAnalyzer.class);
-        QuarkusMock.installMockForType(composerMetaAnalyzerMock, ComposerMetaAnalyzer.class);
-
-        gemMetaAnalyzerMock = Mockito.mock(GemMetaAnalyzer.class);
-        QuarkusMock.installMockForType(gemMetaAnalyzerMock, GemMetaAnalyzer.class);
-
-        goModulesMetaAnalyzerMock = Mockito.mock(GoModulesMetaAnalyzer.class);
-        QuarkusMock.installMockForType(goModulesMetaAnalyzerMock, GoModulesMetaAnalyzer.class);
-
-        hexMetaAnalyzerMock = Mockito.mock(HexMetaAnalyzer.class);
-        QuarkusMock.installMockForType(hexMetaAnalyzerMock, HexMetaAnalyzer.class);
-
-        mavenMetaAnalyzerMock = Mockito.mock(MavenMetaAnalyzer.class);
-        QuarkusMock.installMockForType(mavenMetaAnalyzerMock, MavenMetaAnalyzer.class);
-
-        npmMetaAnalyzerMock = Mockito.mock(NpmMetaAnalyzer.class);
-        QuarkusMock.installMockForType(npmMetaAnalyzerMock, NpmMetaAnalyzer.class);
-
-        nugetMetaAnalyzerMock = Mockito.mock(NugetMetaAnalyzer.class);
-        QuarkusMock.installMockForType(nugetMetaAnalyzerMock, NugetMetaAnalyzer.class);
-
-        pypiMetaAnalyzerMock = Mockito.mock(PypiMetaAnalyzer.class);
-        QuarkusMock.installMockForType(pypiMetaAnalyzerMock, PypiMetaAnalyzer.class);
-
-        repoEntityRepositoryMock = Mockito.mock(RepoEntityRepository.class);
-        QuarkusMock.installMockForType(repoEntityRepositoryMock, RepoEntityRepository.class);
-
         testDriver = new TopologyTestDriver(topology);
         inputTopic = testDriver.createInputTopic(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), new UUIDSerializer(), new ObjectMapperSerializer<>());
         outputTopic = testDriver.createOutputTopic(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), new UUIDDeserializer(), new ObjectMapperDeserializer<>(MetaModel.class));

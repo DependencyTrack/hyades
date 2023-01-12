@@ -20,16 +20,17 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+import org.json.JSONArray;
 import org.acme.model.MetaModel;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +50,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
     };
+    MetaModel meta = new MetaModel();
     private static final Logger LOGGER = Logger.getLogger(NugetMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://api.nuget.org";
 
@@ -95,7 +97,6 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
-        final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null && performVersionCheck(meta, component)) {
                 performLastPublishedCheck(meta, component);
         }
@@ -104,19 +105,21 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private boolean performVersionCheck(final MetaModel meta, final Component component) {
         final String url = String.format(versionQueryUrl, component.getPurl().getName().toLowerCase());
-        try {
-            final HttpResponse<JsonNode> response = httpGet(url);
-            if (response.getStatus() == 200) {
-                if (response.getBody() != null && response.getBody().getObject() != null) {
-                    final JSONArray versions = response.getBody().getObject().getJSONArray("versions");
+        try (final CloseableHttpResponse response = processHttpRequest(url)) {
+            if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                String responseString = EntityUtils.toString(response.getEntity());
+                if (!responseString.equalsIgnoreCase("") && !responseString.equalsIgnoreCase("{}")) {
+                    JSONObject jsonResponse = new JSONObject(responseString);
+                    final JSONArray versions = jsonResponse.getJSONArray("versions");
                     final String latest = findLatestVersion(versions); // get the last version in the array
                     meta.setLatestVersion(latest);
+                    return true;
                 }
-                return true;
-            } else {
-                handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
             }
-        } catch (UnirestException e) {
+            else {
+                handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
+            }
+        } catch (IOException e) {
             handleRequestException(LOGGER, e);
         }
         return false;
@@ -139,33 +142,25 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
         return latestVersion.toString();
     }
 
-    private HttpResponse<JsonNode> httpGet(String url) {
-        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
-        final HttpRequest<GetRequest> request = ui.get(url).header("accept", "application/json");
-
-        if (username != null || password != null) {
-            request.basicAuth(username, password);
-        }
-
-        return request.asJson();
-    }
-
     private boolean performLastPublishedCheck(final MetaModel meta, final Component component) {
         final String url = String.format(registrationUrl, component.getPurl().getName().toLowerCase(), meta.getLatestVersion());
-        try {
-            final HttpResponse<JsonNode> response = httpGet(url);
-            if (response.getStatus() == 200) {
-                if (response.getBody() != null && response.getBody().getObject() != null) {
-                    final String updateTime = response.getBody().getObject().optString("published", null);
-                    if (updateTime != null) {
-                        meta.setPublishedTimestamp(parseUpdateTime(updateTime));
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                    String stringResponse = EntityUtils.toString(response.getEntity());
+                    if(!stringResponse.equalsIgnoreCase("") && !stringResponse.equalsIgnoreCase("{}")){
+                        JSONObject jsonResponse = new JSONObject(stringResponse);
+                            final String updateTime = jsonResponse.optString("published", null);
+                            if (updateTime != null) {
+                                meta.setPublishedTimestamp(parseUpdateTime(updateTime));
+                            }
+                        return true;
                     }
                 }
-                return true;
-            } else {
-                handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
+                else {
+                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
+                }
             }
-        } catch (UnirestException e) {
+         catch (IOException e) {
             handleRequestException(LOGGER, e);
         }
         return false;
@@ -174,17 +169,22 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     private void initializeEndpoints() {
         final String url = baseUrl + INDEX_URL;
         try {
-            final HttpResponse<JsonNode> response = httpGet(url);
-            if (response.getStatus() == 200 && response.getBody() != null && response.getBody().getObject() != null) {
-                final JSONArray resources = response.getBody().getObject().getJSONArray("resources");
-                final JSONObject packageBaseResource = findResourceByType(resources, "PackageBaseAddress");
-                final JSONObject registrationsBaseResource = findResourceByType(resources, "RegistrationsBaseUrl");
-                if (packageBaseResource != null && registrationsBaseResource != null) {
-                    versionQueryUrl = packageBaseResource.getString("@id") + "%s/index.json";
-                    registrationUrl = registrationsBaseResource.getString("@id") + "%s/%s.json";
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                    String responseString = EntityUtils.toString(response.getEntity());
+                    if(responseString!=null){
+                        JSONObject responseJson = new JSONObject(responseString);
+                        final JSONArray resources = responseJson.getJSONArray("resources");
+                        final JSONObject packageBaseResource = findResourceByType(resources, "PackageBaseAddress");
+                        final JSONObject registrationsBaseResource = findResourceByType(resources, "RegistrationsBaseUrl");
+                        if (packageBaseResource != null && registrationsBaseResource != null) {
+                            versionQueryUrl = packageBaseResource.getString("@id") + "%s/index.json";
+                            registrationUrl = registrationsBaseResource.getString("@id") + "%s/%s.json";
+                        }
+                    }
                 }
             }
-        } catch (UnirestException e) {
+        } catch (IOException e) {
             handleRequestException(LOGGER, e);
         }
     }

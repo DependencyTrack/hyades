@@ -1,6 +1,6 @@
 package org.acme.osv;
 
-import kong.unirest.json.JSONObject;
+import org.json.JSONObject;
 import org.acme.client.OsvClient;
 import org.cyclonedx.model.Bom;
 import org.slf4j.Logger;

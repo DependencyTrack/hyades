@@ -56,6 +56,9 @@ import static org.mockserver.model.HttpResponse.response;
 @QuarkusTest
 public class CsWebexPublisherTest  {
 
+    @Inject
+    CsWebexPublisher publisher;
+
     private static ClientAndServer mockServer;
     @Inject
     ConfigPropertyRepository configPropertyRepository;
@@ -99,7 +102,6 @@ public class CsWebexPublisherTest  {
         notification.setLevel(NotificationLevel.INFORMATIONAL);
         notification.setTitle("Test Notification");
         notification.setContent("This is only a test");
-        CsWebexPublisher publisher = new CsWebexPublisher(configPropertyRepository);
         publisher.inform(notification, config);
     }
 

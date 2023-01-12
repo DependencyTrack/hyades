@@ -1,4 +1,4 @@
-name: Publish Native Binary
+name: Publish Repo Meta Analyzer Native Binary
 
 on:
   push:
@@ -30,12 +30,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build native binary
         run: |-
-          mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
+          mvn clean package -Pnative -pl commons,repository-meta-analyzer -DskipTests \
             -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17
       - name: Build and push container image
         uses: docker/build-push-action@v3
         with:
-          context: ./vulnerability-analyzer
-          file: ./vulnerability-analyzer/src/main/docker/Dockerfile.native-micro
+          context: ./repository-meta-analyzer
+          file: ./repository-meta-analyzer/src/main/docker/Dockerfile.native-micro
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/vulnerability-analyzer:latest-native
+          tags: ghcr.io/${{ github.repository_owner }}/repository-meta-analyzer:latest-native

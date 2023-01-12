@@ -2,7 +2,6 @@ package org.acme.common;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.LogFactoryImpl;
 import org.apache.commons.logging.impl.SimpleLog;
 
 /**
@@ -15,7 +14,6 @@ import org.apache.commons.logging.impl.SimpleLog;
 @SuppressWarnings("unused")
 @RegisterForReflection(targets = {
         LogFactory.class,
-        LogFactoryImpl.class,
         SimpleLog.class
 })
 public class ApacheCommonsLoggingReflectionConfiguration {

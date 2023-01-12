@@ -60,6 +60,23 @@ quarkus dev
 ```
 to run the application in dev mode.
 
+### Running Native binaries
+Native executable of each module can be created using the command 
+```shell
+  mvn package -Pnative
+ ```
+The native binary created would be in the target folder of the module in question, for example: target/repository-meta-analyzer-1.0.0-SNAPSHOT-runner<br/>
+To run the native executable version, you would need to:
+* start off the application containers via the docker-compose file in the application root.
+* export the postgres username, password and connection url for the native executable to use:
+  ```shell
+    export QUARKUS_DATASOURCE_USERNAME: test
+    export QUARKUS_DATASOURCE_JDBC_URL: test
+    export QUARKUS_DATASOURCE_PASSWORD: test
+  ```
+* Start off the native binary by running ./repository-meta-analyzer/target/repository-meta-analyzer-1.0.0-SNAPSHOT-runner
+
+
 ### Testing 🤞
 
 #### Load Testing 🚀
@@ -119,7 +136,6 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 * ```shell
   minikube start
     ```
-  ```
 * kubectl installation on target machine
 * helm installation on target machine
 * ```shell

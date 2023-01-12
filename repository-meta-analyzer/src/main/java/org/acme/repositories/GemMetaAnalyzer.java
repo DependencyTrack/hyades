@@ -20,13 +20,15 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
-import org.acme.common.UnirestFactory;
+import org.json.JSONObject;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 
 /**
  * An IMetaAnalyzer implementation that supports Ruby Gems.
@@ -37,7 +39,6 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
-
     private static final Logger LOGGER = Logger.getLogger(GemMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://rubygems.org";
     private static final String API_URL = "/api/v1/versions/%s/latest.json";
@@ -64,27 +65,22 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
-        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null) {
             final String url = String.format(baseUrl + API_URL, component.getPurl().getName());
-            try {
-                final HttpRequest<GetRequest> request = ui.get(url)
-                        .header("accept", "application/json");
-                if (username != null || password != null) {
-                    request.basicAuth(username, password);
-                }
-                final HttpResponse<JsonNode> response = request.asJson();
-
-                if (response.getStatus() == 200) {
-                    if (response.getBody() != null && response.getBody().getObject() != null) {
-                        final String latest = response.getBody().getObject().getString("version");
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                    String jsonString = EntityUtils.toString(response.getEntity());
+                    if (jsonString.equalsIgnoreCase("") || jsonString.equalsIgnoreCase("{}") || jsonString.equalsIgnoreCase("{\"version\":\"unknown\"}")) {
+                        handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
+                    } else {
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        final String latest = jsonObject.getString("version");
                         meta.setLatestVersion(latest);
                     }
-                } else {
-                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
                 }
-            } catch (UnirestException e) {
+
+            } catch (IOException e) {
                 handleRequestException(LOGGER, e);
             }
         }

@@ -19,20 +19,25 @@
 package org.acme.repositories;
 
 import com.github.packageurl.PackageURL;
+import io.quarkus.test.junit.QuarkusTest;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
+
+@QuarkusTest
 class MavenMetaAnalyzerTest {
+    @Inject
+    MavenMetaAnalyzer analyzer;
 
     @Test
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:maven/junit/junit@4.12"));
 
-        MavenMetaAnalyzer analyzer = new MavenMetaAnalyzer();
         Assertions.assertEquals("MavenMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.MAVEN, analyzer.supportedRepositoryType());
@@ -48,8 +53,6 @@ class MavenMetaAnalyzerTest {
         // Scala packages differ from others in that their name always includes the version of
         // the Scala compiler they were built with.
         component.setPurl(new PackageURL("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23"));
-
-        MavenMetaAnalyzer analyzer = new MavenMetaAnalyzer();
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.MAVEN, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);

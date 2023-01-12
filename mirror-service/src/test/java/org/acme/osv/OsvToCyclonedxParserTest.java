@@ -1,8 +1,8 @@
 package org.acme.osv;
 
 import com.github.packageurl.MalformedPackageURLException;
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.ExternalReference;

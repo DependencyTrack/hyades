@@ -20,15 +20,15 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
-import kong.unirest.json.JSONArray;
-import kong.unirest.json.JSONObject;
-import org.acme.common.UnirestFactory;
+import org.json.JSONObject;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,7 +42,6 @@ import java.util.Date;
  */
 @ApplicationScoped
 public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
-
     private static final Logger LOGGER = Logger.getLogger(HexMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://hex.pm";
     private static final String API_URL = "/api/packages/%s";
@@ -69,7 +68,6 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
-        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
         MetaModel successMeta = new MetaModel(component);
         if (component.getPurl() != null) {
@@ -82,32 +80,27 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
             }
 
             final String url = String.format(baseUrl + API_URL, packageName);
-            try {
-                final HttpRequest<GetRequest> request = ui.get(url)
-                        .header("accept", "application/json");
-                if (username != null || password != null) {
-                    request.basicAuth(username, password);
-                }
-                final HttpResponse<JsonNode> response = request.asJson();
-
-                if (response.getStatus() == 200) {
-                    successMeta = processResponse(meta, response);
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+                String jsonString = EntityUtils.toString(response.getEntity());
+                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                    if(!jsonString.equalsIgnoreCase("") && !jsonString.equalsIgnoreCase("{}")) {
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        successMeta = processResponse(meta, jsonObject);
+                    }
                 } else {
-                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
+                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                 }
-            } catch (UnirestException e) {
+            } catch (IOException | org.apache.http.ParseException e) {
                 handleRequestException(LOGGER, e);
             }
         }
         return successMeta;
     }
 
-    private MetaModel processResponse(MetaModel meta, HttpResponse<JsonNode> response) {
-        if (response.getBody() != null && response.getBody().getObject() != null) {
-            final JSONArray releasesArray = response.getBody().getObject().getJSONArray("releases");
-            if (releasesArray.length() > 0) {
-                // The first one in the array is always the latest version
-                final JSONObject release = releasesArray.getJSONObject(0);
+    private MetaModel processResponse(MetaModel meta, JSONObject response) {
+        if (response != null) {
+            if (response.optJSONArray("releases") != null && response.optJSONArray("releases").length() > 0) {
+                final JSONObject release = response.optJSONArray("releases").getJSONObject(0);
                 final String latest = release.optString("version", null);
                 meta.setLatestVersion(latest);
                 final String insertedAt = release.optString("inserted_at", null);

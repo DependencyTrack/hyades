@@ -1,11 +1,13 @@
 package org.acme.notification;
 
+import io.quarkus.test.junit.QuarkusTest;
 import org.acme.notification.publisher.SendMailPublisher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+@QuarkusTest
 public class SendMailPublisherTest {
   private static JsonObject configWithDestination(final String destination) {
     return Json.createObjectBuilder().add("destination", destination).build();

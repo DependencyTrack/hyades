@@ -20,13 +20,15 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import kong.unirest.*;
-import org.acme.common.UnirestFactory;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 
 /**
  * An IMetaAnalyzer implementation that supports NPM.
@@ -63,7 +65,6 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
-        final UnirestInstance ui = UnirestFactory.getUnirestInstance();
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null) {
 
@@ -75,25 +76,20 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
             }
 
             final String url = String.format(baseUrl + API_URL, packageName);
-            try {
-                final HttpRequest<GetRequest> request = ui.get(url)
-                        .header("accept", "application/json");
-                if (username != null || password != null) {
-                    request.basicAuth(username, password);
-                }
-                final HttpResponse<JsonNode> response = request.asJson();
-
-                if (response.getStatus() == 200) {
-                    if (response.getBody() != null && response.getBody().getObject() != null) {
-                        final String latest = response.getBody().getObject().optString("latest");
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                    String responseString = EntityUtils.toString(response.getEntity());
+                    if (!responseString.equalsIgnoreCase("") && !responseString.equalsIgnoreCase("{}")) {
+                        JSONObject jsonResponse = new JSONObject(responseString);
+                        final String latest = jsonResponse.optString("latest");
                         if (latest != null) {
                             meta.setLatestVersion(latest);
                         }
                     }
                 } else {
-                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatus(), response.getStatusText(), component);
+                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
                 }
-            } catch (UnirestException e) {
+            } catch (IOException e) {
                 handleRequestException(LOGGER, e);
             }
         }

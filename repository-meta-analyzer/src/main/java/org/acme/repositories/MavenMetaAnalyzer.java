@@ -20,24 +20,17 @@ package org.acme.repositories;
 
 import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import io.quarkus.cache.Cache;
-import io.quarkus.cache.CacheKey;
-import io.quarkus.cache.CacheName;
-import io.quarkus.cache.CaffeineCache;
 import org.acme.model.MetaModel;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.acme.common.HttpClientPool;
 import org.acme.model.Component;
 import org.acme.model.RepositoryType;
 import org.acme.commonutil.DateUtil;
-import org.acme.commonutil.HttpUtil;
 import org.acme.commonutil.XmlUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -45,7 +38,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * An IMetaAnalyzer implementation that supports Maven repositories (including Maven Central).
@@ -56,7 +48,6 @@ import java.util.concurrent.CompletableFuture;
 
 @ApplicationScoped
 public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
-
     private static final Logger LOGGER = Logger.getLogger(MavenMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://repo1.maven.org/maven2";
     private static final String REPO_METADATA_URL = "/%s/maven-metadata.xml";
@@ -87,46 +78,38 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
         if (component.getPurl() != null) {
             final String mavenGavUrl = component.getPurl().getNamespace().replaceAll("\\.", "/") + "/" + component.getPurl().getName();
             final String url = String.format(baseUrl + REPO_METADATA_URL, mavenGavUrl);
-            try {
-                final HttpUriRequest request = new HttpGet(url);
+            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+                final StatusLine status = response.getStatusLine();
+                if (status.getStatusCode() == 200) {
+                    final HttpEntity entity = response.getEntity();
+                    if (entity != null) {
+                        try (InputStream in = entity.getContent()) {
+                            final Document document = XmlUtil.buildSecureDocumentBuilder().parse(in);
+                            final XPathFactory xpathFactory = XPathFactory.newInstance();
+                            final XPath xpath = xpathFactory.newXPath();
 
-                if (username != null || password != null) {
-                    request.setHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
-                }
+                            final XPathExpression releaseExpression = xpath.compile("/metadata/versioning/release");
+                            final XPathExpression latestExpression = xpath.compile("/metadata/versioning/latest");
+                            final String release = (String) releaseExpression.evaluate(document, XPathConstants.STRING);
+                            final String latest = (String) latestExpression.evaluate(document, XPathConstants.STRING);
 
-                try (final CloseableHttpResponse response = HttpClientPool.getClient().execute(request)) {
-                    final StatusLine status = response.getStatusLine();
-                    if (status.getStatusCode() == 200) {
-                        final HttpEntity entity = response.getEntity();
-                        if (entity != null) {
-                            try (InputStream in = entity.getContent()) {
-                                final Document document = XmlUtil.buildSecureDocumentBuilder().parse(in);
-                                final XPathFactory xpathFactory = XPathFactory.newInstance();
-                                final XPath xpath = xpathFactory.newXPath();
+                            final XPathExpression lastUpdatedExpression = xpath.compile("/metadata/versioning/lastUpdated");
+                            final String lastUpdated = (String) lastUpdatedExpression.evaluate(document, XPathConstants.STRING);
 
-                                final XPathExpression releaseExpression = xpath.compile("/metadata/versioning/release");
-                                final XPathExpression latestExpression = xpath.compile("/metadata/versioning/latest");
-                                final String release = (String) releaseExpression.evaluate(document, XPathConstants.STRING);
-                                final String latest = (String) latestExpression.evaluate(document, XPathConstants.STRING);
-
-                                final XPathExpression lastUpdatedExpression = xpath.compile("/metadata/versioning/lastUpdated");
-                                final String lastUpdated = (String) lastUpdatedExpression.evaluate(document, XPathConstants.STRING);
-
-                                meta.setLatestVersion(release != null ? release : latest);
-                                if (lastUpdated != null) {
-                                    meta.setPublishedTimestamp(DateUtil.parseDate(lastUpdated));
-                                }
+                            meta.setLatestVersion(release != null ? release : latest);
+                            if (lastUpdated != null) {
+                                meta.setPublishedTimestamp(DateUtil.parseDate(lastUpdated));
                             }
                         }
-                    } else {
-                        handleUnexpectedHttpResponse(LOGGER, url, status.getStatusCode(), status.getReasonPhrase(), component);
                     }
+                } else {
+                    handleUnexpectedHttpResponse(LOGGER, url, status.getStatusCode(), status.getReasonPhrase(), component);
                 }
             } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
                 handleRequestException(LOGGER, e);
             }
         }
-       return meta;
+        return meta;
     }
 
     @Override
