@@ -11,16 +11,16 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
 @Dependent
-public class OsvClientConfig {
+public class MirrorClientConfig {
 
     @Produces
-    @Named("osvHttpClient")
+    @Named("mirrorHttpClient")
     public CloseableHttpClient httpClient() {
         return HttpClientBuilder.create().build();
     }
 
     @Produces
-    @Named("osvObjectMapper")
+    @Named("mirrorObjectMapper")
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper()
                 .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);

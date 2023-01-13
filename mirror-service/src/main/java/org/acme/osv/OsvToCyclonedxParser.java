@@ -321,7 +321,7 @@ public class OsvToCyclonedxParser {
             if (databaseSpecific != null) {
                 final String lastAffectedRange = databaseSpecific.optString("last_known_affected_version_range", null);
                 if (lastAffectedRange != null) {
-                    uniVersionRange += lastAffectedRange;
+                    uniVersionRange += lastAffectedRange + "|";
                 }
             }
             versionRange.setRange(StringUtils.chop(uniVersionRange));

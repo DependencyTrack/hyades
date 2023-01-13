@@ -32,8 +32,8 @@ public class OsvClient {
     private final String apiBaseUrl;
 
     @Inject
-    public OsvClient(@Named("osvHttpClient") final CloseableHttpClient httpClient,
-                     @Named("osvObjectMapper") final ObjectMapper objectMapper,
+    public OsvClient(@Named("mirrorHttpClient") final CloseableHttpClient httpClient,
+                     @Named("mirrorObjectMapper") final ObjectMapper objectMapper,
                      @ConfigProperty(name = "mirror.osv.base.url") final Optional<String> apiBaseUrl) {
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
