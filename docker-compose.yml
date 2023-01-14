@@ -53,10 +53,14 @@ services:
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+      SCANNER_INTERNAL_ENABLED: "true"
+      # SCANNER_INTERNAL_TOPIC_PARTITIONS: "3"
       SCANNER_OSSINDEX_ENABLED: "true"
+      # SCANNER_OSSINDEX_TOPIC_PARTITIONS: "3"
       # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
       # SCANNER_OSSINDEX_API_TOKEN: "your-token"
       # SCANNER_SNYK_ENABLED: "true"
+      # SCANNER_SNYK_TOPIC_PARTITIONS: "3
       # SCANNER_SNYK_API_ORG_ID: "your-org-id"
       # SCANNER_SNYK_API_TOKENS: "your-token-1,your-token-2"
     ports:
