@@ -28,12 +28,49 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and Push
+      - name: Determine project version
+        id: determine-project-version
         run: |-
-          mvn clean install -DskipTests \
-            -Dquarkus.container-image.build=true \
-            -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.registry=ghcr.io \
-            -Dquarkus.container-image.group=${{ github.repository_owner }} \
-            -Dquarkus.container-image.additional-tags=latest \
-            -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
+          PROJECT_VERSION=$(yq -p=xml '.project.version' pom.xml)
+          echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_OUTPUT
+      - name: Build JARs
+        run: mvn clean install -DskipTests
+      # Manually invoke buildx for each service.
+      # Workaround for https://github.com/quarkusio/quarkus/issues/30424
+      # Revert to Quarkus-native container build + push once the issue is fixed.
+      - name: Build and push mirror-service container image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./mirror-service
+          file: ./mirror-service/src/main/docker/Dockerfile.jvm
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/mirror-service:latest
+            ghcr.io/${{ github.repository_owner }}/mirror-service:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+      - name: Build and push notification-publisher container image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./notification-publisher
+          file: ./notification-publisher/src/main/docker/Dockerfile.jvm
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/notification-publisher:latest
+            ghcr.io/${{ github.repository_owner }}/notification-publisher:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+      - name: Build and push repository-meta-analyzer container image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./repository-meta-analyzer
+          file: ./repository-meta-analyzer/src/main/docker/Dockerfile.jvm
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/repository-meta-analyzer:latest
+            ghcr.io/${{ github.repository_owner }}/repository-meta-analyzer:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+      - name: Build and push vulnerability-analyzer container image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./vulnerability-analyzer
+          file: ./vulnerability-analyzer/src/main/docker/Dockerfile.jvm
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/vulnerability-analyzer:latest
+            ghcr.io/${{ github.repository_owner }}/vulnerability-analyzer:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
