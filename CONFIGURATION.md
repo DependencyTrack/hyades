@@ -8,21 +8,21 @@ options that are expected to be changed by users.
 
 ### Notification Publisher
 
-| Environment Variable                      | Description | Default          |               Required               |
-|:------------------------------------------|:------------|:-----------------|:------------------------------------:|
-| `QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS` |             | `localhost:9092` |                  ✅                   |
-| `KAFKA_STREAMS_NUM_STREAM_THREADS`        |             | `3`              |                  ❌                   |
-| `QUARKUS_DATASOURCE_DB_KIND`              |             | `postgresql`     |                  ✅                   |
-| `QUARKUS_DATASOURCE_JDBC_URL`             |             | -                |                  ✅                   |
-| `QUARKUS_DATASOURCE_USERNAME`             |             | -                |                  ✅                   |
-| `QUARKUS_DATASOURCE_PASSWORD`             |             | -                |                  ✅                   |
-| `QUARKUS_MAILER_FROM`                     |             | -                | When email notifications are enabled |
-| `QUARKUS_MAILER_HOST`                     |             | -                | When email notifications are enabled |
-| `QUARKUS_MAILER_PORT`                     |             | -                | When email notifications are enabled |
-| `QUARKUS_MAILER_SSL`                      |             | `false`          |                  -                   |
-| `QUARKUS_MAILER_START_TLS`                |             | `DISABLED`       | When email notifications are enabled |
-| `QUARKUS_MAILER_USERNAME`                 |             | -                | When email notifications are enabled |
-| `QUARKUS_MAILER_PASSWORD`                 |             | -                | When email notifications are enabled |
+| Environment Variable                      | Description                                        | Default          |               Required               |
+|:------------------------------------------|:---------------------------------------------------|:-----------------|:------------------------------------:|
+| `QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS` | Comma-separated list of Kafka servers              | `localhost:9092` |                  ✅                   |
+| `KAFKA_STREAMS_NUM_STREAM_THREADS`        | Number of Kafka Streams threads                    | `3`              |                  ❌                   |
+| `QUARKUS_DATASOURCE_DB_KIND`              | The database type                                  | `postgresql`     |                  ✅                   |
+| `QUARKUS_DATASOURCE_JDBC_URL`             | The database JDBC URL                              | -                |                  ✅                   |
+| `QUARKUS_DATASOURCE_USERNAME`             | The database username                              | -                |                  ✅                   |
+| `QUARKUS_DATASOURCE_PASSWORD`             | The database password                              | -                |                  ✅                   |
+| `QUARKUS_MAILER_FROM`                     | The sender name for email notifications            | -                | When email notifications are enabled |
+| `QUARKUS_MAILER_HOST`                     | Address of the mail server for email notifications | -                | When email notifications are enabled |
+| `QUARKUS_MAILER_PORT`                     | Port of the mail server for email notifications    | -                | When email notifications are enabled |
+| `QUARKUS_MAILER_SSL`                      | Use SSL / TLS to communicate with the email server | `false`          |                  -                   |
+| `QUARKUS_MAILER_START_TLS`                | Use StartTLS to communicate with the email server  | `DISABLED`       | When email notifications are enabled |
+| `QUARKUS_MAILER_USERNAME`                 | Username to authenticate with the email server     | -                | When email notifications are enabled |
+| `QUARKUS_MAILER_PASSWORD`                 | Password to authenticate with the email server     | -                | When email notifications are enabled |
 
 > **Note**
 > Refer
@@ -31,14 +31,14 @@ options that are expected to be changed by users.
 
 ### Repository Meta Analyzer
 
-| Environment Variable                      | Description | Default          | Required |
-|:------------------------------------------|:------------|:-----------------|:--------:|
-| `QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS` |             | `localhost:9092` |    ✅     |
-| `KAFKA_STREAMS_NUM_STREAM_THREADS`        |             | `3`              |    ❌     |
-| `QUARKUS_DATASOURCE_DB_KIND`              |             | `postgresql`     |    ✅     |
-| `QUARKUS_DATASOURCE_JDBC_URL`             |             | -                |    ✅     |
-| `QUARKUS_DATASOURCE_USERNAME`             |             | -                |    ✅     |
-| `QUARKUS_DATASOURCE_PASSWORD`             |             | -                |    ✅     |
+| Environment Variable                      | Description                           | Default          | Required |
+|:------------------------------------------|:--------------------------------------|:-----------------|:--------:|
+| `QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS` | Comma-separated list of Kafka servers | `localhost:9092` |    ✅     |
+| `KAFKA_STREAMS_NUM_STREAM_THREADS`        | Number of Kafka Streams threads       | `3`              |    ❌     |
+| `QUARKUS_DATASOURCE_DB_KIND`              | The database type                     | `postgresql`     |    ✅     |
+| `QUARKUS_DATASOURCE_JDBC_URL`             | The database JDBC URL                 | -                |    ✅     |
+| `QUARKUS_DATASOURCE_USERNAME`             | The database username                 | -                |    ✅     |
+| `QUARKUS_DATASOURCE_PASSWORD`             | The database password                 | -                |    ✅     |
 
 > **Note**
 > Refer
