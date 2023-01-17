@@ -3,7 +3,7 @@
 set -euxo pipefail
 
 function create_topic() {
-  if ! output=$(rpk topic create "$1" --partitions "$2" --topic-config "retention.ms=$3"); then
+  if ! output=$(rpk topic create "$1" --partitions "$2" --topic-config "$3"); then
     # Don't fail the script when the rpk command failed because the topic already exists.
     if [[ "$output" != *"TOPIC_ALREADY_EXISTS"* ]]; then
       exit 2
@@ -33,7 +33,7 @@ notification_topics=(
   "dtrack.notification.vex-processed"
 )
 for topic_name in "${notification_topics[@]}"; do
-  create_topic "$topic_name" "$NOTIFICATION_TOPICS_PARTITIONS" "$NOTIFICATION_TOPICS_RETENTION_MS"
+  create_topic "$topic_name" "${NOTIFICATION_TOPICS_PARTITIONS:-3}" "retention.ms=${NOTIFICATION_TOPICS_RETENTION_MS:-43200000}"
 done
 
 repo_meta_analysis_topics=(
@@ -41,7 +41,7 @@ repo_meta_analysis_topics=(
   "dtrack.repo-meta-analysis.result"
 )
 for topic_name in "${repo_meta_analysis_topics[@]}"; do
-  create_topic "$topic_name" "$REPO_META_ANALYSIS_TOPICS_PARTITIONS" "$REPO_META_ANALYSIS_TOPICS_RETENTION_MS"
+  create_topic "$topic_name" "${REPO_META_ANALYSIS_TOPICS_PARTITIONS:-3}" "retention.ms=${REPO_META_ANALYSIS_TOPICS_RETENTION_MS:-43200000}"
 done
 
 vuln_analysis_topics=(
@@ -51,10 +51,11 @@ vuln_analysis_topics=(
   "dtrack.vuln-analysis.component.swid"
   "dtrack.vuln-analysis.vulnerability"
   "dtrack.vuln-analysis.result"
-  "dtrack.vulnerability.mirror.osv"
-  "dtrack.vulnerability"
   "dtrack.vuln-analysis.info"
 )
 for topic_name in "${vuln_analysis_topics[@]}"; do
-  create_topic "$topic_name" "$VULN_ANALYSIS_TOPICS_PARTITIONS" "$VULN_ANALYSIS_TOPICS_RETENTION_MS"
+  create_topic "$topic_name" "${VULN_ANALYSIS_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_ANALYSIS_TOPICS_RETENTION_MS:-43200000}"
 done
+
+create_topic "dtrack.vulnerability.mirror.osv" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
+create_topic "dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
