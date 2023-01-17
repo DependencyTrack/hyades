@@ -18,14 +18,15 @@
  */
 package org.acme.repositories;
 
-import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import org.json.JSONObject;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
@@ -39,7 +40,7 @@ import java.io.IOException;
 
 @ApplicationScoped
 public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
-    private static final Logger LOGGER = Logger.getLogger(GemMetaAnalyzer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GemMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://rubygems.org";
     private static final String API_URL = "/api/v1/versions/%s/latest.json";
 

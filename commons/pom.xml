@@ -36,10 +36,6 @@
     </dependency>
 
     <dependency>
-      <groupId>us.springett</groupId>
-      <artifactId>alpine-common</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>

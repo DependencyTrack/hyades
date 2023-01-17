@@ -18,7 +18,8 @@
  */
 package org.acme.persistence;
 
-import alpine.common.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -46,7 +47,7 @@ import java.util.TreeMap;
  */
 public class CweImporter {
 
-    private static final Logger LOGGER = Logger.getLogger(CweImporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CweImporter.class);
     private static final Map<Integer, String> CWE_MAPPINGS = new TreeMap<>();
 
     public static Map<Integer, String> processCweDefinitions() {

@@ -18,10 +18,9 @@
  */
 package org.acme.notification.publisher;
 
-import alpine.common.logging.Logger;
-import alpine.common.util.UrlUtil;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import org.acme.commonnotification.NotificationScope;
 import org.acme.exception.PublisherException;
 import org.acme.model.ConfigProperty;
 import org.acme.model.ConfigPropertyConstants;
@@ -34,6 +33,7 @@ import org.acme.notification.vo.PolicyViolationIdentified;
 import org.acme.notification.vo.VexConsumedOrProcessed;
 import org.acme.persistence.ConfigPropertyRepository;
 import org.acme.util.NotificationUtil;
+import org.slf4j.LoggerFactory;
 
 import javax.json.JsonObject;
 import java.io.IOException;
@@ -42,7 +42,6 @@ import java.io.Writer;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
-import org.acme.commonnotification.*;
 
 public interface Publisher {
 
@@ -90,7 +89,7 @@ public interface Publisher {
             context.put("timestamp", notification.getTimestamp().toString());
             context.put("notification", notification);
             if (baseUrlProperty != null) {
-                context.put("baseUrl", UrlUtil.normalize(baseUrlProperty.getPropertyValue()));
+                context.put("baseUrl", baseUrlProperty.getPropertyValue().replaceAll("/$", ""));
             } else {
                 context.put("baseUrl", "");
             }
@@ -127,7 +126,7 @@ public interface Publisher {
                 template.evaluate(writer, context);
                 return writer.toString();
             } catch (IOException e) {
-                Logger.getLogger(this.getClass()).error("An error was encountered evaluating template", e);
+                LoggerFactory.getLogger(this.getClass()).error("An error was encountered evaluating template", e);
                 return null;
             }
         }

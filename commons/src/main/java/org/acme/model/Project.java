@@ -19,7 +19,6 @@ package org.acme.model;
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 
-import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -33,7 +32,17 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.acme.common.TrimmedStringDeserializer;
 import org.acme.persistence.ClassifierToStringConverter;
 import org.acme.persistence.UUIDConverter;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -76,37 +85,37 @@ public class Project implements Serializable {
     @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The author may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The author may only contain printable characters")
     private String author;
 
 
     @Column(name = "PUBLISHER", columnDefinition = "VARCHAR")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The publisher may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The publisher may only contain printable characters")
     private String publisher;
 
     @Column(name = "\"GROUP\"", columnDefinition = "VARCHAR")
     @Size(max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The group may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The group may only contain printable characters")
     private String group;
 
     @Column(name = "NAME", columnDefinition = "VARCHAR", nullable = false)
     @NotBlank
     @Size(min = 1, max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The name may only contain printable characters")
     private String name;
 
     @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The description may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The description may only contain printable characters")
     private String description;
 
     @Column(name = "VERSION", columnDefinition = "VARCHAR")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The version may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The version may only contain printable characters")
     private String version;
 
     @ManyToOne()
@@ -136,7 +145,7 @@ public class Project implements Serializable {
     @Size(max = 255)
     @Column(name = "SWIDTAGID")
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The SWID tagId may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The SWID tagId may only contain printable characters")
     private String swidTagId;
 
     @OneToMany()

@@ -18,8 +18,9 @@
  */
 package org.acme.persistence;
 
-import alpine.common.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.AttributeConverter;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import java.util.Iterator;
 
 public class CollectionIntegerConverter implements AttributeConverter<Collection<Integer>, String> {
 
-    private static final Logger LOGGER = Logger.getLogger(CollectionIntegerConverter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectionIntegerConverter.class);
 
     @Override
     public String convertToDatabaseColumn(Collection<Integer> attribute) {

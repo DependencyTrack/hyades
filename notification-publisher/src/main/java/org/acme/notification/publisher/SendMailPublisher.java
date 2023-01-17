@@ -18,10 +18,10 @@
  */
 package org.acme.notification.publisher;
 
-import alpine.common.logging.Logger;
-import alpine.common.util.BooleanUtil;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.quarkus.mailer.Mail;
+import io.quarkus.mailer.Mailer;
 import io.quarkus.runtime.Startup;
 import org.acme.model.ConfigProperty;
 import org.acme.model.ConfigPropertyConstants;
@@ -29,6 +29,9 @@ import org.acme.model.Notification;
 import org.acme.model.Team;
 import org.acme.persistence.ConfigPropertyRepository;
 import org.acme.persistence.ManagedUserRepository;
+import org.apache.commons.lang3.BooleanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -37,14 +40,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.Mailer;
 
 @ApplicationScoped
 @Startup // Force bean creation even though no direct injection points exist
 public class SendMailPublisher implements Publisher {
 
-    private static final Logger LOGGER = Logger.getLogger(SendMailPublisher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SendMailPublisher.class);
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
 
     private final ManagedUserRepository managedUserRepository;
@@ -86,7 +87,7 @@ public class SendMailPublisher implements Publisher {
         }
         try {
             ConfigProperty smtpEnabledConfig = configPropertyRepository.findByGroupAndName(ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getGroupName(), ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getPropertyName());
-            boolean smtpEnabled = BooleanUtil.valueOf(smtpEnabledConfig.getPropertyValue());
+            boolean smtpEnabled = BooleanUtils.toBoolean(smtpEnabledConfig.getPropertyValue());
             if (!smtpEnabled) {
                 LOGGER.warn("SMTP is not enabled");
                 return; // smtp is not enabled

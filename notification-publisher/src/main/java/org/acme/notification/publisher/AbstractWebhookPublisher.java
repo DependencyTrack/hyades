@@ -18,7 +18,6 @@
  */
 package org.acme.notification.publisher;
 
-import alpine.common.logging.Logger;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import org.acme.commonnotification.NotificationConstants;
 import org.acme.commonnotification.NotificationGroup;
@@ -30,6 +29,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,13 +38,13 @@ import javax.json.JsonObject;
 import java.io.IOException;
 
 public abstract class AbstractWebhookPublisher implements Publisher {
-    private static final Logger LOGGER = Logger.getLogger(AbstractWebhookPublisher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWebhookPublisher.class);
     @Inject
     @Named("httpClient")
     CloseableHttpClient httpClient;
 
     public void publish(final String publisherName, final PebbleTemplate template, final Notification notification, final JsonObject config, final ConfigPropertyRepository configPropertyRepository) {
-        final Logger logger = Logger.getLogger(this.getClass());
+        final Logger logger = LoggerFactory.getLogger(this.getClass());
         logger.debug("Preparing to publish notification");
         if (config == null) {
             logger.warn("No configuration found. Skipping notification.");

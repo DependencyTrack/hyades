@@ -18,15 +18,16 @@
  */
 package org.acme.repositories;
 
-import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
-import org.json.JSONArray;
 import org.acme.model.Component;
 import org.acme.model.MetaModel;
 import org.acme.model.RepositoryType;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
@@ -44,7 +45,7 @@ import java.util.Date;
 @ApplicationScoped
 public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
 
-    private static final Logger LOGGER = Logger.getLogger(PypiMetaAnalyzer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PypiMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://pypi.org";
     private static final String API_URL = "/pypi/%s/json";
 
