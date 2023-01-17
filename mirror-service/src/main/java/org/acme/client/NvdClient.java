@@ -1,7 +1,9 @@
 package org.acme.client;
 
-import alpine.Config;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.jeremylong.nvdlib.NvdCveApi;
+import io.github.jeremylong.nvdlib.NvdCveApiBuilder;
+import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import org.acme.common.HttpClientPool;
 import org.acme.commonnotification.NotificationConstants;
 import org.acme.commonnotification.NotificationGroup;
@@ -9,7 +11,6 @@ import org.acme.commonnotification.NotificationScope;
 import org.acme.model.Notification;
 import org.acme.model.NotificationLevel;
 import org.acme.model.NvdResourceType;
-import org.acme.nvd.NvdToCyclonedxParser;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.StatusLine;
@@ -27,17 +28,20 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
@@ -56,14 +60,17 @@ public class NvdClient {
     private final ObjectMapper objectMapper;
     private final String apiBaseUrl;
     private boolean mirroredWithoutErrors = true;
+    private String apiKey;
 
     @Inject
     public NvdClient(@Named("mirrorHttpClient") final CloseableHttpClient httpClient,
                      @Named("mirrorObjectMapper") final ObjectMapper objectMapper,
-                     @ConfigProperty(name = "mirror.nvd.base.url") final Optional<String> apiBaseUrl) {
+                     @ConfigProperty(name = "mirror.nvd.base.url") final Optional<String> apiBaseUrl,
+                     @ConfigProperty(name = "mirror.nvd.api.key") final Optional<String> apiKey) {
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
         this.apiBaseUrl = apiBaseUrl.orElse(null);
+        this.apiKey = apiKey.orElse(null);
     }
 
     public List<Bom> downloadNvdFeed(final File outputDir, final String cveJsonUrl, final NvdResourceType nvdResourceType) {
@@ -194,9 +201,8 @@ public class NvdClient {
             }
             final long start = System.currentTimeMillis();
             if (NvdResourceType.CVE_YEAR_DATA == nvdResourceType || NvdResourceType.CVE_MODIFIED_DATA == nvdResourceType) {
-                final NvdToCyclonedxParser parser = new NvdToCyclonedxParser();
-                nvdVulnerabilities = parser.parse(uncompressedFile);
-                // Update modification time
+//                final NvdToCyclonedxParser parser = new NvdToCyclonedxParser();
+//                nvdVulnerabilities = parser.parse(uncompressedFile);
                 File timestampFile = new File( file.getAbsolutePath() + ".ts");
                 writeTimeStampFile(timestampFile, start);
             }
@@ -208,5 +214,42 @@ public class NvdClient {
             close(out);
         }
         return nvdVulnerabilities;
+    }
+
+    long retrieveLastModifiedRequestEpoch() {
+        //TODO implement a storage/retrieval mechanism for the epoch time.
+        // if the last modified request epoch is not available the method should return 0
+        return 0;
+    }
+
+    void storeLastModifiedRequestEpoch(long epoch) {
+        //TODO implement a storage/retrieval mechanism for the epoch time.
+    }
+
+    public void update() {
+        long lastModifiedRequest = retrieveLastModifiedRequestEpoch();
+        NvdCveApiBuilder builder = NvdCveApiBuilder.aNvdCveApi();
+        if (lastModifiedRequest > 0) {
+            LocalDateTime start = LocalDateTime.ofEpochSecond(lastModifiedRequest, 0, ZoneOffset.UTC);
+            LocalDateTime end = start.minusDays(-120);
+            builder.withLastModifiedFilter(start, end);
+        }
+        if (this.apiKey != null) {
+            builder.withApiKey(this.apiKey);
+            builder.withThreadCount(4);
+            builder.withPublishedDateFilter(LocalDateTime.of(LocalDate.of(2002, 0, 0), LocalTime.MIN),
+                    LocalDateTime.now());
+        }
+        try (NvdCveApi api = builder.build()) {
+            while (api.hasNext()) {
+                Collection<DefCveItem> items = api.next();
+//                final NvdToCyclonedxParser parser = new NvdToCyclonedxParser();
+//                nvdVulnerabilities = parser.parse(items);
+            }
+            lastModifiedRequest = api.getLastModifiedRequest();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        storeLastModifiedRequestEpoch(lastModifiedRequest);
     }
 }

@@ -71,6 +71,11 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.14.1</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.jeremylong</groupId>
+            <artifactId>nvd-lib</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
