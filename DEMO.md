@@ -8,45 +8,39 @@ A UNIX-based system is strongly recommended. In case you're bound to Windows, pl
 > **Note**
 > A >4 core CPU and >=16GB RAM are recommended for a smooth experience.
 
-1. Start by creating a new directory for this setup:
+1. In a terminal, clone *this* repository and navigate to it:
 ```shell
-mkdir demo
-```
-2. Clone both *this* repository and that of our [modified Dependency-Track API server] into the directory you just created:
-```shell
-cd demo
 git clone https://github.com/mehab/DTKafkaPOC.git
-git clone --branch kafka-poc https://github.com/sahibamittal/dependency-track.git
+cd DTKafkaPOC
 ```
-  * Alternatively, should you not have Git installed, you can download the repositories [here](https://github.com/mehab/DTKafkaPOC/archive/refs/heads/main.zip)
-    and [here](https://github.com/sahibamittal/dependency-track/archive/refs/heads/kafka-poc.zip)
-3. Generate a secret key used for encryption and decryption of credentials in the database:
+2. Generate a secret key for encryption and decryption of credentials in the database:
 ```shell
 openssl rand 32 > secret.key
 ```
-4. Pull and build all required container images, and finally start them:
+3. Pull and start all containers:
 ```shell
-cd DTKafkaPOC
-docker compose --profile demo pull
-docker compose --profile demo build
-docker compose --profile demo up -d
+docker compose --profile demo up -d --pull always
 ```
   * Make sure you include the `--profile demo` flag!
-  * Building and the images may take a few minutes
 
 Once completed, the following services will be available:
 
-| Service                     | URL                    |
-|:----------------------------|:-----------------------|
-| Dependency-Track API Server | http://localhost:8080  |
-| Dependency-Track Frontend   | http://localhost:8081  |
-| Redpanda Console            | http://localhost:28080 |
-| PostgreSQL                  | `localhost:5432`       |
-| Redpanda Kafka API          | `localhost:9092`       |
+| Service                                | URL                    |
+|:---------------------------------------|:-----------------------|
+| Dependency-Track API Server + Frontend | http://localhost:8080  |
+| Redpanda Console                       | http://localhost:28080 |
+| PostgreSQL                             | `localhost:5432`       |
+| Redpanda Kafka API                     | `localhost:9092`       |
 
 > **Note**  
 > You'll not need to interact with PostgreSQL or the Kafka API directly to try out the PoC,
 > but if you're curious 🕵️ of course you can!
+
+Finally, to remove everything again, including persistent volumes:
+
+```shell
+docker compose --profile demo down --volumes
+```
 
 ### Common Issues
 
