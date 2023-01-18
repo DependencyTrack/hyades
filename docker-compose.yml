@@ -85,14 +85,16 @@ services:
     restart: unless-stopped
 
   apiserver:
-    build:
-      context: ../dependency-track
-      dockerfile: src/main/docker/Dockerfile.demo
+    image: ghcr.io/sahibamittal/dependency-track-bundled:snapshot
     container_name: dt-apiserver
     depends_on:
       - postgres
       - redpanda
     environment:
+      # Limit maximum heap size to 4GB.
+      # Default would be 90% of available memory,
+      # which can cause problems on some workstations.
+      EXTRA_JAVA_OPTS: "-Xmx4g"
       ALPINE_DATABASE_MODE: "external"
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       ALPINE_DATABASE_DRIVER: "org.postgresql.Driver"
@@ -106,16 +108,6 @@ services:
     volumes:
       - "apiserver-data:/data"
       - "./secret.key:/var/run/secrets/secret.key:ro"
-    profiles:
-      - demo
-    restart: unless-stopped
-
-  frontend:
-    image: dependencytrack/frontend:snapshot
-    environment:
-      API_BASE_URL: "http://localhost:8080"
-    ports:
-      - "127.0.0.1:8081:8080"
     profiles:
       - demo
     restart: unless-stopped
