@@ -1,9 +1,10 @@
-package org.acme.client;
+package org.acme.osv;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusTest;
+import org.acme.client.OsvClient;
 import org.acme.osv.OsvMirrorHandler;
 import org.acme.util.WireMockTestResource;
 import org.acme.util.WireMockTestResource.InjectWireMock;

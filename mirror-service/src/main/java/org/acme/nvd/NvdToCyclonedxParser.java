@@ -160,7 +160,7 @@ public final class NvdToCyclonedxParser {
                     rating.setScore(cvss.getBaseScore());
                     rating.setMethod(Vulnerability.Rating.Method.CVSSV2);
                     rating.setVector(cvss.getVectorString());
-                    rating.setSeverity(Vulnerability.Rating.Severity.fromString(baseMetric.getBaseSeverity()));
+                    rating.setSeverity(Vulnerability.Rating.Severity.fromString(baseMetric.getBaseSeverity().toLowerCase()));
                     ratings.add(rating);
                 }
             });

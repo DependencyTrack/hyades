@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -35,6 +36,7 @@ public class NvdClient {
                      @ConfigProperty(name = "mirror.nvd.api.key") final Optional<String> apiKey) {
         this.objectMapper = objectMapper;
         this.apiKey = apiKey.orElse(null);
+        this.nvdFeeds = new ArrayList<>();
     }
 
     long retrieveLastModifiedRequestEpoch() {
