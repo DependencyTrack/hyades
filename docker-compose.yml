@@ -2,7 +2,7 @@ version: "3"
 
 services:
   notification-publisher:
-    image: ghcr.io/mehab/notification-publisher:latest
+    image: ghcr.io/mehab/notification-publisher:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
 
   repo-meta-analyzer:
-    image: ghcr.io/mehab/repository-meta-analyzer:latest
+    image: ghcr.io/mehab/repository-meta-analyzer:latest-native
     depends_on:
       - postgres
       - redpanda
