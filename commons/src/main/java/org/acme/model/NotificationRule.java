@@ -18,7 +18,6 @@
  */
 package org.acme.model;
 
-import alpine.common.validation.RegexSequence;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -76,7 +75,7 @@ public class NotificationRule extends PanacheEntityBase {
     @NotBlank
     @Size(min = 1, max = 255)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The name may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The name may only contain printable characters")
     private String name;
 
     @Column(name = "ENABLED")
@@ -122,7 +121,7 @@ public class NotificationRule extends PanacheEntityBase {
     @Column(name = "MESSAGE", length = 1024)
     @Size(max = 1024)
     @JsonDeserialize(using = TrimmedStringDeserializer.class)
-    @Pattern(regexp = RegexSequence.Definition.PRINTABLE_CHARS, message = "The message may only contain printable characters")
+    @Pattern(regexp = "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]*$", message = "The message may only contain printable characters")
     private String message;
 
     @JoinColumn(name = "PUBLISHER", columnDefinition = "bigint")

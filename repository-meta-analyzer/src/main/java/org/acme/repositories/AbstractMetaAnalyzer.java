@@ -18,19 +18,19 @@
  */
 package org.acme.repositories;
 
-import alpine.common.logging.Logger;
-import org.acme.commonutil.HttpUtil;
-import org.acme.model.Notification;
-import org.acme.model.NotificationLevel;
-import org.apache.commons.lang3.StringUtils;
-import org.acme.model.Component;
 import org.acme.commonnotification.NotificationConstants;
 import org.acme.commonnotification.NotificationGroup;
 import org.acme.commonnotification.NotificationScope;
+import org.acme.commonutil.HttpUtil;
+import org.acme.model.Component;
+import org.acme.model.Notification;
+import org.acme.model.NotificationLevel;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.slf4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

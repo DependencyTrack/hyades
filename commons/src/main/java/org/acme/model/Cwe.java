@@ -18,16 +18,8 @@
  */
 package org.acme.model;
 
-import alpine.common.validation.RegexSequence;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import org.acme.common.TrimmedStringDeserializer;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+
 import java.io.Serializable;
 
 /**

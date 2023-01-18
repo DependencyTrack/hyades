@@ -18,12 +18,13 @@
  */
 package org.acme.notification.publisher;
 
-import alpine.common.logging.Logger;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
 import org.acme.model.Notification;
 import org.acme.model.NotificationLevel;
 import org.acme.persistence.ConfigPropertyRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,7 +35,7 @@ import java.io.PrintStream;
 @Startup // Force bean creation even though no direct injection points exist
 public class ConsolePublisher implements Publisher {
 
-    private static final Logger LOGGER = Logger.getLogger(ConsolePublisher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConsolePublisher.class);
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
 
     final ConfigPropertyRepository configPropertyRepository;

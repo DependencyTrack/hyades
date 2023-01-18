@@ -18,24 +18,27 @@
  */
 package org.acme.repositories;
 
-import alpine.common.logging.Logger;
 import com.github.packageurl.PackageURL;
+import org.acme.commonutil.DateUtil;
+import org.acme.commonutil.XmlUtil;
+import org.acme.model.Component;
 import org.acme.model.MetaModel;
+import org.acme.model.RepositoryType;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.acme.model.Component;
-import org.acme.model.RepositoryType;
-import org.acme.commonutil.DateUtil;
-import org.acme.commonutil.XmlUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -48,7 +51,7 @@ import java.io.InputStream;
 
 @ApplicationScoped
 public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
-    private static final Logger LOGGER = Logger.getLogger(MavenMetaAnalyzer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MavenMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://repo1.maven.org/maven2";
     private static final String REPO_METADATA_URL = "/%s/maven-metadata.xml";
 
