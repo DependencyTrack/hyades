@@ -25,15 +25,15 @@
 
     <!-- Dependency Versions -->
     <lib.assertj.version>3.24.2</lib.assertj.version>
-    <lib.caffeine.version>3.1.2</lib.caffeine.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.1</lib.cyclonedx-java.version>
     <lib.json-unit.version>2.36.0</lib.json-unit.version>
     <lib.maven-artifact.version>4.0.0-alpha-3</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
-    <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
+    <lib.org-json.version>20220924</lib.org-json.version>
     <lib.pebble.version>3.1.6</lib.pebble.version>
+    <lib.quarkus-helm.version>0.2.3</lib.quarkus-helm.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
@@ -88,30 +88,26 @@
       </dependency>
       <dependency>
         <groupId>io.github.resilience4j</groupId>
-        <artifactId>resilience4j-cache</artifactId>
-        <version>${lib.resilience4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.resilience4j</groupId>
         <artifactId>resilience4j-micrometer</artifactId>
-        <version>${lib.resilience4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.resilience4j</groupId>
-        <artifactId>resilience4j-ratelimiter</artifactId>
         <version>${lib.resilience4j.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.github.ben-manes.caffeine</groupId>
-        <artifactId>jcache</artifactId>
-        <version>${lib.caffeine.version}</version>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>${lib.org-json.version}</version>
       </dependency>
 
       <dependency>
         <groupId>io.pebbletemplates</groupId>
         <artifactId>pebble</artifactId>
         <version>${lib.pebble.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.quarkiverse.helm</groupId>
+        <artifactId>quarkus-helm</artifactId>
+        <version>${lib.quarkus-helm.version}</version>
       </dependency>
 
       <dependency>
@@ -124,12 +120,6 @@
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-artifact</artifactId>
         <version>${lib.maven-artifact.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.github.package-url</groupId>
-        <artifactId>packageurl-java</artifactId>
-        <version>${lib.packageurl-java.version}</version>
       </dependency>
 
       <dependency>

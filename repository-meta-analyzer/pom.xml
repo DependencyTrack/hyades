@@ -84,7 +84,6 @@
     <dependency>
       <groupId>io.quarkiverse.helm</groupId>
       <artifactId>quarkus-helm</artifactId>
-      <version>0.2.3</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -97,7 +96,6 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20220924</version>
     </dependency>
 
   </dependencies>
