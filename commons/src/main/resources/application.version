@@ -1,7 +1,0 @@
-# This file is required when Alpine's Config class is used.
-# Content does not matter, it will be logged to STDOUT whenever
-# the Config class is first accessed.
-name=repository-meta-analyzer
-version=X.X.X
-timestamp=2022-11-11
-uuid=fc92227e-ead2-4010-b949-17c080719506
