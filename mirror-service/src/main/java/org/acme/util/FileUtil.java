@@ -3,10 +3,12 @@ package org.acme.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class FileUtil {
 
@@ -29,5 +31,39 @@ public class FileUtil {
         Path tempDir = Files.createTempDirectory(dirName);
         Path tempFile = Files.createTempFile(tempDir, "", fileSuffix);
         return tempFile;
+    }
+
+    /**
+     * Writes the modification time to a timestamp file
+     * @param file the file
+     * @param modificationTime the time of the last update
+     */
+    public static void writeTimeStampFile(final File file, Long modificationTime)
+    {
+        FileWriter writer = null;
+        try {
+            writer= new FileWriter(file);
+            writer.write(Long.toString(modificationTime));
+        }
+        catch (IOException ex) {
+            LOGGER.error("An error occurred writing time stamp file", ex);
+        }
+        finally {
+            close(writer);
+        }
+    }
+
+    /**
+     * Closes a closable object.
+     * @param object the object to close
+     */
+    public static void close(final Closeable object) {
+        if (object != null) {
+            try {
+                object.close();
+            } catch (IOException e) {
+                LOGGER.warn("Error closing stream", e);
+            }
+        }
     }
 }
