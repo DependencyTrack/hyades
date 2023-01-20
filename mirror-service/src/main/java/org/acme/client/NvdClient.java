@@ -52,10 +52,10 @@ public class NvdClient {
         }
         if (this.apiKey != null) {
             builder.withApiKey(this.apiKey);
-            builder.withThreadCount(4);
-            builder.withPublishedDateFilter(LocalDateTime.of(LocalDate.of(2002, 1, 1), LocalTime.MIN),
-                    LocalDateTime.now());
         }
+        builder.withThreadCount(4);
+        builder.withPublishedDateFilter(LocalDateTime.of(LocalDate.of(2002, 1, 1), LocalTime.MIN),
+                LocalDateTime.now());
         try (NvdCveApi api = builder.build()) {
             while (api.hasNext()) {
                 nvdFeeds.addAll(api.next());
