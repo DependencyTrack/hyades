@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import os.path
 import zipfile
 from argparse import ArgumentParser
@@ -10,6 +11,7 @@ from xml.etree import ElementTree
 
 import jinja2
 import requests
+from defusedxml.ElementTree import parse as parse_etree
 
 template = """package {{ package }};
 
@@ -46,7 +48,7 @@ if __name__ == "__main__":
         tmp.seek(0)
         with zipfile.ZipFile(tmp) as zip:
             with zip.open("cwec_v4.9.xml") as dict_file:
-                tree = ElementTree.parse(dict_file)
+                tree: ElementTree = parse_etree(dict_file)
 
     tree_root = tree.getroot()
     namespaces = {"cwe": "http://cwe.mitre.org/cwe-6"}
