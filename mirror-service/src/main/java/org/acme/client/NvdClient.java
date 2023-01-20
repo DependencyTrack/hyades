@@ -7,6 +7,7 @@ import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.WebApplicationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -62,7 +63,7 @@ public class NvdClient {
             }
             lastModifiedRequest = api.getLastModifiedRequest();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new WebApplicationException("Exception while performing NVD mirroring", e);
         }
         storeLastModifiedRequestEpoch(lastModifiedRequest);
         return nvdFeeds;
