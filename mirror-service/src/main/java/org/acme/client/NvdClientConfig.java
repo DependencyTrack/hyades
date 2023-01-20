@@ -14,8 +14,8 @@ public class NvdClientConfig {
 
     @Produces
     @ApplicationScoped
-    NvdClient nvdClient(@Named("nvdObjectMapper") final ObjectMapper objectMapper,
-                          final NvdConfig config) {
+    NvdClient nvdClient(@Named("nvdObjectMapper") ObjectMapper objectMapper,
+                          NvdConfig config) {
         return new NvdClient(objectMapper, config.api().apiKey().orElse(null));
     }
 

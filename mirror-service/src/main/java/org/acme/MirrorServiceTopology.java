@@ -31,8 +31,8 @@ public class MirrorServiceTopology {
     private final NvdMirrorHandler nvdMirrorHandler;
 
     @Inject
-    public MirrorServiceTopology(final OsvMirrorHandler osvMirrorHandler,
-                                 final NvdMirrorHandler nvdMirrorHandler) {
+    public MirrorServiceTopology(OsvMirrorHandler osvMirrorHandler,
+                                 NvdMirrorHandler nvdMirrorHandler) {
         this.osvMirrorHandler = osvMirrorHandler;
         this.nvdMirrorHandler = nvdMirrorHandler;
     }
@@ -41,7 +41,7 @@ public class MirrorServiceTopology {
     public Topology topology() {
 
         final var streamsBuilder = new StreamsBuilder();
-        final var cyclonedxSerde = new ObjectMapperSerde<>(Bom.class);
+        var cyclonedxSerde = new ObjectMapperSerde<>(Bom.class);
 
         // OSV mirroring stream
         // (K,V) to be consumed as (String ecosystem, null)
@@ -63,7 +63,7 @@ public class MirrorServiceTopology {
 
         // NVD mirroring stream
         // (K,V) to be consumed as (event uuid, null)
-        final KStream<String, String> mirrorNvd = streamsBuilder
+        KStream<String, String> mirrorNvd = streamsBuilder
                 .stream(KafkaTopic.MIRROR_NVD.getName(), Consumed
                         .with(Serdes.String(), Serdes.String())
                         .withName(processorNameConsume(KafkaTopic.MIRROR_NVD)));

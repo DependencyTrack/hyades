@@ -43,7 +43,7 @@ public final class NvdToCyclonedxParser {
     public Bom parse(CveItem nvdVuln) {
 
         // Source
-        Vulnerability.Source source = new Vulnerability.Source();
+        var source = new Vulnerability.Source();
         source.setName(org.acme.model.Vulnerability.Source.NVD.name());
         this.cdxVuln.setSource(source);
 
@@ -93,11 +93,11 @@ public final class NvdToCyclonedxParser {
                 cpeMatches.forEach(cpeMatch -> {
                     if(cpeMatch.getVulnerable()) {
 
-                        Vulnerability.Affect versionRangeAffected = new Vulnerability.Affect();
+                        var versionRangeAffected = new Vulnerability.Affect();
                         versionRangeAffected.setRef(getBomRef(cpeMatch.getCriteria()));
 
                         String uniVersionRange = "vers:"+cpeMatch.getCriteria()+"/";
-                        Vulnerability.Version versionRange = new Vulnerability.Version();
+                        var versionRange = new Vulnerability.Version();
                         if(cpeMatch.getVersionStartIncluding() != null) {
                             uniVersionRange += cpeMatch.getVersionStartIncluding() + "|";
                         }
@@ -129,8 +129,8 @@ public final class NvdToCyclonedxParser {
                 return existingComponent.get().getBomRef();
             }
         }
-        final Component component = new Component();
-        final UUID uuid = UUID.randomUUID();
+        var component = new Component();
+        UUID uuid = UUID.randomUUID();
         component.setBomRef(uuid.toString());
         component.setCpe(cpe);
         this.cdxBom.addComponent(component);
@@ -147,7 +147,7 @@ public final class NvdToCyclonedxParser {
         return enDesc.get();
     }
 
-    private List<Vulnerability.Rating> parseCveImpact(final Metrics metrics) {
+    private List<Vulnerability.Rating> parseCveImpact(Metrics metrics) {
         List<Vulnerability.Rating> ratings = new ArrayList<>();
 
         // CVSS V2
@@ -156,7 +156,7 @@ public final class NvdToCyclonedxParser {
             baseMetricV2.forEach(baseMetric -> {
                 CvssV20 cvss = baseMetric.getCvssData();
                 if (cvss != null) {
-                    Vulnerability.Rating rating = new Vulnerability.Rating();
+                    var rating = new Vulnerability.Rating();
                     rating.setScore(cvss.getBaseScore());
                     rating.setMethod(Vulnerability.Rating.Method.CVSSV2);
                     rating.setVector(cvss.getVectorString());
@@ -172,7 +172,7 @@ public final class NvdToCyclonedxParser {
             baseMetricV3.forEach(baseMetric -> {
                 CvssV30__1 cvss = baseMetric.getCvssData();
                 if (cvss != null) {
-                    Vulnerability.Rating rating = new Vulnerability.Rating();
+                    var rating = new Vulnerability.Rating();
                     rating.setScore(cvss.getBaseScore());
                     rating.setMethod(Vulnerability.Rating.Method.CVSSV3);
                     rating.setVector(cvss.getVectorString());
@@ -188,7 +188,7 @@ public final class NvdToCyclonedxParser {
             baseMetricV31.forEach(baseMetric -> {
                 CvssV31__1 cvss = baseMetric.getCvssData();
                 if (cvss != null) {
-                    Vulnerability.Rating rating = new Vulnerability.Rating();
+                    var rating = new Vulnerability.Rating();
                     rating.setScore(cvss.getBaseScore());
                     rating.setMethod(Vulnerability.Rating.Method.CVSSV3);
                     rating.setVector(cvss.getVectorString());
@@ -200,13 +200,13 @@ public final class NvdToCyclonedxParser {
         return ratings;
     }
 
-    private List<Integer> parseCwes(final List<Weakness> weaknesses) {
+    private List<Integer> parseCwes(List<Weakness> weaknesses) {
         List<Integer> cwes = new ArrayList<>();
         weaknesses.forEach(weakness -> {
             List<LangString> descList = weakness.getDescription();
             descList.forEach(desc -> {
                 if (desc.getLang().equalsIgnoreCase("en")) {
-                    final String cweString = desc.getValue();
+                    String cweString = desc.getValue();
                     if (cweString != null && cweString.startsWith("CWE-")) {
                         cwes.add(CweResolver.getInstance().parseCweString(cweString));
                     }
@@ -216,10 +216,10 @@ public final class NvdToCyclonedxParser {
         return cwes;
     }
 
-    private List<ExternalReference> parseReferences(final List<Reference> references) {
+    private List<ExternalReference> parseReferences(List<Reference> references) {
         List<ExternalReference> externalReferences = new ArrayList<>();
         references.forEach(reference -> {
-            ExternalReference externalReference = new ExternalReference();
+            var externalReference = new ExternalReference();
             externalReference.setUrl(reference.getUrl());
             externalReferences.add(externalReference);
         });
