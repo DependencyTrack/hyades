@@ -38,7 +38,7 @@ public class FileUtil {
      * @param file the file
      * @param modificationTime the time of the last update
      */
-    public static void writeTimeStampFile(final File file, Long modificationTime)
+    public static void writeTimeStampFile(File file, Long modificationTime)
     {
         FileWriter writer = null;
         try {
@@ -57,7 +57,7 @@ public class FileUtil {
      * Closes a closable object.
      * @param object the object to close
      */
-    public static void close(final Closeable object) {
+    public static void close(Closeable object) {
         if (object != null) {
             try {
                 object.close();

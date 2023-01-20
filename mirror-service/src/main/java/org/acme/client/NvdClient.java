@@ -11,6 +11,7 @@ import javax.ws.rs.WebApplicationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,8 +27,8 @@ public class NvdClient {
 
     Collection<DefCveItem> nvdFeeds;
 
-    public NvdClient(final ObjectMapper objectMapper,
-                     final String apiKey) {
+    public NvdClient(ObjectMapper objectMapper,
+                     String apiKey) {
         this.objectMapper = objectMapper;
         this.apiKey = apiKey;
         this.nvdFeeds = new ArrayList<>();
@@ -47,8 +48,8 @@ public class NvdClient {
         long lastModifiedRequest = retrieveLastModifiedRequestEpoch();
         NvdCveApiBuilder builder = NvdCveApiBuilder.aNvdCveApi();
         if (lastModifiedRequest > 0) {
-            LocalDateTime start = LocalDateTime.ofEpochSecond(lastModifiedRequest, 0, ZoneOffset.UTC);
-            LocalDateTime end = start.minusDays(-120);
+            var start = LocalDateTime.ofEpochSecond(lastModifiedRequest, 0, ZoneOffset.UTC);
+            var end = start.minusDays(-120);
             builder.withLastModifiedFilter(start, end);
         }
         if (this.apiKey != null) {
@@ -56,7 +57,7 @@ public class NvdClient {
         }
         builder.withThreadCount(4);
         builder.withPublishedDateFilter(LocalDateTime.of(LocalDate.of(2002, 1, 1), LocalTime.MIN),
-                LocalDateTime.now());
+                LocalDateTime.now(ZoneId.systemDefault()));
         try (NvdCveApi api = builder.build()) {
             while (api.hasNext()) {
                 nvdFeeds.addAll(api.next());
