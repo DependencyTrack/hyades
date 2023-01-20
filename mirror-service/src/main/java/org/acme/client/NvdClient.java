@@ -4,25 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.jeremylong.nvdlib.NvdCveApi;
 import io.github.jeremylong.nvdlib.NvdCveApiBuilder;
 import io.github.jeremylong.nvdlib.nvd.DefCveItem;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Client for the NVD REST API.
  */
-@ApplicationScoped
 public class NvdClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NvdClient.class);
@@ -57,7 +51,7 @@ public class NvdClient {
             builder.withLastModifiedFilter(start, end);
         }
         if (this.apiKey != null) {
-//            builder.withApiKey(this.apiKey);
+            builder.withApiKey(this.apiKey);
             builder.withThreadCount(4);
             builder.withPublishedDateFilter(LocalDateTime.of(LocalDate.of(2002, 1, 1), LocalTime.MIN),
                     LocalDateTime.now());
