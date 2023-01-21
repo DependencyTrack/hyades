@@ -2,7 +2,7 @@ name: Publish Vulnerability Analyzer Native Binary
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "native-arm64" ]
 
 jobs:
   publish-container-image:
@@ -22,20 +22,21 @@ jobs:
         uses: docker/setup-buildx-action@v2.2.1
         with:
           install: true
-      - name: Docker login
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Docker login
+#        uses: docker/login-action@v2
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.repository_owner }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build native binary
         run: |-
           mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
-            -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17
-      - name: Build and push container image
-        uses: docker/build-push-action@v3
-        with:
-          context: ./vulnerability-analyzer
-          file: ./vulnerability-analyzer/src/main/docker/Dockerfile.native-micro
-          push: true
-          tags: ghcr.io/${{ github.repository_owner }}/vulnerability-analyzer:latest-native
+            -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 \
+            -Dquarkus.native.container-runtime-options='--platform=linux/arm64'
+#      - name: Build and push container image
+#        uses: docker/build-push-action@v3
+#        with:
+#          context: ./vulnerability-analyzer
+#          file: ./vulnerability-analyzer/src/main/docker/Dockerfile.native-micro
+#          push: true
+#          tags: ghcr.io/${{ github.repository_owner }}/vulnerability-analyzer:latest-native
