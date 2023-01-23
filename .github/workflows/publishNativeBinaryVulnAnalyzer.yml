@@ -10,9 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch:
-        - amd64
-        - arm64
+        target:
+        - module: notification-publisher
+          arch: amd64
+        - module: notification-publisher
+          arch: arm64
+        - module: repository-meta-analyzer
+          arch: amd64
+        - module: repository-meta-analyzer
+          arch: arm64
+        - module: vulnerability-analyzer
+          arch: amd64
+        - module: vulnerability-analyzer
+          arch: arm64
       fail-fast: true
     steps:
     - name: Checkout Repository
@@ -31,21 +41,40 @@ jobs:
         install: true
     - name: Build Native Image
       run: |-
-        mvn clean package -Pnative -pl commons,vulnerability-analyzer -DskipTests \
+        # Include RocksDB JNI library for aarch64 when building for arm64.
+        # Quarkus only includes the x64 library variant per default.
+        # https://github.com/quarkusio/quarkus/issues/30545
+        RESOURCES_INCLUDES=""
+        RESOURCES_EXCLUDES=""
+        if [[ "${{ matrix.target.arch }}" == "arm64" ]]; then
+          RESOURCES_INCLUDES="librocksdbjni-linux-aarch64.so"
+          RESOURCES_EXCLUDES="librocksdbjni-linux64.so"
+        fi
+        mvn clean package -Pnative -pl commons,${{ matrix.target.module }} -DskipTests \
           -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 \
-          -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch }}'
+          -Dquarkus.native.container-build=true \
+          -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.target.arch }}' \
+          -Dquarkus.native.resources.includes="$RESOURCES_INCLUDES" \
+          -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: native-image-${{ matrix.arch }}
+        name: native-image-${{ matrix.target.arch }}
         path: |-
-          vulnerability-analyzer/target/*-runner
+          ${{ matrix.target.module }}/target/*-runner
 
   build-container-image:
     name: Build Container Image
     runs-on: ubuntu-latest
     needs:
     - build-native-image
+    strategy:
+      matrix:
+        module:
+        - notification-publisher
+        - repository-meta-analyzer
+        - vulnerability-analyzer
+      fail-fast: true
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -53,12 +82,12 @@ jobs:
         uses: actions/download-artifact@v3.0.2
         with:
           name: native-image-amd64
-          path: vulnerability-analyzer/target/amd64
+          path: ${{ matrix.module }}/target/amd64
       - name: Download arm64 Binary
         uses: actions/download-artifact@v3.0.2
         with:
           name: native-image-arm64
-          path: vulnerability-analyzer/target/arm64
+          path: ${{ matrix.module }}/target/arm64
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.1.0
       - name: Set up Docker Buildx
@@ -74,8 +103,8 @@ jobs:
       - name: Build Container Image
         uses: docker/build-push-action@v3
         with:
-          context: ./vulnerability-analyzer
-          file: ./vulnerability-analyzer/src/main/docker/Dockerfile.native-multiarch
+          context: ./${{ matrix.module }}
+          file: ./${{ matrix.module }}/src/main/docker/Dockerfile.native-multiarch
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/vulnerability-analyzer:native-mutliarch
+          tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.module }}:native-mutliarch
