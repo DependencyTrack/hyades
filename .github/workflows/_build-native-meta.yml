@@ -38,7 +38,7 @@ jobs:
         # https://github.com/quarkusio/quarkus/issues/30545
         RESOURCES_INCLUDES=""
         RESOURCES_EXCLUDES=""
-        if [[ ! -z "$(mvn -f ${{ inputs.module }}/pom.xml dependency:tree | grep -i 'org.rocksdb:rocksdbjni')" && "${{ matrix.arch }}" == "arm64" ]]; then
+        if [[ "${{ matrix.arch }}" == "arm64" ]]; then
           RESOURCES_INCLUDES="librocksdbjni-linux-aarch64.so"
           RESOURCES_EXCLUDES="librocksdbjni-linux64.so"
         fi
