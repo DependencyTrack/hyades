@@ -38,7 +38,7 @@ public class NvdClient extends ContextualProcessor {
     }
 
     @Override
-    public void init(final ProcessorContext context) {
+    public void init(ProcessorContext context) {
         super.init(context);
         this.store = context().getStateStore(this.lastModifiedEpochStoreBuilder.name());
     }

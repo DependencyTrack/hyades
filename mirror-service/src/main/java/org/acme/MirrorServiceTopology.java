@@ -40,12 +40,12 @@ public class MirrorServiceTopology {
     @Produces
     public Topology topology() {
 
-        final var streamsBuilder = new StreamsBuilder();
+        var streamsBuilder = new StreamsBuilder();
         var cyclonedxSerde = new ObjectMapperSerde<>(Bom.class);
 
         // OSV mirroring stream
         // (K,V) to be consumed as (String ecosystem, null)
-        final KStream<String, String> mirrorOsv = streamsBuilder
+        KStream<String, String> mirrorOsv = streamsBuilder
                 .stream(KafkaTopic.MIRROR_OSV.getName(), Consumed
                 .with(Serdes.String(), Serdes.String())
                 .withName(processorNameConsume(KafkaTopic.MIRROR_OSV)));
