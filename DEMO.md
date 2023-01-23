@@ -62,8 +62,8 @@ docker restart dt-postgres
 
 ## Testing 🤞
 
-1. In a web browser, navigate to http://localhost:8081 and login (username: `admin`, password: `admin`)
-2. Navigate to the *Notifications* section in the [administration panel](http://localhost:8081/admin)
+1. In a web browser, navigate to http://localhost:8080 and login (username: `admin`, password: `admin`)
+2. Navigate to the *Notifications* section in the [administration panel](http://localhost:8080/admin)
 3. Create a new alert with publisher *Outbound Webhook*
 ![Create Alert](.github/images/demo_dtrack_create-alert.png)
 4. Select a few notification groups and enter a destination URL ([Pipedream](https://pipedream.com/) is convenient for testing Webhooks)

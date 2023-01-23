@@ -1,7 +1,0 @@
-# This file is required when Alpine's Config class is used.
-# Content does not matter, it will be logged to STDOUT whenever
-# the Config class is first accessed.
-name=Alpine
-version=X.X.X
-timestamp=2022-11-11
-uuid=bfc108f4-dfce-4ae7-b291-6b9725fab2fc
