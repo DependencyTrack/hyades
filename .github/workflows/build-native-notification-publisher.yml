@@ -1,0 +1,23 @@
+name: Build Native Notification Publisher
+
+on:
+  push:
+    branches:
+    - native-arm64
+    paths:
+    - ".github/workflows/_build-native-meta.yml"
+    - ".github/workflows/build-native-notification-publisher.yml"
+    - "commons/**"
+    - "notification-publisher/**"
+    - "pom.xml"
+  workflow_dispatch: { }
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-build:
+    uses: ./.github/workflows/_native.yml
+    with:
+      module: notification-publisher
