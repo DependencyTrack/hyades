@@ -8,8 +8,9 @@ A UNIX-based system is strongly recommended. In case you're bound to Windows, pl
 > **Note**
 > A >4 core CPU and >=16GB RAM are recommended for a smooth experience.
 
-1. Start by creating a new directory for this setup:
+1. In a terminal, clone *this* repository and navigate to it:
 ```shell
+<<<<<<< HEAD
 mkdir demo
 ```
 2. Clone both *this* repository and that of our [modified Dependency-Track API server] into the directory you just created:
@@ -21,32 +22,46 @@ git clone --branch kafka-poc https://github.com/sahibamittal/dependency-track.gi
   * Alternatively, should you not have Git installed, you can download the repositories [here](https://github.com/mehab/hyades/archive/refs/heads/main.zip)
     and [here](https://github.com/sahibamittal/dependency-track/archive/refs/heads/kafka-poc.zip)
 3. Generate a secret key used for encryption and decryption of credentials in the database:
+=======
+git clone https://github.com/mehab/DTKafkaPOC.git
+cd DTKafkaPOC
+```
+2. Generate a secret key for encryption and decryption of credentials in the database:
+>>>>>>> 94a7dbdf6d8982c9dddeb2cb3d8ebb5d0c7233c6
 ```shell
 openssl rand 32 > secret.key
 ```
-4. Pull and build all required container images, and finally start them:
+3. Pull and start all containers:
 ```shell
+<<<<<<< HEAD
 cd hyades
 docker compose --profile demo pull
 docker compose --profile demo build
 docker compose --profile demo up -d
+=======
+docker compose --profile demo up -d --pull always
+>>>>>>> 94a7dbdf6d8982c9dddeb2cb3d8ebb5d0c7233c6
 ```
   * Make sure you include the `--profile demo` flag!
-  * Building and the images may take a few minutes
 
 Once completed, the following services will be available:
 
-| Service                     | URL                    |
-|:----------------------------|:-----------------------|
-| Dependency-Track API Server | http://localhost:8080  |
-| Dependency-Track Frontend   | http://localhost:8081  |
-| Redpanda Console            | http://localhost:28080 |
-| PostgreSQL                  | `localhost:5432`       |
-| Redpanda Kafka API          | `localhost:9092`       |
+| Service                                | URL                    |
+|:---------------------------------------|:-----------------------|
+| Dependency-Track API Server + Frontend | http://localhost:8080  |
+| Redpanda Console                       | http://localhost:28080 |
+| PostgreSQL                             | `localhost:5432`       |
+| Redpanda Kafka API                     | `localhost:9092`       |
 
 > **Note**  
 > You'll not need to interact with PostgreSQL or the Kafka API directly to try out the PoC,
 > but if you're curious 🕵️ of course you can!
+
+Finally, to remove everything again, including persistent volumes:
+
+```shell
+docker compose --profile demo down --volumes
+```
 
 ### Common Issues
 
@@ -68,8 +83,8 @@ docker restart dt-postgres
 
 ## Testing 🤞
 
-1. In a web browser, navigate to http://localhost:8081 and login (username: `admin`, password: `admin`)
-2. Navigate to the *Notifications* section in the [administration panel](http://localhost:8081/admin)
+1. In a web browser, navigate to http://localhost:8080 and login (username: `admin`, password: `admin`)
+2. Navigate to the *Notifications* section in the [administration panel](http://localhost:8080/admin)
 3. Create a new alert with publisher *Outbound Webhook*
 ![Create Alert](.github/images/demo_dtrack_create-alert.png)
 4. Select a few notification groups and enter a destination URL ([Pipedream](https://pipedream.com/) is convenient for testing Webhooks)

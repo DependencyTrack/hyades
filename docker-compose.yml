@@ -53,10 +53,14 @@ services:
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+      SCANNER_INTERNAL_ENABLED: "true"
+      # SCANNER_INTERNAL_TOPIC_PARTITIONS: "3"
       SCANNER_OSSINDEX_ENABLED: "true"
+      # SCANNER_OSSINDEX_TOPIC_PARTITIONS: "3"
       # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
       # SCANNER_OSSINDEX_API_TOKEN: "your-token"
       # SCANNER_SNYK_ENABLED: "true"
+      # SCANNER_SNYK_TOPIC_PARTITIONS: "3
       # SCANNER_SNYK_API_ORG_ID: "your-org-id"
       # SCANNER_SNYK_API_TOKENS: "your-token-1,your-token-2"
     ports:
@@ -85,14 +89,16 @@ services:
     restart: unless-stopped
 
   apiserver:
-    build:
-      context: ../dependency-track
-      dockerfile: src/main/docker/Dockerfile.demo
+    image: ghcr.io/sahibamittal/dependency-track-bundled:snapshot
     container_name: dt-apiserver
     depends_on:
       - postgres
       - redpanda
     environment:
+      # Limit maximum heap size to 4GB.
+      # Default would be 90% of available memory,
+      # which can cause problems on some workstations.
+      EXTRA_JAVA_OPTS: "-Xmx4g"
       ALPINE_DATABASE_MODE: "external"
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       ALPINE_DATABASE_DRIVER: "org.postgresql.Driver"
@@ -101,6 +107,7 @@ services:
       ALPINE_METRICS_ENABLED: "true"
       ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
+      KAFKA_NUM_STREAM_THREADS: "6"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
@@ -108,16 +115,7 @@ services:
       - "./secret.key:/var/run/secrets/secret.key:ro"
     profiles:
       - demo
-    restart: unless-stopped
-
-  frontend:
-    image: dependencytrack/frontend:snapshot
-    environment:
-      API_BASE_URL: "http://localhost:8080"
-    ports:
-      - "127.0.0.1:8081:8080"
-    profiles:
-      - demo
+      - load-test
     restart: unless-stopped
 
   postgres:
@@ -178,12 +176,14 @@ services:
     user: "0" # Ensure user can read create-topics.sh
     environment:
       REDPANDA_BROKERS: "dt-redpanda:29092"
-      NOTIFICATION_TOPICS_PARTITIONS: "3"
-      NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
-      REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
-      REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
-      VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
-      VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+      # NOTIFICATION_TOPICS_PARTITIONS: "3"
+      # NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
+      # REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
+      # REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+      # VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
+      # VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+      # VULN_MIRROR_TOPICS_PARTITIONS: "3"
+      # VULN_MIRROR_TOPICS_RETENTION_MS: "43200000" # 12h
     volumes:
       - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro"
     restart: on-failure

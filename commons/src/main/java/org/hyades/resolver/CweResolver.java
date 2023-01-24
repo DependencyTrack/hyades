@@ -22,9 +22,6 @@ import org.hyades.model.Cwe;
 import org.hyades.persistence.CweImporter;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Attempts to resolve an internal CWE object from a string
  * representation of a CWE.
@@ -33,11 +30,6 @@ import java.util.Map;
  * @since 3.0.0
  */
 public class CweResolver {
-
-    private static final Map<Integer, String> CWE_DICTIONARY = new HashMap<>();
-    static {
-        CWE_DICTIONARY.putAll(CweImporter.processCweDefinitions());
-    }
 
     private static final CweResolver INSTANCE = new CweResolver();
 
@@ -58,7 +50,7 @@ public class CweResolver {
      */
     public Cwe lookup(final Integer cweId) {
         if (cweId != null) {
-            final String cweName = CWE_DICTIONARY.get(cweId);
+            final String cweName = CweDefinitions.DEFINITIONS.get(cweId);
             if (cweName != null) {
                 final var cwe = new Cwe();
                 cwe.setCweId(cweId);
@@ -81,7 +73,7 @@ public class CweResolver {
     public Cwe resolve(final String cweString) {
         final Integer cweId = parseCweString(cweString);
         if (cweId != null) {
-            final String cweName =CWE_DICTIONARY.get(cweId);
+            final String cweName = CweDefinitions.DEFINITIONS.get(cweId);
             if (cweName != null) {
                 final var cwe = new Cwe();
                 cwe.setCweId(cweId);

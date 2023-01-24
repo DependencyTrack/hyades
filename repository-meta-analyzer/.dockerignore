@@ -1,5 +1,7 @@
 *
 !target/*-runner
+!target/amd64/*-runner
+!target/arm64/*-runner
 !target/*-runner.jar
 !target/lib/*
 !target/quarkus-app/*

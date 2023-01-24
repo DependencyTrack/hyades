@@ -1,9 +1,10 @@
-import { uuidv4 } from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
-import {SchemaRegistry, SCHEMA_TYPE_JSON, SCHEMA_TYPE_STRING, Writer} from "k6/x/kafka";
+import {uuidv4} from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
+import {BALANCER_MURMUR2, SchemaRegistry, SCHEMA_TYPE_JSON, SCHEMA_TYPE_STRING, Writer} from "k6/x/kafka";
 
 const writer = new Writer({
     brokers: ["localhost:9092"],
     topic: "dtrack.vuln-analysis.component",
+    balancer: BALANCER_MURMUR2,
     autoCreateTopic: false,
 });
 
@@ -27,12 +28,13 @@ const components = JSON.parse(open("fixtures/generated/index.json")).boms
     .flatMap(bomFilePath => extractComponents(bomFilePath));
 
 export default function () {
+    const scanToken = uuidv4()
     for (let i = 0; i < components.length; i++) {
         writer.produce({
             messages: [
                 {
                     key: schemaRegistry.serialize({
-                        data: components[i].uuid,
+                        data: scanToken + "/" + components[i].uuid,
                         schemaType: SCHEMA_TYPE_STRING
                     }),
                     value: schemaRegistry.serialize({
