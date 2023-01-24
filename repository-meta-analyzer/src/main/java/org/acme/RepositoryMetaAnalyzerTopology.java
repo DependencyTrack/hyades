@@ -204,7 +204,7 @@ public class RepositoryMetaAnalyzerTopology {
 
             analyzer.setRepositoryBaseUrl(repository.getUrl());
 
-            LOGGER.info("Performing meta analysis on component: {}" + component);
+            LOGGER.info("Performing meta analysis on component: " + component);
             final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), component.getPurl().canonicalize());
 
             // Populate results from cache
