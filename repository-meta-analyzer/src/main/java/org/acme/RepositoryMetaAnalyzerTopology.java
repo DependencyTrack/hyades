@@ -89,7 +89,7 @@ public class RepositoryMetaAnalyzerTopology {
     @Produces
     public Topology topology() {
         final var streamsBuilder = new StreamsBuilder();
-        try (final var metaModelSerde = new ObjectMapperSerde<>(MetaModel.class);
+        try ( var metaModelSerde = new ObjectMapperSerde<>(MetaModel.class);
              final var componentSerde = new ObjectMapperSerde<>(Component.class)) {
 
             final KStream<String, Component> componentMetaAnalyzerStream = streamsBuilder
