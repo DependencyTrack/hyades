@@ -46,10 +46,6 @@ done
 
 vuln_analysis_topics=(
   "dtrack.vuln-analysis.component"
-  "dtrack.vuln-analysis.component.cpe"
-  "dtrack.vuln-analysis.component.purl"
-  "dtrack.vuln-analysis.component.swid"
-  "dtrack.vuln-analysis.vulnerability"
   "dtrack.vuln-analysis.result"
   "dtrack.vulnerability.mirror.osv"
   "dtrack.vulnerability.mirror.nvd"
