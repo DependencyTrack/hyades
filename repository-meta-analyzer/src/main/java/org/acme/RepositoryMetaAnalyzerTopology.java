@@ -133,7 +133,7 @@ public class RepositoryMetaAnalyzerTopology {
                                             .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "hex_result")))
                             ).withName("-hex")
                     )
-                    .branch((key, component) -> PackageURL.StandardTypes.PYPI.equals(component.getPurl().getType()),
+                    .branch((key, component) -> Objects.equals(component.getPurl().getType(), PackageURL.StandardTypes.PYPI),
                             Branched.<String, Component>withConsumer(componentStreamPypi -> componentStreamPypi
                                     .map((uuid, component) -> performMetaAnalysis(pypiMetaAnalyzer, component),
                                             Named.as("perform_pypi_meta_analysis"))
