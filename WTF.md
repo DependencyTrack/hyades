@@ -157,10 +157,6 @@ RabbitMQ supports Kafka-like partitioned streams via its [Streams plugin](https:
 In the end, we decided against RabbitMQ, because brokers do not support key-based compaction, and its consumer libraries 
 in turn lack adequate support for fault-tolerant stateful operations.
 
-#### NATS
-
-TBD
-
 #### Liftbridge
 
 [Liftbridge](https://liftbridge.io/) is built on top of NATS and provides Kafka-like features. It is however not
