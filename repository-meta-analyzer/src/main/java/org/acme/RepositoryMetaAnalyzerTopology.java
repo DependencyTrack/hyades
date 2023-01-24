@@ -90,7 +90,7 @@ public class RepositoryMetaAnalyzerTopology {
     public Topology topology() {
         final var streamsBuilder = new StreamsBuilder();
         try ( var metaModelSerde = new ObjectMapperSerde<>(MetaModel.class);
-             final var componentSerde = new ObjectMapperSerde<>(Component.class)) {
+             var componentSerde = new ObjectMapperSerde<>(Component.class)) {
 
             final KStream<String, Component> componentMetaAnalyzerStream = streamsBuilder
                     .stream(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), Consumed
