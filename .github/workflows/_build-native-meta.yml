@@ -33,12 +33,12 @@ jobs:
         install: true
     - name: Build Native Image
       run: |-
-        # Include RocksDB JNI library for aarch64 when building for arm64.
-        # Quarkus only includes the x64 library variant per default.
-        # https://github.com/quarkusio/quarkus/issues/30545
         RESOURCES_INCLUDES=""
         RESOURCES_EXCLUDES=""
         if [[ "${{ matrix.arch }}" == "arm64" ]]; then
+          # Include RocksDB JNI library for aarch64 when building for arm64.
+          # Quarkus only includes the x64 library variant per default.
+          # https://github.com/quarkusio/quarkus/issues/30545
           RESOURCES_INCLUDES="librocksdbjni-linux-aarch64.so"
           RESOURCES_EXCLUDES="librocksdbjni-linux64.so"
         fi
@@ -92,4 +92,4 @@ jobs:
         file: ./${{ inputs.module }}/src/main/docker/Dockerfile.native-multiarch
         platforms: linux/amd64,linux/arm64
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/${{ inputs.module }}:native-mutliarch
+        tags: ghcr.io/${{ github.repository_owner }}/${{ inputs.module }}:latest-native
