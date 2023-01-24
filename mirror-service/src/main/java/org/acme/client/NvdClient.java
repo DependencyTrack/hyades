@@ -23,7 +23,7 @@ import java.util.Collection;
 public class NvdClient extends ContextualProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NvdClient.class);
-    private String lastModifiedEpochKey = "LAST_MODIFIED_EPOCH_KEY";
+    private static final String LAST_MODIFIED_EPOCH_KEY = "LAST_MODIFIED_EPOCH_KEY";
     private KeyValueStore<String, Long> store;
     private StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder;
     private String apiKey;
@@ -44,15 +44,12 @@ public class NvdClient extends ContextualProcessor {
     }
 
     long retrieveLastModifiedRequestEpoch() {
-        if(this.store != null) {
-            return this.store.get(this.lastModifiedEpochKey);
-        }
-        return 0;
+        return store != null ? store.get(LAST_MODIFIED_EPOCH_KEY) : 0;
     }
 
     void storeLastModifiedRequestEpoch(long epoch) {
         if (this.store != null) {
-            this.store.put(this.lastModifiedEpochKey, epoch);
+            this.store.put(LAST_MODIFIED_EPOCH_KEY, epoch);
         }
     }
 
@@ -83,9 +80,4 @@ public class NvdClient extends ContextualProcessor {
 
     @Override
     public void process(Record record) {}
-
-    @Override
-    public void close() {
-        super.close();
-    }
 }

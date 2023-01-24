@@ -17,7 +17,7 @@ public class NvdMirrorHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NvdMirrorHandler.class);
     private NvdClient client;
-    List<Bom> nvdVulnerabilities;
+    private List<Bom> nvdVulnerabilities;
     @Inject
     public NvdMirrorHandler(NvdClient client) {
         this.client = client;
@@ -29,8 +29,7 @@ public class NvdMirrorHandler {
         LOGGER.info("Starting NVD mirroring task");
         getNvdFeeds();
         long end = System.currentTimeMillis();
-        LOGGER.info("NVD mirroring complete");
-        LOGGER.info("Time spent (total): " + (end - start) + "ms");
+        LOGGER.info("NVD mirroring complete. Time spent (total): " + (end - start) + "ms");
         return nvdVulnerabilities;
     }
 
@@ -40,7 +39,7 @@ public class NvdMirrorHandler {
     private void getNvdFeeds() {
         Collection<DefCveItem> nvdFeeds = this.client.update();
         nvdFeeds.stream().forEach(nvdFeed -> {
-            NvdToCyclonedxParser parser = new NvdToCyclonedxParser();
+            var parser = new NvdToCyclonedxParser();
             nvdVulnerabilities.add(parser.parse(nvdFeed.getCve()));
         });
     }

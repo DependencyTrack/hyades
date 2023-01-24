@@ -19,7 +19,7 @@ public class NvdToCyclonedxParserTest {
     NvdClientConfig nvdClientConfig = new NvdClientConfig();
 
     @Test
-    public void testVulnerabilityRangeEmpty() throws IOException {
+    public void testVulnerabilityParsing() throws IOException {
 
         String jsonFile = "src/test/resources/nvd/nvd-vuln.json";
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));

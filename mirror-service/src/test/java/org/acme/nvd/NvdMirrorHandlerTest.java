@@ -31,10 +31,10 @@ import static org.mockito.Mockito.when;
 public class NvdMirrorHandlerTest {
 
     @Inject
-    Topology topology;
+    private Topology topology;
 
     @InjectMock
-    NvdClient nvdClient;
+    private NvdClient nvdClient;
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, String> inputTopic;

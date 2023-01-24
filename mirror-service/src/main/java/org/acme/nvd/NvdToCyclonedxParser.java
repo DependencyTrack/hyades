@@ -20,8 +20,6 @@ import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.model.vulnerability.Vulnerability;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Date;
 import java.time.ZoneId;
@@ -36,9 +34,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public final class NvdToCyclonedxParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NvdToCyclonedxParser.class);
-    final Bom cdxBom = new Bom();
-    final Vulnerability cdxVuln = new Vulnerability();
+    private final Bom cdxBom = new Bom();
+    private final Vulnerability cdxVuln = new Vulnerability();
 
     public Bom parse(CveItem nvdVuln) {
 
@@ -137,7 +134,7 @@ public final class NvdToCyclonedxParser {
         return uuid.toString();
     }
 
-    private String parseDescription(List<LangString> descriptions) {
+    private static String parseDescription(List<LangString> descriptions) {
         AtomicReference<String> enDesc = new AtomicReference<>("null");
         descriptions.forEach(desc -> {
             if (desc.getLang().equalsIgnoreCase("en")) {
@@ -147,7 +144,7 @@ public final class NvdToCyclonedxParser {
         return enDesc.get();
     }
 
-    private List<Vulnerability.Rating> parseCveImpact(Metrics metrics) {
+    private static List<Vulnerability.Rating> parseCveImpact(Metrics metrics) {
         List<Vulnerability.Rating> ratings = new ArrayList<>();
 
         // CVSS V2
@@ -200,7 +197,7 @@ public final class NvdToCyclonedxParser {
         return ratings;
     }
 
-    private List<Integer> parseCwes(List<Weakness> weaknesses) {
+    private static List<Integer> parseCwes(List<Weakness> weaknesses) {
         List<Integer> cwes = new ArrayList<>();
         weaknesses.forEach(weakness -> {
             List<LangString> descList = weakness.getDescription();
@@ -216,7 +213,7 @@ public final class NvdToCyclonedxParser {
         return cwes;
     }
 
-    private List<ExternalReference> parseReferences(List<Reference> references) {
+    private static List<ExternalReference> parseReferences(List<Reference> references) {
         List<ExternalReference> externalReferences = new ArrayList<>();
         references.forEach(reference -> {
             var externalReference = new ExternalReference();
