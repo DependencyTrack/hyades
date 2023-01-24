@@ -15,10 +15,10 @@ mkdir demo
 2. Clone both *this* repository and that of our [modified Dependency-Track API server] into the directory you just created:
 ```shell
 cd demo
-git clone https://github.com/mehab/DTKafkaPOC.git
+git clone https://github.com/mehab/hyades.git
 git clone --branch kafka-poc https://github.com/sahibamittal/dependency-track.git
 ```
-  * Alternatively, should you not have Git installed, you can download the repositories [here](https://github.com/mehab/DTKafkaPOC/archive/refs/heads/main.zip)
+  * Alternatively, should you not have Git installed, you can download the repositories [here](https://github.com/mehab/hyades/archive/refs/heads/main.zip)
     and [here](https://github.com/sahibamittal/dependency-track/archive/refs/heads/kafka-poc.zip)
 3. Generate a secret key used for encryption and decryption of credentials in the database:
 ```shell
@@ -26,7 +26,7 @@ openssl rand 32 > secret.key
 ```
 4. Pull and build all required container images, and finally start them:
 ```shell
-cd DTKafkaPOC
+cd hyades
 docker compose --profile demo pull
 docker compose --profile demo build
 docker compose --profile demo up -d

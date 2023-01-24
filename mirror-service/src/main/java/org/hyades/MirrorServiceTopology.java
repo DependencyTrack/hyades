@@ -1,0 +1,68 @@
+package org.hyades;
+
+import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
+import org.hyades.common.KafkaTopic;
+import org.hyades.model.Vulnerability;
+import org.hyades.osv.OsvMirrorHandler;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Named;
+import org.apache.kafka.streams.kstream.Produced;
+import org.cyclonedx.model.Bom;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.List;
+
+import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
+import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
+
+@ApplicationScoped
+public class MirrorServiceTopology {
+
+    private final OsvMirrorHandler osvMirrorHandler;
+
+    @Inject
+    public MirrorServiceTopology(final OsvMirrorHandler osvMirrorHandler) {
+        this.osvMirrorHandler = osvMirrorHandler;
+    }
+
+    @Produces
+    public Topology topology() {
+
+        final var streamsBuilder = new StreamsBuilder();
+        final var osvCyclonedxSerde = new ObjectMapperSerde<>(Bom.class);
+
+        // OSV mirroring stream
+        // (K,V) to be consumed as (event uuid, list of ecosystems)
+        final KStream<String, String> mirrorOsv = streamsBuilder
+                .stream(KafkaTopic.MIRROR_OSV.getName(), Consumed
+                .with(Serdes.String(), Serdes.String())
+                .withName(processorNameConsume(KafkaTopic.MIRROR_OSV)));
+        mirrorOsv
+                .flatMap((ecosystem, value) -> {
+                    try {
+                        return mirrorOsv(ecosystem);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, Named.as("mirror_osv_vulnerabilities"))
+                .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
+                        .with(Serdes.String(), osvCyclonedxSerde)
+                        .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "osv_vulnerability")));
+
+        return streamsBuilder.build();
+    }
+
+    List<KeyValue<String, Bom>> mirrorOsv(String ecosystem) throws IOException {
+        return osvMirrorHandler.performMirror(ecosystem).stream()
+                .map(bom -> KeyValue.pair(Vulnerability.Source.OSV.name() + "/" + bom.getVulnerabilities().get(0).getId(), bom))
+                .toList();
+    }
+}

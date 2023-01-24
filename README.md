@@ -1,10 +1,10 @@
-# DT-Kafka-POC
+# Hyades
 
-[![Build Status](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml/badge.svg)](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
+[![Build Status](https://github.com/mehab/hyades/actions/workflows/ci.yml/badge.svg)](https://github.com/mehab/hyades/actions/workflows/ci.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
 
 ## What is this? 🤔
 
