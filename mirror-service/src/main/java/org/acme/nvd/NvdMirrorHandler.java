@@ -39,7 +39,9 @@ public class NvdMirrorHandler {
      */
     private void getNvdFeeds() {
         Collection<DefCveItem> nvdFeeds = this.client.update();
-        NvdToCyclonedxParser parser = new NvdToCyclonedxParser();
-        nvdFeeds.stream().forEach(nvdFeed -> nvdVulnerabilities.add(parser.parse(nvdFeed.getCve())));
+        nvdFeeds.stream().forEach(nvdFeed -> {
+            NvdToCyclonedxParser parser = new NvdToCyclonedxParser();
+            nvdVulnerabilities.add(parser.parse(nvdFeed.getCve()));
+        });
     }
 }
