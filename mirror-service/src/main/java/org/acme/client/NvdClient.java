@@ -25,7 +25,7 @@ public class NvdClient extends ContextualProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(NvdClient.class);
     private String lastModifiedEpochKey = "LAST_MODIFIED_EPOCH_KEY";
     private KeyValueStore<String, Long> store;
-    StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder;
+    private StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder;
     private String apiKey;
 
     Collection<DefCveItem> nvdFeeds;
