@@ -88,11 +88,11 @@ public class RepositoryMetaAnalyzerTopology {
 
     @Produces
     public Topology topology() {
-        final var streamsBuilder = new StreamsBuilder();
-        try ( var metaModelSerde = new ObjectMapperSerde<>(MetaModel.class);
+        var streamsBuilder = new StreamsBuilder();
+        try (var metaModelSerde = new ObjectMapperSerde<>(MetaModel.class);
              var componentSerde = new ObjectMapperSerde<>(Component.class)) {
 
-            final KStream<String, Component> componentMetaAnalyzerStream = streamsBuilder
+            KStream<String, Component> componentMetaAnalyzerStream = streamsBuilder
                     .stream(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), Consumed
                             .with(Serdes.UUID(), componentSerde)
                             .withName(processorNameConsume(KafkaTopic.REPO_META_ANALYSIS_COMPONENT)))
