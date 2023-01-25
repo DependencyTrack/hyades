@@ -1,7 +1,6 @@
 package org.acme.client;
 
 import io.github.jeremylong.nvdlib.NvdCveApi;
-import io.github.jeremylong.nvdlib.NvdCveApiBuilder;
 import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import org.acme.model.Vulnerability;
 import org.acme.nvd.NvdMirrorHandler;
@@ -17,12 +16,11 @@ import org.cyclonedx.model.Bom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * Client for the NVD REST API.
@@ -34,15 +32,17 @@ public class NvdClient extends ContextualProcessor<String, String, String, Bom>
     private static final String LAST_MODIFIED_EPOCH_KEY = "LAST_MODIFIED_EPOCH_KEY";
     private KeyValueStore<String, Long> store;
     private StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder;
+    private final BiFunction<String, Long, NvdCveApi> cveApiSupplier;
     private String apiKey;
 
     Collection<DefCveItem> nvdFeeds;
 
     public NvdClient(StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder,
-                     String apiKey) {
+                     String apiKey, BiFunction<String, Long, NvdCveApi> cveApiSupplier) {
         this.apiKey = apiKey;
         this.nvdFeeds = new ArrayList<>();
         this.lastModifiedEpochStoreBuilder = lastModifiedEpochStoreBuilder;
+        this.cveApiSupplier = cveApiSupplier;
     }
 
     @Override
@@ -52,7 +52,10 @@ public class NvdClient extends ContextualProcessor<String, String, String, Bom>
     }
 
     long retrieveLastModifiedRequestEpoch() {
-        return store.get(LAST_MODIFIED_EPOCH_KEY) != null ? store.get(LAST_MODIFIED_EPOCH_KEY) : 0;
+        if (this.store != null && store.get(LAST_MODIFIED_EPOCH_KEY) != null) {
+            return store.get(LAST_MODIFIED_EPOCH_KEY);
+        }
+        return 0;
     }
 
     void storeLastModifiedRequestEpoch(long epoch) {
@@ -63,17 +66,7 @@ public class NvdClient extends ContextualProcessor<String, String, String, Bom>
 
     public void update(Record record) {
         long lastModifiedRequest = retrieveLastModifiedRequestEpoch();
-        NvdCveApiBuilder builder = NvdCveApiBuilder.aNvdCveApi();
-        if (lastModifiedRequest > 0) {
-            var start = LocalDateTime.ofEpochSecond(lastModifiedRequest, 0, ZoneOffset.UTC);
-            var end = start.minusDays(-120);
-            builder.withLastModifiedFilter(start, end);
-        }
-        if (this.apiKey != null) {
-            builder.withApiKey(this.apiKey);
-        }
-        builder.withThreadCount(4);
-        try (NvdCveApi api = builder.build()) {
+        try (NvdCveApi api = this.cveApiSupplier.apply(apiKey, lastModifiedRequest)) {
             while (api.hasNext()) {
                 List<Bom> bovs = new ArrayList<>();
                 api.next().stream().forEach(defCveItem -> {
@@ -100,7 +93,7 @@ public class NvdClient extends ContextualProcessor<String, String, String, Bom>
 
     @Override
     public Processor<String, String, String, Bom> get() {
-        return new NvdClient(this.lastModifiedEpochStoreBuilder, this.apiKey);
+        return new NvdClient(this.lastModifiedEpochStoreBuilder, this.apiKey, this.cveApiSupplier);
     }
 
     @Override
