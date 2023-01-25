@@ -38,7 +38,7 @@ final class CweDefinitions {
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
-    arg_parser.add_argument("-p", "--package", default="org.acme.resolver", help="Package name")
+    arg_parser.add_argument("-p", "--package", default="org.hyades.resolver", help="Package name")
     arg_parser.add_argument("-o", "--output", type=Path, required=True, help="Output file path")
     args = arg_parser.parse_args()
 

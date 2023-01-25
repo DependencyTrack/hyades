@@ -1,10 +1,10 @@
-# DT-Kafka-POC
+# Hyades
 
 [![Build Status](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml/badge.svg)](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_DTKafkaPOC&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mehab_DTKafkaPOC)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
 
 ## What is this? 🤔
 
@@ -12,15 +12,16 @@ This project is a proof-of-concept for decoupling responsibilities from [Depende
 into separate, scalable™ services. We're using [Kafka] (or Kafka-compatible brokers like [Redpanda]) for communicating 
 between API server and the PoC applications.
 
+If you're interested in the technical background of this project, please refer to 👉 [`WTF.md`](WTF.md) 👈.
+
 As of now, the PoC is capable of:
 
-* Performing vulnerability analysis using [OSS Index] and [Snyk]
+* Performing vulnerability analysis using scanners that leverage:
+  * Dependency-Track's internal vulnerability database
+  * [OSS Index]
+  * [Snyk]
+* Gathering component meta information (e.g. latest available version) from remote repositories
 * Sending [notifications] via all channels supported by the original API server (E-Mail, Webhook, etc.)
-
-We're planning to expand its set of capabilities further by:
-
-* Performing component meta analysis (e.g. fetching latest versions from remote repositories)
-* ...
 
 Here's a rough overview of the architecture:
 
