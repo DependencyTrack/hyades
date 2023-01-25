@@ -76,13 +76,13 @@ public class NvdClient extends ContextualProcessor<String, String, String, Bom>
         try (NvdCveApi api = builder.build()) {
             while (api.hasNext()) {
                 List<Bom> bovs = new ArrayList<>();
-                var parser = new NvdToCyclonedxParser();
-                api.next().stream().forEach(defCveItem -> bovs.add(parser.parse(defCveItem.getCve())));
-                bovs.forEach(bov -> {
-                    context().forward(record
-                            .withKey(Vulnerability.Source.NVD.name() + "/" + bov.getVulnerabilities().get(0).getId())
-                            .withValue(bov));
+                api.next().stream().forEach(defCveItem -> {
+                    var parser = new NvdToCyclonedxParser();
+                    bovs.add(parser.parse(defCveItem.getCve()));
                 });
+                bovs.forEach(bov -> context().forward(record
+                        .withKey(Vulnerability.Source.NVD.name() + "/" + bov.getVulnerabilities().get(0).getId())
+                        .withValue(bov)));
             }
             lastModifiedRequest = api.getLastModifiedRequest();
             LOGGER.info("NVD mirroring completed successfully.");
