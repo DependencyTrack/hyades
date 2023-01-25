@@ -1,0 +1,35 @@
+package org.hyades.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "MANAGEDUSER")
+public class ManagedUser {
+
+    @Id
+    @Column(name = "ID")
+    private int id;
+
+    @Column(name = "EMAIL")
+    private String email;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+}

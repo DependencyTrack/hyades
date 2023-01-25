@@ -1,4 +1,4 @@
-# DT-Kafka-POC
+# Hyades
 
 [![Build Status](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml/badge.svg)](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)

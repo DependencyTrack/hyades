@@ -10,8 +10,8 @@ A UNIX-based system is strongly recommended. In case you're bound to Windows, pl
 
 1. In a terminal, clone *this* repository and navigate to it:
 ```shell
-git clone https://github.com/mehab/DTKafkaPOC.git
-cd DTKafkaPOC
+git clone https://github.com/mehab/hyades.git
+cd hyades
 ```
 2. Generate a secret key for encryption and decryption of credentials in the database:
 ```shell
@@ -21,7 +21,7 @@ openssl rand 32 > secret.key
 ```shell
 docker compose --profile demo up -d --pull always
 ```
-  * Make sure you include the `--profile demo` flag!
+* Make sure you include the `--profile demo` flag!
 
 Once completed, the following services will be available:
 
@@ -33,7 +33,7 @@ Once completed, the following services will be available:
 | Redpanda Kafka API                     | `localhost:9092`       |
 
 > **Note**  
-> You'll not need to interact with PostgreSQL or the Kafka API directly to try out the PoC,
+> You'll not need to interact with PostgreSQL or the Kafka API directly to try out the project,
 > but if you're curious 🕵️ of course you can!
 
 Finally, to remove everything again, including persistent volumes:
@@ -65,9 +65,9 @@ docker restart dt-postgres
 1. In a web browser, navigate to http://localhost:8080 and login (username: `admin`, password: `admin`)
 2. Navigate to the *Notifications* section in the [administration panel](http://localhost:8080/admin)
 3. Create a new alert with publisher *Outbound Webhook*
-![Create Alert](.github/images/demo_dtrack_create-alert.png)
+   ![Create Alert](.github/images/demo_dtrack_create-alert.png)
 4. Select a few notification groups and enter a destination URL ([Pipedream](https://pipedream.com/) is convenient for testing Webhooks)
-![Configure Alert](.github/images/demo_dtrack_configure-alert.png)
+   ![Configure Alert](.github/images/demo_dtrack_configure-alert.png)
 5. Navigate to the [projects view](http://localhost:8081/projects) and click *Create Project*
 6. Provide an arbitrary project name and click *Create*
 7. Select the project you just created from the project list
@@ -79,10 +79,10 @@ docker restart dt-postgres
 10. Now navigate to the *Audit Vulnerabilities* tab and hit the 🔄 button to the top right of the table a few times
     * You should see the table being populated with vulnerability data
 11. Going back to the service you used as Webhook destination, you should see that a few alerts have been delivered
-![Webhook Notifications](.github/images/demo_webhook_notifications.png)
+    ![Webhook Notifications](.github/images/demo_webhook_notifications.png)
 
 Overall, this should behave just like what you're used to from Dependency-Track.  
-However in this case, the publishing of notifications and vulnerability analysis was performed by external, 
+However in this case, the publishing of notifications and vulnerability analysis was performed by external,
 individually scalable services.
 
 ## Scaling up 📈
@@ -91,11 +91,11 @@ individually scalable services.
 > This section is still a work in progress and does not necessarily show
 > the current state of the setup.
 
-One of the goals of this PoC is to achieve scalability, remember? Well, we're delighted to report
-that there are multiple ways to scale! If you're interested, you can find out more about the parallelism model 
+One of the goals of this project is to achieve scalability, remember? Well, we're delighted to report
+that there are multiple ways to scale! If you're interested, you can find out more about the parallelism model
 at play [here](https://docs.confluent.io/platform/current/streams/architecture.html#parallelism-model).
 
-Per default, when opening the [Consumer Groups view](http://localhost:28080/groups) in Redpanda Console, 
+Per default, when opening the [Consumer Groups view](http://localhost:28080/groups) in Redpanda Console,
 you'll see a total of two groups:
 
 ![Consumer Groups in Redpanda Console as per default configuration](.github/images/demo_redpanda-console_consumer-groups_default.png)
@@ -120,7 +120,7 @@ and recreate the container with `docker compose up -d vulnerability-analyzer`.
 
 ### Scaling to multiple instances 🚀🚀🚀
 
-Putting more load on a single service instance is not always desirable, so oftentimes simply increasing the replica 
+Putting more load on a single service instance is not always desirable, so oftentimes simply increasing the replica
 count is the preferable route. In reality this may be done via Kubernetes manifests, but we can do it in Docker Compose, too.
 Let's scale up to three instances:
 
