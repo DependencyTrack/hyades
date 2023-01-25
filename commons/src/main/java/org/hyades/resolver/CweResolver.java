@@ -19,7 +19,6 @@
 package org.hyades.resolver;
 
 import org.hyades.model.Cwe;
-import org.hyades.persistence.CweImporter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
