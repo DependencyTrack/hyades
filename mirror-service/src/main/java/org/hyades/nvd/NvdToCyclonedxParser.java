@@ -1,4 +1,4 @@
-package org.acme.nvd;
+package org.hyades.nvd;
 
 import io.github.jeremylong.nvdlib.nvd.Config;
 import io.github.jeremylong.nvdlib.nvd.CpeMatch;
