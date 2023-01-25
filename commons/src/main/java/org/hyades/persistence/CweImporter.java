@@ -56,25 +56,25 @@ public class CweImporter {
             throw new NoSuchElementException("CWE dictionary was not found in classpath");
         }
 
-        try (final InputStream cweDictionaryInputStream = cweDictionaryUrl.openStream()) {
+        try (InputStream cweDictionaryInputStream = cweDictionaryUrl.openStream()) {
             LOGGER.info("Synchronizing CWEs with datastore");
 
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final var factory = DocumentBuilderFactory.newInstance();
             factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             factory.setXIncludeAware(false);
             factory.setExpandEntityReferences(false);
-            final DocumentBuilder builder = factory.newDocumentBuilder();
+            DocumentBuilder builder = factory.newDocumentBuilder();
 
-            final Document doc = builder.parse(cweDictionaryInputStream);
-            final XPathFactory xPathfactory = XPathFactory.newInstance();
-            final XPath xpath = xPathfactory.newXPath();
+            Document doc = builder.parse(cweDictionaryInputStream);
+            final var xPathfactory = XPathFactory.newInstance();
+            XPath xpath = xPathfactory.newXPath();
 
             final XPathExpression expr1 = xpath.compile("/Weakness_Catalog/Categories/Category");
-            final XPathExpression expr2 = xpath.compile("/Weakness_Catalog/Weaknesses/Weakness");
-            final XPathExpression expr3 = xpath.compile("/Weakness_Catalog/Views/View");
+            XPathExpression expr2 = xpath.compile("/Weakness_Catalog/Weaknesses/Weakness");
+            XPathExpression expr3 = xpath.compile("/Weakness_Catalog/Views/View");
 
             parseNodes((NodeList) expr1.evaluate(doc, XPathConstants.NODESET));
             parseNodes((NodeList) expr2.evaluate(doc, XPathConstants.NODESET));
@@ -90,12 +90,12 @@ public class CweImporter {
     }
 
 
-    private static void parseNodes(final NodeList nodeList) {
+    private static void parseNodes(NodeList nodeList) {
         for (int i = 0; i < nodeList.getLength(); i++) {
-            final Node node = nodeList.item(i);
-            final NamedNodeMap attributes = node.getAttributes();
-            final Integer id = Integer.valueOf(attributes.getNamedItem("ID").getNodeValue());
-            final String desc = attributes.getNamedItem("Name").getNodeValue();
+            Node node = nodeList.item(i);
+            NamedNodeMap attributes = node.getAttributes();
+            Integer id = Integer.valueOf(attributes.getNamedItem("ID").getNodeValue());
+            String desc = attributes.getNamedItem("Name").getNodeValue();
             CWE_MAPPINGS.put(id, desc);
         }
     }

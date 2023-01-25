@@ -35,7 +35,7 @@ public final class XmlUtil {
      * a parser configuration exception
      */
     public static DocumentBuilder buildSecureDocumentBuilder() throws ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
