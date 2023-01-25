@@ -1,6 +1,7 @@
 package org.acme;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
+import org.acme.client.NvdClient;
 import org.acme.common.KafkaTopic;
 import org.acme.model.Vulnerability;
 import org.acme.nvd.NvdMirrorHandler;
@@ -29,12 +30,14 @@ public class MirrorServiceTopology {
 
     private final OsvMirrorHandler osvMirrorHandler;
     private final NvdMirrorHandler nvdMirrorHandler;
+    private final NvdClient nvdProcessorSupplier;
 
     @Inject
     public MirrorServiceTopology(OsvMirrorHandler osvMirrorHandler,
-                                 NvdMirrorHandler nvdMirrorHandler) {
+                                 NvdMirrorHandler nvdMirrorHandler, NvdClient nvdProcessorSupplier) {
         this.osvMirrorHandler = osvMirrorHandler;
         this.nvdMirrorHandler = nvdMirrorHandler;
+        this.nvdProcessorSupplier = nvdProcessorSupplier;
     }
 
     @Produces
@@ -68,24 +71,12 @@ public class MirrorServiceTopology {
                         .with(Serdes.String(), Serdes.String())
                         .withName(processorNameConsume(KafkaTopic.MIRROR_NVD)));
         mirrorNvd
-                .flatMap((eventId, value) -> {
-                    try {
-                        return mirrorNvd();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }, Named.as("mirror_nvd_vulnerabilities"))
+                .process(nvdProcessorSupplier, Named.as("mirror_nvd_vulnerabilities"))
                 .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
                         .with(Serdes.String(), cyclonedxSerde)
                         .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "nvd_vulnerability")));
 
         return streamsBuilder.build();
-    }
-
-    private List<KeyValue<String, Bom>> mirrorNvd() throws IOException {
-        return nvdMirrorHandler.performMirror().stream()
-                .map(bom -> KeyValue.pair(Vulnerability.Source.NVD.name() + "/" + bom.getVulnerabilities().get(0).getId(), bom))
-                .toList();
     }
 
     List<KeyValue<String, Bom>> mirrorOsv(String ecosystem) throws IOException {

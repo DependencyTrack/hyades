@@ -47,14 +47,11 @@ done
 vuln_analysis_topics=(
   "dtrack.vuln-analysis.component"
   "dtrack.vuln-analysis.result"
-  "dtrack.vulnerability.mirror.osv"
-  "dtrack.vulnerability.mirror.nvd"
-  "dtrack.vulnerability"
-  "dtrack.vuln-analysis.info"
 )
 for topic_name in "${vuln_analysis_topics[@]}"; do
   create_topic "$topic_name" "${VULN_ANALYSIS_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_ANALYSIS_TOPICS_RETENTION_MS:-43200000}"
 done
 
 create_topic "dtrack.vulnerability.mirror.osv" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
+create_topic "dtrack.vulnerability.mirror.nvd" "${VULN_MIRROR_TOPICS_PARTITIONS:-1}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
 create_topic "dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
