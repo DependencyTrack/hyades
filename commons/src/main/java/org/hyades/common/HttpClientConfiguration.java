@@ -69,6 +69,9 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * A simple holder class for proxy configuration.
+ */
 @ApplicationScoped
 public final class HttpClientConfiguration {
     /**
@@ -80,7 +83,7 @@ public final class HttpClientConfiguration {
      * @return a PooledHttpClient object with optional proxy settings
      */
 
-    private static HttpClientConfig httpClientConfig;
+    private HttpClientConfig httpClientConfig;
 
     @Inject
     HttpClientConfiguration(HttpClientConfig config) {
@@ -215,7 +218,7 @@ public final class HttpClientConfiguration {
      *
      * @return ProxyInfo object, or null if proxy is not configured
      */
-    public static ProxyInfo createProxyInfo() {
+    public ProxyInfo createProxyInfo() {
         ProxyInfo proxyInfo = fromConfig();
         if (proxyInfo == null) {
             proxyInfo = fromEnvironment();
@@ -228,7 +231,7 @@ public final class HttpClientConfiguration {
      *
      * @return a ProxyInfo object, or null if proxy is not configured
      */
-    private static ProxyInfo fromConfig() {
+    private ProxyInfo fromConfig() {
         ProxyInfo proxyInfo = null;
         if (httpClientConfig.proxyAddress().isPresent()) {
             proxyInfo = new ProxyInfo();
@@ -336,10 +339,5 @@ public final class HttpClientConfiguration {
             proxyInfo.setUsername(username);
         }
     }
-
-    /**
-     * A simple holder class for proxy configuration.
-     */
-
 
 }
