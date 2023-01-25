@@ -7,6 +7,8 @@ package org.acme.notification;
 
 import org.acme.model.NotificationLevel;
 
+import java.util.Objects;
+
 public class Subscription {
     private final Class<? extends Subscriber> subscriber;
     private String scope;
@@ -70,5 +72,10 @@ public class Subscription {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subscriber, scope, group, level);
     }
 }
