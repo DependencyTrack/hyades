@@ -12,7 +12,6 @@ import org.apache.kafka.streams.TopologyTestDriver;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.hyades.common.KafkaTopic;
-import org.hyades.nvd.NvdMirrorHandler;
 import org.hyades.osv.OsvMirrorHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -34,20 +33,16 @@ public class MirrorServiceTopologyTest {
     Topology topology;
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, String> inputTopicOsv;
-    private TestInputTopic<String, String> inputTopicNvd;
     private TestOutputTopic<String, Bom> outputTopic;
     private OsvMirrorHandler osvMirrorHandlerMock;
-    private NvdMirrorHandler nvdMirrorHandlerMock;
+
 
     @BeforeEach
     void beforeEach() {
         osvMirrorHandlerMock = Mockito.mock(OsvMirrorHandler.class);
         QuarkusMock.installMockForType(osvMirrorHandlerMock, OsvMirrorHandler.class);
-        nvdMirrorHandlerMock = Mockito.mock(NvdMirrorHandler.class);
-        QuarkusMock.installMockForType(nvdMirrorHandlerMock, NvdMirrorHandler.class);
         testDriver = new TopologyTestDriver(topology);
         inputTopicOsv = testDriver.createInputTopic(KafkaTopic.MIRROR_OSV.getName(), new StringSerializer(), new StringSerializer());
-        inputTopicNvd = testDriver.createInputTopic(KafkaTopic.MIRROR_NVD.getName(), new StringSerializer(), new StringSerializer());
         outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(), new StringDeserializer(), new ObjectMapperDeserializer<>(Bom.class));
     }
 
@@ -63,13 +58,6 @@ public class MirrorServiceTopologyTest {
         Assertions.assertTrue(outputTopic.isEmpty());
     }
 
-//    @Test
-//    void testNoNvdAdvisories() {
-//        Mockito.when(nvdMirrorHandlerMock.performMirror()).thenReturn(Collections.emptyList());
-//        inputTopicNvd.pipeInput("", "");
-//        Assertions.assertTrue(outputTopic.isEmpty());
-//    }
-
     @Test
     void testMirroring() throws IOException {
         Bom bov = new Bom();
@@ -77,13 +65,10 @@ public class MirrorServiceTopologyTest {
         vulnerability.setId("test-id");
         bov.setVulnerabilities(List.of(vulnerability));
         Mockito.when(osvMirrorHandlerMock.performMirror(Mockito.anyString())).thenReturn(List.of(bov));
-//        Mockito.when(nvdMirrorHandlerMock.performMirror()).thenReturn(List.of(bov));
         inputTopicOsv.pipeInput("Go", "");
-        inputTopicNvd.pipeInput("", "");
-        assertThat(outputTopic.getQueueSize()).isEqualTo(2);
-        assertThat(outputTopic.readRecordsToList()).satisfies(records -> {
-            assertThat(records.get(0).getKey()).isEqualTo("OSV/test-id");
-            assertThat(records.get(1).getKey()).isEqualTo("NVD/test-id");
+        assertThat(outputTopic.getQueueSize()).isEqualTo(1);
+        assertThat(outputTopic.readRecord()).satisfies(record -> {
+            assertThat(record.getKey()).isEqualTo("OSV/test-id");
         });
     }
 }

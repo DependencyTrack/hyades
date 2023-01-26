@@ -69,7 +69,6 @@ public class NvdMirrorHandlerTest {
     @AfterEach
     void afterEach() {
         testDriver.close();
-        Mockito.reset();
     }
 
     @Test
