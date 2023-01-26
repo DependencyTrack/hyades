@@ -26,7 +26,7 @@ options that are expected to be changed by users.
 
 > **Note**
 > Refer
-> to [`application.properties`](https://github.com/mehab/hyades/blob/main/notification-publisher/src/main/resources/application.properties)
+> to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/notification-publisher/src/main/resources/application.properties)
 > for a complete overview of available config options.
 
 ### Repository Meta Analyzer
@@ -42,7 +42,7 @@ options that are expected to be changed by users.
 
 > **Note**
 > Refer
-> to [`application.properties`](https://github.com/mehab/hyades/blob/main/repository-meta-analyzer/src/main/resources/application.properties)
+> to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/repository-meta-analyzer/src/main/resources/application.properties)
 > for a complete overview of available config options.
 
 ### Vulnerability Analyzer
@@ -68,7 +68,7 @@ options that are expected to be changed by users.
 
 > **Note**
 > Refer
-> to [`application.properties`](https://github.com/mehab/hyades/blob/main/vulnerability-analyzer/src/main/resources/application.properties)
+> to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/vulnerability-analyzer/src/main/resources/application.properties)
 > for a complete overview of available config options.
 
 [Quarkus docs]: https://quarkus.io/guides/config-reference#configuration-sources

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   notification-publisher:
-    image: ghcr.io/mehab/notification-publisher:latest-native
+    image: ghcr.io/dependencytrack/hyades-notification-publisher:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
 
   repo-meta-analyzer:
-    image: ghcr.io/mehab/repository-meta-analyzer:latest-native
+    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   vuln-analyzer:
-    image: ghcr.io/mehab/vulnerability-analyzer:latest-native
+    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -73,7 +73,7 @@ services:
     restart: unless-stopped
 
   mirror-service:
-    image: ghcr.io/mehab/mirror-service:latest
+    image: ghcr.io/dependencytrack/hyades-mirror-service:latest
     depends_on:
       - postgres
       - redpanda
@@ -89,7 +89,7 @@ services:
     restart: unless-stopped
 
   apiserver:
-    image: ghcr.io/sahibamittal/dependency-track-bundled:snapshot
+    image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
     container_name: dt-apiserver
     depends_on:
       - postgres

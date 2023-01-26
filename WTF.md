@@ -70,6 +70,8 @@ thing are processed in parallel, leading to race conditions in cache lookups or 
 would be an even bigger problem if the work was shared across multiple application instances, and would require
 distributed locking as a countermeasure, which is [inherently hard to get right](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html).
 
+In order to scale Dependency-Track beyond its current capabilities, a distributed messaging service is required.
+
 ### Related Issues
 
 On multiple occasions in the past, the Dependency-Track community raised questions about high availability (HA)
@@ -185,8 +187,8 @@ The wide range of mature IaaS offerings is a very important benefit of Kafka ove
 ## Why Java?
 
 We went with Java for now because it was the path of the least resistance for us. There is no intention to exclusively 
-use Java though. We are considering to use [Go](https://github.com/mehab/DTKafkaPOC/issues/253), and generally are open
-to any technology that makes sense.
+use Java though. We are considering to use [Go](https://github.com/DependencyTrack/hyades/issues/253), and generally 
+are open to any technology that makes sense.
 
 ## Why not microservices?
 
