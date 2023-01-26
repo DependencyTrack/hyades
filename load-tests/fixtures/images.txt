@@ -24,9 +24,9 @@ drupal:7.94
 drupal:9.4.9
 flink:1.15.3
 flink:1.16.0
-ghcr.io/mehab/notification-publisher:1.0.0-snapshot
-ghcr.io/mehab/repository-meta-analyzer:1.0.0-snapshot
-ghcr.io/mehab/vulnerability-analyzer:1.0.0-snapshot
+ghcr.io/dependencytrack/hyades-notification-publisher:1.0.0-snapshot
+ghcr.io/dependencytrack/hyades-repository-meta-analyzer:1.0.0-snapshot
+ghcr.io/dependencytrack/hyades-vulnerability-analyzer:1.0.0-snapshot
 jboss/keycloak:15.0.0
 jboss/keycloak:16.0.0
 jenkins/jenkins:2.368

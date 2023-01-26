@@ -10,7 +10,7 @@ A UNIX-based system is strongly recommended. In case you're bound to Windows, pl
 
 1. In a terminal, clone *this* repository and navigate to it:
 ```shell
-git clone https://github.com/mehab/hyades.git
+git clone https://github.com/DependencyTrack/hyades.git
 cd hyades
 ```
 2. Generate a secret key for encryption and decryption of credentials in the database:
