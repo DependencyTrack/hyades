@@ -1,10 +1,9 @@
-package org.acme.nvd;
+package org.hyades.nvd;
 
 import io.github.jeremylong.nvdlib.nvd.CveItem;
-import org.acme.client.NvdClientConfig;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.vulnerability.Vulnerability;
-import org.hyades.nvd.NvdToCyclonedxParser;
+import org.hyades.client.NvdClientConfig;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

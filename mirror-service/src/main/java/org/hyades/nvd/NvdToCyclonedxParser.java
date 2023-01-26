@@ -14,12 +14,12 @@ import io.github.jeremylong.nvdlib.nvd.Metrics;
 import io.github.jeremylong.nvdlib.nvd.Node;
 import io.github.jeremylong.nvdlib.nvd.Reference;
 import io.github.jeremylong.nvdlib.nvd.Weakness;
-import org.acme.resolver.CweResolver;
 import org.apache.commons.lang3.StringUtils;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.model.vulnerability.Vulnerability;
+import org.hyades.resolver.CweResolver;
 
 import java.sql.Date;
 import java.time.ZoneId;
@@ -41,7 +41,7 @@ public final class NvdToCyclonedxParser {
 
         // Source
         var source = new Vulnerability.Source();
-        source.setName(org.acme.model.Vulnerability.Source.NVD.name());
+        source.setName(org.hyades.model.Vulnerability.Source.NVD.name());
         this.cdxVuln.setSource(source);
 
         // Vulnerability ID
