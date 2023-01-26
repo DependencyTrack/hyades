@@ -92,4 +92,4 @@ jobs:
         file: ./${{ inputs.module }}/src/main/docker/Dockerfile.native-multiarch
         platforms: linux/amd64,linux/arm64
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/${{ inputs.module }}:latest-native
+        tags: ghcr.io/${{ github.repository_owner }}/hyades-${{ inputs.module }}:latest-native
