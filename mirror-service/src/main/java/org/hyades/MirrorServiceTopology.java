@@ -4,8 +4,8 @@ import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.hyades.client.NvdClient;
 import org.hyades.common.KafkaTopic;
 import org.hyades.model.Vulnerability;
+import org.hyades.nvd.NvdProcessorSupplier;
 import org.hyades.osv.OsvMirrorHandler;
-import org.hyades.nvd.NvdMirrorHandler;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -29,14 +29,11 @@ import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
 public class MirrorServiceTopology {
 
     private final OsvMirrorHandler osvMirrorHandler;
-    private final NvdMirrorHandler nvdMirrorHandler;
-    private final NvdClient nvdProcessorSupplier;
+    private final NvdProcessorSupplier nvdProcessorSupplier;
 
     @Inject
-    public MirrorServiceTopology(OsvMirrorHandler osvMirrorHandler,
-                                 NvdMirrorHandler nvdMirrorHandler, NvdClient nvdProcessorSupplier) {
+    public MirrorServiceTopology(OsvMirrorHandler osvMirrorHandler, NvdProcessorSupplier nvdProcessorSupplier) {
         this.osvMirrorHandler = osvMirrorHandler;
-        this.nvdMirrorHandler = nvdMirrorHandler;
         this.nvdProcessorSupplier = nvdProcessorSupplier;
     }
 

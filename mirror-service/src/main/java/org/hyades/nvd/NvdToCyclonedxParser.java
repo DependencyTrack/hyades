@@ -21,7 +21,6 @@ import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.hyades.resolver.CweResolver;
 
-import java.sql.Date;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,60 +28,77 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Date.from;
+
 /**
  * Parser and processor of NVD data feeds.
  */
 public final class NvdToCyclonedxParser {
 
-    private final Bom cdxBom = new Bom();
-    private final Vulnerability cdxVuln = new Vulnerability();
+    public static class BovWrapper<T> {
+        public final Bom bov;
+        public final T object;
 
-    public Bom parse(CveItem nvdVuln) {
+        public BovWrapper(Bom bov, T object) {
+            this.bov = bov;
+            this.object = object;
+        }
+    }
+
+    public static Bom parse(CveItem nvdVuln) {
+
+        Bom cdxBom = new Bom();
+        final Vulnerability cdxVuln = new Vulnerability();
 
         // Source
         var source = new Vulnerability.Source();
         source.setName(org.hyades.model.Vulnerability.Source.NVD.name());
-        this.cdxVuln.setSource(source);
+        cdxVuln.setSource(source);
 
         // Vulnerability ID
-        this.cdxVuln.setId(nvdVuln.getId());
+        cdxVuln.setId(nvdVuln.getId());
 
         // Published and Modified dates
         if(nvdVuln.getPublished() != null) {
-            this.cdxVuln.setPublished(
-                    Date.from(nvdVuln.getPublished().toInstant(
+            cdxVuln.setPublished(
+                    from(nvdVuln.getPublished().toInstant(
                             ZoneId.systemDefault().getRules().getOffset(nvdVuln.getPublished())))
             );
         }
         if(nvdVuln.getPublished() != null) {
-            this.cdxVuln.setUpdated(
-                    Date.from(nvdVuln.getLastModified().toInstant(
+            cdxVuln.setUpdated(
+                    from(nvdVuln.getLastModified().toInstant(
                             ZoneId.systemDefault().getRules().getOffset(nvdVuln.getLastModified())))
             );
         }
 
         // Description
-        this.cdxVuln.setDescription(parseDescription(nvdVuln.getDescriptions()));
+        cdxVuln.setDescription(parseDescription(nvdVuln.getDescriptions()));
 
         // References
-        this.cdxBom.setExternalReferences(parseReferences(nvdVuln.getReferences()));
+        cdxBom.setExternalReferences(parseReferences(nvdVuln.getReferences()));
 
         // CWEs
-        this.cdxVuln.setCwes(parseCwes(nvdVuln.getWeaknesses()));
+        cdxVuln.setCwes(parseCwes(nvdVuln.getWeaknesses()));
 
         // CVSS
         if (nvdVuln.getMetrics() != null) {
-            this.cdxVuln.setRatings(parseCveImpact(nvdVuln.getMetrics()));
+            cdxVuln.setRatings(parseCveImpact(nvdVuln.getMetrics()));
         }
 
         // CPE
-        this.cdxVuln.setAffects(parseCpe(nvdVuln.getConfigurations()));
-        this.cdxBom.setVulnerabilities(List.of(cdxVuln));
-        return this.cdxBom;
+        BovWrapper<List<Vulnerability.Affect>> bovWrapper = parseCpe(cdxBom, nvdVuln.getConfigurations());
+        cdxVuln.setAffects(bovWrapper.object);
+        cdxBom = bovWrapper.bov;
+        cdxBom.setVulnerabilities(List.of(cdxVuln));
+        return cdxBom;
     }
 
-    private List<Vulnerability.Affect> parseCpe(List<Config> configurations) {
+    private static BovWrapper<List<Vulnerability.Affect>> parseCpe(Bom cdxBom, List<Config> configurations) {
+
         List<Vulnerability.Affect> affected = new ArrayList<>();
+        AtomicReference<Bom> bovUpdated = new AtomicReference(cdxBom);
+
         configurations.forEach(config -> {
             List<Node> nodes = config.getNodes();
             nodes.forEach(node -> {
@@ -90,48 +106,58 @@ public final class NvdToCyclonedxParser {
                 cpeMatches.forEach(cpeMatch -> {
                     if(cpeMatch.getVulnerable()) {
 
-                        var versionRangeAffected = new Vulnerability.Affect();
-                        versionRangeAffected.setRef(getBomRef(cpeMatch.getCriteria()));
-
-                        String uniVersionRange = "vers:"+cpeMatch.getCriteria()+"/";
-                        var versionRange = new Vulnerability.Version();
-                        if(cpeMatch.getVersionStartIncluding() != null) {
-                            uniVersionRange += cpeMatch.getVersionStartIncluding() + "|";
-                        }
-                        if(cpeMatch.getVersionStartExcluding() != null) {
-                            uniVersionRange += cpeMatch.getVersionStartExcluding() + "|";
-                        }
-                        if(cpeMatch.getVersionEndIncluding() != null) {
-                            uniVersionRange += cpeMatch.getVersionEndIncluding() + "|";
-                        }
-                        if(cpeMatch.getVersionEndExcluding() != null) {
-                            uniVersionRange += cpeMatch.getVersionEndExcluding() + "|";
-                        }
-
-                        versionRange.setRange(StringUtils.chop(uniVersionRange));
-                        versionRangeAffected.setVersions(List.of(versionRange));
-                        affected.add(versionRangeAffected);
+                        BovWrapper<Vulnerability.Affect> bovWrapper = parseVersionRangeAffected(bovUpdated.get(), cpeMatch);
+                        affected.add(bovWrapper.object);
+                        bovUpdated.set(bovWrapper.bov);
                     }
                 });
             });
         });
-        return affected;
+        return new BovWrapper(bovUpdated.get(), affected);
     }
 
-    private String getBomRef(String cpe) {
-        if (this.cdxBom.getComponents() != null) {
-            Optional<Component> existingComponent = this.cdxBom.getComponents().stream().filter(c ->
+    private static BovWrapper<Vulnerability.Affect> parseVersionRangeAffected(Bom bom, CpeMatch cpeMatch) {
+
+        AtomicReference<Bom> bovUpdated = new AtomicReference(bom);
+        var versionRangeAffected = new Vulnerability.Affect();
+        BovWrapper<String> bovWrapper = getBomRef(bovUpdated.get(), cpeMatch.getCriteria());
+        bovUpdated.set(bovWrapper.bov);
+        versionRangeAffected.setRef(bovWrapper.object);
+
+        String uniVersionRange = "vers:"+cpeMatch.getCriteria()+"/";
+        var versionRange = new Vulnerability.Version();
+        if(cpeMatch.getVersionStartIncluding() != null) {
+            uniVersionRange += cpeMatch.getVersionStartIncluding() + "|";
+        }
+        if(cpeMatch.getVersionStartExcluding() != null) {
+            uniVersionRange += cpeMatch.getVersionStartExcluding() + "|";
+        }
+        if(cpeMatch.getVersionEndIncluding() != null) {
+            uniVersionRange += cpeMatch.getVersionEndIncluding() + "|";
+        }
+        if(cpeMatch.getVersionEndExcluding() != null) {
+            uniVersionRange += cpeMatch.getVersionEndExcluding() + "|";
+        }
+
+        versionRange.setRange(StringUtils.chop(uniVersionRange));
+        versionRangeAffected.setVersions(List.of(versionRange));
+        return new BovWrapper(bovUpdated.get(), versionRangeAffected);
+    }
+
+    private static BovWrapper<String> getBomRef(Bom cdxBom, String cpe) {
+        if (cdxBom.getComponents() != null) {
+            Optional<Component> existingComponent = cdxBom.getComponents().stream().filter(c ->
                     c.getCpe().equalsIgnoreCase(cpe)).findFirst();
             if (existingComponent.isPresent()) {
-                return existingComponent.get().getBomRef();
+                return new BovWrapper(cdxBom, existingComponent.get().getBomRef());
             }
         }
         var component = new Component();
         UUID uuid = UUID.randomUUID();
         component.setBomRef(uuid.toString());
         component.setCpe(cpe);
-        this.cdxBom.addComponent(component);
-        return uuid.toString();
+        cdxBom.addComponent(component);
+        return new BovWrapper(cdxBom, uuid.toString());
     }
 
     private static String parseDescription(List<LangString> descriptions) {
