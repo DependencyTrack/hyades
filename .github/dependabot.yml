@@ -37,37 +37,7 @@ updates:
     time: "05:00"
     timezone: Etc/UTC
 - package-ecosystem: maven
-  directory: commons
-  schedule:
-    interval: daily
-    time: "05:00"
-    timezone: Etc/UTC
-- package-ecosystem: maven
-  directory: mirror-service
-  schedule:
-    interval: daily
-    time: "05:00"
-    timezone: Etc/UTC
-- package-ecosystem: maven
-  directory: notification-publisher
-  schedule:
-    interval: daily
-    time: "05:00"
-    timezone: Etc/UTC
-- package-ecosystem: maven
   directory: /
-  schedule:
-    interval: daily
-    time: "05:00"
-    timezone: Etc/UTC
-- package-ecosystem: maven
-  directory: repository-meta-analyzer
-  schedule:
-    interval: daily
-    time: "05:00"
-    timezone: Etc/UTC
-- package-ecosystem: maven
-  directory: vulnerability-analyzer
   schedule:
     interval: daily
     time: "05:00"
