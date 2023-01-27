@@ -25,12 +25,13 @@ docker compose --profile demo up -d --pull always
 
 Once completed, the following services will be available:
 
-| Service                                | URL                    |
-|:---------------------------------------|:-----------------------|
-| Dependency-Track API Server + Frontend | http://localhost:8080  |
-| Redpanda Console                       | http://localhost:28080 |
-| PostgreSQL                             | `localhost:5432`       |
-| Redpanda Kafka API                     | `localhost:9092`       |
+| Service            | URL                    |
+|:-------------------|:-----------------------|
+| API Server         | http://localhost:8080  |
+| Frontend           | http://localhost:8081  |
+| Redpanda Console   | http://localhost:28080 |
+| PostgreSQL         | `localhost:5432`       |
+| Redpanda Kafka API | `localhost:9092`       |
 
 > **Note**  
 > You'll not need to interact with PostgreSQL or the Kafka API directly to try out the project,
@@ -62,8 +63,8 @@ docker restart dt-postgres
 
 ## Testing 🤞
 
-1. In a web browser, navigate to http://localhost:8080 and login (username: `admin`, password: `admin`)
-2. Navigate to the *Notifications* section in the [administration panel](http://localhost:8080/admin)
+1. In a web browser, navigate to http://localhost:8081 and login (username: `admin`, password: `admin`)
+2. Navigate to the *Notifications* section in the [administration panel](http://localhost:8081/admin)
 3. Create a new alert with publisher *Outbound Webhook*
    ![Create Alert](.github/images/demo_dtrack_create-alert.png)
 4. Select a few notification groups and enter a destination URL ([Pipedream](https://pipedream.com/) is convenient for testing Webhooks)

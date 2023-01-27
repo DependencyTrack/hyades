@@ -8,7 +8,7 @@ services:
       - redpanda
     environment:
       QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "1"
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
@@ -27,7 +27,7 @@ services:
       - redpanda
     environment:
       QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "1"
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
@@ -49,7 +49,7 @@ services:
       - redpanda
     environment:
       QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "1"
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
@@ -60,7 +60,7 @@ services:
       # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
       # SCANNER_OSSINDEX_API_TOKEN: "your-token"
       # SCANNER_SNYK_ENABLED: "true"
-      # SCANNER_SNYK_TOPIC_PARTITIONS: "3
+      # SCANNER_SNYK_TOPIC_PARTITIONS: "3"
       # SCANNER_SNYK_API_ORG_ID: "your-org-id"
       # SCANNER_SNYK_API_TOKENS: "your-token-1,your-token-2"
     ports:
@@ -79,7 +79,7 @@ services:
       - redpanda
     environment:
       QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "1"
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
     ports:
       # Dynamic host port binding to allow for scaling of the service.
       # Scaling with Compose doesn't work when assigning static host ports.
@@ -116,6 +116,17 @@ services:
     profiles:
       - demo
       - load-test
+    restart: unless-stopped
+
+  frontend:
+    image: dependencytrack/frontend:4.7.0
+    container_name: dt-frontend
+    environment:
+      API_BASE_URL: "http://localhost:8080"
+    ports:
+    - "127.0.0.1:8081:8080"
+    profiles:
+    - demo
     restart: unless-stopped
 
   postgres:
