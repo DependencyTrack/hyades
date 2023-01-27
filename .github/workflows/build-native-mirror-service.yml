@@ -1,0 +1,23 @@
+name: Build Native Mirror Service
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - ".github/workflows/_build-native-meta.yml"
+    - ".github/workflows/build-native-mirror-service.yml"
+    - "commons/**"
+    - "mirror-service/**"
+    - "pom.xml"
+  workflow_dispatch: { }
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-build:
+    uses: ./.github/workflows/_build-native-meta.yml
+    with:
+      module: mirror-service
