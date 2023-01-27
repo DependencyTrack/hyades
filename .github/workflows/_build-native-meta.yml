@@ -85,11 +85,12 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
+      if: ${{ startsWith(github.repository, 'DependencyTrack/') }}
     - name: Build Container Image
       uses: docker/build-push-action@v3
       with:
         context: ./${{ inputs.module }}
         file: ./${{ inputs.module }}/src/main/docker/Dockerfile.native-multiarch
         platforms: linux/amd64,linux/arm64
-        push: true
-        tags: ghcr.io/${{ github.repository_owner }}/${{ inputs.module }}:latest-native
+        push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
+        tags: ghcr.io/dependencytrack/hyades-${{ inputs.module }}:latest-native

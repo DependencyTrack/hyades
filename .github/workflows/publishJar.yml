@@ -28,6 +28,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ startsWith(github.repository, 'DependencyTrack/') }}
       - name: Determine project version
         id: determine-project-version
         run: |-
@@ -43,34 +44,38 @@ jobs:
         with:
           context: ./mirror-service
           file: ./mirror-service/src/main/docker/Dockerfile.jvm
-          push: true
+          push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/mirror-service:latest
-            ghcr.io/${{ github.repository_owner }}/mirror-service:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+            ghcr.io/dependencytrack/hyades-mirror-service:latest
+            ghcr.io/dependencytrack/hyades-mirror-service:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+          platforms: linux/amd64,linux/arm64
       - name: Build and push notification-publisher container image
         uses: docker/build-push-action@v3
         with:
           context: ./notification-publisher
           file: ./notification-publisher/src/main/docker/Dockerfile.jvm
-          push: true
+          push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/notification-publisher:latest
-            ghcr.io/${{ github.repository_owner }}/notification-publisher:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+            ghcr.io/dependencytrack/hyades-notification-publisher:latest
+            ghcr.io/dependencytrack/hyades-notification-publisher:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+          platforms: linux/amd64,linux/arm64
       - name: Build and push repository-meta-analyzer container image
         uses: docker/build-push-action@v3
         with:
           context: ./repository-meta-analyzer
           file: ./repository-meta-analyzer/src/main/docker/Dockerfile.jvm
-          push: true
+          push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/repository-meta-analyzer:latest
-            ghcr.io/${{ github.repository_owner }}/repository-meta-analyzer:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+            ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest
+            ghcr.io/dependencytrack/hyades-repository-meta-analyzer:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+          platforms: linux/amd64,linux/arm64
       - name: Build and push vulnerability-analyzer container image
         uses: docker/build-push-action@v3
         with:
           context: ./vulnerability-analyzer
           file: ./vulnerability-analyzer/src/main/docker/Dockerfile.jvm
-          push: true
+          push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/vulnerability-analyzer:latest
-            ghcr.io/${{ github.repository_owner }}/vulnerability-analyzer:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+            ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest
+            ghcr.io/dependencytrack/hyades-vulnerability-analyzer:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
+          platforms: linux/amd64,linux/arm64

@@ -1,20 +1,23 @@
 # Hyades
 
-[![Build Status](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml/badge.svg)](https://github.com/mehab/DTKafkaPOC/actions/workflows/ci.yml)
+[![Build Status](https://github.com/DependencyTrack/hyades/actions/workflows/ci.yml/badge.svg)](https://github.com/DependencyTrack/hyades/actions/workflows/ci.yml)
+<!--
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
+-->
 
 ## What is this? 🤔
 
-This project is a proof-of-concept for decoupling responsibilities from [Dependency-Track]'s monolithic API server
-into separate, scalable™ services. We're using [Kafka] (or Kafka-compatible brokers like [Redpanda]) for communicating 
-between API server and the PoC applications.
+Hyades, named after [the star cluster closest to earth](https://en.wikipedia.org/wiki/Hyades_(star_cluster)), 
+is a proof-of-concept for decoupling responsibilities from [Dependency-Track]'s monolithic API server into separate, 
+scalable™ services. We're using [Kafka] (or Kafka-compatible brokers like [Redpanda]) for communicating between API 
+server and Hyades services.
 
 If you're interested in the technical background of this project, please refer to 👉 [`WTF.md`](WTF.md) 👈.
 
-As of now, the PoC is capable of:
+As of now, Hyades is capable of:
 
 * Performing vulnerability analysis using scanners that leverage:
   * Dependency-Track's internal vulnerability database
@@ -29,7 +32,7 @@ Here's a rough overview of the architecture:
 
 ## Great, can I try it? 🙌
 
-Yes! We prepared demo setup that you can use to play around with the PoC.  
+Yes! We prepared demo setup that you can use to play around with Hyades.  
 Check out 👉 [`DEMO.md`](DEMO.md) 👈 for details!
 
 ## Technical Documentation 💻
@@ -38,55 +41,55 @@ Check out 👉 [`DEMO.md`](DEMO.md) 👈 for details!
 
 See [`CONFIGURATION.md`](CONFIGURATION.md).
 
-### Encryption Secret
-
-Dependency-Track needs to store credentials for various purposes in its database.  
-Those credentials are AES256 encrypted, using a secret key that has historically been automatically generated when
-the API server first launches. Now, with multiple services requiring access to the encrypted data, 
-it is necessary to share this secret among them.
-
-To generate the secret key, `openssl` may be used:
-
-```shell
-openssl rand 32 > secret.key
-```
-
 ### Development
-To develop the application, you need to run:
+
+#### Prerequisites
+
+* JDK 17+
+* Docker
+
+#### Building
+
 ```shell
-docker-compose up
+./mvnw clean install -DskipTests
 ```
-to start off the docker containers. And then need to run:
-```shell
 
-quarkus dev
+#### Running locally
+
+Running the Hyades services locally requires both a Kafka broker and a database server to be present.
+Containers for Redpanda and PostgreSQL can be launched using Docker Compose:
+
+```shell
+docker compose up -d
 ```
-to run the application in dev mode.
 
-### Running Native binaries
-Native executable of each module can be created using the command 
+To launch individual services execute the `quarkus:dev` Maven goal for the respective module:
+
 ```shell
-  mvn package -Pnative
- ```
-The native binary created would be in the target folder of the module in question, for example: target/repository-meta-analyzer-1.0.0-SNAPSHOT-runner<br/>
-To run the native executable version, you would need to:
-* start off the application containers via the docker-compose file in the application root.
-* export the postgres username, password and connection url for the native executable to use:
-  ```shell
-    export QUARKUS_DATASOURCE_USERNAME: test
-    export QUARKUS_DATASOURCE_JDBC_URL: test
-    export QUARKUS_DATASOURCE_PASSWORD: test
-  ```
-* Start off the native binary by running ./repository-meta-analyzer/target/repository-meta-analyzer-1.0.0-SNAPSHOT-runner
+./mvnw -pl vulnerability-analyzer quarkus:dev
+```
 
+Make sure you've [built](#building) the project at least once, otherwise the above command will fail.
+
+> **Note**  
+> If you're unfamiliar with Quarkus' Dev Mode, you can read more about it 
+> [here](https://quarkus.io/guides/maven-tooling#dev-mode)
 
 ### Testing 🤞
+
+#### Unit Testing 🕵️‍♂️
+
+To execute the unit tests for all Hyades modules:
+
+```shell
+./mvnw clean verify
+```
 
 #### Load Testing 🚀
 
 See [`load-tests`](load-tests).
 
-### Monitoring
+### Monitoring 📊
 
 #### Metrics
 
@@ -94,7 +97,7 @@ A basic metrics monitoring stack is provided, consisting of Prometheus and Grafa
 To start both services, run:
 
 ```shell
-docker compose --profile monitoring up -d grafana
+docker compose --profile monitoring up -d
 ```
 
 The services will be available locally at the following locations:
@@ -102,7 +105,7 @@ The services will be available locally at the following locations:
 * Prometheus: http://localhost:9090
 * Grafana: http://localhost:3000
 
-Prometheus is [configured](monitoring/prometheus.yml) to scrape metrics from the following services in 5s intervals:
+Prometheus is [configured](monitoring/prometheus.yml) to scrape metrics from the following services in a 5s intervals:
 
 * Redpanda Broker
 * API Server
@@ -115,6 +118,7 @@ data source. Additionally, dashboards for the following services are automatical
 
 * Redpanda Broker
 * API Server
+* Vulnerability Analyzer
 
 #### Redpanda Console 🐼
 
@@ -132,73 +136,3 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 [OSS Index]: https://ossindex.sonatype.org/
 [Redpanda]: https://redpanda.com/
 [Snyk]: https://snyk.io/
-
-#### Deploying vulnerability-analyzer using minkube 
-##### Prerequisites
-* minikube installation on target machine
-* ```shell
-  minikube start
-    ```
-* kubectl installation on target machine
-* helm installation on target machine
-* ```shell
-  docker-compose up
-  ```
-
-##### Deployment Steps
-
-* ```shell
-  cd vulnerability-analyzer
-  mvn clean install
-  ```
-
-An example deployment.yaml is available in ``deploymentCharts/vulnerability-analyzer/deployment.yaml``.<br/>
-This module now has quarkus-helm and quarkus-kubernetes extensions installed so when the project is build using `mvn clean install` it would also create a deployment.yaml inside ./target/helm/kubernetes/<chart-name>/templates/deployment.yaml<br/>
-In addition a values.yaml will be created in ./target/helm/kubernetes/<chart-name>/values.yaml. Upon doing `mvn clean install` the values.yaml will contain these values:
-```yaml
----
-app:
-  serviceType: ClusterIP
-  image: <local path to image>
-  envs:
-    KAFKA_BOOTSTRAP_SERVERS: test
-    SCANNER_SNYK_ENABLED: "true"
-    QUARKUS_DATASOURCE_USERNAME: test
-    SCANNER_OSSINDEX_ENABLED: "false"
-    QUARKUS_DATASOURCE_JDBC_URL: test
-    SCANNER_OSSINDEX_API_TOKEN: test
-    SCANNER_OSSINDEX_API_USERNAME: test
-    QUARKUS_DATASOURCE_PASSWORD: test
-    SCANNER_SNYK_API_ORG_ID: test
-    QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: test
-    SCANNER_SNYK_API_TOKENS: test
-```
-These values can be updated as per requirement. The value populated by default are coming from the application.properties. For example:
-```properties
-quarkus.helm.values.image-name.property=image
-quarkus.helm.values.image-name.value=ghcr.io/mehab/vulnerability-analyzer:1.0.0-snapshot
-```
-The sha of the image that has been tested with and works is here: dd6ba6cc67c021e42ece308b42f9d9d0ab0e312eddbbb922a8650181cfa4dd0d . And the database credentials need to be updated to valid db credentials. These updates can be done either manually or by upgrading the helm chart using helm commands. Once these updates are done, you need to navigate to the module directory in the machine and execute the command below:
-```shell
-helm install vulnerability-analyzer-helm ./target/helm/kubernetes/vulnerability-analyzer
-```
-This will start off the deployment. You can view it by launching the minikube dashboard:
-```shell
-minikube dashboard
-```
-
-##### Testing the minikube deployment
-* To send a new event to the dtrack.vuln-analysis.component topic, open http://localhost:28080/topics/dtrack.vuln-analysis.component?o=-1&p=-1&q&s=50#messages
-  * Publish a new message by using Actions>> Publish Message
-    * An example message value is:
-    ```json
-    {
-    "name": "test3",
-    "purl": "pkg:maven/cyclonedx-core-java@7.1.3",
-    "group": "g1",
-    "uuid": "438232c4-3b43-4c12-ad3c-eae522c6d158",
-    "author": "test3"
-    }
-    ```
-    * The corresponding key to set would be 438232c4-3b43-4c12-ad3c-eae522c6d158
-  * Once the message is sent, you can go to the dtrack.vuln-analysis.component.purl topic in the redpanda console and would be able to see a corresponding message that has been processed by the vulnerability analyzer that was deployed using minikube
