@@ -1,8 +1,10 @@
 package org.hyades;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
+import org.hyades.client.NvdClient;
 import org.hyades.common.KafkaTopic;
 import org.hyades.model.Vulnerability;
+import org.hyades.nvd.NvdProcessorSupplier;
 import org.hyades.osv.OsvMirrorHandler;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
@@ -27,21 +29,23 @@ import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
 public class MirrorServiceTopology {
 
     private final OsvMirrorHandler osvMirrorHandler;
+    private final NvdProcessorSupplier nvdProcessorSupplier;
 
     @Inject
-    public MirrorServiceTopology(final OsvMirrorHandler osvMirrorHandler) {
+    public MirrorServiceTopology(OsvMirrorHandler osvMirrorHandler, NvdProcessorSupplier nvdProcessorSupplier) {
         this.osvMirrorHandler = osvMirrorHandler;
+        this.nvdProcessorSupplier = nvdProcessorSupplier;
     }
 
     @Produces
     public Topology topology() {
 
-        final var streamsBuilder = new StreamsBuilder();
-        final var osvCyclonedxSerde = new ObjectMapperSerde<>(Bom.class);
+        var streamsBuilder = new StreamsBuilder();
+        var cyclonedxSerde = new ObjectMapperSerde<>(Bom.class);
 
         // OSV mirroring stream
-        // (K,V) to be consumed as (event uuid, list of ecosystems)
-        final KStream<String, String> mirrorOsv = streamsBuilder
+        // (K,V) to be consumed as (String ecosystem, null)
+        KStream<String, String> mirrorOsv = streamsBuilder
                 .stream(KafkaTopic.MIRROR_OSV.getName(), Consumed
                 .with(Serdes.String(), Serdes.String())
                 .withName(processorNameConsume(KafkaTopic.MIRROR_OSV)));
@@ -54,8 +58,20 @@ public class MirrorServiceTopology {
                     }
                 }, Named.as("mirror_osv_vulnerabilities"))
                 .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
-                        .with(Serdes.String(), osvCyclonedxSerde)
+                        .with(Serdes.String(), cyclonedxSerde)
                         .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "osv_vulnerability")));
+
+        // NVD mirroring stream
+        // (K,V) to be consumed as (event uuid, null)
+        KStream<String, String> mirrorNvd = streamsBuilder
+                .stream(KafkaTopic.MIRROR_NVD.getName(), Consumed
+                        .with(Serdes.String(), Serdes.String())
+                        .withName(processorNameConsume(KafkaTopic.MIRROR_NVD)));
+        mirrorNvd
+                .process(nvdProcessorSupplier, Named.as("mirror_nvd_vulnerabilities"))
+                .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
+                        .with(Serdes.String(), cyclonedxSerde)
+                        .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "nvd_vulnerability")));
 
         return streamsBuilder.build();
     }
