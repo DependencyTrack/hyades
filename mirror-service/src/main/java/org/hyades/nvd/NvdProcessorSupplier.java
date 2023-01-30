@@ -7,6 +7,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.cyclonedx.model.Bom;
 import org.hyades.client.NvdClient;
+import org.hyades.client.NvdConfig;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -22,9 +23,9 @@ public class NvdProcessorSupplier implements ProcessorSupplier<String, String, S
 
     @Inject
     public NvdProcessorSupplier(final StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder,
-                                final String apiKey,
+                                final NvdConfig config,
                                 final BiFunction<String, Long, NvdCveApi> cveApiSupplier) {
-        this.apiKey = apiKey;
+        this.apiKey = config.api().apiKey().orElse(null);
         this.lastModifiedEpochStoreBuilder = lastModifiedEpochStoreBuilder;
         this.cveApiSupplier = cveApiSupplier;
     }
