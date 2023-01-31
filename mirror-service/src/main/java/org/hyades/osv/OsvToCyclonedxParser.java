@@ -36,6 +36,8 @@ import static org.hyades.model.Vulnerability.Source.OSV;
 public class OsvToCyclonedxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
+    private static final String SEVERITY = "severity";
+    private static final String DATABASE_SPECIFIC= "database_specific";
 
     public static Bom parse(JSONObject object) {
         Bom cyclonedxBom = new Bom();
@@ -62,17 +64,17 @@ public class OsvToCyclonedxParser {
             severity = parseSeverity(osvAffectedArray);
         }
 
-        final JSONObject databaseSpecific = object.optJSONObject("database_specific");
+        final JSONObject databaseSpecific = object.optJSONObject(DATABASE_SPECIFIC);
         if (databaseSpecific != null) {
 
             // HIGH-PRIORITY SEVERITY ASSIGNMENT
-            String osvSeverity = databaseSpecific.optString("severity", null);
+            String osvSeverity = databaseSpecific.optString(SEVERITY, null);
             if (osvSeverity != null) {
                 severity = Vulnerability.Rating.Severity.fromString(osvSeverity.toLowerCase());
             }
 
             // CWEs
-            final JSONArray osvCweIds = databaseSpecific.optJSONArray("cwe_ids");
+            JSONArray osvCweIds = databaseSpecific.optJSONArray("cwe_ids");
             if (osvCweIds != null) {
                 vulnerability.setCwes(parseCwes(osvCweIds));
             }
@@ -180,7 +182,7 @@ public class OsvToCyclonedxParser {
 
             JSONObject osvAffectedObj = osvAffectedArray.getJSONObject(i);
             final JSONObject ecosystemSpecific = osvAffectedObj.optJSONObject("ecosystem_specific");
-            final JSONObject databaseSpecific = osvAffectedObj.optJSONObject("database_specific");
+            final JSONObject databaseSpecific = osvAffectedObj.optJSONObject(DATABASE_SPECIFIC);
             osvAffectedPackageSeverities.add(
                     parseAffectedPackageSeverity(ecosystemSpecific, databaseSpecific).getLevel());
         }
@@ -203,7 +205,7 @@ public class OsvToCyclonedxParser {
         }
 
         if (severity == null && ecosystemSpecific != null) {
-            severity = ecosystemSpecific.optString("severity", null);
+            severity = ecosystemSpecific.optString(SEVERITY, null);
         }
 
         if (severity != null) {
@@ -314,7 +316,7 @@ public class OsvToCyclonedxParser {
             }
 
             // Special treatment for GitHub: https://github.com/github/advisory-database/issues/470
-            final JSONObject databaseSpecific = affectedRange.optJSONObject("database_specific");
+            final JSONObject databaseSpecific = affectedRange.optJSONObject(DATABASE_SPECIFIC);
             if (databaseSpecific != null) {
                 final String lastAffectedRange = databaseSpecific.optString("last_known_affected_version_range", null);
                 if (lastAffectedRange != null) {
@@ -364,7 +366,7 @@ public class OsvToCyclonedxParser {
 
     private static List<Vulnerability.Rating> parseCvssRatings(JSONObject object, Vulnerability.Rating.Severity severity) {
         List<Vulnerability.Rating> ratings = new ArrayList<>();
-        final JSONArray cvssList = object.optJSONArray("severity");
+        final JSONArray cvssList = object.optJSONArray(SEVERITY);
         if (cvssList == null) {
             Vulnerability.Rating rating = new Vulnerability.Rating();
             rating.setSeverity(severity);
