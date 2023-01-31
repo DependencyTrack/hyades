@@ -37,7 +37,7 @@ public class OsvToCyclonedxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
     private static final String SEVERITY = "severity";
-    private static final String DATABASE_SPECIFIC= "database_specific";
+    private static final String DATABASE_SPECIFIC = "database_specific";
 
     public static Bom parse(JSONObject object) {
         Bom cyclonedxBom = new Bom();
@@ -86,7 +86,6 @@ public class OsvToCyclonedxParser {
     }
 
     public static List<Vulnerability.Affect> parseAffectedRanges(JSONArray osvAffectedArray, Bom bom) {
-
         PackageURL packageUrl = null;
         List<Vulnerability.Affect> affects = new ArrayList<>();
 
@@ -97,7 +96,7 @@ public class OsvToCyclonedxParser {
                 packageUrl = new PackageURL(purl);
 
             } catch (MalformedPackageURLException ex) {
-                LOGGER.info("Error while parsing purl: {}" , purl, ex);
+                LOGGER.info("Error while parsing purl: {}", purl, ex);
             }
             String bomReference = getBomRefIfComponentExists(bom, purl);
             if (bomReference == null) {
@@ -119,7 +118,7 @@ public class OsvToCyclonedxParser {
                 }
             }
             // if ranges are not available or only commit hash range is available, look for versions
-            if (!versions.isEmpty()) {
+            if (versions != null && versions.length() > 0) {
                 var versionRange = new Vulnerability.Version();
                 versionRange.setVersion(generateVersionSpecifier(versions, packageUrl.getType()));
                 versionRanges.add(versionRange);
@@ -156,35 +155,33 @@ public class OsvToCyclonedxParser {
         }
         List<Vulnerability.Advisory> advisories = new ArrayList<>();
         List<ExternalReference> externalReferences = new ArrayList<>();
-
-        for (int i = 0; i < references.length(); i++) {
-            JSONObject reference = references.getJSONObject(i);
+        references.forEach(item -> {
+            JSONObject reference = (JSONObject) item;
             String referenceType = reference.optString("type", null);
             String url = reference.optString("url", null);
             if ("ADVISORY".equalsIgnoreCase(referenceType)) {
-                Vulnerability.Advisory advisory = new Vulnerability.Advisory();
+                var advisory = new Vulnerability.Advisory();
                 advisory.setUrl(url);
                 advisories.add(advisory);
             } else {
-                ExternalReference externalReference = new ExternalReference();
+                var externalReference = new ExternalReference();
                 externalReference.setUrl(url);
                 externalReferences.add(externalReference);
             }
-        }
+        });
         vulnerability.setAdvisories(advisories);
         cyclonedxBom.setExternalReferences(externalReferences);
     }
 
     private static Vulnerability.Rating.Severity parseSeverity(JSONArray osvAffectedArray) {
         List<Integer> osvAffectedPackageSeverities = new ArrayList<>();
-        for (int i = 0; i < osvAffectedArray.length(); i++) {
-
-            JSONObject osvAffectedObj = osvAffectedArray.getJSONObject(i);
+        osvAffectedArray.forEach(item -> {
+            JSONObject osvAffectedObj = (JSONObject) item;
             JSONObject ecosystemSpecific = osvAffectedObj.optJSONObject("ecosystem_specific");
             JSONObject databaseSpecific = osvAffectedObj.optJSONObject(DATABASE_SPECIFIC);
             osvAffectedPackageSeverities.add(
                     parseAffectedPackageSeverity(ecosystemSpecific, databaseSpecific).getLevel());
-        }
+        });
         Collections.sort(osvAffectedPackageSeverities);
         Collections.reverse(osvAffectedPackageSeverities);
         return Vulnerability.Rating.Severity.fromString(
@@ -205,7 +202,7 @@ public class OsvToCyclonedxParser {
         if (severity == null && ecosystemSpecific != null) {
             severity = ecosystemSpecific.optString(SEVERITY, null);
         }
-        if(severity == null) {
+        if (severity == null) {
             return Severity.UNASSIGNED;
         }
         severity = severity.toUpperCase();
@@ -364,15 +361,15 @@ public class OsvToCyclonedxParser {
     private static List<Vulnerability.Rating> parseCvssRatings(JSONObject object, Vulnerability.Rating.Severity severity) {
         List<Vulnerability.Rating> ratings = new ArrayList<>();
         JSONArray cvssList = object.optJSONArray(SEVERITY);
+
         if (cvssList == null) {
             Vulnerability.Rating rating = new Vulnerability.Rating();
             rating.setSeverity(severity);
             ratings.add(rating);
             return ratings;
         }
-
-        for (int i = 0; i < cvssList.length(); i++) {
-            JSONObject cvssObj = cvssList.getJSONObject(i);
+        cvssList.forEach(item -> {
+            JSONObject cvssObj = (JSONObject) item;
             String vector = cvssObj.optString("score", null);
             Cvss cvss = Cvss.fromVector(vector);
 
@@ -381,6 +378,7 @@ public class OsvToCyclonedxParser {
             rating.setVector(vector);
             rating.setScore(score);
             String type = cvssObj.optString("type", null);
+
             if (type != null && type.equalsIgnoreCase("CVSS_V3")) {
                 rating.setMethod(Vulnerability.Rating.Method.CVSSV3);
                 rating.setSeverity(Vulnerability.Rating.Severity.fromString(
@@ -391,7 +389,7 @@ public class OsvToCyclonedxParser {
                         String.valueOf(normalizedCvssV2Score(score)).toLowerCase()));
             }
             ratings.add(rating);
-        }
+        });
         return ratings;
     }
 
