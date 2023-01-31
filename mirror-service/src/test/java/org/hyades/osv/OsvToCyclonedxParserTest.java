@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class OsvToCyclonedxParserTest {
+class OsvToCyclonedxParserTest {
 
     @Test
-    public void testTrimSummary() {
+    void testTrimSummary() {
 
         String osvLongSummary = "In uvc_scan_chain_forward of uvc_driver.c, there is a possible linked list corruption due to an unusual root cause. This could lead to local escalation of privilege in the kernel with no additional execution privileges needed. User interaction is not needed for exploitation.";
         String trimmedSummary = OsvToCyclonedxParser.trimSummary(osvLongSummary);
@@ -39,7 +39,7 @@ public class OsvToCyclonedxParserTest {
     }
 
     @Test
-    public void testVulnerabilityRangeEmpty() throws IOException {
+    void testVulnerabilityRangeEmpty() throws IOException {
 
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/osv/osv-vulnerability-no-range.json");
@@ -53,7 +53,7 @@ public class OsvToCyclonedxParserTest {
     }
 
     @Test
-    public void testVulnerabilityRanges() throws IOException {
+    void testVulnerabilityRanges() throws IOException {
         //given
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/osv/osv-vulnerability-with-ranges.json");
@@ -87,7 +87,7 @@ public class OsvToCyclonedxParserTest {
     }
 
     @Test
-    public void testParseOSVJson() throws IOException {
+    void testParseOSVJson() throws IOException {
 
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/osv/osv-GHSA-77rv-6vfw-x4gc.json");
@@ -126,7 +126,7 @@ public class OsvToCyclonedxParserTest {
     }
 
     @Test
-    public void testCommitHashRanges() throws IOException {
+    void testCommitHashRanges() throws IOException {
 
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/osv/osv-git-commit-hash-ranges.json");
@@ -140,7 +140,7 @@ public class OsvToCyclonedxParserTest {
         assertNotNull(vulnerability.getAffects().get(0).getVersions().get(0).getVersion());
     }
 
-    private static JSONObject getOsvForTestingFromFile(String jsonFile) throws IOException{
+    private static JSONObject getOsvForTestingFromFile(String jsonFile) throws IOException {
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         return new JSONObject(jsonString);
     }

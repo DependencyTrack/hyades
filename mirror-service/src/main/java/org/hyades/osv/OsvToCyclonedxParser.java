@@ -98,7 +98,7 @@ public class OsvToCyclonedxParser {
                 packageUrl = new PackageURL(purl);
 
             } catch (MalformedPackageURLException ex) {
-                LOGGER.info("Error while parsing purl: " + purl, ex);
+                LOGGER.info("Error while parsing purl: {}" , purl, ex);
             }
             String bomReference = getBomRefIfComponentExists(bom, purl);
             if (bomReference == null) {
