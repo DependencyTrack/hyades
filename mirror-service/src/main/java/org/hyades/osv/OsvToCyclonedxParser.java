@@ -366,7 +366,7 @@ public class OsvToCyclonedxParser {
 
     private static List<Vulnerability.Rating> parseCvssRatings(JSONObject object, Vulnerability.Rating.Severity severity) {
         List<Vulnerability.Rating> ratings = new ArrayList<>();
-        final JSONArray cvssList = object.optJSONArray(SEVERITY);
+        JSONArray cvssList = object.optJSONArray(SEVERITY);
         if (cvssList == null) {
             Vulnerability.Rating rating = new Vulnerability.Rating();
             rating.setSeverity(severity);
