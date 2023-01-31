@@ -40,8 +40,8 @@ public class OsvToCyclonedxParser {
     private static final String DATABASE_SPECIFIC = "database_specific";
 
     public static Bom parse(JSONObject object) {
-        Bom cyclonedxBom = new Bom();
-        Vulnerability.Rating.Severity severity = Vulnerability.Rating.Severity.UNKNOWN;
+        var cyclonedxBom = new Bom();
+        var severity = Vulnerability.Rating.Severity.UNKNOWN;
 
         // initial check if advisory is valid or withdrawn
         String withdrawn = object.optString("withdrawn", null);
@@ -56,22 +56,19 @@ public class OsvToCyclonedxParser {
         //affected ranges
         JSONArray osvAffectedArray = object.optJSONArray("affected");
         if (osvAffectedArray != null) {
-
-            // AFFECTED PACKAGES AND VERSIONS
-            // LOW-PRIORITY SEVERITY ASSIGNMENT
+            // affected packages and versions
+            // low-priority severity assignment
             vulnerability.setAffects(parseAffectedRanges(osvAffectedArray, cyclonedxBom));
             severity = parseSeverity(osvAffectedArray);
         }
 
         JSONObject databaseSpecific = object.optJSONObject(DATABASE_SPECIFIC);
         if (databaseSpecific != null) {
-
-            // HIGH-PRIORITY SEVERITY ASSIGNMENT
+            // high priority severity assignment
             String osvSeverity = databaseSpecific.optString(SEVERITY, null);
             if (osvSeverity != null) {
                 severity = Vulnerability.Rating.Severity.fromString(osvSeverity.toLowerCase());
             }
-
             // CWEs
             JSONArray osvCweIds = databaseSpecific.optJSONArray("cwe_ids");
             if (osvCweIds != null) {
@@ -81,12 +78,12 @@ public class OsvToCyclonedxParser {
         // CVSS ratings
         vulnerability.setRatings(parseCvssRatings(object, severity));
         cyclonedxBom.setVulnerabilities(List.of(vulnerability));
-
         return cyclonedxBom;
     }
 
     public static List<Vulnerability.Affect> parseAffectedRanges(JSONArray osvAffectedArray, Bom bom) {
-        PackageURL packageUrl = null;
+        PackageURL packageUrl;
+        String ecoSystem = null;
         List<Vulnerability.Affect> affects = new ArrayList<>();
 
         for (int i = 0; i < osvAffectedArray.length(); i++) {
@@ -94,7 +91,7 @@ public class OsvToCyclonedxParser {
             String purl = parsePackageUrl(osvAffectedObj);
             try {
                 packageUrl = new PackageURL(purl);
-
+                ecoSystem = packageUrl.getType();
             } catch (MalformedPackageURLException ex) {
                 LOGGER.info("Error while parsing purl: {}", purl, ex);
             }
@@ -104,26 +101,8 @@ public class OsvToCyclonedxParser {
                 bom.addComponent(component);
                 bomReference = component.getBomRef();
             }
-
-            // RANGES and VERSIONS for each affected package
-            JSONArray rangesObj = osvAffectedObj.optJSONArray("ranges");
-            JSONArray versions = osvAffectedObj.optJSONArray("versions");
-            Vulnerability.Affect versionRangeAffected = new Vulnerability.Affect();
+            Vulnerability.Affect versionRangeAffected = getAffectedPackageVersionRange(osvAffectedObj, ecoSystem);
             versionRangeAffected.setRef(bomReference);
-            List<Vulnerability.Version> versionRanges = new ArrayList<>();
-
-            if (rangesObj != null) {
-                for (int j = 0; j < rangesObj.length(); j++) {
-                    versionRanges.addAll(generateRangeSpecifier(osvAffectedObj, rangesObj.getJSONObject(j), packageUrl.getType()));
-                }
-            }
-            // if ranges are not available or only commit hash range is available, look for versions
-            if (versions != null && versions.length() > 0) {
-                var versionRange = new Vulnerability.Version();
-                versionRange.setVersion(generateVersionSpecifier(versions, packageUrl.getType()));
-                versionRanges.add(versionRange);
-            }
-            versionRangeAffected.setVersions(versionRanges);
             affects.add(versionRangeAffected);
         }
         return affects;
@@ -146,6 +125,30 @@ public class OsvToCyclonedxParser {
         if (aliases != null) {
             vulnerability.setReferences(parseAliases(aliases));
         }
+    }
+
+    private static Vulnerability.Affect getAffectedPackageVersionRange(JSONObject osvAffectedObj, String ecoSystem) {
+
+        // Ranges and Versions for each affected package
+        JSONArray rangesArr = osvAffectedObj.optJSONArray("ranges");
+        JSONArray versions = osvAffectedObj.optJSONArray("versions");
+        var versionRangeAffected = new Vulnerability.Affect();
+        List<Vulnerability.Version> versionRanges = new ArrayList<>();
+
+        if (rangesArr != null) {
+            rangesArr.forEach(item -> {
+                var range = (JSONObject) item;
+                versionRanges.addAll(generateRangeSpecifier(osvAffectedObj, range, ecoSystem));
+            });
+        }
+        // if ranges are not available or only commit hash range is available, look for versions
+        if (versions != null && versions.length() > 0) {
+            var versionRange = new Vulnerability.Version();
+            versionRange.setVersion(generateVersionSpecifier(versions, ecoSystem));
+            versionRanges.add(versionRange);
+        }
+        versionRangeAffected.setVersions(versionRanges);
+        return versionRangeAffected;
     }
 
     private static void setAdvisoriesAndExternalReferences(Vulnerability vulnerability, JSONObject object, Bom cyclonedxBom) {
@@ -205,9 +208,8 @@ public class OsvToCyclonedxParser {
         if (severity == null) {
             return Severity.UNASSIGNED;
         }
-        severity = severity.toUpperCase();
 
-        return switch (severity) {
+        return switch (severity.toUpperCase()) {
             case "CRITICAL" -> Severity.CRITICAL;
             case "HIGH" -> Severity.HIGH;
             case "MODERATE", "MEDIUM" -> Severity.MEDIUM;
@@ -253,7 +255,6 @@ public class OsvToCyclonedxParser {
     private static List<Vulnerability.Version> generateRangeSpecifier(JSONObject affectedRange, JSONObject range, String ecoSystem) {
 
         List<Vulnerability.Version> versionRanges = new ArrayList<>();
-
         String rangeType = range.optString("type");
         if (!"ECOSYSTEM".equalsIgnoreCase(rangeType) && !"SEMVER".equalsIgnoreCase(rangeType)) {
             // We can't support ranges of type GIT for now, as evaluating them requires knowledge of
@@ -350,7 +351,7 @@ public class OsvToCyclonedxParser {
             String osvAlias = osvAliases.optString(i);
             var alias = new Vulnerability.Reference();
             alias.setId(osvAlias);
-            Vulnerability.Source aliasSource = new Vulnerability.Source();
+            var aliasSource = new Vulnerability.Source();
             aliasSource.setName(extractSource(osvAlias));
             alias.setSource(aliasSource);
             aliases.add(alias);
@@ -363,7 +364,7 @@ public class OsvToCyclonedxParser {
         JSONArray cvssList = object.optJSONArray(SEVERITY);
 
         if (cvssList == null) {
-            Vulnerability.Rating rating = new Vulnerability.Rating();
+            var rating = new Vulnerability.Rating();
             rating.setSeverity(severity);
             ratings.add(rating);
             return ratings;
@@ -373,7 +374,7 @@ public class OsvToCyclonedxParser {
             String vector = cvssObj.optString("score", null);
             Cvss cvss = Cvss.fromVector(vector);
 
-            Vulnerability.Rating rating = new Vulnerability.Rating();
+            var rating = new Vulnerability.Rating();
             double score = cvss.calculateScore().getBaseScore();
             rating.setVector(vector);
             rating.setScore(score);
@@ -394,7 +395,7 @@ public class OsvToCyclonedxParser {
     }
 
     private static Vulnerability instantiateVulnerability(JSONObject object) {
-        Vulnerability vulnerability = new Vulnerability();
+        var vulnerability = new Vulnerability();
         vulnerability.setId(object.optString("id", null));
         vulnerability.setDescription(trimSummary(object.optString("summary", null)));
         vulnerability.setDetail(object.optString("details", null));
