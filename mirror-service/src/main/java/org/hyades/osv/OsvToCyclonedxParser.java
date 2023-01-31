@@ -354,7 +354,7 @@ public class OsvToCyclonedxParser {
         List<Vulnerability.Reference> aliases = new ArrayList<>();
         for (int i = 0; i < osvAliases.length(); i++) {
             String osvAlias = osvAliases.optString(i);
-            Vulnerability.Reference alias = new Vulnerability.Reference();
+            var alias = new Vulnerability.Reference();
             alias.setId(osvAlias);
             Vulnerability.Source aliasSource = new Vulnerability.Source();
             aliasSource.setName(extractSource(osvAlias));
