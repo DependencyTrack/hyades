@@ -57,7 +57,6 @@ public class OsvToCyclonedxParser {
         JSONArray osvAffectedArray = object.optJSONArray("affected");
         if (osvAffectedArray != null) {
 
-            // CPE
             // AFFECTED PACKAGES AND VERSIONS
             // LOW-PRIORITY SEVERITY ASSIGNMENT
             vulnerability.setAffects(parseAffectedRanges(osvAffectedArray, cyclonedxBom));
@@ -120,8 +119,8 @@ public class OsvToCyclonedxParser {
                 }
             }
             // if ranges are not available or only commit hash range is available, look for versions
-            if (versions != null && versions.length() > 0) {
-                Vulnerability.Version versionRange = new Vulnerability.Version();
+            if (!versions.isEmpty()) {
+                var versionRange = new Vulnerability.Version();
                 versionRange.setVersion(generateVersionSpecifier(versions, packageUrl.getType()));
                 versionRanges.add(versionRange);
             }
@@ -203,7 +202,6 @@ public class OsvToCyclonedxParser {
                 severity = String.valueOf(normalizedCvssV3Score(score.getBaseScore()));
             }
         }
-
         if (severity == null && ecosystemSpecific != null) {
             severity = ecosystemSpecific.optString(SEVERITY, null);
         }
@@ -234,7 +232,7 @@ public class OsvToCyclonedxParser {
 
     private static Component createNewComponentWithPurl(JSONObject osvAffectedObj, String purl) {
         JSONObject cpeObj = osvAffectedObj.optJSONObject("package");
-        Component component = new Component();
+        var component = new Component();
         UUID uuid = UUID.randomUUID();
         component.setBomRef(uuid.toString());
         component.setName(cpeObj.optString("name", null));
@@ -288,7 +286,7 @@ public class OsvToCyclonedxParser {
                 // that aren't.
                 continue;
             }
-            Vulnerability.Version versionRange = new Vulnerability.Version();
+            var versionRange = new Vulnerability.Version();
             String uniVersionRange = "vers:";
             if (ecoSystem != null) {
                 uniVersionRange += ecoSystem;
@@ -329,10 +327,10 @@ public class OsvToCyclonedxParser {
     }
 
     private static Vulnerability.Credits parseCredits(JSONArray creditsObj) {
-        Vulnerability.Credits credits = new Vulnerability.Credits();
+        var credits = new Vulnerability.Credits();
         List<OrganizationalContact> creditArray = new ArrayList<>();
         for (int i = 0; i < creditsObj.length(); i++) {
-            OrganizationalContact credit = new OrganizationalContact();
+            var credit = new OrganizationalContact();
             JSONObject creditObj = creditsObj.getJSONObject(i);
             credit.setName(creditObj.optString("name", null));
             JSONArray contact = creditObj.optJSONArray("contact");
