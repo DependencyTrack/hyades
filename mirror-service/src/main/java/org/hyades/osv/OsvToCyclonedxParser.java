@@ -140,11 +140,11 @@ public class OsvToCyclonedxParser {
     }
 
     private static void setCreditsAndAliases(Vulnerability vulnerability, JSONObject object) {
-        final JSONArray creditsObj = object.optJSONArray("credits");
+        JSONArray creditsObj = object.optJSONArray("credits");
         if (creditsObj != null) {
             vulnerability.setCredits(parseCredits(creditsObj));
         }
-        final JSONArray aliases = object.optJSONArray("aliases");
+        JSONArray aliases = object.optJSONArray("aliases");
         if (aliases != null) {
             vulnerability.setReferences(parseAliases(aliases));
         }
@@ -207,19 +207,18 @@ public class OsvToCyclonedxParser {
         if (severity == null && ecosystemSpecific != null) {
             severity = ecosystemSpecific.optString(SEVERITY, null);
         }
-
-        if (severity != null) {
-            if (severity.equalsIgnoreCase("CRITICAL")) {
-                return Severity.CRITICAL;
-            } else if (severity.equalsIgnoreCase("HIGH")) {
-                return Severity.HIGH;
-            } else if (severity.equalsIgnoreCase("MODERATE") || severity.equalsIgnoreCase("MEDIUM")) {
-                return Severity.MEDIUM;
-            } else if (severity.equalsIgnoreCase("LOW")) {
-                return Severity.LOW;
-            }
+        if(severity == null) {
+            return Severity.UNASSIGNED;
         }
-        return Severity.UNASSIGNED;
+        severity = severity.toUpperCase();
+
+        return switch (severity) {
+            case "CRITICAL" -> Severity.CRITICAL;
+            case "HIGH" -> Severity.HIGH;
+            case "MODERATE", "MEDIUM" -> Severity.MEDIUM;
+            case "LOW" -> Severity.LOW;
+            default -> Severity.UNASSIGNED;
+        };
     }
 
     private static String getBomRefIfComponentExists(Bom cyclonedxBom, String purl) {
@@ -299,9 +298,9 @@ public class OsvToCyclonedxParser {
 
             if (i + 1 < rangeEvents.length()) {
                 event = rangeEvents.getJSONObject(i + 1);
-                final String fixed = event.optString("fixed", null);
-                final String lastAffected = event.optString("last_affected", null);
-                final String limit = event.optString("limit", null);
+                String fixed = event.optString("fixed", null);
+                String lastAffected = event.optString("last_affected", null);
+                String limit = event.optString("limit", null);
 
                 if (fixed != null) {
                     uniVersionRange += "<" + fixed + "|";
@@ -316,9 +315,9 @@ public class OsvToCyclonedxParser {
             }
 
             // Special treatment for GitHub: https://github.com/github/advisory-database/issues/470
-            final JSONObject databaseSpecific = affectedRange.optJSONObject(DATABASE_SPECIFIC);
+            JSONObject databaseSpecific = affectedRange.optJSONObject(DATABASE_SPECIFIC);
             if (databaseSpecific != null) {
-                final String lastAffectedRange = databaseSpecific.optString("last_known_affected_version_range", null);
+                String lastAffectedRange = databaseSpecific.optString("last_known_affected_version_range", null);
                 if (lastAffectedRange != null) {
                     uniVersionRange += lastAffectedRange;
                 }
@@ -334,9 +333,9 @@ public class OsvToCyclonedxParser {
         List<OrganizationalContact> creditArray = new ArrayList<>();
         for (int i = 0; i < creditsObj.length(); i++) {
             OrganizationalContact credit = new OrganizationalContact();
-            final JSONObject creditObj = creditsObj.getJSONObject(i);
+            JSONObject creditObj = creditsObj.getJSONObject(i);
             credit.setName(creditObj.optString("name", null));
-            final JSONArray contact = creditObj.optJSONArray("contact");
+            JSONArray contact = creditObj.optJSONArray("contact");
             if (contact != null) {
                 String contactLink = "";
                 for (int j = 0; j < creditsObj.length(); j++) {
@@ -431,7 +430,7 @@ public class OsvToCyclonedxParser {
     }
 
     private static String extractSource(String vulnId) {
-        final String sourceId = vulnId.split("-")[0];
+        String sourceId = vulnId.split("-")[0];
         return switch (sourceId) {
             case "GHSA" -> GITHUB.name();
             case "CVE" -> NVD.name();
