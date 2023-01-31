@@ -52,7 +52,7 @@ public class OsvToCyclonedxParser {
         setAdvisoriesAndExternalReferences(vulnerability, object, cyclonedxBom);
 
         //affected ranges
-        final JSONArray osvAffectedArray = object.optJSONArray("affected");
+        JSONArray osvAffectedArray = object.optJSONArray("affected");
         if (osvAffectedArray != null) {
 
             // CPE
