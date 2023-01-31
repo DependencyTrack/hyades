@@ -64,7 +64,7 @@ public class OsvToCyclonedxParser {
             severity = parseSeverity(osvAffectedArray);
         }
 
-        final JSONObject databaseSpecific = object.optJSONObject(DATABASE_SPECIFIC);
+        JSONObject databaseSpecific = object.optJSONObject(DATABASE_SPECIFIC);
         if (databaseSpecific != null) {
 
             // HIGH-PRIORITY SEVERITY ASSIGNMENT
