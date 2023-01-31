@@ -58,7 +58,7 @@ public class OsvMirrorHandler {
             while ((line = reader.readLine()) != null) {
                 out.append(line);
             }
-            JSONObject json = new JSONObject(out.toString());
+            var json = new JSONObject(out.toString());
             final Bom osvAdvisory = OsvToCyclonedxParser.parse(json);
             if (osvAdvisory != null) {
                 osvAdvisories.add(osvAdvisory);
