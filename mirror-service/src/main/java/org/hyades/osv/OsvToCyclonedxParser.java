@@ -338,7 +338,7 @@ public class OsvToCyclonedxParser {
             credit.setName(creditObj.optString("name", null));
             final JSONArray contact = creditObj.optJSONArray("contact");
             if (contact != null) {
-                String contactLink = "";
+                @Var String contactLink = "";
                 for (int j = 0; j < creditsObj.length(); j++) {
                     contactLink += creditsObj.optString(j) + ";";
                 }
