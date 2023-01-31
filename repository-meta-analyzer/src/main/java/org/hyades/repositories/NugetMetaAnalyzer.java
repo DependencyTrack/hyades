@@ -51,7 +51,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
     };
-    MetaModel meta = new MetaModel();
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NugetMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://api.nuget.org";
 
@@ -98,6 +98,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
+        final var meta = new MetaModel(component);
         if (component.getPurl() != null && performVersionCheck(meta, component)) {
                 performLastPublishedCheck(meta, component);
         }

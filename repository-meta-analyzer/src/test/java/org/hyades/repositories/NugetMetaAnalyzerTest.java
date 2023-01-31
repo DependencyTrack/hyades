@@ -92,7 +92,7 @@ class NugetMetaAnalyzerTest {
         analyzer.setRepositoryUsernameAndPassword(null, "password");
         analyzer.setRepositoryBaseUrl("http://localhost:1080");
         MetaModel metaModel = analyzer.analyze(component);
-        Assertions.assertNull(metaModel.getComponent());
+        Assertions.assertNotNull(metaModel.getComponent());
     }
 
 
@@ -106,6 +106,7 @@ class NugetMetaAnalyzerTest {
 
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.NUGET, analyzer.supportedRepositoryType());
+        Assertions.assertNotNull(metaModel.getComponent());
         Assertions.assertNotNull(metaModel.getLatestVersion());
         Assertions.assertNotNull(metaModel.getPublishedTimestamp());
     }
@@ -163,6 +164,7 @@ class NugetMetaAnalyzerTest {
         analyzer.setRepositoryUsernameAndPassword(null, "password");
         analyzer.setRepositoryBaseUrl("http://localhost:1080");
         MetaModel metaModel = analyzer.analyze(component);
+        Assertions.assertNotNull(metaModel.getComponent());
         Assertions.assertEquals("5.0.2", metaModel.getLatestVersion());
         Assertions.assertNotNull(metaModel.getPublishedTimestamp());
     }
