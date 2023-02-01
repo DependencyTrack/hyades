@@ -3,7 +3,7 @@ name: Build Native Mirror Service
 on:
   push:
     branches:
-    - main
+    - issue-299
     paths:
     - ".github/workflows/_build-native-meta.yml"
     - ".github/workflows/build-native-mirror-service.yml"
