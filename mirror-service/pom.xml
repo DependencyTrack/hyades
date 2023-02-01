@@ -82,6 +82,27 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>native</id>
+            <dependencies>
+                <!--
+                    Required for Apache httpclient5.
+                    Conscrypt is marked as optional by httpclient5, but the httpclient5 class referencing
+                    Conscrypt is linked as build time. Adding the missing dependency for now appears to
+                    be the only way to solve this. See also:
+                      - https://github.com/apache/httpcomponents-client/blob/d8f702fb4d44c746bb0edf00643aa7139cb8bdf7/httpclient5/pom.xml#L55-L59
+                      - https://github.com/quarkusio/quarkus/issues/2101
+                -->
+                <dependency>
+                    <groupId>org.conscrypt</groupId>
+                    <artifactId>conscrypt-openjdk-uber</artifactId>
+                    <version>${lib.conscrypt.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>

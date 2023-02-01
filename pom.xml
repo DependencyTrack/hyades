@@ -26,6 +26,7 @@
     <!-- Dependency Versions -->
     <lib.assertj.version>3.24.2</lib.assertj.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
+    <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.1</lib.cyclonedx-java.version>
     <lib.json-unit.version>2.36.1</lib.json-unit.version>
