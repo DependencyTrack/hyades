@@ -8,7 +8,6 @@ import org.hyades.resolver.CweResolver;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RegisterForReflection
@@ -38,7 +37,7 @@ public class DatabaseSpecificDto implements Serializable {
     public List<Integer> getCwes() {
         List<Integer> cweIds = new ArrayList<>();
         if(this.cwes == null) {
-            return Collections.emptyList();
+            return cweIds;
         }
         this.cwes.forEach(cwe -> cweIds.add(CweResolver.getInstance().parseCweString(cwe)));
         return cweIds;

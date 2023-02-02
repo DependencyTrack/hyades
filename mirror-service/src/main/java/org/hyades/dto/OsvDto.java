@@ -139,7 +139,7 @@ public class OsvDto implements Serializable {
     public List<Vulnerability.Reference> getAliases() {
         List<Vulnerability.Reference> aliasReferences = new ArrayList<>();
         if (this.aliases == null) {
-            return Collections.emptyList();
+            return aliasReferences;
         }
         this.aliases.stream().forEach(alias -> {
             var reference = new Vulnerability.Reference();
