@@ -1,55 +1,73 @@
 package org.hyades.osv;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.quarkus.test.junit.QuarkusTest;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.model.vulnerability.Vulnerability;
-import org.json.JSONArray;
+import org.hyades.client.OsvClientConfig;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static org.hyades.util.ParsingUtil.trimSummary;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@QuarkusTest
 class OsvToCyclonedxParserTest {
+
+    @Inject
+    @Named("osvObjectMapper")
+    ObjectMapper mapper;
 
     @Test
     void testTrimSummary() {
 
         String osvLongSummary = "In uvc_scan_chain_forward of uvc_driver.c, there is a possible linked list corruption due to an unusual root cause. This could lead to local escalation of privilege in the kernel with no additional execution privileges needed. User interaction is not needed for exploitation.";
-        String trimmedSummary = OsvToCyclonedxParser.trimSummary(osvLongSummary);
+        String trimmedSummary = trimSummary(osvLongSummary);
         assertNotNull(trimmedSummary);
         assertEquals(255, trimmedSummary.length());
         assertEquals("In uvc_scan_chain_forward of uvc_driver.c, there is a possible linked list corruption due to an unusual root cause. This could lead to local escalation of privilege in the kernel with no additional execution privileges needed. User interaction is not ne..", trimmedSummary);
 
         osvLongSummary = "I'm a short Summary";
-        trimmedSummary = OsvToCyclonedxParser.trimSummary(osvLongSummary);
+        trimmedSummary = trimSummary(osvLongSummary);
         assertNotNull(trimmedSummary);
         assertEquals("I'm a short Summary", trimmedSummary);
 
         osvLongSummary = null;
-        trimmedSummary = OsvToCyclonedxParser.trimSummary(osvLongSummary);
+        trimmedSummary = trimSummary(osvLongSummary);
         assertNull(trimmedSummary);
     }
 
     @Test
-    void testVulnerabilityRangeEmpty() throws IOException {
-
+    void testVulnerabilityRangeWithNoRange() throws IOException {
+        //Test file has 1 vulnerability with one affected element
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/osv/osv-vulnerability-no-range.json");
-        Bom bom = OsvToCyclonedxParser.parse(jsonObject);
-        final JSONArray affected = jsonObject.optJSONArray("affected");
-        List<Vulnerability.Affect> affectedPackages = OsvToCyclonedxParser.parseAffectedRanges(affected, bom);
-        assertNotNull(affectedPackages);
-        assertEquals(1, affectedPackages.size());
+
+        //When
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
+
+        //Then
+        assertNotNull(bom);
         assertNotNull(bom.getVulnerabilities());
         assertEquals(1, bom.getVulnerabilities().size());
+
+
+        Vulnerability vulnerability = bom.getVulnerabilities().get(0);
+        assertNotNull(vulnerability);
+        List<Vulnerability.Affect> affectedPacks= vulnerability.getAffects();
+        assertNotNull(affectedPacks);
+        assertEquals(1, affectedPacks.size());
     }
 
     @Test
@@ -57,42 +75,52 @@ class OsvToCyclonedxParserTest {
         //given
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/osv/osv-vulnerability-with-ranges.json");
-        Bom bom = OsvToCyclonedxParser.parse(jsonObject);
 
         //when
-        JSONArray affected = jsonObject.optJSONArray("affected");
-        List<Vulnerability.Affect> affectedPackages = OsvToCyclonedxParser.parseAffectedRanges(affected, bom);
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
+        List<Vulnerability> vulnerabilities = bom.getVulnerabilities();
 
         //then
-        assertNotNull(affectedPackages);
-        assertEquals(7, affectedPackages.size());
-
         List<Component> components = bom.getComponents();
         assertNotNull(components);
         assertEquals(2, components.size());
 
-        Vulnerability.Affect affectedPackage = affectedPackages.get(0);
-        assertEquals(components.get(0).getBomRef(), affectedPackage.getRef());
-        List<Vulnerability.Version> versionRanges = affectedPackage.getVersions();
-        assertNotNull(versionRanges);
-        assertEquals("vers:maven/1.0.0.RELEASE|1.0.1.RELEASE", versionRanges.get(0).getVersion());
+        assertNotNull(vulnerabilities);
+        assertNotNull(vulnerabilities.get(0));
+        List<Vulnerability.Affect> affected = vulnerabilities.get(0).getAffects();
 
-        affectedPackage = affectedPackages.get(3);
-        assertEquals(components.get(1).getBomRef(), affectedPackage.getRef());
-        versionRanges = affectedPackage.getVersions();
-        assertNotNull(versionRanges);
-        assertEquals("vers:maven/>=3", versionRanges.get(0).getRange());
-        assertEquals("vers:maven/>=4|<5", versionRanges.get(1).getRange());
-        assertEquals("vers:maven/1.0.0.RELEASE|2.0.9.RELEASE", versionRanges.get(2).getVersion());
+        assertNotNull(affected);
+        assertEquals(7, affected.size());
+
+
+        Vulnerability.Affect affectedPack1 = affected.get(0);
+        assertEquals(components.get(0).getBomRef(), affectedPack1.getRef());
+
+        List<Vulnerability.Version> versions1 = affectedPack1.getVersions();
+        assertNotNull(versions1);
+        assertEquals("vers:maven/1.0.0.RELEASE|1.0.1.RELEASE", versions1.get(0).getVersion());
+
+        Vulnerability.Affect affectedPack3 = affected.get(3);
+        assertEquals(components.get(1).getBomRef(), affectedPack3.getRef());
+
+        List<Vulnerability.Version> versions3 = affectedPack3.getVersions();
+        assertNotNull(versions3);
+        assertEquals(3, versions3.size());
+        assertEquals("vers:maven/>=3", versions3.get(0).getRange());
+        assertEquals("vers:maven/>=4|<5", versions3.get(1).getRange());
+        assertEquals("vers:maven/1.0.0.RELEASE|2.0.9.RELEASE", versions3.get(2).getVersion());
     }
 
     @Test
-    void testParseOSVJson() throws IOException {
-
+    void testParseOsvToBom() throws IOException {
+        //given
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/osv/osv-GHSA-77rv-6vfw-x4gc.json");
-        Bom bom = OsvToCyclonedxParser.parse(jsonObject);
 
+        //when
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
+
+        //then
         assertNotNull(bom);
         List<Component> components = bom.getComponents();
         assertNotNull(components);
@@ -130,7 +158,7 @@ class OsvToCyclonedxParserTest {
 
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/osv/osv-git-commit-hash-ranges.json");
-        Bom bom = OsvToCyclonedxParser.parse(jsonObject);
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
 
         assertNotNull(bom);
         Vulnerability vulnerability = bom.getVulnerabilities().get(0);
