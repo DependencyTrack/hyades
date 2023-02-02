@@ -1,5 +1,6 @@
 package org.hyades.osv;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.hyades.client.OsvClient;
 import org.cyclonedx.model.Bom;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,30 +27,32 @@ import static org.hyades.util.FileUtil.deleteFileAndDir;
 public class OsvMirrorHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvMirrorHandler.class);
-    private OsvClient client;
-    List<Bom> osvAdvisories;
+    private final OsvClient client;
+    private final ObjectMapper objectMapper;
 
     @Inject
-    public OsvMirrorHandler(final OsvClient client) {
+    public OsvMirrorHandler(final OsvClient client,
+                            @Named("osvObjectMapper") ObjectMapper objectMapper) {
         this.client = client;
-        this.osvAdvisories = new ArrayList<>();
+        this.objectMapper = objectMapper;
     }
 
     public List<Bom> performMirror(String ecosystem) throws IOException {
         Path ecosystemZip = client.downloadEcosystemZip(ecosystem);
+        List<Bom> osvAdvisories =  new ArrayList<>();
         try (InputStream inputStream = new FileInputStream(ecosystemZip.toFile());
              ZipInputStream zipInput = new ZipInputStream(inputStream)) {
-            unzipFolder(zipInput, ecosystem);
+            osvAdvisories = unzipFolder(zipInput);
             deleteFileAndDir(ecosystemZip);
-            LOGGER.info("OSV mirroring completed for ecosystem: " + ecosystem);
+            LOGGER.info("OSV mirroring completed for ecosystem: {} advisories: {}",  ecosystem, osvAdvisories);
         } catch (IOException e) {
             LOGGER.error("Exception found while reading from OSV: ", e);
         }
         return osvAdvisories;
     }
 
-    private void unzipFolder(ZipInputStream zipIn, String ecosystem) throws IOException {
-
+    private List<Bom> unzipFolder(ZipInputStream zipIn) throws IOException {
+        var osvAdvisories =  new ArrayList<Bom>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipIn));
         ZipEntry zipEntry = zipIn.getNextEntry();
         while (zipEntry != null) {
@@ -58,9 +62,8 @@ public class OsvMirrorHandler {
             while ((line = reader.readLine()) != null) {
                 out.append(line);
             }
-            JSONObject json = new JSONObject(out.toString());
-            final OsvToCyclonedxParser parser = new OsvToCyclonedxParser();
-            final Bom osvAdvisory = parser.parse(json);
+            var json = new JSONObject(out.toString());
+            Bom osvAdvisory = new OsvToCyclonedxParser(this.objectMapper).parse(json);
             if (osvAdvisory != null) {
                 osvAdvisories.add(osvAdvisory);
             }
@@ -68,6 +71,6 @@ public class OsvMirrorHandler {
             reader = new BufferedReader(new InputStreamReader(zipIn));
         }
         reader.close();
-        LOGGER.info(osvAdvisories.size() +" advisories mirrored successfully for ecosystem: "+ ecosystem);
+        return osvAdvisories;
     }
 }

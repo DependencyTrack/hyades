@@ -41,14 +41,14 @@ public class NvdClient extends ContextualProcessor<String, String, String, Bom> 
         this.store = context().getStateStore(this.lastModifiedEpochStoreBuilder.name());
     }
 
-    long retrieveLastModifiedRequestEpoch() {
+    private long retrieveLastModifiedRequestEpoch() {
         if (this.store != null && store.get(LAST_MODIFIED_EPOCH) != null) {
             return store.get(LAST_MODIFIED_EPOCH);
         }
         return 0;
     }
 
-    void storeLastModifiedRequestEpoch(long epoch) {
+    private void storeLastModifiedRequestEpoch(long epoch) {
         if (this.store != null) {
             this.store.put(LAST_MODIFIED_EPOCH, epoch);
         }
