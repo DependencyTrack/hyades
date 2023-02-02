@@ -57,6 +57,10 @@ jobs:
           -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch }}' \
           -Dquarkus.native.resources.includes="$RESOURCES_INCLUDES" \
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
+    - name: Test Native Image
+      if: ${{ matrix.arch == "amd64" }}
+      run: |-
+        mvn -pl ${{ inputs.module }} test-compile failsafe:integration-test -Pnative
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
