@@ -1,5 +1,8 @@
 package org.hyades.analyzer;
 
+import com.github.packageurl.MalformedPackageURLException;
+import com.github.packageurl.PackageURL;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.streams.processor.api.ContextualProcessor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
@@ -7,17 +10,22 @@ import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.OrganizationalContact;
 import org.cyclonedx.model.vulnerability.Vulnerability;
+import org.hyades.model.VulnerabilityAlias;
 import org.hyades.model.VulnerabilityScanKey;
 import org.hyades.model.VulnerabilityScanResult;
+import org.hyades.model.VulnerableSoftware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV2Score;
 import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV3Score;
 import static org.hyades.commonutil.VulnerabilityUtil.trimSummary;
+import static org.hyades.util.ParserUtil.getBomRefIfComponentExists;
 
 public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey, VulnerabilityScanResult, String, Bom> {
 
@@ -47,32 +55,40 @@ public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey,
                 source.setName(analyzerVuln.getSource());
                 vulnerability.setSource(source);
             }
-
             if (analyzerVuln.getComponents() != null) {
                 parseComponents(cyclonedxBom, analyzerVuln.getComponents());
             }
-
             if (analyzerVuln.getCredits() != null) {
                 parseCredits(vulnerability, analyzerVuln);
             }
             parseRatings(vulnerability, analyzerVuln);
-
-            if (analyzerVuln.getVulnerableVersions() != null) {
-                parseAffects(vulnerability, analyzerVuln);
+            if (analyzerVuln.getVulnerableSoftware() != null) {
+                parseAffects(cyclonedxBom, vulnerability, analyzerVuln.getVulnerableSoftware());
             }
-
-            // TODO parse aliases
-//            var aliases = new ArrayList<Vulnerability.Reference>();
-//            analyzerVuln.getAliases().stream().forEach(vulnerabilityAlias -> {
-//                var alias = new Vulnerability.Reference();
-//            });
-
+            if (analyzerVuln.getAliases() != null) {
+                parseAliases(vulnerability, analyzerVuln.getAliases());
+            }
             cyclonedxBom.setVulnerabilities(List.of(vulnerability));
             context().forward(record
                     .withKey(analyzer + "/" + vulnerability.getId())
                     .withValue(cyclonedxBom));
         });
         LOGGER.info("Vulnerabilities analyzed by "+ analyzer +" completed successfully.");
+    }
+
+    private void parseAliases(Vulnerability vulnerability, List<VulnerabilityAlias> analyzerAliases) {
+        var distinctAliases = new HashSet<Vulnerability.Reference>();
+        analyzerAliases.stream().forEach(analyzerAlias -> {
+            analyzerAlias.getAllBySource().forEach((aliasSource, aliasId) -> {
+                var reference = new Vulnerability.Reference();
+                var referenceSource = new Vulnerability.Source();
+                referenceSource.setName(aliasSource.name());
+                reference.setSource(referenceSource);
+                reference.setId(aliasId);
+                distinctAliases.add(reference);
+            });
+        });
+        vulnerability.setReferences(distinctAliases.stream().toList());
     }
 
     private static void parseComponents(Bom cyclonedxBom, List<org.hyades.model.Component> components) {
@@ -100,13 +116,73 @@ public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey,
         return vulnerability;
     }
 
-    private static void parseAffects(Vulnerability vulnerability, org.hyades.model.Vulnerability analyzerVuln) {
-        // TODO verify the range parsing.
-        var affected = new Vulnerability.Affect();
-        var version = new Vulnerability.Version();
-        version.setVersion(analyzerVuln.getVulnerableVersions());
-        affected.setVersions(List.of(version));
-        vulnerability.setAffects(List.of(affected));
+    private static void parseAffects(Bom cyclonedxBom, Vulnerability vulnerability, List<VulnerableSoftware> vulnerableSoftwares) {
+
+        // Map one vulnerableSoftware to one CDX affected object
+        var affectedPAckages = new ArrayList<Vulnerability.Affect>();
+        vulnerableSoftwares.forEach(vulnerableSoftware -> {
+
+            if (vulnerableSoftware.isVulnerable()) {
+                var affected = new Vulnerability.Affect();
+                PackageURL packageUrl = null;
+                String packageType = null;
+
+                // map bom reference
+                if (vulnerableSoftware.getPurl() != null) {
+                    try {
+                        packageUrl = new PackageURL(vulnerableSoftware.getPurl());
+                        packageType = packageUrl.getType();
+                    } catch (MalformedPackageURLException ex) {
+                        LOGGER.info("Error while parsing purl: {}", vulnerableSoftware.getPurl(), ex);
+                    }
+                    String bomReference = getBomRefIfComponentExists(cyclonedxBom, vulnerableSoftware.getPurl());
+                    if (bomReference == null) {
+                        Component component = createNewComponentWithPurl(vulnerableSoftware, packageUrl);
+                        cyclonedxBom.addComponent(component);
+                        bomReference = component.getBomRef();
+                    }
+                    affected.setRef(bomReference);
+                }
+                // map version ranges
+                var versionRange = new Vulnerability.Version();
+                if (vulnerableSoftware.getVersion() != null) {
+                    versionRange.setVersion(vulnerableSoftware.getVersion());
+                }
+                String uniVersionRange = "vers:";
+                if (packageType != null) {
+                    uniVersionRange += packageType;
+                }
+                uniVersionRange += "/";
+                if (vulnerableSoftware.getVersionStartIncluding() != null) {
+                    uniVersionRange += ">=" + vulnerableSoftware.getVersionStartIncluding() + "|";
+                }
+                if (vulnerableSoftware.getVersionStartExcluding() != null) {
+                    uniVersionRange += ">" + vulnerableSoftware.getVersionStartExcluding() + "|";
+                }
+                if (vulnerableSoftware.getVersionEndIncluding() != null) {
+                    uniVersionRange += "<=" + vulnerableSoftware.getVersionEndIncluding() + "|";
+                }
+                if (vulnerableSoftware.getVersionEndExcluding() != null) {
+                    uniVersionRange += "<" + vulnerableSoftware.getVersionEndExcluding() + "|";
+                }
+                versionRange.setRange(StringUtils.chop(uniVersionRange));
+                affected.setVersions(List.of(versionRange));
+                affectedPAckages.add(affected);
+            }
+        });
+        vulnerability.setAffects(affectedPAckages);
+    }
+
+    private static Component createNewComponentWithPurl(VulnerableSoftware vulnerableSoftware, PackageURL packageUrl) {
+        var component = new Component();
+        UUID uuid = UUID.randomUUID();
+        component.setBomRef(uuid.toString());
+        if (packageUrl != null) {
+            component.setName(packageUrl.getName());
+            component.setPurl(vulnerableSoftware.getPurl());
+            component.setVersion(packageUrl.getVersion());
+        }
+        return component;
     }
 
     private static void parseRatings(Vulnerability vulnerability, org.hyades.model.Vulnerability analyzerVuln) {

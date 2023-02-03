@@ -1,11 +1,11 @@
 package org.hyades.analyzer;
 
 import com.github.packageurl.MalformedPackageURLException;
-import com.github.packageurl.PackageURL;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import io.quarkus.test.junit.QuarkusTest;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
@@ -13,7 +13,6 @@ import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.test.TestRecord;
 import org.cyclonedx.model.Bom;
 import org.hyades.model.AnalyzerIdentity;
-import org.hyades.model.Component;
 import org.hyades.model.VulnerabilityScanKey;
 import org.hyades.model.VulnerabilityScanResult;
 import org.hyades.model.VulnerabilityScanStatus;
@@ -39,11 +38,11 @@ class AnalyzerProcessorTest {
     @BeforeEach
     void beforeEach() {
         final var topology = new Topology();
-        topology.addSource("sourceProcessor", new StringDeserializer(),
+        topology.addSource("sourceProcessor", new ObjectMapperDeserializer<>(VulnerabilityScanKey.class),
                 new ObjectMapperDeserializer<>(VulnerabilityScanResult.class), "input-topic");
         topology.addProcessor("analyzerProcessor", processorSupplier, "sourceProcessor");
         topology.addSink("sinkProcessor", "output-topic",
-                new ObjectMapperSerializer<>(), new ObjectMapperSerializer<>(), "analyzerProcessor");
+                new StringSerializer(), new ObjectMapperSerializer<>(), "analyzerProcessor");
         testDriver = new TopologyTestDriver(topology);
         inputTopic = testDriver.createInputTopic("input-topic",
                 new ObjectMapperSerializer<>(), new ObjectMapperSerializer<>());
@@ -69,8 +68,6 @@ class AnalyzerProcessorTest {
         assertThat(outputRecord.key()).isEqualTo("OSSINDEX_ANALYZER/analyzer-vuln-id");
         assertThat(outputRecord.getValue().getVulnerabilities().get(0).getId())
                 .isEqualTo("analyzer-vuln-id");
-        assertThat(outputRecord.getValue().getComponents().get(0).getPurl())
-                .isEqualTo("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1");
     }
 
     @Test
@@ -86,12 +83,7 @@ class AnalyzerProcessorTest {
     private TestRecord<VulnerabilityScanKey, VulnerabilityScanResult> createTestRecord() throws MalformedPackageURLException {
         var analyzerVuln = new org.hyades.model.Vulnerability();
         analyzerVuln.setVulnId("analyzer-vuln-id");
-        final var component = new Component();
-        component.setUuid(UUID.randomUUID());
-        final PackageURL packageURL = new PackageURL("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1");
-        component.setPurl(packageURL);
-        analyzerVuln.setComponents(List.of(component));
-        final var scanKey = new VulnerabilityScanKey(UUID.randomUUID().toString(), component.getUuid());
+        final var scanKey = new VulnerabilityScanKey(UUID.randomUUID().toString(), UUID.randomUUID());
         return new TestRecord<>(scanKey, new VulnerabilityScanResult(scanKey, AnalyzerIdentity.OSSINDEX_ANALYZER,
                 VulnerabilityScanStatus.COMPLETE, List.of(analyzerVuln), "na"));
     }
