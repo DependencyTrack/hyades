@@ -83,10 +83,14 @@ public class MirrorServiceTopologyTest {
         when(nvdProcessorSupplierMock.get()).thenAnswer(invocation ->
                 new MockScannerProcessor(event -> new Bom()));
         testDriver = new TopologyTestDriver(topology);
-        inputTopicOsv = testDriver.createInputTopic(KafkaTopic.MIRROR_OSV.getName(), new StringSerializer(), new StringSerializer());
-        inputTopicNvd = testDriver.createInputTopic(KafkaTopic.MIRROR_NVD.getName(), new StringSerializer(), new StringSerializer());
-        inputTopicAnalyzer = testDriver.createInputTopic(KafkaTopic.VULN_ANALYSIS_RESULT.getName(), new ObjectMapperSerializer<>(), new ObjectMapperSerializer<>());
-        outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(), new StringDeserializer(), new ObjectMapperDeserializer<>(Bom.class));
+        inputTopicOsv = testDriver.createInputTopic(KafkaTopic.MIRROR_OSV.getName(),
+                new StringSerializer(), new StringSerializer());
+        inputTopicNvd = testDriver.createInputTopic(KafkaTopic.MIRROR_NVD.getName(),
+                new StringSerializer(), new StringSerializer());
+        inputTopicAnalyzer = testDriver.createInputTopic(KafkaTopic.VULN_ANALYSIS_RESULT.getName(),
+                new ObjectMapperSerializer<>(), new ObjectMapperSerializer<>());
+        outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(),
+                new StringDeserializer(), new ObjectMapperDeserializer<>(Bom.class));
     }
 
     @AfterEach
@@ -114,7 +118,8 @@ public class MirrorServiceTopologyTest {
         var analyzerVuln = new org.hyades.model.Vulnerability();
         analyzerVuln.setVulnId("analyzer-vuln-id");
         inputTopicAnalyzer.pipeInput(testScanKey,
-                new VulnerabilityScanResult(testScanKey, AnalyzerIdentity.SNYK_ANALYZER, VulnerabilityScanStatus.COMPLETE, List.of(analyzerVuln), "na"));
+                new VulnerabilityScanResult(testScanKey, AnalyzerIdentity.SNYK_ANALYZER,
+                        VulnerabilityScanStatus.COMPLETE, List.of(analyzerVuln), "na"));
         assertThat(outputTopic.getQueueSize()).isEqualTo(3);
         assertThat(outputTopic.readRecordsToList()).satisfies(records -> {
             assertThat(records.get(0).getKey()).isEqualTo("NVD/CVE-1999-1341");
