@@ -28,8 +28,8 @@ import java.util.UUID;
 import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV2Score;
 import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV3Score;
 import static org.hyades.model.Severity.getSeverityByLevel;
-import static org.hyades.util.ParsingUtil.fromString;
-import static org.hyades.util.ParsingUtil.trimSummary;
+import static org.hyades.commonutil.VulnerabilityUtil.fromString;
+import static org.hyades.commonutil.VulnerabilityUtil.trimSummary;
 
 public class OsvToCyclonedxParser {
 
