@@ -81,8 +81,8 @@ public class MirrorServiceTopology {
                         .with(Serdes.String(), cyclonedxSerde)
                         .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "nvd_vulnerability")));
 
-        // NVD mirroring stream
-        // (K,V) to be consumed as (event ScanKey, ScanResult)
+        // Vulnerability analyzers stream
+        // (K,V) to be consumed as (event ScanKey, ScanResult) from analyzers result topic
         KStream<VulnerabilityScanKey, VulnerabilityScanResult> analyzerStream = streamsBuilder
                 .stream(KafkaTopic.VULN_ANALYSIS_RESULT.getName(), Consumed
                         .with(scanKeySerde, scanResultSerde)
@@ -91,7 +91,7 @@ public class MirrorServiceTopology {
                 .process(analyzerProcessorSupplier, Named.as("analyzers_vulnerabilities"))
                 .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
                         .with(Serdes.String(), cyclonedxSerde)
-                        .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "nvd_vulnerability")));
+                        .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "analyzer_vulnerability")));
 
         return streamsBuilder.build();
     }

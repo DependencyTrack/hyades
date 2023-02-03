@@ -9,6 +9,8 @@ import org.cyclonedx.model.OrganizationalContact;
 import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.hyades.model.VulnerabilityScanKey;
 import org.hyades.model.VulnerabilityScanResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,8 @@ import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV3Score;
 import static org.hyades.commonutil.VulnerabilityUtil.trimSummary;
 
 public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey, VulnerabilityScanResult, String, Bom> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyzerProcessor.class);
 
     public AnalyzerProcessor() {
     }
@@ -44,20 +48,18 @@ public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey,
                 vulnerability.setSource(source);
             }
 
-            analyzerVuln.getComponents().stream().forEach(component -> {
-                var cdxComponent = new Component();
-                cdxComponent.setName(component.getName());
-                cdxComponent.setVersion(component.getVersion());
-                cdxComponent.setPurl(component.getPurl());
-                cdxComponent.setCpe(component.getCpe());
-                cdxComponent.setGroup(component.getGroup());
-                cdxComponent.setBomRef(component.getBomRef());
-                cyclonedxBom.addComponent(cdxComponent);
-            });
+            if (analyzerVuln.getComponents() != null) {
+                parseComponents(cyclonedxBom, analyzerVuln.getComponents());
+            }
 
-            parseCredits(vulnerability, analyzerVuln);
+            if (analyzerVuln.getCredits() != null) {
+                parseCredits(vulnerability, analyzerVuln);
+            }
             parseRatings(vulnerability, analyzerVuln);
-            parseAffects(vulnerability, analyzerVuln);
+
+            if (analyzerVuln.getVulnerableVersions() != null) {
+                parseAffects(vulnerability, analyzerVuln);
+            }
 
             // TODO parse aliases
 //            var aliases = new ArrayList<Vulnerability.Reference>();
@@ -69,6 +71,20 @@ public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey,
             context().forward(record
                     .withKey(analyzer + "/" + vulnerability.getId())
                     .withValue(cyclonedxBom));
+        });
+        LOGGER.info("Vulnerabilities analyzed by "+ analyzer +" completed successfully.");
+    }
+
+    private static void parseComponents(Bom cyclonedxBom, List<org.hyades.model.Component> components) {
+        components.forEach(component -> {
+            var cdxComponent = new Component();
+            cdxComponent.setName(component.getName());
+            cdxComponent.setVersion(component.getVersion());
+            cdxComponent.setPurl(component.getPurl());
+            cdxComponent.setCpe(component.getCpe());
+            cdxComponent.setGroup(component.getGroup());
+            cdxComponent.setBomRef(component.getBomRef());
+            cyclonedxBom.addComponent(cdxComponent);
         });
     }
 
@@ -116,10 +132,10 @@ public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey,
         vulnerability.setRatings(ratings);
     }
 
-    private static void parseCredits(Vulnerability vulnerability, org.hyades.model.Vulnerability ossVuln) {
+    private static void parseCredits(Vulnerability vulnerability, org.hyades.model.Vulnerability analyzerVuln) {
         var credits = new Vulnerability.Credits();
         var credit = new OrganizationalContact();
-        credit.setName(ossVuln.getCredits());
+        credit.setName(analyzerVuln.getCredits());
         credits.setIndividuals(List.of(credit));
         vulnerability.setCredits(credits);
     }
