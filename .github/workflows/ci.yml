@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Test
@@ -28,36 +32,33 @@ jobs:
     name: Test Native Image
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
     strategy:
       matrix:
         module:
-          - mirror-service
-          - notification-publisher
-          - repository-meta-analyzer
-          - vulnerability-analyzer
+        - mirror-service
+        - notification-publisher
+        - repository-meta-analyzer
+        - vulnerability-analyzer
       fail-fast: true
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-      - name: Set up GraalVM
-        uses: graalvm/setup-graalvm@v1
-        with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build Native Image
-        run: |-
-          mvn -pl commons,${{ matrix.module }} clean install -Pnative -DskipTests
-      - name: Test Native Image
-        run: |-
-          mvn -pl commons,${{ matrix.module }} test-compile failsafe:integration-test -Pnative
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Set up GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        version: 'latest'
+        java-version: '17'
+        components: 'native-image'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build Native Image
+      run: |-
+        mvn -pl commons,${{ matrix.module }} clean install -Pnative -DskipTests
+    - name: Test Native Image
+      run: |-
+        mvn -pl commons,${{ matrix.module }} test-compile failsafe:integration-test -Pnative
