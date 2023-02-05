@@ -1,0 +1,23 @@
+name: Test Native Repository Meta Analyzer
+
+on:
+  push:
+    branches:
+    - issue-192
+    paths:
+    - ".github/workflows/_test-native-meta.yml"
+    - ".github/workflows/test-native-repository-meta-analyzer.yml"
+    - "commons/**"
+    - "repository-meta-analyzer/**"
+    - "pom.xml"
+  workflow_dispatch: { }
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-build:
+    uses: ./.github/workflows/_test-native-meta.yml
+    with:
+      module: repository-meta-analyzer

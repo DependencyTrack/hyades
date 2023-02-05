@@ -1,0 +1,23 @@
+name: Test Native Mirror Service
+
+on:
+  push:
+    branches:
+    - issue-192
+    paths:
+    - ".github/workflows/_test-native-meta.yml"
+    - ".github/workflows/test-native-mirror-service.yml"
+    - "commons/**"
+    - "mirror-service/**"
+    - "pom.xml"
+  workflow_dispatch: { }
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  call-build:
+    uses: ./.github/workflows/_test-native-meta.yml
+    with:
+      module: mirror-service
