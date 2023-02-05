@@ -1,11 +1,6 @@
 package org.hyades;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
-import org.hyades.client.NvdClient;
-import org.hyades.common.KafkaTopic;
-import org.hyades.model.Vulnerability;
-import org.hyades.nvd.NvdProcessorSupplier;
-import org.hyades.osv.OsvMirrorHandler;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -15,6 +10,10 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
 import org.cyclonedx.model.Bom;
+import org.hyades.common.KafkaTopic;
+import org.hyades.model.Vulnerability;
+import org.hyades.nvd.NvdProcessorSupplier;
+import org.hyades.osv.OsvMirrorHandler;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
