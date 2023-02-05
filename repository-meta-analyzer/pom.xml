@@ -67,11 +67,22 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-flyway</artifactId>
-      <scope>test</scope>
+      <!--
+          Despite not being used in production, Flyway must be included in
+          "compile" (default) scope. Integration tests are running in the "prod" profile,
+          and we need Flyway in order to initialize the DB schema.
+          Scope may be changed to "test" when we find a better way to handle
+          schema initialization in integration tests.
+      -->
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-streams-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-test-kafka-companion</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -83,6 +94,11 @@
     <dependency>
       <groupId>org.mock-server</groupId>
       <artifactId>mockserver-netty</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock-jre8-standalone</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -101,7 +117,11 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
