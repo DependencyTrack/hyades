@@ -11,6 +11,10 @@
     <artifactId>mirror-service</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <properties>
+        <project.parentBaseDir>${project.basedir}/..</project.parentBaseDir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.hyades</groupId>
