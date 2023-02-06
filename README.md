@@ -30,6 +30,10 @@ Here's a rough overview of the architecture:
 
 ![Architecture Overview](docs/architecture-overview.png)
 
+To read more about the individual services, refer to their respective `REAMDE.md`:
+
+* [Vulnerability Analyzer](vulnerability-analyzer/README.md)
+
 ## Great, can I try it? 🙌
 
 Yes! We prepared demo setup that you can use to play around with Hyades.  
