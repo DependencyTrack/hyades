@@ -16,6 +16,7 @@ import org.hyades.model.AnalyzerIdentity;
 import org.hyades.model.VulnerabilityScanKey;
 import org.hyades.model.VulnerabilityScanResult;
 import org.hyades.model.VulnerabilityScanStatus;
+import org.hyades.model.VulnerableSoftware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -99,7 +100,12 @@ class AnalyzerProcessorTest {
         String jsonFile = "src/test/resources/analyzer/dt-vulnerability.json";
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         org.hyades.model.Vulnerability vulnInput = new ObjectMapper().readValue(jsonString, org.hyades.model.Vulnerability.class);
-
+        var vs = new VulnerableSoftware();
+        vs.setVulnerable(true);
+        vs.setVersionEndExcluding("2.2");
+        vs.setVersionStartIncluding("1.1");
+        vs.setPurl("pkg:golang/test");
+        vulnInput.setVulnerableSoftware(List.of(vs));
         final var scanKey = new VulnerabilityScanKey(UUID.randomUUID().toString(), UUID.randomUUID());
         return new TestRecord<>(scanKey, new VulnerabilityScanResult(scanKey, AnalyzerIdentity.OSSINDEX_ANALYZER,
                 VulnerabilityScanStatus.COMPLETE, List.of(vulnInput), "na"));
