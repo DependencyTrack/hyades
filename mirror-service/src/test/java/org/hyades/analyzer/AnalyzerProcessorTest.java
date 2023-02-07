@@ -1,6 +1,6 @@
 package org.hyades.analyzer;
 
-import com.github.packageurl.MalformedPackageURLException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import io.quarkus.test.junit.QuarkusTest;
@@ -20,6 +20,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -65,13 +68,25 @@ class AnalyzerProcessorTest {
         inputTopic.pipeInput(inputRecord);
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
         final TestRecord<String, Bom> outputRecord = outputTopic.readRecord();
-        assertThat(outputRecord.key()).isEqualTo("OSSINDEX_ANALYZER/analyzer-vuln-id");
-        assertThat(outputRecord.getValue().getVulnerabilities().get(0).getId())
-                .isEqualTo("analyzer-vuln-id");
+        assertThat(outputRecord.key()).isEqualTo("OSSINDEX_ANALYZER/test-id");
+        var outputVuln = outputRecord.getValue().getVulnerabilities().get(0);
+        assertThat(outputVuln.getId()).isEqualTo("test-id");
+        assertThat(outputVuln.getSource().getName()).isEqualTo("NVD");
+        assertThat(outputVuln.getCredits().getIndividuals().get(0).getName()).isEqualTo("local");
+        assertThat(outputVuln.getCwes().size()).isEqualTo(2);
+        assertThat(outputVuln.getReferences().size()).isEqualTo(3);
+        assertThat(outputVuln.getRatings().get(0).getSeverity())
+                .isEqualTo(org.cyclonedx.model.vulnerability.Vulnerability.Rating.Severity.MEDIUM);
+        assertThat(outputVuln.getAffects().size()).isEqualTo(1);
+        var affectedPackage = outputVuln.getAffects().get(0);
+        assertThat(affectedPackage.getVersions().get(0).getRange()).isEqualTo("vers:golang/>=1.1|<2.2");
+        var components = outputRecord.getValue().getComponents();
+        assertThat(components.size()).isEqualTo(1);
+        assertThat(affectedPackage.getRef()).isEqualTo(components.get(0).getBomRef());
     }
 
     @Test
-    void testMultipleResults() throws Exception {
+    void testMultipleResults() {
         final TestRecord<VulnerabilityScanKey, VulnerabilityScanResult> inputRecord = createTestRecordWithMultipleVuln();
         inputTopic.pipeInput(inputRecord);
         assertThat(outputTopic.getQueueSize()).isEqualTo(2);
@@ -80,15 +95,17 @@ class AnalyzerProcessorTest {
         assertThat(outputRecords.get(1).getKey()).isEqualTo("INTERNAL_ANALYZER/analyzer-vuln-id-2");
     }
 
-    private TestRecord<VulnerabilityScanKey, VulnerabilityScanResult> createTestRecord() throws MalformedPackageURLException {
-        var analyzerVuln = new org.hyades.model.Vulnerability();
-        analyzerVuln.setVulnId("analyzer-vuln-id");
+    private TestRecord<VulnerabilityScanKey, VulnerabilityScanResult> createTestRecord() throws IOException {
+        String jsonFile = "src/test/resources/analyzer/dt-vulnerability.json";
+        String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
+        org.hyades.model.Vulnerability vulnInput = new ObjectMapper().readValue(jsonString, org.hyades.model.Vulnerability.class);
+
         final var scanKey = new VulnerabilityScanKey(UUID.randomUUID().toString(), UUID.randomUUID());
         return new TestRecord<>(scanKey, new VulnerabilityScanResult(scanKey, AnalyzerIdentity.OSSINDEX_ANALYZER,
-                VulnerabilityScanStatus.COMPLETE, List.of(analyzerVuln), "na"));
+                VulnerabilityScanStatus.COMPLETE, List.of(vulnInput), "na"));
     }
 
-    private TestRecord<VulnerabilityScanKey, VulnerabilityScanResult> createTestRecordWithMultipleVuln() throws MalformedPackageURLException {
+    private TestRecord<VulnerabilityScanKey, VulnerabilityScanResult> createTestRecordWithMultipleVuln() {
         var analyzerVuln1 = new org.hyades.model.Vulnerability();
         analyzerVuln1.setVulnId("analyzer-vuln-id-1");
         var analyzerVuln2 = new org.hyades.model.Vulnerability();

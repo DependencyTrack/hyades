@@ -77,18 +77,16 @@ public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey,
     }
 
     private void parseAliases(Vulnerability vulnerability, List<VulnerabilityAlias> analyzerAliases) {
-        var distinctAliases = new HashSet<Vulnerability.Reference>();
-        analyzerAliases.stream().forEach(analyzerAlias -> {
-            analyzerAlias.getAllBySource().forEach((aliasSource, aliasId) -> {
-                var reference = new Vulnerability.Reference();
-                var referenceSource = new Vulnerability.Source();
-                referenceSource.setName(aliasSource.name());
-                reference.setSource(referenceSource);
-                reference.setId(aliasId);
-                distinctAliases.add(reference);
-            });
+        var references = new ArrayList<Vulnerability.Reference>();
+        var distinctAliases = new HashSet<String>();
+        analyzerAliases.stream().forEach(analyzerAlias ->
+                distinctAliases.addAll(analyzerAlias.getAllBySource().values()));
+        distinctAliases.forEach(distinctAlias -> {
+            var reference = new Vulnerability.Reference();
+            reference.setId(distinctAlias);
+            references.add(reference);
         });
-        vulnerability.setReferences(distinctAliases.stream().toList());
+        vulnerability.setReferences(references);
     }
 
     private static void parseComponents(Bom cyclonedxBom, List<org.hyades.model.Component> components) {
@@ -203,6 +201,11 @@ public class AnalyzerProcessor extends ContextualProcessor<VulnerabilityScanKey,
             rating.setScore(analyzerVuln.getCvssV2BaseScore().doubleValue());
             rating.setSeverity(Vulnerability.Rating.Severity.fromString(
                     String.valueOf(normalizedCvssV2Score(analyzerVuln.getCvssV2BaseScore().doubleValue()))));
+            ratings.add(rating);
+        }
+        if (analyzerVuln.getSeverity() != null) {
+            var rating = new Vulnerability.Rating();
+            rating.setSeverity(Vulnerability.Rating.Severity.fromString(analyzerVuln.getSeverity().name().toLowerCase()));
             ratings.add(rating);
         }
         vulnerability.setRatings(ratings);
