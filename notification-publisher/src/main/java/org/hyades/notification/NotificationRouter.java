@@ -18,6 +18,8 @@
  */
 package org.hyades.notification;
 
+import org.hyades.commonnotification.NotificationGroup;
+import org.hyades.commonnotification.NotificationScope;
 import org.hyades.exception.PublisherException;
 import org.hyades.model.Notification;
 import org.hyades.model.NotificationPublisher;
@@ -50,7 +52,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.hyades.commonnotification.*;
 
 @ApplicationScoped
 public class NotificationRouter {

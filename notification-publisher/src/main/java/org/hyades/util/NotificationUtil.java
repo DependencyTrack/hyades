@@ -17,6 +17,10 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.hyades.util;
+
+import org.hyades.commonutil.DateUtil;
+import org.hyades.commonutil.JsonUtil;
+import org.hyades.commonutil.VulnerabilityUtil;
 import org.hyades.model.Analysis;
 import org.hyades.model.Component;
 import org.hyades.model.Cwe;
@@ -32,14 +36,14 @@ import org.hyades.notification.vo.NewVulnerabilityIdentified;
 import org.hyades.notification.vo.NewVulnerableDependency;
 import org.hyades.notification.vo.PolicyViolationIdentified;
 import org.hyades.notification.vo.VexConsumedOrProcessed;
+import org.hyades.resolver.CweResolver;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.util.Map;
-import org.hyades.resolver.CweResolver;
-import org.hyades.commonutil.*;
 public final class NotificationUtil {
 
     /**

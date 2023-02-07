@@ -11,6 +11,10 @@
     <artifactId>mirror-service</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <properties>
+        <project.parentBaseDir>${project.basedir}/..</project.parentBaseDir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.hyades</groupId>
@@ -38,6 +42,11 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-streams-test-utils</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-test-kafka-companion</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
