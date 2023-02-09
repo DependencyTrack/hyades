@@ -22,14 +22,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
+import static org.hyades.commonutil.VulnerabilityUtil.fromString;
 import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV2Score;
 import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV3Score;
+import static org.hyades.commonutil.VulnerabilityUtil.trimSummary;
 import static org.hyades.model.Severity.getSeverityByLevel;
-import static org.hyades.util.ParsingUtil.fromString;
-import static org.hyades.util.ParsingUtil.trimSummary;
+import static org.hyades.util.ParserUtil.getBomRefIfComponentExists;
 
 public class OsvToCyclonedxParser {
 
@@ -160,17 +160,6 @@ public class OsvToCyclonedxParser {
             severity = ecosystemSpecific.optString("severity", null);
         }
         return fromString(severity);
-    }
-
-    private static String getBomRefIfComponentExists(Bom cyclonedxBom, String purl) {
-        if (cyclonedxBom.getComponents() != null && purl != null) {
-            Optional<Component> existingComponent = cyclonedxBom.getComponents().stream().filter(c ->
-                    c.getPurl().equalsIgnoreCase(purl)).findFirst();
-            if (existingComponent.isPresent()) {
-                return existingComponent.get().getBomRef();
-            }
-        }
-        return null;
     }
 
     private static Component createNewComponentWithPurl(JSONObject osvAffectedObj, String purl) {
