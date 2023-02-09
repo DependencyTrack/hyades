@@ -19,7 +19,6 @@ import org.hyades.model.VulnerabilityScanStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,8 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @QuarkusTest
 class AnalyzerProcessorTest {
 
-    @Inject
-    AnalyzerProcessorSupplier processorSupplier;
     private TopologyTestDriver testDriver;
     private TestInputTopic<VulnerabilityScanKey, VulnerabilityScanResult> inputTopic;
     private TestOutputTopic<String, Bom> outputTopic;
@@ -43,7 +40,7 @@ class AnalyzerProcessorTest {
         final var topology = new Topology();
         topology.addSource("sourceProcessor", new ObjectMapperDeserializer<>(VulnerabilityScanKey.class),
                 new ObjectMapperDeserializer<>(VulnerabilityScanResult.class), "input-topic");
-        topology.addProcessor("analyzerProcessor", processorSupplier, "sourceProcessor");
+        topology.addProcessor("analyzerProcessor", AnalyzerProcessor::new, "sourceProcessor");
         topology.addSink("sinkProcessor", "output-topic",
                 new StringSerializer(), new ObjectMapperSerializer<>(), "analyzerProcessor");
         testDriver = new TopologyTestDriver(topology);

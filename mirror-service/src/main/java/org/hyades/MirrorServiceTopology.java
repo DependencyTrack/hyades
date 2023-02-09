@@ -10,7 +10,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
 import org.cyclonedx.model.Bom;
-import org.hyades.analyzer.AnalyzerProcessorSupplier;
+import org.hyades.analyzer.AnalyzerProcessor;
 import org.hyades.common.KafkaTopic;
 import org.hyades.model.Vulnerability;
 import org.hyades.model.VulnerabilityScanKey;
@@ -32,15 +32,12 @@ public class MirrorServiceTopology {
 
     private final OsvMirrorHandler osvMirrorHandler;
     private final NvdProcessorSupplier nvdProcessorSupplier;
-    private final AnalyzerProcessorSupplier analyzerProcessorSupplier;
 
     @Inject
     public MirrorServiceTopology(OsvMirrorHandler osvMirrorHandler,
-                                 NvdProcessorSupplier nvdProcessorSupplier,
-                                 AnalyzerProcessorSupplier analyzerProcessorSupplier) {
+                                 NvdProcessorSupplier nvdProcessorSupplier) {
         this.osvMirrorHandler = osvMirrorHandler;
         this.nvdProcessorSupplier = nvdProcessorSupplier;
-        this.analyzerProcessorSupplier = analyzerProcessorSupplier;
     }
 
     @Produces
@@ -88,7 +85,7 @@ public class MirrorServiceTopology {
                         .with(scanKeySerde, scanResultSerde)
                         .withName(processorNameConsume(KafkaTopic.VULN_ANALYSIS_RESULT)));
         analyzerStream
-                .process(analyzerProcessorSupplier, Named.as("analyzers_vulnerabilities"))
+                .process(AnalyzerProcessor::new, Named.as("analyzers_vulnerabilities"))
                 .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
                         .with(Serdes.String(), cyclonedxSerde)
                         .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "analyzer_vulnerability")));
