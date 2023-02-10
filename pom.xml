@@ -48,7 +48,7 @@
     <!-- SonarCloud -->
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>hyades</sonar.organization>
-    <sonar.projectKey>hyades_hyades</sonar.projectKey>
+    <sonar.projectKey>mehab_hyades</sonar.projectKey>
     <sonar.moduleKey>${artifactId}</sonar.moduleKey>
     <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
