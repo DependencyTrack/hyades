@@ -46,11 +46,11 @@
     <plugin.jacoco.version>0.8.8</plugin.jacoco.version>
 
     <!-- SonarCloud -->
-    <!--<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>mehab</sonar.organization>
     <sonar.projectKey>mehab_hyades</sonar.projectKey>
     <sonar.moduleKey>${artifactId}</sonar.moduleKey>
-    <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
+    <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M8</surefire-plugin.version>
