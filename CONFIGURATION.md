@@ -65,6 +65,8 @@ options that are expected to be changed by users.
 | `SCANNER_SNYK_API_TOKENS`                 | Comma-separated list of Snyk API tokens               | -                | When Snyk is enabled |
 | `SCANNER_SNYK_API_VERSION`                | Version of the Snyk API to use                        | `2022-12-15`     | When Snyk is enabled |
 | `SCANNER_SNYK_SEVERITY_SOURCE`            | Preferred source of vulnerability severities          | `NVD`            | When Snyk is enabled |
+| `SCANNER_SNYK_BATCH_INTERVAL`             | Max time to wait before submitting incomplete batches | `5S`             | When Snyk is enabled |
+| `SCANNER_SNYK_BATCH_SIZE`                 | Max size of batch at which it will be submitted       | `100`            | When Snyk is enabled |
 
 > **Note**
 > Refer
