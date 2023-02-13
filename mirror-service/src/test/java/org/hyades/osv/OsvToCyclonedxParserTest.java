@@ -6,7 +6,6 @@ import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.model.vulnerability.Vulnerability;
-import org.hyades.client.OsvClientConfig;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.hyades.util.ParsingUtil.trimSummary;
+import static org.hyades.commonutil.VulnerabilityUtil.trimSummary;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
