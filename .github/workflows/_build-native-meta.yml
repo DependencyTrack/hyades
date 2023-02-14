@@ -58,7 +58,7 @@ jobs:
           -Dquarkus.native.resources.includes="$RESOURCES_INCLUDES" \
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
     - name: Test Native Image
-      if: ${{ matrix.arch == "amd64" }}
+      if: ${{ matrix.arch == 'amd64' }}
       run: |-
         mvn -pl commons,${{ inputs.module }} test-compile failsafe:integration-test -Pnative
     - name: Upload Build Artifact
