@@ -2060,7 +2060,7 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(scanner_components_batch_size_sum{instance=~\"$instance\",scanner=\"ossindex\"}[1m])) without (instance, thread_id, task_id) / sum(rate(scanner_components_batch_size_count{instance=~\"$instance\",scanner=\"ossindex\"}[1m])) without (instance, thread_id, task_id) >= 0",
+          "expr": "sum(rate(scanner_components_batch_size_sum{instance=~\"$instance\",scanner=\"OssIndexProcessor\"}[1m])) without (instance, thread_id, task_id) / sum(rate(scanner_components_batch_size_count{instance=~\"$instance\",scanner=\"OssIndexProcessor\"}[1m])) without (instance, thread_id, task_id) >= 0",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -2157,7 +2157,7 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(scanner_components_scanned_total{instance=~\"$instance\",scanner=\"ossindex\"}[1m])) by (result)",
+          "expr": "sum(rate(scanner_components_scanned_total{instance=~\"$instance\",scanner=\"OssIndexProcessor\"}[1m])) by (result)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -2168,7 +2168,7 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(scanner_components_scanned_total{instance=~\"$instance\",scanner=\"ossindex\"}[1m]))",
+          "expr": "sum(rate(scanner_components_scanned_total{instance=~\"$instance\",scanner=\"OssIndexProcessor\"}[1m]))",
           "hide": false,
           "legendFormat": "Total",
           "range": true,
@@ -2793,7 +2793,7 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(httpcomponents_httpclient_request_seconds_sum{instance=~\"$instance\", client=\"snykHttpClient\"}[1m])) by (client) / sum(rate(httpcomponents_httpclient_request_seconds_count{instance=~\"$instance\"}[1m])) by (client) >= 0",
+          "expr": "sum(rate(http_client_requests_seconds_sum{instance=~\"$instance\", clientName=\"api.snyk.io\"}[1m])) by (client) / sum(rate(http_client_requests_seconds_count{instance=~\"$instance\"}[1m])) by (client) >= 0",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -3014,7 +3014,7 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(scanner_components_scanned_total{instance=~\"$instance\",scanner=\"snyk\"}[1m])) by (result)",
+          "expr": "sum(rate(scanner_components_scanned_total{instance=~\"$instance\",scanner=\"SnykProcessor\"}[1m])) by (result)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -3025,7 +3025,7 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(scanner_components_scanned_total{instance=~\"$instance\",scanner=\"snyk\"}[1m]))",
+          "expr": "sum(rate(scanner_components_scanned_total{instance=~\"$instance\",scanner=\"SnykProcessor\"}[1m]))",
           "hide": false,
           "legendFormat": "Total",
           "range": true,
