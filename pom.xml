@@ -13,6 +13,7 @@
     <module>mirror-service</module>
     <module>notification-publisher</module>
     <module>repository-meta-analyzer</module>
+    <module>proto</module>
     <module>vulnerability-analyzer</module>
   </modules>
     
@@ -44,6 +45,10 @@
 
     <!-- Plugin Versions -->
     <plugin.jacoco.version>0.8.8</plugin.jacoco.version>
+    <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
+
+    <!-- Tool Versions -->
+    <tool.protoc.version>3.21.12</tool.protoc.version>
 
     <!-- SonarCloud -->
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -69,6 +74,11 @@
       <dependency>
         <groupId>org.hyades</groupId>
         <artifactId>commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hyades</groupId>
+        <artifactId>proto</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -167,6 +177,12 @@
               <arg>-parameters</arg>
             </compilerArgs>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.github.os72</groupId>
+          <artifactId>protoc-jar-maven-plugin</artifactId>
+          <version>${plugin.protoc-jar.version}</version>
         </plugin>
 
         <plugin>
