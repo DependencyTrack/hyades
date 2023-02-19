@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+// Internal API for Hyades vulnerability analysis.
+package org.hyades.vulnanalysis.v1.internal;
+
+option java_multiple_files = true;
+option java_package = "org.hyades.proto.vulnanalysis.v1.internal";
+
+import "vuln-analysis_v1.proto";
+
+message ExpectedScans {
+  // Scanners for which a scan result is expected.
+  repeated Scanner scanners = 1;
+
+  // Whether this event represents a tombstone.
+  bool tombstone = 2;
+}
+
+message Scans {
+  // Scan statuses per scanner.
+  map<string, ScanStatus> statuses = 1;
+
+  // Whether this event represents a tombstone.
+  bool tombstone = 2;
+}
+
+message ScanTask {
+  // Key of the scan.
+  ScanKey key = 1;
+
+  // The scanner that shall process this event.
+  Scanner scanner = 2;
+
+  // The component that shall be scanned.
+  optional Component component = 3;
+
+  // Whether this event represents a tombstone.
+  bool tombstone = 4;
+}
