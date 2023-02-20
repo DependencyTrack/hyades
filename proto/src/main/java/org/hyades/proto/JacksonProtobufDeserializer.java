@@ -1,6 +1,5 @@
 package org.hyades.proto;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -23,7 +22,7 @@ public class JacksonProtobufDeserializer<T extends MessageOrBuilder> extends Std
 
     @Override
     @SuppressWarnings("unchecked")
-    public T deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException, JacksonException {
+    public T deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
         final Message.Builder builder;
         try {
             final Object builderObject = clazz.getMethod("newBuilder").invoke(null);
