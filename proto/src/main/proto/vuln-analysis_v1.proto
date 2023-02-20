@@ -19,9 +19,12 @@ message Component {
   // Package URL (PURL) of the component.
   optional string purl = 3;
 
+  // Software Identification (SWID) Tag ID of the component.
+  optional string swid_tag_id = 4;
+
   // Whether the component is internal to the organization.
   // Internal components should not be looked up in external sources.
-  bool internal = 4;
+  bool internal = 5;
 }
 
 enum Scanner {
