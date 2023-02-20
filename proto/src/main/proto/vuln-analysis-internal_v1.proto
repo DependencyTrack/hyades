@@ -13,7 +13,7 @@ message ExpectedScans {
   repeated Scanner scanners = 1;
 
   // Whether this event represents a tombstone.
-  bool tombstone = 2;
+  optional bool tombstone = 2;
 }
 
 message Scans {
@@ -21,7 +21,7 @@ message Scans {
   map<string, ScanStatus> statuses = 1;
 
   // Whether this event represents a tombstone.
-  bool tombstone = 2;
+  optional bool tombstone = 2;
 }
 
 message ScanTask {
@@ -35,5 +35,5 @@ message ScanTask {
   optional Component component = 3;
 
   // Whether this event represents a tombstone.
-  bool tombstone = 4;
+  optional bool tombstone = 4;
 }
