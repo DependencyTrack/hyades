@@ -24,7 +24,7 @@ message Component {
 
   // Whether the component is internal to the organization.
   // Internal components should not be looked up in external sources.
-  bool internal = 5;
+  optional bool internal = 5;
 }
 
 enum Scanner {
