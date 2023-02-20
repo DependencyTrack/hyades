@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+// Public API for communicating vulnerability details.
+// Heavily inspired by the CycloneDX schema: https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto
 package org.hyades.vuln.v1;
 
 option java_multiple_files = true;
@@ -45,9 +47,15 @@ enum Severity {
   SEVERITY_NONE = 6;
 }
 
-message Source {
-  string name = 1;
-  optional string url = 2;
+enum Source {
+  SOURCE_UNKNOWN = 0;
+  SOURCE_GITHUB = 1;
+  SOURCE_INTERNAL = 2;
+  SOURCE_NVD = 3;
+  SOURCE_OSSINDEX = 4;
+  SOURCE_OSV = 5;
+  SOURCE_SNYK = 6;
+  SOURCE_VULNDB = 7;
 }
 
 message Vulnerability {
