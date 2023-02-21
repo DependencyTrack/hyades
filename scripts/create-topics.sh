@@ -55,3 +55,12 @@ done
 create_topic "dtrack.vulnerability.mirror.osv" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
 create_topic "dtrack.vulnerability.mirror.nvd" "${VULN_MIRROR_TOPICS_PARTITIONS:-1}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
 create_topic "dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
+
+metrics_topics=(
+  "dtrack.metrics.component"
+  "dtrack.metrics.project",
+  "dtrack.metrics.portfolio"
+)
+for topic_name in "${metrics_topics[@]}"; do
+  create_topic "$topic_name" "${METRIC_TOPICS_PARTITIONS:-3}" "retention.ms=${METRICS_TOPICS_RETENTION_MS:-43200000}"
+done
