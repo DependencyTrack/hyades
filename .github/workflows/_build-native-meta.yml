@@ -100,7 +100,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
       if: ${{ startsWith(github.repository, 'DependencyTrack/') }}
     - name: Build Container Image
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v4
       with:
         context: ./${{ inputs.module }}
         file: ./${{ inputs.module }}/src/main/docker/Dockerfile.native-multiarch
