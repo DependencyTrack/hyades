@@ -1,12 +1,10 @@
 # Hyades
 
 [![Build Status](https://github.com/DependencyTrack/hyades/actions/workflows/ci.yml/badge.svg)](https://github.com/DependencyTrack/hyades/actions/workflows/ci.yml)
-<!--
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mehab_hyades&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mehab_hyades)
--->
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dependency-track_hyades&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dependency-track_hyades)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dependency-track_hyades&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dependency-track_hyades)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dependency-track_hyades&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dependency-track_hyades)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dependency-track_hyades&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=dependency-track_hyades)
 
 ## What is this? 🤔
 
