@@ -202,12 +202,32 @@ services:
   redpanda-console:
     image: docker.redpanda.com/vectorized/console:v2.1.1
     container_name: dt-redpanda-console
+    entrypoint: "/bin/sh"
+    command: "-c 'echo \"$$CONSOLE_CONFIG_FILE\" > \"$$CONFIG_FILEPATH\"; /app/console'"
     depends_on:
       - redpanda
     environment:
-      KAFKA_BROKERS: "redpanda:29092"
+      CONFIG_FILEPATH: "/tmp/config.yml"
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda:29092"]
+          protobuf:
+            enabled: true
+            mappings:
+              - topicName: dtrack.vuln-analysis.component
+                keyProtoType: org.hyades.vulnanalysis.v1.ScanKey
+                valueProtoType: org.hyades.vulnanalysis.v1.ScanCommand
+              - topicName: dtrack.vuln-analysis.result
+                keyProtoType: org.hyades.vulnanalysis.v1.ScanKey
+                valueProtoType: org.hyades.vulnanalysis.v1.ScanResult
+            fileSystem:
+              enabled: true
+              paths: ["/etc/protos"]
+              refreshInterval: 5m
     ports:
       - "127.0.0.1:28080:8080"
+    volumes:
+      - "./proto/src/main/proto:/etc/protos:ro"
     restart: unless-stopped
 
   prometheus:
