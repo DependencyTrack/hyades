@@ -36,7 +36,7 @@
     <lib.maven-artifact.version>4.0.0-alpha-4</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20220924</lib.org-json.version>
-    <lib.pebble.version>3.1.6</lib.pebble.version>
+    <lib.pebble.version>3.2.0</lib.pebble.version>
     <lib.quarkus-helm.version>0.2.7</lib.quarkus-helm.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>

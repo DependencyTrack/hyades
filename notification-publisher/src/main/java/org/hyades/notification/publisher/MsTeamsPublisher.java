@@ -18,7 +18,7 @@
  */
 package org.hyades.notification.publisher;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
 import org.hyades.model.Notification;
 import org.hyades.persistence.ConfigPropertyRepository;
@@ -34,7 +34,7 @@ public class MsTeamsPublisher extends AbstractWebhookPublisher implements Publis
     private final ConfigPropertyRepository configPropertyRepository;
 
     @Inject
-    public MsTeamsPublisher(final ConfigPropertyRepository configPropertyRepository){
+    public MsTeamsPublisher(final ConfigPropertyRepository configPropertyRepository) {
         this.configPropertyRepository = configPropertyRepository;
     }
 
