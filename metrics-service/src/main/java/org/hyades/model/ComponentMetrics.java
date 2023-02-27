@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @RegisterForReflection
-public class DependencyMetrics implements Serializable {
+public class ComponentMetrics implements Serializable {
 
     private long id;
 
@@ -22,54 +22,56 @@ public class DependencyMetrics implements Serializable {
 
     private int low;
 
-    private Integer unassigned;
+    private int unassigned;
 
     private int vulnerabilities;
 
     private int suppressed;
 
-    // New column, must allow nulls on existing databases)
-    private Integer findingsTotal;
 
-    private Integer findingsAudited;
+    private int findingsTotal;
 
-    private Integer findingsUnaudited;
+    private int findingsAudited;
+
+    private int findingsUnaudited;
 
     private double inheritedRiskScore;
 
-    private Integer policyViolationsFail;
+    private int policyViolationsFail;
 
-    private Integer policyViolationsWarn;
+    private int policyViolationsWarn;
 
-    private Integer policyViolationsInfo;
+    private int policyViolationsInfo;
 
-    private Integer policyViolationsTotal;
+    private int policyViolationsTotal;
 
-    private Integer policyViolationsAudited;
+    private int policyViolationsAudited;
 
-    private Integer policyViolationsUnaudited;
+    private int policyViolationsUnaudited;
 
-    private Integer policyViolationsSecurityTotal;
+    private int policyViolationsSecurityTotal;
 
-    private Integer policyViolationsSecurityAudited;
+    private int policyViolationsSecurityAudited;
 
-    private Integer policyViolationsSecurityUnaudited;
+    private int policyViolationsSecurityUnaudited;
 
-    private Integer policyViolationsLicenseTotal;
+    private int policyViolationsLicenseTotal;
 
-    private Integer policyViolationsLicenseAudited;
+    private int policyViolationsLicenseAudited;
 
-    private Integer policyViolationsLicenseUnaudited;
+    private int policyViolationsLicenseUnaudited;
 
-    private Integer policyViolationsOperationalTotal;
+    private int policyViolationsOperationalTotal;
 
-    private Integer policyViolationsOperationalAudited;
+    private int policyViolationsOperationalAudited;
 
-    private Integer policyViolationsOperationalUnaudited;
+    private int policyViolationsOperationalUnaudited;
 
     private Date firstOccurrence;
 
     private Date lastOccurrence;
+
+    private Status status;
 
     public long getId() {
         return id;
@@ -127,11 +129,11 @@ public class DependencyMetrics implements Serializable {
         this.low = low;
     }
 
-    public Integer getUnassigned() {
+    public int getUnassigned() {
         return unassigned;
     }
 
-    public void setUnassigned(Integer unassigned) {
+    public void setUnassigned(int unassigned) {
         this.unassigned = unassigned;
     }
 
@@ -151,27 +153,27 @@ public class DependencyMetrics implements Serializable {
         this.suppressed = suppressed;
     }
 
-    public Integer getFindingsTotal() {
+    public int getFindingsTotal() {
         return findingsTotal;
     }
 
-    public void setFindingsTotal(Integer findingsTotal) {
+    public void setFindingsTotal(int findingsTotal) {
         this.findingsTotal = findingsTotal;
     }
 
-    public Integer getFindingsAudited() {
+    public int getFindingsAudited() {
         return findingsAudited;
     }
 
-    public void setFindingsAudited(Integer findingsAudited) {
+    public void setFindingsAudited(int findingsAudited) {
         this.findingsAudited = findingsAudited;
     }
 
-    public Integer getFindingsUnaudited() {
+    public int getFindingsUnaudited() {
         return findingsUnaudited;
     }
 
-    public void setFindingsUnaudited(Integer findingsUnaudited) {
+    public void setFindingsUnaudited(int findingsUnaudited) {
         this.findingsUnaudited = findingsUnaudited;
     }
 
@@ -183,123 +185,123 @@ public class DependencyMetrics implements Serializable {
         this.inheritedRiskScore = inheritedRiskScore;
     }
 
-    public Integer getPolicyViolationsFail() {
+    public int getPolicyViolationsFail() {
         return policyViolationsFail;
     }
 
-    public void setPolicyViolationsFail(Integer policyViolationsFail) {
+    public void setPolicyViolationsFail(int policyViolationsFail) {
         this.policyViolationsFail = policyViolationsFail;
     }
 
-    public Integer getPolicyViolationsWarn() {
+    public int getPolicyViolationsWarn() {
         return policyViolationsWarn;
     }
 
-    public void setPolicyViolationsWarn(Integer policyViolationsWarn) {
+    public void setPolicyViolationsWarn(int policyViolationsWarn) {
         this.policyViolationsWarn = policyViolationsWarn;
     }
 
-    public Integer getPolicyViolationsInfo() {
+    public int getPolicyViolationsInfo() {
         return policyViolationsInfo;
     }
 
-    public void setPolicyViolationsInfo(Integer policyViolationsInfo) {
+    public void setPolicyViolationsInfo(int policyViolationsInfo) {
         this.policyViolationsInfo = policyViolationsInfo;
     }
 
-    public Integer getPolicyViolationsTotal() {
+    public int getPolicyViolationsTotal() {
         return policyViolationsTotal;
     }
 
-    public void setPolicyViolationsTotal(Integer policyViolationsTotal) {
+    public void setPolicyViolationsTotal(int policyViolationsTotal) {
         this.policyViolationsTotal = policyViolationsTotal;
     }
 
-    public Integer getPolicyViolationsAudited() {
+    public int getPolicyViolationsAudited() {
         return policyViolationsAudited;
     }
 
-    public void setPolicyViolationsAudited(Integer policyViolationsAudited) {
+    public void setPolicyViolationsAudited(int policyViolationsAudited) {
         this.policyViolationsAudited = policyViolationsAudited;
     }
 
-    public Integer getPolicyViolationsUnaudited() {
+    public int getPolicyViolationsUnaudited() {
         return policyViolationsUnaudited;
     }
 
-    public void setPolicyViolationsUnaudited(Integer policyViolationsUnaudited) {
+    public void setPolicyViolationsUnaudited(int policyViolationsUnaudited) {
         this.policyViolationsUnaudited = policyViolationsUnaudited;
     }
 
-    public Integer getPolicyViolationsSecurityTotal() {
+    public int getPolicyViolationsSecurityTotal() {
         return policyViolationsSecurityTotal;
     }
 
-    public void setPolicyViolationsSecurityTotal(Integer policyViolationsSecurityTotal) {
+    public void setPolicyViolationsSecurityTotal(int policyViolationsSecurityTotal) {
         this.policyViolationsSecurityTotal = policyViolationsSecurityTotal;
     }
 
-    public Integer getPolicyViolationsSecurityAudited() {
+    public int getPolicyViolationsSecurityAudited() {
         return policyViolationsSecurityAudited;
     }
 
-    public void setPolicyViolationsSecurityAudited(Integer policyViolationsSecurityAudited) {
+    public void setPolicyViolationsSecurityAudited(int policyViolationsSecurityAudited) {
         this.policyViolationsSecurityAudited = policyViolationsSecurityAudited;
     }
 
-    public Integer getPolicyViolationsSecurityUnaudited() {
+    public int getPolicyViolationsSecurityUnaudited() {
         return policyViolationsSecurityUnaudited;
     }
 
-    public void setPolicyViolationsSecurityUnaudited(Integer policyViolationsSecurityUnaudited) {
+    public void setPolicyViolationsSecurityUnaudited(int policyViolationsSecurityUnaudited) {
         this.policyViolationsSecurityUnaudited = policyViolationsSecurityUnaudited;
     }
 
-    public Integer getPolicyViolationsLicenseTotal() {
+    public int getPolicyViolationsLicenseTotal() {
         return policyViolationsLicenseTotal;
     }
 
-    public void setPolicyViolationsLicenseTotal(Integer policyViolationsLicenseTotal) {
+    public void setPolicyViolationsLicenseTotal(int policyViolationsLicenseTotal) {
         this.policyViolationsLicenseTotal = policyViolationsLicenseTotal;
     }
 
-    public Integer getPolicyViolationsLicenseAudited() {
+    public int getPolicyViolationsLicenseAudited() {
         return policyViolationsLicenseAudited;
     }
 
-    public void setPolicyViolationsLicenseAudited(Integer policyViolationsLicenseAudited) {
+    public void setPolicyViolationsLicenseAudited(int policyViolationsLicenseAudited) {
         this.policyViolationsLicenseAudited = policyViolationsLicenseAudited;
     }
 
-    public Integer getPolicyViolationsLicenseUnaudited() {
+    public int getPolicyViolationsLicenseUnaudited() {
         return policyViolationsLicenseUnaudited;
     }
 
-    public void setPolicyViolationsLicenseUnaudited(Integer policyViolationsLicenseUnaudited) {
+    public void setPolicyViolationsLicenseUnaudited(int policyViolationsLicenseUnaudited) {
         this.policyViolationsLicenseUnaudited = policyViolationsLicenseUnaudited;
     }
 
-    public Integer getPolicyViolationsOperationalTotal() {
+    public int getPolicyViolationsOperationalTotal() {
         return policyViolationsOperationalTotal;
     }
 
-    public void setPolicyViolationsOperationalTotal(Integer policyViolationsOperationalTotal) {
+    public void setPolicyViolationsOperationalTotal(int policyViolationsOperationalTotal) {
         this.policyViolationsOperationalTotal = policyViolationsOperationalTotal;
     }
 
-    public Integer getPolicyViolationsOperationalAudited() {
+    public int getPolicyViolationsOperationalAudited() {
         return policyViolationsOperationalAudited;
     }
 
-    public void setPolicyViolationsOperationalAudited(Integer policyViolationsOperationalAudited) {
+    public void setPolicyViolationsOperationalAudited(int policyViolationsOperationalAudited) {
         this.policyViolationsOperationalAudited = policyViolationsOperationalAudited;
     }
 
-    public Integer getPolicyViolationsOperationalUnaudited() {
+    public int getPolicyViolationsOperationalUnaudited() {
         return policyViolationsOperationalUnaudited;
     }
 
-    public void setPolicyViolationsOperationalUnaudited(Integer policyViolationsOperationalUnaudited) {
+    public void setPolicyViolationsOperationalUnaudited(int policyViolationsOperationalUnaudited) {
         this.policyViolationsOperationalUnaudited = policyViolationsOperationalUnaudited;
     }
 
@@ -317,5 +319,13 @@ public class DependencyMetrics implements Serializable {
 
     public void setLastOccurrence(Date lastOccurrence) {
         this.lastOccurrence = lastOccurrence;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

@@ -1,4 +1,4 @@
-package org.hyades.metrics;
+package org.hyades.processor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
@@ -6,6 +6,7 @@ import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
+import org.hyades.model.ComponentMetrics;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -15,6 +16,7 @@ import static org.apache.kafka.streams.state.Stores.keyValueStoreBuilder;
 import static org.apache.kafka.streams.state.Stores.persistentKeyValueStore;
 
 public class DeltaProcessorConfiguration {
+
     @Produces
     @ApplicationScoped
     @Named("deltaStoreBuilder")

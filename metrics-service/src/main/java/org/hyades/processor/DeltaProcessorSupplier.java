@@ -1,10 +1,10 @@
-package org.hyades.metrics;
+package org.hyades.processor;
 
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorSupplier;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
-import org.hyades.model.DependencyMetrics;
+import org.hyades.model.ComponentMetrics;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,17 +12,17 @@ import javax.inject.Named;
 import java.util.Set;
 
 @ApplicationScoped
-public class DeltaProcessorSupplier implements ProcessorSupplier<String, DependencyMetrics, String, DependencyMetrics> {
+public class DeltaProcessorSupplier implements ProcessorSupplier<String, ComponentMetrics, String, ComponentMetrics> {
 
-    private final StoreBuilder<KeyValueStore<String, DependencyMetrics>> deltaStoreBuilder;
+    private final StoreBuilder<KeyValueStore<String, ComponentMetrics>> deltaStoreBuilder;
 
     @Inject
-    public DeltaProcessorSupplier(@Named("deltaStoreBuilder") final StoreBuilder<KeyValueStore<String, DependencyMetrics>> batchStoreBuilder) {
-        this.deltaStoreBuilder = batchStoreBuilder;
+    public DeltaProcessorSupplier(@Named("deltaStoreBuilder") final StoreBuilder<KeyValueStore<String, ComponentMetrics>> deltaStoreBuilder) {
+        this.deltaStoreBuilder = deltaStoreBuilder;
     }
 
     @Override
-    public Processor<String, DependencyMetrics, String, DependencyMetrics> get() {
+    public Processor<String, ComponentMetrics, String, ComponentMetrics> get() {
         return new DeltaProcessor(deltaStoreBuilder.name());
     }
 
@@ -30,5 +30,4 @@ public class DeltaProcessorSupplier implements ProcessorSupplier<String, Depende
     public Set<StoreBuilder<?>> stores() {
         return Set.of(deltaStoreBuilder);
     }
-
 }
