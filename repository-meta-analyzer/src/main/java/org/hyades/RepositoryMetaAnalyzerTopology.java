@@ -7,6 +7,7 @@ import io.quarkus.cache.CaffeineCache;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.hyades.common.KafkaTopic;
 import org.hyades.common.SecretDecryptor;
+import org.hyades.config.KafkaTopicConfig;
 import org.hyades.model.Component;
 import org.hyades.model.MetaAnalyzerCacheKey;
 import org.hyades.model.MetaModel;
@@ -58,6 +59,7 @@ public class RepositoryMetaAnalyzerTopology {
     private final PypiMetaAnalyzer pypiMetaAnalyzer;
     private final RepoEntityRepository repoEntityRepository;
     private final SecretDecryptor secretDecryptor;
+    private final KafkaTopicConfig kafkaTopicConfig;
     @Inject
     @CacheName("metaAnalyzer")
     Cache cache;
@@ -72,8 +74,8 @@ public class RepositoryMetaAnalyzerTopology {
                                           final NugetMetaAnalyzer nugetMetaAnalyzer,
                                           final PypiMetaAnalyzer pypiMetaAnalyzer,
                                           final RepoEntityRepository repoEntityRepository,
-                                          final SecretDecryptor secretDecryptor
-    ) {
+                                          final SecretDecryptor secretDecryptor,
+                                          KafkaTopicConfig kafkaTopicConfig) {
         this.composerMetaAnalyzer = composerMetaAnalyzer;
         this.gemMetaAnalyzer = gemMetaAnalyzer;
         this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
@@ -84,6 +86,7 @@ public class RepositoryMetaAnalyzerTopology {
         this.pypiMetaAnalyzer = pypiMetaAnalyzer;
         this.repoEntityRepository = repoEntityRepository;
         this.secretDecryptor = secretDecryptor;
+        this.kafkaTopicConfig = kafkaTopicConfig;
     }
 
     @Produces

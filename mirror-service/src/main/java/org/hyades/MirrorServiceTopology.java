@@ -12,6 +12,7 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.cyclonedx.model.Bom;
 import org.hyades.analyzer.AnalyzerProcessor;
 import org.hyades.common.KafkaTopic;
+import org.hyades.config.KafkaTopicConfig;
 import org.hyades.model.Vulnerability;
 import org.hyades.model.VulnerabilityScanKey;
 import org.hyades.model.VulnerabilityScanResult;
@@ -32,12 +33,14 @@ public class MirrorServiceTopology {
 
     private final OsvMirrorHandler osvMirrorHandler;
     private final NvdProcessorSupplier nvdProcessorSupplier;
+    private final KafkaTopicConfig kafkaTopicConfig;
 
     @Inject
     public MirrorServiceTopology(OsvMirrorHandler osvMirrorHandler,
-                                 NvdProcessorSupplier nvdProcessorSupplier) {
+                                 NvdProcessorSupplier nvdProcessorSupplier, KafkaTopicConfig kafkaTopicConfig) {
         this.osvMirrorHandler = osvMirrorHandler;
         this.nvdProcessorSupplier = nvdProcessorSupplier;
+        this.kafkaTopicConfig = kafkaTopicConfig;
     }
 
     @Produces
