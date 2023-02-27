@@ -18,18 +18,18 @@
  */
 package org.hyades.notification.publisher;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.pebbletemplates.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.template.PebbleTemplate;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.runtime.Startup;
+import org.apache.commons.lang3.BooleanUtils;
 import org.hyades.model.ConfigProperty;
 import org.hyades.model.ConfigPropertyConstants;
 import org.hyades.model.Notification;
 import org.hyades.model.Team;
 import org.hyades.persistence.ConfigPropertyRepository;
 import org.hyades.persistence.ManagedUserRepository;
-import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

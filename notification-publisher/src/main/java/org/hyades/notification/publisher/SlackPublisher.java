@@ -17,7 +17,8 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.hyades.notification.publisher;
-import com.mitchellbosecke.pebble.PebbleEngine;
+
+import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
 import org.hyades.model.Notification;
 import org.hyades.persistence.ConfigPropertyRepository;
@@ -33,9 +34,10 @@ public class SlackPublisher extends AbstractWebhookPublisher implements Publishe
     private final ConfigPropertyRepository configPropertyRepository;
 
     @Inject
-    public SlackPublisher(final ConfigPropertyRepository configPropertyRepository){
+    public SlackPublisher(final ConfigPropertyRepository configPropertyRepository) {
         this.configPropertyRepository = configPropertyRepository;
     }
+
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().defaultEscapingStrategy("json").build();
 
     public void inform(final Notification notification, final JsonObject config) {

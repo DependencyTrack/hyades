@@ -18,7 +18,7 @@
  */
 package org.hyades.notification.publisher;
 
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.pebbletemplates.pebble.template.PebbleTemplate;
 import org.hyades.commonnotification.NotificationConstants;
 import org.hyades.commonnotification.NotificationGroup;
 import org.hyades.commonnotification.NotificationScope;
