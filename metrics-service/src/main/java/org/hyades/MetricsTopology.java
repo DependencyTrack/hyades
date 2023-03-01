@@ -16,11 +16,12 @@ import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.StoreBuilder;
 import org.hyades.common.KafkaTopic;
-import org.hyades.model.ComponentMetrics;
-import org.hyades.model.PortfolioMetrics;
-import org.hyades.model.ProjectMetrics;
-import org.hyades.processor.DeltaProcessorSupplier;
+import org.hyades.metrics.model.ComponentMetrics;
+import org.hyades.metrics.model.PortfolioMetrics;
+import org.hyades.metrics.model.ProjectMetrics;
+import org.hyades.metrics.processor.DeltaProcessorSupplier;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -34,9 +35,18 @@ public class MetricsTopology {
 
     private final DeltaProcessorSupplier deltaProcessorSupplier;
 
+    private final StoreBuilder<KeyValueStore<String, ProjectMetrics>> projectMetricsStoreBuilder;
+
+    private final StoreBuilder<KeyValueStore<String, PortfolioMetrics>> portfolioMetricsStoreBuilder;
+
     @Inject
-    public MetricsTopology(final DeltaProcessorSupplier deltaProcessorSupplier) {
+    public MetricsTopology(final DeltaProcessorSupplier deltaProcessorSupplier,
+                           final StoreBuilder<KeyValueStore<String, ProjectMetrics>> projectMetricsStoreBuilder,
+                           final StoreBuilder<KeyValueStore<String, PortfolioMetrics>> portfolioMetricsStoreBuilder) {
         this.deltaProcessorSupplier = deltaProcessorSupplier;
+        this.projectMetricsStoreBuilder = projectMetricsStoreBuilder;
+        this.portfolioMetricsStoreBuilder = portfolioMetricsStoreBuilder;
+
     }
 
     @Produces
@@ -69,10 +79,10 @@ public class MetricsTopology {
                         projectMetricsInitializer,
                         metricsAdder,
                         Named.as("aggregate-component-metrics-to-project-metrics"),
-                        Materialized.<String, ProjectMetrics, KeyValueStore<Bytes, byte[]>>as("project-metrics")
+                        Materialized.<String, ProjectMetrics, KeyValueStore<Bytes, byte[]>>as(projectMetricsStoreBuilder.name())
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(projectMetricsSerde)
-                                .withStoreType(Materialized.StoreType.ROCKS_DB));
+                                .withStoreType(Materialized.StoreType.IN_MEMORY));
 
         //stream projectMetricsTable to project metrics topic
         projectMetricsTable
@@ -88,7 +98,7 @@ public class MetricsTopology {
                         .withName(processorNameConsume(KafkaTopic.PROJECT_METRICS)));
 
         KGroupedStream<String, ProjectMetrics> kGroupedProjectStream = projectMetricsKStream
-                .groupBy((key, value) -> "new key", Grouped
+                .groupBy((key, value) -> "re-key", Grouped
                         .with(Serdes.String(), projectMetricsSerde)
                         .withName("group_metrics_by_portfolio"));
 
@@ -102,10 +112,10 @@ public class MetricsTopology {
                         portfolioMetricsInitializer,
                         portfolioMetricsAdder,
                         Named.as("aggregate-project-metrics-to-portfolio-metrics"),
-                        Materialized.<String, PortfolioMetrics, KeyValueStore<Bytes, byte[]>>as("portfolio-metrics")
+                        Materialized.<String, PortfolioMetrics, KeyValueStore<Bytes, byte[]>>as(portfolioMetricsStoreBuilder.name())
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(portfolioMetricsSerde)
-                                .withStoreType(Materialized.StoreType.ROCKS_DB));
+                                .withStoreType(Materialized.StoreType.IN_MEMORY));
 
         //stream portfolioMetricsTable to portfolio metrics topic
         portfolioMetricsTable

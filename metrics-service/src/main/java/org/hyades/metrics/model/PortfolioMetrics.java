@@ -1,4 +1,4 @@
-package org.hyades.model;
+package org.hyades.metrics.model;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
@@ -6,13 +6,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 @RegisterForReflection
-public class ComponentMetrics implements Serializable {
+public class PortfolioMetrics implements Serializable {
 
     private long id;
-
-    private Project project;
-
-    private Component component;
 
     private int critical;
 
@@ -26,8 +22,15 @@ public class ComponentMetrics implements Serializable {
 
     private int vulnerabilities;
 
-    private int suppressed;
+    private int projects;
 
+    private int vulnerableProjects;
+
+    private int components;
+
+    private int vulnerableComponents;
+
+    private int suppressed;
 
     private int findingsTotal;
 
@@ -71,7 +74,46 @@ public class ComponentMetrics implements Serializable {
 
     private Date lastOccurrence;
 
-    private Status status;
+
+    public PortfolioMetrics add(ProjectMetrics projectMetrics) {
+        if (projectMetrics == null) {
+            return this;
+        }
+
+        this.projects++;
+        if (projectMetrics.getVulnerabilities() > 0) {
+            this.vulnerableProjects++;
+        }
+
+        this.components += projectMetrics.getComponents();
+        this.critical += projectMetrics.getCritical();
+        this.high += projectMetrics.getHigh();
+        this.medium += projectMetrics.getMedium();
+        this.low += projectMetrics.getLow();
+        this.vulnerabilities += projectMetrics.getVulnerabilities();
+        this.vulnerableComponents += projectMetrics.getVulnerableComponents();
+
+        this.findingsAudited += projectMetrics.getFindingsAudited();
+        this.findingsTotal += projectMetrics.getFindingsTotal();
+        this.findingsUnaudited += projectMetrics.getFindingsUnaudited();
+        this.policyViolationsAudited += projectMetrics.getPolicyViolationsAudited();
+        this.policyViolationsFail += projectMetrics.getPolicyViolationsFail();
+        this.policyViolationsInfo += projectMetrics.getPolicyViolationsInfo();
+        this.policyViolationsWarn += projectMetrics.getPolicyViolationsWarn();
+        this.policyViolationsLicenseTotal += projectMetrics.getPolicyViolationsLicenseTotal();
+        this.policyViolationsLicenseAudited += projectMetrics.getPolicyViolationsAudited();
+        this.policyViolationsLicenseUnaudited += projectMetrics.getPolicyViolationsLicenseUnaudited();
+        this.policyViolationsOperationalAudited += projectMetrics.getPolicyViolationsOperationalUnaudited();
+        this.policyViolationsOperationalTotal += projectMetrics.getPolicyViolationsOperationalTotal();
+        this.policyViolationsOperationalUnaudited += projectMetrics.getPolicyViolationsOperationalUnaudited();
+        this.policyViolationsSecurityAudited += projectMetrics.getPolicyViolationsSecurityAudited();
+        this.policyViolationsSecurityTotal += projectMetrics.getPolicyViolationsSecurityTotal();
+        this.policyViolationsSecurityUnaudited += projectMetrics.getPolicyViolationsSecurityUnaudited();
+        this.inheritedRiskScore = inheritedRiskScore(this.critical, this.high, this.medium, this.low, this.unassigned);
+        this.lastOccurrence = new Date();
+        this.firstOccurrence = new Date();
+        return this;
+    }
 
     public long getId() {
         return id;
@@ -79,22 +121,6 @@ public class ComponentMetrics implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public Component getComponent() {
-        return component;
-    }
-
-    public void setComponent(Component component) {
-        this.component = component;
     }
 
     public int getCritical() {
@@ -143,6 +169,38 @@ public class ComponentMetrics implements Serializable {
 
     public void setVulnerabilities(int vulnerabilities) {
         this.vulnerabilities = vulnerabilities;
+    }
+
+    public int getProjects() {
+        return projects;
+    }
+
+    public void setProjects(int projects) {
+        this.projects = projects;
+    }
+
+    public int getVulnerableProjects() {
+        return vulnerableProjects;
+    }
+
+    public void setVulnerableProjects(int vulnerableProjects) {
+        this.vulnerableProjects = vulnerableProjects;
+    }
+
+    public int getComponents() {
+        return components;
+    }
+
+    public void setComponents(int components) {
+        this.components = components;
+    }
+
+    public int getVulnerableComponents() {
+        return vulnerableComponents;
+    }
+
+    public void setVulnerableComponents(int vulnerableComponents) {
+        this.vulnerableComponents = vulnerableComponents;
     }
 
     public int getSuppressed() {
@@ -321,11 +379,7 @@ public class ComponentMetrics implements Serializable {
         this.lastOccurrence = lastOccurrence;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
+    public static double inheritedRiskScore(final int critical, final int high, final int medium, final int low, final int unassigned) {
+        return (double) ((critical * 10) + (high * 5) + (medium * 3) + (low * 1) + (unassigned * 5));
     }
 }

@@ -1,11 +1,11 @@
-package org.hyades.processor;
+package org.hyades.metrics.processor;
 
 import org.apache.kafka.streams.processor.api.ContextualProcessor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.hyades.model.ComponentMetrics;
-import org.hyades.model.Status;
+import org.hyades.metrics.model.ComponentMetrics;
+import org.hyades.metrics.model.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,22 +36,24 @@ public class DeltaProcessor extends ContextualProcessor<String, ComponentMetrics
      */
     @Override
     public void process(Record<String, ComponentMetrics> record) {
+
         String componentId = record.key();
         ComponentMetrics componentMetrics = record.value();
-
         ComponentMetrics lastComponentMetrics = store.get(componentId);
 
-        //TODO check for value being null. If no body in record, it is a tombstone event
-        //Drop the record from store
-        //set status to deleted
-        //send delta with status deleted and corresponding metrics to be deleted
+        ComponentMetrics deltaComponentMetrics;
 
-        //calculate Delta metrics
-        ComponentMetrics deltaComponentMetrics = lastComponentMetrics == null
-                ? newComponentMetrics(componentMetrics)
-                : calculateDelta(componentMetrics, lastComponentMetrics);
+        if (record.value() == null) {
+            LOGGER.info("Tombstone event for component metrics for component id: {} Deleting record from store");
+            store.delete(componentId);
+            deltaComponentMetrics = deletedComponentMetrics(lastComponentMetrics);
+        } else {
+            deltaComponentMetrics = lastComponentMetrics == null
+                    ? newComponentMetrics(componentMetrics)
+                    : calculateDelta(componentMetrics, lastComponentMetrics);
 
-        store.put(componentId, componentMetrics);
+            store.put(componentId, componentMetrics);
+        }
         this.context().forward(new Record(componentId, deltaComponentMetrics, context().currentSystemTimeMs()));
     }
 
@@ -92,6 +94,38 @@ public class DeltaProcessor extends ContextualProcessor<String, ComponentMetrics
     private static ComponentMetrics newComponentMetrics(ComponentMetrics componentMetrics) {
         componentMetrics.setStatus(Status.CREATED);
         return componentMetrics;
+    }
+
+    private static ComponentMetrics deletedComponentMetrics(ComponentMetrics componentMetrics) {
+        ComponentMetrics deltaMetrics = new ComponentMetrics();
+        deltaMetrics.setStatus(Status.DELETED);
+        deltaMetrics.setProject(componentMetrics.getProject());
+        deltaMetrics.setComponent(componentMetrics.getComponent());
+        deltaMetrics.setCritical(0 - componentMetrics.getCritical());
+        deltaMetrics.setHigh(0 - componentMetrics.getHigh());
+        deltaMetrics.setMedium(0 - componentMetrics.getMedium());
+        deltaMetrics.setLow(0 - componentMetrics.getLow());
+        deltaMetrics.setFindingsTotal(0 - componentMetrics.getFindingsTotal());
+        deltaMetrics.setFindingsAudited(0 - componentMetrics.getFindingsAudited());
+        deltaMetrics.setFindingsUnaudited(0 - componentMetrics.getFindingsUnaudited());
+        deltaMetrics.setPolicyViolationsAudited(0 - componentMetrics.getPolicyViolationsAudited());
+        deltaMetrics.setPolicyViolationsUnaudited(0 - componentMetrics.getPolicyViolationsUnaudited());
+        deltaMetrics.setPolicyViolationsFail(0 - componentMetrics.getPolicyViolationsFail());
+        deltaMetrics.setPolicyViolationsInfo(0 - componentMetrics.getPolicyViolationsInfo());
+        deltaMetrics.setPolicyViolationsTotal(0 - componentMetrics.getPolicyViolationsTotal());
+        deltaMetrics.setPolicyViolationsWarn(0 - componentMetrics.getPolicyViolationsWarn());
+        deltaMetrics.setPolicyViolationsLicenseUnaudited(0 - componentMetrics.getPolicyViolationsLicenseUnaudited());
+        deltaMetrics.setPolicyViolationsLicenseAudited(0 - componentMetrics.getPolicyViolationsLicenseAudited());
+        deltaMetrics.setPolicyViolationsLicenseTotal(0 - componentMetrics.getPolicyViolationsLicenseTotal());
+        deltaMetrics.setPolicyViolationsOperationalAudited(0 - componentMetrics.getPolicyViolationsOperationalAudited());
+        deltaMetrics.setPolicyViolationsOperationalUnaudited(0 - componentMetrics.getPolicyViolationsOperationalAudited());
+        deltaMetrics.setPolicyViolationsOperationalTotal(0 - componentMetrics.getPolicyViolationsOperationalTotal());
+        deltaMetrics.setVulnerabilities(0 - componentMetrics.getVulnerabilities());
+        deltaMetrics.setUnassigned(0 - componentMetrics.getUnassigned());
+        deltaMetrics.setPolicyViolationsSecurityAudited(0 - componentMetrics.getPolicyViolationsSecurityAudited());
+        deltaMetrics.setPolicyViolationsSecurityUnaudited(0 - componentMetrics.getPolicyViolationsSecurityUnaudited());
+        deltaMetrics.setPolicyViolationsSecurityTotal(0 - componentMetrics.getPolicyViolationsSecurityTotal());
+        return deltaMetrics;
     }
 }
 

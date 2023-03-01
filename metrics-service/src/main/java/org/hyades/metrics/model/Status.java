@@ -1,4 +1,4 @@
-package org.hyades.model;
+package org.hyades.metrics.model;
 
 public enum Status {
     CREATED,

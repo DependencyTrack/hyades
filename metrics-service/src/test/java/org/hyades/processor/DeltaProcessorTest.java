@@ -10,9 +10,10 @@ import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.test.TestRecord;
+import org.hyades.metrics.model.ComponentMetrics;
+import org.hyades.metrics.model.Status;
+import org.hyades.metrics.processor.DeltaProcessorSupplier;
 import org.hyades.model.Component;
-import org.hyades.model.ComponentMetrics;
-import org.hyades.model.Status;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,6 +71,7 @@ public class DeltaProcessorTest {
             assertThat(record.getValue().getHigh()).isEqualTo(3);
             assertThat(record.getValue().getMedium()).isEqualTo(4);
             assertThat(record.getValue().getVulnerabilities()).isEqualTo(2);
+            assertThat(record.getValue().getFindingsAudited()).isEqualTo(1);
         });
     }
 
@@ -91,6 +93,7 @@ public class DeltaProcessorTest {
                     assertThat(record.getValue().getHigh()).isEqualTo(3);
                     assertThat(record.getValue().getMedium()).isEqualTo(4);
                     assertThat(record.getValue().getVulnerabilities()).isEqualTo(2);
+                    assertThat(record.getValue().getFindingsAudited()).isEqualTo(1);
                 },
 
                 record -> {
@@ -100,6 +103,35 @@ public class DeltaProcessorTest {
                     assertThat(record.getValue().getHigh()).isEqualTo(-1);
                     assertThat(record.getValue().getMedium()).isEqualTo(0);
                     assertThat(record.getValue().getVulnerabilities()).isEqualTo(0);
+                    assertThat(record.getValue().getFindingsAudited()).isEqualTo(0);
+                }
+        );
+    }
+
+    @Test
+    void testTombstoneEventForComponentInStore() {
+
+        final TestRecord<String, ComponentMetrics> inputRecord = createTestRecord(2, 3, 4, 2);
+        inputTopic.pipeInput(inputRecord);
+        inputTopic.pipeInput(new TestRecord<>(COMPONENT_UUID.toString(), null));
+
+        assertThat(outputTopic.readRecordsToList()).satisfiesExactlyInAnyOrder(
+                record -> {
+                    assertThat(record.getValue().getCritical()).isEqualTo(2);
+                    assertThat(record.getValue().getComponent().getUuid().toString()).isEqualTo(inputRecord.getKey());
+                    assertThat(record.getValue().getStatus()).isEqualTo(Status.CREATED);
+                    assertThat(record.getValue().getHigh()).isEqualTo(3);
+                    assertThat(record.getValue().getMedium()).isEqualTo(4);
+                    assertThat(record.getValue().getVulnerabilities()).isEqualTo(2);
+                },
+
+                record -> {
+                    assertThat(record.getValue().getCritical()).isEqualTo(-2);
+                    assertThat(record.getValue().getComponent().getUuid().toString()).isEqualTo(inputRecord.getKey());
+                    assertThat(record.getValue().getStatus()).isEqualTo(Status.DELETED);
+                    assertThat(record.getValue().getHigh()).isEqualTo(-3);
+                    assertThat(record.getValue().getMedium()).isEqualTo(-4);
+                    assertThat(record.getValue().getVulnerabilities()).isEqualTo(-2);
                 }
         );
     }
@@ -114,6 +146,7 @@ public class DeltaProcessorTest {
         componentMetrics.setMedium(medium);
         componentMetrics.setVulnerabilities(vulnerabilities);
         componentMetrics.setComponent(component);
+        componentMetrics.setFindingsAudited(1);
         return new TestRecord<>(COMPONENT_UUID.toString(), componentMetrics);
     }
 }

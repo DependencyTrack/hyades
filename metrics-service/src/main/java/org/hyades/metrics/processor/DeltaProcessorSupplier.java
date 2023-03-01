@@ -1,10 +1,10 @@
-package org.hyades.processor;
+package org.hyades.metrics.processor;
 
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorSupplier;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
-import org.hyades.model.ComponentMetrics;
+import org.hyades.metrics.model.ComponentMetrics;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
