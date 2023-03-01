@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
+import org.apache.kafka.streams.state.Stores;
 import org.hyades.metrics.model.ComponentMetrics;
-import org.hyades.metrics.model.PortfolioMetrics;
-import org.hyades.metrics.model.ProjectMetrics;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -31,19 +31,16 @@ public class DeltaProcessorConfiguration {
 
     @Produces
     @ApplicationScoped
-    @Named("projectMetricsStoreBuilder")
-    StoreBuilder<KeyValueStore<String, ProjectMetrics>> projectMetricsStoreBuilder() {
-        return keyValueStoreBuilder(persistentKeyValueStore("project-metrics-store"),
-                new Serdes.StringSerde(), Serdes.serdeFrom(new ObjectMapperSerializer<>(),
-                        new ObjectMapperDeserializer<>(new TypeReference<>() {
-                        })));
+    @Named("projectMetricsStoreSupplier")
+    KeyValueBytesStoreSupplier projectMetricsStoreSupplier() {
+        return Stores.persistentKeyValueStore("metrics-store-project");
     }
 
-    @Named("portfolioMetricsStoreBuilder")
-    StoreBuilder<KeyValueStore<String, PortfolioMetrics>> portfolioMetricsStoreBuilder() {
-        return keyValueStoreBuilder(persistentKeyValueStore("portfolio-metrics-store"),
-                new Serdes.StringSerde(), Serdes.serdeFrom(new ObjectMapperSerializer<>(),
-                        new ObjectMapperDeserializer<>(new TypeReference<>() {
-                        })));
+    @Produces
+    @ApplicationScoped
+    @Named("portfolioMetricsStoreSupplier")
+    KeyValueBytesStoreSupplier portfolioMetricsStoreSupplier() {
+        return Stores.persistentKeyValueStore("metrics-store-portfolio");
     }
 }
+

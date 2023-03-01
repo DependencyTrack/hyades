@@ -61,7 +61,7 @@ public class MetricsTopologyTest {
                 .awaitCompletion()
                 .getRecords();
 
-        final List<ConsumerRecord<String, PortfolioMetrics>> protfolioResults = kafkaCompanion
+        final List<ConsumerRecord<String, PortfolioMetrics>> portfolioResults = kafkaCompanion
                 .consume(new Serdes.StringSerde(), new ObjectMapperSerde<>(PortfolioMetrics.class))
                 .fromTopics(KafkaTopic.PORTFOLIO_METRICS.getName(), 1, Duration.ofSeconds(8))
                 .awaitCompletion()
@@ -78,8 +78,8 @@ public class MetricsTopologyTest {
                 }
         );
 
-        assertThat(protfolioResults.size()).isEqualTo(1);
-        assertThat(protfolioResults).satisfiesExactly(
+        assertThat(portfolioResults.size()).isEqualTo(1);
+        assertThat(portfolioResults).satisfiesExactly(
                 record -> {
                     assertThat(record.value().getProjects()).isEqualTo(1);
                     assertThat(record.value().getComponents()).isEqualTo(1);

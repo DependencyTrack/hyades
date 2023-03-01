@@ -2,7 +2,6 @@ package org.hyades;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Aggregator;
@@ -15,8 +14,7 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.StoreBuilder;
+import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
 import org.hyades.common.KafkaTopic;
 import org.hyades.metrics.model.ComponentMetrics;
 import org.hyades.metrics.model.PortfolioMetrics;
@@ -35,18 +33,18 @@ public class MetricsTopology {
 
     private final DeltaProcessorSupplier deltaProcessorSupplier;
 
-    private final StoreBuilder<KeyValueStore<String, ProjectMetrics>> projectMetricsStoreBuilder;
+    private final KeyValueBytesStoreSupplier projectMetricsStoreSupplier;
 
-    private final StoreBuilder<KeyValueStore<String, PortfolioMetrics>> portfolioMetricsStoreBuilder;
+    private final KeyValueBytesStoreSupplier portfolioMetricsStoreSupplier;
+
 
     @Inject
     public MetricsTopology(final DeltaProcessorSupplier deltaProcessorSupplier,
-                           final StoreBuilder<KeyValueStore<String, ProjectMetrics>> projectMetricsStoreBuilder,
-                           final StoreBuilder<KeyValueStore<String, PortfolioMetrics>> portfolioMetricsStoreBuilder) {
+                           @javax.inject.Named("projectMetricsStoreSupplier") final KeyValueBytesStoreSupplier projectMetricsStoreSupplier,
+                           @javax.inject.Named("portfolioMetricsStoreSupplier") final KeyValueBytesStoreSupplier portfolioMetricsStoreSupplier) {
         this.deltaProcessorSupplier = deltaProcessorSupplier;
-        this.projectMetricsStoreBuilder = projectMetricsStoreBuilder;
-        this.portfolioMetricsStoreBuilder = portfolioMetricsStoreBuilder;
-
+        this.projectMetricsStoreSupplier = projectMetricsStoreSupplier;
+        this.portfolioMetricsStoreSupplier = portfolioMetricsStoreSupplier;
     }
 
     @Produces
@@ -79,10 +77,9 @@ public class MetricsTopology {
                         projectMetricsInitializer,
                         metricsAdder,
                         Named.as("aggregate-component-metrics-to-project-metrics"),
-                        Materialized.<String, ProjectMetrics, KeyValueStore<Bytes, byte[]>>as(projectMetricsStoreBuilder.name())
+                        Materialized.<String, ProjectMetrics>as(projectMetricsStoreSupplier)
                                 .withKeySerde(Serdes.String())
-                                .withValueSerde(projectMetricsSerde)
-                                .withStoreType(Materialized.StoreType.IN_MEMORY));
+                                .withValueSerde(projectMetricsSerde));
 
         //stream projectMetricsTable to project metrics topic
         projectMetricsTable
@@ -107,15 +104,15 @@ public class MetricsTopology {
         Aggregator<String, ProjectMetrics, PortfolioMetrics> portfolioMetricsAdder =
                 (key, value, aggregate) -> aggregate.add(value);
 
+
         KTable<String, PortfolioMetrics> portfolioMetricsTable =
                 kGroupedProjectStream.aggregate(
                         portfolioMetricsInitializer,
                         portfolioMetricsAdder,
                         Named.as("aggregate-project-metrics-to-portfolio-metrics"),
-                        Materialized.<String, PortfolioMetrics, KeyValueStore<Bytes, byte[]>>as(portfolioMetricsStoreBuilder.name())
+                        Materialized.<String, PortfolioMetrics>as(portfolioMetricsStoreSupplier)
                                 .withKeySerde(Serdes.String())
-                                .withValueSerde(portfolioMetricsSerde)
-                                .withStoreType(Materialized.StoreType.IN_MEMORY));
+                                .withValueSerde(portfolioMetricsSerde));
 
         //stream portfolioMetricsTable to portfolio metrics topic
         portfolioMetricsTable
