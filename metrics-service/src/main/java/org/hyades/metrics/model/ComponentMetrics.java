@@ -7,6 +7,8 @@ import org.hyades.model.Project;
 import java.io.Serializable;
 import java.util.Date;
 
+import static org.hyades.metrics.model.Status.CREATED;
+
 @RegisterForReflection
 public class ComponentMetrics implements Serializable {
 
@@ -72,7 +74,7 @@ public class ComponentMetrics implements Serializable {
 
     private Date lastOccurrence;
 
-    private Status status;
+    private Status status = CREATED;
 
     public long getId() {
         return id;
