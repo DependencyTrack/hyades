@@ -45,6 +45,10 @@ public class MetricsTopologyTest {
         componentMetrics1.setCritical(2);
         componentMetrics1.setHigh(3);
         componentMetrics1.setMedium(4);
+        componentMetrics1.setFindingsAudited(2);
+        componentMetrics1.setFindingsUnaudited(2);
+        componentMetrics1.setPolicyViolationsAudited(2);
+        componentMetrics1.setPolicyViolationsUnaudited(2);
         componentMetrics1.setComponent(component1);
         componentMetrics1.setProject(project1);
 
@@ -97,6 +101,24 @@ public class MetricsTopologyTest {
                     assertThat(record.value().getCritical()).isEqualTo(2);
                     assertThat(record.value().getHigh()).isEqualTo(3);
                     assertThat(record.value().getMedium()).isEqualTo(4);
+                    assertThat(record.value().getLow()).isEqualTo(0);
+                    assertThat(record.value().getFindingsUnaudited()).isEqualTo(2);
+                    assertThat(record.value().getFindingsAudited()).isEqualTo(2);
+                    assertThat(record.value().getPolicyViolationsAudited()).isEqualTo(2);
+                    assertThat(record.value().getPolicyViolationsUnaudited()).isEqualTo(2);
+                    assertThat(record.value().getPolicyViolationsFail()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsWarn()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsInfo()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityTotal()).isEqualTo(0);
                     assertThat(record.value().getComponents()).isEqualTo(1);
                     assertThat(record.value().getProject().getName()).isEqualTo("test1");
                 },
@@ -105,12 +127,29 @@ public class MetricsTopologyTest {
                     assertThat(record.value().getCritical()).isEqualTo(3);
                     assertThat(record.value().getHigh()).isEqualTo(5);
                     assertThat(record.value().getMedium()).isEqualTo(6);
+                    assertThat(record.value().getLow()).isEqualTo(0);
                     assertThat(record.value().getComponents()).isEqualTo(1);
                     assertThat(record.value().getProject().getName()).isEqualTo("test2");
+                    assertThat(record.value().getFindingsUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getFindingsAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsFail()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsWarn()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsInfo()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityTotal()).isEqualTo(0);
                 }
         );
 
-        assertThat(portfolioResults.size()).isEqualTo(1);
         assertThat(portfolioResults).satisfiesExactly(
                 record -> {
                     assertThat(record.value().getProjects()).isEqualTo(2);
@@ -118,6 +157,25 @@ public class MetricsTopologyTest {
                     assertThat(record.value().getCritical()).isEqualTo(5);
                     assertThat(record.value().getHigh()).isEqualTo(8);
                     assertThat(record.value().getMedium()).isEqualTo(10);
+                    assertThat(record.value().getLow()).isEqualTo(0);
+                    assertThat(record.value().getFindingsUnaudited()).isEqualTo(2);
+                    assertThat(record.value().getFindingsAudited()).isEqualTo(2);
+                    assertThat(record.value().getPolicyViolationsAudited()).isEqualTo(2);
+                    assertThat(record.value().getPolicyViolationsUnaudited()).isEqualTo(2);
+                    assertThat(record.value().getPolicyViolationsFail()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsWarn()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsInfo()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsLicenseTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsOperationalTotal()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityAudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityUnaudited()).isEqualTo(0);
+                    assertThat(record.value().getPolicyViolationsSecurityTotal()).isEqualTo(0);
+                    assertThat(record.value().getInheritedRiskScore()).isEqualTo(120.0);
                 }
         );
     }

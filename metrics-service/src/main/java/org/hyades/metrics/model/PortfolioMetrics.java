@@ -3,7 +3,9 @@ package org.hyades.metrics.model;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+
+import static org.hyades.metrics.util.MetricsUtil.inheritedRiskScore;
 
 @RegisterForReflection
 public class PortfolioMetrics implements Serializable {
@@ -70,9 +72,9 @@ public class PortfolioMetrics implements Serializable {
 
     private int policyViolationsOperationalUnaudited;
 
-    private Date firstOccurrence;
+    private LocalDate firstOccurrence;
 
-    private Date lastOccurrence;
+    private LocalDate lastOccurrence;
 
 
     public PortfolioMetrics add(ProjectMetrics projectMetrics) {
@@ -96,12 +98,14 @@ public class PortfolioMetrics implements Serializable {
         this.findingsAudited += projectMetrics.getFindingsAudited();
         this.findingsTotal += projectMetrics.getFindingsTotal();
         this.findingsUnaudited += projectMetrics.getFindingsUnaudited();
-        this.policyViolationsAudited += projectMetrics.getPolicyViolationsAudited();
         this.policyViolationsFail += projectMetrics.getPolicyViolationsFail();
         this.policyViolationsInfo += projectMetrics.getPolicyViolationsInfo();
         this.policyViolationsWarn += projectMetrics.getPolicyViolationsWarn();
+        this.policyViolationsTotal += projectMetrics.getPolicyViolationsTotal();
+        this.policyViolationsAudited += projectMetrics.getPolicyViolationsAudited();
+        this.policyViolationsUnaudited += projectMetrics.getPolicyViolationsUnaudited();
         this.policyViolationsLicenseTotal += projectMetrics.getPolicyViolationsLicenseTotal();
-        this.policyViolationsLicenseAudited += projectMetrics.getPolicyViolationsAudited();
+        this.policyViolationsLicenseAudited += projectMetrics.getPolicyViolationsLicenseAudited();
         this.policyViolationsLicenseUnaudited += projectMetrics.getPolicyViolationsLicenseUnaudited();
         this.policyViolationsOperationalAudited += projectMetrics.getPolicyViolationsOperationalUnaudited();
         this.policyViolationsOperationalTotal += projectMetrics.getPolicyViolationsOperationalTotal();
@@ -110,8 +114,8 @@ public class PortfolioMetrics implements Serializable {
         this.policyViolationsSecurityTotal += projectMetrics.getPolicyViolationsSecurityTotal();
         this.policyViolationsSecurityUnaudited += projectMetrics.getPolicyViolationsSecurityUnaudited();
         this.inheritedRiskScore = inheritedRiskScore(this.critical, this.high, this.medium, this.low, this.unassigned);
-        this.lastOccurrence = new Date();
-        this.firstOccurrence = new Date();
+        this.lastOccurrence = LocalDate.now();
+        this.firstOccurrence = LocalDate.now();
         return this;
     }
 
@@ -363,23 +367,20 @@ public class PortfolioMetrics implements Serializable {
         this.policyViolationsOperationalUnaudited = policyViolationsOperationalUnaudited;
     }
 
-    public Date getFirstOccurrence() {
+    public LocalDate getFirstOccurrence() {
         return firstOccurrence;
     }
 
-    public void setFirstOccurrence(Date firstOccurrence) {
+    public void setFirstOccurrence(LocalDate firstOccurrence) {
         this.firstOccurrence = firstOccurrence;
     }
 
-    public Date getLastOccurrence() {
+    public LocalDate getLastOccurrence() {
         return lastOccurrence;
     }
 
-    public void setLastOccurrence(Date lastOccurrence) {
+    public void setLastOccurrence(LocalDate lastOccurrence) {
         this.lastOccurrence = lastOccurrence;
     }
 
-    public static double inheritedRiskScore(final int critical, final int high, final int medium, final int low, final int unassigned) {
-        return (double) ((critical * 10) + (high * 5) + (medium * 3) + (low * 1) + (unassigned * 5));
-    }
 }

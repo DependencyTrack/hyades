@@ -9,8 +9,6 @@ import org.hyades.metrics.model.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
-
 public class DeltaProcessor extends ContextualProcessor<String, ComponentMetrics, String, ComponentMetrics> {
 
     private String storeName;
@@ -86,8 +84,8 @@ public class DeltaProcessor extends ContextualProcessor<String, ComponentMetrics
         deltaComponentMetrics.setPolicyViolationsSecurityAudited(componentEventMetrics.getPolicyViolationsSecurityAudited() - inMemoryMetrics.getPolicyViolationsSecurityAudited());
         deltaComponentMetrics.setPolicyViolationsSecurityUnaudited(componentEventMetrics.getPolicyViolationsSecurityUnaudited() - inMemoryMetrics.getPolicyViolationsSecurityUnaudited());
         deltaComponentMetrics.setPolicyViolationsSecurityTotal(componentEventMetrics.getPolicyViolationsSecurityTotal() - inMemoryMetrics.getPolicyViolationsSecurityTotal());
-        deltaComponentMetrics.setFirstOccurrence(new Date());
-        deltaComponentMetrics.setLastOccurrence(new Date());
+        deltaComponentMetrics.setFirstOccurrence(componentEventMetrics.getFirstOccurrence());
+        deltaComponentMetrics.setLastOccurrence(componentEventMetrics.getLastOccurrence());
         return deltaComponentMetrics;
     }
 

@@ -5,7 +5,7 @@ import org.hyades.model.Component;
 import org.hyades.model.Project;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.hyades.metrics.model.Status.CREATED;
 
@@ -70,9 +70,9 @@ public class ComponentMetrics implements Serializable {
 
     private int policyViolationsOperationalUnaudited;
 
-    private Date firstOccurrence;
+    private LocalDate firstOccurrence;
 
-    private Date lastOccurrence;
+    private LocalDate lastOccurrence;
 
     private Status status = CREATED;
 
@@ -308,19 +308,19 @@ public class ComponentMetrics implements Serializable {
         this.policyViolationsOperationalUnaudited = policyViolationsOperationalUnaudited;
     }
 
-    public Date getFirstOccurrence() {
+    public LocalDate getFirstOccurrence() {
         return firstOccurrence;
     }
 
-    public void setFirstOccurrence(Date firstOccurrence) {
+    public void setFirstOccurrence(LocalDate firstOccurrence) {
         this.firstOccurrence = firstOccurrence;
     }
 
-    public Date getLastOccurrence() {
+    public LocalDate getLastOccurrence() {
         return lastOccurrence;
     }
 
-    public void setLastOccurrence(Date lastOccurrence) {
+    public void setLastOccurrence(LocalDate lastOccurrence) {
         this.lastOccurrence = lastOccurrence;
     }
 

@@ -4,9 +4,10 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.hyades.model.Project;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.hyades.metrics.model.Status.CREATED;
+import static org.hyades.metrics.util.MetricsUtil.inheritedRiskScore;
 
 @RegisterForReflection
 public class ProjectMetrics implements Serializable {
@@ -71,9 +72,9 @@ public class ProjectMetrics implements Serializable {
 
     private int policyViolationsOperationalUnaudited;
 
-    private Date firstOccurrence;
+    private LocalDate firstOccurrence;
 
-    private Date lastOccurrence;
+    private LocalDate lastOccurrence;
 
     public long getId() {
         return id;
@@ -89,6 +90,9 @@ public class ProjectMetrics implements Serializable {
             this.components++;
         }
 
+        if (componentMetrics.getVulnerabilities() > 0) {
+            this.vulnerableComponents++;
+        }
         this.vulnerabilities += componentMetrics.getVulnerabilities();
         this.critical += componentMetrics.getCritical();
         this.high += componentMetrics.getHigh();
@@ -97,9 +101,12 @@ public class ProjectMetrics implements Serializable {
         this.findingsTotal += componentMetrics.getFindingsTotal();
         this.findingsAudited += componentMetrics.getFindingsAudited();
         this.findingsUnaudited += componentMetrics.getFindingsUnaudited();
-        this.policyViolationsAudited += componentMetrics.getPolicyViolationsAudited();
         this.policyViolationsFail += componentMetrics.getPolicyViolationsFail();
+        this.policyViolationsWarn += componentMetrics.getPolicyViolationsWarn();
         this.policyViolationsInfo += componentMetrics.getPolicyViolationsInfo();
+        this.policyViolationsTotal += componentMetrics.getPolicyViolationsTotal();
+        this.policyViolationsUnaudited += componentMetrics.getPolicyViolationsUnaudited();
+        this.policyViolationsAudited += componentMetrics.getPolicyViolationsAudited();
         this.policyViolationsLicenseAudited += componentMetrics.getPolicyViolationsLicenseAudited();
         this.policyViolationsLicenseTotal += componentMetrics.getPolicyViolationsLicenseTotal();
         this.policyViolationsLicenseUnaudited += componentMetrics.getPolicyViolationsLicenseUnaudited();
@@ -109,7 +116,9 @@ public class ProjectMetrics implements Serializable {
         this.policyViolationsSecurityAudited += componentMetrics.getPolicyViolationsSecurityAudited();
         this.policyViolationsSecurityTotal += componentMetrics.getPolicyViolationsSecurityTotal();
         this.policyViolationsSecurityUnaudited += componentMetrics.getPolicyViolationsSecurityUnaudited();
-
+        this.inheritedRiskScore = inheritedRiskScore(this.critical, this.high, this.medium, this.low, this.unassigned);
+        this.firstOccurrence = LocalDate.now();
+        this.lastOccurrence = LocalDate.now();
         return this;
     }
 
@@ -345,19 +354,19 @@ public class ProjectMetrics implements Serializable {
         this.policyViolationsOperationalUnaudited = policyViolationsOperationalUnaudited;
     }
 
-    public Date getFirstOccurrence() {
+    public LocalDate getFirstOccurrence() {
         return firstOccurrence;
     }
 
-    public void setFirstOccurrence(Date firstOccurrence) {
+    public void setFirstOccurrence(LocalDate firstOccurrence) {
         this.firstOccurrence = firstOccurrence;
     }
 
-    public Date getLastOccurrence() {
+    public LocalDate getLastOccurrence() {
         return lastOccurrence;
     }
 
-    public void setLastOccurrence(Date lastOccurrence) {
+    public void setLastOccurrence(LocalDate lastOccurrence) {
         this.lastOccurrence = lastOccurrence;
     }
 }
