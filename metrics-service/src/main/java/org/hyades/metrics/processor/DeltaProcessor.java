@@ -42,14 +42,14 @@ public class DeltaProcessor extends ContextualProcessor<String, ComponentMetrics
         ComponentMetrics deltaComponentMetrics;
 
         if (record.value() == null) {
-            LOGGER.info("Tombstone event for component metrics for component id: {} Deleting record from store");
+            LOGGER.info("Tombstone event for component metrics for component id: {} Deleting record from store", componentId);
             store.delete(componentId);
             deltaComponentMetrics = deletedComponentMetrics(lastComponentMetrics);
         } else {
             deltaComponentMetrics = lastComponentMetrics == null
                     ? newComponentMetrics(componentMetrics)
                     : calculateDelta(componentMetrics, lastComponentMetrics);
-
+            LOGGER.debug("Forwarding record to sink from delta processor {}", componentId);
             store.put(componentId, componentMetrics);
         }
         this.context().forward(new Record(componentId, deltaComponentMetrics, context().currentSystemTimeMs()));
