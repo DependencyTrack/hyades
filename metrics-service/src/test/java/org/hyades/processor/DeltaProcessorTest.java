@@ -76,8 +76,8 @@ public class DeltaProcessorTest {
             assertThat(record.getValue().getFindingsTotal()).isEqualTo(10);
             assertThat(record.getValue().getPolicyViolationsFail()).isEqualTo(1);
             assertThat(record.getValue().getPolicyViolationsInfo()).isEqualTo(2);
-            assertThat(record.getValue().getPolicyViolationsAudited()).isEqualTo(0);
-            assertThat(record.getValue().getPolicyViolationsUnaudited()).isEqualTo(0);
+            assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
         });
     }
 
@@ -104,8 +104,8 @@ public class DeltaProcessorTest {
                     assertThat(record.getValue().getFindingsTotal()).isEqualTo(10);
                     assertThat(record.getValue().getPolicyViolationsFail()).isEqualTo(1);
                     assertThat(record.getValue().getPolicyViolationsInfo()).isEqualTo(2);
-                    assertThat(record.getValue().getPolicyViolationsAudited()).isEqualTo(0);
-                    assertThat(record.getValue().getPolicyViolationsUnaudited()).isEqualTo(0);
+                    assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
                 },
 
                 record -> {
@@ -113,15 +113,15 @@ public class DeltaProcessorTest {
                     assertThat(record.getValue().getComponent().getUuid().toString()).isEqualTo(inputRecord.getKey());
                     assertThat(record.getValue().getStatus()).isEqualTo(Status.UPDATED);
                     assertThat(record.getValue().getHigh()).isEqualTo(-1);
-                    assertThat(record.getValue().getMedium()).isEqualTo(0);
-                    assertThat(record.getValue().getLow()).isEqualTo(0);
-                    assertThat(record.getValue().getVulnerabilities()).isEqualTo(0);
-                    assertThat(record.getValue().getFindingsAudited()).isEqualTo(0);
-                    assertThat(record.getValue().getFindingsTotal()).isEqualTo(0);
-                    assertThat(record.getValue().getPolicyViolationsFail()).isEqualTo(0);
-                    assertThat(record.getValue().getPolicyViolationsInfo()).isEqualTo(0);
-                    assertThat(record.getValue().getPolicyViolationsAudited()).isEqualTo(0);
-                    assertThat(record.getValue().getPolicyViolationsUnaudited()).isEqualTo(0);
+                    assertThat(record.getValue().getMedium()).isZero();
+                    assertThat(record.getValue().getLow()).isZero();
+                    assertThat(record.getValue().getVulnerabilities()).isZero();
+                    assertThat(record.getValue().getFindingsAudited()).isZero();
+                    assertThat(record.getValue().getFindingsTotal()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsFail()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsInfo()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
                 }
         );
     }
