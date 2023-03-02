@@ -18,7 +18,7 @@
  */
 package org.hyades.notification.publisher;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
 import org.hyades.model.Notification;
 import org.hyades.model.NotificationLevel;

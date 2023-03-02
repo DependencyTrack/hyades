@@ -18,8 +18,8 @@
  */
 package org.hyades.notification.publisher;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.pebbletemplates.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.template.PebbleTemplate;
 import org.hyades.commonnotification.NotificationScope;
 import org.hyades.exception.PublisherException;
 import org.hyades.model.ConfigProperty;

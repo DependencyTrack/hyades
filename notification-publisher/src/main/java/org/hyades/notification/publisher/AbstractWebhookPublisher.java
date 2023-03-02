@@ -18,17 +18,17 @@
  */
 package org.hyades.notification.publisher;
 
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.pebbletemplates.pebble.template.PebbleTemplate;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.hyades.commonnotification.NotificationConstants;
 import org.hyades.commonnotification.NotificationGroup;
 import org.hyades.commonnotification.NotificationScope;
 import org.hyades.model.Notification;
 import org.hyades.model.NotificationLevel;
 import org.hyades.persistence.ConfigPropertyRepository;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

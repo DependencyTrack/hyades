@@ -6,9 +6,9 @@ import io.github.jeremylong.nvdlib.nvd.CveItem;
 import io.github.jeremylong.nvdlib.nvd.CvssV2;
 import io.github.jeremylong.nvdlib.nvd.CvssV20;
 import io.github.jeremylong.nvdlib.nvd.CvssV30;
-import io.github.jeremylong.nvdlib.nvd.CvssV30__1;
+import io.github.jeremylong.nvdlib.nvd.CvssV30Data;
 import io.github.jeremylong.nvdlib.nvd.CvssV31;
-import io.github.jeremylong.nvdlib.nvd.CvssV31__1;
+import io.github.jeremylong.nvdlib.nvd.CvssV31Data;
 import io.github.jeremylong.nvdlib.nvd.LangString;
 import io.github.jeremylong.nvdlib.nvd.Metrics;
 import io.github.jeremylong.nvdlib.nvd.Node;
@@ -21,14 +21,12 @@ import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.hyades.resolver.CweResolver;
 
-import java.time.ZoneId;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static java.util.Date.from;
 
 /**
  * Parser and processor of NVD data feeds.
@@ -60,16 +58,10 @@ public final class NvdToCyclonedxParser {
 
         // Published and Modified dates
         if(nvdVuln.getPublished() != null) {
-            cdxVuln.setPublished(
-                    from(nvdVuln.getPublished().toInstant(
-                            ZoneId.systemDefault().getRules().getOffset(nvdVuln.getPublished())))
-            );
+            cdxVuln.setPublished(Date.from(nvdVuln.getPublished().toInstant()));
         }
         if(nvdVuln.getPublished() != null) {
-            cdxVuln.setUpdated(
-                    from(nvdVuln.getLastModified().toInstant(
-                            ZoneId.systemDefault().getRules().getOffset(nvdVuln.getLastModified())))
-            );
+            cdxVuln.setUpdated(Date.from(nvdVuln.getLastModified().toInstant()));
         }
 
         // Description
@@ -193,7 +185,7 @@ public final class NvdToCyclonedxParser {
         List<CvssV30> baseMetricV3 = metrics.getCvssMetricV30();
         if (baseMetricV3 != null && baseMetricV3.size() > 0) {
             baseMetricV3.forEach(baseMetric -> {
-                CvssV30__1 cvss = baseMetric.getCvssData();
+                CvssV30Data cvss = baseMetric.getCvssData();
                 if (cvss != null) {
                     var rating = new Vulnerability.Rating();
                     rating.setScore(cvss.getBaseScore());
@@ -209,7 +201,7 @@ public final class NvdToCyclonedxParser {
         List<CvssV31> baseMetricV31 = metrics.getCvssMetricV31();
         if (baseMetricV31 != null && baseMetricV31.size() > 0) {
             baseMetricV31.forEach(baseMetric -> {
-                CvssV31__1 cvss = baseMetric.getCvssData();
+                CvssV31Data cvss = baseMetric.getCvssData();
                 if (cvss != null) {
                     var rating = new Vulnerability.Rating();
                     rating.setScore(cvss.getBaseScore());
