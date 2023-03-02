@@ -60,15 +60,7 @@ public class PortfolioMetrics extends Counters implements Serializable {
         this.firstOccurrence = Instant.now();
         return this;
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
+    
     public int getProjects() {
         return projects;
     }

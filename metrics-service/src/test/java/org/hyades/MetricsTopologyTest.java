@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @QuarkusTestResource(KafkaCompanionResource.class)
-public class MetricsTopologyTest {
+class MetricsTopologyTest {
 
     @InjectKafkaCompanion
     KafkaCompanion kafkaCompanion;

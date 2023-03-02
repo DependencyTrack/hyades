@@ -24,7 +24,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-public class DeltaProcessorTest {
+class DeltaProcessorTest {
 
     @Inject
     DeltaProcessorSupplier deltaProcessorSupplier;
@@ -94,7 +94,7 @@ public class DeltaProcessorTest {
         assertThat(outputTopic.readRecordsToList()).satisfiesExactlyInAnyOrder(
                 record -> {
                     assertThat(record.getValue().getCritical()).isEqualTo(2);
-                    assertThat(record.getValue().getComponent().getUuid().toString()).isEqualTo(inputRecord.getKey());
+                    assertThat(record.getValue().getComponent().getUuid().toString()).hasToString(inputRecord.getKey());
                     assertThat(record.getValue().getStatus()).isEqualTo(Status.CREATED);
                     assertThat(record.getValue().getHigh()).isEqualTo(3);
                     assertThat(record.getValue().getMedium()).isEqualTo(4);
@@ -110,7 +110,7 @@ public class DeltaProcessorTest {
 
                 record -> {
                     assertThat(record.getValue().getCritical()).isEqualTo(-1);
-                    assertThat(record.getValue().getComponent().getUuid().toString()).isEqualTo(inputRecord.getKey());
+                    assertThat(record.getValue().getComponent().getUuid().toString()).hasToString(inputRecord.getKey());
                     assertThat(record.getValue().getStatus()).isEqualTo(Status.UPDATED);
                     assertThat(record.getValue().getHigh()).isEqualTo(-1);
                     assertThat(record.getValue().getMedium()).isZero();
@@ -136,7 +136,7 @@ public class DeltaProcessorTest {
         assertThat(outputTopic.readRecordsToList()).satisfiesExactlyInAnyOrder(
                 record -> {
                     assertThat(record.getValue().getCritical()).isEqualTo(2);
-                    assertThat(record.getValue().getComponent().getUuid().toString()).isEqualTo(inputRecord.getKey());
+                    assertThat(record.getValue().getComponent().getUuid().toString()).hasToString(inputRecord.getKey());
                     assertThat(record.getValue().getStatus()).isEqualTo(Status.CREATED);
                     assertThat(record.getValue().getHigh()).isEqualTo(3);
                     assertThat(record.getValue().getMedium()).isEqualTo(4);
@@ -145,7 +145,7 @@ public class DeltaProcessorTest {
 
                 record -> {
                     assertThat(record.getValue().getCritical()).isEqualTo(-2);
-                    assertThat(record.getValue().getComponent().getUuid().toString()).isEqualTo(inputRecord.getKey());
+                    assertThat(record.getValue().getComponent().getUuid().toString()).hasToString(inputRecord.getKey());
                     assertThat(record.getValue().getStatus()).isEqualTo(Status.DELETED);
                     assertThat(record.getValue().getHigh()).isEqualTo(-3);
                     assertThat(record.getValue().getMedium()).isEqualTo(-4);
