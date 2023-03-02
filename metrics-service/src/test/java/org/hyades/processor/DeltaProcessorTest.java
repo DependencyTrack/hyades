@@ -57,7 +57,7 @@ public class DeltaProcessorTest {
     }
 
     @Test
-    void testWhenComponentIsNotInStore() {
+    void shouldReturnComponentMetricsAsDeltaIfComponentWasNotInStore() {
 
         final TestRecord<String, ComponentMetrics> inputRecord = createTestRecord(2, 3, 4, 2);
         inputTopic.pipeInput(inputRecord);
@@ -70,13 +70,19 @@ public class DeltaProcessorTest {
             assertThat(record.getValue().getCritical()).isEqualTo(2);
             assertThat(record.getValue().getHigh()).isEqualTo(3);
             assertThat(record.getValue().getMedium()).isEqualTo(4);
+            assertThat(record.getValue().getLow()).isEqualTo(5);
             assertThat(record.getValue().getVulnerabilities()).isEqualTo(2);
             assertThat(record.getValue().getFindingsAudited()).isEqualTo(1);
+            assertThat(record.getValue().getFindingsTotal()).isEqualTo(10);
+            assertThat(record.getValue().getPolicyViolationsFail()).isEqualTo(1);
+            assertThat(record.getValue().getPolicyViolationsInfo()).isEqualTo(2);
+            assertThat(record.getValue().getPolicyViolationsAudited()).isEqualTo(0);
+            assertThat(record.getValue().getPolicyViolationsUnaudited()).isEqualTo(0);
         });
     }
 
     @Test
-    void testWhenComponentIsInStore() {
+    void shouldReturnDeltaWithOnlyChangesWhenComponentIsInStore() {
 
         final TestRecord<String, ComponentMetrics> inputRecord = createTestRecord(2, 3, 4, 2);
         inputTopic.pipeInput(inputRecord);
@@ -92,8 +98,14 @@ public class DeltaProcessorTest {
                     assertThat(record.getValue().getStatus()).isEqualTo(Status.CREATED);
                     assertThat(record.getValue().getHigh()).isEqualTo(3);
                     assertThat(record.getValue().getMedium()).isEqualTo(4);
+                    assertThat(record.getValue().getLow()).isEqualTo(5);
                     assertThat(record.getValue().getVulnerabilities()).isEqualTo(2);
                     assertThat(record.getValue().getFindingsAudited()).isEqualTo(1);
+                    assertThat(record.getValue().getFindingsTotal()).isEqualTo(10);
+                    assertThat(record.getValue().getPolicyViolationsFail()).isEqualTo(1);
+                    assertThat(record.getValue().getPolicyViolationsInfo()).isEqualTo(2);
+                    assertThat(record.getValue().getPolicyViolationsAudited()).isEqualTo(0);
+                    assertThat(record.getValue().getPolicyViolationsUnaudited()).isEqualTo(0);
                 },
 
                 record -> {
@@ -102,8 +114,14 @@ public class DeltaProcessorTest {
                     assertThat(record.getValue().getStatus()).isEqualTo(Status.UPDATED);
                     assertThat(record.getValue().getHigh()).isEqualTo(-1);
                     assertThat(record.getValue().getMedium()).isEqualTo(0);
+                    assertThat(record.getValue().getLow()).isEqualTo(0);
                     assertThat(record.getValue().getVulnerabilities()).isEqualTo(0);
                     assertThat(record.getValue().getFindingsAudited()).isEqualTo(0);
+                    assertThat(record.getValue().getFindingsTotal()).isEqualTo(0);
+                    assertThat(record.getValue().getPolicyViolationsFail()).isEqualTo(0);
+                    assertThat(record.getValue().getPolicyViolationsInfo()).isEqualTo(0);
+                    assertThat(record.getValue().getPolicyViolationsAudited()).isEqualTo(0);
+                    assertThat(record.getValue().getPolicyViolationsUnaudited()).isEqualTo(0);
                 }
         );
     }
@@ -147,6 +165,12 @@ public class DeltaProcessorTest {
         componentMetrics.setVulnerabilities(vulnerabilities);
         componentMetrics.setComponent(component);
         componentMetrics.setFindingsAudited(1);
+        componentMetrics.setLow(5);
+        componentMetrics.setFindingsTotal(10);
+        componentMetrics.setPolicyViolationsFail(1);
+        componentMetrics.setPolicyViolationsInfo(2);
+        componentMetrics.setPolicyViolationsAudited(0);
+        componentMetrics.setPolicyViolationsUnaudited(0);
         return new TestRecord<>(COMPONENT_UUID.toString(), componentMetrics);
     }
 }
