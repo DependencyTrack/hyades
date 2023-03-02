@@ -127,7 +127,7 @@ public class DeltaProcessorTest {
     }
 
     @Test
-    void testTombstoneEventForComponentInStore() {
+    void shouldRemoveComponentMetricsWhenTombstoneEventIsReceived() {
 
         final TestRecord<String, ComponentMetrics> inputRecord = createTestRecord(2, 3, 4, 2);
         inputTopic.pipeInput(inputRecord);
