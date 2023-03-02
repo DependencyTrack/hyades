@@ -58,7 +58,7 @@ create_topic "dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "clean
 
 metrics_topics=(
   "dtrack.metrics.component"
-  "dtrack.metrics.project",
+  "dtrack.metrics.project"
   "dtrack.metrics.portfolio"
 )
 for topic_name in "${metrics_topics[@]}"; do

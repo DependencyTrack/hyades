@@ -3,7 +3,7 @@ package org.hyades.metrics.model;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.Instant;
 
 import static org.hyades.metrics.util.MetricsUtil.inheritedRiskScore;
 
@@ -72,9 +72,9 @@ public class PortfolioMetrics implements Serializable {
 
     private int policyViolationsOperationalUnaudited;
 
-    private LocalDate firstOccurrence;
+    private Instant firstOccurrence;
 
-    private LocalDate lastOccurrence;
+    private Instant lastOccurrence;
 
 
     public PortfolioMetrics add(ProjectMetrics projectMetrics) {
@@ -114,8 +114,8 @@ public class PortfolioMetrics implements Serializable {
         this.policyViolationsSecurityTotal += projectMetrics.getPolicyViolationsSecurityTotal();
         this.policyViolationsSecurityUnaudited += projectMetrics.getPolicyViolationsSecurityUnaudited();
         this.inheritedRiskScore = inheritedRiskScore(this.critical, this.high, this.medium, this.low, this.unassigned);
-        this.lastOccurrence = LocalDate.now();
-        this.firstOccurrence = LocalDate.now();
+        this.lastOccurrence = Instant.now();
+        this.firstOccurrence = Instant.now();
         return this;
     }
 
@@ -367,19 +367,19 @@ public class PortfolioMetrics implements Serializable {
         this.policyViolationsOperationalUnaudited = policyViolationsOperationalUnaudited;
     }
 
-    public LocalDate getFirstOccurrence() {
+    public Instant getFirstOccurrence() {
         return firstOccurrence;
     }
 
-    public void setFirstOccurrence(LocalDate firstOccurrence) {
+    public void setFirstOccurrence(Instant firstOccurrence) {
         this.firstOccurrence = firstOccurrence;
     }
 
-    public LocalDate getLastOccurrence() {
+    public Instant getLastOccurrence() {
         return lastOccurrence;
     }
 
-    public void setLastOccurrence(LocalDate lastOccurrence) {
+    public void setLastOccurrence(Instant lastOccurrence) {
         this.lastOccurrence = lastOccurrence;
     }
 
