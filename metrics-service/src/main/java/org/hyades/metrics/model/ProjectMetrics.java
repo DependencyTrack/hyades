@@ -8,6 +8,7 @@ import java.time.Instant;
 
 import static org.hyades.metrics.model.Status.CREATED;
 import static org.hyades.metrics.model.Status.DELETED;
+import static org.hyades.metrics.model.Status.NO_CHANGE;
 import static org.hyades.metrics.model.Status.UNKNOWN;
 import static org.hyades.metrics.model.Status.UPDATED;
 import static org.hyades.metrics.util.MetricsUtil.inheritedRiskScore;
@@ -47,6 +48,8 @@ public class ProjectMetrics extends Counters implements Serializable {
                 || componentMetrics.getStatus().equals(UPDATED)
                 || componentMetrics.getStatus().equals(DELETED)) {
             this.status = UPDATED;
+        } else {
+            this.status = NO_CHANGE;
         }
 
         this.vulnerabilities += componentMetrics.getVulnerabilities();

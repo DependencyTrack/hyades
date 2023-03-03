@@ -9,6 +9,8 @@ import org.hyades.metrics.model.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hyades.metrics.util.MetricsUtil.hasChanged;
+
 public class DeltaProcessor extends ContextualProcessor<String, ComponentMetrics, String, ComponentMetrics> {
 
     private String storeName;
@@ -57,7 +59,11 @@ public class DeltaProcessor extends ContextualProcessor<String, ComponentMetrics
 
     private static ComponentMetrics calculateDelta(ComponentMetrics componentEventMetrics, ComponentMetrics inMemoryMetrics) {
         ComponentMetrics deltaComponentMetrics = new ComponentMetrics();
-        deltaComponentMetrics.setStatus(Status.UPDATED);
+        if (hasChanged(componentEventMetrics, inMemoryMetrics)) {
+            deltaComponentMetrics.setStatus(Status.UPDATED);
+        } else {
+            deltaComponentMetrics.setStatus(Status.NO_CHANGE);
+        }
         deltaComponentMetrics.setComponent(componentEventMetrics.getComponent());
         deltaComponentMetrics.setProject(componentEventMetrics.getProject());
         deltaComponentMetrics.setCritical(componentEventMetrics.getCritical() - inMemoryMetrics.getCritical());
