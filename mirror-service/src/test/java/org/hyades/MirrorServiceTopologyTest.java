@@ -19,7 +19,6 @@ import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.hyades.client.NvdClientConfig;
 import org.hyades.common.KafkaTopic;
-import org.hyades.config.KafkaTopicConfig;
 import org.hyades.model.AnalyzerIdentity;
 import org.hyades.model.VulnerabilityScanKey;
 import org.hyades.model.VulnerabilityScanResult;
@@ -60,9 +59,6 @@ public class MirrorServiceTopologyTest {
     private TestInputTopic<VulnerabilityScanKey, VulnerabilityScanResult> inputTopicAnalyzer;
     private TestOutputTopic<String, Bom> outputTopic;
     private OsvMirrorHandler osvMirrorHandlerMock;
-
-    @Inject
-    KafkaTopicConfig kafkaTopicConfig;
 
     @Produces
     @Mock

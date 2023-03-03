@@ -2,7 +2,6 @@ package org.hyades.common;
 
 import io.smallrye.config.SmallRyeConfig;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.hyades.config.KafkaTopicConfig;
 
 public enum KafkaTopic {
 
@@ -38,8 +37,10 @@ public enum KafkaTopic {
 
     public String getName() {
         SmallRyeConfig config = ConfigProvider.getConfig().unwrap(SmallRyeConfig.class);
-        KafkaTopicConfig kafkaTopicConfig = config.getConfigMapping(KafkaTopicConfig.class);
-        return kafkaTopicConfig.prefix().orElse("") + name;
+        var prefixConfig = config.getConfigValue("api.topic.prefix");
+        if (prefixConfig.getValue() != null)
+            return prefixConfig.getValue() + name;
+        return name;
     }
 
     @Override
