@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import static org.hyades.metrics.model.Status.CREATED;
+import static org.hyades.metrics.model.Status.DELETED;
 import static org.hyades.metrics.util.MetricsUtil.inheritedRiskScore;
 
 @RegisterForReflection
@@ -25,9 +26,19 @@ public class ProjectMetrics extends Counters implements Serializable {
             this.components++;
         }
 
+        if (componentMetrics.getStatus().equals(DELETED)) {
+            this.components--;
+        }
+
         if (componentMetrics.getVulnerabilities() > 0) {
             this.vulnerableComponents++;
         }
+
+
+        if (componentMetrics.getVulnerabilities() < 0) {
+            this.vulnerableComponents--;
+        }
+
         this.vulnerabilities += componentMetrics.getVulnerabilities();
         this.critical += componentMetrics.getCritical();
         this.high += componentMetrics.getHigh();
