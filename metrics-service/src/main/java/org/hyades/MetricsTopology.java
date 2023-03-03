@@ -19,6 +19,7 @@ import org.hyades.common.KafkaTopic;
 import org.hyades.metrics.model.ComponentMetrics;
 import org.hyades.metrics.model.PortfolioMetrics;
 import org.hyades.metrics.model.ProjectMetrics;
+import org.hyades.metrics.model.Status;
 import org.hyades.metrics.processor.DeltaProcessorSupplier;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -84,6 +85,7 @@ public class MetricsTopology {
         //stream projectMetricsTable to project metrics topic
         projectMetricsTable
                 .toStream(Named.as("stream-project-metrics"))
+                .filter((key, value) -> value.getStatus().equals(Status.UPDATED))
                 .to(KafkaTopic.PROJECT_METRICS.getName(), Produced
                         .with(Serdes.String(), projectMetricsSerde)
                         .withName(processorNameProduce(KafkaTopic.PROJECT_METRICS, "project_metric_event")));

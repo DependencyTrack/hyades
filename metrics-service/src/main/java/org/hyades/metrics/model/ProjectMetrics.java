@@ -8,6 +8,8 @@ import java.time.Instant;
 
 import static org.hyades.metrics.model.Status.CREATED;
 import static org.hyades.metrics.model.Status.DELETED;
+import static org.hyades.metrics.model.Status.UNKNOWN;
+import static org.hyades.metrics.model.Status.UPDATED;
 import static org.hyades.metrics.util.MetricsUtil.inheritedRiskScore;
 
 @RegisterForReflection
@@ -19,8 +21,11 @@ public class ProjectMetrics extends Counters implements Serializable {
 
     private int vulnerableComponents;
 
+    private Status status = UNKNOWN;
+
 
     public ProjectMetrics add(ComponentMetrics componentMetrics) {
+
         if (componentMetrics.getStatus().equals(CREATED)) {
             this.project = componentMetrics.getProject();
             this.components++;
@@ -34,9 +39,14 @@ public class ProjectMetrics extends Counters implements Serializable {
             this.vulnerableComponents++;
         }
 
-
         if (componentMetrics.getVulnerabilities() < 0) {
             this.vulnerableComponents--;
+        }
+
+        if (componentMetrics.getStatus().equals(CREATED)
+                || componentMetrics.getStatus().equals(UPDATED)
+                || componentMetrics.getStatus().equals(DELETED)) {
+            this.status = UPDATED;
         }
 
         this.vulnerabilities += componentMetrics.getVulnerabilities();
@@ -90,5 +100,13 @@ public class ProjectMetrics extends Counters implements Serializable {
 
     public void setVulnerableComponents(int vulnerableComponents) {
         this.vulnerableComponents = vulnerableComponents;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
