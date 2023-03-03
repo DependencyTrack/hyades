@@ -6,6 +6,14 @@ Options can be provided via environment variables as well, refer to the [Quarkus
 Not all options are supposed to be tweaked by users though. This document contains an overview of all
 options that are expected to be changed by users.
 
+### Kafka Topic Configuration
+
+Kafka topics (including internal topics) can be configured with custom prefix. In order to provide custom prefix, below environment variable can be used.
+
+| Environment Variable               | Description                     | Default      | Required |
+|:-----------------------------------|:--------------------------------|:-------------|:--------:|
+| `API_TOPIC_PREFIX`                 | Prefix for topic names          | -            |    ✅     |
+
 ### Notification Publisher
 
 | Environment Variable                      | Description                                        | Default          |               Required               |

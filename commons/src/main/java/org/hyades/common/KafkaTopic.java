@@ -1,5 +1,9 @@
 package org.hyades.common;
 
+import io.smallrye.config.SmallRyeConfig;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.hyades.config.KafkaTopicConfig;
+
 public enum KafkaTopic {
 
     NOTIFICATION_ANALYZER("dtrack.notification.analyzer"),
@@ -33,12 +37,13 @@ public enum KafkaTopic {
     }
 
     public String getName() {
-        return name;
+        SmallRyeConfig config = ConfigProvider.getConfig().unwrap(SmallRyeConfig.class);
+        KafkaTopicConfig kafkaTopicConfig = config.getConfigMapping(KafkaTopicConfig.class);
+        return kafkaTopicConfig.prefix().orElse("") + name;
     }
 
     @Override
     public String toString() {
         return name;
     }
-
 }

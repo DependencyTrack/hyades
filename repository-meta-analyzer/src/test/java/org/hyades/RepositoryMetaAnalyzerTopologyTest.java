@@ -8,6 +8,7 @@ import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.hyades.common.KafkaTopic;
+import org.hyades.config.KafkaTopicConfig;
 import org.hyades.model.Component;
 import org.hyades.model.MetaAnalyzerCacheKey;
 import org.hyades.model.Repository;
@@ -50,6 +51,9 @@ public class RepositoryMetaAnalyzerTopologyTest {
     @Inject
     @CacheName("metaAnalyzer")
     Cache cache;
+
+    @Inject
+    KafkaTopicConfig kafkaTopicConfig;
 
     private TopologyTestDriver testDriver;
     private TestInputTopic<UUID, Component> inputTopic;
