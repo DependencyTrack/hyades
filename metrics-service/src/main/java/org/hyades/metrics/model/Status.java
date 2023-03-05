@@ -1,5 +1,8 @@
 package org.hyades.metrics.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public enum Status {
     CREATED,
     UPDATED,
