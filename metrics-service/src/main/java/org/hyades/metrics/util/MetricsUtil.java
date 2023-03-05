@@ -28,7 +28,7 @@ public class MetricsUtil {
         return inMemoryMetrics.getCritical() != eventMetrics.getCritical()
                 || inMemoryMetrics.getHigh() != eventMetrics.getHigh()
                 || inMemoryMetrics.getMedium() != eventMetrics.getMedium()
-                || inMemoryMetrics.getLow() != inMemoryMetrics.getLow()
+                || inMemoryMetrics.getLow() != eventMetrics.getLow()
                 || inMemoryMetrics.getUnassigned() != eventMetrics.getUnassigned()
                 || inMemoryMetrics.getVulnerabilities() != eventMetrics.getVulnerabilities()
                 || inMemoryMetrics.getSuppressed() != eventMetrics.getSuppressed()
