@@ -11,14 +11,14 @@ import org.slf4j.LoggerFactory;
 
 import static org.hyades.metrics.util.MetricsUtil.hasChanged;
 
-public class DeltaProcessor extends ContextualProcessor<String, ComponentMetrics, String, ComponentMetrics> {
+public class ComponentDeltaProcessor extends ContextualProcessor<String, ComponentMetrics, String, ComponentMetrics> {
 
     private String storeName;
     private KeyValueStore<String, ComponentMetrics> store;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeltaProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentDeltaProcessor.class);
 
-    public DeltaProcessor(String storeName) {
+    public ComponentDeltaProcessor(String storeName) {
         this.storeName = storeName;
     }
 

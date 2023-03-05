@@ -9,6 +9,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
 import org.hyades.metrics.model.ComponentMetrics;
+import org.hyades.metrics.model.ProjectMetrics;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -23,7 +24,17 @@ public class DeltaProcessorConfiguration {
     @ApplicationScoped
     @Named("deltaStoreBuilder")
     StoreBuilder<KeyValueStore<String, ComponentMetrics>> deltaStoreBuilder() {
-        return keyValueStoreBuilder(persistentKeyValueStore("delta-store"),
+        return keyValueStoreBuilder(persistentKeyValueStore("delta-component-store"),
+                new Serdes.StringSerde(), Serdes.serdeFrom(new ObjectMapperSerializer<>(),
+                        new ObjectMapperDeserializer<>(new TypeReference<>() {
+                        })));
+    }
+
+    @Produces
+    @ApplicationScoped
+    @Named("deltaProjectStoreBuilder")
+    StoreBuilder<KeyValueStore<String, ProjectMetrics>> deltaProjectStoreBuilder() {
+        return keyValueStoreBuilder(persistentKeyValueStore("delta-project-store"),
                 new Serdes.StringSerde(), Serdes.serdeFrom(new ObjectMapperSerializer<>(),
                         new ObjectMapperDeserializer<>(new TypeReference<>() {
                         })));
@@ -33,14 +44,15 @@ public class DeltaProcessorConfiguration {
     @ApplicationScoped
     @Named("projectMetricsStoreSupplier")
     KeyValueBytesStoreSupplier projectMetricsStoreSupplier() {
-        return Stores.persistentKeyValueStore("metrics-store-project");
+        return Stores.persistentKeyValueStore("project-metrics-store");
     }
 
     @Produces
     @ApplicationScoped
     @Named("portfolioMetricsStoreSupplier")
     KeyValueBytesStoreSupplier portfolioMetricsStoreSupplier() {
-        return Stores.persistentKeyValueStore("metrics-store-portfolio");
+        return Stores.persistentKeyValueStore("portfolio-metrics-store");
     }
+
 }
 

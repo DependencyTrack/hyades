@@ -12,18 +12,18 @@ import javax.inject.Named;
 import java.util.Set;
 
 @ApplicationScoped
-public class DeltaProcessorSupplier implements ProcessorSupplier<String, ComponentMetrics, String, ComponentMetrics> {
+public class ComponentProcessorSupplier implements ProcessorSupplier<String, ComponentMetrics, String, ComponentMetrics> {
 
     private final StoreBuilder<KeyValueStore<String, ComponentMetrics>> deltaStoreBuilder;
 
     @Inject
-    public DeltaProcessorSupplier(@Named("deltaStoreBuilder") final StoreBuilder<KeyValueStore<String, ComponentMetrics>> deltaStoreBuilder) {
+    public ComponentProcessorSupplier(@Named("deltaStoreBuilder") final StoreBuilder<KeyValueStore<String, ComponentMetrics>> deltaStoreBuilder) {
         this.deltaStoreBuilder = deltaStoreBuilder;
     }
 
     @Override
     public Processor<String, ComponentMetrics, String, ComponentMetrics> get() {
-        return new DeltaProcessor(deltaStoreBuilder.name());
+        return new ComponentDeltaProcessor(deltaStoreBuilder.name());
     }
 
     @Override

@@ -6,16 +6,13 @@ import org.hyades.model.Project;
 
 import java.io.Serializable;
 
-import static org.hyades.metrics.model.Status.UNKNOWN;
-
 @RegisterForReflection
-public class ComponentMetrics extends Counters implements Serializable {
+public class ComponentMetrics extends Metrics implements Serializable {
 
     private Project project;
 
     private Component component;
 
-    private Status status = UNKNOWN;
 
     public Project getProject() {
         return project;
@@ -31,13 +28,5 @@ public class ComponentMetrics extends Counters implements Serializable {
 
     public void setComponent(Component component) {
         this.component = component;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 }

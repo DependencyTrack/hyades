@@ -9,10 +9,11 @@ import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
+import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.test.TestRecord;
 import org.hyades.metrics.model.ComponentMetrics;
 import org.hyades.metrics.model.Status;
-import org.hyades.metrics.processor.DeltaProcessorSupplier;
+import org.hyades.metrics.processor.ComponentProcessorSupplier;
 import org.hyades.model.Component;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,13 +25,15 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-class DeltaProcessorTest {
+class ComponentDeltaProcessorTest {
 
     @Inject
-    DeltaProcessorSupplier deltaProcessorSupplier;
+    ComponentProcessorSupplier componentProcessorSupplier;
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, ComponentMetrics> inputTopic;
     private TestOutputTopic<String, ComponentMetrics> outputTopic;
+
+    private KeyValueStore<String, ComponentMetrics> store;
 
     private static final String TEST_PURL_JACKSON_BIND = "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4";
     private static final UUID COMPONENT_UUID = UUID.randomUUID();
@@ -40,11 +43,12 @@ class DeltaProcessorTest {
         final var topology = new Topology();
         topology.addSource("sourceProcessor", new StringDeserializer(),
                 new ObjectMapperDeserializer<>(ComponentMetrics.class), "input-topic");
-        topology.addProcessor("deltaProcessor", deltaProcessorSupplier, "sourceProcessor");
+        topology.addProcessor("deltaProcessor", componentProcessorSupplier, "sourceProcessor");
         topology.addSink("sinkProcessor", "output-topic",
                 new StringSerializer(), new ObjectMapperSerializer<>(), "deltaProcessor");
 
         testDriver = new TopologyTestDriver(topology);
+        store = testDriver.getKeyValueStore("delta-component-store");
         inputTopic = testDriver.createInputTopic("input-topic",
                 new StringSerializer(), new ObjectMapperSerializer<>());
         outputTopic = testDriver.createOutputTopic("output-topic",
@@ -82,7 +86,7 @@ class DeltaProcessorTest {
     }
 
     @Test
-    void shouldReturnDeltaWithOnlyChangesWhenComponentIsInStore() {
+    void shouldReturnDeltaWithOnlyChangesWhenEventIsOfSameComponent() {
 
         final TestRecord<String, ComponentMetrics> inputRecord = createTestRecord(2, 3, 4, 2);
         inputTopic.pipeInput(inputRecord);
@@ -154,7 +158,37 @@ class DeltaProcessorTest {
         );
     }
 
+    @Test
+    void shouldSendNoChangeStatusIfNoChangeFromComponentMetricsInStore() {
+
+        store.put(COMPONENT_UUID.toString(), createComponentMetrics(2, 3, 4, 2));
+
+        final TestRecord<String, ComponentMetrics> inputRecord = createTestRecord(2, 3, 4, 2);
+        inputTopic.pipeInput(inputRecord);
+
+        assertThat(outputTopic.readRecord()).satisfies(record -> {
+            assertThat(record.key()).isEqualTo(inputRecord.getKey());
+            assertThat(record.getValue().getStatus()).isEqualTo(Status.NO_CHANGE);
+            assertThat(record.getValue().getCritical()).isZero();
+            assertThat(record.getValue().getHigh()).isZero();
+            assertThat(record.getValue().getMedium()).isZero();
+            assertThat(record.getValue().getLow()).isZero();
+            assertThat(record.getValue().getVulnerabilities()).isZero();
+            assertThat(record.getValue().getFindingsAudited()).isZero();
+            assertThat(record.getValue().getFindingsTotal()).isZero();
+            assertThat(record.getValue().getPolicyViolationsFail()).isZero();
+            assertThat(record.getValue().getPolicyViolationsInfo()).isZero();
+            assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
+        });
+    }
+
     private TestRecord<String, ComponentMetrics> createTestRecord(int critical, int high, int medium, int vulnerabilities) {
+        final var componentMetrics = createComponentMetrics(critical, high, medium, vulnerabilities);
+        return new TestRecord<>(COMPONENT_UUID.toString(), componentMetrics);
+    }
+
+    private static ComponentMetrics createComponentMetrics(int critical, int high, int medium, int vulnerabilities) {
         final var component = new Component();
         component.setUuid(COMPONENT_UUID);
         component.setPurl(TEST_PURL_JACKSON_BIND);
@@ -171,6 +205,6 @@ class DeltaProcessorTest {
         componentMetrics.setPolicyViolationsInfo(2);
         componentMetrics.setPolicyViolationsAudited(0);
         componentMetrics.setPolicyViolationsUnaudited(0);
-        return new TestRecord<>(COMPONENT_UUID.toString(), componentMetrics);
+        return componentMetrics;
     }
 }
