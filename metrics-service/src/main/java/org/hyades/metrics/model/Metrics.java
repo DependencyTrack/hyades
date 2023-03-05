@@ -1,9 +1,12 @@
 package org.hyades.metrics.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.time.Instant;
 
-public abstract class Counters implements Serializable {
+@RegisterForReflection
+public abstract class Metrics implements Serializable {
 
     protected long id;
 
@@ -62,6 +65,8 @@ public abstract class Counters implements Serializable {
     protected Instant firstOccurrence;
 
     protected Instant lastOccurrence;
+
+    protected Status status = Status.UNKNOWN;
 
     public long getId() {
         return id;
@@ -293,5 +298,13 @@ public abstract class Counters implements Serializable {
 
     public void setLastOccurrence(Instant lastOccurrence) {
         this.lastOccurrence = lastOccurrence;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

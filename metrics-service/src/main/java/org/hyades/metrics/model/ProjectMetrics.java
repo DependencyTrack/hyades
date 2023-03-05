@@ -9,20 +9,17 @@ import java.time.Instant;
 import static org.hyades.metrics.model.Status.CREATED;
 import static org.hyades.metrics.model.Status.DELETED;
 import static org.hyades.metrics.model.Status.NO_CHANGE;
-import static org.hyades.metrics.model.Status.UNKNOWN;
 import static org.hyades.metrics.model.Status.UPDATED;
 import static org.hyades.metrics.util.MetricsUtil.inheritedRiskScore;
 
 @RegisterForReflection
-public class ProjectMetrics extends Counters implements Serializable {
+public class ProjectMetrics extends Metrics implements Serializable {
 
     private Project project;
 
     private int components;
 
     private int vulnerableComponents;
-
-    private Status status = UNKNOWN;
 
 
     public ProjectMetrics add(ComponentMetrics componentMetrics) {
@@ -57,6 +54,7 @@ public class ProjectMetrics extends Counters implements Serializable {
         this.high += componentMetrics.getHigh();
         this.medium += componentMetrics.getMedium();
         this.low += componentMetrics.getLow();
+        this.suppressed += componentMetrics.getSuppressed();
         this.findingsTotal += componentMetrics.getFindingsTotal();
         this.findingsAudited += componentMetrics.getFindingsAudited();
         this.findingsUnaudited += componentMetrics.getFindingsUnaudited();
@@ -103,13 +101,5 @@ public class ProjectMetrics extends Counters implements Serializable {
 
     public void setVulnerableComponents(int vulnerableComponents) {
         this.vulnerableComponents = vulnerableComponents;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 }

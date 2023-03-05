@@ -5,10 +5,14 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.io.Serializable;
 import java.time.Instant;
 
+import static org.hyades.metrics.model.Status.CREATED;
+import static org.hyades.metrics.model.Status.DELETED;
+import static org.hyades.metrics.model.Status.NO_CHANGE;
+import static org.hyades.metrics.model.Status.UPDATED;
 import static org.hyades.metrics.util.MetricsUtil.inheritedRiskScore;
 
 @RegisterForReflection
-public class PortfolioMetrics extends Counters implements Serializable {
+public class PortfolioMetrics extends Metrics implements Serializable {
 
     private int projects;
 
@@ -20,14 +24,36 @@ public class PortfolioMetrics extends Counters implements Serializable {
 
 
     public PortfolioMetrics add(ProjectMetrics projectMetrics) {
+
         if (projectMetrics == null) {
             return this;
         }
 
-        this.projects++;
+        if (projectMetrics.getStatus().equals(CREATED)) {
+            this.projects++;
+        }
+
+        if (projectMetrics.getStatus().equals(DELETED)) {
+            this.projects--;
+        }
+
+        if (projectMetrics.getStatus().equals(CREATED)
+                || projectMetrics.getStatus().equals(UPDATED)
+                || projectMetrics.getStatus().equals(DELETED)) {
+            this.status = UPDATED;
+        } else {
+            this.status = NO_CHANGE;
+        }
+
+
         if (projectMetrics.getVulnerabilities() > 0) {
             this.vulnerableProjects++;
         }
+
+        if (projectMetrics.getVulnerabilities() < 0) {
+            this.vulnerableProjects--;
+        }
+
 
         this.components += projectMetrics.getComponents();
         this.critical += projectMetrics.getCritical();
@@ -60,7 +86,7 @@ public class PortfolioMetrics extends Counters implements Serializable {
         this.firstOccurrence = Instant.now();
         return this;
     }
-    
+
     public int getProjects() {
         return projects;
     }

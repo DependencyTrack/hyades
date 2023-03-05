@@ -20,7 +20,8 @@ import org.hyades.metrics.model.ComponentMetrics;
 import org.hyades.metrics.model.PortfolioMetrics;
 import org.hyades.metrics.model.ProjectMetrics;
 import org.hyades.metrics.model.Status;
-import org.hyades.metrics.processor.DeltaProcessorSupplier;
+import org.hyades.metrics.processor.ComponentProcessorSupplier;
+import org.hyades.metrics.processor.ProjectProcessorSupplier;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -32,7 +33,9 @@ import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
 @ApplicationScoped
 public class MetricsTopology {
 
-    private final DeltaProcessorSupplier deltaProcessorSupplier;
+    private final ComponentProcessorSupplier componentProcessorSupplier;
+
+    private final ProjectProcessorSupplier projectProcessorSupplier;
 
     private final KeyValueBytesStoreSupplier projectMetricsStoreSupplier;
 
@@ -40,10 +43,12 @@ public class MetricsTopology {
 
 
     @Inject
-    public MetricsTopology(final DeltaProcessorSupplier deltaProcessorSupplier,
+    public MetricsTopology(final ComponentProcessorSupplier componentProcessorSupplier,
+                           final ProjectProcessorSupplier projectProcessorSupplier,
                            @javax.inject.Named("projectMetricsStoreSupplier") final KeyValueBytesStoreSupplier projectMetricsStoreSupplier,
                            @javax.inject.Named("portfolioMetricsStoreSupplier") final KeyValueBytesStoreSupplier portfolioMetricsStoreSupplier) {
-        this.deltaProcessorSupplier = deltaProcessorSupplier;
+        this.componentProcessorSupplier = componentProcessorSupplier;
+        this.projectProcessorSupplier = projectProcessorSupplier;
         this.projectMetricsStoreSupplier = projectMetricsStoreSupplier;
         this.portfolioMetricsStoreSupplier = portfolioMetricsStoreSupplier;
     }
@@ -60,7 +65,7 @@ public class MetricsTopology {
                 .stream(KafkaTopic.COMPONENT_METRICS.getName(), Consumed
                         .with(Serdes.String(), componentMetricsSerde)
                         .withName(processorNameConsume(KafkaTopic.COMPONENT_METRICS)))
-                .process(deltaProcessorSupplier, Named.as("process_with_delta_processor"));
+                .process(componentProcessorSupplier, Named.as("process_with_component_delta_processor"));
 
         KGroupedStream<String, ComponentMetrics> kGroupedStream = componentMetricsStream
                 .groupBy((key, value) -> value.getProject().getUuid().toString(), Grouped
@@ -94,7 +99,8 @@ public class MetricsTopology {
         final KStream<String, ProjectMetrics> projectMetricsKStream = streamsBuilder
                 .stream(KafkaTopic.PROJECT_METRICS.getName(), Consumed
                         .with(Serdes.String(), projectMetricsSerde)
-                        .withName(processorNameConsume(KafkaTopic.PROJECT_METRICS)));
+                        .withName(processorNameConsume(KafkaTopic.PROJECT_METRICS)))
+                .process(projectProcessorSupplier, Named.as("process_with_project_delta_processor"));
 
         KGroupedStream<String, ProjectMetrics> kGroupedProjectStream = projectMetricsKStream
                 .groupBy((key, value) -> "re-key", Grouped
@@ -119,6 +125,7 @@ public class MetricsTopology {
         //stream portfolioMetricsTable to portfolio metrics topic
         portfolioMetricsTable
                 .toStream(Named.as("stream-portfolio-metrics"))
+                .filter((key, value) -> value.getStatus().equals(Status.UPDATED))
                 .to(KafkaTopic.PORTFOLIO_METRICS.getName(), Produced
                         .with(Serdes.String(), portfolioMetricsSerde)
                         .withName(processorNameProduce(KafkaTopic.PORTFOLIO_METRICS, "portfolio_metrics_event")));
