@@ -34,48 +34,12 @@ jobs:
         run: |-
           PROJECT_VERSION=$(yq -p=xml '.project.version' pom.xml)
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_OUTPUT
-      - name: Build JARs
-        run: mvn clean install -DskipTests
-      # Manually invoke buildx for each service.
-      # Workaround for https://github.com/quarkusio/quarkus/issues/30424
-      # Revert to Quarkus-native container build + push once the issue is fixed.
-      - name: Build and push mirror-service container image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./mirror-service
-          file: ./mirror-service/src/main/docker/Dockerfile.jvm
-          push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
-          tags: |
-            ghcr.io/dependencytrack/hyades-mirror-service:latest
-            ghcr.io/dependencytrack/hyades-mirror-service:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
-          platforms: linux/amd64,linux/arm64
-      - name: Build and push notification-publisher container image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./notification-publisher
-          file: ./notification-publisher/src/main/docker/Dockerfile.jvm
-          push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
-          tags: |
-            ghcr.io/dependencytrack/hyades-notification-publisher:latest
-            ghcr.io/dependencytrack/hyades-notification-publisher:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
-          platforms: linux/amd64,linux/arm64
-      - name: Build and push repository-meta-analyzer container image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./repository-meta-analyzer
-          file: ./repository-meta-analyzer/src/main/docker/Dockerfile.jvm
-          push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
-          tags: |
-            ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest
-            ghcr.io/dependencytrack/hyades-repository-meta-analyzer:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
-          platforms: linux/amd64,linux/arm64
-      - name: Build and push vulnerability-analyzer container image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./vulnerability-analyzer
-          file: ./vulnerability-analyzer/src/main/docker/Dockerfile.jvm
-          push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
-          tags: |
-            ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest
-            ghcr.io/dependencytrack/hyades-vulnerability-analyzer:${{ steps.determine-project-version.outputs.PROJECT_VERSION }}
-          platforms: linux/amd64,linux/arm64
+      - name: Build and push container images
+        run: |-
+          mvn clean install -DskipTests \
+            -Dquarkus.container-image.registry=ghcr.io \
+            -Dquarkus.container-image.group=dependencytrack \
+            -Dquarkus.container-image.additional-tags=latest \
+            -Dquarkus.container-image.build=true \
+            -Dquarkus.container-image.push=${{ startsWith(github.repository, 'DependencyTrack/') }} \
+            -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
