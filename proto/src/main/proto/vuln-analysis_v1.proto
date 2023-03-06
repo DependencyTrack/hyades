@@ -40,8 +40,8 @@ message ScanCommand {
 }
 
 message ScanKey {
-  // A (preferably) random correlation ID in arbitrary format.
-  string correlation_id = 1;
+  // A (preferably) random correlation token in arbitrary format.
+  string scan_token = 1;
 
   // UUID of the component in the Dependency-Track database.
   string component_uuid = 2;
