@@ -3,7 +3,6 @@ package org.hyades;
 import io.github.jeremylong.nvdlib.NvdCveApi;
 import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
-import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import io.quarkus.test.Mock;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -19,10 +18,6 @@ import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.vulnerability.Vulnerability;
 import org.hyades.client.NvdClientConfig;
 import org.hyades.common.KafkaTopic;
-import org.hyades.model.AnalyzerIdentity;
-import org.hyades.model.VulnerabilityScanKey;
-import org.hyades.model.VulnerabilityScanResult;
-import org.hyades.model.VulnerabilityScanStatus;
 import org.hyades.nvd.NvdProcessorSupplier;
 import org.hyades.osv.OsvMirrorHandler;
 import org.junit.jupiter.api.AfterEach;
@@ -40,7 +35,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -56,7 +50,6 @@ public class MirrorServiceTopologyTest {
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, String> inputTopicOsv;
     private TestInputTopic<String, String> inputTopicNvd;
-    private TestInputTopic<VulnerabilityScanKey, VulnerabilityScanResult> inputTopicAnalyzer;
     private TestOutputTopic<String, Bom> outputTopic;
     private OsvMirrorHandler osvMirrorHandlerMock;
 
@@ -87,8 +80,6 @@ public class MirrorServiceTopologyTest {
                 new StringSerializer(), new StringSerializer());
         inputTopicNvd = testDriver.createInputTopic(KafkaTopic.MIRROR_NVD.getName(),
                 new StringSerializer(), new StringSerializer());
-        inputTopicAnalyzer = testDriver.createInputTopic(KafkaTopic.VULN_ANALYSIS_RESULT.getName(),
-                new ObjectMapperSerializer<>(), new ObjectMapperSerializer<>());
         outputTopic = testDriver.createOutputTopic(KafkaTopic.NEW_VULNERABILITY.getName(),
                 new StringDeserializer(), new ObjectMapperDeserializer<>(Bom.class));
     }
@@ -114,17 +105,10 @@ public class MirrorServiceTopologyTest {
         when(osvMirrorHandlerMock.performMirror(Mockito.anyString())).thenReturn(List.of(bov));
         inputTopicNvd.pipeInput("event-test", "");
         inputTopicOsv.pipeInput("Go", "");
-        var testScanKey = new VulnerabilityScanKey("test-token", UUID.randomUUID());
-        var analyzerVuln = new org.hyades.model.Vulnerability();
-        analyzerVuln.setVulnId("analyzer-vuln-id");
-        inputTopicAnalyzer.pipeInput(testScanKey,
-                new VulnerabilityScanResult(testScanKey, AnalyzerIdentity.SNYK_ANALYZER,
-                        VulnerabilityScanStatus.COMPLETE, List.of(analyzerVuln), "na"));
-        assertThat(outputTopic.getQueueSize()).isEqualTo(3);
+        assertThat(outputTopic.getQueueSize()).isEqualTo(2);
         assertThat(outputTopic.readRecordsToList()).satisfies(records -> {
             assertThat(records.get(0).getKey()).isEqualTo("NVD/CVE-1999-1341");
             assertThat(records.get(1).getKey()).isEqualTo("OSV/test-id");
-            assertThat(records.get(2).getKey()).isEqualTo("SNYK_ANALYZER/analyzer-vuln-id");
         });
     }
 

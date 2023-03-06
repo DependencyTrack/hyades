@@ -10,7 +10,6 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
 import org.cyclonedx.model.Bom;
-import org.hyades.analyzer.AnalyzerProcessor;
 import org.hyades.common.KafkaTopic;
 import org.hyades.model.Vulnerability;
 import org.hyades.model.VulnerabilityScanKey;
@@ -77,18 +76,6 @@ public class MirrorServiceTopology {
                 .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
                         .with(Serdes.String(), cyclonedxSerde)
                         .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "nvd_vulnerability")));
-
-        // Vulnerability analyzers stream
-        // (K,V) to be consumed as (event ScanKey, ScanResult) from analyzers result topic
-        KStream<VulnerabilityScanKey, VulnerabilityScanResult> analyzerStream = streamsBuilder
-                .stream(KafkaTopic.VULN_ANALYSIS_RESULT.getName(), Consumed
-                        .with(scanKeySerde, scanResultSerde)
-                        .withName(processorNameConsume(KafkaTopic.VULN_ANALYSIS_RESULT)));
-        analyzerStream
-                .process(AnalyzerProcessor::new, Named.as("analyzers_vulnerabilities"))
-                .to(KafkaTopic.NEW_VULNERABILITY.getName(), Produced
-                        .with(Serdes.String(), cyclonedxSerde)
-                        .withName(processorNameProduce(KafkaTopic.NEW_VULNERABILITY, "analyzer_vulnerability")));
 
         return streamsBuilder.build();
     }
