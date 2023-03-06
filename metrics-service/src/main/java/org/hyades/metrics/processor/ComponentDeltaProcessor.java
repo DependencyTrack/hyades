@@ -87,6 +87,7 @@ public class ComponentDeltaProcessor extends ContextualProcessor<String, Compone
         deltaComponentMetrics.setPolicyViolationsOperationalTotal(componentEventMetrics.getPolicyViolationsOperationalTotal() - inMemoryMetrics.getPolicyViolationsOperationalTotal());
         deltaComponentMetrics.setVulnerabilities(componentEventMetrics.getVulnerabilities() - inMemoryMetrics.getVulnerabilities());
         deltaComponentMetrics.setUnassigned(componentEventMetrics.getUnassigned() - inMemoryMetrics.getUnassigned());
+        deltaComponentMetrics.setSuppressed(componentEventMetrics.getSuppressed() - inMemoryMetrics.getSuppressed());
         deltaComponentMetrics.setPolicyViolationsSecurityAudited(componentEventMetrics.getPolicyViolationsSecurityAudited() - inMemoryMetrics.getPolicyViolationsSecurityAudited());
         deltaComponentMetrics.setPolicyViolationsSecurityUnaudited(componentEventMetrics.getPolicyViolationsSecurityUnaudited() - inMemoryMetrics.getPolicyViolationsSecurityUnaudited());
         deltaComponentMetrics.setPolicyViolationsSecurityTotal(componentEventMetrics.getPolicyViolationsSecurityTotal() - inMemoryMetrics.getPolicyViolationsSecurityTotal());
@@ -109,6 +110,9 @@ public class ComponentDeltaProcessor extends ContextualProcessor<String, Compone
         deltaMetrics.setHigh(0 - componentMetrics.getHigh());
         deltaMetrics.setMedium(0 - componentMetrics.getMedium());
         deltaMetrics.setLow(0 - componentMetrics.getLow());
+        deltaMetrics.setVulnerabilities(0 - componentMetrics.getVulnerabilities());
+        deltaMetrics.setUnassigned(0 - componentMetrics.getUnassigned());
+        deltaMetrics.setSuppressed(0 - componentMetrics.getSuppressed());
         deltaMetrics.setFindingsTotal(0 - componentMetrics.getFindingsTotal());
         deltaMetrics.setFindingsAudited(0 - componentMetrics.getFindingsAudited());
         deltaMetrics.setFindingsUnaudited(0 - componentMetrics.getFindingsUnaudited());
@@ -124,8 +128,6 @@ public class ComponentDeltaProcessor extends ContextualProcessor<String, Compone
         deltaMetrics.setPolicyViolationsOperationalAudited(0 - componentMetrics.getPolicyViolationsOperationalAudited());
         deltaMetrics.setPolicyViolationsOperationalUnaudited(0 - componentMetrics.getPolicyViolationsOperationalAudited());
         deltaMetrics.setPolicyViolationsOperationalTotal(0 - componentMetrics.getPolicyViolationsOperationalTotal());
-        deltaMetrics.setVulnerabilities(0 - componentMetrics.getVulnerabilities());
-        deltaMetrics.setUnassigned(0 - componentMetrics.getUnassigned());
         deltaMetrics.setPolicyViolationsSecurityAudited(0 - componentMetrics.getPolicyViolationsSecurityAudited());
         deltaMetrics.setPolicyViolationsSecurityUnaudited(0 - componentMetrics.getPolicyViolationsSecurityUnaudited());
         deltaMetrics.setPolicyViolationsSecurityTotal(0 - componentMetrics.getPolicyViolationsSecurityTotal());

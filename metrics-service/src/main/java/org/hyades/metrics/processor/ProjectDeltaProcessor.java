@@ -69,6 +69,8 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
         deltaProjectMetrics.setHigh(projectEventMetrics.getHigh() - inMemoryMetrics.getHigh());
         deltaProjectMetrics.setMedium(projectEventMetrics.getMedium() - inMemoryMetrics.getMedium());
         deltaProjectMetrics.setLow(projectEventMetrics.getLow() - inMemoryMetrics.getLow());
+        deltaProjectMetrics.setUnassigned(projectEventMetrics.getUnassigned() - inMemoryMetrics.getUnassigned());
+        deltaProjectMetrics.setSuppressed(projectEventMetrics.getSuppressed() - inMemoryMetrics.getSuppressed());
         deltaProjectMetrics.setFindingsTotal(projectEventMetrics.getFindingsTotal() - inMemoryMetrics.getFindingsTotal());
         deltaProjectMetrics.setFindingsAudited(projectEventMetrics.getFindingsAudited() - inMemoryMetrics.getFindingsAudited());
         deltaProjectMetrics.setFindingsUnaudited(projectEventMetrics.getFindingsUnaudited() - inMemoryMetrics.getFindingsUnaudited());
@@ -85,7 +87,6 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
         deltaProjectMetrics.setPolicyViolationsOperationalUnaudited(projectEventMetrics.getPolicyViolationsOperationalUnaudited() - inMemoryMetrics.getPolicyViolationsOperationalAudited());
         deltaProjectMetrics.setPolicyViolationsOperationalTotal(projectEventMetrics.getPolicyViolationsOperationalTotal() - inMemoryMetrics.getPolicyViolationsOperationalTotal());
         deltaProjectMetrics.setVulnerabilities(projectEventMetrics.getVulnerabilities() - inMemoryMetrics.getVulnerabilities());
-        deltaProjectMetrics.setUnassigned(projectEventMetrics.getUnassigned() - inMemoryMetrics.getUnassigned());
         deltaProjectMetrics.setPolicyViolationsSecurityAudited(projectEventMetrics.getPolicyViolationsSecurityAudited() - inMemoryMetrics.getPolicyViolationsSecurityAudited());
         deltaProjectMetrics.setPolicyViolationsSecurityUnaudited(projectEventMetrics.getPolicyViolationsSecurityUnaudited() - inMemoryMetrics.getPolicyViolationsSecurityUnaudited());
         deltaProjectMetrics.setPolicyViolationsSecurityTotal(projectEventMetrics.getPolicyViolationsSecurityTotal() - inMemoryMetrics.getPolicyViolationsSecurityTotal());
@@ -107,6 +108,7 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
         deltaMetrics.setVulnerableComponents(0 - projectMetrics.getVulnerableComponents());
         deltaMetrics.setVulnerabilities(0 - projectMetrics.getVulnerabilities());
         deltaMetrics.setUnassigned(0 - projectMetrics.getUnassigned());
+        deltaMetrics.setSuppressed(0 - projectMetrics.getSuppressed());
         deltaMetrics.setCritical(0 - projectMetrics.getCritical());
         deltaMetrics.setHigh(0 - projectMetrics.getHigh());
         deltaMetrics.setMedium(0 - projectMetrics.getMedium());

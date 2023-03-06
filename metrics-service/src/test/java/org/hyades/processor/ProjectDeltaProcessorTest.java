@@ -281,8 +281,80 @@ class ProjectDeltaProcessorTest {
         });
     }
 
+    @Test
+    void shouldSendDeltaOfMetricsFromProjectMetricsInStore() {
+
+        store.put(PROJECT_UUID.toString(), createProjectMetrics(2, 3, 4, 2));
+
+        final TestRecord<String, ProjectMetrics> inputRecord = createRecordWithComponentDeleted();
+        inputTopic.pipeInput(inputRecord);
+
+        assertThat(outputTopic.readRecord()).satisfies(record -> {
+            assertThat(record.key()).isEqualTo(inputRecord.getKey());
+            assertThat(record.getValue().getStatus()).isEqualTo(Status.UPDATED);
+            assertThat(record.getValue().getVulnerableComponents()).isZero();
+            assertThat(record.getValue().getCritical()).isEqualTo(-2);
+            assertThat(record.getValue().getHigh()).isEqualTo(-3);
+            assertThat(record.getValue().getMedium()).isEqualTo(-4);
+            assertThat(record.getValue().getLow()).isZero();
+            assertThat(record.getValue().getVulnerabilities()).isEqualTo(-2);
+            assertThat(record.getValue().getVulnerableComponents()).isZero();
+            assertThat(record.getValue().getFindingsAudited()).isZero();
+            assertThat(record.getValue().getFindingsUnaudited()).isZero();
+            assertThat(record.getValue().getFindingsTotal()).isZero();
+            assertThat(record.getValue().getPolicyViolationsFail()).isZero();
+            assertThat(record.getValue().getPolicyViolationsWarn()).isZero();
+            assertThat(record.getValue().getPolicyViolationsInfo()).isZero();
+            assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsSecurityAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsSecurityUnaudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsSecurityTotal()).isZero();
+            assertThat(record.getValue().getPolicyViolationsOperationalTotal()).isZero();
+            assertThat(record.getValue().getPolicyViolationsOperationalUnaudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsOperationalAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsLicenseAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsLicenseUnaudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsLicenseTotal()).isZero();
+        });
+    }
+
     private TestRecord<String, ProjectMetrics> createTestRecord(int critical, int high, int medium, int vulnerabilities) {
         final var projectMetrics = createProjectMetrics(critical, high, medium, vulnerabilities);
+        return new TestRecord<>(PROJECT_UUID.toString(), projectMetrics);
+    }
+
+    private TestRecord<String, ProjectMetrics> createRecordWithComponentDeleted() {
+        var project = new Project();
+        project.setUuid(PROJECT_UUID);
+        var projectMetrics = new ProjectMetrics();
+        projectMetrics.setProject(project);
+        projectMetrics.setComponents(1);
+        projectMetrics.setCritical(0);
+        projectMetrics.setHigh(0);
+        projectMetrics.setMedium(0);
+        projectMetrics.setLow(5);
+        projectMetrics.setVulnerabilities(0);
+        projectMetrics.setVulnerableComponents(2);
+        projectMetrics.setFindingsAudited(5);
+        projectMetrics.setFindingsUnaudited(5);
+        projectMetrics.setFindingsTotal(10);
+        projectMetrics.setPolicyViolationsFail(1);
+        projectMetrics.setPolicyViolationsWarn(5);
+        projectMetrics.setPolicyViolationsInfo(5);
+        projectMetrics.setPolicyViolationsAudited(0);
+        projectMetrics.setPolicyViolationsUnaudited(0);
+        projectMetrics.setFindingsUnaudited(5);
+        projectMetrics.setPolicyViolationsOperationalAudited(5);
+        projectMetrics.setPolicyViolationsOperationalUnaudited(5);
+        projectMetrics.setPolicyViolationsOperationalTotal(10);
+        projectMetrics.setPolicyViolationsSecurityAudited(5);
+        projectMetrics.setPolicyViolationsSecurityUnaudited(5);
+        projectMetrics.setPolicyViolationsSecurityTotal(10);
+        projectMetrics.setPolicyViolationsLicenseAudited(5);
+        projectMetrics.setPolicyViolationsLicenseAudited(5);
+        projectMetrics.setPolicyViolationsLicenseUnaudited(5);
+        projectMetrics.setPolicyViolationsLicenseTotal(10);
         return new TestRecord<>(PROJECT_UUID.toString(), projectMetrics);
     }
 
