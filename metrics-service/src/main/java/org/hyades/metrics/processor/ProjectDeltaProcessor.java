@@ -65,6 +65,8 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
             deltaProjectMetrics.setStatus(Status.NO_CHANGE);
         }
         deltaProjectMetrics.setProject(projectEventMetrics.getProject());
+        deltaProjectMetrics.setComponents(projectEventMetrics.getComponents() - inMemoryMetrics.getComponents());
+        deltaProjectMetrics.setVulnerableComponents(projectEventMetrics.getVulnerableComponents() - inMemoryMetrics.getVulnerableComponents());
         deltaProjectMetrics.setCritical(projectEventMetrics.getCritical() - inMemoryMetrics.getCritical());
         deltaProjectMetrics.setHigh(projectEventMetrics.getHigh() - inMemoryMetrics.getHigh());
         deltaProjectMetrics.setMedium(projectEventMetrics.getMedium() - inMemoryMetrics.getMedium());

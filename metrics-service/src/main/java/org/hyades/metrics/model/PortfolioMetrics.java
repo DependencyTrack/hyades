@@ -25,10 +25,6 @@ public class PortfolioMetrics extends Metrics implements Serializable {
 
     public PortfolioMetrics add(ProjectMetrics projectMetrics) {
 
-        if (projectMetrics == null) {
-            return this;
-        }
-
         if (projectMetrics.getStatus().equals(CREATED)) {
             this.projects++;
         }

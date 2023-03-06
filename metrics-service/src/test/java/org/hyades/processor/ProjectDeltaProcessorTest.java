@@ -292,6 +292,7 @@ class ProjectDeltaProcessorTest {
         assertThat(outputTopic.readRecord()).satisfies(record -> {
             assertThat(record.key()).isEqualTo(inputRecord.getKey());
             assertThat(record.getValue().getStatus()).isEqualTo(Status.UPDATED);
+            assertThat(record.getValue().getComponents()).isEqualTo(-1);
             assertThat(record.getValue().getVulnerableComponents()).isZero();
             assertThat(record.getValue().getCritical()).isEqualTo(-2);
             assertThat(record.getValue().getHigh()).isEqualTo(-3);
