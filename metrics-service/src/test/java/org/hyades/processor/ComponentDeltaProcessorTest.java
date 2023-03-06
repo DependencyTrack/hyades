@@ -82,6 +82,18 @@ class ComponentDeltaProcessorTest {
             assertThat(record.getValue().getPolicyViolationsInfo()).isEqualTo(2);
             assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
             assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
+            assertThat(record.getValue().getFindingsUnaudited()).isEqualTo(5);
+            assertThat(record.getValue().getSuppressed()).isEqualTo(5);
+            assertThat(record.getValue().getPolicyViolationsWarn()).isEqualTo(1);
+            assertThat(record.getValue().getPolicyViolationsLicenseAudited()).isEqualTo(5);
+            assertThat(record.getValue().getPolicyViolationsLicenseUnaudited()).isEqualTo(5);
+            assertThat(record.getValue().getPolicyViolationsLicenseTotal()).isEqualTo(10);
+            assertThat(record.getValue().getPolicyViolationsOperationalAudited()).isEqualTo(5);
+            assertThat(record.getValue().getPolicyViolationsOperationalUnaudited()).isEqualTo(5);
+            assertThat(record.getValue().getPolicyViolationsOperationalTotal()).isEqualTo(10);
+            assertThat(record.getValue().getPolicyViolationsSecurityAudited()).isEqualTo(5);
+            assertThat(record.getValue().getPolicyViolationsSecurityUnaudited()).isEqualTo(5);
+            assertThat(record.getValue().getPolicyViolationsSecurityTotal()).isEqualTo(10);
         });
     }
 
@@ -110,6 +122,18 @@ class ComponentDeltaProcessorTest {
                     assertThat(record.getValue().getPolicyViolationsInfo()).isEqualTo(2);
                     assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
                     assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
+                    assertThat(record.getValue().getFindingsUnaudited()).isEqualTo(5);
+                    assertThat(record.getValue().getSuppressed()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsWarn()).isEqualTo(1);
+                    assertThat(record.getValue().getPolicyViolationsLicenseAudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsLicenseUnaudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsLicenseTotal()).isEqualTo(10);
+                    assertThat(record.getValue().getPolicyViolationsOperationalAudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsOperationalUnaudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsOperationalTotal()).isEqualTo(10);
+                    assertThat(record.getValue().getPolicyViolationsSecurityAudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsSecurityUnaudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsSecurityTotal()).isEqualTo(10);
                 },
 
                 record -> {
@@ -126,6 +150,18 @@ class ComponentDeltaProcessorTest {
                     assertThat(record.getValue().getPolicyViolationsInfo()).isZero();
                     assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
                     assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
+                    assertThat(record.getValue().getFindingsUnaudited()).isZero();
+                    assertThat(record.getValue().getSuppressed()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsWarn()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsLicenseAudited()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsLicenseUnaudited()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsLicenseTotal()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsOperationalAudited()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsOperationalUnaudited()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsOperationalTotal()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsSecurityAudited()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsSecurityUnaudited()).isZero();
+                    assertThat(record.getValue().getPolicyViolationsSecurityTotal()).isZero();
                 }
         );
     }
@@ -145,6 +181,18 @@ class ComponentDeltaProcessorTest {
                     assertThat(record.getValue().getHigh()).isEqualTo(3);
                     assertThat(record.getValue().getMedium()).isEqualTo(4);
                     assertThat(record.getValue().getVulnerabilities()).isEqualTo(2);
+                    assertThat(record.getValue().getFindingsUnaudited()).isEqualTo(5);
+                    assertThat(record.getValue().getSuppressed()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsWarn()).isEqualTo(1);
+                    assertThat(record.getValue().getPolicyViolationsLicenseAudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsLicenseUnaudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsLicenseTotal()).isEqualTo(10);
+                    assertThat(record.getValue().getPolicyViolationsOperationalAudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsOperationalUnaudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsOperationalTotal()).isEqualTo(10);
+                    assertThat(record.getValue().getPolicyViolationsSecurityAudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsSecurityUnaudited()).isEqualTo(5);
+                    assertThat(record.getValue().getPolicyViolationsSecurityTotal()).isEqualTo(10);
                 },
 
                 record -> {
@@ -154,6 +202,18 @@ class ComponentDeltaProcessorTest {
                     assertThat(record.getValue().getHigh()).isEqualTo(-3);
                     assertThat(record.getValue().getMedium()).isEqualTo(-4);
                     assertThat(record.getValue().getVulnerabilities()).isEqualTo(-2);
+                    assertThat(record.getValue().getFindingsUnaudited()).isEqualTo(-5);
+                    assertThat(record.getValue().getSuppressed()).isEqualTo(-5);
+                    assertThat(record.getValue().getPolicyViolationsWarn()).isEqualTo(-1);
+                    assertThat(record.getValue().getPolicyViolationsLicenseAudited()).isEqualTo(-5);
+                    assertThat(record.getValue().getPolicyViolationsLicenseUnaudited()).isEqualTo(-5);
+                    assertThat(record.getValue().getPolicyViolationsLicenseTotal()).isEqualTo(-10);
+                    assertThat(record.getValue().getPolicyViolationsOperationalAudited()).isEqualTo(-5);
+                    assertThat(record.getValue().getPolicyViolationsOperationalUnaudited()).isEqualTo(-5);
+                    assertThat(record.getValue().getPolicyViolationsOperationalTotal()).isEqualTo(-10);
+                    assertThat(record.getValue().getPolicyViolationsSecurityAudited()).isEqualTo(-5);
+                    assertThat(record.getValue().getPolicyViolationsSecurityUnaudited()).isEqualTo(-5);
+                    assertThat(record.getValue().getPolicyViolationsSecurityTotal()).isEqualTo(-10);
                 }
         );
     }
@@ -180,6 +240,18 @@ class ComponentDeltaProcessorTest {
             assertThat(record.getValue().getPolicyViolationsInfo()).isZero();
             assertThat(record.getValue().getPolicyViolationsAudited()).isZero();
             assertThat(record.getValue().getPolicyViolationsUnaudited()).isZero();
+            assertThat(record.getValue().getFindingsUnaudited()).isZero();
+            assertThat(record.getValue().getSuppressed()).isZero();
+            assertThat(record.getValue().getPolicyViolationsWarn()).isZero();
+            assertThat(record.getValue().getPolicyViolationsLicenseAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsLicenseUnaudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsLicenseTotal()).isZero();
+            assertThat(record.getValue().getPolicyViolationsOperationalAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsOperationalUnaudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsOperationalTotal()).isZero();
+            assertThat(record.getValue().getPolicyViolationsSecurityAudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsSecurityUnaudited()).isZero();
+            assertThat(record.getValue().getPolicyViolationsSecurityTotal()).isZero();
         });
     }
 
@@ -205,6 +277,18 @@ class ComponentDeltaProcessorTest {
         componentMetrics.setPolicyViolationsInfo(2);
         componentMetrics.setPolicyViolationsAudited(0);
         componentMetrics.setPolicyViolationsUnaudited(0);
+        componentMetrics.setFindingsUnaudited(5);
+        componentMetrics.setSuppressed(5);
+        componentMetrics.setPolicyViolationsWarn(1);
+        componentMetrics.setPolicyViolationsLicenseAudited(5);
+        componentMetrics.setPolicyViolationsLicenseUnaudited(5);
+        componentMetrics.setPolicyViolationsLicenseTotal(10);
+        componentMetrics.setPolicyViolationsOperationalAudited(5);
+        componentMetrics.setPolicyViolationsOperationalUnaudited(5);
+        componentMetrics.setPolicyViolationsOperationalTotal(10);
+        componentMetrics.setPolicyViolationsSecurityAudited(5);
+        componentMetrics.setPolicyViolationsSecurityUnaudited(5);
+        componentMetrics.setPolicyViolationsSecurityTotal(10);
         return componentMetrics;
     }
 }
