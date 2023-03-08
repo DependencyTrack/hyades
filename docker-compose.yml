@@ -88,6 +88,21 @@ services:
       - demo
     restart: unless-stopped
 
+  metrics-service:
+    image: ghcr.io/dependencytrack/hyades-metrics-service:latest
+    depends_on:
+      - redpanda
+    environment:
+      QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
+    ports:
+      # Dynamic host port binding to allow for scaling of the service.
+      # Scaling with Compose doesn't work when assigning static host ports.
+      - "8094"
+    profiles:
+      - demo
+    restart: unless-stopped
+
   apiserver:
     image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
     container_name: dt-apiserver

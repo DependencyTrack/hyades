@@ -30,6 +30,12 @@ updates:
     interval: daily
     time: "05:00"
     timezone: Etc/UTC
+- package-ecosystem: docker
+  directory: metrics-service/src/main/docker
+  schedule:
+    interval: daily
+    time: "05:00"
+    timezone: Etc/UTC
 - package-ecosystem: github-actions
   directory: /.github/workflows
   schedule:

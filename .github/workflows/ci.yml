@@ -35,6 +35,7 @@ jobs:
     strategy:
       matrix:
         module:
+        - metrics-service
         - mirror-service
         - notification-publisher
         - repository-meta-analyzer
