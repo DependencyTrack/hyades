@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "add-native-workflow-for-metrics-service" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "add-native-workflow-for-metrics-service" ]
+    branches: [ "main" ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
