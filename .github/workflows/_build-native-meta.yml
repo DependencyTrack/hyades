@@ -13,8 +13,10 @@ jobs:
     strategy:
       matrix:
         arch:
-        - amd64
-        - arm64
+        - name: amd64
+          build-timeout: 15
+        - name: arm64
+          build-timeout: 60
       fail-fast: true
     steps:
     - name: Checkout Repository
@@ -32,10 +34,11 @@ jobs:
       with:
         install: true
     - name: Build Native Image
+      timeout-minutes: ${{ matrix.arch.build-timeout }}
       run: |-
         RESOURCES_INCLUDES=""
         RESOURCES_EXCLUDES=""
-        if [[ "${{ matrix.arch }}" == "arm64" ]]; then
+        if [[ "${{ matrix.arch.name }}" == "arm64" ]]; then
           # Include RocksDB JNI library for aarch64 when building for arm64.
           # Quarkus only includes the x64 library variant per default.
           # https://github.com/quarkusio/quarkus/issues/30545
@@ -54,23 +57,24 @@ jobs:
         mvn clean package -Pnative -pl commons,proto,${{ inputs.module }} -DskipTests \
           -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 \
           -Dquarkus.native.container-build=true \
-          -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch }}' \
+          -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch.name }}' \
           -Dquarkus.native.resources.includes="$RESOURCES_INCLUDES" \
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
     - name: Test Native Image
-      if: ${{ matrix.arch == 'amd64' }}
+      if: ${{ matrix.arch.name == 'amd64' }}
       run: |-
         mvn -pl commons,proto,${{ inputs.module }} test-compile failsafe:integration-test -Pnative
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: native-image-${{ matrix.arch }}
+        name: native-image-${{ matrix.arch.name }}
         path: |-
           ${{ inputs.module }}/target/*-runner
 
   build-container-image:
     name: Build Container Image
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs:
     - build-native-image
     steps:
