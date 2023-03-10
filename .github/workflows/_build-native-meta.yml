@@ -16,7 +16,7 @@ jobs:
         - name: amd64
           build-timeout: 15
         - name: arm64
-          build-timeout: 60
+          build-timeout: 75
       fail-fast: true
     steps:
     - name: Checkout Repository
