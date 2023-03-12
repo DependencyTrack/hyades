@@ -1,0 +1,193 @@
+syntax = "proto3";
+
+package org.hyades.metrics.v1;
+
+option java_multiple_files = true;
+option java_package = "org.hyades.proto.metrics.v1";
+
+message ComponentMetrics {
+
+  // UUID of the component in the Dependency-Track database.
+  string component_uuid = 1;
+
+  // UUID of the project in the Dependency-Track database.
+  string project_uuid = 2;
+
+  // The status of this record.
+  Status status = 3;
+
+  // The inherited risk score of the component.
+  double inherited_risk_score = 4;
+
+  // Metrics about vulnerabilities affecting the component.
+  VulnerabilitiesMetrics vulnerabilities = 5;
+
+  // Metrics about findings for the component.
+  FindingsMetrics findings = 6;
+
+  // Metrics about policy violations for the component.
+  PolicyViolationsMetrics policy_violations = 7;
+
+}
+
+message ProjectMetrics {
+
+  // UUID of the project in the Dependency-Track database.
+  string project_uuid = 1;
+
+  // The status of this record.
+  Status status = 2;
+
+  // Total number of components in the project.
+  int32 components = 3;
+
+  // Number of vulnerable components in the project.
+  int32 vulnerable_components = 4;
+
+  // The inherited risk score of the project.
+  double inherited_risk_score = 5;
+
+  // Metrics about vulnerabilities affecting the project.
+  VulnerabilitiesMetrics vulnerabilities = 6;
+
+  // Metrics about findings for the project.
+  FindingsMetrics findings = 7;
+
+  // Metrics about policy violations for the project.
+  PolicyViolationsMetrics policy_violations = 8;
+
+}
+
+message PortfolioMetrics {
+
+  // The status of this record.
+  Status status = 1;
+
+  // Total number of projects in the portfolio.
+  int32 projects = 2;
+
+  // Number of vulnerable projects in the portfolio.
+  int32 vulnerable_projects = 3;
+
+  // Total number of components in the portfolio.
+  int32 components = 4;
+
+  // Number of vulnerable components in the portfolio.
+  int32 vulnerable_components = 5;
+
+  // Total inherited risk score of the portfolio.
+  double inherited_risk_score = 6;
+
+  VulnerabilitiesMetrics vulnerabilities = 7;
+
+  FindingsMetrics findings = 8;
+
+  PolicyViolationsMetrics policy_violations = 9;
+
+}
+
+message FindingsMetrics {
+
+  // Total number of findings.
+  int32 total = 1;
+
+  // Number of audited findings.
+  int32 audited = 2;
+
+  // Number of unaudited findings.
+  int32 unaudited = 3;
+
+  // Number of suppressed findings.
+  int32 suppressed = 4;
+
+}
+
+message PolicyViolationsMetrics {
+
+  // Total number of policy violations.
+  int32 total = 1;
+
+  // Number of policy violations in FAIL state.
+  int32 fail = 2;
+
+  // Number of policy violations in WARN state.
+  int32 warn = 3;
+
+  // Number of policy violations in INFO state.
+  int32 info = 4;
+
+  // Number of audited policy violations.
+  int32 audited = 5;
+
+  // Number of unaudited policy violations.
+  int32 unaudited = 6;
+
+  // Total number of violations of license policies.
+  int32 license_total = 7;
+
+  // Number of audited violations of license policies.
+  int32 license_audited = 8;
+
+  // Number of unaudited violations of license policies.
+  int32 license_unaudited = 9;
+
+  // Total number of violations of operational policies.
+  int32 operational_total = 10;
+
+  // Number of audited violations of operational policies.
+  int32 operational_audited = 11;
+
+  // Number of unaudited violations of unaudited policies.
+  int32 operational_unaudited = 12;
+
+  // Total number of violations of security policies.
+  int32 security_total = 13;
+
+  // Number of audited violations of security policies.
+  int32 security_audited = 14;
+
+  // Number of unaudited violations of security policies.
+  int32 security_unaudited = 15;
+
+}
+
+message VulnerabilitiesMetrics {
+
+  // Total number of vulnerabilities.
+  int32 total = 1;
+
+  // Number of vulnerabilities with critical severity.
+  int32 critical = 2;
+
+  // Number of vulnerabilities with high severity.
+  int32 high = 3;
+
+  // Number of vulnerabilities with medium severity.
+  int32 medium = 4;
+
+  // Number of vulnerabilities with low severity.
+  int32 low = 5;
+
+  // Number of vulnerabilities with unassigned severity.
+  int32 unassigned = 6;
+
+}
+
+enum Status {
+
+  // Indicates that the status of the record is unknown.
+  STATUS_UNKNOWN = 0;
+
+  // Indicates that the record was created.
+  STATUS_CREATED = 1;
+
+  // Indicates that the record was updated.
+  STATUS_UPDATED = 2;
+
+  // Indicates that the record was deleted.
+  STATUS_DELETED = 3;
+
+  // Indicates that the record did not change.
+  STATUS_UNCHANGED = 4;
+
+}
