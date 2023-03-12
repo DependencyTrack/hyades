@@ -73,7 +73,7 @@ services:
     restart: unless-stopped
 
   mirror-service:
-    image: ghcr.io/dependencytrack/hyades-mirror-service:latest
+    image: ghcr.io/dependencytrack/hyades-mirror-service:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -89,7 +89,7 @@ services:
     restart: unless-stopped
 
   metrics-service:
-    image: ghcr.io/dependencytrack/hyades-metrics-service:latest
+    image: ghcr.io/dependencytrack/hyades-metrics-service:latest-native
     depends_on:
       - redpanda
     environment:
@@ -110,10 +110,12 @@ services:
       - postgres
       - redpanda
     environment:
-      # Limit maximum heap size to 4GB.
+      # Limit maximum heap size to 2GB.
       # Default would be 90% of available memory,
       # which can cause problems on some workstations.
-      EXTRA_JAVA_OPTS: "-Xmx4g"
+      # For production deployments, the default should be used.
+      EXTRA_JAVA_OPTS: "-Xmx2g"
+      SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
       ALPINE_DATABASE_MODE: "external"
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       ALPINE_DATABASE_DRIVER: "org.postgresql.Driver"
@@ -168,6 +170,8 @@ services:
       - '1'
       - --reserve-memory
       - 0M
+      - --memory
+      - 512M
       - --overprovisioned
       - --node-id
       - '0'
