@@ -8,6 +8,10 @@ public class KafkaProtobufSerializer<T extends MessageLite> implements Serialize
 
     @Override
     public byte[] serialize(final String topic, final T data) {
+        if (data == null) {
+            return null;
+        }
+
         try {
             return data.toByteArray();
         } catch (RuntimeException e) {

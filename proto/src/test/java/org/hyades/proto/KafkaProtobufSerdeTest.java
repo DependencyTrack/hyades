@@ -51,4 +51,20 @@ class KafkaProtobufSerdeTest {
                 .isThrownBy(() -> serde.deserializer().deserialize("topic", "[]".getBytes(StandardCharsets.UTF_8)));
     }
 
+    @Test
+    @SuppressWarnings("resource")
+    void testSerializeNull() {
+        final var serde = new KafkaProtobufSerde<>(Component.parser());
+
+        assertThat(serde.serializer().serialize("topic", null)).isNull();
+    }
+
+    @Test
+    @SuppressWarnings("resource")
+    void testDeserializeNull() {
+        final var serde = new KafkaProtobufSerde<>(Component.parser());
+
+        assertThat(serde.deserializer().deserialize("topic", null)).isEqualTo(null);
+    }
+
 }
