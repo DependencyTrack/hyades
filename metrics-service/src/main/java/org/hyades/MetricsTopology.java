@@ -1,6 +1,5 @@
 package org.hyades;
 
-import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
@@ -16,12 +15,13 @@ import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
 import org.hyades.common.KafkaTopic;
-import org.hyades.metrics.model.ComponentMetrics;
-import org.hyades.metrics.model.PortfolioMetrics;
-import org.hyades.metrics.model.ProjectMetrics;
-import org.hyades.metrics.model.Status;
 import org.hyades.metrics.processor.ComponentProcessorSupplier;
 import org.hyades.metrics.processor.ProjectProcessorSupplier;
+import org.hyades.proto.KafkaProtobufSerde;
+import org.hyades.proto.metrics.v1.ComponentMetrics;
+import org.hyades.proto.metrics.v1.PortfolioMetrics;
+import org.hyades.proto.metrics.v1.ProjectMetrics;
+import org.hyades.proto.metrics.v1.Status;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -29,6 +29,7 @@ import javax.inject.Inject;
 
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
+import static org.hyades.metrics.util.MetricsUtil.add;
 
 @ApplicationScoped
 public class MetricsTopology {
@@ -57,9 +58,9 @@ public class MetricsTopology {
     public Topology metricsTopology() {
         final var streamsBuilder = new StreamsBuilder();
 
-        var componentMetricsSerde = new ObjectMapperSerde<>(ComponentMetrics.class);
-        var projectMetricsSerde = new ObjectMapperSerde<>(ProjectMetrics.class);
-        var portfolioMetricsSerde = new ObjectMapperSerde<>(PortfolioMetrics.class);
+        var componentMetricsSerde = new KafkaProtobufSerde<>(ComponentMetrics.parser());
+        var projectMetricsSerde = new KafkaProtobufSerde<>(ProjectMetrics.parser());
+        var portfolioMetricsSerde = new KafkaProtobufSerde<>(PortfolioMetrics.parser());
 
         final KStream<String, ComponentMetrics> componentMetricsStream = streamsBuilder
                 .stream(KafkaTopic.COMPONENT_METRICS.getName(), Consumed
@@ -68,15 +69,15 @@ public class MetricsTopology {
                 .process(componentProcessorSupplier, Named.as("process_with_component_delta_processor"));
 
         KGroupedStream<String, ComponentMetrics> kGroupedStream = componentMetricsStream
-                .groupBy((key, value) -> value.getProject().getUuid().toString(), Grouped
+                .groupBy((key, value) -> value.getProjectUuid(), Grouped
                         .with(Serdes.String(), componentMetricsSerde)
                         .withName("group_metrics_by_project"));
 
         // The initial value of our aggregation will be a new Metrics instance
-        Initializer<ProjectMetrics> projectMetricsInitializer = ProjectMetrics::new;
+        Initializer<ProjectMetrics> projectMetricsInitializer = ProjectMetrics.newBuilder()::build;
 
         Aggregator<String, ComponentMetrics, ProjectMetrics> metricsAdder =
-                (key, value, aggregate) -> aggregate.add(value);
+                (key, value, aggregate) -> add(aggregate, value);
 
         KTable<String, ProjectMetrics> projectMetricsTable =
                 kGroupedStream.aggregate(
@@ -90,7 +91,7 @@ public class MetricsTopology {
         //stream projectMetricsTable to project metrics topic
         projectMetricsTable
                 .toStream(Named.as("stream-project-metrics"))
-                .filter((key, value) -> value.getStatus().equals(Status.UPDATED))
+                .filter((key, value) -> value.getStatus().equals(Status.STATUS_UPDATED))
                 .to(KafkaTopic.PROJECT_METRICS.getName(), Produced
                         .with(Serdes.String(), projectMetricsSerde)
                         .withName(processorNameProduce(KafkaTopic.PROJECT_METRICS, "project_metric_event")));
@@ -107,10 +108,10 @@ public class MetricsTopology {
                         .with(Serdes.String(), projectMetricsSerde)
                         .withName("group_metrics_by_portfolio"));
 
-        Initializer<PortfolioMetrics> portfolioMetricsInitializer = PortfolioMetrics::new;
+        Initializer<PortfolioMetrics> portfolioMetricsInitializer = PortfolioMetrics.newBuilder()::build;
 
         Aggregator<String, ProjectMetrics, PortfolioMetrics> portfolioMetricsAdder =
-                (key, value, aggregate) -> aggregate.add(value);
+                (key, value, aggregate) -> add(aggregate, value);
 
 
         KTable<String, PortfolioMetrics> portfolioMetricsTable =
@@ -125,7 +126,7 @@ public class MetricsTopology {
         //stream portfolioMetricsTable to portfolio metrics topic
         portfolioMetricsTable
                 .toStream(Named.as("stream-portfolio-metrics"))
-                .filter((key, value) -> value.getStatus().equals(Status.UPDATED))
+                .filter((key, value) -> value.getStatus().equals(Status.STATUS_UPDATED))
                 .to(KafkaTopic.PORTFOLIO_METRICS.getName(), Produced
                         .with(Serdes.String(), portfolioMetricsSerde)
                         .withName(processorNameProduce(KafkaTopic.PORTFOLIO_METRICS, "portfolio_metrics_event")));
