@@ -16,6 +16,10 @@ public class KafkaProtobufDeserializer<T extends MessageLite> implements Deseria
 
     @Override
     public T deserialize(final String topic, final byte[] data) {
+        if (data == null) {
+            return null;
+        }
+
         try {
             return parser.parseFrom(data);
         } catch (InvalidProtocolBufferException e) {

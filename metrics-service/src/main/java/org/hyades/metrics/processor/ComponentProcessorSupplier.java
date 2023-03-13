@@ -4,7 +4,7 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorSupplier;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
-import org.hyades.metrics.model.ComponentMetrics;
+import org.hyades.proto.metrics.v1.ComponentMetrics;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
