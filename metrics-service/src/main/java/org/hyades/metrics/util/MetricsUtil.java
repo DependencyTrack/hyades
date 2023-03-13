@@ -7,6 +7,7 @@ import org.hyades.proto.metrics.v1.PortfolioMetrics;
 import org.hyades.proto.metrics.v1.ProjectMetrics;
 import org.hyades.proto.metrics.v1.VulnerabilitiesMetrics;
 
+import static org.hyades.proto.metrics.v1.Status.STATUS_CREATED;
 import static org.hyades.proto.metrics.v1.Status.STATUS_DELETED;
 import static org.hyades.proto.metrics.v1.Status.STATUS_UNCHANGED;
 import static org.hyades.proto.metrics.v1.Status.STATUS_UPDATED;
@@ -51,9 +52,9 @@ public class MetricsUtil {
     private static boolean isChanged(final FindingsMetrics inMemoryMetrics,
                                      final FindingsMetrics eventMetrics) {
         return inMemoryMetrics.getTotal() != eventMetrics.getTotal()
-                || inMemoryMetrics.getAudited() != inMemoryMetrics.getAudited()
-                || inMemoryMetrics.getUnaudited() != inMemoryMetrics.getUnaudited()
-                || inMemoryMetrics.getSuppressed() != inMemoryMetrics.getSuppressed();
+                || inMemoryMetrics.getAudited() != eventMetrics.getAudited()
+                || inMemoryMetrics.getUnaudited() != eventMetrics.getUnaudited()
+                || inMemoryMetrics.getSuppressed() != eventMetrics.getSuppressed();
     }
 
     private static boolean isChanged(final PolicyViolationsMetrics inMemoryMetrics,
@@ -217,11 +218,12 @@ public class MetricsUtil {
             default -> STATUS_UNCHANGED;
         });
 
-        switch (componentMetrics.getStatus()) {
-            case STATUS_CREATED -> resultBuilder
+        if (componentMetrics.getStatus() == STATUS_CREATED) {
+            resultBuilder
                     .setProjectUuid(componentMetrics.getProjectUuid())
                     .setComponents(projectMetrics.getComponents() + 1);
-            case STATUS_DELETED -> resultBuilder
+        } else if (componentMetrics.getStatus() == STATUS_DELETED) {
+            resultBuilder
                     .setComponents(projectMetrics.getComponents() - 1);
         }
 
