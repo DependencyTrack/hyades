@@ -43,6 +43,6 @@ scrape_configs:
   scheme: http
   metrics_path: /q/metrics
   dns_sd_configs:
-    - names: [ "metrics-service" ]
-      type: A
-      port: 8094
+  - names: [ "metrics-service" ]
+    type: A
+    port: 8094

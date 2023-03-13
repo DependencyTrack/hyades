@@ -50,7 +50,7 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
             deltaProjectMetrics = deletedProjectMetrics(lastProjectMetrics);
         } else {
             deltaProjectMetrics = lastProjectMetrics == null
-                    ? newComponentMetrics(projectMetrics)
+                    ? newProjectMetrics(projectMetrics)
                     : calculateDelta(projectMetrics, lastProjectMetrics);
             LOGGER.debug("Forwarding record to sink from delta processor {}", projectUuId);
             store.put(projectUuId, projectMetrics);
@@ -71,6 +71,10 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
             return deltaProjectMetrics;
         }
 
+        //When a project is updated it can transition from
+        //          vulnerable -> not vulnerable
+        //          not_vulnerable -> vulnerable
+        //          no change in vulnerability status
         if (projectEventMetrics.getVulnerabilities() > 0 && inMemoryMetrics.getVulnerabilities() == 0) {
             deltaProjectMetrics.setVulnerabilityStatus(VulnerabilityStatus.VULNERABLE);
         } else if (projectEventMetrics.getVulnerabilities() == 0 && inMemoryMetrics.getVulnerabilities() > 0) {
@@ -109,8 +113,9 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
         return deltaProjectMetrics;
     }
 
-    private static ProjectMetrics newComponentMetrics(ProjectMetrics projectMetrics) {
+    private static ProjectMetrics newProjectMetrics(ProjectMetrics projectMetrics) {
         projectMetrics.setStatus(Status.CREATED);
+        //Vulnerable project count should only increase when new project has vulnerabilities
         if (projectMetrics.getVulnerabilities() > 0) {
             projectMetrics.setVulnerabilityStatus(VulnerabilityStatus.VULNERABLE);
         }

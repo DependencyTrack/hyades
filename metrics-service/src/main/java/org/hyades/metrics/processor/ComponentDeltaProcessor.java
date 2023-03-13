@@ -74,6 +74,10 @@ public class ComponentDeltaProcessor extends ContextualProcessor<String, Compone
             return deltaComponentMetrics;
         }
 
+        //When a component is updated it can transition from
+        //          vulnerable -> not vulnerable
+        //          not_vulnerable -> vulnerable
+        //          no change in vulnerability status
         if (componentEventMetrics.getVulnerabilities() > 0 && inMemoryMetrics.getVulnerabilities() == 0) {
             deltaComponentMetrics.setVulnerabilityStatus(VulnerabilityStatus.VULNERABLE);
         } else if (componentEventMetrics.getVulnerabilities() == 0 && inMemoryMetrics.getVulnerabilities() > 0) {
