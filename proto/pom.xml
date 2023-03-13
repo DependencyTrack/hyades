@@ -67,7 +67,7 @@
                             <includeDirectories>
                                 <includeDirectory>src/main/proto</includeDirectory>
                             </includeDirectories>
-                            <protocVersion>${tool.protoc.version}</protocVersion>
+                            <protocArtifact>${tool.protoc.version}</protocArtifact>
                         </configuration>
                     </execution>
                 </executions>
