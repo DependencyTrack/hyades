@@ -1,6 +1,6 @@
 ---
 scrape_configs:
-  - job_name: redpanda
+- job_name: redpanda
   scrape_interval: 15s
   scheme: http
   dns_sd_configs:
