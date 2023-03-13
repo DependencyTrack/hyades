@@ -29,6 +29,7 @@ import static org.hyades.proto.metrics.v1.Status.STATUS_UNCHANGED;
 import static org.hyades.proto.metrics.v1.Status.STATUS_UPDATED;
 import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_NOT_VULNERABLE;
 import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_UNCHANGED;
+import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_UNKNOWN;
 import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_VULNERABLE;
 
 @QuarkusTest
@@ -209,7 +210,7 @@ class ComponentDeltaProcessorTest {
                     assertThat(record.getValue().getVulnerabilities().getCritical()).isEqualTo(-2);
                     assertThat(record.getValue().getComponentUuid()).isEqualTo(inputRecord.getKey());
                     assertThat(record.getValue().getStatus()).isEqualTo(STATUS_DELETED);
-                    assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VULNERABILITY_STATUS_NOT_VULNERABLE);
+                    assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VULNERABILITY_STATUS_UNKNOWN);
                     assertThat(record.getValue().getVulnerabilities().getHigh()).isEqualTo(-3);
                     assertThat(record.getValue().getVulnerabilities().getMedium()).isEqualTo(-4);
                     assertThat(record.getValue().getVulnerabilities().getTotal()).isEqualTo(-2);

@@ -29,6 +29,7 @@ import static org.hyades.proto.metrics.v1.Status.STATUS_UNCHANGED;
 import static org.hyades.proto.metrics.v1.Status.STATUS_UPDATED;
 import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_NOT_VULNERABLE;
 import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_UNCHANGED;
+import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_UNKNOWN;
 import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_VULNERABLE;
 
 @QuarkusTest
@@ -223,7 +224,7 @@ class ProjectDeltaProcessorTest {
                 record -> {
                     assertThat(record.getValue().getProjectUuid()).isEqualTo(inputRecord.getKey());
                     assertThat(record.getValue().getStatus()).isEqualTo(STATUS_DELETED);
-                    assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VULNERABILITY_STATUS_NOT_VULNERABLE);
+                    assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VULNERABILITY_STATUS_UNKNOWN);
                     assertThat(record.getValue().getComponents()).isEqualTo(-2);
                     assertThat(record.getValue().getVulnerabilities().getCritical()).isEqualTo(-2);
                     assertThat(record.getValue().getVulnerabilities().getHigh()).isEqualTo(-3);
@@ -304,7 +305,7 @@ class ProjectDeltaProcessorTest {
         assertThat(outputTopic.readRecord()).satisfies(record -> {
             assertThat(record.key()).isEqualTo(inputRecord.getKey());
             assertThat(record.getValue().getStatus()).isEqualTo(STATUS_UPDATED);
-            assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VULNERABILITY_STATUS_UNCHANGED);
+            assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VULNERABILITY_STATUS_NOT_VULNERABLE);
             assertThat(record.getValue().getComponents()).isEqualTo(-1);
             assertThat(record.getValue().getVulnerableComponents()).isZero();
             assertThat(record.getValue().getVulnerabilities().getCritical()).isEqualTo(-2);
@@ -348,7 +349,7 @@ class ProjectDeltaProcessorTest {
     }
 
     @Test
-    void shouldSetVulnerabilityStatusToNotVulnerabeIfVulnerabilitiesFixed() {
+    void shouldSetVulnerabilityStatusToNotVulnerableIfVulnerabilitiesFixed() {
         store.put(PROJECT_UUID.toString(), createProjectMetrics(2, 3, 4, 9));
 
         final TestRecord<String, ProjectMetrics> inputRecord = createTestRecord(0, 0, 0, 0);
@@ -356,7 +357,7 @@ class ProjectDeltaProcessorTest {
 
         assertThat(outputTopic.readRecord()).satisfies(record -> {
             assertThat(record.key()).isEqualTo(inputRecord.getKey());
-            assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VULNERABILITY_STATUS_UNCHANGED);
+            assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VULNERABILITY_STATUS_NOT_VULNERABLE);
         });
     }
 

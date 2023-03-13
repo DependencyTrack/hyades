@@ -16,17 +16,20 @@ message ComponentMetrics {
   // The status of this record.
   Status status = 3;
 
+  // The vulnerability status of this record.
+  VulnerabilityStatus vulnerability_status = 4;
+
   // The inherited risk score of the component.
-  double inherited_risk_score = 4;
+  double inherited_risk_score = 5;
 
   // Metrics about vulnerabilities affecting the component.
-  VulnerabilitiesMetrics vulnerabilities = 5;
+  VulnerabilitiesMetrics vulnerabilities = 6;
 
   // Metrics about findings for the component.
-  FindingsMetrics findings = 6;
+  FindingsMetrics findings = 7;
 
   // Metrics about policy violations for the component.
-  PolicyViolationsMetrics policy_violations = 7;
+  PolicyViolationsMetrics policy_violations = 8;
 
 }
 
@@ -38,23 +41,26 @@ message ProjectMetrics {
   // The status of this record.
   Status status = 2;
 
+  // The vulnerability status of this record.
+  VulnerabilityStatus vulnerability_status = 3;
+
   // Total number of components in the project.
-  int32 components = 3;
+  int32 components = 4;
 
   // Number of vulnerable components in the project.
-  int32 vulnerable_components = 4;
+  int32 vulnerable_components = 5;
 
   // The inherited risk score of the project.
-  double inherited_risk_score = 5;
+  double inherited_risk_score = 6;
 
   // Metrics about vulnerabilities affecting the project.
-  VulnerabilitiesMetrics vulnerabilities = 6;
+  VulnerabilitiesMetrics vulnerabilities = 7;
 
   // Metrics about findings for the project.
-  FindingsMetrics findings = 7;
+  FindingsMetrics findings = 8;
 
   // Metrics about policy violations for the project.
-  PolicyViolationsMetrics policy_violations = 8;
+  PolicyViolationsMetrics policy_violations = 9;
 
 }
 
@@ -189,5 +195,21 @@ enum Status {
 
   // Indicates that the record did not change.
   STATUS_UNCHANGED = 4;
+
+}
+
+enum VulnerabilityStatus {
+
+  // Indicates that the vulnerability status of the record is unknown.
+  VULNERABILITY_STATUS_UNKNOWN = 0;
+
+  // Indicates that the record is "vulnerable".
+  VULNERABILITY_STATUS_VULNERABLE = 1;
+
+  // Indicates that the record is "not vulnerable".
+  VULNERABILITY_STATUS_NOT_VULNERABLE = 2;
+
+  // Indicates that the vulnerability status of the record did not change.
+  VULNERABILITY_STATUS_UNCHANGED = 3;
 
 }

@@ -11,6 +11,9 @@ import static org.hyades.proto.metrics.v1.Status.STATUS_CREATED;
 import static org.hyades.proto.metrics.v1.Status.STATUS_DELETED;
 import static org.hyades.proto.metrics.v1.Status.STATUS_UNCHANGED;
 import static org.hyades.proto.metrics.v1.Status.STATUS_UPDATED;
+import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_NOT_VULNERABLE;
+import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_UNCHANGED;
+import static org.hyades.proto.metrics.v1.VulnerabilityStatus.VULNERABILITY_STATUS_VULNERABLE;
 
 public class MetricsUtil {
 
@@ -76,7 +79,7 @@ public class MetricsUtil {
 
     public static ComponentMetrics calculateDelta(final ComponentMetrics inMemoryMetrics,
                                                   final ComponentMetrics eventMetrics) {
-        return ComponentMetrics.newBuilder()
+        final var metricsBuilder = ComponentMetrics.newBuilder()
                 .setComponentUuid(eventMetrics.getComponentUuid())
                 .setProjectUuid(eventMetrics.getProjectUuid())
                 .setStatus(hasChanged(inMemoryMetrics, eventMetrics)
@@ -84,13 +87,26 @@ public class MetricsUtil {
                         : STATUS_UNCHANGED)
                 .setVulnerabilities(calculateDelta(inMemoryMetrics.getVulnerabilities(), eventMetrics.getVulnerabilities()))
                 .setFindings(calculateDelta(inMemoryMetrics.getFindings(), eventMetrics.getFindings()))
-                .setPolicyViolations(calculateDelta(inMemoryMetrics.getPolicyViolations(), eventMetrics.getPolicyViolations()))
-                .build();
+                .setPolicyViolations(calculateDelta(inMemoryMetrics.getPolicyViolations(), eventMetrics.getPolicyViolations()));
+
+        // When a component is updated it can transition from
+        //          vulnerable -> not vulnerable
+        //          not_vulnerable -> vulnerable
+        //          no change in vulnerability status
+        if (eventMetrics.getVulnerabilities().getTotal() > 0 && inMemoryMetrics.getVulnerabilities().getTotal() == 0) {
+            metricsBuilder.setVulnerabilityStatus(VULNERABILITY_STATUS_VULNERABLE);
+        } else if (eventMetrics.getVulnerabilities().getTotal() == 0 && inMemoryMetrics.getVulnerabilities().getTotal() > 0) {
+            metricsBuilder.setVulnerabilityStatus(VULNERABILITY_STATUS_NOT_VULNERABLE);
+        } else {
+            metricsBuilder.setVulnerabilityStatus(VULNERABILITY_STATUS_UNCHANGED);
+        }
+
+        return metricsBuilder.build();
     }
 
     public static ProjectMetrics calculateDelta(final ProjectMetrics inMemoryMetrics,
                                                 final ProjectMetrics eventMetrics) {
-        return ProjectMetrics.newBuilder()
+        final var metricsBuilder = ProjectMetrics.newBuilder()
                 .setProjectUuid(eventMetrics.getProjectUuid())
                 .setStatus(hasChanged(inMemoryMetrics, eventMetrics)
                         ? STATUS_UPDATED
@@ -99,8 +115,21 @@ public class MetricsUtil {
                 .setVulnerableComponents(eventMetrics.getVulnerableComponents() - inMemoryMetrics.getVulnerableComponents())
                 .setVulnerabilities(calculateDelta(inMemoryMetrics.getVulnerabilities(), eventMetrics.getVulnerabilities()))
                 .setFindings(calculateDelta(inMemoryMetrics.getFindings(), eventMetrics.getFindings()))
-                .setPolicyViolations(calculateDelta(inMemoryMetrics.getPolicyViolations(), eventMetrics.getPolicyViolations()))
-                .build();
+                .setPolicyViolations(calculateDelta(inMemoryMetrics.getPolicyViolations(), eventMetrics.getPolicyViolations()));
+
+        // When a project is updated it can transition from
+        //          vulnerable -> not vulnerable
+        //          not_vulnerable -> vulnerable
+        //          no change in vulnerability status
+        if (eventMetrics.getVulnerabilities().getTotal() > 0 && inMemoryMetrics.getVulnerabilities().getTotal() == 0) {
+            metricsBuilder.setVulnerabilityStatus(VULNERABILITY_STATUS_VULNERABLE);
+        } else if (eventMetrics.getVulnerabilities().getTotal() == 0 && inMemoryMetrics.getVulnerabilities().getTotal() > 0) {
+            metricsBuilder.setVulnerabilityStatus(VULNERABILITY_STATUS_NOT_VULNERABLE);
+        } else {
+            metricsBuilder.setVulnerabilityStatus(VULNERABILITY_STATUS_UNCHANGED);
+        }
+
+        return metricsBuilder.build();
     }
 
     private static VulnerabilitiesMetrics calculateDelta(final VulnerabilitiesMetrics inMemoryMetrics,
@@ -227,9 +256,10 @@ public class MetricsUtil {
                     .setComponents(projectMetrics.getComponents() - 1);
         }
 
-        if (componentMetrics.getVulnerabilities().getTotal() > 0) {
+        if (componentMetrics.getVulnerabilityStatus() == VULNERABILITY_STATUS_VULNERABLE) {
             resultBuilder.setVulnerableComponents(projectMetrics.getVulnerableComponents() + 1);
-        } else if (componentMetrics.getVulnerabilities().getTotal() < 0) {
+        } else if (componentMetrics.getVulnerabilityStatus() == VULNERABILITY_STATUS_NOT_VULNERABLE
+                || (componentMetrics.getStatus() == STATUS_DELETED && componentMetrics.getVulnerabilities().getTotal() < 0)) {
             resultBuilder.setVulnerableComponents(projectMetrics.getVulnerableComponents() - 1);
         }
 
@@ -257,9 +287,10 @@ public class MetricsUtil {
             default -> portfolioMetrics.getProjects();
         });
 
-        if (projectMetrics.getVulnerabilities().getTotal() > 0) {
+        if (projectMetrics.getVulnerabilityStatus() == VULNERABILITY_STATUS_VULNERABLE) {
             resultBuilder.setVulnerableProjects(portfolioMetrics.getVulnerableProjects() + 1);
-        } else if (projectMetrics.getVulnerabilities().getTotal() < 0) {
+        } else if (projectMetrics.getVulnerabilityStatus() == VULNERABILITY_STATUS_NOT_VULNERABLE
+                || (projectMetrics.getStatus() == STATUS_DELETED && projectMetrics.getVulnerabilities().getTotal() < 0)) {
             resultBuilder.setVulnerableProjects(portfolioMetrics.getVulnerableProjects() - 1);
         }
 
