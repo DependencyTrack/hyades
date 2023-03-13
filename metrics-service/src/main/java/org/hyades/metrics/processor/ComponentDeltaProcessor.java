@@ -6,6 +6,7 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.hyades.metrics.model.ComponentMetrics;
 import org.hyades.metrics.model.Status;
+import org.hyades.metrics.model.VulnerabilityStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,13 +60,32 @@ public class ComponentDeltaProcessor extends ContextualProcessor<String, Compone
 
     private static ComponentMetrics calculateDelta(ComponentMetrics componentEventMetrics, ComponentMetrics inMemoryMetrics) {
         ComponentMetrics deltaComponentMetrics = new ComponentMetrics();
+
+        deltaComponentMetrics.setComponent(componentEventMetrics.getComponent());
+        deltaComponentMetrics.setProject(componentEventMetrics.getProject());
+        deltaComponentMetrics.setFirstOccurrence(componentEventMetrics.getFirstOccurrence());
+        deltaComponentMetrics.setLastOccurrence(componentEventMetrics.getLastOccurrence());
+
         if (hasChanged(componentEventMetrics, inMemoryMetrics)) {
             deltaComponentMetrics.setStatus(Status.UPDATED);
         } else {
             deltaComponentMetrics.setStatus(Status.NO_CHANGE);
+            deltaComponentMetrics.setVulnerabilityStatus(VulnerabilityStatus.NO_CHANGE);
+            return deltaComponentMetrics;
         }
-        deltaComponentMetrics.setComponent(componentEventMetrics.getComponent());
-        deltaComponentMetrics.setProject(componentEventMetrics.getProject());
+
+        //When a component is updated it can transition from
+        //          vulnerable -> not vulnerable
+        //          not_vulnerable -> vulnerable
+        //          no change in vulnerability status
+        if (componentEventMetrics.getVulnerabilities() > 0 && inMemoryMetrics.getVulnerabilities() == 0) {
+            deltaComponentMetrics.setVulnerabilityStatus(VulnerabilityStatus.VULNERABLE);
+        } else if (componentEventMetrics.getVulnerabilities() == 0 && inMemoryMetrics.getVulnerabilities() > 0) {
+            deltaComponentMetrics.setVulnerabilityStatus(VulnerabilityStatus.NOT_VULNERABLE);
+        } else {
+            deltaComponentMetrics.setVulnerabilityStatus(VulnerabilityStatus.NO_CHANGE);
+        }
+
         deltaComponentMetrics.setCritical(componentEventMetrics.getCritical() - inMemoryMetrics.getCritical());
         deltaComponentMetrics.setHigh(componentEventMetrics.getHigh() - inMemoryMetrics.getHigh());
         deltaComponentMetrics.setMedium(componentEventMetrics.getMedium() - inMemoryMetrics.getMedium());
@@ -91,13 +111,14 @@ public class ComponentDeltaProcessor extends ContextualProcessor<String, Compone
         deltaComponentMetrics.setPolicyViolationsSecurityAudited(componentEventMetrics.getPolicyViolationsSecurityAudited() - inMemoryMetrics.getPolicyViolationsSecurityAudited());
         deltaComponentMetrics.setPolicyViolationsSecurityUnaudited(componentEventMetrics.getPolicyViolationsSecurityUnaudited() - inMemoryMetrics.getPolicyViolationsSecurityUnaudited());
         deltaComponentMetrics.setPolicyViolationsSecurityTotal(componentEventMetrics.getPolicyViolationsSecurityTotal() - inMemoryMetrics.getPolicyViolationsSecurityTotal());
-        deltaComponentMetrics.setFirstOccurrence(componentEventMetrics.getFirstOccurrence());
-        deltaComponentMetrics.setLastOccurrence(componentEventMetrics.getLastOccurrence());
         return deltaComponentMetrics;
     }
 
     private static ComponentMetrics newComponentMetrics(ComponentMetrics componentMetrics) {
         componentMetrics.setStatus(Status.CREATED);
+        if (componentMetrics.getVulnerabilities() > 0) {
+            componentMetrics.setVulnerabilityStatus(VulnerabilityStatus.VULNERABLE);
+        }
         return componentMetrics;
     }
 

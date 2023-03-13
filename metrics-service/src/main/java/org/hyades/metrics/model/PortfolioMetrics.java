@@ -42,14 +42,13 @@ public class PortfolioMetrics extends Metrics implements Serializable {
         }
 
 
-        if (projectMetrics.getVulnerabilities() > 0) {
+        if (projectMetrics.getVulnerabilityStatus().equals(VulnerabilityStatus.VULNERABLE)) {
             this.vulnerableProjects++;
         }
 
-        if (projectMetrics.getVulnerabilities() < 0) {
+        if (projectMetrics.getVulnerabilityStatus().equals(VulnerabilityStatus.NOT_VULNERABLE) || (projectMetrics.getStatus().equals(DELETED) && projectMetrics.getVulnerabilities() < 0)) {
             this.vulnerableProjects--;
         }
-
 
         this.components += projectMetrics.getComponents();
         this.critical += projectMetrics.getCritical();
@@ -57,6 +56,7 @@ public class PortfolioMetrics extends Metrics implements Serializable {
         this.medium += projectMetrics.getMedium();
         this.low += projectMetrics.getLow();
         this.vulnerabilities += projectMetrics.getVulnerabilities();
+        this.unassigned += projectMetrics.getUnassigned();
         this.vulnerableComponents += projectMetrics.getVulnerableComponents();
 
         this.findingsAudited += projectMetrics.getFindingsAudited();

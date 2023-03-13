@@ -33,11 +33,12 @@ public class ProjectMetrics extends Metrics implements Serializable {
             this.components--;
         }
 
-        if (componentMetrics.getVulnerabilities() > 0) {
+        if (componentMetrics.getVulnerabilityStatus().equals(VulnerabilityStatus.VULNERABLE)) {
             this.vulnerableComponents++;
         }
 
-        if (componentMetrics.getVulnerabilities() < 0) {
+        if (componentMetrics.getVulnerabilityStatus().equals(VulnerabilityStatus.NOT_VULNERABLE)
+                || (componentMetrics.status.equals(DELETED) && componentMetrics.getVulnerabilities() < 0)) {
             this.vulnerableComponents--;
         }
 
@@ -55,6 +56,7 @@ public class ProjectMetrics extends Metrics implements Serializable {
         this.medium += componentMetrics.getMedium();
         this.low += componentMetrics.getLow();
         this.suppressed += componentMetrics.getSuppressed();
+        this.unassigned += componentMetrics.getUnassigned();
         this.findingsTotal += componentMetrics.getFindingsTotal();
         this.findingsAudited += componentMetrics.getFindingsAudited();
         this.findingsUnaudited += componentMetrics.getFindingsUnaudited();

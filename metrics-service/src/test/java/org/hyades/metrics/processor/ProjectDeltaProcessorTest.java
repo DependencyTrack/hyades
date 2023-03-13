@@ -1,4 +1,4 @@
-package org.hyades.processor;
+package org.hyades.metrics.processor;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
@@ -13,7 +13,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.test.TestRecord;
 import org.hyades.metrics.model.ProjectMetrics;
 import org.hyades.metrics.model.Status;
-import org.hyades.metrics.processor.ProjectProcessorSupplier;
+import org.hyades.metrics.model.VulnerabilityStatus;
 import org.hyades.model.Project;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -317,6 +317,33 @@ class ProjectDeltaProcessorTest {
             assertThat(record.getValue().getPolicyViolationsLicenseAudited()).isZero();
             assertThat(record.getValue().getPolicyViolationsLicenseUnaudited()).isZero();
             assertThat(record.getValue().getPolicyViolationsLicenseTotal()).isZero();
+        });
+    }
+
+    @Test
+    void shouldSetVulnerabilityStatusToNoChangeIfVulnerableProjectRemainsSo() {
+        store.put(PROJECT_UUID.toString(), createProjectMetrics(2, 3, 4, 2));
+
+        final TestRecord<String, ProjectMetrics> inputRecord = createTestRecord(0, 3, 4, 2);
+        inputTopic.pipeInput(inputRecord);
+
+        assertThat(outputTopic.readRecord()).satisfies(record -> {
+            assertThat(record.key()).isEqualTo(inputRecord.getKey());
+            assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VulnerabilityStatus.NO_CHANGE);
+        });
+
+    }
+
+    @Test
+    void shouldSetVulnerabilityStatusToNotVulnerabeIfVulnerabilitiesFixed() {
+        store.put(PROJECT_UUID.toString(), createProjectMetrics(2, 3, 4, 9));
+
+        final TestRecord<String, ProjectMetrics> inputRecord = createTestRecord(0, 0, 0, 0);
+        inputTopic.pipeInput(inputRecord);
+
+        assertThat(outputTopic.readRecord()).satisfies(record -> {
+            assertThat(record.key()).isEqualTo(inputRecord.getKey());
+            assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VulnerabilityStatus.NOT_VULNERABLE);
         });
     }
 
