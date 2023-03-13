@@ -21,7 +21,6 @@ import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.metrics.v1.ComponentMetrics;
 import org.hyades.proto.metrics.v1.PortfolioMetrics;
 import org.hyades.proto.metrics.v1.ProjectMetrics;
-import org.hyades.proto.metrics.v1.Status;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -30,6 +29,7 @@ import javax.inject.Inject;
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
 import static org.hyades.metrics.util.MetricsUtil.add;
+import static org.hyades.proto.metrics.v1.Status.STATUS_UPDATED;
 
 @ApplicationScoped
 public class MetricsTopology {
@@ -91,7 +91,7 @@ public class MetricsTopology {
         //stream projectMetricsTable to project metrics topic
         projectMetricsTable
                 .toStream(Named.as("stream-project-metrics"))
-                .filter((key, value) -> value.getStatus().equals(Status.STATUS_UPDATED))
+                .filter((key, value) -> value.getStatus().equals(STATUS_UPDATED))
                 .to(KafkaTopic.PROJECT_METRICS.getName(), Produced
                         .with(Serdes.String(), projectMetricsSerde)
                         .withName(processorNameProduce(KafkaTopic.PROJECT_METRICS, "project_metric_event")));
@@ -126,7 +126,7 @@ public class MetricsTopology {
         //stream portfolioMetricsTable to portfolio metrics topic
         portfolioMetricsTable
                 .toStream(Named.as("stream-portfolio-metrics"))
-                .filter((key, value) -> value.getStatus().equals(Status.STATUS_UPDATED))
+                .filter((key, value) -> value.getStatus().equals(STATUS_UPDATED))
                 .to(KafkaTopic.PORTFOLIO_METRICS.getName(), Produced
                         .with(Serdes.String(), portfolioMetricsSerde)
                         .withName(processorNameProduce(KafkaTopic.PORTFOLIO_METRICS, "portfolio_metrics_event")));
