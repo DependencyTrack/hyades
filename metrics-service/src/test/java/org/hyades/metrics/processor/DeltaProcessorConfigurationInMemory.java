@@ -1,4 +1,4 @@
-package org.hyades.processor;
+package org.hyades.metrics.processor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.quarkus.arc.Priority;

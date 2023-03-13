@@ -6,6 +6,7 @@ import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.hyades.metrics.model.ProjectMetrics;
 import org.hyades.metrics.model.Status;
+import org.hyades.metrics.model.VulnerabilityStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,18 +60,32 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
 
     private static ProjectMetrics calculateDelta(ProjectMetrics projectEventMetrics, ProjectMetrics inMemoryMetrics) {
         ProjectMetrics deltaProjectMetrics = new ProjectMetrics();
+        deltaProjectMetrics.setProject(projectEventMetrics.getProject());
+        deltaProjectMetrics.setFirstOccurrence(projectEventMetrics.getFirstOccurrence());
+        deltaProjectMetrics.setLastOccurrence(projectEventMetrics.getLastOccurrence());
+
         if (hasChanged(projectEventMetrics, inMemoryMetrics)) {
             deltaProjectMetrics.setStatus(Status.UPDATED);
         } else {
             deltaProjectMetrics.setStatus(Status.NO_CHANGE);
+            return deltaProjectMetrics;
         }
-        deltaProjectMetrics.setProject(projectEventMetrics.getProject());
+
+        if (projectEventMetrics.getVulnerabilities() > 0 && inMemoryMetrics.getVulnerabilities() == 0) {
+            deltaProjectMetrics.setVulnerabilityStatus(VulnerabilityStatus.VULNERABLE);
+        } else if (projectEventMetrics.getVulnerabilities() == 0 && inMemoryMetrics.getVulnerabilities() > 0) {
+            deltaProjectMetrics.setVulnerabilityStatus(VulnerabilityStatus.NOT_VULNERABLE);
+        } else {
+            deltaProjectMetrics.setVulnerabilityStatus(VulnerabilityStatus.NO_CHANGE);
+        }
+
         deltaProjectMetrics.setComponents(projectEventMetrics.getComponents() - inMemoryMetrics.getComponents());
         deltaProjectMetrics.setVulnerableComponents(projectEventMetrics.getVulnerableComponents() - inMemoryMetrics.getVulnerableComponents());
         deltaProjectMetrics.setCritical(projectEventMetrics.getCritical() - inMemoryMetrics.getCritical());
         deltaProjectMetrics.setHigh(projectEventMetrics.getHigh() - inMemoryMetrics.getHigh());
         deltaProjectMetrics.setMedium(projectEventMetrics.getMedium() - inMemoryMetrics.getMedium());
         deltaProjectMetrics.setLow(projectEventMetrics.getLow() - inMemoryMetrics.getLow());
+        deltaProjectMetrics.setVulnerabilities(projectEventMetrics.getVulnerabilities() - inMemoryMetrics.getVulnerabilities());
         deltaProjectMetrics.setUnassigned(projectEventMetrics.getUnassigned() - inMemoryMetrics.getUnassigned());
         deltaProjectMetrics.setSuppressed(projectEventMetrics.getSuppressed() - inMemoryMetrics.getSuppressed());
         deltaProjectMetrics.setFindingsTotal(projectEventMetrics.getFindingsTotal() - inMemoryMetrics.getFindingsTotal());
@@ -88,17 +103,17 @@ public class ProjectDeltaProcessor extends ContextualProcessor<String, ProjectMe
         deltaProjectMetrics.setPolicyViolationsOperationalAudited(projectEventMetrics.getPolicyViolationsOperationalAudited() - inMemoryMetrics.getPolicyViolationsOperationalAudited());
         deltaProjectMetrics.setPolicyViolationsOperationalUnaudited(projectEventMetrics.getPolicyViolationsOperationalUnaudited() - inMemoryMetrics.getPolicyViolationsOperationalAudited());
         deltaProjectMetrics.setPolicyViolationsOperationalTotal(projectEventMetrics.getPolicyViolationsOperationalTotal() - inMemoryMetrics.getPolicyViolationsOperationalTotal());
-        deltaProjectMetrics.setVulnerabilities(projectEventMetrics.getVulnerabilities() - inMemoryMetrics.getVulnerabilities());
         deltaProjectMetrics.setPolicyViolationsSecurityAudited(projectEventMetrics.getPolicyViolationsSecurityAudited() - inMemoryMetrics.getPolicyViolationsSecurityAudited());
         deltaProjectMetrics.setPolicyViolationsSecurityUnaudited(projectEventMetrics.getPolicyViolationsSecurityUnaudited() - inMemoryMetrics.getPolicyViolationsSecurityUnaudited());
         deltaProjectMetrics.setPolicyViolationsSecurityTotal(projectEventMetrics.getPolicyViolationsSecurityTotal() - inMemoryMetrics.getPolicyViolationsSecurityTotal());
-        deltaProjectMetrics.setFirstOccurrence(projectEventMetrics.getFirstOccurrence());
-        deltaProjectMetrics.setLastOccurrence(projectEventMetrics.getLastOccurrence());
         return deltaProjectMetrics;
     }
 
     private static ProjectMetrics newComponentMetrics(ProjectMetrics projectMetrics) {
         projectMetrics.setStatus(Status.CREATED);
+        if (projectMetrics.getVulnerabilities() > 0) {
+            projectMetrics.setVulnerabilityStatus(VulnerabilityStatus.VULNERABLE);
+        }
         return projectMetrics;
     }
 

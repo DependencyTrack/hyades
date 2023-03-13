@@ -1,6 +1,6 @@
 ---
 scrape_configs:
-- job_name: redpanda
+  - job_name: redpanda
   scrape_interval: 15s
   scheme: http
   dns_sd_configs:
@@ -38,3 +38,11 @@ scrape_configs:
   - names: [ "vuln-analyzer" ]
     type: A
     port: 8092
+- job_name: metrics-service
+  scrape_interval: 15s
+  scheme: http
+  metrics_path: /q/metrics
+  dns_sd_configs:
+    - names: [ "metrics-service" ]
+      type: A
+      port: 8094

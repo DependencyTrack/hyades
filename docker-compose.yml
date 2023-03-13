@@ -89,7 +89,7 @@ services:
     restart: unless-stopped
 
   metrics-service:
-    image: ghcr.io/dependencytrack/hyades-metrics-service:latest
+    image: ghcr.io/dependencytrack/hyades-metrics-service:latest-native
     depends_on:
       - redpanda
     environment:

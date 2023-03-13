@@ -1,4 +1,4 @@
-package org.hyades.processor;
+package org.hyades.metrics.processor;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
@@ -13,7 +13,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.test.TestRecord;
 import org.hyades.metrics.model.ComponentMetrics;
 import org.hyades.metrics.model.Status;
-import org.hyades.metrics.processor.ComponentProcessorSupplier;
+import org.hyades.metrics.model.VulnerabilityStatus;
 import org.hyades.model.Component;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -253,6 +253,34 @@ class ComponentDeltaProcessorTest {
             assertThat(record.getValue().getPolicyViolationsSecurityUnaudited()).isZero();
             assertThat(record.getValue().getPolicyViolationsSecurityTotal()).isZero();
         });
+    }
+
+    @Test
+    void shouldSetVulnerabilityStatusToNoChangeIfVulnerableComponentRemainsSo() {
+        store.put(COMPONENT_UUID.toString(), createComponentMetrics(2, 3, 4, 9));
+
+        final TestRecord<String, ComponentMetrics> inputRecord = createTestRecord(0, 3, 4, 7);
+        inputTopic.pipeInput(inputRecord);
+
+        assertThat(outputTopic.readRecord()).satisfies(record -> {
+            assertThat(record.key()).isEqualTo(inputRecord.getKey());
+            assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VulnerabilityStatus.NO_CHANGE);
+        });
+
+    }
+
+    @Test
+    void shouldSetVulnerabilityStatusToNotVulnerableIfVulnerabilitiesFixed() {
+        store.put(COMPONENT_UUID.toString(), createComponentMetrics(2, 3, 4, 9));
+
+        final TestRecord<String, ComponentMetrics> inputRecord = createTestRecord(0, 0, 0, 0);
+        inputTopic.pipeInput(inputRecord);
+
+        assertThat(outputTopic.readRecord()).satisfies(record -> {
+            assertThat(record.key()).isEqualTo(inputRecord.getKey());
+            assertThat(record.getValue().getVulnerabilityStatus()).isEqualTo(VulnerabilityStatus.NOT_VULNERABLE);
+        });
+
     }
 
     private TestRecord<String, ComponentMetrics> createTestRecord(int critical, int high, int medium, int vulnerabilities) {

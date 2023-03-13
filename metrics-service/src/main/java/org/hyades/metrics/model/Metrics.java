@@ -68,6 +68,8 @@ public abstract class Metrics implements Serializable {
 
     protected Status status = Status.UNKNOWN;
 
+    private VulnerabilityStatus vulnerabilityStatus = VulnerabilityStatus.UNKNOWN;
+
     public long getId() {
         return id;
     }
@@ -306,5 +308,13 @@ public abstract class Metrics implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public VulnerabilityStatus getVulnerabilityStatus() {
+        return vulnerabilityStatus;
+    }
+
+    public void setVulnerabilityStatus(VulnerabilityStatus vulnerabilityStatus) {
+        this.vulnerabilityStatus = vulnerabilityStatus;
     }
 }
