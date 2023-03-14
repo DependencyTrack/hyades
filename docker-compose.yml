@@ -206,6 +206,8 @@ services:
     user: "0" # Ensure user can read create-topics.sh
     environment:
       REDPANDA_BROKERS: "dt-redpanda:29092"
+      # METRICS_COMPONENT_TOPIC_PARTITIONS: "3"
+      # METRICS_PROJECT_TOPIC_PARTITIONS: "3"
       # NOTIFICATION_TOPICS_PARTITIONS: "3"
       # NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
       # REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
