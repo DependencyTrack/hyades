@@ -88,7 +88,7 @@ public interface Publisher {
             context.put("timestampEpochSecond", epochSecond);
             context.put("timestamp", notification.getTimestamp().toString());
             context.put("notification", notification);
-            if (baseUrlProperty != null) {
+            if (baseUrlProperty != null && baseUrlProperty.getPropertyValue() != null) {
                 context.put("baseUrl", baseUrlProperty.getPropertyValue().replaceAll("/$", ""));
             } else {
                 context.put("baseUrl", "");
