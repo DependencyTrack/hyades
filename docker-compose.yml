@@ -88,21 +88,6 @@ services:
       - demo
     restart: unless-stopped
 
-  metrics-service:
-    image: ghcr.io/dependencytrack/hyades-metrics-service:latest-native
-    depends_on:
-      - redpanda
-    environment:
-      QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
-    ports:
-      # Dynamic host port binding to allow for scaling of the service.
-      # Scaling with Compose doesn't work when assigning static host ports.
-      - "8094"
-    profiles:
-      - demo
-    restart: unless-stopped
-
   apiserver:
     image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
     container_name: dt-apiserver
@@ -206,8 +191,6 @@ services:
     user: "0" # Ensure user can read create-topics.sh
     environment:
       REDPANDA_BROKERS: "dt-redpanda:29092"
-      # METRICS_COMPONENT_TOPIC_PARTITIONS: "3"
-      # METRICS_PROJECT_TOPIC_PARTITIONS: "3"
       # NOTIFICATION_TOPICS_PARTITIONS: "3"
       # NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
       # REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
@@ -235,12 +218,6 @@ services:
           protobuf:
             enabled: true
             mappings:
-              - topicName: dtrack.metrics.component
-                valueProtoType: org.hyades.metrics.v1.ComponentMetrics
-              - topicName: dtrack.metrics.project
-                valueProtoType: org.hyades.metrics.v1.ProjectMetrics
-              - topicName: dtrack.metrics.portfolio
-                valueProtoType: org.hyades.metrics.v1.PortfolioMetrics
               - topicName: dtrack.vuln-analysis.component
                 keyProtoType: org.hyades.vulnanalysis.v1.ScanKey
                 valueProtoType: org.hyades.vulnanalysis.v1.ScanCommand
