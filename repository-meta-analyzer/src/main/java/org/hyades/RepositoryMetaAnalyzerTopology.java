@@ -1,12 +1,8 @@
 package org.hyades;
 
+import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
-import io.quarkus.cache.Cache;
-import io.quarkus.cache.CacheName;
-import io.quarkus.cache.CaffeineCache;
-import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Branched;
@@ -14,219 +10,89 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.Repartitioned;
 import org.hyades.common.KafkaTopic;
-import org.hyades.common.SecretDecryptor;
-import org.hyades.model.Component;
-import org.hyades.model.MetaAnalyzerCacheKey;
-import org.hyades.model.MetaModel;
-import org.hyades.model.Repository;
-import org.hyades.persistence.RepoEntityRepository;
-import org.hyades.repositories.ComposerMetaAnalyzer;
-import org.hyades.repositories.GemMetaAnalyzer;
-import org.hyades.repositories.GoModulesMetaAnalyzer;
-import org.hyades.repositories.HexMetaAnalyzer;
-import org.hyades.repositories.IMetaAnalyzer;
-import org.hyades.repositories.MavenMetaAnalyzer;
-import org.hyades.repositories.NpmMetaAnalyzer;
-import org.hyades.repositories.NugetMetaAnalyzer;
-import org.hyades.repositories.PypiMetaAnalyzer;
-import org.jboss.logging.Logger;
+import org.hyades.processor.MetaAnalyzerProcessorSupplier;
+import org.hyades.proto.KafkaProtobufSerde;
+import org.hyades.proto.repometaanalysis.v1.Command;
+import org.hyades.proto.repometaanalysis.v1.Component;
+import org.hyades.proto.repometaanalysis.v1.Result;
+import org.hyades.repositories.RepositoryAnalyzerFactory;
+import org.hyades.serde.KafkaPurlSerde;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
 
-@ApplicationScoped
 public class RepositoryMetaAnalyzerTopology {
 
-    private static final Logger LOGGER = Logger.getLogger(RepositoryMetaAnalyzerTopology.class);
-
-    private final ComposerMetaAnalyzer composerMetaAnalyzer;
-    private final GemMetaAnalyzer gemMetaAnalyzer;
-    private final GoModulesMetaAnalyzer goModulesMetaAnalyzer;
-    private final HexMetaAnalyzer hexMetaAnalyzer;
-    private final MavenMetaAnalyzer mavenMetaAnalyzer;
-    private final NpmMetaAnalyzer npmMetaAnalyzer;
-    private final NugetMetaAnalyzer nugetMetaAnalyzer;
-    private final PypiMetaAnalyzer pypiMetaAnalyzer;
-    private final RepoEntityRepository repoEntityRepository;
-    private final SecretDecryptor secretDecryptor;
-    @Inject
-    @CacheName("metaAnalyzer")
-    Cache cache;
-
-    @Inject
-    public RepositoryMetaAnalyzerTopology(final ComposerMetaAnalyzer composerMetaAnalyzer,
-                                          final GemMetaAnalyzer gemMetaAnalyzer,
-                                          final GoModulesMetaAnalyzer goModulesMetaAnalyzer,
-                                          final HexMetaAnalyzer hexMetaAnalyzer,
-                                          final MavenMetaAnalyzer mavenMetaAnalyzer,
-                                          final NpmMetaAnalyzer npmMetaAnalyzer,
-                                          final NugetMetaAnalyzer nugetMetaAnalyzer,
-                                          final PypiMetaAnalyzer pypiMetaAnalyzer,
-                                          final RepoEntityRepository repoEntityRepository,
-                                          final SecretDecryptor secretDecryptor) {
-        this.composerMetaAnalyzer = composerMetaAnalyzer;
-        this.gemMetaAnalyzer = gemMetaAnalyzer;
-        this.goModulesMetaAnalyzer = goModulesMetaAnalyzer;
-        this.hexMetaAnalyzer = hexMetaAnalyzer;
-        this.mavenMetaAnalyzer = mavenMetaAnalyzer;
-        this.npmMetaAnalyzer = npmMetaAnalyzer;
-        this.nugetMetaAnalyzer = nugetMetaAnalyzer;
-        this.pypiMetaAnalyzer = pypiMetaAnalyzer;
-        this.repoEntityRepository = repoEntityRepository;
-        this.secretDecryptor = secretDecryptor;
-    }
-
     @Produces
-    public Topology topology() {
-        var streamsBuilder = new StreamsBuilder();
-        try (var metaModelSerde = new ObjectMapperSerde<>(MetaModel.class);
-             var componentSerde = new ObjectMapperSerde<>(Component.class)) {
+    public Topology topology(final RepositoryAnalyzerFactory analyzerFactory,
+                             final MetaAnalyzerProcessorSupplier analyzerProcessorSupplier) {
+        final var streamsBuilder = new StreamsBuilder();
 
-            KStream<String, Component> componentMetaAnalyzerStream = streamsBuilder
-                    .stream(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), Consumed
-                            .with(Serdes.UUID(), componentSerde)
-                            .withName(processorNameConsume(KafkaTopic.REPO_META_ANALYSIS_COMPONENT)))
-                    .peek((uuid, component) -> LOGGER.info("Received component for repo meta analyzer:" + component),
-                            Named.as("log_component"))
-                    .filter((uuid, component) -> component.getPurl() != null,
-                            Named.as("filter_component_without_purl"))
-                    .map((projectUuid, component) -> KeyValue.pair(component.getPurl().getCoordinates(), component),
-                            Named.as("re-key_component_from_uuid_to_purl"))
-                    .peek((identifier, component) -> LOGGER.info("Re-keyed component: " + component.getUuid() + " -> " + identifier),
-                            Named.as("log_re-keyed_component"));
+        final var purlSerde = new KafkaPurlSerde();
+        final var commandSerde = new KafkaProtobufSerde<>(Command.parser());
+        final var resultSerde = new KafkaProtobufSerde<>(Result.parser());
 
-            componentMetaAnalyzerStream.split(Named.as("meta-analysis"))
-                    .branch((purl, component) -> PackageURL.StandardTypes.MAVEN.equals(component.getPurl().getType()),
-                            Branched.<String, Component>withConsumer(componentStreamMaven -> componentStreamMaven
-                                    .map((purl, component) -> performMetaAnalysis(mavenMetaAnalyzer, component),
-                                            Named.as("perform_maven_meta_analysis"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "maven_result")))
-                            ).withName("-maven")
-                    )
-                    .branch((purl, component) -> PackageURL.StandardTypes.NPM.equals(component.getPurl().getType()),
-                            Branched.<String, Component>withConsumer(componentStreamNpm -> componentStreamNpm
-                                    .map((purl, component) -> performMetaAnalysis(npmMetaAnalyzer, component),
-                                            Named.as("perform_npm_meta_analysis"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "npm_result")))
-                            ).withName("-npm")
-                    )
-                    .branch((purl, component) -> PackageURL.StandardTypes.HEX.equals(component.getPurl().getType()),
-                            Branched.<String, Component>withConsumer(componentStreamHex -> componentStreamHex
-                                    .map((purl, component) -> performMetaAnalysis(hexMetaAnalyzer, component),
-                                            Named.as("perform_hex_meta_analysis"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "hex_result")))
-                            ).withName("-hex")
-                    )
-                    .branch((key, component) -> PackageURL.StandardTypes.PYPI.equals(component.getPurl().getType()),
-                            Branched.<String, Component>withConsumer(componentStreamPypi -> componentStreamPypi
-                                    .map((uuid, component) -> performMetaAnalysis(pypiMetaAnalyzer, component),
-                                            Named.as("perform_pypi_meta_analysis"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "pypi_result")))
-                            ).withName("-pypi")
-                    )
-                    .branch((purl, component) -> PackageURL.StandardTypes.GOLANG.equals(component.getPurl().getType()),
-                            Branched.<String, Component>withConsumer(componentStreamGolang -> componentStreamGolang
-                                    .map((purl, component) -> performMetaAnalysis(goModulesMetaAnalyzer, component),
-                                            Named.as("perform_golang_meta_analysis"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "golang_result")))
-                            ).withName("-golang")
-                    )
-                    .branch((purl, component) -> PackageURL.StandardTypes.NUGET.equals(component.getPurl().getType()),
-                            Branched.<String, Component>withConsumer(componentStreamNuget -> componentStreamNuget
-                                    .map((purl, component) -> performMetaAnalysis(nugetMetaAnalyzer, component),
-                                            Named.as("perform_nuget_meta_analysis"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "nuget_result")))
-                            ).withName("-nuget")
-                    )
-                    .branch((purl, component) -> PackageURL.StandardTypes.COMPOSER.equals(component.getPurl().getType()),
-                            Branched.<String, Component>withConsumer(componentStreamComposer -> componentStreamComposer
-                                    .map((purl, component) -> performMetaAnalysis(composerMetaAnalyzer, component),
-                                            Named.as("perform_composer_meta_analysis"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "composer_result")))
-                            ).withName("-composer")
-                    )
-                    .branch((purl, component) -> component.getPurl().getType().equalsIgnoreCase("gem"),
-                            Branched.<String, Component>withConsumer(componentStreamGem -> componentStreamGem
-                                    .map((purl, component) -> performMetaAnalysis(gemMetaAnalyzer, component),
-                                            Named.as("perform_gem_meta_analysis"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "gem_result")))
-                            ).withName("-gem")
-                    )
-                    .defaultBranch(Branched.<String, Component>withConsumer(componentsStreamUnknown -> componentsStreamUnknown
-                                    .map((purl, component) -> KeyValue.pair(component.getUuid(), new MetaModel(component)),
-                                            Named.as("map_to_empty_result"))
-                                    .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                            .with(Serdes.UUID(), metaModelSerde)
-                                            .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "empty_result"))))
-                            .withName("-unknown")
-                    );
+        final KStream<PackageURL, Command> commandStream = streamsBuilder
+                .stream(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), Consumed
+                        .with(Serdes.UUID(), commandSerde)
+                        .withName(processorNameConsume(KafkaTopic.REPO_META_ANALYSIS_COMMAND)))
+                .filter((uuid, command) -> command.hasComponent() && isValidPurl(command.getComponent().getPurl()),
+                        Named.as("filter_components_with_valid_purl"))
+                // Re-key to PURL coordinates WITHOUT VERSION. As we are fetching data for packages,
+                // but not specific package versions, including the version here would make our caching
+                // largely ineffective. We want events for the same package to be sent to the same partition.
+                .selectKey((uuid, command) -> mustParsePurlCoordinatesWithoutVersion(command.getComponent().getPurl()),
+                        Named.as("re-key_to_purl_coordinates"))
+                // Force a repartition to ensure that the ordering guarantees we want, based on the
+                // previous re-keying operation, are effective.
+                .repartition(Repartitioned
+                        .with(purlSerde, commandSerde)
+                        .withName("command-by-purl-coordinates"));
 
-            return streamsBuilder.build();
+        commandStream
+                .mapValues((purl, command) -> command.getComponent(),
+                        Named.as("map_to_component"))
+                .split(Named.as("applicable_analyzer"))
+                .branch((purl, component) -> analyzerFactory.hasApplicableAnalyzer(purl), Branched
+                        .<PackageURL, Component>withConsumer(stream -> stream
+                                .processValues(analyzerProcessorSupplier, Named.as("analyze_component"))
+                                .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
+                                        .with(purlSerde, resultSerde)
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "analysis_result"))))
+                        .withName("-found"))
+                .defaultBranch(Branched
+                        .<PackageURL, Component>withConsumer(stream -> stream
+                                .mapValues((purl, component) -> Result.newBuilder().setComponent(component).build(),
+                                        Named.as("map_unmatched_component_to_empty_result"))
+                                .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
+                                        .with(purlSerde, resultSerde)
+                                        .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "empty_result"))))
+                        .withName("-not-found"));
+
+        return streamsBuilder.build();
+    }
+
+    private boolean isValidPurl(final String purl) {
+        try {
+            new PackageURL(purl);
+            return true;
+        } catch (MalformedPackageURLException e) {
+            return false;
         }
     }
 
-    @Transactional
-    KeyValue<UUID, MetaModel> performMetaAnalysis(final IMetaAnalyzer analyzer, final Component component) {
-        for (Repository repository : repoEntityRepository.findRepositoryByRepositoryType(analyzer.supportedRepositoryType())) {
-            if (repository.isInternal()) {
-                try {
-                    analyzer.setRepositoryUsernameAndPassword(repository.getUsername(), secretDecryptor.decryptAsString(repository.getPassword()));
-                } catch (Exception e) {
-                    LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
-                }
-            }
-
-            analyzer.setRepositoryBaseUrl(repository.getUrl());
-
-            LOGGER.info("Performing meta analysis on component: " + component);
-            final MetaAnalyzerCacheKey metaAnalyzerCacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), component.getPurl().canonicalize());
-
-            // Populate results from cache
-            AtomicReference<MetaModel> cacheModel = new AtomicReference<>();
-            if (cache.as(CaffeineCache.class).getIfPresent(metaAnalyzerCacheKey) != null) {
-                LOGGER.info("Cache hit for analyzer " + analyzer + " for purl " + component.getPurl());
-                MetaModel result = (MetaModel) cache.as(CaffeineCache.class).getIfPresent(metaAnalyzerCacheKey).join();
-                cacheModel.set(result);
-            } else {
-                LOGGER.info("Cache miss for analyzer " + analyzer + " for purl " + component.getPurl());
-            }
-
-            if (cacheModel.get() != null) {
-                return KeyValue.pair(component.getUuid(), cacheModel.get());
-            }
-            final MetaModel model = analyzer.analyze(component);
-            cache.as(CaffeineCache.class).put(metaAnalyzerCacheKey, CompletableFuture.completedFuture(model));
-            if (model.getLatestVersion() != null) {
-                return KeyValue.pair(component.getUuid(), model);
-            }
+    private PackageURL mustParsePurlCoordinatesWithoutVersion(final String purl) {
+        try {
+            final var parsedPurl = new PackageURL(purl);
+            return new PackageURL(parsedPurl.getType(), parsedPurl.getNamespace(),
+                    parsedPurl.getName(), null, null, null);
+        } catch (MalformedPackageURLException e) {
+            throw new RuntimeException(e);
         }
-
-        // Produce "empty" result in case no repository did yield a satisfactory result
-        return KeyValue.pair(component.getUuid(), new MetaModel(component));
     }
+
 }

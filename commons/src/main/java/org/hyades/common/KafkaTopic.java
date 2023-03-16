@@ -20,7 +20,7 @@ public enum KafkaTopic {
     NOTIFICATION_REPOSITORY("dtrack.notification.repository"),
     NOTIFICATION_VEX_CONSUMED("dtrack.notification.vex-consumed"),
     NOTIFICATION_VEX_PROCESSED("dtrack.notification.vex-processed"),
-    REPO_META_ANALYSIS_COMPONENT("dtrack.repo-meta-analysis.component"),
+    REPO_META_ANALYSIS_COMMAND("dtrack.repo-meta-analysis.component"),
     REPO_META_ANALYSIS_RESULT("dtrack.repo-meta-analysis.result"),
     VULN_ANALYSIS_SCANNER_RESULT("dtrack.vuln-analysis.scanner.result"),
     VULN_ANALYSIS_COMPONENT("dtrack.vuln-analysis.component"),
