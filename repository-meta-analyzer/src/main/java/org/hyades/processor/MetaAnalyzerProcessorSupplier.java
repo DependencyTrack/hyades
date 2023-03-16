@@ -1,0 +1,39 @@
+package org.hyades.processor;
+
+import com.github.packageurl.PackageURL;
+import io.quarkus.cache.Cache;
+import io.quarkus.cache.CacheName;
+import org.apache.kafka.streams.processor.api.FixedKeyProcessor;
+import org.apache.kafka.streams.processor.api.FixedKeyProcessorSupplier;
+import org.hyades.common.SecretDecryptor;
+import org.hyades.persistence.RepoEntityRepository;
+import org.hyades.proto.repometaanalysis.v1.Component;
+import org.hyades.proto.repometaanalysis.v1.Result;
+import org.hyades.repositories.RepositoryAnalyzerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class MetaAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<PackageURL, Component, Result> {
+
+    private final RepoEntityRepository repoEntityRepository;
+    private final RepositoryAnalyzerFactory analyzerFactory;
+    private final SecretDecryptor secretDecryptor;
+    private final Cache cache;
+
+    public MetaAnalyzerProcessorSupplier(final RepoEntityRepository repoEntityRepository,
+                                         final RepositoryAnalyzerFactory analyzerFactory,
+                                         final SecretDecryptor secretDecryptor,
+                                         @CacheName("metaAnalyzer") final Cache cache) {
+        this.repoEntityRepository = repoEntityRepository;
+        this.analyzerFactory = analyzerFactory;
+        this.secretDecryptor = secretDecryptor;
+        this.cache = cache;
+    }
+
+    @Override
+    public FixedKeyProcessor<PackageURL, Component, Result> get() {
+        return new MetaAnalyzerProcessor(repoEntityRepository, analyzerFactory, secretDecryptor, cache);
+    }
+
+}
