@@ -15,7 +15,6 @@
     <module>repository-meta-analyzer</module>
     <module>proto</module>
     <module>vulnerability-analyzer</module>
-    <module>metrics-service</module>
   </modules>
 
   <properties>
