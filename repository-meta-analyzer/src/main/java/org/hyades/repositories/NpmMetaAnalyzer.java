@@ -19,16 +19,15 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 
 /**
@@ -37,7 +36,6 @@ import java.io.IOException;
  * @author Steve Springett
  * @since 3.1.0
  */
-@ApplicationScoped
 public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NpmMetaAnalyzer.class);
