@@ -28,6 +28,7 @@ import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
 public class RepositoryMetaAnalyzerTopology {
 
     @Produces
+    @SuppressWarnings({"resource", "java:S2095"}) // Ignore linter warnings about Serdes having to be closed
     public Topology topology(final RepositoryAnalyzerFactory analyzerFactory,
                              final MetaAnalyzerProcessorSupplier analyzerProcessorSupplier) {
         final var streamsBuilder = new StreamsBuilder();
