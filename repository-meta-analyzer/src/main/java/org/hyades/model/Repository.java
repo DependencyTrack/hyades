@@ -21,7 +21,6 @@ package org.hyades.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.hyades.persistence.RepositoryTypeConverter;
 
 import javax.persistence.Column;
@@ -42,7 +41,6 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "REPOSITORY")
-@RegisterForReflection
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Repository implements Serializable {
 
@@ -57,7 +55,6 @@ public class Repository implements Serializable {
     @NotNull
     @Convert(converter = RepositoryTypeConverter.class)
     private RepositoryType type;
-
 
     @Column(name = "IDENTIFIER", nullable = false)
     @NotBlank

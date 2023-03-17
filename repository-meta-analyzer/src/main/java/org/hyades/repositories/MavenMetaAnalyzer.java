@@ -19,20 +19,19 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
+import org.apache.http.HttpEntity;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.XmlUtil;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
-import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -48,8 +47,6 @@ import java.io.InputStream;
  * @author Steve Springett
  * @since 3.1.0
  */
-
-@ApplicationScoped
 public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://repo1.maven.org/maven2";

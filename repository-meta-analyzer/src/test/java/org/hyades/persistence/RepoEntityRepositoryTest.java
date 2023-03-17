@@ -33,7 +33,7 @@ class RepoEntityRepositoryTest {
                                     (2, 'true', 'central2', 'false', 'null', 1, 'MAVEN', 'https://repo1.maven.org/maven2/123');
                 """).executeUpdate();
         final List<Repository> config= repository
-                .findRepositoryByRepositoryType(RepositoryType.MAVEN);
+                .findEnabledRepositoriesByType(RepositoryType.MAVEN);
         Assertions.assertEquals(2, config.size());
         Assertions.assertEquals(1, config.get(0).getResolutionOrder());
         Assertions.assertEquals(2, config.get(1).getResolutionOrder());

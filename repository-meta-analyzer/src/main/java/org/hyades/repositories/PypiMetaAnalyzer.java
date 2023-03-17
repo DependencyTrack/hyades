@@ -19,17 +19,16 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -42,7 +41,6 @@ import java.util.Date;
  * @author Steve Springett
  * @since 3.4.0
  */
-@ApplicationScoped
 public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PypiMetaAnalyzer.class);
@@ -74,7 +72,7 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
         final MetaModel meta = new MetaModel(component);
         MetaModel successMeta = new MetaModel(component);
         if (component.getPurl() != null) {
-            final String url = String.format(baseUrl+API_URL, component.getPurl().getName());
+            final String url = String.format(baseUrl + API_URL, component.getPurl().getName());
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     successMeta = processSuccessResponse(response, meta);

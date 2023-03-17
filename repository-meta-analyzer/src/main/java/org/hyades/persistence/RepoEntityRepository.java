@@ -11,9 +11,9 @@ import java.util.List;
 @ApplicationScoped
 public class RepoEntityRepository implements PanacheRepository<Repository> {
 
-    public List<Repository> findRepositoryByRepositoryType(RepositoryType type){
-        return list("type = :type order by resolutionOrder asc",
-                Parameters.with("type", type));
+    public List<Repository> findEnabledRepositoriesByType(final RepositoryType type) {
+        return list("type = :type AND enabled = :enabled ORDER BY resolutionOrder ASC",
+                Parameters.with("type", type).and("enabled", true));
     }
 
 }

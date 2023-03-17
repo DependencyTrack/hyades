@@ -18,6 +18,11 @@
  */
 package org.hyades.repositories;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.hyades.commonnotification.NotificationConstants;
 import org.hyades.commonnotification.NotificationGroup;
 import org.hyades.commonnotification.NotificationScope;
@@ -25,16 +30,8 @@ import org.hyades.commonutil.HttpUtil;
 import org.hyades.model.Component;
 import org.hyades.model.Notification;
 import org.hyades.model.NotificationLevel;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.IOException;
 
 /**
@@ -44,12 +41,9 @@ import java.io.IOException;
  * @since 3.1.0
  */
 
-@ApplicationScoped
 public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
 
-    @Inject
-    @Named("httpClient")
-    CloseableHttpClient httpClient;
+    protected CloseableHttpClient httpClient;
 
     protected String baseUrl;
 
@@ -60,6 +54,15 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
     /**
      * {@inheritDoc}
      */
+    @Override
+    public void setHttpClient(final CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setRepositoryBaseUrl(String baseUrl) {
         baseUrl = StringUtils.trimToNull(baseUrl);
         if (baseUrl == null) {
@@ -71,6 +74,7 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
         this.baseUrl = baseUrl;
     }
 
+    @Override
     public void setRepositoryUsernameAndPassword(String username, String password) {
         this.username = StringUtils.trimToNull(username);
         this.password = StringUtils.trimToNull(password);
@@ -84,7 +88,7 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
                 .scope(NotificationScope.SYSTEM)
                 .group(NotificationGroup.REPOSITORY)
                 .title(NotificationConstants.Title.REPO_ERROR)
-                .content("An error occurred while communicating with an " + supportedRepositoryType().name() + " repository. URL: " + url + " HTTP Status: " + statusCode + ". Check log for details." )
+                .content("An error occurred while communicating with an " + supportedRepositoryType().name() + " repository. URL: " + url + " HTTP Status: " + statusCode + ". Check log for details.")
                 .level(NotificationLevel.ERROR)
         );
     }

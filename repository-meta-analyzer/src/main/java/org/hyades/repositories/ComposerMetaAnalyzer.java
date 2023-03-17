@@ -19,17 +19,16 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import org.hyades.model.Component;
-import org.hyades.model.MetaModel;
-import org.hyades.model.RepositoryType;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.hyades.model.Component;
+import org.hyades.model.MetaModel;
+import org.hyades.model.RepositoryType;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -41,8 +40,6 @@ import java.text.SimpleDateFormat;
  * @author Szabolcs (Szasza) Palmer
  * @since 4.1.0
  */
-
-@ApplicationScoped
 public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComposerMetaAnalyzer.class);
@@ -86,7 +83,7 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
             if (jsonString.equalsIgnoreCase("")) {
                 return meta;
             }
-            if (jsonString.equalsIgnoreCase( "{}")) {
+            if (jsonString.equalsIgnoreCase("{}")) {
                 return meta;
             }
             JSONObject jsonObject = new JSONObject(jsonString);

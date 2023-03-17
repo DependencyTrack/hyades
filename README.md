@@ -21,7 +21,7 @@ As of now, Hyades is capable of:
   * Dependency-Track's internal vulnerability database
   * [OSS Index]
   * [Snyk]
-* Gathering component meta information (e.g. latest available version) from remote repositories
+* Gathering component metadata (e.g. latest available version) from remote repositories
 * Sending [notifications] via all channels supported by the original API server (E-Mail, Webhook, etc.)
 
 Here's a rough overview of the architecture:
@@ -30,6 +30,7 @@ Here's a rough overview of the architecture:
 
 To read more about the individual services, refer to their respective `REAMDE.md`:
 
+* [Repository Metadata Analyzer](repository-meta-analyzer/README.md)
 * [Vulnerability Analyzer](vulnerability-analyzer/README.md)
 
 ## Great, can I try it? 🙌
