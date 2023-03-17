@@ -92,42 +92,12 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 LOGGER.debug("Cache miss (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
             }
 
-            analyzer.setRepositoryBaseUrl(repository.getUrl());
-            if (repository.isInternal()) {
-                try {
-                    analyzer.setRepositoryUsernameAndPassword(repository.getUsername(), secretDecryptor.decryptAsString(repository.getPassword()));
-                } catch (Exception e) {
-                    LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
-                }
-            }
-
-            LOGGER.debug("Performing meta analysis on purl: {}", purl);
-            final MetaModel metaModel;
-            try {
-                // Analyzers still work with "legacy" data models,
-                // allowing us to avoid major refactorings of the original code.
-                final var analyzerComponent = new org.hyades.model.Component();
-                analyzerComponent.setPurl(purl);
-                metaModel = analyzer.analyze(analyzerComponent);
-            } catch (Exception e) {
-                LOGGER.error("Failed to analyze {} using {} with repository {}", purl, analyzer.getName(), repository.getIdentifier(), e);
-                continue;
-            }
-
-            final AnalysisResult.Builder resultBuilder = AnalysisResult.newBuilder()
-                    .setComponent(component)
-                    .setRepository(repository.getIdentifier());
-            if (metaModel.getLatestVersion() != null) {
-                resultBuilder.setLatestVersion(metaModel.getLatestVersion());
-                if (metaModel.getPublishedTimestamp() != null) {
-                    resultBuilder.setPublished(Timestamp.newBuilder()
-                            .setSeconds(metaModel.getPublishedTimestamp().getTime() / 1000));
-                }
-                final AnalysisResult result = resultBuilder.build();
-                context().forward(record.withValue(result).withTimestamp(context().currentSystemTimeMs()));
-                cacheResult(cacheKey, result);
-                LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
-                        purl, repository.getIdentifier(), repository.getType());
+            final Optional<AnalysisResult> optionalResult = analyze(analyzer, repository, component);
+            if (optionalResult.isPresent()) {
+                context().forward(record
+                        .withValue(optionalResult.get())
+                        .withTimestamp(context().currentSystemTimeMs()));
+                cacheResult(cacheKey, optionalResult.get());
                 return;
             }
         }
@@ -138,11 +108,56 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .withTimestamp(context().currentSystemTimeMs()));
     }
 
+    private Optional<AnalysisResult> analyze(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
+        analyzer.setRepositoryBaseUrl(repository.getUrl());
+        if (repository.isInternal()) {
+            try {
+                analyzer.setRepositoryUsernameAndPassword(repository.getUsername(), secretDecryptor.decryptAsString(repository.getPassword()));
+            } catch (Exception e) {
+                LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
+            }
+        }
+
+        LOGGER.debug("Performing meta analysis on purl: {}", component.getPurl());
+        final MetaModel metaModel;
+        try {
+            // Analyzers still work with "legacy" data models,
+            // allowing us to avoid major refactorings of the original code.
+            final var analyzerComponent = new org.hyades.model.Component();
+            analyzerComponent.setPurl(component.getPurl());
+            metaModel = analyzer.analyze(analyzerComponent);
+        } catch (Exception e) {
+            LOGGER.error("Failed to analyze {} using {} with repository {}",
+                    component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
+            return Optional.empty();
+        }
+
+        final AnalysisResult.Builder resultBuilder = AnalysisResult.newBuilder()
+                .setComponent(component)
+                .setRepository(repository.getIdentifier());
+        if (metaModel.getLatestVersion() != null) {
+            resultBuilder.setLatestVersion(metaModel.getLatestVersion());
+            if (metaModel.getPublishedTimestamp() != null) {
+                resultBuilder.setPublished(Timestamp.newBuilder()
+                        .setSeconds(metaModel.getPublishedTimestamp().getTime() / 1000));
+            }
+            final AnalysisResult result = resultBuilder.build();
+            LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
+                    component.getPurl(), repository.getIdentifier(), repository.getType());
+            return Optional.of(result);
+        }
+
+        return Optional.empty();
+    }
+
     private PackageURL mustParsePurl(final String purl) {
         try {
             return new PackageURL(purl);
         } catch (MalformedPackageURLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException("""
+                    The provided PURL is invalid, even though it should have been
+                    validated in a previous processing step
+                    """, e);
         }
     }
 

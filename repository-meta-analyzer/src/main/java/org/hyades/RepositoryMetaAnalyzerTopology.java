@@ -95,7 +95,10 @@ public class RepositoryMetaAnalyzerTopology {
             return new PackageURL(parsedPurl.getType(), parsedPurl.getNamespace(),
                     parsedPurl.getName(), null, null, null);
         } catch (MalformedPackageURLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException("""
+                    The provided PURL is invalid, even though it should have been
+                    validated in a previous processing step
+                    """, e);
         }
     }
 
