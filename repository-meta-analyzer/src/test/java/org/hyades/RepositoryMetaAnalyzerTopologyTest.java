@@ -1,45 +1,42 @@
 package org.hyades;
 
+import com.github.packageurl.PackageURL;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CaffeineCache;
-import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
-import io.quarkus.kafka.client.serialization.ObjectMapperSerializer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
-import org.hyades.common.KafkaTopic;
-import org.hyades.model.Component;
-import org.hyades.model.MetaAnalyzerCacheKey;
-import org.hyades.model.Repository;
-import org.hyades.persistence.RepoEntityRepository;
-import org.hyades.repositories.ComposerMetaAnalyzer;
-import org.hyades.repositories.GemMetaAnalyzer;
-import org.hyades.repositories.GoModulesMetaAnalyzer;
-import org.hyades.repositories.HexMetaAnalyzer;
-import org.hyades.repositories.MavenMetaAnalyzer;
-import org.hyades.model.MetaModel;
-import org.hyades.repositories.NpmMetaAnalyzer;
-import org.hyades.repositories.NugetMetaAnalyzer;
-import org.hyades.repositories.PypiMetaAnalyzer;
-import org.apache.kafka.common.serialization.UUIDDeserializer;
-import org.apache.kafka.common.serialization.UUIDSerializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
+import org.hyades.common.KafkaTopic;
+import org.hyades.model.MetaAnalyzerCacheKey;
+import org.hyades.model.MetaModel;
+import org.hyades.model.Repository;
+import org.hyades.persistence.RepoEntityRepository;
+import org.hyades.proto.KafkaProtobufDeserializer;
+import org.hyades.proto.KafkaProtobufSerializer;
+import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
+import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
+import org.hyades.repositories.IMetaAnalyzer;
+import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @QuarkusTest
 public class RepositoryMetaAnalyzerTopologyTest {
@@ -47,143 +44,143 @@ public class RepositoryMetaAnalyzerTopologyTest {
     @Inject
     Topology topology;
 
+    @InjectMock
+    RepositoryAnalyzerFactory analyzerFactoryMock;
+
+    @InjectMock
+    RepoEntityRepository repoEntityRepositoryMock;
+
     @Inject
     @CacheName("metaAnalyzer")
     Cache cache;
 
     private TopologyTestDriver testDriver;
-    private TestInputTopic<UUID, Component> inputTopic;
-    private TestOutputTopic<UUID, MetaModel> outputTopic;
-
-    @InjectMock
-    private ComposerMetaAnalyzer composerMetaAnalyzerMock;
-    @InjectMock
-    private GemMetaAnalyzer gemMetaAnalyzerMock;
-    @InjectMock
-    private GoModulesMetaAnalyzer goModulesMetaAnalyzerMock;
-
-    @InjectMock
-    private HexMetaAnalyzer hexMetaAnalyzerMock;
-
-    @InjectMock
-    private MavenMetaAnalyzer mavenMetaAnalyzerMock;
-
-    @InjectMock
-    private NpmMetaAnalyzer npmMetaAnalyzerMock;
-
-    @InjectMock
-    private NugetMetaAnalyzer nugetMetaAnalyzerMock;
-
-    @InjectMock
-    private PypiMetaAnalyzer pypiMetaAnalyzerMock;
-
-    @InjectMock
-    private RepoEntityRepository repoEntityRepositoryMock;
+    private TestInputTopic<String, AnalysisCommand> inputTopic;
+    private TestOutputTopic<String, AnalysisResult> outputTopic;
+    private IMetaAnalyzer analyzerMock;
 
     @BeforeEach
     void beforeEach() {
         testDriver = new TopologyTestDriver(topology);
-        inputTopic = testDriver.createInputTopic(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), new UUIDSerializer(), new ObjectMapperSerializer<>());
-        outputTopic = testDriver.createOutputTopic(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), new UUIDDeserializer(), new ObjectMapperDeserializer<>(MetaModel.class));
+        inputTopic = testDriver.createInputTopic(
+                KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(),
+                new StringSerializer(), new KafkaProtobufSerializer<>());
+        outputTopic = testDriver.createOutputTopic(
+                KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(),
+                new StringDeserializer(), new KafkaProtobufDeserializer<>(AnalysisResult.parser()));
+
+        analyzerMock = mock(IMetaAnalyzer.class);
+
+        when(analyzerFactoryMock.hasApplicableAnalyzer(any(PackageURL.class)))
+                .thenReturn(true);
+        when(analyzerFactoryMock.createAnalyzer(any(PackageURL.class)))
+                .thenReturn(Optional.of(analyzerMock));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    void testAnalyzerCacheMiss() {
-
-        final var component = new Component();
-        final UUID uuid = UUID.randomUUID();
-        component.setUuid(uuid);
-        component.setCpe("cpe:/a:acme:application:9.1.1");
-        component.setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2");
-        component.setSwidTagId("PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8");
+    void testAnalyzerCacheMiss() throws Exception {
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2")
+                        .build())
+                .build();
 
         // mock repository data
         Repository repository = new Repository();
+        repository.setIdentifier("testRepository");
         repository.setInternal(false);
         repository.setUrl("https://repo1.maven.org/maven2/");
-        //Mockito.when(repoEntityRepositoryMock.findRepositoryByRepositoryType(any())).thenReturn(List.of(repository));
+        when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
+                .thenReturn(List.of(repository));
 
         // mock maven analyzer analyze method
         final MetaModel outputMetaModel = new MetaModel();
         outputMetaModel.setLatestVersion("test");
-        Mockito.when(mavenMetaAnalyzerMock.analyze(any())).thenReturn(outputMetaModel);
+        when(analyzerMock.analyze(any())).thenReturn(outputMetaModel);
+        when(analyzerMock.getName()).thenReturn("testAnalyzer");
 
-        inputTopic.pipeInput(uuid, component);
-        //Assertions.assertNotNull(cache.as(CaffeineCache.class).getIfPresent(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize())));
+        inputTopic.pipeInput("foo", command);
+
+        final var cacheKey = new MetaAnalyzerCacheKey("testAnalyzer",
+                "pkg:maven/com.fasterxml.jackson.core/jackson-databind",
+                "https://repo1.maven.org/maven2/");
+        Assertions.assertNotNull(cache.as(CaffeineCache.class).getIfPresent(cacheKey).get());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testAnalyzerCacheHit() {
-
-        final var component = new Component();
-        final UUID uuid = UUID.randomUUID();
-        component.setUuid(uuid);
-        component.setCpe("cpe:/a:acme:application:9.1.1");
-        component.setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2");
-        component.setSwidTagId("PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8");
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
+                .build();
 
         // mock repository data
         Repository repository = new Repository();
+        repository.setIdentifier("testRepository");
         repository.setInternal(false);
         repository.setUrl("https://repo1.maven.org/maven2/");
-        //Mockito.when(repoEntityRepositoryMock.findRepositoryByRepositoryType(any())).thenReturn(List.of(repository));
+        when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
+                .thenReturn(List.of(repository));
 
         // mock maven analyzer analyze method
-        final MetaModel outputMetaModel = new MetaModel();
-        outputMetaModel.setLatestVersion("test");
+        final var result = AnalysisResult.newBuilder()
+                .setComponent(command.getComponent())
+                .setRepository("testRepository")
+                .setLatestVersion("test")
+                .build();
+        when(analyzerMock.getName()).thenReturn("testAnalyzer");
 
         // populate the cache to hit the match
-        //cache.as(CaffeineCache.class).put(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize()), CompletableFuture.completedFuture(outputMetaModel));
+        final var cacheKey = new MetaAnalyzerCacheKey("testAnalyzer",
+                "pkg:maven/com.fasterxml.jackson.core/jackson-databind",
+                "https://repo1.maven.org/maven2/");
+        cache.as(CaffeineCache.class).put(cacheKey, completedFuture(result));
 
-        inputTopic.pipeInput(uuid, component);
-        final KeyValue<UUID, MetaModel> record = outputTopic.readKeyValue();
+        inputTopic.pipeInput("foo", command);
+        final KeyValue<String, AnalysisResult> record = outputTopic.readKeyValue();
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
         Assertions.assertEquals("test", record.value.getLatestVersion());
     }
 
 
     @Test
-    void testPerformMetaAnalysis(){
-        final var component = new Component();
-        final UUID uuid = UUID.randomUUID();
-        component.setUuid(uuid);
-        component.setCpe("cpe:/a:acme:application:9.1.1");
-        component.setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2");
-        component.setSwidTagId("PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8");
-        inputTopic.pipeInput(uuid, component);
+    void testPerformMetaAnalysis() {
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
+                .build();
+
+        inputTopic.pipeInput("foo", command);
 
         Assertions.assertEquals(1, outputTopic.getQueueSize());
     }
 
 
     @Test
-    void testNoPurlComponent(){
-        final var component = new Component();
-        final UUID uuid = UUID.randomUUID();
-        component.setUuid(uuid);
-        component.setCpe("cpe:/a:acme:application:9.1.1");
-        component.setSwidTagId("PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8");
-        inputTopic.pipeInput(uuid, component);
+    void testNoPurlComponent() {
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder())
+                .build();
+
+        inputTopic.pipeInput("foo", command);
 
         Assertions.assertEquals(0, outputTopic.getQueueSize());
     }
 
     @Test
-    void testMetaOutput(){
-        final var component = new Component();
-        final UUID uuid = UUID.randomUUID();
-        component.setUuid(uuid);
-        component.setCpe("cpe:/a:acme:application:9.1.1");
-        component.setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2");
-        component.setSwidTagId("PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiID8");
-        inputTopic.pipeInput(uuid, component);
+    void testMetaOutput() {
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
+                .build();
+
+        inputTopic.pipeInput("foo", command);
 
         Assertions.assertEquals(1, outputTopic.getQueueSize());
-        final KeyValue<UUID, MetaModel> record = outputTopic.readKeyValue();
-        Assertions.assertEquals(uuid, record.key);
-        Assertions.assertEquals(uuid, record.value.getComponent().getUuid());
-        Assertions.assertNull(record.value.getLatestVersion());
+        final KeyValue<String, AnalysisResult> record = outputTopic.readKeyValue();
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.value.getComponent().getPurl());
+        Assertions.assertFalse(record.value.hasLatestVersion());
     }
 
     @AfterEach

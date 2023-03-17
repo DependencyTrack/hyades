@@ -4,24 +4,21 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
-import io.quarkus.kafka.client.serialization.ObjectMapperSerde;
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
-import org.apache.http.HttpHeaders;
-import org.apache.http.entity.ContentType;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.hyades.common.KafkaTopic;
-import org.hyades.model.Component;
-import org.hyades.model.MetaModel;
+import org.hyades.proto.KafkaProtobufSerde;
+import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
+import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.util.WireMockTestResource;
 import org.hyades.util.WireMockTestResource.InjectWireMock;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +31,6 @@ import java.sql.PreparedStatement;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,45 +78,51 @@ class RepositoryMetaAnalyzerIT {
                 .willReturn(WireMock.aResponse()
                         .withStatus(200)
                         .withResponseBody(Body.ofBinaryOrText("""
-                               {
-                                   "Version": "v6.6.6",
-                                   "Time": "2022-09-28T21:59:32Z",
-                                   "Origin": {
-                                       "VCS": "git",
-                                       "URL": "https://github.com/acme/acme-lib",
-                                       "Ref": "refs/tags/v6.6.6",
-                                       "Hash": "39a1d8f8f69040a53114e1ea481e48f6d792c05e"
-                                   }
-                               }
-                                """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
+                                {
+                                    "Version": "v6.6.6",
+                                    "Time": "2022-09-28T21:59:32Z",
+                                    "Origin": {
+                                        "VCS": "git",
+                                        "URL": "https://github.com/acme/acme-lib",
+                                        "Ref": "refs/tags/v6.6.6",
+                                        "Hash": "39a1d8f8f69040a53114e1ea481e48f6d792c05e"
+                                    }
+                                }
+                                 """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
                         )));
     }
 
     @Test
     void test() {
-        final var component = new Component();
-        component.setUuid(UUID.randomUUID());
-        component.setPurl("pkg:golang/github.com/acme/acme-lib@9.1.1");
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:golang/github.com/acme/acme-lib@9.1.1"))
+                .build();
 
         kafkaCompanion
-                .produce(Serdes.UUID(), new ObjectMapperSerde<>(Component.class))
-                .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), component.getUuid(), component));
+                .produce(Serdes.String(), new KafkaProtobufSerde<>(AnalysisCommand.parser()))
+                .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), "foo", command));
 
-        final List<ConsumerRecord<UUID, MetaModel>> results = kafkaCompanion
-                .consume(Serdes.UUID(), new ObjectMapperSerde<>(MetaModel.class))
+        final List<ConsumerRecord<String, AnalysisResult>> results = kafkaCompanion
+                .consume(Serdes.String(), new KafkaProtobufSerde<>(AnalysisResult.parser()))
                 .fromTopics(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), 1, Duration.ofSeconds(5))
                 .awaitCompletion()
                 .getRecords();
 
         assertThat(results).satisfiesExactly(
                 record -> {
-                    assertThat(record.key()).isEqualTo(component.getUuid());
+                    assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib");
                     assertThat(record.value()).isNotNull();
 
-                    final MetaModel result = record.value();
-                    assertThat(result.getComponent()).isNotNull();
+                    final AnalysisResult result = record.value();
+                    assertThat(result.hasComponent()).isTrue();
+                    assertThat(result.getComponent()).isEqualTo(command.getComponent());
+                    assertThat(result.hasRepository()).isTrue();
+                    assertThat(result.getRepository()).isEqualTo("test");
+                    assertThat(result.hasLatestVersion()).isTrue();
                     assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
-                    assertThat(result.getPublishedTimestamp()).isEqualTo("2022-09-28T21:59:32");
+                    assertThat(result.hasPublished()).isTrue();
+                    assertThat(result.getPublished().getSeconds()).isEqualTo(1664395172);
                 }
         );
     }
