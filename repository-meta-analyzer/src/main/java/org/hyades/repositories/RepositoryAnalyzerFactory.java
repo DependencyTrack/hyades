@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 @ApplicationScoped
 public class RepositoryAnalyzerFactory {
 
-    private static final Map<String, Supplier<IMetaAnalyzer>> ANALYZER_CLASSES = Map.of(
+    private static final Map<String, Supplier<IMetaAnalyzer>> ANALYZER_SUPPLIERS = Map.of(
             PackageURL.StandardTypes.COMPOSER, ComposerMetaAnalyzer::new,
             PackageURL.StandardTypes.GEM, GemMetaAnalyzer::new,
             PackageURL.StandardTypes.GOLANG, GoModulesMetaAnalyzer::new,
@@ -30,11 +30,11 @@ public class RepositoryAnalyzerFactory {
     }
 
     public boolean hasApplicableAnalyzer(final PackageURL purl) {
-        return ANALYZER_CLASSES.containsKey(purl.getType());
+        return ANALYZER_SUPPLIERS.containsKey(purl.getType());
     }
 
     public Optional<IMetaAnalyzer> createAnalyzer(final PackageURL purl) {
-        final Supplier<IMetaAnalyzer> analyzerSupplier = ANALYZER_CLASSES.get(purl.getType());
+        final Supplier<IMetaAnalyzer> analyzerSupplier = ANALYZER_SUPPLIERS.get(purl.getType());
         if (analyzerSupplier == null) {
             return Optional.empty();
         }
