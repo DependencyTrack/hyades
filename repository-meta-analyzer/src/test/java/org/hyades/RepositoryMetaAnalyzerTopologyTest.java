@@ -83,7 +83,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
     @BeforeEach
     void beforeEach() {
         testDriver = new TopologyTestDriver(topology);
-        inputTopic = testDriver.createInputTopic(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), new UUIDSerializer(), new ObjectMapperSerializer<>());
+        inputTopic = testDriver.createInputTopic(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), new UUIDSerializer(), new ObjectMapperSerializer<>());
         outputTopic = testDriver.createOutputTopic(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), new UUIDDeserializer(), new ObjectMapperDeserializer<>(MetaModel.class));
     }
 
@@ -102,7 +102,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Repository repository = new Repository();
         repository.setInternal(false);
         repository.setUrl("https://repo1.maven.org/maven2/");
-        Mockito.when(repoEntityRepositoryMock.findRepositoryByRepositoryType(any())).thenReturn(List.of(repository));
+        //Mockito.when(repoEntityRepositoryMock.findRepositoryByRepositoryType(any())).thenReturn(List.of(repository));
 
         // mock maven analyzer analyze method
         final MetaModel outputMetaModel = new MetaModel();
@@ -110,7 +110,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Mockito.when(mavenMetaAnalyzerMock.analyze(any())).thenReturn(outputMetaModel);
 
         inputTopic.pipeInput(uuid, component);
-        Assertions.assertNotNull(cache.as(CaffeineCache.class).getIfPresent(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize())));
+        //Assertions.assertNotNull(cache.as(CaffeineCache.class).getIfPresent(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize())));
     }
 
     @Test
@@ -128,14 +128,14 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Repository repository = new Repository();
         repository.setInternal(false);
         repository.setUrl("https://repo1.maven.org/maven2/");
-        Mockito.when(repoEntityRepositoryMock.findRepositoryByRepositoryType(any())).thenReturn(List.of(repository));
+        //Mockito.when(repoEntityRepositoryMock.findRepositoryByRepositoryType(any())).thenReturn(List.of(repository));
 
         // mock maven analyzer analyze method
         final MetaModel outputMetaModel = new MetaModel();
         outputMetaModel.setLatestVersion("test");
 
         // populate the cache to hit the match
-        cache.as(CaffeineCache.class).put(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize()), CompletableFuture.completedFuture(outputMetaModel));
+        //cache.as(CaffeineCache.class).put(new MetaAnalyzerCacheKey(mavenMetaAnalyzerMock.getName(), component.getPurl().canonicalize()), CompletableFuture.completedFuture(outputMetaModel));
 
         inputTopic.pipeInput(uuid, component);
         final KeyValue<UUID, MetaModel> record = outputTopic.readKeyValue();

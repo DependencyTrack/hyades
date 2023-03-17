@@ -14,9 +14,9 @@ import org.apache.kafka.streams.kstream.Repartitioned;
 import org.hyades.common.KafkaTopic;
 import org.hyades.processor.MetaAnalyzerProcessorSupplier;
 import org.hyades.proto.KafkaProtobufSerde;
-import org.hyades.proto.repometaanalysis.v1.Command;
+import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
+import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
-import org.hyades.proto.repometaanalysis.v1.Result;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
 
@@ -33,24 +33,27 @@ public class RepositoryMetaAnalyzerTopology {
         final var streamsBuilder = new StreamsBuilder();
 
         final var purlSerde = new KafkaPurlSerde();
-        final var commandSerde = new KafkaProtobufSerde<>(Command.parser());
-        final var resultSerde = new KafkaProtobufSerde<>(Result.parser());
+        final var analysisCommandSerde = new KafkaProtobufSerde<>(AnalysisCommand.parser());
+        final var scanResultSerde = new KafkaProtobufSerde<>(AnalysisResult.parser());
 
-        final KStream<PackageURL, Command> commandStream = streamsBuilder
+        final KStream<PackageURL, AnalysisCommand> commandStream = streamsBuilder
                 .stream(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), Consumed
-                        .with(Serdes.UUID(), commandSerde)
+                        .with(Serdes.String(), analysisCommandSerde) // Key can be in arbitrary format
                         .withName(processorNameConsume(KafkaTopic.REPO_META_ANALYSIS_COMMAND)))
-                .filter((uuid, command) -> command.hasComponent() && isValidPurl(command.getComponent().getPurl()),
+                .filter((key, scanCommand) -> scanCommand.hasComponent() && isValidPurl(scanCommand.getComponent().getPurl()),
                         Named.as("filter_components_with_valid_purl"))
                 // Re-key to PURL coordinates WITHOUT VERSION. As we are fetching data for packages,
                 // but not specific package versions, including the version here would make our caching
                 // largely ineffective. We want events for the same package to be sent to the same partition.
-                .selectKey((uuid, command) -> mustParsePurlCoordinatesWithoutVersion(command.getComponent().getPurl()),
+                //
+                // Because we can't enforce this format on the keys of the input topic without causing
+                // serialization exceptions, we're left with this mandatory key change.
+                .selectKey((key, command) -> mustParsePurlCoordinatesWithoutVersion(command.getComponent().getPurl()),
                         Named.as("re-key_to_purl_coordinates"))
                 // Force a repartition to ensure that the ordering guarantees we want, based on the
                 // previous re-keying operation, are effective.
                 .repartition(Repartitioned
-                        .with(purlSerde, commandSerde)
+                        .with(purlSerde, analysisCommandSerde)
                         .withName("command-by-purl-coordinates"));
 
         commandStream
@@ -61,15 +64,15 @@ public class RepositoryMetaAnalyzerTopology {
                         .<PackageURL, Component>withConsumer(stream -> stream
                                 .processValues(analyzerProcessorSupplier, Named.as("analyze_component"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                        .with(purlSerde, resultSerde)
+                                        .with(purlSerde, scanResultSerde)
                                         .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "analysis_result"))))
                         .withName("-found"))
                 .defaultBranch(Branched
                         .<PackageURL, Component>withConsumer(stream -> stream
-                                .mapValues((purl, component) -> Result.newBuilder().setComponent(component).build(),
+                                .mapValues((purl, component) -> AnalysisResult.newBuilder().setComponent(component).build(),
                                         Named.as("map_unmatched_component_to_empty_result"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
-                                        .with(purlSerde, resultSerde)
+                                        .with(purlSerde, scanResultSerde)
                                         .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "empty_result"))))
                         .withName("-not-found"));
 

@@ -104,7 +104,7 @@ class RepositoryMetaAnalyzerIT {
 
         kafkaCompanion
                 .produce(Serdes.UUID(), new ObjectMapperSerde<>(Component.class))
-                .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMPONENT.getName(), component.getUuid(), component));
+                .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), component.getUuid(), component));
 
         final List<ConsumerRecord<UUID, MetaModel>> results = kafkaCompanion
                 .consume(Serdes.UUID(), new ObjectMapperSerde<>(MetaModel.class))

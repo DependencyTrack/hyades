@@ -13,8 +13,8 @@ import org.hyades.model.MetaModel;
 import org.hyades.model.Repository;
 import org.hyades.model.RepositoryType;
 import org.hyades.persistence.RepoEntityRepository;
+import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
-import org.hyades.proto.repometaanalysis.v1.Result;
 import org.hyades.repositories.IMetaAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Component, Result> {
+class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Component, AnalysisResult> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaAnalyzerProcessor.class);
 
@@ -45,9 +45,10 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
 
     @Override
     public void process(final FixedKeyRecord<PackageURL, Component> record) {
+        final PackageURL purlWithoutVersion = record.key();
         final Component component = record.value();
 
-        // NOTE: Do not use the PURL from the record's key for the analysis!
+        // NOTE: Do not use purlWithoutVersion for the analysis!
         // It only contains the type, namespace and name, but is missing the
         // version and other qualifiers. Some analyzers require the version.
         final PackageURL purl = mustParsePurl(component.getPurl());
@@ -56,7 +57,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         if (optionalAnalyzer.isEmpty()) {
             LOGGER.debug("No analyzer is capable of analyzing {}", purl);
             context().forward(record
-                    .withValue(Result.newBuilder().setComponent(component).build())
+                    .withValue(AnalysisResult.newBuilder().setComponent(component).build())
                     .withTimestamp(context().currentSystemTimeMs()));
             return;
         }
@@ -74,10 +75,10 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 continue;
             }
 
-            // TODO: Can we use the PURL coordinates without version here?
-            // That would result in many more cache hits, but it will not work anymore as soon
-            // as we also want to capture version-specific data, like checksums.
-            final var cacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), purl.getCoordinates(), repository.getUrl());
+            // NOTE: The cache key currently does not take the PURL version into consideration.
+            // At the time of writing this, the meta analysis result is not version-specific.
+            // When that circumstance changes, the cache key must also include the PURL version.
+            final var cacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), purlWithoutVersion.canonicalize(), repository.getUrl());
 
             // Populate results from cache if possible.
             final var cachedResult = getCachedResult(cacheKey);
@@ -113,14 +114,16 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 continue;
             }
 
-            final Result.Builder resultBuilder = Result.newBuilder().setComponent(component);
+            final AnalysisResult.Builder resultBuilder = AnalysisResult.newBuilder()
+                    .setComponent(component)
+                    .setRepository(repository.getIdentifier());
             if (metaModel.getLatestVersion() != null) {
                 resultBuilder.setLatestVersion(metaModel.getLatestVersion());
                 if (metaModel.getPublishedTimestamp() != null) {
                     resultBuilder.setPublished(Timestamp.newBuilder()
                             .setSeconds(metaModel.getPublishedTimestamp().getTime() / 1000));
                 }
-                final Result result = resultBuilder.build();
+                final AnalysisResult result = resultBuilder.build();
                 context().forward(record.withValue(result).withTimestamp(context().currentSystemTimeMs()));
                 cacheResult(cacheKey, result);
                 LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
@@ -131,7 +134,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
 
         // Produce "empty" result in case no repository did yield a satisfactory result.
         context().forward(record
-                .withValue(Result.newBuilder().setComponent(component).build())
+                .withValue(AnalysisResult.newBuilder().setComponent(component).build())
                 .withTimestamp(context().currentSystemTimeMs()));
     }
 
@@ -157,9 +160,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 
-    private Optional<Result> getCachedResult(final MetaAnalyzerCacheKey cacheKey) {
+    private Optional<AnalysisResult> getCachedResult(final MetaAnalyzerCacheKey cacheKey) {
         try {
-            final Result cachedResult = cache.<MetaAnalyzerCacheKey, Result>get(cacheKey,
+            final AnalysisResult cachedResult = cache.<MetaAnalyzerCacheKey, AnalysisResult>get(cacheKey,
                     key -> {
                         // null values would be cached, so throw an exception instead.
                         // See https://quarkus.io/guides/cache#let-exceptions-bubble-up
@@ -171,7 +174,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         }
     }
 
-    private void cacheResult(final MetaAnalyzerCacheKey cacheKey, final Result result) {
+    private void cacheResult(final MetaAnalyzerCacheKey cacheKey, final AnalysisResult result) {
         cache.get(cacheKey, key -> result).await().indefinitely();
     }
 

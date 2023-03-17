@@ -7,14 +7,14 @@ import org.apache.kafka.streams.processor.api.FixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyProcessorSupplier;
 import org.hyades.common.SecretDecryptor;
 import org.hyades.persistence.RepoEntityRepository;
+import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
-import org.hyades.proto.repometaanalysis.v1.Result;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class MetaAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<PackageURL, Component, Result> {
+public class MetaAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<PackageURL, Component, AnalysisResult> {
 
     private final RepoEntityRepository repoEntityRepository;
     private final RepositoryAnalyzerFactory analyzerFactory;
@@ -32,7 +32,7 @@ public class MetaAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<
     }
 
     @Override
-    public FixedKeyProcessor<PackageURL, Component, Result> get() {
+    public FixedKeyProcessor<PackageURL, Component, AnalysisResult> get() {
         return new MetaAnalyzerProcessor(repoEntityRepository, analyzerFactory, secretDecryptor, cache);
     }
 
