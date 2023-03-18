@@ -57,3 +57,4 @@ create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.osv" "${VULN_MIRR
 create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.nvd" "${VULN_MIRROR_TOPICS_PARTITIONS:-1}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
 create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
 
+echo "All topics created successfully"
