@@ -29,7 +29,7 @@ public class ConfigProperty implements IConfigProperty {
     @Id
     @JsonIgnore
     @Column(name = "ID")
-    private int id;
+    private long id;
 
     @Column(
             name = "GROUPNAME",
@@ -89,11 +89,11 @@ public class ConfigProperty implements IConfigProperty {
     public ConfigProperty() {
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
