@@ -20,16 +20,14 @@ package org.hyades.notification;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import org.hyades.commonnotification.NotificationGroup;
-import org.hyades.commonnotification.NotificationScope;
-import org.hyades.model.Notification;
-import org.hyades.model.NotificationLevel;
+import org.apache.commons.io.IOUtils;
 import org.hyades.notification.publisher.ConsolePublisher;
 import org.hyades.notification.publisher.DefaultNotificationPublishers;
 import org.hyades.notification.publisher.Publisher;
-import org.hyades.persistence.ConfigPropertyRepository;
-import org.hyades.util.NotificationUtil;
-import org.apache.commons.io.FileUtils;
+import org.hyades.proto.notification.v1.Group;
+import org.hyades.proto.notification.v1.Level;
+import org.hyades.proto.notification.v1.Notification;
+import org.hyades.proto.notification.v1.Scope;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,12 +39,13 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URLDecoder;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hyades.proto.notification.v1.Group.GROUP_FILE_SYSTEM;
+import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
+import static org.hyades.proto.notification.v1.Scope.SCOPE_SYSTEM;
 
 @QuarkusTest
 public class ConsolePublisherTest {
@@ -58,9 +57,6 @@ public class ConsolePublisherTest {
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private final PrintStream originalErr = System.err;
-
-    @Inject
-    ConfigPropertyRepository configPropertyRepository;
 
     @Inject
     EntityManager entityManager;
@@ -80,37 +76,38 @@ public class ConsolePublisherTest {
 
     @Test
     @TestTransaction
-    public void testOutputStream() throws IOException {
-
+    public void testOutputStream() throws Exception {
         entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    (1, 'console', 'general', 'STRING', 'base.url', '');
+                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
+                                    ('console', 'general', 'STRING', 'base.url', '');
                 """).executeUpdate();
 
-        Notification notification = new Notification();
-        notification.setScope(NotificationScope.PORTFOLIO.name());
-        notification.setGroup(NotificationGroup.NEW_VULNERABILITY.name());
-        notification.setLevel(NotificationLevel.INFORMATIONAL);
-        notification.setTitle("Test Notification");
-        notification.setContent("This is only a test");
+        final var notification = Notification.newBuilder()
+                .setScope(Scope.SCOPE_PORTFOLIO)
+                .setLevel(Level.LEVEL_INFORMATIONAL)
+                .setGroup(Group.GROUP_NEW_VULNERABILITY)
+                .setTitle("Test Notification")
+                .setContent("This is only a test")
+                .build();
         publisher.inform(notification, getConfig(DefaultNotificationPublishers.CONSOLE, ""));
         Assertions.assertTrue(outContent.toString().contains(expectedResult(notification)));
     }
 
     @Test
     @TestTransaction
-    public void testErrorStream() throws IOException {
+    public void testErrorStream() throws Exception {
         entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    (1, 'console', 'general', 'STRING', 'base.url', '');
+                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
+                                    ('console', 'general', 'STRING', 'base.url', '');
                 """).executeUpdate();
 
-        Notification notification = new Notification();
-        notification.setScope(NotificationScope.SYSTEM.name());
-        notification.setGroup(NotificationGroup.FILE_SYSTEM.name());
-        notification.setLevel(NotificationLevel.ERROR);
-        notification.setTitle("Test Notification");
-        notification.setContent("This is only a test");
+        final var notification = Notification.newBuilder()
+                .setScope(SCOPE_SYSTEM)
+                .setGroup(GROUP_FILE_SYSTEM)
+                .setLevel(LEVEL_ERROR)
+                .setTitle("Test Notification")
+                .setContent("This is only a test")
+                .build();
         publisher.inform(notification, getConfig(DefaultNotificationPublishers.CONSOLE, ""));
         Assertions.assertTrue(errContent.toString().contains(expectedResult(notification)));
     }
@@ -125,9 +122,9 @@ public class ConsolePublisherTest {
                 "  -- title:     " + notification.getTitle() + System.lineSeparator() +
                 "  -- content:   " + notification.getContent() + System.lineSeparator() + System.lineSeparator();
     }
+
     JsonObject getConfig(DefaultNotificationPublishers publisher, String destination) throws IOException {
-        File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
-        String templateContent = FileUtils.readFileToString(templateFile, UTF_8);
+        String templateContent = IOUtils.resourceToString(publisher.getPublisherTemplateFile(), UTF_8);
         return Json.createObjectBuilder()
                 .add(Publisher.CONFIG_TEMPLATE_MIME_TYPE_KEY, publisher.getTemplateMimeType())
                 .add(Publisher.CONFIG_TEMPLATE_KEY, templateContent)

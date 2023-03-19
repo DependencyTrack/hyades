@@ -18,30 +18,32 @@
  */
 package org.hyades.notification.publisher;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
-import org.hyades.commonnotification.NotificationScope;
 import org.hyades.exception.PublisherException;
 import org.hyades.model.ConfigProperty;
 import org.hyades.model.ConfigPropertyConstants;
-import org.hyades.model.Notification;
-import org.hyades.notification.vo.AnalysisDecisionChange;
-import org.hyades.notification.vo.BomConsumedOrProcessed;
-import org.hyades.notification.vo.NewVulnerabilityIdentified;
-import org.hyades.notification.vo.NewVulnerableDependency;
-import org.hyades.notification.vo.PolicyViolationIdentified;
-import org.hyades.notification.vo.VexConsumedOrProcessed;
 import org.hyades.persistence.ConfigPropertyRepository;
-import org.hyades.util.NotificationUtil;
+import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
+import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
+import org.hyades.proto.notification.v1.NewVulnerableDependencySubject;
+import org.hyades.proto.notification.v1.Notification;
+import org.hyades.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
+import org.hyades.proto.notification.v1.PolicyViolationSubject;
+import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
+import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.slf4j.LoggerFactory;
 
 import javax.json.JsonObject;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.hyades.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 
 public interface Publisher {
 
@@ -52,7 +54,7 @@ public interface Publisher {
     String CONFIG_DESTINATION = "destination";
 
 
-    void inform(Notification notification, JsonObject config);
+    void inform(Notification notification, JsonObject config) throws Exception;
 
     PebbleEngine getTemplateEngine();
 
@@ -73,7 +75,7 @@ public interface Publisher {
         }
     }
 
-    default String prepareTemplate(final Notification notification, final PebbleTemplate template, final ConfigPropertyRepository configPropertyRepository) {
+    default String prepareTemplate(final Notification notification, final PebbleTemplate template, final ConfigPropertyRepository configPropertyRepository) throws InvalidProtocolBufferException {
 
             final ConfigProperty baseUrlProperty = configPropertyRepository.findByGroupAndName(
                     ConfigPropertyConstants.GENERAL_BASE_URL.getGroupName(),
@@ -81,10 +83,7 @@ public interface Publisher {
             );
 
             final Map<String, Object> context = new HashMap<>();
-            final long epochSecond = notification.getTimestamp().toEpochSecond(
-                    ZoneId.systemDefault().getRules()
-                            .getOffset(notification.getTimestamp())
-            );
+            final long epochSecond = notification.getTimestamp().getSeconds();
             context.put("timestampEpochSecond", epochSecond);
             context.put("timestamp", notification.getTimestamp().toString());
             context.put("notification", notification);
@@ -94,31 +93,35 @@ public interface Publisher {
                 context.put("baseUrl", "");
             }
 
-            if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())) {
-                if (notification.getSubject() instanceof NewVulnerabilityIdentified) {
-                    final NewVulnerabilityIdentified subject = (NewVulnerabilityIdentified) notification.getSubject();
+            if (notification.getScope() == SCOPE_PORTFOLIO) {
+                if (notification.getSubject().is(NewVulnerabilitySubject.class)) {
+                    final var subject = notification.getSubject().unpack(NewVulnerabilitySubject.class);
                     context.put("subject", subject);
-                    context.put("subjectJson", NotificationUtil.toJson(subject));
-                } else if (notification.getSubject() instanceof NewVulnerableDependency) {
-                    final NewVulnerableDependency subject = (NewVulnerableDependency) notification.getSubject();
+                    context.put("subjectJson", JsonFormat.printer().print(subject));
+                } else if (notification.getSubject().is(NewVulnerableDependencySubject.class)) {
+                    final var subject = notification.getSubject().unpack(NewVulnerableDependencySubject.class);
                     context.put("subject", subject);
-                    context.put("subjectJson", NotificationUtil.toJson(subject));
-                } else if (notification.getSubject() instanceof AnalysisDecisionChange) {
-                    final AnalysisDecisionChange subject = (AnalysisDecisionChange) notification.getSubject();
+                    context.put("subjectJson", JsonFormat.printer().print(subject));
+                } else if (notification.getSubject().is(VulnerabilityAnalysisDecisionChangeSubject.class)) {
+                    final var subject = notification.getSubject().unpack(VulnerabilityAnalysisDecisionChangeSubject.class);
                     context.put("subject", subject);
-                    context.put("subjectJson", NotificationUtil.toJson(subject));
-                } else if (notification.getSubject() instanceof BomConsumedOrProcessed) {
-                    final BomConsumedOrProcessed subject = (BomConsumedOrProcessed) notification.getSubject();
+                    context.put("subjectJson", JsonFormat.printer().print(subject));
+                } else if (notification.getSubject().is(PolicyViolationAnalysisDecisionChangeSubject.class)) {
+                    final var subject = notification.getSubject().unpack(PolicyViolationAnalysisDecisionChangeSubject.class);
                     context.put("subject", subject);
-                    context.put("subjectJson", NotificationUtil.toJson(subject));
-                } else if (notification.getSubject() instanceof VexConsumedOrProcessed) {
-                    final VexConsumedOrProcessed subject = (VexConsumedOrProcessed) notification.getSubject();
+                    context.put("subjectJson", JsonFormat.printer().print(subject));
+                } else if (notification.getSubject().is(BomConsumedOrProcessedSubject.class)) {
+                    final var subject = notification.getSubject().unpack(BomConsumedOrProcessedSubject.class);
                     context.put("subject", subject);
-                    context.put("subjectJson", NotificationUtil.toJson(subject));
-                } else if (notification.getSubject() instanceof PolicyViolationIdentified) {
-                    final PolicyViolationIdentified subject = (PolicyViolationIdentified) notification.getSubject();
+                    context.put("subjectJson", JsonFormat.printer().print(subject));
+                } else if (notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
+                    final var subject = notification.getSubject().unpack(VexConsumedOrProcessedSubject.class);
                     context.put("subject", subject);
-                    context.put("subjectJson", NotificationUtil.toJson(subject));
+                    context.put("subjectJson", JsonFormat.printer().print(subject));
+                } else if (notification.getSubject().is(PolicyViolationSubject.class)) {
+                    final var subject = notification.getSubject().unpack(PolicyViolationSubject.class);
+                    context.put("subject", subject);
+                    context.put("subjectJson", JsonFormat.printer().print(subject));
                 }
             }
 

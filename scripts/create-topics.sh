@@ -28,6 +28,7 @@ notification_topics=(
   "${API_TOPIC_PREFIX:-}dtrack.notification.new-vulnerable-dependency"
   "${API_TOPIC_PREFIX:-}dtrack.notification.policy-violation"
   "${API_TOPIC_PREFIX:-}dtrack.notification.project-audit-change"
+  "${API_TOPIC_PREFIX:-}dtrack.notification.project-created"
   "${API_TOPIC_PREFIX:-}dtrack.notification.repository"
   "${API_TOPIC_PREFIX:-}dtrack.notification.vex-consumed"
   "${API_TOPIC_PREFIX:-}dtrack.notification.vex-processed"

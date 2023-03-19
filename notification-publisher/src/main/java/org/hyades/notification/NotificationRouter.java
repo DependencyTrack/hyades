@@ -18,25 +18,26 @@
  */
 package org.hyades.notification;
 
-import org.hyades.commonnotification.NotificationGroup;
+import com.google.protobuf.Any;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.hyades.commonnotification.NotificationScope;
 import org.hyades.exception.PublisherException;
-import org.hyades.model.Notification;
 import org.hyades.model.NotificationPublisher;
 import org.hyades.model.NotificationRule;
 import org.hyades.model.Project;
 import org.hyades.model.Team;
 import org.hyades.notification.publisher.Publisher;
 import org.hyades.notification.publisher.SendMailPublisher;
-import org.hyades.notification.vo.AnalysisDecisionChange;
-import org.hyades.notification.vo.BomConsumedOrProcessed;
-import org.hyades.notification.vo.NewVulnerabilityIdentified;
-import org.hyades.notification.vo.NewVulnerableDependency;
-import org.hyades.notification.vo.PolicyViolationIdentified;
-import org.hyades.notification.vo.VexConsumedOrProcessed;
-import org.hyades.notification.vo.ViolationAnalysisDecisionChange;
 import org.hyades.persistence.NotificationRuleRepository;
 import org.hyades.persistence.TeamRepository;
+import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
+import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
+import org.hyades.proto.notification.v1.NewVulnerableDependencySubject;
+import org.hyades.proto.notification.v1.Notification;
+import org.hyades.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
+import org.hyades.proto.notification.v1.PolicyViolationSubject;
+import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
+import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -53,6 +54,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.hyades.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
+import static org.hyades.proto.notification.v1.Scope.SCOPE_SYSTEM;
+import static org.hyades.util.ModelConverter.convert;
+
 @ApplicationScoped
 public class NotificationRouter {
 
@@ -68,7 +73,7 @@ public class NotificationRouter {
     }
 
     @Transactional
-    public void inform(final Notification notification) {
+    public void inform(final Notification notification) throws Exception {
         for (final NotificationRule rule : resolveRules(notification)) {
 
             // Not all publishers need configuration (i.e. ConsolePublisher)
@@ -116,61 +121,62 @@ public class NotificationRouter {
         }
     }
 
-    public Notification restrictNotificationToRuleProjects(Notification initialNotification, NotificationRule rule) {
-        Notification restrictedNotification = initialNotification;
+    public Notification restrictNotificationToRuleProjects(Notification initialNotification, NotificationRule rule) throws InvalidProtocolBufferException {
+        Notification.Builder restrictedNotification = Notification.newBuilder(initialNotification);
         if (canRestrictNotificationToRuleProjects(initialNotification, rule)) {
             Set<String> ruleProjectsUuids = rule.getProjects().stream().map(Project::getUuid).map(UUID::toString).collect(Collectors.toSet());
-            restrictedNotification = new Notification();
-            restrictedNotification.setGroup(initialNotification.getGroup());
-            restrictedNotification.setLevel(initialNotification.getLevel());
-            restrictedNotification.scope(initialNotification.getScope());
-            restrictedNotification.setContent(initialNotification.getContent());
-            restrictedNotification.setTitle(initialNotification.getTitle());
-            restrictedNotification.setTimestamp(initialNotification.getTimestamp());
-            if (initialNotification.getSubject() instanceof final NewVulnerabilityIdentified subject) {
-                Set<Project> restrictedProjects = subject.getAffectedProjects().stream().filter(project -> ruleProjectsUuids.contains(project.getUuid().toString())).collect(Collectors.toSet());
-                NewVulnerabilityIdentified restrictedSubject = new NewVulnerabilityIdentified(subject.getVulnerability(), subject.getComponent(), restrictedProjects, null);
-                restrictedNotification.setSubject(restrictedSubject);
+            if (initialNotification.getSubject().is(NewVulnerabilitySubject.class)) {
+                final var initialSubject = initialNotification.getSubject().unpack(NewVulnerabilitySubject.class);
+                Set<org.hyades.proto.notification.v1.Project> restrictedProjects = initialSubject.getAffectedProjectsList().stream().filter(project -> ruleProjectsUuids.contains(project.getUuid())).collect(Collectors.toSet());
+                restrictedNotification.setSubject(Any.pack(NewVulnerabilitySubject.newBuilder(initialSubject)
+                        .clearAffectedProjects()
+                        .addAllAffectedProjects(restrictedProjects)
+                        .build()));
             }
         }
-        return restrictedNotification;
+        return restrictedNotification.build();
     }
 
     private boolean canRestrictNotificationToRuleProjects(Notification initialNotification, NotificationRule rule) {
-        return (initialNotification.getSubject() instanceof NewVulnerabilityIdentified || initialNotification.getSubject() instanceof AnalysisDecisionChange) &&
-                rule.getProjects() != null
+        return (initialNotification.getSubject().is(NewVulnerabilitySubject.class)
+                || initialNotification.getSubject().is(VulnerabilityAnalysisDecisionChangeSubject.class))
+                && rule.getProjects() != null
                 && rule.getProjects().size() > 0;
     }
 
-    List<NotificationRule> resolveRules(final Notification notification) {
+    List<NotificationRule> resolveRules(final Notification notification) throws InvalidProtocolBufferException {
         // The notification rules to process for this specific notification
         final List<NotificationRule> rules = new ArrayList<>();
 
-        if (notification == null || notification.getScope() == null || notification.getGroup() == null || notification.getLevel() == null) {
+        if (notification == null) {
             return rules;
         }
+
 
         final NotificationScope scope;
-        try {
-            scope = NotificationScope.valueOf(notification.getScope());
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Invalid notification scope", e);
+        if (notification.getScope() == SCOPE_PORTFOLIO) {
+            scope = NotificationScope.PORTFOLIO;
+        } else if (notification.getScope() == SCOPE_SYSTEM) {
+            scope = NotificationScope.SYSTEM;
+        } else {
+            LOGGER.error("Invalid notification scope: " + notification.getScope());
             return rules;
         }
 
-        final List<NotificationRule> result = ruleRepository.findByScopeAndForLevel(scope, notification.getLevel());
-        if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())
-                && notification.getSubject() instanceof final NewVulnerabilityIdentified subject) {
+        final List<NotificationRule> result = ruleRepository.findByScopeAndForLevel(scope, convert(notification.getLevel()));
+        if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(NewVulnerabilitySubject.class)) {
+            final var subject = notification.getSubject().unpack(NewVulnerabilitySubject.class);
             // If the rule specified one or more projects as targets, reduce the execution
             // of the notification down to those projects that the rule matches and which
             // also match project the component is included in.
             // NOTE: This logic is slightly different from what is implemented in limitToProject()
             for (final NotificationRule rule : result) {
-                if (rule.getNotifyOn().contains(NotificationGroup.valueOf(notification.getGroup()))) {
+                if (rule.getNotifyOn().contains(convert(notification.getGroup()))) {
                     if (rule.getProjects() != null && rule.getProjects().size() > 0
-                            && subject.getComponent() != null && subject.getComponent().getProject() != null) {
+                            && subject.hasComponent() && subject.hasProject()) {
                         for (final Project project : rule.getProjects()) {
-                            if (subject.getComponent().getProject().getUuid().equals(project.getUuid()) || (Boolean.TRUE.equals(rule.isNotifyChildren() && checkIfChildrenAreAffected(project, subject.getComponent().getProject().getUuid())))) {
+                            if (subject.getProject().getUuid().equals(project.getUuid().toString()) || (Boolean.TRUE.equals(rule.isNotifyChildren() && checkIfChildrenAreAffected(project, subject.getProject().getUuid())))) {
                                 rules.add(rule);
                             }
                         }
@@ -179,27 +185,27 @@ public class NotificationRouter {
                     }
                 }
             }
-        } else if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())
-                && notification.getSubject() instanceof final NewVulnerableDependency subject) {
-            limitToProject(rules, result, notification, subject.getComponent().getProject());
-        } else if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())
-                && notification.getSubject() instanceof final BomConsumedOrProcessed subject) {
-            limitToProject(rules, result, notification, subject.getProject());
-        } else if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())
-                && notification.getSubject() instanceof final VexConsumedOrProcessed subject) {
-            limitToProject(rules, result, notification, subject.getProject());
-        } else if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())
-                && notification.getSubject() instanceof final PolicyViolationIdentified subject) {
-            limitToProject(rules, result, notification, subject.getProject());
-        } else if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())
-                && notification.getSubject() instanceof final AnalysisDecisionChange subject) {
-            limitToProject(rules, result, notification, subject.getProject());
-        } else if (NotificationScope.PORTFOLIO.name().equals(notification.getScope())
-                && notification.getSubject() instanceof final ViolationAnalysisDecisionChange subject) {
-            limitToProject(rules, result, notification, subject.getComponent().getProject());
+        } else if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(NewVulnerableDependencySubject.class)) {
+            limitToProject(rules, result, notification, notification.getSubject().unpack(NewVulnerableDependencySubject.class).getProject());
+        } else if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(BomConsumedOrProcessedSubject.class)) {
+            limitToProject(rules, result, notification, notification.getSubject().unpack(BomConsumedOrProcessedSubject.class).getProject());
+        } else if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
+            limitToProject(rules, result, notification, notification.getSubject().unpack(VexConsumedOrProcessedSubject.class).getProject());
+        } else if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(PolicyViolationSubject.class)) {
+            limitToProject(rules, result, notification, notification.getSubject().unpack(PolicyViolationSubject.class).getProject());
+        } else if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(VulnerabilityAnalysisDecisionChangeSubject.class)) {
+            limitToProject(rules, result, notification, notification.getSubject().unpack(VulnerabilityAnalysisDecisionChangeSubject.class).getProject());
+        } else if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(PolicyViolationAnalysisDecisionChangeSubject.class)) {
+            limitToProject(rules, result, notification, notification.getSubject().unpack(PolicyViolationAnalysisDecisionChangeSubject.class).getProject());
         } else {
             for (final NotificationRule rule : result) {
-                if (rule.getNotifyOn().contains(NotificationGroup.valueOf(notification.getGroup()))) {
+                if (rule.getNotifyOn().contains(convert(notification.getGroup()))) {
                     rules.add(rule);
                 }
             }
@@ -213,12 +219,12 @@ public class NotificationRouter {
      * also match projects affected by the vulnerability.
      */
     private void limitToProject(final List<NotificationRule> applicableRules, final List<NotificationRule> rules,
-                                final Notification notification, final Project limitToProject) {
+                                final Notification notification, final org.hyades.proto.notification.v1.Project limitToProject) {
         for (final NotificationRule rule : rules) {
-            if (rule.getNotifyOn().contains(NotificationGroup.valueOf(notification.getGroup()))) {
+            if (rule.getNotifyOn().contains(convert(notification.getGroup()))) {
                 if (rule.getProjects() != null && rule.getProjects().size() > 0) {
                     for (final Project project : rule.getProjects()) {
-                        if (project.getUuid().equals(limitToProject.getUuid()) || (Boolean.TRUE.equals(rule.isNotifyChildren()) && checkIfChildrenAreAffected(project, limitToProject.getUuid()))) {
+                        if (project.getUuid().toString().equals(limitToProject.getUuid()) || (Boolean.TRUE.equals(rule.isNotifyChildren()) && checkIfChildrenAreAffected(project, limitToProject.getUuid()))) {
                             applicableRules.add(rule);
                         }
                     }
@@ -229,13 +235,13 @@ public class NotificationRouter {
         }
     }
 
-    private boolean checkIfChildrenAreAffected(Project parent, UUID uuid) {
+    private boolean checkIfChildrenAreAffected(Project parent, String uuid) {
         boolean isChild = false;
         if (parent.getChildren() == null || parent.getChildren().isEmpty()) {
             return false;
         }
         for (Project child : parent.getChildren()) {
-            if ((child.getUuid().equals(uuid) && child.isActive()) || isChild) {
+            if ((child.getUuid().toString().equals(uuid) && child.isActive()) || isChild) {
                 return true;
             }
             isChild = checkIfChildrenAreAffected(child, uuid);

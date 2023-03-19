@@ -218,6 +218,38 @@ services:
           protobuf:
             enabled: true
             mappings:
+              - topicName: dtrack.notification.analyzer
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.bom-consumed
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.bom-processed
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.configuration
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.datasource-mirroring
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.file-system
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.indexing-service
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.integration
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.new-vulnerability
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.new-vulnerable-dependency
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.policy-violation
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.project-audit-change
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.project-created
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.repository
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.vex-consumed
+                valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.vex-processed
+                valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.repo-meta-analysis.component
                 valueProtoType: org.hyades.repometaanalysis.v1.AnalysisCommand
               - topicName: dtrack.repo-meta-analysis.result

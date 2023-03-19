@@ -23,13 +23,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.hyades.commonnotification.NotificationConstants;
-import org.hyades.commonnotification.NotificationGroup;
-import org.hyades.commonnotification.NotificationScope;
 import org.hyades.commonutil.HttpUtil;
 import org.hyades.model.Component;
-import org.hyades.model.Notification;
-import org.hyades.model.NotificationLevel;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -84,24 +79,30 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
         logger.debug("HTTP Status : " + statusCode + " " + statusText);
         logger.debug(" - RepositoryType URL : " + url);
         logger.debug(" - Package URL : " + component.getPurl().canonicalize());
-        Notification.dispatch(new Notification()
-                .scope(NotificationScope.SYSTEM)
-                .group(NotificationGroup.REPOSITORY)
-                .title(NotificationConstants.Title.REPO_ERROR)
-                .content("An error occurred while communicating with an " + supportedRepositoryType().name() + " repository. URL: " + url + " HTTP Status: " + statusCode + ". Check log for details.")
-                .level(NotificationLevel.ERROR)
-        );
+        // TODO: Send a notification to the dtrack.notification.repository topic.
+        // This should be incorporated into the Kafka Streams topology, otherwise we'll have
+        // to spin up a separate producer.
+//        Notification.dispatch(new Notification()
+//                .scope(NotificationScope.SYSTEM)
+//                .group(NotificationGroup.REPOSITORY)
+//                .title(NotificationConstants.Title.REPO_ERROR)
+//                .content("An error occurred while communicating with an " + supportedRepositoryType().name() + " repository. URL: " + url + " HTTP Status: " + statusCode + ". Check log for details.")
+//                .level(NotificationLevel.ERROR)
+//        );
     }
 
     protected void handleRequestException(final Logger logger, final Exception e) {
         logger.error("Request failure", e);
-        Notification.dispatch(new Notification()
-                .scope(NotificationScope.SYSTEM)
-                .group(NotificationGroup.REPOSITORY)
-                .title(NotificationConstants.Title.REPO_ERROR)
-                .content("An error occurred while communicating with an " + supportedRepositoryType().name() + " repository. Check log for details. " + e.getMessage())
-                .level(NotificationLevel.ERROR)
-        );
+        // TODO: Send a notification to the dtrack.notification.repository topic.
+        // This should be incorporated into the Kafka Streams topology, otherwise we'll have
+        // to spin up a separate producer.
+//        Notification.dispatch(new Notification()
+//                .scope(NotificationScope.SYSTEM)
+//                .group(NotificationGroup.REPOSITORY)
+//                .title(NotificationConstants.Title.REPO_ERROR)
+//                .content("An error occurred while communicating with an " + supportedRepositoryType().name() + " repository. Check log for details. " + e.getMessage())
+//                .level(NotificationLevel.ERROR)
+//        );
     }
 
     protected CloseableHttpResponse processHttpRequest(String url) throws IOException {

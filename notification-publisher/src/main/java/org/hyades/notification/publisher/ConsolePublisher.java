@@ -20,9 +20,9 @@ package org.hyades.notification.publisher;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
-import org.hyades.model.Notification;
-import org.hyades.model.NotificationLevel;
 import org.hyades.persistence.ConfigPropertyRepository;
+import org.hyades.proto.notification.v1.Level;
+import org.hyades.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,14 +45,14 @@ public class ConsolePublisher implements Publisher {
         this.configPropertyRepository = configPropertyRepository;
     }
 
-    public void inform(final Notification notification, final JsonObject config) {
+    public void inform(final Notification notification, final JsonObject config) throws Exception {
         final String content = prepareTemplate(notification, getTemplate(config), configPropertyRepository);
         if (content == null) {
             LOGGER.warn("A template was not found. Skipping notification");
             return;
         }
         final PrintStream ps;
-        if (notification.getLevel() == NotificationLevel.ERROR) {
+        if (notification.getLevel() == Level.LEVEL_ERROR) {
             ps = System.err;
         } else {
             ps = System.out;

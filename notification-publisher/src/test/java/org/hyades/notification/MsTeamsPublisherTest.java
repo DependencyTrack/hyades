@@ -20,17 +20,15 @@ package org.hyades.notification;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import org.hyades.commonnotification.NotificationGroup;
-import org.hyades.commonnotification.NotificationScope;
-import org.hyades.model.Notification;
-import org.hyades.model.NotificationLevel;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHeaders;
 import org.hyades.notification.publisher.DefaultNotificationPublishers;
 import org.hyades.notification.publisher.MsTeamsPublisher;
 import org.hyades.notification.publisher.Publisher;
-import org.hyades.persistence.ConfigPropertyRepository;
-import org.hyades.util.NotificationUtil;
-import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpHeaders;
+import org.hyades.proto.notification.v1.Group;
+import org.hyades.proto.notification.v1.Level;
+import org.hyades.proto.notification.v1.Notification;
+import org.hyades.proto.notification.v1.Scope;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,9 +40,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
-import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -52,18 +48,15 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
-public class MsTeamsPublisherTest{
+public class MsTeamsPublisherTest {
 
     @Inject
     MsTeamsPublisher publisher;
 
-    private static ClientAndServer mockServer;
-
-    @Inject
-    ConfigPropertyRepository configPropertyRepository;
-
     @Inject
     EntityManager entityManager;
+
+    private static ClientAndServer mockServer;
 
     @BeforeAll
     public static void beforeClass() {
@@ -77,7 +70,7 @@ public class MsTeamsPublisherTest{
 
     @Test
     @TestTransaction
-    public void testPublish() throws IOException {
+    public void testPublish() throws Exception {
         new MockServerClient("localhost", 1060)
                 .when(
                         request()
@@ -90,23 +83,23 @@ public class MsTeamsPublisherTest{
                                 .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 );
         entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    (1, 'msteams', 'general', 'STRING', 'base.url', 'http://localhost:1060/mychannel');
+                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
+                                    ('msteams', 'general', 'STRING', 'base.url', 'http://localhost:1060/mychannel');
                 """).executeUpdate();
 
         JsonObject config = getConfig(DefaultNotificationPublishers.MS_TEAMS, "http://localhost:1060/mychannel");
-        Notification notification = new Notification();
-        notification.setScope(NotificationScope.PORTFOLIO.name());
-        notification.setGroup(NotificationGroup.NEW_VULNERABILITY.name());
-        notification.setLevel(NotificationLevel.INFORMATIONAL);
-        notification.setTitle("Test Notification");
-        notification.setContent("This is only a test");
+        final var notification = Notification.newBuilder()
+                .setScope(Scope.SCOPE_PORTFOLIO)
+                .setLevel(Level.LEVEL_INFORMATIONAL)
+                .setGroup(Group.GROUP_NEW_VULNERABILITY)
+                .setTitle("Test Notification")
+                .setContent("This is only a test")
+                .build();
         publisher.inform(notification, config);
     }
 
     JsonObject getConfig(DefaultNotificationPublishers publisher, String destination) throws IOException {
-        File templateFile = new File(URLDecoder.decode(NotificationUtil.class.getResource(publisher.getPublisherTemplateFile()).getFile(), UTF_8.name()));
-        String templateContent = FileUtils.readFileToString(templateFile, UTF_8);
+        String templateContent = IOUtils.resourceToString(publisher.getPublisherTemplateFile(), UTF_8);
         return Json.createObjectBuilder()
                 .add(Publisher.CONFIG_TEMPLATE_MIME_TYPE_KEY, publisher.getTemplateMimeType())
                 .add(Publisher.CONFIG_TEMPLATE_KEY, templateContent)
