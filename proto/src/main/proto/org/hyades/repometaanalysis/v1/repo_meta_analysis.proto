@@ -3,20 +3,17 @@ syntax = "proto3";
 // Public API for Hyades repository meta analysis.
 package org.hyades.repometaanalysis.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option java_multiple_files = true;
 option java_package = "org.hyades.proto.repometaanalysis.v1";
 
-import "google/protobuf/timestamp.proto";
-
 message AnalysisCommand {
-
   // The component that shall be analyzed.
   Component component = 1;
-
 }
 
 message AnalysisResult {
-
   // The component this result is for.
   Component component = 1;
 
@@ -28,16 +25,13 @@ message AnalysisResult {
 
   // When the latest version was published.
   optional google.protobuf.Timestamp published = 4;
-
 }
 
 message Component {
-
   // Package URL of the component.
   string purl = 1;
 
   // Whether the component is internal to the organization.
   // Internal components will only be looked up in internal repositories.
   optional bool internal = 2;
-
 }

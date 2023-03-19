@@ -4,10 +4,10 @@ syntax = "proto3";
 // Heavily inspired by the CycloneDX schema: https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto
 package org.hyades.vuln.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option java_multiple_files = true;
 option java_package = "org.hyades.proto.vuln.v1";
-
-import "google/protobuf/timestamp.proto";
 
 message Alias {
   string id = 1;
@@ -29,7 +29,7 @@ message Reference {
 }
 
 enum ScoreMethod {
-  SCORE_METHOD_NULL = 0;
+  SCORE_METHOD_UNSPECIFIED = 0;
   SCORE_METHOD_CVSSV2 = 1;
   SCORE_METHOD_CVSSV3 = 2;
   SCORE_METHOD_CVSSV31 = 3;
@@ -38,7 +38,7 @@ enum ScoreMethod {
 }
 
 enum Severity {
-  SEVERITY_UNKNOWN = 0;
+  SEVERITY_UNSPECIFIED = 0;
   SEVERITY_CRITICAL = 1;
   SEVERITY_HIGH = 2;
   SEVERITY_MEDIUM = 3;
@@ -48,7 +48,7 @@ enum Severity {
 }
 
 enum Source {
-  SOURCE_UNKNOWN = 0;
+  SOURCE_UNSPECIFIED = 0;
   SOURCE_GITHUB = 1;
   SOURCE_INTERNAL = 2;
   SOURCE_NVD = 3;
