@@ -4,11 +4,15 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.hyades.apiserver.model.BomProcessingResponse;
 import org.hyades.apiserver.model.BomUploadRequest;
 import org.hyades.apiserver.model.BomUploadResponse;
+import org.hyades.apiserver.model.CreateNotificationRuleRequest;
 import org.hyades.apiserver.model.CreateTeamRequest;
 import org.hyades.apiserver.model.CreateVulnerabilityRequest;
 import org.hyades.apiserver.model.Finding;
+import org.hyades.apiserver.model.NotificationPublisher;
+import org.hyades.apiserver.model.NotificationRule;
 import org.hyades.apiserver.model.Project;
 import org.hyades.apiserver.model.Team;
+import org.hyades.apiserver.model.UpdateNotificationRuleRequest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -85,5 +89,23 @@ public interface ApiServerClient {
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
     Project lookupProject(@QueryParam("name") final String name, @QueryParam("version") final String version);
+
+    @GET
+    @Path("/notification/publisher")
+    @Produces(MediaType.WILDCARD)
+    @Consumes(MediaType.APPLICATION_JSON)
+    List<NotificationPublisher> getAllNotificationPublishers();
+
+    @PUT
+    @Path("/notification/rule")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    NotificationRule createNotificationRule(final CreateNotificationRuleRequest request);
+
+    @POST
+    @Path("/notification/rule")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    NotificationRule updateNotificationRule(final UpdateNotificationRuleRequest request);
 
 }

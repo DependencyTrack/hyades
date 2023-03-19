@@ -1,6 +1,8 @@
 package org.hyades.e2e;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import io.quarkus.restclient.runtime.QuarkusRestClientBuilder;
+import io.quarkus.runtime.Quarkus;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.hyades.apiserver.ApiServerClient;
 import org.hyades.apiserver.ApiServerClientHeaderFactory;
@@ -13,22 +15,33 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static org.testcontainers.lifecycle.Startables.deepStart;
 
 public class AbstractE2eTest {
+
+    protected static String POSTGRES_IMAGE = "postgres:15-alpine";
+    protected static String REDPANDA_IMAGE = "docker.redpanda.com/vectorized/redpanda:v23.1.2";
+    protected static String API_SERVER_IMAGE = "ghcr.io/dependencytrack/hyades-apiserver:snapshot";
+    protected static String NOTIFICATION_PUBLISHER_IMAGE = "ghcr.io/dependencytrack/hyades-notification-publisher:latest-native";
+    protected static String REPO_META_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest-native";
+    protected static String VULN_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest-native";
 
     protected Logger logger;
     private Network internalNetwork;
     protected PostgreSQLContainer<?> postgresContainer;
     protected GenericContainer<?> redpandaContainer;
     protected GenericContainer<?> apiServerContainer;
+    protected GenericContainer<?> notificationPublisherContainer;
     protected GenericContainer<?> repoMetaAnalyzerContainer;
     protected GenericContainer<?> vulnAnalyzerContainer;
     protected ApiServerClient apiServerClient;
@@ -48,15 +61,17 @@ public class AbstractE2eTest {
         apiServerContainer = createApiServerContainer();
         apiServerContainer.start();
 
+        notificationPublisherContainer = createNotificationPublisherContainer();
         repoMetaAnalyzerContainer = createRepoMetaAnalyzerContainer();
         vulnAnalyzerContainer = createVulnAnalyzerContainer();
-        deepStart(repoMetaAnalyzerContainer, vulnAnalyzerContainer);
+        deepStart(notificationPublisherContainer, repoMetaAnalyzerContainer, vulnAnalyzerContainer);
 
         apiServerClient = initializeApiServerClient();
     }
 
+    @SuppressWarnings("resource")
     private PostgreSQLContainer<?> createPostgresContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:15-alpine"))
+        return new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_IMAGE))
                 .withDatabaseName("dtrack")
                 .withUsername("dtrack")
                 .withPassword("dtrack")
@@ -64,8 +79,9 @@ public class AbstractE2eTest {
                 .withNetwork(internalNetwork);
     }
 
+    @SuppressWarnings("resource")
     private GenericContainer<?> createRedpandaContainer() {
-        return new GenericContainer<>(DockerImageName.parse("docker.redpanda.com/vectorized/redpanda:v22.3.10"))
+        return new GenericContainer<>(DockerImageName.parse(REDPANDA_IMAGE))
                 .withCommand(
                         "redpanda", "start", "--mode", "dev-container",
                         "--kafka-addr", "PLAINTEXT://0.0.0.0:29092",
@@ -77,8 +93,9 @@ public class AbstractE2eTest {
                 .withNetwork(internalNetwork);
     }
 
+    @SuppressWarnings("resource")
     private void initializeRedpanda() {
-        new GenericContainer<>(DockerImageName.parse("docker.redpanda.com/vectorized/redpanda:v22.3.10"))
+        new GenericContainer<>(DockerImageName.parse(REDPANDA_IMAGE))
                 .withCreateContainerCmdModifier(cmd -> cmd.withEntrypoint("/bin/bash"))
                 .withCommand("/tmp/create-topics.sh")
                 .withEnv("REDPANDA_BROKERS", "redpanda:29092")
@@ -88,9 +105,10 @@ public class AbstractE2eTest {
                 .start();
     }
 
+    @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
-        return new GenericContainer<>(DockerImageName.parse("ghcr.io/dependencytrack/hyades-apiserver:snapshot"))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+        return new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
+                // .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("ALPINE_DATABASE_MODE", "external")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("ALPINE_DATABASE_DRIVER", "org.postgresql.Driver")
@@ -104,9 +122,24 @@ public class AbstractE2eTest {
                 .withExposedPorts(8080);
     }
 
+    @SuppressWarnings("resource")
+    private GenericContainer<?> createNotificationPublisherContainer() {
+        return new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
+                // .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
+                .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
+                .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
+                // .withLogConsumer(new Slf4jLogConsumer(logger))
+                .withNetworkAliases("notification-publisher")
+                .withNetwork(internalNetwork)
+                .withStartupAttempts(3);
+    }
+
+    @SuppressWarnings("resource")
     private GenericContainer<?> createRepoMetaAnalyzerContainer() {
-        return new GenericContainer<>(DockerImageName.parse("ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest-native"))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+        return new GenericContainer<>(DockerImageName.parse(REPO_META_ANALYZER_IMAGE))
+                // .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -117,9 +150,10 @@ public class AbstractE2eTest {
                 .withStartupAttempts(3);
     }
 
+    @SuppressWarnings("resource")
     private GenericContainer<?> createVulnAnalyzerContainer() {
-        final GenericContainer<?> container = new GenericContainer<>(DockerImageName.parse("ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest-native"))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+        final var container = new GenericContainer<>(DockerImageName.parse(VULN_ANALYZER_IMAGE))
+                // .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -136,10 +170,8 @@ public class AbstractE2eTest {
     }
 
     private ApiServerClient initializeApiServerClient() {
-        final ApiServerClient client = RestClientBuilder.newBuilder()
+        final ApiServerClient client = new QuarkusRestClientBuilder()
                 .baseUri(URI.create("http://localhost:%d".formatted(apiServerContainer.getFirstMappedPort())))
-                .register(new JacksonJsonProvider(), 1)
-                // .proxyAddress("localhost", 8083)
                 .build(ApiServerClient.class);
 
         logger.info("Changing API server admin password");
@@ -158,7 +190,8 @@ public class AbstractE2eTest {
                 "BOM_UPLOAD",
                 "PROJECT_CREATION_UPLOAD",
                 "PORTFOLIO_MANAGEMENT",
-                "VULNERABILITY_MANAGEMENT"
+                "VULNERABILITY_MANAGEMENT",
+                "SYSTEM_CONFIGURATION"
         )) {
             client.addPermissionToTeam(team.uuid(), permission);
         }
@@ -172,25 +205,12 @@ public class AbstractE2eTest {
     void afterEach() {
         ApiServerClientHeaderFactory.reset();
 
-        if (postgresContainer != null) {
-            postgresContainer.stop();
-        }
-
-        if (redpandaContainer != null) {
-            redpandaContainer.stop();
-        }
-
-        if (apiServerContainer != null) {
-            apiServerContainer.stop();
-        }
-
-        if (repoMetaAnalyzerContainer != null) {
-            repoMetaAnalyzerContainer.close();
-        }
-
-        if (vulnAnalyzerContainer != null) {
-            vulnAnalyzerContainer.stop();
-        }
+        Optional.ofNullable(vulnAnalyzerContainer).ifPresent(GenericContainer::stop);
+        Optional.ofNullable(repoMetaAnalyzerContainer).ifPresent(GenericContainer::stop);
+        Optional.ofNullable(notificationPublisherContainer).ifPresent(GenericContainer::stop);
+        Optional.ofNullable(apiServerContainer).ifPresent(GenericContainer::stop);
+        Optional.ofNullable(redpandaContainer).ifPresent(GenericContainer::stop);
+        Optional.ofNullable(postgresContainer).ifPresent(GenericContainer::stop);
     }
 
 

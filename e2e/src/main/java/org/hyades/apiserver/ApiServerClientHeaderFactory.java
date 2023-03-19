@@ -17,7 +17,7 @@ public class ApiServerClientHeaderFactory implements ClientHeadersFactory {
         if (apiKey != null) {
             headers.putSingle("X-Api-Key", apiKey);
         } else if (bearerToken != null) {
-            headers.putSingle("Authorization ", "Bearer " + bearerToken);
+            headers.putSingle("Authorization", "Bearer " + bearerToken);
         }
         return headers;
     }
