@@ -24,6 +24,7 @@ import org.hyades.persistence.UUIDConverter;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -47,7 +48,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "VULNERABLESOFTWARE")
-public class VulnerableSoftware  extends PanacheEntityBase implements ICpe, Serializable{
+public class VulnerableSoftware extends PanacheEntityBase implements ICpe, Serializable {
 
     private static final long serialVersionUID = -3987946408457131098L;
 
@@ -130,7 +131,7 @@ public class VulnerableSoftware  extends PanacheEntityBase implements ICpe, Seri
     @Column(name = "VULNERABLE")
     private boolean vulnerable;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "VULNERABLESOFTWARE_VULNERABILITIES",
             joinColumns =
