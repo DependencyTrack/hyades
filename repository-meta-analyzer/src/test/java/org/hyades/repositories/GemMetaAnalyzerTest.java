@@ -19,40 +19,44 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import io.quarkus.test.junit.QuarkusTest;
+import org.apache.http.HttpHeaders;
+import org.apache.http.impl.client.HttpClients;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
-import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
-import javax.inject.Inject;
-
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-@QuarkusTest
 class GemMetaAnalyzerTest {
-
-    @Inject
-    GemMetaAnalyzer analyzer;
 
     private static ClientAndServer mockServer;
 
+    private IMetaAnalyzer analyzer;
+
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         mockServer = ClientAndServer.startClientAndServer(1080);
     }
 
+    @BeforeEach
+    void afterEach() {
+        analyzer = new GemMetaAnalyzer();
+        analyzer.setHttpClient(HttpClients.createDefault());
+    }
+
     @AfterAll
-    public static void afterClass() {
+    static void afterClass() {
         mockServer.stop();
     }
+
     @Test
     void testAnalyzer() throws Exception {
         Component component = new Component();

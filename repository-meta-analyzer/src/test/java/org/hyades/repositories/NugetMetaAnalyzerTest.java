@@ -19,42 +19,44 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import io.quarkus.test.junit.QuarkusTest;
+import org.apache.http.HttpHeaders;
+import org.apache.http.impl.client.HttpClients;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
-import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
-import javax.inject.Inject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-@QuarkusTest
 class NugetMetaAnalyzerTest {
-
-    @Inject
-    NugetMetaAnalyzer analyzer;
-
-    Component component = new Component();
 
     private static ClientAndServer mockServer;
 
+    private IMetaAnalyzer analyzer;
+
     @BeforeAll
-    public static void beforeClass() {
+    static void beforeClass() {
         mockServer = ClientAndServer.startClientAndServer(1080);
     }
 
+    @BeforeEach
+    void beforeEach() {
+        analyzer = new NugetMetaAnalyzer();
+        analyzer.setHttpClient(HttpClients.createDefault());
+    }
+
     @AfterAll
-    public static void afterClass() {
+    static void afterClass() {
         mockServer.stop();
     }
 
@@ -87,7 +89,7 @@ class NugetMetaAnalyzerTest {
                                 .withStatusCode(404)
                 );
 
-
+        final var component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnitPrivate@2.0.1"));
         analyzer.setRepositoryUsernameAndPassword(null, "password");
         analyzer.setRepositoryBaseUrl("http://localhost:1080");
@@ -160,6 +162,7 @@ class NugetMetaAnalyzerTest {
                                 .withBody(mockRegistrationResponse)
                 );
 
+        final var component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnitPrivate@5.0.1"));
         analyzer.setRepositoryUsernameAndPassword(null, "password");
         analyzer.setRepositoryBaseUrl("http://localhost:1080");

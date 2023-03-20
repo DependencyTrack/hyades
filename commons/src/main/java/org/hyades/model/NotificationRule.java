@@ -66,7 +66,7 @@ public class NotificationRule extends PanacheEntityBase {
     @Id
     @JsonIgnore
     @Column(name = "ID")
-    private int id;
+    private long id;
 
     /**
      * The String representation of the name of the notification.
@@ -140,11 +140,11 @@ public class NotificationRule extends PanacheEntityBase {
     @Column(name = "NOTIFY_CHILDREN") // New column, must allow nulls on existing data bases
     private boolean notifyChildren;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

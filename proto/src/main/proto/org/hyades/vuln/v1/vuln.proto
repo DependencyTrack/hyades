@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+// Public API for communicating vulnerability details.
+// Heavily inspired by the CycloneDX schema: https://github.com/CycloneDX/specification/blob/master/schema/bom-1.4.proto
+package org.hyades.vuln.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_package = "org.hyades.proto.vuln.v1";
+
+message Alias {
+  string id = 1;
+  Source source = 2;
+}
+
+message Rating {
+  Source source = 1;
+  optional double score = 2;
+  optional Severity severity = 3;
+  optional ScoreMethod method = 4;
+  optional string vector = 5;
+  optional string justification = 6;
+}
+
+message Reference {
+  string url = 1;
+  optional string display_name = 2;
+}
+
+enum ScoreMethod {
+  SCORE_METHOD_UNSPECIFIED = 0;
+  SCORE_METHOD_CVSSV2 = 1;
+  SCORE_METHOD_CVSSV3 = 2;
+  SCORE_METHOD_CVSSV31 = 3;
+  SCORE_METHOD_OWASP = 4;
+  SCORE_METHOD_OTHER = 5;
+}
+
+enum Severity {
+  SEVERITY_UNSPECIFIED = 0;
+  SEVERITY_CRITICAL = 1;
+  SEVERITY_HIGH = 2;
+  SEVERITY_MEDIUM = 3;
+  SEVERITY_LOW = 4;
+  SEVERITY_INFO = 5;
+  SEVERITY_NONE = 6;
+}
+
+enum Source {
+  SOURCE_UNSPECIFIED = 0;
+  SOURCE_GITHUB = 1;
+  SOURCE_INTERNAL = 2;
+  SOURCE_NVD = 3;
+  SOURCE_OSSINDEX = 4;
+  SOURCE_OSV = 5;
+  SOURCE_SNYK = 6;
+  SOURCE_VULNDB = 7;
+}
+
+message Vulnerability {
+  string id = 1;
+  Source source = 2;
+  optional string title = 3;
+  optional string description = 4;
+  repeated Rating ratings = 5;
+  optional google.protobuf.Timestamp created = 6;
+  optional google.protobuf.Timestamp published = 7;
+  optional google.protobuf.Timestamp updated = 8;
+  repeated Reference references = 9;
+  repeated int32 cwes = 10;
+  repeated Alias aliases = 11;
+}

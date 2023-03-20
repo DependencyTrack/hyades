@@ -19,19 +19,23 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import io.quarkus.test.junit.QuarkusTest;
+import org.apache.http.impl.client.HttpClients;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-
-@QuarkusTest
 class MavenMetaAnalyzerTest {
-    @Inject
-    MavenMetaAnalyzer analyzer;
+
+    private IMetaAnalyzer analyzer;
+
+    @BeforeEach
+    void beforeEach() {
+        analyzer = new MavenMetaAnalyzer();
+        analyzer.setHttpClient(HttpClients.createDefault());
+    }
 
     @Test
     void testAnalyzer() throws Exception {

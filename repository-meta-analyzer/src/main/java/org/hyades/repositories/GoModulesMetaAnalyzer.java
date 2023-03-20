@@ -19,17 +19,16 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import org.hyades.model.Component;
-import org.hyades.model.MetaModel;
-import org.hyades.model.RepositoryType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.hyades.model.Component;
+import org.hyades.model.MetaModel;
+import org.hyades.model.RepositoryType;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,7 +39,6 @@ import java.text.SimpleDateFormat;
  * An IMetaAnalyzer implementation that supports Golang.
  * @since 4.3.0
  */
-@ApplicationScoped
 public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(GoModulesMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://proxy.golang.org";

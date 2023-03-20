@@ -65,10 +65,9 @@ public class Component extends PanacheEntityBase implements Serializable {
         ALL
     }
 
-
     @Id
     @Column(name = "ID")
-    private int id;
+    private long id;
 
     @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
     private String author;
@@ -151,11 +150,11 @@ public class Component extends PanacheEntityBase implements Serializable {
     @JsonIgnore
     private transient JsonObject cacheResult;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

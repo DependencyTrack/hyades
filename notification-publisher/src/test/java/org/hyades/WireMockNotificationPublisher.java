@@ -24,6 +24,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.math.BigInteger;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -84,7 +86,7 @@ public class WireMockNotificationPublisher {
         WireMock.stubFor(get("/instance-dsl").willReturn(ok()));
         String publisherConfig = "{\"destination\":\"" + wireMockServer.url("/instance-dsl") + "\"}";
 
-        final int publisherId = (int) entityManager.createNativeQuery("""
+        final var publisherId = (BigInteger) entityManager.createNativeQuery("""
                 INSERT INTO "NOTIFICATIONPUBLISHER" ("DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID") VALUES
                     (true, 'foo', 'org.hyades.notification.publisher.WebhookPublisher', 'template','text/plain', '1781db56-51a8-462a-858c-6030a2341dfc')
                 RETURNING "ID";

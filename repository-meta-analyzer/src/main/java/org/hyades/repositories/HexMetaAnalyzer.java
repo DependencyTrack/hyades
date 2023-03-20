@@ -19,16 +19,15 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -41,7 +40,6 @@ import java.util.Date;
  * @author Steve Springett
  * @since 3.7.0
  */
-@ApplicationScoped
 public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(HexMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://hex.pm";

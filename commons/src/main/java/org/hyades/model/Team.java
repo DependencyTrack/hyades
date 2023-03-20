@@ -11,16 +11,16 @@ public class Team {
 
     @Id
     @Column(name = "ID")
-    private int id;
+    private long id;
 
     @Column(name = "NAME")
     private String name;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(final long id) {
         this.id = id;
     }
 

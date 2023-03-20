@@ -1,0 +1,25 @@
+name: Buf
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  buf:
+    name: Buf
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    - name: Setup buf
+      uses: bufbuild/buf-setup-action@v1
+    - name: Lint Protobuf
+      uses: bufbuild/buf-lint-action@v1
+      with:
+        input: proto/src/main/proto
+    - name: Detect Breaking Changes
+      uses: bufbuild/buf-breaking-action@v1
+      with:
+        input: proto/src/main/proto
+        against: https://github.com/${{ github.repository }}.git#branch=main,subdir=proto/src/main/proto

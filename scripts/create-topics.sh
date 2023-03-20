@@ -56,6 +56,3 @@ create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.osv" "${VULN_MIRR
 create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.nvd" "${VULN_MIRROR_TOPICS_PARTITIONS:-1}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
 create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
 
-create_topic "${API_TOPIC_PREFIX:-}dtrack.metrics.component" "${METRICS_COMPONENT_TOPIC_PARTITIONS:-3}" "cleanup.policy=compact"
-create_topic "${API_TOPIC_PREFIX:-}dtrack.metrics.project" "${METRICS_PROJECT_TOPIC_PARTITIONS:-3}" "cleanup.policy=compact"
-create_topic "${API_TOPIC_PREFIX:-}dtrack.metrics.portfolio" "1" "cleanup.policy=compact"

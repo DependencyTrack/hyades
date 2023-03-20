@@ -18,6 +18,7 @@
  */
 package org.hyades.repositories;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
@@ -29,6 +30,13 @@ import org.hyades.model.RepositoryType;
  * @since 3.1.0
  */
 public interface IMetaAnalyzer {
+
+    /**
+     * Sets the {@link CloseableHttpClient} to be used by the analyzer.
+     *
+     * @param httpClient The {@link CloseableHttpClient} to use
+     */
+    void setHttpClient(final CloseableHttpClient httpClient);
 
     /**
      * Sets the base URL for the repository being used. If not specified, IMetaAnalyzer implementations

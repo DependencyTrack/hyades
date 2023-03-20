@@ -19,18 +19,17 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import org.hyades.model.Component;
-import org.hyades.model.MetaModel;
-import org.hyades.model.RepositoryType;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.hyades.model.Component;
+import org.hyades.model.MetaModel;
+import org.hyades.model.RepositoryType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,8 +42,6 @@ import java.util.Date;
  * @author Steve Springett
  * @since 3.4.0
  */
-
-@ApplicationScoped
 public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
 
     public static final DateFormat[] SUPPORTED_DATE_FORMATS = new DateFormat[]{
@@ -100,7 +97,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     public MetaModel analyze(final Component component) {
         final var meta = new MetaModel(component);
         if (component.getPurl() != null && performVersionCheck(meta, component)) {
-                performLastPublishedCheck(meta, component);
+            performLastPublishedCheck(meta, component);
         }
         return meta;
     }
@@ -117,8 +114,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
                     meta.setLatestVersion(latest);
                     return true;
                 }
-            }
-            else {
+            } else {
                 handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
             }
         } catch (IOException e) {
@@ -146,23 +142,21 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private boolean performLastPublishedCheck(final MetaModel meta, final Component component) {
         final String url = String.format(registrationUrl, component.getPurl().getName().toLowerCase(), meta.getLatestVersion());
-            try (final CloseableHttpResponse response = processHttpRequest(url)) {
-                if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
-                    String stringResponse = EntityUtils.toString(response.getEntity());
-                    if(!stringResponse.equalsIgnoreCase("") && !stringResponse.equalsIgnoreCase("{}")){
-                        JSONObject jsonResponse = new JSONObject(stringResponse);
-                            final String updateTime = jsonResponse.optString("published", null);
-                            if (updateTime != null) {
-                                meta.setPublishedTimestamp(parseUpdateTime(updateTime));
-                            }
-                        return true;
+        try (final CloseableHttpResponse response = processHttpRequest(url)) {
+            if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
+                String stringResponse = EntityUtils.toString(response.getEntity());
+                if (!stringResponse.equalsIgnoreCase("") && !stringResponse.equalsIgnoreCase("{}")) {
+                    JSONObject jsonResponse = new JSONObject(stringResponse);
+                    final String updateTime = jsonResponse.optString("published", null);
+                    if (updateTime != null) {
+                        meta.setPublishedTimestamp(parseUpdateTime(updateTime));
                     }
+                    return true;
                 }
-                else {
-                    handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
-                }
+            } else {
+                handleUnexpectedHttpResponse(LOGGER, url, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase(), component);
             }
-         catch (IOException e) {
+        } catch (IOException e) {
             handleRequestException(LOGGER, e);
         }
         return false;
@@ -174,7 +168,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String responseString = EntityUtils.toString(response.getEntity());
-                    if(responseString!=null){
+                    if (responseString != null) {
                         JSONObject responseJson = new JSONObject(responseString);
                         final JSONArray resources = responseJson.getJSONArray("resources");
                         final JSONObject packageBaseResource = findResourceByType(resources, "PackageBaseAddress");
