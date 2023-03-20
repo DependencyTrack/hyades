@@ -49,7 +49,7 @@ public class Repository implements Serializable {
     @Id
     @JsonIgnore
     @Column(name = "ID")
-    private int id;
+    private long id;
 
     @Column(name = "TYPE", columnDefinition = "VARCHAR", nullable = false)
     @NotNull
@@ -87,11 +87,11 @@ public class Repository implements Serializable {
     @NotNull
     private UUID uuid;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

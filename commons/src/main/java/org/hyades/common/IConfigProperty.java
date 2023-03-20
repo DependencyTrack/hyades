@@ -1,9 +1,9 @@
 package org.hyades.common;
 
 public interface IConfigProperty {
-    int getId();
+    long getId();
 
-    void setId(int var1);
+    void setId(long var1);
 
     String getGroupName();
 

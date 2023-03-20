@@ -45,7 +45,7 @@ public class NotificationPublisher extends PanacheEntityBase implements Serializ
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @JsonIgnore
     @Column(name="ID")
-    private int id;
+    private long id;
 
     //@Persistent(defaultFetchGroup = "true")
     //@Column(lenght = "NAME", allowsNull = "false")
@@ -84,11 +84,11 @@ public class NotificationPublisher extends PanacheEntityBase implements Serializ
     @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

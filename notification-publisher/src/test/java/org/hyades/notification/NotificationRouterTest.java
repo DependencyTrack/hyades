@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.math.BigInteger;
 
 @QuarkusTest
 class NotificationRouterTest {
@@ -36,7 +37,7 @@ class NotificationRouterTest {
     @Test
     @TestTransaction
     void testConsolePublisher() {
-        final int publisherId = (int) entityManager.createNativeQuery("""
+        final var publisherId = (BigInteger) entityManager.createNativeQuery("""
                 INSERT INTO "NOTIFICATIONPUBLISHER" ("DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID") VALUES
                     (true, 'foo', 'org.hyades.notification.publisher.ConsolePublisher', 'template','text/plain', '1781db56-51a8-462a-858c-6030a2341dfc')
                 RETURNING "ID";

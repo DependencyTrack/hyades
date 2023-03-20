@@ -80,7 +80,7 @@ public class Project implements Serializable {
     @Id
     @JsonIgnore
     @Column(name = "ID")
-    private int id;
+    private long id;
 
     @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
     @Size(max = 255)
@@ -192,11 +192,11 @@ public class Project implements Serializable {
     private Boolean active; // Added in v3.6. Existing records need to be nullable on upgrade.
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

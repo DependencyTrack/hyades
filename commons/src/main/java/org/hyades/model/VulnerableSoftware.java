@@ -53,7 +53,7 @@ public class VulnerableSoftware  extends PanacheEntityBase implements ICpe, Seri
 
     @Id
     @Column(name = "ID")
-    private int id;
+    private long id;
 
     @Column(name = "PURL", columnDefinition = "VARCHAR")
     private String purl;

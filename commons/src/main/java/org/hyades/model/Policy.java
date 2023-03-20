@@ -46,7 +46,7 @@ public class Policy implements Serializable {
         FAIL
     }
 
-    private int id;
+    private long id;
 
     /**
      * The String representation of the policy name.
@@ -91,11 +91,11 @@ public class Policy implements Serializable {
      */
     private UUID uuid;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
