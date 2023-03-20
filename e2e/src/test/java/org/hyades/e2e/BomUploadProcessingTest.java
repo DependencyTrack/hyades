@@ -2,6 +2,8 @@ package org.hyades.e2e;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.ServerSetup;
 import org.hyades.apiserver.model.BomProcessingResponse;
 import org.hyades.apiserver.model.BomUploadRequest;
 import org.hyades.apiserver.model.BomUploadResponse;
@@ -14,10 +16,15 @@ import org.hyades.apiserver.model.NotificationPublisher;
 import org.hyades.apiserver.model.NotificationRule;
 import org.hyades.apiserver.model.Project;
 import org.hyades.apiserver.model.UpdateNotificationRuleRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
@@ -33,6 +40,28 @@ import static org.awaitility.Awaitility.await;
 @WireMockTest
 public class BomUploadProcessingTest extends AbstractE2eTest {
 
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetup.SMTP.dynamicPort());
+
+    @BeforeEach
+    void beforeEach() throws Exception {
+        // Users must be created before the notification-publisher container is started.
+        greenMail.getUserManager().createUser("from@localhost", "from", "fromPass");
+        greenMail.getUserManager().createUser("to@localhost", "to", "toPass");
+
+        super.beforeEach();
+    }
+
+    @Override
+    protected void customizeNotificationPublisherContainer(final GenericContainer<?> container) {
+        container
+                .withEnv("QUARKUS_MAILER_FROM", "from@localhost")
+                .withEnv("QUARKUS_MAILER_HOST", greenMail.getSmtp().getBindTo())
+                .withEnv("QUARKUS_MAILER_PORT", Integer.toString(greenMail.getSmtp().getPort()))
+                .withEnv("QUARKUS_MAILER_USERNAME", "from")
+                .withEnv("QUARKUS_MAILER_PASSWORD", "fromPass");
+    }
+
     @Override
     protected void customizeVulnAnalyzerContainer(final GenericContainer<?> container) {
         // Disable all scanners except the internal one.
@@ -44,16 +73,34 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
 
     @Test
     void test(final WireMockRuntimeInfo wireMockRuntimeInfo) throws Exception {
+        final List<NotificationPublisher> publishers = apiServerClient.getAllNotificationPublishers();
+
+        // Find the email notification publisher.
+        final NotificationPublisher emailPublisher = publishers.stream()
+                .filter(publisher -> publisher.name().equals("Email"))
+                .findAny()
+                .orElseThrow(() -> new AssertionError("Unable to find email notification publisher"));
+
         // Find the webhook notification publisher.
-        final NotificationPublisher webhookPublisher = apiServerClient.getAllNotificationPublishers().stream()
+        final NotificationPublisher webhookPublisher = publishers.stream()
                 .filter(publisher -> publisher.name().equals("Outbound Webhook"))
                 .findAny()
                 .orElseThrow(() -> new AssertionError("Unable to find webhook notification publisher"));
 
+        // Create an email alert for NEW_VULNERABILITY notifications and point it to GreenMail.
+        final NotificationRule emailRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
+                "email", "PORTFOLIO", "INFORMATIONAL", new Publisher(emailPublisher.uuid())));
+        apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(emailRule.uuid(), emailRule.name(), true,
+                "INFORMATIONAL", Set.of("NEW_VULNERABILITY"), """
+                {
+                  "destination": "to@localhost"
+                }
+                """));
+
         // Create a webhook alert for NEW_VULNERABILITY notifications and point it to WireMock.
-        final NotificationRule rule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
+        final NotificationRule webhookRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "foo", "PORTFOLIO", "INFORMATIONAL", new Publisher(webhookPublisher.uuid())));
-        apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(rule.uuid(), rule.name(), true,
+        apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(webhookRule.uuid(), webhookRule.name(), true,
                 "INFORMATIONAL", Set.of("NEW_VULNERABILITY"), """
                 {
                   "destination": "http://host.docker.internal:%d/notification"
@@ -95,13 +142,24 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
                 }
         );
 
-        // Verify that we received the alert about jackson-databind being vulnerable.
-        await("NEW_VULNERABILITY notification")
+        // Verify that we received alerts about jackson-databind being vulnerable
+        // via both email and webhook notifications.
+        await("NEW_VULNERABILITY email notification")
                 .atMost(Duration.ofSeconds(5))
-                .untilAsserted(this::verifyNotification);
+                .untilAsserted(this::verifyEmailNotification);
+        await("NEW_VULNERABILITY webhook notification")
+                .atMost(Duration.ofSeconds(5))
+                .untilAsserted(this::verifyWebhookNotification);
     }
 
-    private void verifyNotification() {
+    private void verifyEmailNotification() throws MessagingException, IOException {
+        assertThat(greenMail.getReceivedMessages().length).isEqualTo(1);
+        final MimeMessage email = greenMail.getReceivedMessages()[0];
+        assertThat(email.getSubject()).isEqualTo("foo"); // TODO
+        assertThat(email.getContent()).isEqualTo("bar"); // TODO
+    }
+
+    private void verifyWebhookNotification() {
         verify(postRequestedFor(urlPathEqualTo("/notification"))
                 .withRequestBody(equalToJson("""
                         {

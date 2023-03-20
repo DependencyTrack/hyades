@@ -1,9 +1,6 @@
 package org.hyades.e2e;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import io.quarkus.restclient.runtime.QuarkusRestClientBuilder;
-import io.quarkus.runtime.Quarkus;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.hyades.apiserver.ApiServerClient;
 import org.hyades.apiserver.ApiServerClientHeaderFactory;
 import org.hyades.apiserver.model.CreateTeamRequest;
@@ -12,18 +9,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import static org.testcontainers.lifecycle.Startables.deepStart;
 
@@ -47,7 +43,7 @@ public class AbstractE2eTest {
     protected ApiServerClient apiServerClient;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws Exception {
         logger = LoggerFactory.getLogger(getClass());
 
         internalNetwork = Network.newNetwork();
@@ -96,10 +92,10 @@ public class AbstractE2eTest {
     @SuppressWarnings("resource")
     private void initializeRedpanda() {
         new GenericContainer<>(DockerImageName.parse(REDPANDA_IMAGE))
-                .withCreateContainerCmdModifier(cmd -> cmd.withEntrypoint("/bin/bash"))
+                .withCreateContainerCmdModifier(cmd -> cmd.withUser("0").withEntrypoint("/bin/bash"))
                 .withCommand("/tmp/create-topics.sh")
                 .withEnv("REDPANDA_BROKERS", "redpanda:29092")
-                .withFileSystemBind("../scripts/create-topics.sh", "/tmp/create-topics.sh")
+                .withFileSystemBind("../scripts/create-topics.sh", "/tmp/create-topics.sh", BindMode.READ_ONLY)
                 .waitingFor(Wait.forLogMessage(".*All topics created successfully.*", 1))
                 .withNetwork(internalNetwork)
                 .start();
@@ -108,7 +104,7 @@ public class AbstractE2eTest {
     @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
         return new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
-                // .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("ALPINE_DATABASE_MODE", "external")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("ALPINE_DATABASE_DRIVER", "org.postgresql.Driver")
@@ -124,8 +120,8 @@ public class AbstractE2eTest {
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createNotificationPublisherContainer() {
-        return new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
-                // .withImagePullPolicy(PullPolicy.alwaysPull())
+        final var container = new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
+                .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -134,12 +130,17 @@ public class AbstractE2eTest {
                 .withNetworkAliases("notification-publisher")
                 .withNetwork(internalNetwork)
                 .withStartupAttempts(3);
+        customizeNotificationPublisherContainer(container);
+        return container;
+    }
+
+    protected void customizeNotificationPublisherContainer(final GenericContainer<?> container) {
     }
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createRepoMetaAnalyzerContainer() {
-        return new GenericContainer<>(DockerImageName.parse(REPO_META_ANALYZER_IMAGE))
-                // .withImagePullPolicy(PullPolicy.alwaysPull())
+        final var container = new GenericContainer<>(DockerImageName.parse(REPO_META_ANALYZER_IMAGE))
+                .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -148,12 +149,17 @@ public class AbstractE2eTest {
                 .withNetworkAliases("repo-meta-analyzer")
                 .withNetwork(internalNetwork)
                 .withStartupAttempts(3);
+        customizeRepoMetaAnalyzerContainer(container);
+        return container;
+    }
+
+    protected void customizeRepoMetaAnalyzerContainer(final GenericContainer<?> container) {
     }
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createVulnAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(VULN_ANALYZER_IMAGE))
-                // .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -211,6 +217,8 @@ public class AbstractE2eTest {
         Optional.ofNullable(apiServerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(redpandaContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(postgresContainer).ifPresent(GenericContainer::stop);
+
+        Optional.ofNullable(internalNetwork).ifPresent(Network::close);
     }
 
 

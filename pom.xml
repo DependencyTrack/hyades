@@ -33,6 +33,7 @@
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
+    <lib.greenmail.version>1.6.14</lib.greenmail.version>
     <lib.json-unit.version>2.36.1</lib.json-unit.version>
     <lib.maven-artifact.version>4.0.0-alpha-4</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
@@ -163,6 +164,11 @@
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-assertj</artifactId>
         <version>${lib.json-unit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.icegreen</groupId>
+        <artifactId>greenmail-junit5</artifactId>
+        <version>${lib.greenmail.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
