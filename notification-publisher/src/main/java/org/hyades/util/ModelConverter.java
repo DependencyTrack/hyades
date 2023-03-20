@@ -11,6 +11,10 @@ public final class ModelConverter {
     }
 
     public static NotificationLevel convert(final Level level) {
+        if (level == null) {
+            throw new IllegalArgumentException("level must not be null");
+        }
+
         return switch (level) {
             case LEVEL_ERROR -> NotificationLevel.ERROR;
             case LEVEL_WARNING -> NotificationLevel.WARNING;
@@ -20,6 +24,10 @@ public final class ModelConverter {
     }
 
     public static NotificationGroup convert(final Group group) {
+        if (group == null) {
+            throw new IllegalArgumentException("group must not be null");
+        }
+
         return switch (group) {
             case GROUP_CONFIGURATION -> NotificationGroup.CONFIGURATION;
             case GROUP_DATASOURCE_MIRRORING -> NotificationGroup.DATASOURCE_MIRRORING;
