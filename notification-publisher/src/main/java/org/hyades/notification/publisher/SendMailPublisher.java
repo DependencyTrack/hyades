@@ -95,7 +95,7 @@ public class SendMailPublisher implements Publisher {
                 return; // smtp is not enabled
             }
             for (String destination : destinations) {
-                mailer.send(Mail.withText(destination, "\"[Dependency-Track] \" + notification.getTitle()", content));
+                mailer.send(Mail.withText(destination, "[Dependency-Track] " + notification.getTitle(), content));
             }
         } catch (Exception e) {
             LOGGER.error("An error occurred sending output email notification", e);
