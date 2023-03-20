@@ -21,9 +21,11 @@ package org.hyades.model;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.hyades.persistence.UUIDConverter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -130,7 +132,8 @@ public class VulnerableSoftware  extends PanacheEntityBase implements ICpe, Seri
     @Column(name = "VULNERABLE")
     private boolean vulnerable;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, targetEntity = org.hyades.model.Vulnerability.class
+    , mappedBy = "vulnerableSoftware")
     @JoinTable(
             name = "VULNERABLESOFTWARE_VULNERABILITIES",
             joinColumns =
