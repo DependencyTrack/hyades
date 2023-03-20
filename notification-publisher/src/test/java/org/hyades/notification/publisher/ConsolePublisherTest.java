@@ -16,14 +16,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.hyades.notification;
+package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.apache.commons.io.IOUtils;
-import org.hyades.notification.publisher.ConsolePublisher;
-import org.hyades.notification.publisher.DefaultNotificationPublishers;
-import org.hyades.notification.publisher.Publisher;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;

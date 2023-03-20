@@ -1,12 +1,27 @@
-package org.hyades.notification;
+/*
+ * This file is part of Dependency-Track.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) Steve Springett. All Rights Reserved.
+ */
+package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
-import org.hyades.notification.publisher.DefaultNotificationPublishers;
-import org.hyades.notification.publisher.MattermostPublisher;
-import org.hyades.notification.publisher.Publisher;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
@@ -30,19 +45,19 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
-public class MattermostPublisherTest {
+public class SlackPublisherTest {
 
     @Inject
     EntityManager entityManager;
 
     @Inject
-    MattermostPublisher publisher;
+    SlackPublisher publisher;
 
     private static ClientAndServer mockServer;
 
     @BeforeAll
     public static void beforeClass() {
-        mockServer = startClientAndServer(1090);
+        mockServer = startClientAndServer(1070);
     }
 
     @AfterAll
@@ -53,7 +68,7 @@ public class MattermostPublisherTest {
     @Test
     @TestTransaction
     public void testPublish() throws Exception {
-        new MockServerClient("localhost", 1090)
+        new MockServerClient("localhost", 1070)
                 .when(
                         request()
                                 .withMethod("POST")
@@ -67,10 +82,9 @@ public class MattermostPublisherTest {
 
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('mattermost', 'general', 'STRING', 'base.url', 'http://localhost:1090/mychannel');
+                                    ('slack', 'general', 'STRING', 'base.url', 'http://localhost:1070/mychannel');
                 """).executeUpdate();
-
-        JsonObject config = getConfig(DefaultNotificationPublishers.MATTERMOST, "http://localhost:1090/mychannel");
+        JsonObject config = getConfig(DefaultNotificationPublishers.SLACK, "http://localhost:1070/mychannel");
         final var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)
@@ -94,4 +108,5 @@ public class MattermostPublisherTest {
     JsonObjectBuilder getExtraConfig() {
         return Json.createObjectBuilder();
     }
+
 }

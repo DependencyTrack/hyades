@@ -16,15 +16,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.hyades.notification;
+package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
-import org.hyades.notification.publisher.CsWebexPublisher;
-import org.hyades.notification.publisher.DefaultNotificationPublishers;
-import org.hyades.notification.publisher.Publisher;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
@@ -48,10 +45,10 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
-public class CsWebexPublisherTest {
+public class MsTeamsPublisherTest {
 
     @Inject
-    CsWebexPublisher publisher;
+    MsTeamsPublisher publisher;
 
     @Inject
     EntityManager entityManager;
@@ -60,7 +57,7 @@ public class CsWebexPublisherTest {
 
     @BeforeAll
     public static void beforeClass() {
-        mockServer = startClientAndServer(1040);
+        mockServer = startClientAndServer(1060);
     }
 
     @AfterAll
@@ -71,7 +68,7 @@ public class CsWebexPublisherTest {
     @Test
     @TestTransaction
     public void testPublish() throws Exception {
-        new MockServerClient("localhost", 1040)
+        new MockServerClient("localhost", 1060)
                 .when(
                         request()
                                 .withMethod("POST")
@@ -84,11 +81,11 @@ public class CsWebexPublisherTest {
                 );
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('cswebex', 'general', 'STRING', 'base.url', 'http://localhost:1040/mychannel');
+                                    ('msteams', 'general', 'STRING', 'base.url', 'http://localhost:1060/mychannel');
                 """).executeUpdate();
 
-        JsonObject config = getConfig(DefaultNotificationPublishers.CS_WEBEX, "http://localhost:1040/mychannel");
-        var notification = Notification.newBuilder()
+        JsonObject config = getConfig(DefaultNotificationPublishers.MS_TEAMS, "http://localhost:1060/mychannel");
+        final var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)
                 .setGroup(Group.GROUP_NEW_VULNERABILITY)

@@ -1,31 +1,9 @@
-/*
- * This file is part of Dependency-Track.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * SPDX-License-Identifier: Apache-2.0
- * Copyright (c) Steve Springett. All Rights Reserved.
- */
-package org.hyades.notification;
-
+package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
-import org.hyades.notification.publisher.DefaultNotificationPublishers;
-import org.hyades.notification.publisher.Publisher;
-import org.hyades.notification.publisher.WebhookPublisher;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
@@ -49,19 +27,19 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
-public class WebhookPublisherTest {
-
-    @Inject
-    WebhookPublisher publisher;
+public class MattermostPublisherTest {
 
     @Inject
     EntityManager entityManager;
+
+    @Inject
+    MattermostPublisher publisher;
 
     private static ClientAndServer mockServer;
 
     @BeforeAll
     public static void beforeClass() {
-        mockServer = startClientAndServer(1080);
+        mockServer = startClientAndServer(1090);
     }
 
     @AfterAll
@@ -72,7 +50,7 @@ public class WebhookPublisherTest {
     @Test
     @TestTransaction
     public void testPublish() throws Exception {
-        new MockServerClient("localhost", 1080)
+        new MockServerClient("localhost", 1090)
                 .when(
                         request()
                                 .withMethod("POST")
@@ -83,11 +61,13 @@ public class WebhookPublisherTest {
                                 .withStatusCode(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 );
+
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('slack', 'general', 'STRING', 'base.url', 'http://localhost:1080/mychannel');
+                                    ('mattermost', 'general', 'STRING', 'base.url', 'http://localhost:1090/mychannel');
                 """).executeUpdate();
-        JsonObject config = getConfig(DefaultNotificationPublishers.WEBHOOK, "http://localhost:1080/mychannel");
+
+        JsonObject config = getConfig(DefaultNotificationPublishers.MATTERMOST, "http://localhost:1090/mychannel");
         final var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)

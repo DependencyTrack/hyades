@@ -16,15 +16,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.hyades.notification;
+package org.hyades.notification.publisher;
+
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
-import org.hyades.notification.publisher.DefaultNotificationPublishers;
-import org.hyades.notification.publisher.Publisher;
-import org.hyades.notification.publisher.SlackPublisher;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
@@ -48,19 +46,19 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
-public class SlackPublisherTest {
+public class WebhookPublisherTest {
+
+    @Inject
+    WebhookPublisher publisher;
 
     @Inject
     EntityManager entityManager;
-
-    @Inject
-    SlackPublisher publisher;
 
     private static ClientAndServer mockServer;
 
     @BeforeAll
     public static void beforeClass() {
-        mockServer = startClientAndServer(1070);
+        mockServer = startClientAndServer(1080);
     }
 
     @AfterAll
@@ -71,7 +69,7 @@ public class SlackPublisherTest {
     @Test
     @TestTransaction
     public void testPublish() throws Exception {
-        new MockServerClient("localhost", 1070)
+        new MockServerClient("localhost", 1080)
                 .when(
                         request()
                                 .withMethod("POST")
@@ -82,12 +80,11 @@ public class SlackPublisherTest {
                                 .withStatusCode(200)
                                 .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 );
-
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('slack', 'general', 'STRING', 'base.url', 'http://localhost:1070/mychannel');
+                                    ('slack', 'general', 'STRING', 'base.url', 'http://localhost:1080/mychannel');
                 """).executeUpdate();
-        JsonObject config = getConfig(DefaultNotificationPublishers.SLACK, "http://localhost:1070/mychannel");
+        JsonObject config = getConfig(DefaultNotificationPublishers.WEBHOOK, "http://localhost:1080/mychannel");
         final var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)
@@ -111,5 +108,4 @@ public class SlackPublisherTest {
     JsonObjectBuilder getExtraConfig() {
         return Json.createObjectBuilder();
     }
-
 }
