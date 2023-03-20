@@ -14,7 +14,6 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.net.URI;
@@ -104,7 +103,7 @@ public class AbstractE2eTest {
     @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
         return new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+                // .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("ALPINE_DATABASE_MODE", "external")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("ALPINE_DATABASE_DRIVER", "org.postgresql.Driver")
@@ -121,7 +120,7 @@ public class AbstractE2eTest {
     @SuppressWarnings("resource")
     private GenericContainer<?> createNotificationPublisherContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+                // .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -140,7 +139,7 @@ public class AbstractE2eTest {
     @SuppressWarnings("resource")
     private GenericContainer<?> createRepoMetaAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(REPO_META_ANALYZER_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+                // .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -159,7 +158,7 @@ public class AbstractE2eTest {
     @SuppressWarnings("resource")
     private GenericContainer<?> createVulnAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(VULN_ANALYZER_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+                // .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")

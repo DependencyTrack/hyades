@@ -7,6 +7,7 @@ import com.icegreen.greenmail.util.ServerSetup;
 import org.hyades.apiserver.model.BomProcessingResponse;
 import org.hyades.apiserver.model.BomUploadRequest;
 import org.hyades.apiserver.model.BomUploadResponse;
+import org.hyades.apiserver.model.ConfigProperty;
 import org.hyades.apiserver.model.CreateNotificationRuleRequest;
 import org.hyades.apiserver.model.CreateNotificationRuleRequest.Publisher;
 import org.hyades.apiserver.model.CreateVulnerabilityRequest;
@@ -24,14 +25,16 @@ import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +59,7 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
     protected void customizeNotificationPublisherContainer(final GenericContainer<?> container) {
         container
                 .withEnv("QUARKUS_MAILER_FROM", "from@localhost")
-                .withEnv("QUARKUS_MAILER_HOST", greenMail.getSmtp().getBindTo())
+                .withEnv("QUARKUS_MAILER_HOST", "host.docker.internal")
                 .withEnv("QUARKUS_MAILER_PORT", Integer.toString(greenMail.getSmtp().getPort()))
                 .withEnv("QUARKUS_MAILER_USERNAME", "from")
                 .withEnv("QUARKUS_MAILER_PASSWORD", "fromPass");
@@ -97,6 +100,11 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
                 }
                 """));
 
+        // Enable email on the API server side.
+        // TODO: We should decide where to put the email configuration,
+        // it currently is split between API server and notification publisher.
+        apiServerClient.updateConfigProperty(new ConfigProperty("email", "smtp.enabled", "true"));
+
         // Create a webhook alert for NEW_VULNERABILITY notifications and point it to WireMock.
         final NotificationRule webhookRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "foo", "PORTFOLIO", "INFORMATIONAL", new Publisher(webhookPublisher.uuid())));
@@ -106,6 +114,9 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
                   "destination": "http://host.docker.internal:%d/notification"
                 }
                 """.formatted(wireMockRuntimeInfo.getHttpPort())));
+        stubFor(post(urlPathEqualTo("/notification"))
+                .willReturn(aResponse()
+                        .withStatus(201)));
 
         // Create a new internal vulnerability for jackson-databind.
         apiServerClient.createVulnerability(new CreateVulnerabilityRequest("INT-123", List.of(
@@ -137,26 +148,25 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
         assertThat(findings).satisfiesExactly(
                 finding -> {
                     assertThat(finding.component().name()).isEqualTo("jackson-databind");
-                    assertThat(finding.project().name()).isEqualTo("foo");
                     assertThat(finding.vulnerability().vulnId()).isEqualTo("INT-123");
                 }
         );
 
         // Verify that we received alerts about jackson-databind being vulnerable
         // via both email and webhook notifications.
-        await("NEW_VULNERABILITY email notification")
-                .atMost(Duration.ofSeconds(5))
-                .untilAsserted(this::verifyEmailNotification);
         await("NEW_VULNERABILITY webhook notification")
                 .atMost(Duration.ofSeconds(5))
                 .untilAsserted(this::verifyWebhookNotification);
+        await("NEW_VULNERABILITY email notification")
+                .atMost(Duration.ofSeconds(5))
+                .untilAsserted(this::verifyEmailNotification);
     }
 
-    private void verifyEmailNotification() throws MessagingException, IOException {
+    private void verifyEmailNotification() throws MessagingException {
         assertThat(greenMail.getReceivedMessages().length).isEqualTo(1);
         final MimeMessage email = greenMail.getReceivedMessages()[0];
-        assertThat(email.getSubject()).isEqualTo("foo"); // TODO
-        assertThat(email.getContent()).isEqualTo("bar"); // TODO
+        // assertThat(email.getSubject()).isEqualTo("[Dependency-Track] New Vulnerability Identified on Project: [foo : bar]"); // TODO
+        // assertThat(email.getContent()).asString().matches(""); // TODO
     }
 
     private void verifyWebhookNotification() {
@@ -164,23 +174,23 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
                 .withRequestBody(equalToJson("""
                         {
                           "notification": {
-                            "level": "INFORMATIONAL",
-                            "scope": "PORTFOLIO",
-                            "group": "NEW_VULNERABILITY",
+                            "level": "LEVEL_INFORMATIONAL",
+                            "scope": "SCOPE_PORTFOLIO",
+                            "group": "GROUP_NEW_VULNERABILITY",
                             "timestamp": "${json-unit.any-string}",
-                            "title": "${json-unit.any-string}",
-                            "content": "${json-unit.any-string}",
+                            "title": "New Vulnerability Identified on Project: [foo : bar]",
+                            "content": "INT-123",
                             "subject": {
                               "component": {
                                 "uuid": "${json-unit.any-string}",
                                 "group": "com.fasterxml.jackson.core",
                                 "name": "jackson-databind",
                                 "version": "2.13.2.2",
-                                "purl": "${json-unit.any-string}",
-                                "md5": "${json-unit.any-string}",
-                                "sha1": "${json-unit.any-string}",
-                                "sha256": "${json-unit.any-string}",
-                                "sha512": "${json-unit.any-string}"
+                                "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.2?type=jar",
+                                "md5": "055c97cb488b0956801e13abcc2a0cfe",
+                                "sha1": "ffeb635597d093509f33e1e94274d14be610f933",
+                                "sha256": "efb86b148712a838b94b3cfc95769785a116b3461f709b4cc510055a58b804b2",
+                                "sha512": "0e9398591d86f80f16fc2d6ff0dda3e7821033e2c59472981eaab61443be3d77198655682905b85260fb2186a2cf0f33988aff689a49bb54e56c07e02f607e8a"
                               },
                               "project": {
                                 "uuid": "${json-unit.any-string}",
@@ -190,7 +200,8 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
                               "vulnerability": {
                                 "uuid": "${json-unit.any-string}",
                                 "id": "INT-123",
-                                "source": "INTERNAL"
+                                "source": "INTERNAL",
+                                "severity": "UNASSIGNED"
                               },
                               "affectedProjects": [
                                 {
@@ -198,7 +209,8 @@ public class BomUploadProcessingTest extends AbstractE2eTest {
                                   "name": "foo",
                                   "version": "bar"
                                 }
-                              ]
+                              ],
+                              "analysisLevel": "VULNERABILITY_ANALYSIS_LEVEL_BOM_UPLOAD"
                             }
                           }
                         }

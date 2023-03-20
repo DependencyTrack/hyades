@@ -4,6 +4,7 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.hyades.apiserver.model.BomProcessingResponse;
 import org.hyades.apiserver.model.BomUploadRequest;
 import org.hyades.apiserver.model.BomUploadResponse;
+import org.hyades.apiserver.model.ConfigProperty;
 import org.hyades.apiserver.model.CreateNotificationRuleRequest;
 import org.hyades.apiserver.model.CreateTeamRequest;
 import org.hyades.apiserver.model.CreateVulnerabilityRequest;
@@ -107,5 +108,11 @@ public interface ApiServerClient {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     NotificationRule updateNotificationRule(final UpdateNotificationRuleRequest request);
+
+    @POST
+    @Path("/configProperty")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    ConfigProperty updateConfigProperty(final ConfigProperty configProperty);
 
 }
