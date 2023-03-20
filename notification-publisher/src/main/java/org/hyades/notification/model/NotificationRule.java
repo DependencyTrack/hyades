@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.hyades.model;
+package org.hyades.notification.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -24,10 +24,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.hyades.common.TrimmedStringDeserializer;
-import org.hyades.commonnotification.NotificationGroup;
-import org.hyades.commonnotification.NotificationScope;
-import org.hyades.persistence.NotificationLevelConverter;
-import org.hyades.persistence.NotificationScopeConverter;
+import org.hyades.model.Project;
+import org.hyades.notification.persistence.NotificationLevelConverter;
+import org.hyades.notification.persistence.NotificationScopeConverter;
 import org.hyades.persistence.UUIDConverter;
 
 import javax.persistence.CascadeType;

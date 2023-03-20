@@ -1,6 +1,7 @@
 package org.hyades.persistence;
 
-import org.hyades.commonnotification.NotificationScope;
+import org.hyades.notification.model.NotificationScope;
+import org.hyades.notification.persistence.NotificationScopeConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

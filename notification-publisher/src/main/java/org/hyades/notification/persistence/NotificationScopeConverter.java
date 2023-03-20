@@ -1,6 +1,6 @@
-package org.hyades.persistence;
+package org.hyades.notification.persistence;
 
-import org.hyades.commonnotification.NotificationScope;
+import org.hyades.notification.model.NotificationScope;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

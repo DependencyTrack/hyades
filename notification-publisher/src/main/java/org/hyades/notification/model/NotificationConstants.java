@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.hyades.commonnotification;
+package org.hyades.notification.model;
 
 public class NotificationConstants {
 

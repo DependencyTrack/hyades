@@ -1,6 +1,7 @@
 package org.hyades.persistence;
 
-import org.hyades.model.NotificationLevel;
+import org.hyades.notification.model.NotificationLevel;
+import org.hyades.notification.persistence.NotificationLevelConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

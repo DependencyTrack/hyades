@@ -1,10 +1,10 @@
-package org.hyades.persistence;
+package org.hyades.notification.persistence;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
-import org.hyades.model.NotificationLevel;
-import org.hyades.model.NotificationRule;
-import org.hyades.commonnotification.NotificationScope;
+import org.hyades.notification.model.NotificationLevel;
+import org.hyades.notification.model.NotificationRule;
+import org.hyades.notification.model.NotificationScope;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.List;

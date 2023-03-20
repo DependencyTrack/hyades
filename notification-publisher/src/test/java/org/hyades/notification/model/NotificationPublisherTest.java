@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.hyades.model;
+package org.hyades.notification.model;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

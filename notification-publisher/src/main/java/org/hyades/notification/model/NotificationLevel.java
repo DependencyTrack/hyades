@@ -1,4 +1,4 @@
-package org.hyades.model;
+package org.hyades.notification.model;
 
 public enum NotificationLevel {
     

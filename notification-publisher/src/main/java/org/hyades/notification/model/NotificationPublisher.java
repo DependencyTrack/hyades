@@ -1,4 +1,4 @@
-package org.hyades.model;
+package org.hyades.notification.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

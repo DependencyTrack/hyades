@@ -1,7 +1,7 @@
 package org.hyades.util;
 
-import org.hyades.commonnotification.NotificationGroup;
-import org.hyades.model.NotificationLevel;
+import org.hyades.notification.model.NotificationGroup;
+import org.hyades.notification.model.NotificationLevel;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.junit.jupiter.api.Test;

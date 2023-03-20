@@ -16,16 +16,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.hyades.commonnotification;
+package org.hyades.notification.model;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-public class NotificationScopeTest {
-
-    @Test
-    public void testEnums() {
-        Assertions.assertEquals("SYSTEM", NotificationScope.SYSTEM.name());
-        Assertions.assertEquals("PORTFOLIO", NotificationScope.PORTFOLIO.name());
-    }
+public enum NotificationScope {
+    SYSTEM,
+    PORTFOLIO
 }

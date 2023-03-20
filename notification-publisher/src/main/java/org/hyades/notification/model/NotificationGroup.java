@@ -16,9 +16,31 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
-package org.hyades.commonnotification;
+package org.hyades.notification.model;
 
-public enum NotificationScope {
-    SYSTEM,
-    PORTFOLIO
+public enum NotificationGroup {
+
+    // System Groups
+    CONFIGURATION,
+    DATASOURCE_MIRRORING,
+    REPOSITORY,
+    INTEGRATION,
+    INDEXING_SERVICE,
+    FILE_SYSTEM,
+    ANALYZER,
+
+    // Portfolio Groups
+    NEW_VULNERABILITY,
+    NEW_VULNERABLE_DEPENDENCY,
+    //NEW_OUTDATED_COMPONENT,
+    //FIXED_VULNERABILITY,
+    //FIXED_OUTDATED,
+    //GLOBAL_AUDIT_CHANGE,
+    PROJECT_AUDIT_CHANGE,
+    BOM_CONSUMED,
+    BOM_PROCESSED,
+    VEX_CONSUMED,
+    VEX_PROCESSED,
+    POLICY_VIOLATION,
+    PROJECT_CREATED
 }
