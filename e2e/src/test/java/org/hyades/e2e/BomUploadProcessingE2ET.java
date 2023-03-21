@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 @WireMockTest
-public class BomUploadProcessingTest extends AbstractE2eTest {
+public class BomUploadProcessingE2ET extends AbstractE2ET {
 
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetup.SMTP.dynamicPort());

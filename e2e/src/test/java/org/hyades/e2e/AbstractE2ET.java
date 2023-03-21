@@ -22,7 +22,7 @@ import java.util.Set;
 
 import static org.testcontainers.lifecycle.Startables.deepStart;
 
-public class AbstractE2eTest {
+public class AbstractE2ET {
 
     protected static String POSTGRES_IMAGE = "postgres:15-alpine";
     protected static String REDPANDA_IMAGE = "docker.redpanda.com/vectorized/redpanda:v23.1.2";
