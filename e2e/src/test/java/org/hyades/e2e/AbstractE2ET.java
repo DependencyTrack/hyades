@@ -80,7 +80,8 @@ public class AbstractE2ET {
     private GenericContainer<?> createRedpandaContainer() {
         return new GenericContainer<>(DockerImageName.parse(REDPANDA_IMAGE))
                 .withCommand(
-                        "redpanda", "start", "--mode", "dev-container",
+                        "redpanda", "start", "--smp", "1", "--mode", "dev-container",
+                        "--reserve-memory", "0M", "--memory", "512M", "--overprovisioned",
                         "--kafka-addr", "PLAINTEXT://0.0.0.0:29092",
                         "--advertise-kafka-addr", "PLAINTEXT://redpanda:29092"
                 )
@@ -106,6 +107,7 @@ public class AbstractE2ET {
         return new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx2g")
+                .withEnv("SYSTEM_REQUIREMENT_CHECK_ENABLED", "false")
                 .withEnv("ALPINE_DATABASE_MODE", "external")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("ALPINE_DATABASE_DRIVER", "org.postgresql.Driver")
