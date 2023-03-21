@@ -7,8 +7,8 @@ import javax.ws.rs.core.MultivaluedMap;
 
 public class ApiServerClientHeaderFactory implements ClientHeadersFactory {
 
-    public static String bearerToken;
-    public static String apiKey;
+    private static String bearerToken;
+    private static String apiKey;
 
     @Override
     public MultivaluedMap<String, String> update(final MultivaluedMap<String, String> incomingHeaders,
@@ -22,9 +22,17 @@ public class ApiServerClientHeaderFactory implements ClientHeadersFactory {
         return headers;
     }
 
+    public static void setBearerToken(final String bearerToken) {
+        ApiServerClientHeaderFactory.bearerToken = bearerToken;
+    }
+
+    public static void setApiKey(final String apiKey) {
+        ApiServerClientHeaderFactory.apiKey = apiKey;
+    }
+
     public static void reset() {
-        bearerToken = null;
-        apiKey = null;
+        ApiServerClientHeaderFactory.bearerToken = null;
+        ApiServerClientHeaderFactory.apiKey = null;
     }
 
 }

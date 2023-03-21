@@ -13,7 +13,9 @@ import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
 
 import java.net.URI;
@@ -59,7 +61,7 @@ public class AbstractE2ET {
         notificationPublisherContainer = createNotificationPublisherContainer();
         repoMetaAnalyzerContainer = createRepoMetaAnalyzerContainer();
         vulnAnalyzerContainer = createVulnAnalyzerContainer();
-        deepStart(notificationPublisherContainer, repoMetaAnalyzerContainer, vulnAnalyzerContainer);
+        deepStart(notificationPublisherContainer, repoMetaAnalyzerContainer, vulnAnalyzerContainer).join();
 
         apiServerClient = initializeApiServerClient();
     }
@@ -84,7 +86,6 @@ public class AbstractE2ET {
                 )
                 .waitingFor(Wait.forLogMessage(".*Started Kafka API server.*", 1))
                 .withNetworkAliases("redpanda")
-                .withExposedPorts(9092)
                 .withNetwork(internalNetwork);
     }
 
@@ -103,14 +104,14 @@ public class AbstractE2ET {
     @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
         return new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
-                // .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("ALPINE_DATABASE_MODE", "external")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("ALPINE_DATABASE_DRIVER", "org.postgresql.Driver")
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
                 .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
-                // .withLogConsumer(new Slf4jLogConsumer(logger))
+                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("apiserver")))
                 .waitingFor(Wait.forLogMessage(".*Dependency-Track is ready.*", 1))
                 .withNetworkAliases("apiserver")
                 .withNetwork(internalNetwork)
@@ -120,12 +121,12 @@ public class AbstractE2ET {
     @SuppressWarnings("resource")
     private GenericContainer<?> createNotificationPublisherContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
-                // .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
-                // .withLogConsumer(new Slf4jLogConsumer(logger))
+                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("notification-publisher")))
                 .withNetworkAliases("notification-publisher")
                 .withNetwork(internalNetwork)
                 .withStartupAttempts(3);
@@ -139,12 +140,12 @@ public class AbstractE2ET {
     @SuppressWarnings("resource")
     private GenericContainer<?> createRepoMetaAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(REPO_META_ANALYZER_IMAGE))
-                // .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
-                // .withLogConsumer(new Slf4jLogConsumer(logger))
+                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("repo-meta-analyzer")))
                 .withNetworkAliases("repo-meta-analyzer")
                 .withNetwork(internalNetwork)
                 .withStartupAttempts(3);
@@ -163,7 +164,7 @@ public class AbstractE2ET {
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
-                // .withLogConsumer(new Slf4jLogConsumer(logger))
+                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("vuln-analyzer")))
                 .withNetworkAliases("vuln-analyzer")
                 .withNetwork(internalNetwork)
                 .withStartupAttempts(3);
@@ -183,25 +184,28 @@ public class AbstractE2ET {
         client.forcePasswordChange("admin", "admin", "admin123", "admin123");
 
         logger.info("Authenticating as admin");
-        ApiServerClientHeaderFactory.bearerToken = client.login("admin", "admin123");
+        final String bearerToken = client.login("admin", "admin123");
+        ApiServerClientHeaderFactory.setBearerToken(bearerToken);
 
         logger.info("Creating e2e team");
         final Team team = client.createTeam(new CreateTeamRequest("e2e"));
 
+        // TODO: Should assigned permissions be configurable per test case?
         logger.info("Assigning permissions to e2e team");
         for (final String permission : Set.of(
+                "BOM_UPLOAD",
+                "PORTFOLIO_MANAGEMENT",
+                "PROJECT_CREATION_UPLOAD",
+                "SYSTEM_CONFIGURATION",
                 "VIEW_PORTFOLIO",
                 "VIEW_VULNERABILITY",
-                "BOM_UPLOAD",
-                "PROJECT_CREATION_UPLOAD",
-                "PORTFOLIO_MANAGEMENT",
-                "VULNERABILITY_MANAGEMENT",
-                "SYSTEM_CONFIGURATION"
+                "VULNERABILITY_MANAGEMENT"
         )) {
             client.addPermissionToTeam(team.uuid(), permission);
         }
 
-        ApiServerClientHeaderFactory.apiKey = team.apiKeys().get(0).key();
+        logger.info("Authenticating as e2e team");
+        ApiServerClientHeaderFactory.setApiKey(team.apiKeys().get(0).key());
 
         return client;
     }
