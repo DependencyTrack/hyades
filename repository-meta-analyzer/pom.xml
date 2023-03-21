@@ -19,6 +19,17 @@
     <dependency>
       <groupId>org.hyades</groupId>
       <artifactId>commons</artifactId>
+      <exclusions>
+        <exclusion>
+          <!--
+            Causes XPathFactoryConfigurationException in MavenMetaAnalyzer
+            when running in JVM-based container image. It's likely conflicting
+            with other JAXP providers.
+          -->
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.hyades</groupId>
