@@ -29,9 +29,9 @@ public class AbstractE2ET {
     protected static String POSTGRES_IMAGE = "postgres:15-alpine";
     protected static String REDPANDA_IMAGE = "docker.redpanda.com/vectorized/redpanda:v23.1.2";
     protected static String API_SERVER_IMAGE = "ghcr.io/dependencytrack/hyades-apiserver:snapshot";
-    protected static String NOTIFICATION_PUBLISHER_IMAGE = "ghcr.io/dependencytrack/hyades-notification-publisher:latest-native";
-    protected static String REPO_META_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest-native";
-    protected static String VULN_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest-native";
+    protected static String NOTIFICATION_PUBLISHER_IMAGE = "ghcr.io/dependencytrack/hyades-notification-publisher:latest";
+    protected static String REPO_META_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest";
+    protected static String VULN_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest";
 
     protected Logger logger;
     private Network internalNetwork;
@@ -105,6 +105,7 @@ public class AbstractE2ET {
     private GenericContainer<?> createApiServerContainer() {
         return new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx2g")
                 .withEnv("ALPINE_DATABASE_MODE", "external")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("ALPINE_DATABASE_DRIVER", "org.postgresql.Driver")
@@ -159,7 +160,7 @@ public class AbstractE2ET {
     @SuppressWarnings("resource")
     private GenericContainer<?> createVulnAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(VULN_ANALYZER_IMAGE))
-                // .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
