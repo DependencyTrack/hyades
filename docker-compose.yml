@@ -126,9 +126,9 @@ services:
     environment:
       API_BASE_URL: "http://localhost:8080"
     ports:
-    - "127.0.0.1:8081:8080"
+      - "127.0.0.1:8081:8080"
     profiles:
-    - demo
+      - demo
     restart: unless-stopped
 
   postgres:
@@ -191,6 +191,8 @@ services:
     user: "0" # Ensure user can read create-topics.sh
     environment:
       REDPANDA_BROKERS: "dt-redpanda:29092"
+      # api topic prefix to be used when a required prefix is expected on topics created by redpanda
+      API_TOPIC_PREFIX: ""
       # NOTIFICATION_TOPICS_PARTITIONS: "3"
       # NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
       # REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
@@ -303,8 +305,8 @@ services:
     restart: unless-stopped
 
 volumes:
-  apiserver-data: {}
-  postgres-data: {}
-  redpanda-data: {}
-  grafana-data: {}
-  prometheus-data: {}
+  apiserver-data: { }
+  postgres-data: { }
+  redpanda-data: { }
+  grafana-data: { }
+  prometheus-data: { }

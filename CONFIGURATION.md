@@ -10,9 +10,9 @@ options that are expected to be changed by users.
 
 Kafka topics (including internal topics) can be configured with custom prefix. In order to provide custom prefix, below environment variable can be used.
 
-| Environment Variable               | Description                     | Default      | Required |
-|:-----------------------------------|:--------------------------------|:-------------|:--------:|
-| `API_TOPIC_PREFIX`                 | Prefix for topic names          | -            |    ✅     |
+| Environment Variable               | Description                     | Default      | Required  |
+|:-----------------------------------|:--------------------------------|:-------------|:---------:|
+| `API_TOPIC_PREFIX`                 | Prefix for topic names          | -            |     ❌     |
 
 ### Notification Publisher
 
