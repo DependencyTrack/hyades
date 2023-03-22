@@ -58,6 +58,7 @@
     <sonar.projectKey>dependency-track_hyades</sonar.projectKey>
     <sonar.moduleKey>${artifactId}</sonar.moduleKey>
     <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.exclusions>e2e/**/*</sonar.exclusions>
 
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0</surefire-plugin.version>
