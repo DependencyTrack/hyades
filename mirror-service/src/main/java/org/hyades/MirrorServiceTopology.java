@@ -78,6 +78,7 @@ public class MirrorServiceTopology {
 
     List<KeyValue<String, Bom>> mirrorOsv(String ecosystem) throws IOException {
         return osvMirrorHandler.performMirror(ecosystem).stream()
+                .filter(bom -> (bom.getVulnerabilities() != null  && bom.getVulnerabilities().get(0) != null))
                 .map(bom -> KeyValue.pair(Vulnerability.Source.OSV.name() + "/" + bom.getVulnerabilities().get(0).getId(), bom))
                 .toList();
     }

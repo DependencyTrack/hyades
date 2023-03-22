@@ -156,6 +156,7 @@ public class OsvDto implements Serializable {
         this.aliases = aliases;
     }
 
+    @RegisterForReflection
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Credit {
         private String name;
@@ -179,6 +180,7 @@ public class OsvDto implements Serializable {
         private List<String> contact;
     }
 
+    @RegisterForReflection
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Reference {
         private String type;
