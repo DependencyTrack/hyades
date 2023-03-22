@@ -199,7 +199,7 @@ public class BomUploadProcessingE2ET extends AbstractE2ET {
                               },
                               "vulnerability": {
                                 "uuid": "${json-unit.any-string}",
-                                "id": "INT-123",
+                                "vulnId": "INT-123",
                                 "source": "INTERNAL",
                                 "severity": "UNASSIGNED"
                               },
@@ -210,7 +210,7 @@ public class BomUploadProcessingE2ET extends AbstractE2ET {
                                   "version": "bar"
                                 }
                               ],
-                              "analysisLevel": "VULNERABILITY_ANALYSIS_LEVEL_BOM_UPLOAD"
+                              "vulnerabilityAnalysisLevel": "BOM_UPLOAD_ANALYSIS"
                             }
                           }
                         }
