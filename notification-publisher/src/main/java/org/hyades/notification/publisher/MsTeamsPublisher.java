@@ -20,8 +20,8 @@ package org.hyades.notification.publisher;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
-import org.hyades.model.Notification;
 import org.hyades.persistence.ConfigPropertyRepository;
+import org.hyades.proto.notification.v1.Notification;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -40,7 +40,7 @@ public class MsTeamsPublisher extends AbstractWebhookPublisher implements Publis
 
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().defaultEscapingStrategy("json").build();
 
-    public void inform(final Notification notification, final JsonObject config) {
+    public void inform(final Notification notification, final JsonObject config) throws Exception {
         publish(DefaultNotificationPublishers.MS_TEAMS.getPublisherName(), getTemplate(config), notification, config, configPropertyRepository);
     }
 

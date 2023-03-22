@@ -18,6 +18,7 @@
  */
 package org.hyades.notification.publisher;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 import io.quarkus.mailer.Mail;
@@ -26,10 +27,10 @@ import io.quarkus.runtime.Startup;
 import org.apache.commons.lang3.BooleanUtils;
 import org.hyades.model.ConfigProperty;
 import org.hyades.model.ConfigPropertyConstants;
-import org.hyades.model.Notification;
 import org.hyades.model.Team;
 import org.hyades.persistence.ConfigPropertyRepository;
 import org.hyades.persistence.ManagedUserRepository;
+import org.hyades.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,12 +55,13 @@ public class SendMailPublisher implements Publisher {
 
     @Inject
     Mailer mailer;
+
     public SendMailPublisher(final ManagedUserRepository managedUserRepository, final ConfigPropertyRepository configPropertyRepository) {
         this.managedUserRepository = managedUserRepository;
         this.configPropertyRepository = configPropertyRepository;
     }
 
-    public void inform(final Notification notification, final JsonObject config) {
+    public void inform(final Notification notification, final JsonObject config) throws Exception {
         if (config == null) {
             LOGGER.warn("No configuration found. Skipping notification.");
             return;
@@ -68,7 +70,7 @@ public class SendMailPublisher implements Publisher {
         sendNotification(notification, config, destinations);
     }
 
-    public void inform(final Notification notification, final JsonObject config, List<Team> teams) {
+    public void inform(final Notification notification, final JsonObject config, List<Team> teams) throws Exception {
         if (config == null) {
             LOGGER.warn("No configuration found. Skipping notification.");
             return;
@@ -77,7 +79,7 @@ public class SendMailPublisher implements Publisher {
         sendNotification(notification, config, destinations);
     }
 
-    private void sendNotification(Notification notification, JsonObject config, String[] destinations) {
+    private void sendNotification(Notification notification, JsonObject config, String[] destinations) throws InvalidProtocolBufferException {
         PebbleTemplate template = getTemplate(config);
         String mimeType = getTemplateMimeType(config);
         final String content = prepareTemplate(notification, template, configPropertyRepository);
@@ -92,8 +94,8 @@ public class SendMailPublisher implements Publisher {
                 LOGGER.warn("SMTP is not enabled");
                 return; // smtp is not enabled
             }
-            for (String destination: destinations){
-                mailer.send(Mail.withText(destination, "\"[Dependency-Track] \" + notification.getTitle()", content));
+            for (String destination : destinations) {
+                mailer.send(Mail.withText(destination, "[Dependency-Track] " + notification.getTitle(), content));
             }
         } catch (Exception e) {
             LOGGER.error("An error occurred sending output email notification", e);

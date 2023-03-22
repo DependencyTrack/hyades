@@ -20,8 +20,8 @@ package org.hyades.notification.publisher;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
-import org.hyades.model.Notification;
 import org.hyades.persistence.ConfigPropertyRepository;
+import org.hyades.proto.notification.v1.Notification;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,12 +34,13 @@ public class WebhookPublisher extends AbstractWebhookPublisher implements Publis
     private final ConfigPropertyRepository configPropertyRepository;
 
     @Inject
-    public WebhookPublisher(final ConfigPropertyRepository configPropertyRepository){
+    public WebhookPublisher(final ConfigPropertyRepository configPropertyRepository) {
         this.configPropertyRepository = configPropertyRepository;
     }
+
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().defaultEscapingStrategy("json").build();
 
-    public void inform(final Notification notification, final JsonObject config) {
+    public void inform(final Notification notification, final JsonObject config) throws Exception {
         publish(DefaultNotificationPublishers.WEBHOOK.getPublisherName(), getTemplate(config), notification, config, configPropertyRepository);
     }
 

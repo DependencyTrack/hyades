@@ -1,0 +1,186 @@
+syntax = "proto3";
+
+package org.hyades.notification.v1;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_package = "org.hyades.proto.notification.v1";
+
+message Notification {
+  Level level = 1;
+  Scope scope = 2;
+  Group group = 3;
+  string title = 4;
+  string content = 5;
+  google.protobuf.Timestamp timestamp = 6;
+  google.protobuf.Any subject = 7;
+}
+
+enum Level {
+  LEVEL_UNSPECIFIED = 0;
+  LEVEL_INFORMATIONAL = 1;
+  LEVEL_WARNING = 2;
+  LEVEL_ERROR = 3;
+}
+
+enum Scope {
+  SCOPE_UNSPECIFIED = 0;
+  SCOPE_PORTFOLIO = 1;
+  SCOPE_SYSTEM = 2;
+}
+
+enum Group {
+  GROUP_UNSPECIFIED = 0;
+  GROUP_CONFIGURATION = 1;
+  GROUP_DATASOURCE_MIRRORING = 2;
+  GROUP_REPOSITORY = 3;
+  GROUP_INTEGRATION = 4;
+  GROUP_INDEXING_SERVICE = 5;
+  GROUP_FILE_SYSTEM = 6;
+  GROUP_ANALYZER = 7;
+  GROUP_NEW_VULNERABILITY = 8;
+  GROUP_NEW_VULNERABLE_DEPENDENCY = 9;
+  GROUP_PROJECT_AUDIT_CHANGE = 10;
+  GROUP_BOM_CONSUMED = 11;
+  GROUP_BOM_PROCESSED = 12;
+  GROUP_VEX_CONSUMED = 13;
+  GROUP_VEX_PROCESSED = 14;
+  GROUP_POLICY_VIOLATION = 15;
+  GROUP_PROJECT_CREATED = 16;
+}
+
+message BomConsumedOrProcessedSubject {
+  Project project = 1;
+  bytes bom = 2;
+  string format = 3;
+  string spec_version = 4;
+}
+
+message NewVulnerabilitySubject {
+  Component component = 1;
+  Project project = 2;
+  Vulnerability vulnerability = 3;
+  repeated Project affected_projects = 4;
+  optional string vulnerability_analysis_level = 5;
+}
+
+message NewVulnerableDependencySubject {
+  Component component = 1;
+  Project project = 2;
+  repeated Vulnerability vulnerabilities = 3;
+}
+
+message PolicyViolationSubject {
+  Component component = 1;
+  Project project = 2;
+  PolicyViolation policy_violation = 3;
+}
+
+message VexConsumedOrProcessedSubject {
+  Project project = 1;
+  bytes vex = 2;
+  string format = 3;
+  string spec_version = 4;
+}
+
+message VulnerabilityAnalysisDecisionChangeSubject {
+  Component component = 1;
+  Project project = 2;
+  Vulnerability vulnerability = 3;
+  VulnerabilityAnalysis analysis = 4;
+}
+
+message PolicyViolationAnalysisDecisionChangeSubject {
+  Component component = 1;
+  Project project = 2;
+  PolicyViolation policy_violation = 3;
+  PolicyViolationAnalysis analysis = 4;
+}
+
+message Component {
+  string uuid = 1;
+  optional string group = 2;
+  string name = 3;
+  string version = 4;
+  optional string purl = 5;
+  optional string md5 = 6;
+  optional string sha1 = 7;
+  optional string sha256 = 8;
+  optional string sha512 = 9;
+}
+
+message Project {
+  string uuid = 1;
+  string name = 2;
+  optional string version = 3;
+  optional string description = 4;
+  optional string purl = 5;
+  repeated string tags = 6;
+}
+
+message PolicyViolation {
+  string uuid = 1;
+  string type = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  PolicyCondition condition = 4;
+}
+
+message PolicyCondition {
+  string uuid = 1;
+  string subject = 2;
+  string operator = 3;
+  string value = 4;
+  Policy policy = 5;
+}
+
+message Policy {
+  string uuid = 1;
+  string name = 2;
+  string violation_state = 3;
+}
+
+message Vulnerability {
+  string uuid = 1;
+  string vuln_id = 2;
+  string source = 3;
+  repeated Alias aliases = 4;
+  optional string title = 5;
+  optional string sub_title = 6;
+  optional string description = 7;
+  optional string recommendation = 8;
+  optional double cvss_v2 = 9;
+  optional double cvss_v3 = 10;
+  optional double owasp_rr_likelihood = 11;
+  optional double owasp_rr_technical_impact = 12;
+  optional double owasp_rr_business_impact = 13;
+  optional string severity = 14;
+  repeated Cwe cwes = 15;
+
+  message Alias {
+    string id = 1;
+    string source = 2;
+  }
+
+  message Cwe {
+    int32 cwe_id = 1;
+    string name = 2;
+  }
+}
+
+message VulnerabilityAnalysis {
+  Component component = 1;
+  Project project = 2;
+  Vulnerability vulnerability = 3;
+  optional string state = 4;
+  optional bool suppressed = 5;
+}
+
+message PolicyViolationAnalysis {
+  Component component = 1;
+  Project project = 2;
+  PolicyViolation policy_violation = 3;
+  optional string state = 4;
+  optional bool suppressed = 5;
+}

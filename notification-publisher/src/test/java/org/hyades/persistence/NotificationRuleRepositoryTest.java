@@ -2,9 +2,10 @@ package org.hyades.persistence;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import org.hyades.model.NotificationLevel;
-import org.hyades.model.NotificationRule;
-import org.hyades.commonnotification.NotificationScope;
+import org.hyades.notification.model.NotificationLevel;
+import org.hyades.notification.model.NotificationRule;
+import org.hyades.notification.model.NotificationScope;
+import org.hyades.notification.persistence.NotificationRuleRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

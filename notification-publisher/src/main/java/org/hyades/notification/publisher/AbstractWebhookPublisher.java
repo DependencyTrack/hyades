@@ -23,27 +23,22 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.hyades.commonnotification.NotificationConstants;
-import org.hyades.commonnotification.NotificationGroup;
-import org.hyades.commonnotification.NotificationScope;
-import org.hyades.model.Notification;
-import org.hyades.model.NotificationLevel;
 import org.hyades.persistence.ConfigPropertyRepository;
+import org.hyades.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.json.JsonObject;
-import java.io.IOException;
 
 public abstract class AbstractWebhookPublisher implements Publisher {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWebhookPublisher.class);
+
     @Inject
     @Named("httpClient")
     CloseableHttpClient httpClient;
 
-    public void publish(final String publisherName, final PebbleTemplate template, final Notification notification, final JsonObject config, final ConfigPropertyRepository configPropertyRepository) {
+    public void publish(final String publisherName, final PebbleTemplate template, final Notification notification, final JsonObject config, final ConfigPropertyRepository configPropertyRepository) throws Exception {
         final Logger logger = LoggerFactory.getLogger(this.getClass());
         logger.debug("Preparing to publish notification");
         if (config == null) {
@@ -56,35 +51,22 @@ public abstract class AbstractWebhookPublisher implements Publisher {
             logger.warn("A destination or template was not found. Skipping notification");
             return;
         }
-        try {
-            final HttpPost request = new HttpPost(destination);
-            final String mimeType = getTemplateMimeType(config);
-            request.addHeader("content-type", mimeType);
-            request.addHeader("accept", mimeType);
-            StringEntity entity = new StringEntity(content);
-            request.setEntity(entity);
-            final CloseableHttpResponse response = httpClient.execute(request);
 
-            if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {
-                logger.error("An error was encountered publishing notification to " + publisherName);
-                logger.error("HTTP Status : " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
-                logger.error("Destination: " + destination);
-                logger.debug(content);
-            }
-        }catch (IOException ex){
-            handleRequestException(LOGGER, ex);
+        final HttpPost request = new HttpPost(destination);
+        final String mimeType = getTemplateMimeType(config);
+        request.addHeader("content-type", mimeType);
+        request.addHeader("accept", mimeType);
+        StringEntity entity = new StringEntity(content);
+        request.setEntity(entity);
+        final CloseableHttpResponse response = httpClient.execute(request);
+
+        if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {
+            logger.error("An error was encountered publishing notification to " + publisherName);
+            logger.error("HTTP Status : " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+            logger.error("Destination: " + destination);
+            logger.debug(content);
         }
     }
 
-    protected void handleRequestException(final Logger logger, final Exception e) {
-        logger.error("Request failure", e);
-        Notification.dispatch(new Notification()
-                .scope(NotificationScope.SYSTEM)
-                .group(NotificationGroup.REPOSITORY)
-                .title(NotificationConstants.Title.REPO_ERROR)
-                .content("An error occurred publishing notification. Check log for details. " + e.getMessage())
-                .level(NotificationLevel.ERROR)
-        );
-    }
 }
 
