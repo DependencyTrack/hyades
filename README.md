@@ -88,6 +88,27 @@ To execute the unit tests for all Hyades modules:
 ./mvnw clean verify
 ```
 
+#### End-To-End Testing 🧟
+
+> **Note**  
+> End-to-end tests are based on container images. The tags of those images are currently hardcoded.
+> For the Hyades services, the tags are set to `latest`. If you want to test local changes, you'll have
+> to first:
+> * Build container images locally
+> * Update the tags in [`AbstractE2ET`](https://github.com/DependencyTrack/hyades/blob/main/e2e/src/test/java/org/hyades/e2e/AbstractE2ET.java)
+
+To execute end-to-end tests as part of the build:
+
+```shell
+./mvnw clean verify -Pe2e-all
+```
+
+To execute *only* the end-to-end tests:
+
+```shell
+./mvnw -pl e2e clean verify -Pe2e-all
+```
+
 #### Load Testing 🚀
 
 See [`load-tests`](load-tests).

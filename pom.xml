@@ -15,6 +15,7 @@
     <module>repository-meta-analyzer</module>
     <module>proto</module>
     <module>vulnerability-analyzer</module>
+    <module>e2e</module>
   </modules>
 
   <properties>
@@ -32,6 +33,7 @@
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
+    <lib.greenmail.version>1.6.14</lib.greenmail.version>
     <lib.json-unit.version>2.36.1</lib.json-unit.version>
     <lib.maven-artifact.version>4.0.0-alpha-4</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
@@ -56,6 +58,7 @@
     <sonar.projectKey>dependency-track_hyades</sonar.projectKey>
     <sonar.moduleKey>${artifactId}</sonar.moduleKey>
     <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.exclusions>e2e/**/*</sonar.exclusions>
 
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0</surefire-plugin.version>
@@ -163,6 +166,11 @@
         <artifactId>json-unit-assertj</artifactId>
         <version>${lib.json-unit.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.icegreen</groupId>
+        <artifactId>greenmail-junit5</artifactId>
+        <version>${lib.greenmail.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -241,6 +249,10 @@
                 <goal>verify</goal>
               </goals>
               <configuration>
+                <includes>
+                  <include>**/*IT.java</include>
+                  <include>**/*E2ET.java</include>
+                </includes>
                 <systemPropertyVariables>
                   <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                   <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
