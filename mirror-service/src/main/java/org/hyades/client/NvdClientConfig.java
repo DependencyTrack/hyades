@@ -53,7 +53,7 @@ public class NvdClientConfig {
     private final BiFunction<String, Long, NvdCveApi> cveApiSupplier = (apiKey, lastModified) -> {
         NvdCveApiBuilder builder = NvdCveApiBuilder.aNvdCveApi();
         if (lastModified > 0) {
-            var start = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastModified), ZoneOffset.UTC);
+            var start = ZonedDateTime.ofInstant(Instant.ofEpochSecond(lastModified), ZoneOffset.UTC);
             var end = start.minusDays(-120);
             builder.withLastModifiedFilter(start, end);
         }
