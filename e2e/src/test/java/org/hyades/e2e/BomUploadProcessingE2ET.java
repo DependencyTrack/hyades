@@ -1,7 +1,6 @@
 package org.hyades.e2e;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetup;
 import org.hyades.apiserver.model.BomProcessingResponse;
@@ -20,6 +19,7 @@ import org.hyades.apiserver.model.UpdateNotificationRuleRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
@@ -34,20 +34,27 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-@WireMockTest
 public class BomUploadProcessingE2ET extends AbstractE2ET {
+
+    @RegisterExtension
+    static WireMockExtension wireMock = WireMockExtension.newInstance()
+            .options(wireMockConfig().dynamicPort())
+            .build();
 
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetup.SMTP.dynamicPort());
 
     @BeforeEach
     void beforeEach() throws Exception {
+        // host.docker.internal may not always be available, so use testcontainer's
+        // solution for host port exposure instead: https://www.testcontainers.org/features/networking/#exposing-host-ports-to-the-container
+        Testcontainers.exposeHostPorts(greenMail.getSmtp().getPort(), wireMock.getRuntimeInfo().getHttpPort());
+
         // Users must be created before the notification-publisher container is started.
         greenMail.getUserManager().createUser("from@localhost", "from", "fromPass");
         greenMail.getUserManager().createUser("to@localhost", "to", "toPass");
@@ -59,7 +66,7 @@ public class BomUploadProcessingE2ET extends AbstractE2ET {
     protected void customizeNotificationPublisherContainer(final GenericContainer<?> container) {
         container
                 .withEnv("QUARKUS_MAILER_FROM", "from@localhost")
-                .withEnv("QUARKUS_MAILER_HOST", "host.docker.internal")
+                .withEnv("QUARKUS_MAILER_HOST", "host.testcontainers.internal")
                 .withEnv("QUARKUS_MAILER_PORT", Integer.toString(greenMail.getSmtp().getPort()))
                 .withEnv("QUARKUS_MAILER_USERNAME", "from")
                 .withEnv("QUARKUS_MAILER_PASSWORD", "fromPass");
@@ -75,7 +82,7 @@ public class BomUploadProcessingE2ET extends AbstractE2ET {
     }
 
     @Test
-    void test(final WireMockRuntimeInfo wireMockRuntimeInfo) throws Exception {
+    void test() throws Exception {
         final List<NotificationPublisher> publishers = apiServerClient.getAllNotificationPublishers();
 
         // Find the email notification publisher.
@@ -111,10 +118,10 @@ public class BomUploadProcessingE2ET extends AbstractE2ET {
         apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(webhookRule.uuid(), webhookRule.name(), true,
                 "INFORMATIONAL", Set.of("NEW_VULNERABILITY"), """
                 {
-                  "destination": "http://host.docker.internal:%d/notification"
+                  "destination": "http://host.testcontainers.internal:%d/notification"
                 }
-                """.formatted(wireMockRuntimeInfo.getHttpPort())));
-        stubFor(post(urlPathEqualTo("/notification"))
+                """.formatted(wireMock.getPort())));
+        wireMock.stubFor(post(urlPathEqualTo("/notification"))
                 .willReturn(aResponse()
                         .withStatus(201)));
 
@@ -170,7 +177,7 @@ public class BomUploadProcessingE2ET extends AbstractE2ET {
     }
 
     private void verifyWebhookNotification() {
-        verify(postRequestedFor(urlPathEqualTo("/notification"))
+        wireMock.verify(postRequestedFor(urlPathEqualTo("/notification"))
                 .withRequestBody(equalToJson("""
                         {
                           "notification": {
