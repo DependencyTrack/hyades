@@ -2,13 +2,13 @@ package org.hyades.vulnmirror.datasource.nvd;
 
 import io.github.jeremylong.nvdlib.NvdCveApi;
 import io.github.jeremylong.nvdlib.nvd.DefCveItem;
-import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Source;
 import org.cyclonedx.proto.v1_4.Vulnerability;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.hyades.common.KafkaTopic;
 import org.hyades.vulnmirror.datasource.Datasource;
 import org.hyades.vulnmirror.datasource.DatasourceMirror;
 import org.hyades.vulnmirror.state.MirrorStateStore;
@@ -31,18 +31,18 @@ class NvdMirror implements DatasourceMirror {
     private final ExecutorService executorService;
     private final VulnerabilityDigestStore vulnDigestStore;
     private final MirrorStateStore stateStore;
-    private final Emitter<byte[]> bovEmitter;
+    private final Producer<String, byte[]> bovProducer;
 
     NvdMirror(final NvdApiClientFactory apiClientFactory,
               @Named("nvdExecutorService") final ExecutorService executorService,
               final VulnerabilityDigestStore vulnDigestStore,
               final MirrorStateStore stateStore,
-              @Channel("vulnerabilities") final Emitter<byte[]> bovEmitter) {
+              final Producer<String, byte[]> bovProducer) {
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
         this.vulnDigestStore = vulnDigestStore;
         this.stateStore = stateStore;
-        this.bovEmitter = bovEmitter;
+        this.bovProducer = bovProducer;
     }
 
     public void doMirror() {
@@ -55,8 +55,9 @@ class NvdMirror implements DatasourceMirror {
     }
 
     private void mirrorInternal() {
+        LOGGER.info("Starting NVD mirroring");
         final NvdMirrorState state = stateStore.get(Datasource.NVD, NvdMirrorState.class);
-        final long lastModified = Optional.ofNullable(state)
+        long lastModified = Optional.ofNullable(state)
                 .map(NvdMirrorState::lastModifiedEpochSeconds)
                 .orElse(0L);
 
@@ -74,7 +75,7 @@ class NvdMirror implements DatasourceMirror {
                     final byte[] bovDigest = DigestUtils.getSha256Digest().digest(serializedBov);
                     if (!Arrays.equals(vulnDigestStore.get(Datasource.NVD, cveItem.getCve().getId()), bovDigest)) {
                         LOGGER.debug("{} has changed", eventId);
-                        bovEmitter.send(KafkaRecord.of(eventId, serializedBov));
+                        bovProducer.send(new ProducerRecord<>(KafkaTopic.NEW_VULNERABILITY.getName(), eventId, serializedBov)).get();
                     } else {
                         LOGGER.debug("{} did not change", eventId);
                     }
@@ -82,9 +83,9 @@ class NvdMirror implements DatasourceMirror {
             }
 
             stateStore.putAndWait(Datasource.NVD, new NvdMirrorState(apiClient.getLastModifiedRequest()));
-            LOGGER.info("Completed");
+            LOGGER.info("NVD mirroring completed");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            LOGGER.error("NVD mirroring failed", e);
         }
     }
 

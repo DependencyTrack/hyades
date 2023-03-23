@@ -3,11 +3,11 @@ package org.hyades.vulnmirror.state;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
-import io.smallrye.reactive.messaging.kafka.KafkaRecord;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.hyades.common.KafkaTopic;
 import org.hyades.vulnmirror.datasource.Datasource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +21,18 @@ public class MirrorStateStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MirrorStateStore.class);
 
-    private final Emitter<byte[]> stateEmitter;
+    private final Producer<String, byte[]> stateProducer;
     private final ObjectMapper objectMapper;
 
-    MirrorStateStore(@Channel("mirror-states") final Emitter<byte[]> stateEmitter,
+    MirrorStateStore(final Producer<String, byte[]> stateProducer,
                      final ObjectMapper objectMapper) {
-        this.stateEmitter = stateEmitter;
+        this.stateProducer = stateProducer;
         this.objectMapper = objectMapper;
     }
 
     public <T> void put(final Datasource datasource, final T state) {
-        stateEmitter.send(KafkaRecord.of(datasource.name(), serialize(state)));
+        stateProducer.send(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_STATE.getName(),
+                datasource.name(), serialize(state)));
     }
 
     /**
