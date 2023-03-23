@@ -43,7 +43,7 @@
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>2.16.4.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.16.5.Final</quarkus.platform.version>
 
     <!-- Plugin Versions -->
     <plugin.jacoco.version>0.8.8</plugin.jacoco.version>
