@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 /**
- * Client for the NVD REST API.
+ * Processor for nvd mirroring
  */
 public class NvdClient extends ContextualProcessor<String, String, String, Bom> {
 
@@ -59,10 +59,8 @@ public class NvdClient extends ContextualProcessor<String, String, String, Bom> 
         try (NvdCveApi api = this.cveApiSupplier.apply(apiKey, lastModifiedRequest)) {
             while (api.hasNext()) {
                 List<Bom> bovs = new ArrayList<>();
-                api.next().stream().forEach(defCveItem -> {
-                    var parser = new NvdToCyclonedxParser();
-                    bovs.add(parser.parse(defCveItem.getCve()));
-                });
+                api.next().stream().forEach(defCveItem ->
+                        bovs.add(NvdToCyclonedxParser.parse(defCveItem.getCve())));
                 bovs.forEach(bov -> context().forward(record
                         .withKey(Vulnerability.Source.NVD.name() + "/" + bov.getVulnerabilities().get(0).getId())
                         .withValue(bov)));

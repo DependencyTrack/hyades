@@ -12,7 +12,7 @@ import org.apache.kafka.streams.state.StoreBuilder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.function.BiFunction;
@@ -53,7 +53,7 @@ public class NvdClientConfig {
     private final BiFunction<String, Long, NvdCveApi> cveApiSupplier = (apiKey, lastModified) -> {
         NvdCveApiBuilder builder = NvdCveApiBuilder.aNvdCveApi();
         if (lastModified > 0) {
-            var start = ZonedDateTime.from(LocalDateTime.ofEpochSecond(lastModified, 0, ZoneOffset.UTC));
+            var start = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastModified), ZoneOffset.UTC);
             var end = start.minusDays(-120);
             builder.withLastModifiedFilter(start, end);
         }
