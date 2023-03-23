@@ -15,6 +15,7 @@
     <module>repository-meta-analyzer</module>
     <module>proto</module>
     <module>vulnerability-analyzer</module>
+    <module>mirror-service-x</module>
     <module>e2e</module>
   </modules>
 
@@ -33,11 +34,14 @@
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
+    <lib.failsafe.version>3.3.1</lib.failsafe.version>
+    <lib.gh-advisory-lib.version>2.0.2</lib.gh-advisory-lib.version>
     <lib.greenmail.version>1.6.14</lib.greenmail.version>
     <lib.json-unit.version>2.37.0</lib.json-unit.version>
     <lib.kafka.version>3.4.0</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-5</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
+    <lib.nvd-lib.version>2.0.2</lib.nvd-lib.version>
     <lib.org-json.version>20230227</lib.org-json.version>
     <lib.pebble.version>3.2.0</lib.pebble.version>
     <lib.quarkus-helm.version>0.2.8</lib.quarkus-helm.version>
@@ -96,6 +100,24 @@
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-core-java</artifactId>
         <version>${lib.cyclonedx-java.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>dev.failsafe</groupId>
+        <artifactId>failsafe</artifactId>
+        <version>${lib.failsafe.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.jeremylong</groupId>
+        <artifactId>gh-advisory-lib</artifactId>
+        <version>${lib.gh-advisory-lib.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.jeremylong</groupId>
+        <artifactId>nvd-lib</artifactId>
+        <version>${lib.nvd-lib.version}</version>
       </dependency>
 
       <dependency>

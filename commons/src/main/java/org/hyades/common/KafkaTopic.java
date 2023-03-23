@@ -28,6 +28,9 @@ public enum KafkaTopic {
     MIRROR_OSV("dtrack.vulnerability.mirror.osv"),
     MIRROR_NVD("dtrack.vulnerability.mirror.nvd"),
     NEW_VULNERABILITY("dtrack.vulnerability"),
+    VULNERABILITY_MIRROR_COMMAND("dtrack.vulnerability.mirror.command"),
+    VULNERABILITY_MIRROR_STATE("dtrack.vulnerability.mirror.state"),
+    VULNERABILITY_DIGEST("dtrack.vulnerability.digest"),
     COMPONENT_METRICS("dtrack.metrics.component"),
     PROJECT_METRICS("dtrack.metrics.project"),
     PORTFOLIO_METRICS("dtrack.metrics.portfolio");
