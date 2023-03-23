@@ -44,3 +44,22 @@ jobs:
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=${{ startsWith(github.repository, 'DependencyTrack/') }} \
             -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
+
+  e2e-test:
+    name: End-To-End Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs:
+    # As e2e tests depend on the latest container images,
+    # only trigger them after building the images completed.
+    - publish-container-image
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Test
+      run: mvn -pl e2e clean verify -Pe2e-all
