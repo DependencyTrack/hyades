@@ -28,7 +28,7 @@
 
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+            <artifactId>quarkus-kafka-client</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

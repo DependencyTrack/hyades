@@ -20,8 +20,9 @@ class GitHubApiClientFactory {
     }
 
     GitHubSecurityAdvisoryClient create(final long lastUpdatedEpochSeconds) {
-        final GitHubSecurityAdvisoryClientBuilder builder = aGitHubSecurityAdvisoryClient()
-                .withApiKey(config.apiKey());
+        final GitHubSecurityAdvisoryClientBuilder builder = aGitHubSecurityAdvisoryClient();
+
+        config.apiKey().ifPresent(builder::withApiKey);
 
         if (lastUpdatedEpochSeconds > 0) {
             final ZonedDateTime lastUpdated = ZonedDateTime.ofInstant(Instant.ofEpochSecond(lastUpdatedEpochSeconds), ZoneOffset.UTC);

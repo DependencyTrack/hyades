@@ -2,13 +2,13 @@ package org.hyades.vulnmirror.datasource.github;
 
 import io.github.jeremylong.ghsa.GitHubSecurityAdvisoryClient;
 import io.github.jeremylong.ghsa.SecurityAdvisory;
-import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Source;
 import org.cyclonedx.proto.v1_4.Vulnerability;
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.hyades.common.KafkaTopic;
 import org.hyades.vulnmirror.datasource.Datasource;
 import org.hyades.vulnmirror.datasource.DatasourceMirror;
 import org.hyades.vulnmirror.state.MirrorStateStore;
@@ -33,18 +33,18 @@ class GitHubMirror implements DatasourceMirror {
     private final ExecutorService executorService;
     private final VulnerabilityDigestStore vulnDigestStore;
     private final MirrorStateStore stateStore;
-    private final Emitter<byte[]> bovEmitter;
+    private final Producer<String, byte[]> bovProducer;
 
     GitHubMirror(final GitHubApiClientFactory apiClientFactory,
                  @Named("githubExecutorService") final ExecutorService executorService,
                  final VulnerabilityDigestStore vulnDigestStore,
                  final MirrorStateStore stateStore,
-                 @Channel("vulnerabilities") final Emitter<byte[]> bovEmitter) {
+                 final Producer<String, byte[]> bovProducer) {
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
         this.vulnDigestStore = vulnDigestStore;
         this.stateStore = stateStore;
-        this.bovEmitter = bovEmitter;
+        this.bovProducer = bovProducer;
     }
 
     @Override
@@ -77,7 +77,7 @@ class GitHubMirror implements DatasourceMirror {
                     final byte[] bovDigest = DigestUtils.getSha256Digest().digest(serializedBov);
                     if (!Arrays.equals(vulnDigestStore.get(Datasource.GITHUB, advisory.getGhsaId()), bovDigest)) {
                         LOGGER.info("{} has changed", eventId);
-                        bovEmitter.send(KafkaRecord.of(eventId, serializedBov));
+                        bovProducer.send(new ProducerRecord<>(KafkaTopic.NEW_VULNERABILITY.getName(), eventId, serializedBov));
                     } else {
                         LOGGER.info("{} did not change", eventId);
                     }
