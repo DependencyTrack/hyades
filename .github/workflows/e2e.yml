@@ -1,13 +1,16 @@
 name: E2E
 
 on:
+  push:
+    branches:
+    - e2e-docker-host
   # As e2e tests depend on the latest container images,
   # only trigger them after building the images completed.
-  workflow_run:
-    workflows:
-    - "Publish Jar"
-    types:
-    - completed
+#  workflow_run:
+#    workflows:
+#    - "Publish Jar"
+#    types:
+#    - completed
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,7 +23,7 @@ jobs:
     # The workflow completion event will be triggered for both
     # failures and successes, so we need to check the status.
     # https://github.com/orgs/community/discussions/26238
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    #if: ${{ github.event.workflow_run.conclusion == 'success' }}
     timeout-minutes: 15
     steps:
     - uses: actions/checkout@v3
