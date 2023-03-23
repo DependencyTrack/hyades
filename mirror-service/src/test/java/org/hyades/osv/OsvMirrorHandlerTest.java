@@ -3,8 +3,6 @@ package org.hyades.osv;
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
-import org.hyades.client.OsvClient;
-import org.hyades.common.KafkaTopic;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.TestInputTopic;
@@ -12,6 +10,8 @@ import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.cyclonedx.model.Bom;
+import org.hyades.common.KafkaTopic;
+import org.hyades.osv.client.OsvClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,9 +22,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyades.util.FileUtil.deleteFileAndDir;
 import static org.hyades.util.FileUtil.getTempFileLocation;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 

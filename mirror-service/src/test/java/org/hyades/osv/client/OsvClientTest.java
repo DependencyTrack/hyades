@@ -1,13 +1,13 @@
-package org.hyades.client;
+package org.hyades.osv.client;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusTest;
+import org.apache.http.HttpStatus;
 import org.hyades.osv.OsvMirrorHandler;
 import org.hyades.util.WireMockTestResource;
 import org.hyades.util.WireMockTestResource.InjectWireMock;
-import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,9 +25,9 @@ import java.nio.file.Paths;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static org.hyades.util.FileUtil.deleteFileAndDir;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.hyades.util.FileUtil.deleteFileAndDir;
 
 @QuarkusTest
 @QuarkusTestResource(

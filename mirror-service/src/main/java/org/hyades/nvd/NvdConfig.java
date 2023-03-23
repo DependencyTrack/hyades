@@ -1,4 +1,4 @@
-package org.hyades.client;
+package org.hyades.nvd;
 
 import io.smallrye.config.ConfigMapping;
 

@@ -1,4 +1,4 @@
-package org.hyades.client;
+package org.hyades.nvd;
 
 import io.github.jeremylong.nvdlib.NvdCveApi;
 import org.apache.kafka.streams.processor.api.ContextualProcessor;
@@ -8,7 +8,6 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.cyclonedx.model.Bom;
 import org.hyades.model.Vulnerability;
-import org.hyades.nvd.NvdToCyclonedxParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,20 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-/**
- * Client for the NVD REST API.
- */
-public class NvdClient extends ContextualProcessor<String, String, String, Bom> {
+public class NvdProcessor extends ContextualProcessor<String, String, String, Bom> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NvdClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NvdProcessor.class);
     private static final String LAST_MODIFIED_EPOCH = "LAST_MODIFIED_EPOCH";
     private KeyValueStore<String, Long> store;
     private final StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder;
     private final BiFunction<String, Long, NvdCveApi> cveApiSupplier;
     private final String apiKey;
 
-    public NvdClient(StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder,
-                     String apiKey, BiFunction<String, Long, NvdCveApi> cveApiSupplier) {
+    public NvdProcessor(StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder,
+                        String apiKey, BiFunction<String, Long, NvdCveApi> cveApiSupplier) {
         this.apiKey = apiKey;
         this.lastModifiedEpochStoreBuilder = lastModifiedEpochStoreBuilder;
         this.cveApiSupplier = cveApiSupplier;
@@ -59,10 +55,8 @@ public class NvdClient extends ContextualProcessor<String, String, String, Bom> 
         try (NvdCveApi api = this.cveApiSupplier.apply(apiKey, lastModifiedRequest)) {
             while (api.hasNext()) {
                 List<Bom> bovs = new ArrayList<>();
-                api.next().stream().forEach(defCveItem -> {
-                    var parser = new NvdToCyclonedxParser();
-                    bovs.add(parser.parse(defCveItem.getCve()));
-                });
+                api.next().stream().forEach(defCveItem ->
+                    bovs.add(NvdToCyclonedxParser.parse(defCveItem.getCve())));
                 bovs.forEach(bov -> context().forward(record
                         .withKey(Vulnerability.Source.NVD.name() + "/" + bov.getVulnerabilities().get(0).getId())
                         .withValue(bov)));

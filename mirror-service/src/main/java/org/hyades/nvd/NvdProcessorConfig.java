@@ -1,4 +1,4 @@
-package org.hyades.client;
+package org.hyades.nvd;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +12,7 @@ import org.apache.kafka.streams.state.StoreBuilder;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.function.BiFunction;
@@ -20,14 +20,14 @@ import java.util.function.BiFunction;
 import static org.apache.kafka.streams.state.Stores.inMemoryKeyValueStore;
 import static org.apache.kafka.streams.state.Stores.keyValueStoreBuilder;
 
-public class NvdClientConfig {
+public class NvdProcessorConfig {
 
     @Produces
     @ApplicationScoped
-    NvdClient nvdClient(@Named("LastModifiedEpochStoreBuilder") StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder,
-                          NvdConfig config,
-                        @Named("NvdCveApiSupplier") BiFunction<String, Long, NvdCveApi> cveApiSupplier) {
-        return new NvdClient(lastModifiedEpochStoreBuilder, config.api().apiKey().orElse(null), cveApiSupplier);
+    NvdProcessor nvdClient(@Named("LastModifiedEpochStoreBuilder") StoreBuilder<KeyValueStore<String, Long>> lastModifiedEpochStoreBuilder,
+                           NvdConfig config,
+                           @Named("NvdCveApiSupplier") BiFunction<String, Long, NvdCveApi> cveApiSupplier) {
+        return new NvdProcessor(lastModifiedEpochStoreBuilder, config.api().apiKey().orElse(null), cveApiSupplier);
     }
 
     @Produces
@@ -53,7 +53,7 @@ public class NvdClientConfig {
     private final BiFunction<String, Long, NvdCveApi> cveApiSupplier = (apiKey, lastModified) -> {
         NvdCveApiBuilder builder = NvdCveApiBuilder.aNvdCveApi();
         if (lastModified > 0) {
-            var start = ZonedDateTime.from(LocalDateTime.ofEpochSecond(lastModified, 0, ZoneOffset.UTC));
+            var start = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastModified), ZoneOffset.UTC);
             var end = start.minusDays(-120);
             builder.withLastModifiedFilter(start, end);
         }

@@ -1,9 +1,9 @@
 package org.hyades.osv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
-import org.hyades.client.OsvClient;
 import org.cyclonedx.model.Bom;
+import org.hyades.osv.client.OsvClient;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

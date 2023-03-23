@@ -1,4 +1,4 @@
-package org.hyades.nvd;
+package org.hyades.reflection;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 

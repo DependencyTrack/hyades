@@ -1,4 +1,4 @@
-package org.hyades.cyclonedx;
+package org.hyades.reflection;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 

@@ -1,4 +1,4 @@
-package org.hyades.client;
+package org.hyades.osv.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;

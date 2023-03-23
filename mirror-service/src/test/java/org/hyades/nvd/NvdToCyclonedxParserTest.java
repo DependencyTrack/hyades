@@ -3,7 +3,6 @@ package org.hyades.nvd;
 import io.github.jeremylong.nvdlib.nvd.CveItem;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.vulnerability.Vulnerability;
-import org.hyades.client.NvdClientConfig;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -16,14 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class NvdToCyclonedxParserTest {
 
     NvdToCyclonedxParser parser = new NvdToCyclonedxParser();
-    NvdClientConfig nvdClientConfig = new NvdClientConfig();
+    NvdProcessorConfig nvdProcessorConfig = new NvdProcessorConfig();
 
     @Test
     public void testVulnerabilityParsing() throws IOException {
 
         String jsonFile = "src/test/resources/nvd/nvd-vuln.json";
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
-        CveItem cveItem = nvdClientConfig.objectMapper().readValue(jsonString, CveItem.class);
+        CveItem cveItem = nvdProcessorConfig.objectMapper().readValue(jsonString, CveItem.class);
         Bom result = parser.parse(cveItem);
         assertNotNull(result);
 

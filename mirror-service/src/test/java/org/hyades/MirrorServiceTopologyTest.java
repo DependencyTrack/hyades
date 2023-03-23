@@ -16,8 +16,8 @@ import org.apache.kafka.streams.processor.api.ContextualProcessor;
 import org.apache.kafka.streams.processor.api.Record;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.vulnerability.Vulnerability;
-import org.hyades.client.NvdClientConfig;
 import org.hyades.common.KafkaTopic;
+import org.hyades.nvd.NvdProcessorConfig;
 import org.hyades.nvd.NvdProcessorSupplier;
 import org.hyades.osv.OsvMirrorHandler;
 import org.junit.jupiter.api.AfterEach;
@@ -60,7 +60,7 @@ public class MirrorServiceTopologyTest {
     public BiFunction<String, Long, NvdCveApi> cveApiSupplier() throws IOException {
         String jsonFile = "src/test/resources/nvd/nvd-response.json";
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
-        DefCveItem defCveItem = new NvdClientConfig().objectMapper().readValue(jsonString, DefCveItem.class);
+        DefCveItem defCveItem = new NvdProcessorConfig().objectMapper().readValue(jsonString, DefCveItem.class);
 
         final var cveApiMock = mock(NvdCveApi.class);
         when(cveApiMock.hasNext()).thenReturn(true).thenReturn(false);
