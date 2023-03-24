@@ -10,6 +10,20 @@
     </parent>
     <artifactId>mirror-service-x</artifactId>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!--
+                    Temporary workaround to fix https://issues.apache.org/jira/browse/HTTPCLIENT-2182.
+                    See also: https://github.com/jeremylong/vuln-tools/pull/43#issuecomment-1482713320
+                -->
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>5.2.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.hyades</groupId>
