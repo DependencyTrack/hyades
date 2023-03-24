@@ -37,6 +37,8 @@ public class MirrorStateStore {
 
     /**
      * Publish an event to the store's changelog topic, <em>and wait for the local state store to become consistent</em>.
+     * <p>
+     * Will wait up to 30 seconds. This is a blocking operation.
      *
      * @param datasource The {@link Datasource} to update the state for
      * @param state      The state to update
@@ -48,11 +50,13 @@ public class MirrorStateStore {
         Failsafe
                 .with(RetryPolicy.builder()
                         .handleResultIf(result -> {
-                            LOGGER.debug("Waiting for state to become consistent (want: {}; got: {})", state, result);
+                            // TODO: Change back to debug; info is used for demonstration purposes only.
+                            LOGGER.info("Waiting for state to become consistent (want: {}; got: {})", state, result);
                             return !state.equals(result);
                         })
                         .withDelay(Duration.ofMillis(100))
-                        .withMaxRetries(30)
+                        .withMaxDuration(Duration.ofSeconds(30))
+                        .withMaxRetries(-1) // Unlimited
                         .build())
                 .get(() -> get(datasource, state.getClass()));
     }

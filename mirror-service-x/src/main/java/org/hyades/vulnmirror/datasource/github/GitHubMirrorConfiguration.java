@@ -26,7 +26,7 @@ class GitHubMirrorConfiguration {
                 })
                 .build();
 
-        return new ThreadPoolExecutor(0, 1, 0L, TimeUnit.MILLISECONDS,
+        return new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(1), threadFactory);
     }
 
