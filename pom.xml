@@ -34,7 +34,7 @@
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
     <lib.greenmail.version>1.6.14</lib.greenmail.version>
-    <lib.json-unit.version>2.36.1</lib.json-unit.version>
+    <lib.json-unit.version>2.37.0</lib.json-unit.version>
     <lib.maven-artifact.version>4.0.0-alpha-5</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20230227</lib.org-json.version>
