@@ -39,7 +39,7 @@
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20230227</lib.org-json.version>
     <lib.pebble.version>3.2.0</lib.pebble.version>
-    <lib.quarkus-helm.version>0.2.7</lib.quarkus-helm.version>
+    <lib.quarkus-helm.version>0.2.8</lib.quarkus-helm.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
