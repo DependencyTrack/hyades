@@ -24,7 +24,7 @@ import static org.apache.kafka.streams.state.Stores.keyValueStoreBuilder;
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
 
-class StreamTopologyProducer {
+class KafkaStreamsTopologyProducer {
 
     @Produces
     Topology topology(final Instance<DatasourceMirror> datasourceMirrors) {
@@ -66,7 +66,7 @@ class StreamTopologyProducer {
         // of its serialized BOV.
         vulnerabilityStream
                 .mapValues((key, bytes) -> DigestUtils.getSha256Digest().digest(bytes),
-                        Named.as("hash_bov"))
+                        Named.as("hash_vulnerability_bov"))
                 .to(KafkaTopic.VULNERABILITY_DIGEST.getName(), Produced
                         .with(Serdes.String(), Serdes.ByteArray())
                         .withName(processorNameProduce(KafkaTopic.VULNERABILITY_DIGEST)));
