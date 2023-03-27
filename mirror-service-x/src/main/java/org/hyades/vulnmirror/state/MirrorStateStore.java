@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Objects;
+import java.util.Optional;
 
 @ApplicationScoped
 public class MirrorStateStore {
@@ -52,13 +54,13 @@ public class MirrorStateStore {
                         .handleResultIf(result -> {
                             // TODO: Change back to debug; info is used for demonstration purposes only.
                             LOGGER.info("Waiting for state to become consistent (want: {}; got: {})", state, result);
-                            return !state.equals(result);
+                            return !Objects.equals(state, result);
                         })
                         .withDelay(Duration.ofMillis(100))
                         .withMaxDuration(Duration.ofSeconds(30))
                         .withMaxRetries(-1) // Unlimited
                         .build())
-                .get(() -> get(datasource, state.getClass()));
+                .get(() -> get(datasource, Optional.ofNullable(state).map(Object::getClass).orElse(null)));
     }
 
     public <T> T get(final Datasource datasource, final Class<T> clazz) {
@@ -71,7 +73,21 @@ public class MirrorStateStore {
         return deserialize(stateBytes, clazz);
     }
 
+    void delete(final Datasource datasource) {
+        putAndWait(datasource, null);
+    }
+
+    void clear() {
+        for (final Datasource datasource : Datasource.values()) {
+            delete(datasource);
+        }
+    }
+
     private <T> byte[] serialize(final T state) {
+        if (state == null) {
+            return null;
+        }
+
         try {
             return objectMapper.writeValueAsBytes(state);
         } catch (IOException e) {
@@ -80,6 +96,10 @@ public class MirrorStateStore {
     }
 
     private <T> T deserialize(final byte[] bytes, final Class<T> clazz) {
+        if (bytes == null) {
+            return null;
+        }
+
         try {
             return objectMapper.readValue(bytes, clazz);
         } catch (IOException e) {
