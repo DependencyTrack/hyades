@@ -15,12 +15,18 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
+import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
+import static org.hyades.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 
 @ApplicationScoped
 class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NvdMirror.class);
+    private static final String NOTIFICATION_TITLE = "NVD Mirroring";
 
     private final NvdApiClientFactory apiClientFactory;
     private final ExecutorService executorService;
@@ -29,18 +35,28 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
               @Named("nvdExecutorService") final ExecutorService executorService,
               final MirrorStateStore mirrorStateStore,
               final VulnerabilityDigestStore vulnDigestStore,
-              final Producer<String, byte[]> bovProducer) {
-        super(Datasource.NVD, mirrorStateStore, vulnDigestStore, bovProducer, NvdMirrorState.class);
+              final Producer<String, byte[]> kafkaProducer) {
+        super(Datasource.NVD, mirrorStateStore, vulnDigestStore, kafkaProducer, NvdMirrorState.class);
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
     }
 
     @Override
-    public void doMirror() {
-        executorService.submit(this::mirrorInternal);
+    public Future<?> doMirror() {
+        return executorService.submit(() -> {
+            try {
+                mirrorInternal();
+                dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
+                        "Mirroring of the National Vulnerability Database completed successfully.");
+            } catch (Exception e) {
+                LOGGER.error("An unexpected error occurred mirroring the contents of the National Vulnerability Database", e);
+                dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,
+                        "An error occurred mirroring the contents of the National Vulnerability Database. Check log for details.");
+            }
+        });
     }
 
-    private void mirrorInternal() {
+    void mirrorInternal() throws Exception {
         LOGGER.info("Starting NVD mirroring");
         long lastModified = getState()
                 .map(NvdMirrorState::lastModifiedEpochSeconds)
@@ -48,7 +64,13 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
 
         try (final NvdCveApi apiClient = apiClientFactory.createApiClient(lastModified)) {
             while (apiClient.hasNext()) {
-                for (final DefCveItem cveItem : apiClient.next()) {
+                final Collection<DefCveItem> cveItems = apiClient.next();
+                if (cveItems == null) {
+                    LOGGER.warn("foo");
+                    continue;
+                }
+
+                for (final DefCveItem cveItem : cveItems) {
                     final Bom bov = Bom.newBuilder()
                             .addVulnerabilities(Vulnerability.newBuilder()
                                     .setId(cveItem.getCve().getId())
@@ -61,8 +83,6 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
 
             updateState(new NvdMirrorState(apiClient.getLastModifiedRequest()));
             LOGGER.info("NVD mirroring completed");
-        } catch (Exception e) {
-            LOGGER.error("NVD mirroring failed", e);
         }
     }
 

@@ -26,7 +26,7 @@ class MirrorStateStoreTest {
     }
 
     @Test
-    void test() {
+    void testPutAndWait() {
         final ObjectNode nvdState = JsonNodeFactory.instance.objectNode();
         nvdState.put("foo", "bar");
         nvdState.put("baz", 12345);

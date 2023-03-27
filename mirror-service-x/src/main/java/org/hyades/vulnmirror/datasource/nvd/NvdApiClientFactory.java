@@ -20,6 +20,7 @@ class NvdApiClientFactory {
     NvdCveApi createApiClient(final long lastModifiedEpochSeconds) {
         final NvdCveApiBuilder builder = NvdCveApiBuilder.aNvdCveApi();
 
+        config.baseUrl().ifPresent(builder::withEndpoint);
         config.apiKey().ifPresent(apiKey -> {
             builder.withApiKey(apiKey);
             builder.withThreadCount(config.numThreads());

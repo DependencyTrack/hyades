@@ -22,6 +22,7 @@ class GitHubApiClientFactory {
     GitHubSecurityAdvisoryClient create(final long lastUpdatedEpochSeconds) {
         final GitHubSecurityAdvisoryClientBuilder builder = aGitHubSecurityAdvisoryClient();
 
+        config.baseUrl().ifPresent(builder::withEndpoint);
         config.apiKey().ifPresent(builder::withApiKey);
 
         if (lastUpdatedEpochSeconds > 0) {
