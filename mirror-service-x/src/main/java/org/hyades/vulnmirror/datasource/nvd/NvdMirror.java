@@ -2,6 +2,7 @@ package org.hyades.vulnmirror.datasource.nvd;
 
 import io.github.jeremylong.nvdlib.NvdCveApi;
 import io.github.jeremylong.nvdlib.nvd.DefCveItem;
+import io.micrometer.core.instrument.Timer;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Source;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -30,15 +33,18 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
 
     private final NvdApiClientFactory apiClientFactory;
     private final ExecutorService executorService;
+    private final Timer durationTimer;
 
     NvdMirror(final NvdApiClientFactory apiClientFactory,
               @Named("nvdExecutorService") final ExecutorService executorService,
               final MirrorStateStore mirrorStateStore,
               final VulnerabilityDigestStore vulnDigestStore,
-              final Producer<String, byte[]> kafkaProducer) {
+              final Producer<String, byte[]> kafkaProducer,
+              @Named("nvdDurationTimer") final Timer durationTimer) {
         super(Datasource.NVD, mirrorStateStore, vulnDigestStore, kafkaProducer, NvdMirrorState.class);
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
+        this.durationTimer = durationTimer;
     }
 
     @Override
@@ -57,10 +63,12 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
     }
 
     void mirrorInternal() throws Exception {
-        LOGGER.info("Starting NVD mirroring");
         long lastModified = getState()
                 .map(NvdMirrorState::lastModifiedEpochSeconds)
                 .orElse(0L);
+
+        LOGGER.info("Mirroring CVEs that were modified since {}", Instant.ofEpochSecond(lastModified));
+        final Timer.Sample durationSample = Timer.start();
 
         try (final NvdCveApi apiClient = apiClientFactory.createApiClient(lastModified)) {
             while (apiClient.hasNext()) {
@@ -82,7 +90,9 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
             }
 
             updateState(new NvdMirrorState(apiClient.getLastModifiedRequest()));
-            LOGGER.info("NVD mirroring completed");
+        } finally {
+            final long durationNanos = durationSample.stop(durationTimer);
+            LOGGER.info("Mirroring of CVEs completed in {}", Duration.ofNanos(durationNanos));
         }
     }
 

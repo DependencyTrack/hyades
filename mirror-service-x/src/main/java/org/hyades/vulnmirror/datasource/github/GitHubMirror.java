@@ -2,6 +2,7 @@ package org.hyades.vulnmirror.datasource.github;
 
 import io.github.jeremylong.ghsa.GitHubSecurityAdvisoryClient;
 import io.github.jeremylong.ghsa.SecurityAdvisory;
+import io.micrometer.core.instrument.Timer;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Source;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.chrono.ChronoZonedDateTime;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -31,15 +34,18 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
 
     final GitHubApiClientFactory apiClientFactory;
     private final ExecutorService executorService;
+    private final Timer durationTimer;
 
     GitHubMirror(final GitHubApiClientFactory apiClientFactory,
                  @Named("githubExecutorService") final ExecutorService executorService,
                  final MirrorStateStore mirrorStateStore,
                  final VulnerabilityDigestStore vulnDigestStore,
-                 final Producer<String, byte[]> kafkaProducer) {
+                 final Producer<String, byte[]> kafkaProducer,
+                 @Named("githubDurationTimer") final Timer durationTimer) {
         super(Datasource.GITHUB, mirrorStateStore, vulnDigestStore, kafkaProducer, GitHubMirrorState.class);
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
+        this.durationTimer = durationTimer;
     }
 
     @Override
@@ -63,10 +69,12 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
     }
 
     void mirrorInternal() throws Exception {
-        LOGGER.info("Starting GitHub mirroring");
         final long lastModified = getState()
                 .map(GitHubMirrorState::lastUpdatedEpochSeconds)
                 .orElse(0L);
+
+        LOGGER.info("Mirroring GitHub Advisories that were modified since {}", Instant.ofEpochSecond(lastModified));
+        final Timer.Sample durationSample = Timer.start();
 
         try (final GitHubSecurityAdvisoryClient apiClient = apiClientFactory.create(lastModified)) {
             while (apiClient.hasNext()) {
@@ -85,7 +93,9 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
             Optional.ofNullable(apiClient.getLastUpdated())
                     .map(ChronoZonedDateTime::toEpochSecond)
                     .ifPresent(epochSeconds -> updateState(new GitHubMirrorState(epochSeconds)));
-            LOGGER.info("GitHub mirroring completed");
+        } finally {
+            final long durationNanos = durationSample.stop(durationTimer);
+            LOGGER.info("Mirroring of GitHub Advisories completed in {}", Duration.ofNanos(durationNanos));
         }
     }
 

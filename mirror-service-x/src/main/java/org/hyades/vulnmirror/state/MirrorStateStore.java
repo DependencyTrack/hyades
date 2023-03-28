@@ -68,8 +68,7 @@ public class MirrorStateStore {
         Failsafe
                 .with(RetryPolicy.builder()
                         .handleResultIf(result -> {
-                            // TODO: Change back to debug; info is used for demonstration purposes only.
-                            LOGGER.info("Waiting for state to become consistent (want: {}; got: {})", state, result);
+                            LOGGER.debug("Waiting for state to become consistent (want: {}; got: {})", state, result);
                             return !Objects.equals(state, result);
                         })
                         .withDelay(Duration.ofMillis(100))

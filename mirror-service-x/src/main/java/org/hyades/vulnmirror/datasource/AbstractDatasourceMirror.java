@@ -102,13 +102,11 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
         final byte[] bovDigest = DigestUtils.getSha256Digest().digest(serializedBov);
 
         if (!Arrays.equals(vulnDigestStore.get(Datasource.NVD, vulnId), bovDigest)) {
-            // TODO: Change back to debug; info is used for demonstration purposes only.
-            logger.info("{} has changed", recordKey);
+            logger.debug("{} has changed", recordKey);
             kafkaProducer.send(new ProducerRecord<>(
                     KafkaTopic.NEW_VULNERABILITY.getName(), recordKey, serializedBov)).get();
         } else {
-            // TODO: Change back to debug; info is used for demonstration purposes only.
-            logger.info("{} did not change", recordKey);
+            logger.debug("{} did not change", recordKey);
         }
     }
 

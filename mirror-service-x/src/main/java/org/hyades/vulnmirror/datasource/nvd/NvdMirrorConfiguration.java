@@ -1,5 +1,7 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -22,6 +24,15 @@ class NvdMirrorConfiguration {
 
         return new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(1), threadFactory);
+    }
+
+    @Produces
+    @ApplicationScoped
+    @Named("nvdDurationTimer")
+    Timer durationTimer(final MeterRegistry meterRegistry) {
+        return Timer.builder("mirror.nvd.duration")
+                .description("Duration of NVD mirroring operations")
+                .register(meterRegistry);
     }
 
 }
