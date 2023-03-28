@@ -29,7 +29,7 @@
 
     <!-- Dependency Versions -->
     <lib.assertj.version>3.24.2</lib.assertj.version>
-    <lib.checkstyle.version>10.9.2</lib.checkstyle.version>
+    <lib.checkstyle.version>10.9.3</lib.checkstyle.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
@@ -37,13 +37,14 @@
     <lib.failsafe.version>3.3.1</lib.failsafe.version>
     <lib.gh-advisory-lib.version>2.0.2</lib.gh-advisory-lib.version>
     <lib.greenmail.version>1.6.14</lib.greenmail.version>
-    <lib.json-unit.version>2.36.1</lib.json-unit.version>
+    <lib.json-unit.version>2.37.0</lib.json-unit.version>
+    <lib.kafka.version>3.4.0</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-5</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.nvd-lib.version>2.0.2</lib.nvd-lib.version>
     <lib.org-json.version>20230227</lib.org-json.version>
     <lib.pebble.version>3.2.0</lib.pebble.version>
-    <lib.quarkus-helm.version>0.2.7</lib.quarkus-helm.version>
+    <lib.quarkus-helm.version>0.2.8</lib.quarkus-helm.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
@@ -134,6 +135,24 @@
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
         <version>${lib.org-json.version}</version>
+      </dependency>
+             
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>${lib.kafka.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-streams</artifactId>
+        <version>${lib.kafka.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-streams-test-utils</artifactId>
+        <version>${lib.kafka.version}</version>
       </dependency>
 
       <dependency>
