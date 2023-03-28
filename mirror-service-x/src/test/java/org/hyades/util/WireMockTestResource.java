@@ -1,6 +1,7 @@
 package org.hyades.util;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 import java.lang.annotation.ElementType;
@@ -36,7 +37,7 @@ public class WireMockTestResource implements QuarkusTestResourceLifecycleManager
 
     @Override
     public Map<String, String> start() {
-        wireMockServer = new WireMockServer(options().dynamicPort());
+        wireMockServer = new WireMockServer(options().dynamicPort().notifier(new ConsoleNotifier(true)));
         wireMockServer.start();
 
         if (serverUrlProperty == null) {
