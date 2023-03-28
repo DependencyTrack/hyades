@@ -94,6 +94,8 @@ class KafkaStreamsTopologyIT {
             // Wait for all expected vulnerability records; There should be one for each CVE.
             final List<ConsumerRecord<String, Bom>> results = kafkaCompanion
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
+                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
+                    .withAutoCommit()
                     .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
                     .awaitCompletion()
                     .getRecords();
@@ -132,6 +134,8 @@ class KafkaStreamsTopologyIT {
             // Wait for the notification that reports the successful mirroring operation.
             final List<ConsumerRecord<String, Notification>> notifications = kafkaCompanion
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
+                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
+                    .withAutoCommit()
                     .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
                     .awaitCompletion()
                     .getRecords();
@@ -194,6 +198,8 @@ class KafkaStreamsTopologyIT {
             // Wait for all expected vulnerability records; There should be one for each advisory.
             final List<ConsumerRecord<String, Bom>> results = kafkaCompanion
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
+                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
+                    .withAutoCommit()
                     .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
                     .awaitCompletion()
                     .getRecords();
@@ -236,6 +242,8 @@ class KafkaStreamsTopologyIT {
             // Wait for the notification that reports the successful mirroring operation.
             final List<ConsumerRecord<String, Notification>> notifications = kafkaCompanion
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
+                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
+                    .withAutoCommit()
                     .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
                     .awaitCompletion()
                     .getRecords();
