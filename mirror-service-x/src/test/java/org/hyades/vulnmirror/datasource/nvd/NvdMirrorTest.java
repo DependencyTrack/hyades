@@ -16,6 +16,7 @@ import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.hyades.common.KafkaTopic;
 import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.notification.v1.Notification;
+import org.hyades.vulnmirror.TestConstants;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
@@ -64,6 +65,8 @@ class NvdMirrorTest {
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
+                .withGroupId(TestConstants.CONSUMER_GROUP_ID)
+                .withAutoCommit()
                 .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
                 .awaitCompletion()
                 .getRecords();
@@ -95,6 +98,8 @@ class NvdMirrorTest {
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
+                .withGroupId(TestConstants.CONSUMER_GROUP_ID)
+                .withAutoCommit()
                 .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
                 .awaitCompletion()
                 .getRecords();
@@ -133,6 +138,8 @@ class NvdMirrorTest {
 
         final List<ConsumerRecord<String, Bom>> vulnRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
+                .withGroupId(TestConstants.CONSUMER_GROUP_ID)
+                .withAutoCommit()
                 .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 1, Duration.ofSeconds(5))
                 .awaitCompletion()
                 .getRecords();
