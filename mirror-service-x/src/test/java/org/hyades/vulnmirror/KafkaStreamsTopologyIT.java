@@ -1,8 +1,6 @@
 package org.hyades.vulnmirror;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
@@ -30,11 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.any;
-import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToIgnoreCase;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.http.Body.fromJsonBytes;
 import static org.apache.commons.io.IOUtils.resourceToByteArray;
@@ -48,11 +46,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 class KafkaStreamsTopologyIT {
 
     @QuarkusIntegrationTest
-    @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(value = WireMockTestResource.class, initArgs = {
-            @ResourceArg(name = "serverUrlProperty", value = "mirror.datasource.nvd.base-url")
-    })
+    @TestProfile(NvdMirrorIT.TestProfile.class)
     static class NvdMirrorIT {
+
+        public static class TestProfile implements QuarkusTestProfile {
+            @Override
+            public List<TestResourceEntry> testResources() {
+                return List.of(
+                        new TestResourceEntry(KafkaCompanionResource.class),
+                        new TestResourceEntry(
+                                WireMockTestResource.class,
+                                Map.of("serverUrlProperty", "mirror.datasource.nvd.base-url")
+                        ));
+            }
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -135,16 +142,22 @@ class KafkaStreamsTopologyIT {
 
     @QuarkusIntegrationTest
     @TestProfile(GitHubMirrorIT.TestProfile.class)
-    @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(value = WireMockTestResource.class, initArgs = {
-            @ResourceArg(name = "serverUrlProperty", value = "mirror.datasource.github.base-url")
-    })
     static class GitHubMirrorIT {
 
         public static class TestProfile implements QuarkusTestProfile {
             @Override
             public Map<String, String> getConfigOverrides() {
                 return Map.of("mirror.datasource.github.api-key", "foobar");
+            }
+
+            @Override
+            public List<TestResourceEntry> testResources() {
+                return List.of(
+                        new TestResourceEntry(KafkaCompanionResource.class),
+                        new TestResourceEntry(
+                                WireMockTestResource.class,
+                                Map.of("serverUrlProperty", "mirror.datasource.github.base-url")
+                        ));
             }
         }
 
@@ -156,33 +169,29 @@ class KafkaStreamsTopologyIT {
 
         @Test
         void test() throws Exception {
-            wireMock.stubFor(any(anyUrl())
-                    .willReturn(aResponse()
-                            .withStatus(418)));
-
-            // Simulate the first page of CVEs, containing 2 CVEs.
-            wireMock.stubFor(post(anyUrl())
+            // Simulate the first page of advisories, containing 2 GHSAs.
+            wireMock.stubFor(post(urlPathEqualTo("/"))
+                    .inScenario("advisories-paging")
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/github/advisories-page-01.json")))));
+                            .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/github/advisories-page-01.json"))))
+                    .willSetStateTo("first-page-fetched"));
 
-            // Simulate the second page of CVEs, containing only one item.
-            // NOTE: The nvd-lib library will request pages of 2000 items each,
-            // that's why we're expecting a startIndex=2000 parameter here.
-            wireMock.stubFor(post(anyUrl())
+            // Simulate the second page of advisories, containing only one advisory.
+            wireMock.stubFor(post(urlPathEqualTo("/"))
                     .inScenario("advisories-paging")
                     .whenScenarioStateIs("first-page-fetched")
                     .willReturn(aResponse()
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                             .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/github/advisories-page-02.json")))));
 
-            // Trigger a NVD mirroring operation.
+            // Trigger a GitHub mirroring operation.
             kafkaCompanion
                     .produce(Serdes.String(), Serdes.String())
                     .fromRecords(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName(), "GITHUB", null));
 
-            // Wait for all expected vulnerability records; There should be one for each CVE.
+            // Wait for all expected vulnerability records; There should be one for each advisory.
             final List<ConsumerRecord<String, Bom>> results = kafkaCompanion
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
                     .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
@@ -192,33 +201,37 @@ class KafkaStreamsTopologyIT {
             // Ensure the vulnerability details are correct.
             assertThat(results).satisfiesExactlyInAnyOrder(
                     record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-40489");
+                        assertThat(record.key()).isEqualTo("GITHUB/GHSA-fxwm-579q-49qq");
                         assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
 
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-40489");
+                        assertThat(vuln.getId()).isEqualTo("GHSA-fxwm-579q-49qq");
                         assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
+                        assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
                     },
                     record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-40849");
+                        assertThat(record.key()).isEqualTo("GITHUB/GHSA-wh77-3x4m-4q9g");
                         assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
 
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-40849");
+                        assertThat(vuln.getId()).isEqualTo("GHSA-wh77-3x4m-4q9g");
                         assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
+                        assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
                     },
                     record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-44262");
+                        assertThat(record.key()).isEqualTo("GITHUB/GHSA-p82g-2xpp-m5r3");
                         assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
 
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-44262");
+                        assertThat(vuln.getId()).isEqualTo("GHSA-p82g-2xpp-m5r3");
                         assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
+                        assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
                     }
             );
+
+            // Verify that the API key was used.
+            wireMock.verify(postRequestedFor(urlPathEqualTo("/"))
+                    .withHeader(HttpHeaders.AUTHORIZATION, equalToIgnoreCase("bearer foobar")));
 
             // Wait for the notification that reports the successful mirroring operation.
             final List<ConsumerRecord<String, Notification>> notifications = kafkaCompanion
