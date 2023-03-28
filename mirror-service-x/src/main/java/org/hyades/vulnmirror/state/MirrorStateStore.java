@@ -18,6 +18,22 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * A key-value store for {@link Datasource} mirrors to store their internal state.
+ * <p>
+ * The store is backed by a Kafka Streams global {@link ReadOnlyKeyValueStore},
+ * that is populated by the application's Kafka Streams topology.
+ * <p>
+ * Writing to the store via {@link #put(Datasource, Object)} involves publishing of change events
+ * to the backing {@link ReadOnlyKeyValueStore}'s changelog topic. This makes changes to the store
+ * eventually consistent, as there is no guarantee how soon changes will be visible.
+ * <p>
+ * If consistent reads are required, {@link #putAndWait(Datasource, Object)} should be used instead.
+ * <p>
+ * The design is heavily influenced by the Strimzi topic operator.
+ *
+ * @see <a href="https://github.com/strimzi/strimzi-kafka-operator/blob/0.34.0/topic-operator/design/topic-store.md">Strimzi Topic Operator</a>
+ */
 @ApplicationScoped
 public class MirrorStateStore {
 

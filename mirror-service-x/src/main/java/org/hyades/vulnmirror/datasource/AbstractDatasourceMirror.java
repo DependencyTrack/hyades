@@ -31,7 +31,7 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
     private Logger logger;
 
     /**
-     * Non-private no-args constructor required by Quarkus.
+     * Non-private, no-args constructor required by Quarkus.
      * <p>
      * DO NOT USE, use {@link #AbstractDatasourceMirror(Datasource, MirrorStateStore, VulnerabilityDigestStore, Producer, Class)} instead.
      *
@@ -41,6 +41,13 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
     protected AbstractDatasourceMirror() {
     }
 
+    /**
+     * @param datasource       The {@link Datasource} supported by this mirror
+     * @param mirrorStateStore The state store to use for persisting state
+     * @param vulnDigestStore  The state store to use for querying vulnerability digests
+     * @param kafkaProducer    The Kafka {@link Producer} to use for publishing events
+     * @param stateClass       Class of the state object
+     */
     protected AbstractDatasourceMirror(final Datasource datasource,
                                        final MirrorStateStore mirrorStateStore,
                                        final VulnerabilityDigestStore vulnDigestStore,
@@ -54,6 +61,9 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
         this.logger = LoggerFactory.getLogger(getClass());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supportsDatasource(final Datasource datasource) {
         return this.datasource == datasource;

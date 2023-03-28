@@ -15,6 +15,9 @@ import java.time.Duration;
 
 import static org.apache.kafka.streams.StoreQueryParameters.fromNameAndType;
 
+/**
+ * @see <a href="https://kafka.apache.org/34/documentation/streams/developer-guide/interactive-queries.html">Interactive Queries</a>
+ */
 public final class StateStores {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StateStores.class);
@@ -36,8 +39,8 @@ public final class StateStores {
         return Failsafe
                 .with(RetryPolicy.builder()
                         .handle(InvalidStateStoreException.class)
-                        .onRetry(event -> LOGGER.debug("State store {} is not ready yet; Retrying", name))
-                        .onRetriesExceeded(event -> LOGGER.debug("Retries exceeded for state store {}", name))
+                        .onRetry(event -> LOGGER.debug("State store {} is not ready yet; Retrying", name, event.getLastException()))
+                        .onRetriesExceeded(event -> LOGGER.warn("Max retries exceeded while waiting for state store {} to become ready", name, event.getException()))
                         .onSuccess(event -> LOGGER.debug("State store {} is ready", name))
                         .withDelay(Duration.ofMillis(50))
                         .withMaxRetries(100)
