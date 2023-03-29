@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hyades.commonutil.JsonUtil.jsonStringToTimestamp;
-import static org.hyades.model.Vulnerability.Source.GITHUB;
-import static org.hyades.model.Vulnerability.Source.NVD;
-import static org.hyades.model.Vulnerability.Source.OSV;
+import static org.hyades.vulnmirror.datasource.util.ParserUtil.extractSource;
 
 @RegisterForReflection
 
@@ -213,13 +211,5 @@ public class OsvDto implements Serializable {
         }
     }
 
-    private static String extractSource(String vulnId) {
-        String sourceId = vulnId.split("-")[0];
-        return switch (sourceId) {
-            case "GHSA" -> GITHUB.name();
-            case "CVE" -> NVD.name();
-            default -> OSV.name();
-        };
-    }
 }
 

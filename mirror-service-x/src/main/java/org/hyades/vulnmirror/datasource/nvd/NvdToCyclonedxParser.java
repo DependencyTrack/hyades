@@ -110,10 +110,10 @@ public final class NvdToCyclonedxParser {
     private static BovWrapper<VulnerabilityAffects> parseVersionRangeAffected(Bom bom, CpeMatch cpeMatch) {
 
         AtomicReference<Bom> bovUpdated = new AtomicReference(bom);
-        var versionRangeAffected = VulnerabilityAffects.newBuilder();
+        var vulnerabilityAffects = VulnerabilityAffects.newBuilder();
         BovWrapper<String> bovWrapper = getBomRef(bovUpdated.get(), cpeMatch.getCriteria());
         bovUpdated.set(bovWrapper.bov);
-        versionRangeAffected.setRef(bovWrapper.object);
+        vulnerabilityAffects.setRef(bovWrapper.object);
 
         String uniVersionRange = "vers:"+cpeMatch.getCriteria()+"/";
         var versionRange = VulnerabilityAffectedVersions.newBuilder();
@@ -131,8 +131,8 @@ public final class NvdToCyclonedxParser {
         }
 
         versionRange.setRange(StringUtils.chop(uniVersionRange));
-        versionRangeAffected.addVersions(versionRange);
-        return new BovWrapper(bovUpdated.get(), versionRangeAffected.build());
+        vulnerabilityAffects.addVersions(versionRange);
+        return new BovWrapper(bovUpdated.get(), vulnerabilityAffects.build());
     }
 
     private static BovWrapper<String> getBomRef(Bom cdxBom, String cpe) {

@@ -150,7 +150,7 @@ public class OsvToCyclonedxParser {
         Collections.sort(osvAffectedPackageSeverities);
         Collections.reverse(osvAffectedPackageSeverities);
         return mapSeverity(
-                String.valueOf(getSeverityByLevel(osvAffectedPackageSeverities.get(0))).toLowerCase());
+                String.valueOf(getSeverityByLevel(osvAffectedPackageSeverities.get(0))));
     }
 
     private static Severity parseAffectedPackageSeverity(JSONObject ecosystemSpecific, JSONObject databaseSpecific) {
