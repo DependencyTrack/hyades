@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -34,7 +33,7 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
     private final OsvClient client;
     private final ObjectMapper objectMapper;
 
-    public OsvMirror(ExecutorService executorService, OsvClient client,
+    public OsvMirror(@Named("osvExecutorService") ExecutorService executorService, OsvClient client,
                      @Named("osvObjectMapper") ObjectMapper objectMapper, final MirrorStateStore mirrorStateStore,
                      final VulnerabilityDigestStore vulnDigestStore,
                      final Producer<String, byte[]> bovProducer) {
@@ -44,52 +43,48 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
         this.objectMapper = objectMapper;
     }
 
-    public void performMirror(String ecosystem) {
+    public void performMirror() {
         try {
-            Path ecosystemZip = client.downloadEcosystemZip(ecosystem);
+            Path ecosystemZip = client.downloadEcosystemZip(Datasource.OSV.name());
             try (InputStream inputStream = new FileInputStream(ecosystemZip.toFile());
                  ZipInputStream zipInput = new ZipInputStream(inputStream)) {
-                unzipFolder(zipInput);
+                parseZipInputAndPublishIfChanged(zipInput);
                 deleteFileAndDir(ecosystemZip);
-                LOGGER.info("OSV mirroring completed for ecosystem: {}", ecosystem);
+                LOGGER.info("OSV mirroring completed for ecosystem: {}", Datasource.OSV);
             }
         } catch (IOException e) {
             LOGGER.error("Exception found while reading from OSV: ", e);
         }
     }
 
-    private void unzipFolder(ZipInputStream zipIn) {
+    private void parseZipInputAndPublishIfChanged(ZipInputStream zipIn) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipIn));
-        try{
-        ZipEntry zipEntry = zipIn.getNextEntry();
-        while (zipEntry != null) {
+        try {
+            ZipEntry zipEntry = zipIn.getNextEntry();
+            while (zipEntry != null) {
 
-            String line = null;
-            StringBuilder out = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                out.append(line);
+                String line = null;
+                StringBuilder out = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    out.append(line);
+                }
+                var json = new JSONObject(out.toString());
+                Bom osvAdvisory = new OsvToCyclonedxParser(this.objectMapper).parse(json);
+                if (osvAdvisory != null) {
+                    publishIfChanged(osvAdvisory);
+                }
+                zipEntry = zipIn.getNextEntry();
+                reader = new BufferedReader(new InputStreamReader(zipIn));
             }
-            var json = new JSONObject(out.toString());
-            Bom osvAdvisory = new OsvToCyclonedxParser(this.objectMapper).parse(json);
-            if (osvAdvisory != null) {
-                publishIfChanged(osvAdvisory);
-            }
-            zipEntry = zipIn.getNextEntry();
-            reader = new BufferedReader(new InputStreamReader(zipIn));
-        }
-        reader.close();
-    } catch (Exception ex) {
+            reader.close();
+        } catch (Exception ex) {
             LOGGER.error("An error occurred while performing OSV mirroring", ex);
         }
     }
 
     @Override
     public void doMirror() {
-        executorService.submit(this::mirrorInternal);
-    }
-
-    private void mirrorInternal() {
-        performMirror(Datasource.OSV.name());
+        executorService.submit(this::performMirror);
     }
 
 }
