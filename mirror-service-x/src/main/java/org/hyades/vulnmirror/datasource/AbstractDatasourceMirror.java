@@ -85,7 +85,7 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
         final byte[] serializedBov = bov.toByteArray();
         final byte[] bovDigest = DigestUtils.getSha256Digest().digest(serializedBov);
 
-        if (!Arrays.equals(vulnDigestStore.get(Datasource.NVD, vulnId), bovDigest)) {
+        if (!Arrays.equals(vulnDigestStore.get(datasource, vulnId), bovDigest)) {
             // TODO: Change back to debug; info is used for demonstration purposes only.
             logger.info("{} has changed", recordKey);
             bovProducer.send(new ProducerRecord<>(
