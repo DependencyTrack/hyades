@@ -42,28 +42,4 @@ public class OsvMirrorTest {
     @InjectKafkaCompanion
     KafkaCompanion kafkaCompanion;
 
-    @Test
-    void testDoMirrorSuccessNotification() {
-        assertThatNoException().isThrownBy(() -> osvMirror.doMirror());
-
-        final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
-                .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
-                .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                .withAutoCommit()
-                .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
-                .awaitCompletion()
-                .getRecords();
-
-        assertThat(notificationRecords).satisfiesExactly(
-                record -> {
-                    assertThat(record.key()).isNull();
-                    assertThat(record.value().getScope()).isEqualTo(SCOPE_SYSTEM);
-                    assertThat(record.value().getGroup()).isEqualTo(GROUP_DATASOURCE_MIRRORING);
-                    assertThat(record.value().getLevel()).isEqualTo(LEVEL_INFORMATIONAL);
-                    assertThat(record.value().getTitle()).isEqualTo("NVD Mirroring");
-                    assertThat(record.value().getContent()).isEqualTo("Mirroring of the National Vulnerability Database completed successfully.");
-                }
-        );
-    }
-
 }

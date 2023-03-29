@@ -19,15 +19,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
+import static org.hyades.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 import static org.hyades.vulnmirror.datasource.util.FileUtil.deleteFileAndDir;
 
 @ApplicationScoped
 public class OsvMirror extends AbstractDatasourceMirror<Void> {
 
+    private static final String NOTIFICATION_TITLE = "NVD Mirroring";
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvMirror.class);
     private final ExecutorService executorService;
     private final OsvClient client;
@@ -43,48 +48,52 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
         this.objectMapper = objectMapper;
     }
 
-    public void performMirror() {
-        try {
-            Path ecosystemZip = client.downloadEcosystemZip(Datasource.OSV.name());
-            try (InputStream inputStream = new FileInputStream(ecosystemZip.toFile());
-                 ZipInputStream zipInput = new ZipInputStream(inputStream)) {
-                parseZipInputAndPublishIfChanged(zipInput);
-                deleteFileAndDir(ecosystemZip);
-                LOGGER.info("OSV mirroring completed for ecosystem: {}", Datasource.OSV);
-            }
-        } catch (IOException e) {
-            LOGGER.error("Exception found while reading from OSV: ", e);
+    public void performMirror() throws IOException, ExecutionException, InterruptedException {
+        Path ecosystemZip = client.downloadEcosystemZip(Datasource.OSV.name());
+        try (InputStream inputStream = new FileInputStream(ecosystemZip.toFile());
+             ZipInputStream zipInput = new ZipInputStream(inputStream)) {
+            parseZipInputAndPublishIfChanged(zipInput);
+            deleteFileAndDir(ecosystemZip);
+            LOGGER.info("OSV mirroring completed for ecosystem: {}", Datasource.OSV);
         }
+
     }
 
-    private void parseZipInputAndPublishIfChanged(ZipInputStream zipIn) {
+    private void parseZipInputAndPublishIfChanged(ZipInputStream zipIn) throws IOException, ExecutionException, InterruptedException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipIn));
-        try {
-            ZipEntry zipEntry = zipIn.getNextEntry();
-            while (zipEntry != null) {
+        ZipEntry zipEntry = zipIn.getNextEntry();
+        while (zipEntry != null) {
 
-                String line = null;
-                StringBuilder out = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    out.append(line);
-                }
-                var json = new JSONObject(out.toString());
-                Bom osvAdvisory = new OsvToCyclonedxParser(this.objectMapper).parse(json);
-                if (osvAdvisory != null) {
-                    publishIfChanged(osvAdvisory);
-                }
-                zipEntry = zipIn.getNextEntry();
-                reader = new BufferedReader(new InputStreamReader(zipIn));
+            String line = null;
+            StringBuilder out = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                out.append(line);
             }
-            reader.close();
-        } catch (Exception ex) {
-            LOGGER.error("An error occurred while performing OSV mirroring", ex);
+            var json = new JSONObject(out.toString());
+            Bom osvAdvisory = new OsvToCyclonedxParser(this.objectMapper).parse(json);
+            if (osvAdvisory != null) {
+                publishIfChanged(osvAdvisory);
+            }
+            zipEntry = zipIn.getNextEntry();
+            reader = new BufferedReader(new InputStreamReader(zipIn));
         }
+        reader.close();
+
     }
 
     @Override
-    public void doMirror() {
-        executorService.submit(this::performMirror);
+    public Future<?> doMirror() {
+        return executorService.submit(() -> {
+            try {
+                performMirror();
+                dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
+                        "OSV mirroring completed successfully.");
+            } catch (Exception e) {
+                LOGGER.error("An unexpected error occurred mirroring the contents of OSV", e);
+                dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,
+                        "An error occurred mirroring the contents of OSV. Check log for details.");
+            }
+        });
     }
 
 }
