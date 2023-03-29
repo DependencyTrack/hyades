@@ -1441,7 +1441,7 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(kafka_stream_alive_stream_threads, instance)",
+        "definition": "label_values(kafka_stream_alive_stream_threads{client_id=~\".*hyades-mirror-service.*\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "Instance",
@@ -1449,7 +1449,7 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(kafka_stream_alive_stream_threads, instance)",
+          "query": "label_values(kafka_stream_alive_stream_threads{client_id=~\".*hyades-mirror-service.*\"}, instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
