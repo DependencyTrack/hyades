@@ -54,7 +54,6 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
              ZipInputStream zipInput = new ZipInputStream(inputStream)) {
             parseZipInputAndPublishIfChanged(zipInput);
             deleteFileAndDir(ecosystemZip);
-            LOGGER.info("OSV mirroring completed for ecosystem: {}", Datasource.OSV);
         }
 
     }
@@ -87,11 +86,11 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
             try {
                 performMirror(ecosystem);
                 dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
-                        "OSV mirroring completed successfully.");
+                        "OSV mirroring completed for ecosystem: "+ecosystem);
             } catch (Exception e) {
-                LOGGER.error("An unexpected error occurred mirroring the contents of OSV", e);
+                LOGGER.error("An unexpected error occurred mirroring the contents of ecosystem:"+ecosystem, e);
                 dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,
-                        "An error occurred mirroring the contents of OSV. Check log for details.");
+                        "An error occurred mirroring the contents of ecosystem :"+ecosystem+" for OSV. Check log for details.");
             }
         });
     }

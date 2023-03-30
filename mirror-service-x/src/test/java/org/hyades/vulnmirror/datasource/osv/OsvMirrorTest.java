@@ -82,7 +82,7 @@ class OsvMirrorTest {
                     assertThat(record.value().getGroup()).isEqualTo(GROUP_DATASOURCE_MIRRORING);
                     assertThat(record.value().getLevel()).isEqualTo(LEVEL_INFORMATIONAL);
                     assertThat(record.value().getTitle()).isEqualTo("OSV Mirroring");
-                    assertThat(record.value().getContent()).isEqualTo("OSV mirroring completed successfully.");
+                    assertThat(record.value().getContent()).isEqualTo("OSV mirroring completed for ecosystem: Maven");
                 }
         );
     }
@@ -107,7 +107,7 @@ class OsvMirrorTest {
                     assertThat(record.value().getGroup()).isEqualTo(GROUP_DATASOURCE_MIRRORING);
                     assertThat(record.value().getLevel()).isEqualTo(LEVEL_ERROR);
                     assertThat(record.value().getTitle()).isEqualTo("OSV Mirroring");
-                    assertThat(record.value().getContent()).isEqualTo("An error occurred mirroring the contents of OSV. Check log for details.");
+                    assertThat(record.value().getContent()).isEqualTo("An error occurred mirroring the contents of ecosystem :Maven for OSV. Check log for details.");
                 }
         );
     }
@@ -132,7 +132,7 @@ class OsvMirrorTest {
                     assertThat(record.value().getGroup()).isEqualTo(GROUP_DATASOURCE_MIRRORING);
                     assertThat(record.value().getLevel()).isEqualTo(LEVEL_ERROR);
                     assertThat(record.value().getTitle()).isEqualTo("OSV Mirroring");
-                    assertThat(record.value().getContent()).isEqualTo("An error occurred mirroring the contents of OSV. Check log for details.");
+                    assertThat(record.value().getContent()).isEqualTo("An error occurred mirroring the contents of ecosystem :null for OSV. Check log for details.");
                 }
         );
     }

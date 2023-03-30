@@ -309,7 +309,7 @@ class KafkaStreamsTopologyIT {
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
                         assertThat(vuln.getId()).isEqualTo("GHSA-2chv-87wj-pjv2");
                         assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("OSV");
+                        assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
                     },
                     record -> {
                         assertThat(record.key()).isEqualTo("OSV/GHSA-2cpx-6pqp-wf35");
@@ -318,7 +318,7 @@ class KafkaStreamsTopologyIT {
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
                         assertThat(vuln.getId()).isEqualTo("GHSA-2cpx-6pqp-wf35");
                         assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("OSV");
+                        assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
                     }
             );
 
