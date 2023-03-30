@@ -6,7 +6,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import static org.hyades.vulnmirror.datasource.util.FileUtil.getTempFileLocation;
 
@@ -29,19 +27,19 @@ import static org.hyades.vulnmirror.datasource.util.FileUtil.getTempFileLocation
 public class OsvClient {
     private final CloseableHttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private final String apiBaseUrl;
+
+    private final OsvConfig osvConfig;
 
     @Inject
     public OsvClient(@Named("osvHttpClient") final CloseableHttpClient httpClient,
-                     @Named("osvObjectMapper") final ObjectMapper objectMapper,
-                     @ConfigProperty(name = "mirror.osv.base.url") final Optional<String> apiBaseUrl) {
+                     @Named("osvObjectMapper") final ObjectMapper objectMapper, OsvConfig osvConfig) {
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
-        this.apiBaseUrl = apiBaseUrl.orElse(null);
+        this.osvConfig = osvConfig;
     }
 
     public Path downloadEcosystemZip(String ecosystem) throws IOException {
-        final var request = new HttpGet(this.apiBaseUrl + "/" + URLEncoder.encode(ecosystem, StandardCharsets.UTF_8).replace("+", "%20")
+        final var request = new HttpGet(this.osvConfig.baseurl() + "/" + URLEncoder.encode(ecosystem, StandardCharsets.UTF_8).replace("+", "%20")
                 + "/all.zip");
         try (final CloseableHttpResponse response = httpClient.execute(request)) {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

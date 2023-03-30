@@ -32,7 +32,7 @@ import static org.hyades.vulnmirror.datasource.util.FileUtil.deleteFileAndDir;
 @ApplicationScoped
 public class OsvMirror extends AbstractDatasourceMirror<Void> {
 
-    private static final String NOTIFICATION_TITLE = "NVD Mirroring";
+    private static final String NOTIFICATION_TITLE = "OSV Mirroring";
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvMirror.class);
     private final ExecutorService executorService;
     private final OsvClient client;

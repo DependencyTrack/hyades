@@ -9,10 +9,12 @@ import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
 import org.cyclonedx.proto.v1_4.ScoreMethod;
 import org.cyclonedx.proto.v1_4.Severity;
+import org.cyclonedx.proto.v1_4.Source;
 import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.cyclonedx.proto.v1_4.VulnerabilityAffectedVersions;
 import org.cyclonedx.proto.v1_4.VulnerabilityAffects;
 import org.cyclonedx.proto.v1_4.VulnerabilityRating;
+import org.hyades.vulnmirror.datasource.Datasource;
 import org.hyades.vulnmirror.datasource.osv.dto.OsvDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -301,6 +303,7 @@ public class OsvToCyclonedxParser {
     private static Vulnerability.Builder buildVulnerability(OsvDto osvDto) {
         Vulnerability.Builder vulnerability = Vulnerability.newBuilder();
         Optional.ofNullable(osvDto.getId()).ifPresent(id -> vulnerability.setId(id));
+        vulnerability.setSource(Source.newBuilder().setName(Datasource.OSV.toString()).build());
         Optional.ofNullable(osvDto.getSummary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
         Optional.ofNullable(osvDto.getDetails()).ifPresent(summary -> vulnerability.setDetail(summary));
 
