@@ -44,7 +44,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Suite
 @SelectClasses(value = {
         KafkaStreamsTopologyIT.NvdMirrorIT.class,
-        KafkaStreamsTopologyIT.GitHubMirrorIT.class
+        KafkaStreamsTopologyIT.GitHubMirrorIT.class,
+        KafkaStreamsTopologyIT.OsvMirrorIT.class
 })
 class KafkaStreamsTopologyIT {
 
