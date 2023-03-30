@@ -120,7 +120,7 @@ public class GitHubAdvisoryToCdxParser {
             return null;
         }
         List<ExternalReference> externalReferences = new ArrayList<>();
-        advisory.getReferences().stream().filter(reference ->
+        advisory.getReferences().forEach(reference ->
                 externalReferences.add(ExternalReference.newBuilder()
                         .setUrl(reference.getUrl())
                         .build())
