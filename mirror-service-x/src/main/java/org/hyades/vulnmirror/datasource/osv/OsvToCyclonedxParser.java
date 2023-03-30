@@ -14,7 +14,6 @@ import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.cyclonedx.proto.v1_4.VulnerabilityAffectedVersions;
 import org.cyclonedx.proto.v1_4.VulnerabilityAffects;
 import org.cyclonedx.proto.v1_4.VulnerabilityRating;
-import org.hyades.vulnmirror.datasource.Datasource;
 import org.hyades.vulnmirror.datasource.osv.dto.OsvDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -110,7 +109,7 @@ public class OsvToCyclonedxParser {
             }
             VulnerabilityAffects versionRangeAffected = getAffectedPackageVersionRange(osvAffectedObj, ecoSystem);
             VulnerabilityAffects rangeWithBomReference = VulnerabilityAffects.newBuilder(versionRangeAffected)
-                            .setRef(bomReference).build();
+                    .setRef(bomReference).build();
             affects.add(rangeWithBomReference);
         }
         return affects;
@@ -325,7 +324,7 @@ public class OsvToCyclonedxParser {
         return cpeObj != null ? cpeObj.optString("purl", null) : null;
     }
 
-    private <T>T convertStringToObject(String stringToConvert, Class<T> type) {
+    private <T> T convertStringToObject(String stringToConvert, Class<T> type) {
         try {
             return this.objectMapper.readValue(stringToConvert, type);
         } catch (Exception ex) {
@@ -333,6 +332,7 @@ public class OsvToCyclonedxParser {
         }
         return null;
     }
+
     private static Source extractSource(String vulnId) {
         final String sourceId = vulnId.split("-")[0];
         var source = Source.newBuilder();
