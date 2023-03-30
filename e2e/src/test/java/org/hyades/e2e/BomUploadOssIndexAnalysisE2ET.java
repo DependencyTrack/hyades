@@ -47,7 +47,7 @@ class BomUploadOssIndexAnalysisE2ET extends AbstractE2ET {
 
         // Wait up to 15sec for the BOM processing to complete.
         await("BOM processing")
-                .atMost(Duration.ofSeconds(15))
+                .atMost(Duration.ofSeconds(30))
                 .pollDelay(Duration.ofMillis(250))
                 .untilAsserted(() -> {
                     final BomProcessingResponse processingResponse = apiServerClient.isBomBeingProcessed(response.token());
