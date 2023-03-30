@@ -231,8 +231,7 @@ public final class NvdToCyclonedxParser {
 
     private static List<ExternalReference> parseReferences(List<Reference> references) {
         List<ExternalReference> externalReferences = new ArrayList<>();
-        references.forEach(reference ->
-                externalReferences.add(ExternalReference.newBuilder()
+        references.forEach(reference -> externalReferences.add(ExternalReference.newBuilder()
                         .setUrl(reference.getUrl())
                         .build()));
         return externalReferences;

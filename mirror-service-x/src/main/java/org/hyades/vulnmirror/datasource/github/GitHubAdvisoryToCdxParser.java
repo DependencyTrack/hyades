@@ -41,16 +41,18 @@ public class GitHubAdvisoryToCdxParser {
         final Vulnerability.Builder vuln = Vulnerability.newBuilder()
                 .setSource(Source.newBuilder().setName(Datasource.GITHUB.name()).build())
                 .setId(advisory.getGhsaId())
-                .setDescription(advisory.getDescription())
-                .setDetail(advisory.getSummary())
-                .addRatings(VulnerabilityRating.newBuilder()
-                        .setSeverity(mapSeverity(advisory.getSeverity().value()))
-                        .setScore(advisory.getCvss().getScore())
-                        .build())
+                .setDescription(Optional.ofNullable(advisory.getDescription()).orElse(""))
+                .setDetail(Optional.ofNullable(advisory.getSummary()).orElse(""))
                 .addAllCwes(parseCwes(advisory.getCwes()));
 
-        Optional.ofNullable(mapVulnerabilityReferences(advisory)).ifPresent(vuln::addAllReferences);
+        VulnerabilityRating.Builder rating = VulnerabilityRating.newBuilder()
+                .setSeverity(mapSeverity(advisory.getSeverity().value()))
+                .setScore(advisory.getCvss().getScore());
 
+        Optional.ofNullable(advisory.getCvss().getVectorString()).ifPresent(rating::setVector);
+        vuln.addRatings(rating.build());
+
+        Optional.ofNullable(mapVulnerabilityReferences(advisory)).ifPresent(vuln::addAllReferences);
         Optional.ofNullable(advisory.getPublishedAt())
                 .map(published -> published.toInstant())
                 .map(instant -> Timestamp.newBuilder().setSeconds(instant.getEpochSecond()))

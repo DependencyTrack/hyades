@@ -139,7 +139,13 @@ class GitHubAdvisoryToCdxParserTest {
                             rating -> {
                                 assertThat(rating.getSeverity()).isEqualTo(Severity.SEVERITY_MEDIUM);
                                 assertThat(rating.getScore()).isEqualTo(5.4);
+                                assertThat(rating.getVector()).isEqualTo("CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N");
                             });
+                    assertThat(vulnerability.getCwesList()).satisfiesExactly(
+                            cwe -> {
+                                assertThat(cwe.intValue()).isEqualTo(79);
+                            }
+                    );
                 });
 
         assertThat(vulnerabilityAffects).satisfiesExactly(
