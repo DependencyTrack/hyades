@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.getBomRefIfComponentExists;
+import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapGitHubEcosystemToPurlType;
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 
 public class GitHubToCyclonedxParser {
@@ -209,29 +210,5 @@ public class GitHubToCyclonedxParser {
             LOGGER.warn("Unable to create purl from GitHub Vulnerability. Skipping " + vuln.getPackage().getEcosystem() + " : " + vuln.getPackage().getName());
         }
         return null;
-    }
-
-
-    private static String mapGitHubEcosystemToPurlType(final String ecosystem) {
-        switch (ecosystem.toUpperCase()) {
-            case "MAVEN":
-                return PackageURL.StandardTypes.MAVEN;
-            case "RUST":
-                return PackageURL.StandardTypes.CARGO;
-            case "PIP":
-                return PackageURL.StandardTypes.PYPI;
-            case "RUBYGEMS":
-                return PackageURL.StandardTypes.GEM;
-            case "GO":
-                return PackageURL.StandardTypes.GOLANG;
-            case "NPM":
-                return PackageURL.StandardTypes.NPM;
-            case "COMPOSER":
-                return PackageURL.StandardTypes.COMPOSER;
-            case "NUGET":
-                return PackageURL.StandardTypes.NUGET;
-            default:
-                return null;
-        }
     }
 }

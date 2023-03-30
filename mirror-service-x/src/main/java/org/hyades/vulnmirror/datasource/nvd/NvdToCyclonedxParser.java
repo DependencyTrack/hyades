@@ -10,6 +10,7 @@ import io.github.jeremylong.nvdlib.nvd.CvssV30;
 import io.github.jeremylong.nvdlib.nvd.CvssV30Data;
 import io.github.jeremylong.nvdlib.nvd.CvssV31;
 import io.github.jeremylong.nvdlib.nvd.CvssV31Data;
+import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import io.github.jeremylong.nvdlib.nvd.LangString;
 import io.github.jeremylong.nvdlib.nvd.Metrics;
 import io.github.jeremylong.nvdlib.nvd.Node;
@@ -52,30 +53,30 @@ public final class NvdToCyclonedxParser {
         }
     }
 
-    public static Bom parse(CveItem nvdVuln) {
-
+    public static Bom parse(DefCveItem nvdVuln) {
+        CveItem cveItem = nvdVuln.getCve();
         Vulnerability.Builder cdxVuln = Vulnerability.newBuilder()
                 .setSource(Source.newBuilder().setName(Datasource.NVD.name()))
-                .setId(nvdVuln.getId())
-                .setDescription(parseDescription(nvdVuln.getDescriptions()))
-                .addAllCwes(parseCwes(nvdVuln.getWeaknesses()))
-                .addAllRatings(parseCveImpact(nvdVuln.getMetrics()));
+                .setId(cveItem.getId())
+                .setDescription(parseDescription(cveItem.getDescriptions()))
+                .addAllCwes(parseCwes(cveItem.getWeaknesses()))
+                .addAllRatings(parseCveImpact(cveItem.getMetrics()));
 
-        Optional.ofNullable(nvdVuln.getPublished())
+        Optional.ofNullable(cveItem.getPublished())
                 .map(published -> published.toInstant())
                 .map(instant -> Timestamp.newBuilder().setSeconds(instant.getEpochSecond()))
                 .ifPresent(cdxVuln::setPublished);
 
-        Optional.ofNullable(nvdVuln.getLastModified())
+        Optional.ofNullable(cveItem.getLastModified())
                 .map(published -> published.toInstant())
                 .map(instant -> Timestamp.newBuilder().setSeconds(instant.getEpochSecond()))
                 .ifPresent(cdxVuln::setUpdated);
 
         Bom cdxBom = Bom.newBuilder()
-                .addAllExternalReferences(parseReferences(nvdVuln.getReferences()))
+                .addAllExternalReferences(parseReferences(cveItem.getReferences()))
                 .build();
 
-        BovWrapper<List<VulnerabilityAffects>> bovWrapper = parseCpe(cdxBom, nvdVuln.getConfigurations());
+        BovWrapper<List<VulnerabilityAffects>> bovWrapper = parseCpe(cdxBom, cveItem.getConfigurations());
 
         cdxVuln.addAllAffects(bovWrapper.object);
         Bom parsedCpeBom = bovWrapper.bov;

@@ -3,7 +3,7 @@ package org.hyades.vulnmirror.datasource.nvd;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.github.jeremylong.nvdlib.nvd.CveItem;
+import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.ScoreMethod;
 import org.cyclonedx.proto.v1_4.Severity;
@@ -25,9 +25,9 @@ class NvdToCyclonedxParserTest {
 
         String jsonFile = "src/test/resources/nvd/nvd-vuln.json";
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
-        CveItem cveItem = new ObjectMapper()
+        DefCveItem cveItem = new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .registerModule(new JavaTimeModule()).readValue(jsonString, CveItem.class);
+                .registerModule(new JavaTimeModule()).readValue(jsonString, DefCveItem.class);
 
         Bom result = NvdToCyclonedxParser.parse(cveItem);
         assertNotNull(result);

@@ -1,5 +1,6 @@
 package org.hyades.vulnmirror.datasource.util;
 
+import com.github.packageurl.PackageURL;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
 import org.cyclonedx.proto.v1_4.Severity;
@@ -52,6 +53,29 @@ public class ParserUtil {
             case "CVE" -> NVD.name();
             default -> OSV.name();
         };
+    }
+
+    public static String mapGitHubEcosystemToPurlType(final String ecosystem) {
+        switch (ecosystem.toUpperCase()) {
+            case "MAVEN":
+                return PackageURL.StandardTypes.MAVEN;
+            case "RUST":
+                return PackageURL.StandardTypes.CARGO;
+            case "PIP":
+                return PackageURL.StandardTypes.PYPI;
+            case "RUBYGEMS":
+                return PackageURL.StandardTypes.GEM;
+            case "GO":
+                return PackageURL.StandardTypes.GOLANG;
+            case "NPM":
+                return PackageURL.StandardTypes.NPM;
+            case "COMPOSER":
+                return PackageURL.StandardTypes.COMPOSER;
+            case "NUGET":
+                return PackageURL.StandardTypes.NUGET;
+            default:
+                return null;
+        }
     }
 }
 
