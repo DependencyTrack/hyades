@@ -39,6 +39,9 @@ public class OsvClient {
     }
 
     public Path downloadEcosystemZip(String ecosystem) throws IOException {
+        if(ecosystem == null){
+            throw new NullPointerException("Ecosystem cannot be null");
+        }
         final var request = new HttpGet(this.osvConfig.baseurl() + "/" + URLEncoder.encode(ecosystem, StandardCharsets.UTF_8).replace("+", "%20")
                 + "/all.zip");
         try (final CloseableHttpResponse response = httpClient.execute(request)) {

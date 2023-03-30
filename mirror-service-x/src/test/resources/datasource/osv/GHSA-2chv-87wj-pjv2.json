@@ -1,0 +1,74 @@
+{
+  "id": "GHSA-2chv-87wj-pjv2",
+  "summary": "OHDSI WebAPI vulnerable to SQL Injection",
+  "details": "Observational Health Data Sciences and Informatics (OHDSI) WebAPI before 2.7.2 allows SQL injection in `FeatureExtractionService.java`.",
+  "aliases": [
+    "CVE-2019-15563"
+  ],
+  "modified": "2022-11-22T18:45:23Z",
+  "published": "2022-05-24T16:54:46Z",
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-89"
+    ],
+    "severity": "CRITICAL",
+    "github_reviewed": true,
+    "github_reviewed_at": "2022-11-22T18:45:23Z",
+    "nvd_published_at": "2019-08-26T15:15:00Z"
+  },
+  "references": [
+    {
+      "type": "ADVISORY",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-15563"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/OHDSI/WebAPI/pull/1101"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/OHDSI/WebAPI"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/OHDSI/WebAPI/milestone/28?closed=1"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/OHDSI/WebAPI/releases/tag/v2.7.2"
+    }
+  ],
+  "affected": [
+    {
+      "package": {
+        "name": "org.ohdsi:WebAPI",
+        "ecosystem": "Maven",
+        "purl": "pkg:maven/org.ohdsi/WebAPI"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.7.2"
+            }
+          ]
+        }
+      ],
+      "database_specific": {
+        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/05/GHSA-2chv-87wj-pjv2/GHSA-2chv-87wj-pjv2.json"
+      },
+      "versions": []
+    }
+  ],
+  "schema_version": "1.4.0",
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  ]
+}

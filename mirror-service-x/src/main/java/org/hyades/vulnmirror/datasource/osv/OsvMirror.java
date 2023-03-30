@@ -48,8 +48,8 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
         this.objectMapper = objectMapper;
     }
 
-    public void performMirror() throws IOException, ExecutionException, InterruptedException {
-        Path ecosystemZip = client.downloadEcosystemZip(Datasource.OSV.name());
+    public void performMirror(String ecosystem) throws IOException, ExecutionException, InterruptedException {
+        Path ecosystemZip = client.downloadEcosystemZip(ecosystem);
         try (InputStream inputStream = new FileInputStream(ecosystemZip.toFile());
              ZipInputStream zipInput = new ZipInputStream(inputStream)) {
             parseZipInputAndPublishIfChanged(zipInput);
@@ -82,10 +82,10 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
     }
 
     @Override
-    public Future<?> doMirror() {
+    public Future<?> doMirror(String ecosystem) {
         return executorService.submit(() -> {
             try {
-                performMirror();
+                performMirror(ecosystem);
                 dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
                         "OSV mirroring completed successfully.");
             } catch (Exception e) {

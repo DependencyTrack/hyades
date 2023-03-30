@@ -1,6 +1,8 @@
 package org.hyades.vulnmirror;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.http.Body;
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
@@ -278,15 +280,15 @@ class KafkaStreamsTopologyIT {
         @Test
         void test() throws Exception {
             // Simulate the first page of CVEs, containing 2 CVEs.
-            wireMock.stubFor(get(urlPathMatching("/"))
+            wireMock.stubFor(get(urlPathMatching("/.*"))
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/osv/GHSA-2c3p-9j5f-33g3.json")))));
+                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/osv/maven.zip"), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM)))));
             // Trigger a OSV mirroring operation.
             kafkaCompanion
                     .produce(Serdes.String(), Serdes.String())
-                    .fromRecords(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName(), "OSV", null));
+                    .fromRecords(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName(), "OSV", "Maven"));
 
             // Wait for all expected vulnerability records; There should be one for each CVE.
             final List<ConsumerRecord<String, Bom>> results = kafkaCompanion
@@ -300,31 +302,22 @@ class KafkaStreamsTopologyIT {
             // Ensure the vulnerability details are correct.
             assertThat(results).satisfiesExactlyInAnyOrder(
                     record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-40489");
+                        assertThat(record.key()).isEqualTo("OSV/GHSA-2chv-87wj-pjv2");
                         assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
 
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-40489");
+                        assertThat(vuln.getId()).isEqualTo("GHSA-2chv-87wj-pjv2");
                         assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
+                        assertThat(vuln.getSource().getName()).isEqualTo("OSV");
                     },
                     record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-40849");
+                        assertThat(record.key()).isEqualTo("OSV/GHSA-2cpx-6pqp-wf35");
                         assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
 
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-40849");
+                        assertThat(vuln.getId()).isEqualTo("GHSA-2cpx-6pqp-wf35");
                         assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
-                    },
-                    record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-44262");
-                        assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
-
-                        final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-44262");
-                        assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
+                        assertThat(vuln.getSource().getName()).isEqualTo("OSV");
                     }
             );
 

@@ -303,7 +303,7 @@ public class OsvToCyclonedxParser {
     private static Vulnerability.Builder buildVulnerability(OsvDto osvDto) {
         Vulnerability.Builder vulnerability = Vulnerability.newBuilder();
         Optional.ofNullable(osvDto.getId()).ifPresent(id -> vulnerability.setId(id));
-        vulnerability.setSource(Source.newBuilder().setName(Datasource.OSV.toString()).build());
+        vulnerability.setSource(extractSource(osvDto.getId()));
         Optional.ofNullable(osvDto.getSummary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
         Optional.ofNullable(osvDto.getDetails()).ifPresent(summary -> vulnerability.setDetail(summary));
 
@@ -332,6 +332,15 @@ public class OsvToCyclonedxParser {
             LOGGER.error("Failed to parse Json object into Bom {}", ex);
         }
         return null;
+    }
+    private static Source extractSource(String vulnId) {
+        final String sourceId = vulnId.split("-")[0];
+        var source = Source.newBuilder();
+        return switch (sourceId) {
+            case "GHSA" -> source.setName("GITHUB").build();
+            case "CVE" -> source.setName("NVD").build();
+            default -> source.setName("OSV").build();
+        };
     }
 }
 

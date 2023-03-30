@@ -61,7 +61,7 @@ class NvdMirrorTest {
         when(apiClientFactoryMock.createApiClient(anyLong()))
                 .thenReturn(apiClientMock);
 
-        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror().get());
+        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror(null).get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
@@ -94,7 +94,7 @@ class NvdMirrorTest {
         when(apiClientFactoryMock.createApiClient(anyLong()))
                 .thenReturn(apiClientMock);
 
-        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror().get());
+        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror(null).get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
