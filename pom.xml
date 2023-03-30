@@ -35,17 +35,16 @@
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
     <lib.failsafe.version>3.3.1</lib.failsafe.version>
-    <lib.gh-advisory-lib.version>2.0.2</lib.gh-advisory-lib.version>
     <lib.greenmail.version>1.6.14</lib.greenmail.version>
     <lib.json-unit.version>2.37.0</lib.json-unit.version>
     <lib.kafka.version>3.4.0</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-5</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
-    <lib.nvd-lib.version>2.0.2</lib.nvd-lib.version>
     <lib.org-json.version>20230227</lib.org-json.version>
     <lib.pebble.version>3.2.0</lib.pebble.version>
     <lib.quarkus-helm.version>0.2.8</lib.quarkus-helm.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
+    <lib.vulns-lib.version>2.0.4</lib.vulns-lib.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>2.16.5.Final</quarkus.platform.version>
@@ -110,14 +109,18 @@
 
       <dependency>
         <groupId>io.github.jeremylong</groupId>
-        <artifactId>gh-advisory-lib</artifactId>
-        <version>${lib.gh-advisory-lib.version}</version>
+        <artifactId>data-source</artifactId>
+        <version>${lib.vulns-lib.version}</version>
       </dependency>
-
+      <dependency>
+        <groupId>io.github.jeremylong</groupId>
+        <artifactId>gh-advisory-lib</artifactId>
+        <version>${lib.vulns-lib.version}</version>
+      </dependency>
       <dependency>
         <groupId>io.github.jeremylong</groupId>
         <artifactId>nvd-lib</artifactId>
-        <version>${lib.nvd-lib.version}</version>
+        <version>${lib.vulns-lib.version}</version>
       </dependency>
 
       <dependency>
