@@ -59,16 +59,8 @@ public class GitHubToCyclonedxParser {
                 .map(instant -> Timestamp.newBuilder().setSeconds(instant.getEpochSecond()))
                 .ifPresent(vuln::setUpdated);
 
-        List<ExternalReference> externalReferences = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(advisory.getReferences())) {
-            advisory.getReferences().stream().filter(reference ->
-                    externalReferences.add(ExternalReference.newBuilder()
-                        .setUrl(reference.getUrl())
-                        .build())
-            );
-        }
-        Bom.Builder bom = Bom.newBuilder()
-                .addAllExternalReferences(externalReferences);
+        Bom.Builder bom = Bom.newBuilder();
+        Optional.ofNullable(mapExternalReferences(advisory)).ifPresent(bom::addAllExternalReferences);
 
         List<VulnerabilityAffects> affectedPackages = new ArrayList<>();
 
@@ -107,8 +99,11 @@ public class GitHubToCyclonedxParser {
     }
 
     private static List<VulnerabilityReference> mapVulnerabilityReferences(SecurityAdvisory advisory) {
-        List<VulnerabilityReference> references = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(advisory.getIdentifiers())) {
+
+        if(CollectionUtils.isEmpty(advisory.getIdentifiers())) {
+            return null;
+        }
+            List<VulnerabilityReference> references = new ArrayList<>();
             advisory.getIdentifiers().forEach(identifier -> {
                 VulnerabilityReference ref = VulnerabilityReference.newBuilder()
                         .setId(identifier.getValue())
@@ -117,8 +112,20 @@ public class GitHubToCyclonedxParser {
 
                 references.add(ref);
             });
+            return references;
+    }
+
+
+    private static List<ExternalReference> mapExternalReferences(SecurityAdvisory advisory) {
+        List<ExternalReference> externalReferences = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(advisory.getReferences())) {
+            advisory.getReferences().stream().filter(reference ->
+                    externalReferences.add(ExternalReference.newBuilder()
+                            .setUrl(reference.getUrl())
+                            .build())
+            );
         }
-        return references;
+        return externalReferences;
     }
 
     private static VulnerabilityAffectedVersions parseVersionRangeAffected(final io.github.jeremylong.ghsa.Vulnerability vuln) {
