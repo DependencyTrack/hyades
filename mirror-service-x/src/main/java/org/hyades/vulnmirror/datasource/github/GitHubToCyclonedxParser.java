@@ -46,8 +46,9 @@ public class GitHubToCyclonedxParser {
                         .setSeverity(mapSeverity(advisory.getSeverity().value()))
                         .setScore(advisory.getCvss().getScore())
                         .build())
-                .addAllCwes(parseCwes(advisory.getCwes()))
-                .addAllReferences(mapVulnerabilityReferences(advisory));
+                .addAllCwes(parseCwes(advisory.getCwes()));
+
+        Optional.ofNullable(mapVulnerabilityReferences(advisory)).ifPresent(vuln::addAllReferences);
 
         Optional.ofNullable(advisory.getPublishedAt())
                 .map(published -> published.toInstant())
@@ -64,13 +65,13 @@ public class GitHubToCyclonedxParser {
 
         List<VulnerabilityAffects> affectedPackages = new ArrayList<>();
 
-        if(advisory.getVulnerabilities() != null &&
+        if (advisory.getVulnerabilities() != null &&
                 CollectionUtils.isNotEmpty(advisory.getVulnerabilities().getEdges())) {
 
-            for(int i = 0 ; i < advisory.getVulnerabilities().getEdges().size(); i++ ) {
+            for (int i = 0; i < advisory.getVulnerabilities().getEdges().size(); i++) {
                 io.github.jeremylong.ghsa.Vulnerability gitHubVulnerability = advisory.getVulnerabilities().getEdges().get(i);
                 PackageURL purl = generatePurlFromGitHubVulnerability(gitHubVulnerability);
-                if(purl == null) {
+                if (purl == null) {
                     //drop mapping if purl is null
                     break;
                 }
@@ -90,85 +91,83 @@ public class GitHubToCyclonedxParser {
                 vulnerabilityAffects.addVersions(parseVersionRangeAffected(gitHubVulnerability));
                 affectedPackages.add(vulnerabilityAffects.build());
             }
-
         }
         vuln.addAllAffects(affectedPackages);
 
-        return bom.addVulnerabilities(vuln.build())
-                .build();
+        return bom.addVulnerabilities(vuln.build()).build();
     }
 
     private static List<VulnerabilityReference> mapVulnerabilityReferences(SecurityAdvisory advisory) {
-
-        if(CollectionUtils.isEmpty(advisory.getIdentifiers())) {
+        if (CollectionUtils.isEmpty(advisory.getIdentifiers())) {
             return null;
         }
-            List<VulnerabilityReference> references = new ArrayList<>();
-            advisory.getIdentifiers().forEach(identifier -> {
-                VulnerabilityReference ref = VulnerabilityReference.newBuilder()
-                        .setId(identifier.getValue())
-                        .setSource(Source.newBuilder().setName(identifier.getType()).build())
-                        .build();
+        List<VulnerabilityReference> references = new ArrayList<>();
+        advisory.getIdentifiers().forEach(identifier -> {
+            VulnerabilityReference ref = VulnerabilityReference.newBuilder()
+                    .setId(identifier.getValue())
+                    .setSource(Source.newBuilder().setName(identifier.getType()).build())
+                    .build();
 
-                references.add(ref);
-            });
-            return references;
+            references.add(ref);
+        });
+        return references;
     }
 
 
     private static List<ExternalReference> mapExternalReferences(SecurityAdvisory advisory) {
-        List<ExternalReference> externalReferences = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(advisory.getReferences())) {
-            advisory.getReferences().stream().filter(reference ->
-                    externalReferences.add(ExternalReference.newBuilder()
-                            .setUrl(reference.getUrl())
-                            .build())
-            );
+        if (CollectionUtils.isEmpty(advisory.getReferences())) {
+            return null;
         }
+        List<ExternalReference> externalReferences = new ArrayList<>();
+        advisory.getReferences().stream().filter(reference ->
+                externalReferences.add(ExternalReference.newBuilder()
+                        .setUrl(reference.getUrl())
+                        .build())
+        );
         return externalReferences;
     }
 
     private static VulnerabilityAffectedVersions parseVersionRangeAffected(final io.github.jeremylong.ghsa.Vulnerability vuln) {
 
-            final PackageURL purl = generatePurlFromGitHubVulnerability(vuln);
-            if (purl == null) return null;
-            String versionStartIncluding = null;
-            String versionStartExcluding = null;
-            String versionEndIncluding = null;
-            String versionEndExcluding = null;
-            if (vuln.getVulnerableVersionRange() != null) {
-                final String[] parts = Arrays.stream(vuln.getVulnerableVersionRange().split(",")).map(String::trim).toArray(String[]::new);
-                for (String part: parts) {
-                    if (part.startsWith(">=")) {
-                        versionStartIncluding = part.trim();
-                    } else if (part.startsWith(">")) {
-                        versionStartExcluding = part.trim();
-                    } else if (part.startsWith("<=")) {
-                        versionEndIncluding = part.trim();
-                    } else if (part.startsWith("<")) {
-                        versionEndExcluding = part.trim();
-                    } else if (part.startsWith("=")) {
-                        versionStartIncluding = part.replace("=", "").trim();
-                        versionEndIncluding = part.replace("=", "").trim();
-                    } else {
-                        LOGGER.warn("Unable to determine version range of " + vuln.getPackage().getEcosystem()
-                                + " : " + vuln.getPackage().getName() + " : " + vuln.getVulnerableVersionRange());
-                    }
+        final PackageURL purl = generatePurlFromGitHubVulnerability(vuln);
+        if (purl == null) return null;
+        String versionStartIncluding = null;
+        String versionStartExcluding = null;
+        String versionEndIncluding = null;
+        String versionEndExcluding = null;
+        if (vuln.getVulnerableVersionRange() != null) {
+            final String[] parts = Arrays.stream(vuln.getVulnerableVersionRange().split(",")).map(String::trim).toArray(String[]::new);
+            for (String part : parts) {
+                if (part.startsWith(">=")) {
+                    versionStartIncluding = part.trim();
+                } else if (part.startsWith(">")) {
+                    versionStartExcluding = part.trim();
+                } else if (part.startsWith("<=")) {
+                    versionEndIncluding = part.trim();
+                } else if (part.startsWith("<")) {
+                    versionEndExcluding = part.trim();
+                } else if (part.startsWith("=")) {
+                    versionStartIncluding = part.replace("=", "").trim();
+                    versionEndIncluding = part.replace("=", "").trim();
+                } else {
+                    LOGGER.warn("Unable to determine version range of " + vuln.getPackage().getEcosystem()
+                            + " : " + vuln.getPackage().getName() + " : " + vuln.getVulnerableVersionRange());
                 }
             }
+        }
 
-        String uniVersionRange = "vers:"+purl.getType()+"/";
+        String uniVersionRange = "vers:" + purl.getType() + "/";
         var versionRange = VulnerabilityAffectedVersions.newBuilder();
-        if(versionStartIncluding != null) {
+        if (versionStartIncluding != null) {
             uniVersionRange += versionStartIncluding + "|";
         }
-        if(versionStartExcluding != null) {
+        if (versionStartExcluding != null) {
             uniVersionRange += versionStartExcluding + "|";
         }
-        if(versionEndIncluding != null) {
+        if (versionEndIncluding != null) {
             uniVersionRange += versionEndIncluding + "|";
         }
-        if(versionEndExcluding != null) {
+        if (versionEndExcluding != null) {
             uniVersionRange += versionEndExcluding + "|";
         }
 
@@ -177,7 +176,7 @@ public class GitHubToCyclonedxParser {
 
     private static List<Integer> parseCwes(CWEs weaknesses) {
         List<Integer> cwes = new ArrayList<>();
-        if(weaknesses != null && CollectionUtils.isNotEmpty(weaknesses.getEdges())) {
+        if (weaknesses != null && CollectionUtils.isNotEmpty(weaknesses.getEdges())) {
             weaknesses.getEdges().forEach(weakness -> {
                 String cweString = weakness.getCweId();
                 if (cweString != null && cweString.startsWith("CWE-")) {
@@ -206,8 +205,8 @@ public class GitHubToCyclonedxParser {
                     return PackageURLBuilder.aPackageURL().withType(purlType).withName(vuln.getPackage().getName()).build();
                 }
             }
-        } catch(MalformedPackageURLException e) {
-            LOGGER.warn("Unable to create purl from GitHub Vulnerability. Skipping " + vuln.getPackage().getEcosystem() + " : " + vuln.getPackage().getName() );
+        } catch (MalformedPackageURLException e) {
+            LOGGER.warn("Unable to create purl from GitHub Vulnerability. Skipping " + vuln.getPackage().getEcosystem() + " : " + vuln.getPackage().getName());
         }
         return null;
     }
@@ -215,16 +214,24 @@ public class GitHubToCyclonedxParser {
 
     private static String mapGitHubEcosystemToPurlType(final String ecosystem) {
         switch (ecosystem.toUpperCase()) {
-            case "MAVEN":  return PackageURL.StandardTypes.MAVEN;
-            case "RUST":  return PackageURL.StandardTypes.CARGO;
-            case "PIP":  return PackageURL.StandardTypes.PYPI;
-            case "RUBYGEMS":  return PackageURL.StandardTypes.GEM;
-            case "GO":  return PackageURL.StandardTypes.GOLANG;
-            case "NPM":  return PackageURL.StandardTypes.NPM;
-            case "COMPOSER":  return PackageURL.StandardTypes.COMPOSER;
-            case "NUGET":  return PackageURL.StandardTypes.NUGET;
-            default: return null;
+            case "MAVEN":
+                return PackageURL.StandardTypes.MAVEN;
+            case "RUST":
+                return PackageURL.StandardTypes.CARGO;
+            case "PIP":
+                return PackageURL.StandardTypes.PYPI;
+            case "RUBYGEMS":
+                return PackageURL.StandardTypes.GEM;
+            case "GO":
+                return PackageURL.StandardTypes.GOLANG;
+            case "NPM":
+                return PackageURL.StandardTypes.NPM;
+            case "COMPOSER":
+                return PackageURL.StandardTypes.COMPOSER;
+            case "NUGET":
+                return PackageURL.StandardTypes.NUGET;
+            default:
+                return null;
         }
     }
-
 }
