@@ -1,8 +1,8 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -20,14 +20,19 @@ class NvdMirrorConfiguration {
     ExecutorService executorService() {
         final var threadFactory = new BasicThreadFactory.Builder()
                 .namingPattern("hyades-mirror-nvd-%d")
-                .uncaughtExceptionHandler((thread, exception) -> {
-                    final Logger logger = LoggerFactory.getLogger(NvdMirror.class);
-                    logger.error("An uncaught exception was thrown while mirroring NVD", exception);
-                })
                 .build();
 
         return new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(1), threadFactory);
+    }
+
+    @Produces
+    @ApplicationScoped
+    @Named("nvdDurationTimer")
+    Timer durationTimer(final MeterRegistry meterRegistry) {
+        return Timer.builder("mirror.nvd.duration")
+                .description("Duration of NVD mirroring operations")
+                .register(meterRegistry);
     }
 
 }
