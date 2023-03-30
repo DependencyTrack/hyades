@@ -39,7 +39,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-public class BomUploadProcessingE2ET extends AbstractE2ET {
+class BomUploadProcessingE2ET extends AbstractE2ET {
 
     @RegisterExtension
     static WireMockExtension wireMock = WireMockExtension.newInstance()
@@ -49,6 +49,7 @@ public class BomUploadProcessingE2ET extends AbstractE2ET {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetup.SMTP.dynamicPort());
 
+    @Override
     @BeforeEach
     void beforeEach() throws Exception {
         // host.docker.internal may not always be available, so use testcontainer's
@@ -156,6 +157,8 @@ public class BomUploadProcessingE2ET extends AbstractE2ET {
                 finding -> {
                     assertThat(finding.component().name()).isEqualTo("jackson-databind");
                     assertThat(finding.vulnerability().vulnId()).isEqualTo("INT-123");
+                    assertThat(finding.attribution().analyzerIdentity()).isEqualTo("INTERNAL_ANALYZER");
+                    assertThat(finding.attribution().attributedOn()).isNotBlank();
                 }
         );
 
