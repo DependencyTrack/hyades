@@ -72,7 +72,7 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
             while (apiClient.hasNext()) {
                 final Collection<DefCveItem> cveItems = apiClient.next();
                 if (cveItems == null) {
-                    LOGGER.warn("foo");
+                    LOGGER.warn("No cve item in response from Nvd. Skipping to next item");
                     continue;
                 }
 

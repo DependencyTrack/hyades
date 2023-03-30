@@ -21,15 +21,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class GitHubAdvisoryToCdxParserTest {
 
+    private static final ObjectMapper MAPPER = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .registerModule(new JavaTimeModule());
+
     @Test
     void shouldParseAdvisoryToBom() throws IOException {
 
         //given
         String jsonFile = "src/test/resources/datasource/github/advisory.json";
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
-        SecurityAdvisory securityAdvisory = new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .registerModule(new JavaTimeModule()).readValue(jsonString, SecurityAdvisory.class);
+        SecurityAdvisory securityAdvisory = MAPPER.readValue(jsonString, SecurityAdvisory.class);
 
         Bom bom = GitHubAdvisoryToCdxParser.parse(securityAdvisory);
 
@@ -107,5 +109,94 @@ class GitHubAdvisoryToCdxParserTest {
                     assertThat(reference.getId()).isEqualTo("CVE-2019-8331");
                     assertThat(reference.getSource().getName()).isEqualTo("CVE");
                 });
+    }
+
+    @Test
+    void shouldParseAdvisoryWithCweAndMultipleExternalReferences() throws IOException {
+
+        //given
+        String jsonFile = "src/test/resources/datasource/github/advisory-02.json";
+        String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
+        SecurityAdvisory securityAdvisory = MAPPER.readValue(jsonString, SecurityAdvisory.class);
+
+        Bom bom = GitHubAdvisoryToCdxParser.parse(securityAdvisory);
+
+        List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
+
+        assertNotNull(vulnerabilities);
+        assertEquals(1, bom.getVulnerabilitiesCount());
+        assertEquals(1, bom.getComponentsCount());
+
+        List<VulnerabilityAffects> vulnerabilityAffects = vulnerabilities.get(0).getAffectsList();
+
+        assertThat(vulnerabilities).satisfiesExactly(
+                vulnerability -> {
+                    assertThat(vulnerability.getId()).isEqualTo("GHSA-p82g-2xpp-m5r3");
+                    assertThat(vulnerability.getSource().getName()).isEqualTo("GITHUB");
+                    assertThat(vulnerability.getDescription()).isEqualTo("Versions of `dojo` prior to 1.2.0 are vulnerable to Cross-Site Scripting (XSS). The package fails to sanitize HTML code in user-controlled input, allowing attackers to execute arbitrary JavaScript in the victim\'s browser.\n\n\n## Recommendation\n\nUpgrade to version 1.2.0 or later.");
+                    assertThat(vulnerability.getDetail()).isEqualTo("Cross-Site Scripting in dojo");
+                    assertThat(vulnerability.getRatingsList()).satisfiesExactly(
+                            rating -> {
+                                assertThat(rating.getSeverity()).isEqualTo(Severity.SEVERITY_MEDIUM);
+                                assertThat(rating.getScore()).isEqualTo(5.4);
+                            });
+                });
+
+        assertThat(vulnerabilityAffects).satisfiesExactly(
+                affects -> {
+                    assertThat(affects.getVersionsList()).satisfiesExactlyInAnyOrder(
+                            version -> {
+                                assertThat(version.getRange()).isEqualTo("vers:npm/< 1.2.0");
+                            }
+                    );
+                }
+        );
+        assertThat(bom.getComponentsList()).satisfiesExactlyInAnyOrder(
+                component -> {
+                    assertThat(component.getPurl()).isEqualTo("pkg:npm/dojo");
+                });
+
+        assertThat(vulnerabilities.get(0).getReferencesList()).satisfiesExactlyInAnyOrder(
+                reference -> {
+                    assertThat(reference.getId()).isEqualTo("GHSA-p82g-2xpp-m5r3");
+                    assertThat(reference.getSource().getName()).isEqualTo("GHSA");
+                },
+                reference -> {
+                    assertThat(reference.getId()).isEqualTo("CVE-2015-5654");
+                    assertThat(reference.getSource().getName()).isEqualTo("CVE");
+                });
+
+        assertThat(bom.getExternalReferencesList()).satisfiesExactlyInAnyOrder(
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-5654");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("https://snyk.io/vuln/SNYK-JS-DOJO-174933");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("https://www.npmjs.com/advisories/973");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("https://nvd.nist.gov/vuln/detail/CVE-2015-5654");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("http://jvn.jp/en/jp/JVN13456571/index.html");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("http://jvndb.jvn.jp/jvndb/JVNDB-2015-000153");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("http://www-01.ibm.com/support/docview.wss?uid=swg21975256");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("http://www.securityfocus.com/bid/77026");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("http://www.securitytracker.com/id/1034848");
+                },
+                reference -> {
+                    assertThat(reference.getUrl()).isEqualTo("https://github.com/advisories/GHSA-p82g-2xpp-m5r3");
+                }
+        );
     }
 }
