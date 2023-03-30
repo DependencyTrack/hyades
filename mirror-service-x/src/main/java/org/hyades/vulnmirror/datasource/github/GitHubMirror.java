@@ -77,7 +77,7 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
         try (final GitHubSecurityAdvisoryClient apiClient = apiClientFactory.create(lastModified)) {
             while (apiClient.hasNext()) {
                 for (final SecurityAdvisory advisory : apiClient.next()) {
-                    Bom bov =  GitHubToCyclonedxParser.parse(advisory);
+                    Bom bov =  GitHubAdvisoryToCdxParser.parse(advisory);
                     publishIfChanged(bov);
                 }
             }

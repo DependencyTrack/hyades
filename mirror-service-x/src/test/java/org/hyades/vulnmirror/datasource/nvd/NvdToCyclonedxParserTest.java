@@ -23,7 +23,7 @@ class NvdToCyclonedxParserTest {
     @Test
     public void testVulnerabilityParsing() throws IOException {
 
-        String jsonFile = "src/test/resources/nvd/nvd-vuln.json";
+        String jsonFile = "src/test/resources/datasource/nvd/cve-vuln.json";
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         DefCveItem cveItem = new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

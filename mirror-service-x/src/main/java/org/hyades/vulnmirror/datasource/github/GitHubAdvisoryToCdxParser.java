@@ -33,9 +33,9 @@ import static org.hyades.vulnmirror.datasource.util.ParserUtil.getBomRefIfCompon
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapGitHubEcosystemToPurlType;
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 
-public class GitHubToCyclonedxParser {
+public class GitHubAdvisoryToCdxParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitHubToCyclonedxParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GitHubAdvisoryToCdxParser.class);
 
     public static Bom parse(final SecurityAdvisory advisory) {
         final Vulnerability.Builder vuln = Vulnerability.newBuilder()

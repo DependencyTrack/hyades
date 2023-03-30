@@ -96,7 +96,7 @@ public final class NvdToCyclonedxParser {
             nodes.forEach(node -> {
                 List<CpeMatch> cpeMatches = node.getCpeMatch();
                 cpeMatches.forEach(cpeMatch -> {
-                    if(cpeMatch.getVulnerable()) {
+                    if (cpeMatch.getVulnerable()) {
 
                         BovWrapper<VulnerabilityAffects> bovWrapper = parseVersionRangeAffected(bovUpdated.get(), cpeMatch);
                         affected.add(bovWrapper.object);
@@ -116,18 +116,18 @@ public final class NvdToCyclonedxParser {
         bovUpdated.set(bovWrapper.bov);
         vulnerabilityAffects.setRef(bovWrapper.object);
 
-        String uniVersionRange = "vers:"+cpeMatch.getCriteria()+"/";
+        String uniVersionRange = "vers:" + cpeMatch.getCriteria() + "/";
         var versionRange = VulnerabilityAffectedVersions.newBuilder();
-        if(cpeMatch.getVersionStartIncluding() != null) {
+        if (cpeMatch.getVersionStartIncluding() != null) {
             uniVersionRange += cpeMatch.getVersionStartIncluding() + "|";
         }
-        if(cpeMatch.getVersionStartExcluding() != null) {
+        if (cpeMatch.getVersionStartExcluding() != null) {
             uniVersionRange += cpeMatch.getVersionStartExcluding() + "|";
         }
-        if(cpeMatch.getVersionEndIncluding() != null) {
+        if (cpeMatch.getVersionEndIncluding() != null) {
             uniVersionRange += cpeMatch.getVersionEndIncluding() + "|";
         }
-        if(cpeMatch.getVersionEndExcluding() != null) {
+        if (cpeMatch.getVersionEndExcluding() != null) {
             uniVersionRange += cpeMatch.getVersionEndExcluding() + "|";
         }
 
@@ -171,20 +171,15 @@ public final class NvdToCyclonedxParser {
 
         // CVSS V2
         List<CvssV2> baseMetricV2 = metrics.getCvssMetricV2();
-
         if (CollectionUtils.isNotEmpty(baseMetricV2)) {
-
             baseMetricV2.forEach(baseMetric -> {
                 CvssV20 cvss = baseMetric.getCvssData();
-                if (cvss != null) {
-                    var rating = VulnerabilityRating.newBuilder()
-                            .setScore(cvss.getBaseScore())
-                            .setMethod(ScoreMethod.SCORE_METHOD_CVSSV2)
-                            .setVector(cvss.getVectorString())
-                            .setSeverity(mapSeverity(baseMetric.getBaseSeverity()))
-                            .build();
-                    ratings.add(rating);
-                }
+                Optional.ofNullable(cvss).map(cvss20 -> VulnerabilityRating.newBuilder()
+                        .setScore(cvss20.getBaseScore())
+                        .setMethod(ScoreMethod.SCORE_METHOD_CVSSV2)
+                        .setVector(cvss20.getVectorString())
+                        .setSeverity(mapSeverity(baseMetric.getBaseSeverity()))
+                        .build()).ifPresent(rating -> ratings.add(rating));
             });
         }
 
@@ -193,15 +188,12 @@ public final class NvdToCyclonedxParser {
         if (CollectionUtils.isNotEmpty(baseMetricV3)) {
             baseMetricV3.forEach(baseMetric -> {
                 CvssV30Data cvss = baseMetric.getCvssData();
-                if (cvss != null) {
-                    var rating = VulnerabilityRating.newBuilder()
-                            .setScore(cvss.getBaseScore())
-                            .setMethod(ScoreMethod.SCORE_METHOD_CVSSV3)
-                            .setVector(cvss.getVectorString())
-                            .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))
-                            .build();
-                    ratings.add(rating);
-                }
+                Optional.ofNullable(cvss).map(cvssx -> VulnerabilityRating.newBuilder()
+                        .setScore(cvssx.getBaseScore())
+                        .setMethod(ScoreMethod.SCORE_METHOD_CVSSV3)
+                        .setVector(cvssx.getVectorString())
+                        .setSeverity(mapSeverity(cvssx.getBaseSeverity().value()))
+                        .build()).ifPresent(rating -> ratings.add(rating));
             });
         }
 
@@ -210,15 +202,12 @@ public final class NvdToCyclonedxParser {
         if (CollectionUtils.isNotEmpty(baseMetricV31)) {
             baseMetricV31.forEach(baseMetric -> {
                 CvssV31Data cvss = baseMetric.getCvssData();
-                if (cvss != null) {
-                    var rating = VulnerabilityRating.newBuilder()
-                            .setScore(cvss.getBaseScore())
-                            .setMethod(ScoreMethod.SCORE_METHOD_CVSSV31)
-                            .setVector(cvss.getVectorString())
-                            .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))
-                            .build();
-                    ratings.add(rating);
-                }
+                Optional.ofNullable(cvss).map(cvss31 -> VulnerabilityRating.newBuilder()
+                        .setScore(cvss.getBaseScore())
+                        .setMethod(ScoreMethod.SCORE_METHOD_CVSSV31)
+                        .setVector(cvss.getVectorString())
+                        .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))
+                        .build()).ifPresent(rating -> ratings.add(rating));
             });
         }
         return ratings;
@@ -244,8 +233,8 @@ public final class NvdToCyclonedxParser {
         List<ExternalReference> externalReferences = new ArrayList<>();
         references.forEach(reference ->
                 externalReferences.add(ExternalReference.newBuilder()
-                    .setUrl(reference.getUrl())
-                    .build()));
+                        .setUrl(reference.getUrl())
+                        .build()));
         return externalReferences;
     }
 }

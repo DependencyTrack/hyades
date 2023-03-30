@@ -19,19 +19,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class GitHubToCyclonedxParserTest {
+class GitHubAdvisoryToCdxParserTest {
 
     @Test
     void shouldParseAdvisoryToBom() throws IOException {
 
         //given
-        String jsonFile = "src/test/resources/github/github-vuln.json";
+        String jsonFile = "src/test/resources/datasource/github/advisory.json";
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         SecurityAdvisory securityAdvisory = new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModule(new JavaTimeModule()).readValue(jsonString, SecurityAdvisory.class);
 
-        Bom bom = GitHubToCyclonedxParser.parse(securityAdvisory);
+        Bom bom = GitHubAdvisoryToCdxParser.parse(securityAdvisory);
 
         List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
 
