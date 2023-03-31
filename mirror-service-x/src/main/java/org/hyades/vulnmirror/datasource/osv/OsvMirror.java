@@ -68,11 +68,12 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
             while ((line = reader.readLine()) != null) {
                 out.append(line);
             }
-            var json = new JSONObject(out.toString());
-            Bom osvAdvisory = new OsvToCyclonedxParser(this.objectMapper).parse(json);
-            if (osvAdvisory != null) {
-                publishIfChanged(osvAdvisory);
-            }
+                var json = new JSONObject(out.toString());
+                Bom bov = new OsvToCyclonedxParser(this.objectMapper).parse(json);
+                // if deserialized osvDto has a withdrawn date then the bov returned is "" and need not be processed further
+                if (bov != null && !bov.toString().equals("")) {
+                    publishIfChanged(bov);
+                }
             zipEntry = zipIn.getNextEntry();
             reader = new BufferedReader(new InputStreamReader(zipIn));
         }
@@ -86,11 +87,11 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
             try {
                 performMirror(ecosystem);
                 dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
-                        "OSV mirroring completed for ecosystem: "+ecosystem);
+                        "OSV mirroring completed for ecosystem: " + ecosystem);
             } catch (Exception e) {
-                LOGGER.error("An unexpected error occurred mirroring the contents of ecosystem:"+ecosystem, e);
+                LOGGER.error("An unexpected error occurred mirroring the contents of ecosystem:" + ecosystem, e);
                 dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,
-                        "An error occurred mirroring the contents of ecosystem :"+ecosystem+" for OSV. Check log for details.");
+                        "An error occurred mirroring the contents of ecosystem :" + ecosystem + " for OSV. Check log for details.");
             }
         });
     }
