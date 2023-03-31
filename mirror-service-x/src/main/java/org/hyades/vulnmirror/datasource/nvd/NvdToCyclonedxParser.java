@@ -31,6 +31,7 @@ import org.hyades.resolver.CweResolver;
 import org.hyades.vulnmirror.datasource.Datasource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,9 +60,11 @@ public final class NvdToCyclonedxParser {
                 .setSource(Source.newBuilder().setName(Datasource.NVD.name()))
                 .setId(cveItem.getId())
                 .setDescription(parseDescription(cveItem.getDescriptions()))
-                .addAllCwes(parseCwes(cveItem.getWeaknesses()))
                 .addAllRatings(parseCveImpact(cveItem.getMetrics()));
-
+        //.addAllCwes(cveItem.getWeaknesses() != null ? parseCwes(cveItem.getWeaknesses()) : null)
+        if(cveItem.getWeaknesses()!=null){
+            cdxVuln.addAllCwes(parseCwes(cveItem.getWeaknesses()));
+        }
         Optional.ofNullable(cveItem.getPublished())
                 .map(published -> published.toInstant())
                 .map(instant -> Timestamp.newBuilder().setSeconds(instant.getEpochSecond()))
@@ -90,21 +93,22 @@ public final class NvdToCyclonedxParser {
 
         List<VulnerabilityAffects> affected = new ArrayList<>();
         AtomicReference<Bom> bovUpdated = new AtomicReference(cdxBom);
+        if (configurations != null) {
+            configurations.forEach(config -> {
+                List<Node> nodes = config.getNodes();
+                nodes.forEach(node -> {
+                    List<CpeMatch> cpeMatches = node.getCpeMatch();
+                    cpeMatches.forEach(cpeMatch -> {
+                        if (cpeMatch.getVulnerable()) {
 
-        configurations.forEach(config -> {
-            List<Node> nodes = config.getNodes();
-            nodes.forEach(node -> {
-                List<CpeMatch> cpeMatches = node.getCpeMatch();
-                cpeMatches.forEach(cpeMatch -> {
-                    if (cpeMatch.getVulnerable()) {
-
-                        BovWrapper<VulnerabilityAffects> bovWrapper = parseVersionRangeAffected(bovUpdated.get(), cpeMatch);
-                        affected.add(bovWrapper.object);
-                        bovUpdated.set(bovWrapper.bov);
-                    }
+                            BovWrapper<VulnerabilityAffects> bovWrapper = parseVersionRangeAffected(bovUpdated.get(), cpeMatch);
+                            affected.add(bovWrapper.object);
+                            bovUpdated.set(bovWrapper.bov);
+                        }
+                    });
                 });
             });
-        });
+        }
         return new BovWrapper(bovUpdated.get(), affected);
     }
 
@@ -232,8 +236,8 @@ public final class NvdToCyclonedxParser {
     private static List<ExternalReference> parseReferences(List<Reference> references) {
         List<ExternalReference> externalReferences = new ArrayList<>();
         references.forEach(reference -> externalReferences.add(ExternalReference.newBuilder()
-                        .setUrl(reference.getUrl())
-                        .build()));
+                .setUrl(reference.getUrl())
+                .build()));
         return externalReferences;
     }
 }
