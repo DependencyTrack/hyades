@@ -5,8 +5,6 @@ import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import io.micrometer.core.instrument.Timer;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;
-import org.cyclonedx.proto.v1_4.Source;
-import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.hyades.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.hyades.vulnmirror.datasource.Datasource;
 import org.hyades.vulnmirror.state.MirrorStateStore;
@@ -74,17 +72,12 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
             while (apiClient.hasNext()) {
                 final Collection<DefCveItem> cveItems = apiClient.next();
                 if (cveItems == null) {
-                    LOGGER.warn("foo");
+                    LOGGER.warn("No cve item in response from Nvd. Skipping to next item");
                     continue;
                 }
 
                 for (final DefCveItem cveItem : cveItems) {
-                    final Bom bov = Bom.newBuilder()
-                            .addVulnerabilities(Vulnerability.newBuilder()
-                                    .setId(cveItem.getCve().getId())
-                                    .setSource(Source.newBuilder().setName(Datasource.NVD.name())))
-                            .build();
-
+                    final Bom bov = NvdToCyclonedxParser.parse(cveItem);
                     publishIfChanged(bov);
                 }
             }

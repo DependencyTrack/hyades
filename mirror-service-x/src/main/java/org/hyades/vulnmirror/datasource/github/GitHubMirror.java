@@ -5,8 +5,6 @@ import io.github.jeremylong.ghsa.SecurityAdvisory;
 import io.micrometer.core.instrument.Timer;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;
-import org.cyclonedx.proto.v1_4.Source;
-import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.hyades.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.hyades.vulnmirror.datasource.Datasource;
 import org.hyades.vulnmirror.state.MirrorStateStore;
@@ -79,12 +77,7 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
         try (final GitHubSecurityAdvisoryClient apiClient = apiClientFactory.create(lastModified)) {
             while (apiClient.hasNext()) {
                 for (final SecurityAdvisory advisory : apiClient.next()) {
-                    final Bom bov = Bom.newBuilder()
-                            .addVulnerabilities(Vulnerability.newBuilder()
-                                    .setId(advisory.getGhsaId())
-                                    .setSource(Source.newBuilder().setName(Datasource.GITHUB.name())))
-                            .build();
-
+                    Bom bov =  GitHubAdvisoryToCdxParser.parse(advisory);
                     publishIfChanged(bov);
                 }
             }
