@@ -10,6 +10,7 @@ import io.github.jeremylong.nvdlib.nvd.CvssV30;
 import io.github.jeremylong.nvdlib.nvd.CvssV30Data;
 import io.github.jeremylong.nvdlib.nvd.CvssV31;
 import io.github.jeremylong.nvdlib.nvd.CvssV31Data;
+import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import io.github.jeremylong.nvdlib.nvd.LangString;
 import io.github.jeremylong.nvdlib.nvd.Metrics;
 import io.github.jeremylong.nvdlib.nvd.Node;
@@ -52,30 +53,30 @@ public final class NvdToCyclonedxParser {
         }
     }
 
-    public static Bom parse(CveItem nvdVuln) {
-
+    public static Bom parse(DefCveItem nvdVuln) {
+        CveItem cveItem = nvdVuln.getCve();
         Vulnerability.Builder cdxVuln = Vulnerability.newBuilder()
                 .setSource(Source.newBuilder().setName(Datasource.NVD.name()))
-                .setId(nvdVuln.getId())
-                .setDescription(parseDescription(nvdVuln.getDescriptions()))
-                .addAllCwes(parseCwes(nvdVuln.getWeaknesses()))
-                .addAllRatings(parseCveImpact(nvdVuln.getMetrics()));
+                .setId(cveItem.getId())
+                .setDescription(parseDescription(cveItem.getDescriptions()))
+                .addAllCwes(parseCwes(cveItem.getWeaknesses()))
+                .addAllRatings(parseCveImpact(cveItem.getMetrics()));
 
-        Optional.ofNullable(nvdVuln.getPublished())
+        Optional.ofNullable(cveItem.getPublished())
                 .map(published -> published.toInstant())
                 .map(instant -> Timestamp.newBuilder().setSeconds(instant.getEpochSecond()))
                 .ifPresent(cdxVuln::setPublished);
 
-        Optional.ofNullable(nvdVuln.getLastModified())
+        Optional.ofNullable(cveItem.getLastModified())
                 .map(published -> published.toInstant())
                 .map(instant -> Timestamp.newBuilder().setSeconds(instant.getEpochSecond()))
                 .ifPresent(cdxVuln::setUpdated);
 
         Bom cdxBom = Bom.newBuilder()
-                .addAllExternalReferences(parseReferences(nvdVuln.getReferences()))
+                .addAllExternalReferences(parseReferences(cveItem.getReferences()))
                 .build();
 
-        BovWrapper<List<VulnerabilityAffects>> bovWrapper = parseCpe(cdxBom, nvdVuln.getConfigurations());
+        BovWrapper<List<VulnerabilityAffects>> bovWrapper = parseCpe(cdxBom, cveItem.getConfigurations());
 
         cdxVuln.addAllAffects(bovWrapper.object);
         Bom parsedCpeBom = bovWrapper.bov;
@@ -95,7 +96,7 @@ public final class NvdToCyclonedxParser {
             nodes.forEach(node -> {
                 List<CpeMatch> cpeMatches = node.getCpeMatch();
                 cpeMatches.forEach(cpeMatch -> {
-                    if(cpeMatch.getVulnerable()) {
+                    if (cpeMatch.getVulnerable()) {
 
                         BovWrapper<VulnerabilityAffects> bovWrapper = parseVersionRangeAffected(bovUpdated.get(), cpeMatch);
                         affected.add(bovWrapper.object);
@@ -110,29 +111,29 @@ public final class NvdToCyclonedxParser {
     private static BovWrapper<VulnerabilityAffects> parseVersionRangeAffected(Bom bom, CpeMatch cpeMatch) {
 
         AtomicReference<Bom> bovUpdated = new AtomicReference(bom);
-        var versionRangeAffected = VulnerabilityAffects.newBuilder();
+        var vulnerabilityAffects = VulnerabilityAffects.newBuilder();
         BovWrapper<String> bovWrapper = getBomRef(bovUpdated.get(), cpeMatch.getCriteria());
         bovUpdated.set(bovWrapper.bov);
-        versionRangeAffected.setRef(bovWrapper.object);
+        vulnerabilityAffects.setRef(bovWrapper.object);
 
-        String uniVersionRange = "vers:"+cpeMatch.getCriteria()+"/";
+        String uniVersionRange = "vers:" + cpeMatch.getCriteria() + "/";
         var versionRange = VulnerabilityAffectedVersions.newBuilder();
-        if(cpeMatch.getVersionStartIncluding() != null) {
+        if (cpeMatch.getVersionStartIncluding() != null) {
             uniVersionRange += cpeMatch.getVersionStartIncluding() + "|";
         }
-        if(cpeMatch.getVersionStartExcluding() != null) {
+        if (cpeMatch.getVersionStartExcluding() != null) {
             uniVersionRange += cpeMatch.getVersionStartExcluding() + "|";
         }
-        if(cpeMatch.getVersionEndIncluding() != null) {
+        if (cpeMatch.getVersionEndIncluding() != null) {
             uniVersionRange += cpeMatch.getVersionEndIncluding() + "|";
         }
-        if(cpeMatch.getVersionEndExcluding() != null) {
+        if (cpeMatch.getVersionEndExcluding() != null) {
             uniVersionRange += cpeMatch.getVersionEndExcluding() + "|";
         }
 
         versionRange.setRange(StringUtils.chop(uniVersionRange));
-        versionRangeAffected.addVersions(versionRange);
-        return new BovWrapper(bovUpdated.get(), versionRangeAffected.build());
+        vulnerabilityAffects.addVersions(versionRange);
+        return new BovWrapper(bovUpdated.get(), vulnerabilityAffects.build());
     }
 
     private static BovWrapper<String> getBomRef(Bom cdxBom, String cpe) {
@@ -170,20 +171,15 @@ public final class NvdToCyclonedxParser {
 
         // CVSS V2
         List<CvssV2> baseMetricV2 = metrics.getCvssMetricV2();
-
         if (CollectionUtils.isNotEmpty(baseMetricV2)) {
-
             baseMetricV2.forEach(baseMetric -> {
                 CvssV20 cvss = baseMetric.getCvssData();
-                if (cvss != null) {
-                    var rating = VulnerabilityRating.newBuilder()
-                            .setScore(cvss.getBaseScore())
-                            .setMethod(ScoreMethod.SCORE_METHOD_CVSSV2)
-                            .setVector(cvss.getVectorString())
-                            .setSeverity(mapSeverity(baseMetric.getBaseSeverity()))
-                            .build();
-                    ratings.add(rating);
-                }
+                Optional.ofNullable(cvss).map(cvss20 -> VulnerabilityRating.newBuilder()
+                        .setScore(cvss20.getBaseScore())
+                        .setMethod(ScoreMethod.SCORE_METHOD_CVSSV2)
+                        .setVector(cvss20.getVectorString())
+                        .setSeverity(mapSeverity(baseMetric.getBaseSeverity()))
+                        .build()).ifPresent(rating -> ratings.add(rating));
             });
         }
 
@@ -192,15 +188,12 @@ public final class NvdToCyclonedxParser {
         if (CollectionUtils.isNotEmpty(baseMetricV3)) {
             baseMetricV3.forEach(baseMetric -> {
                 CvssV30Data cvss = baseMetric.getCvssData();
-                if (cvss != null) {
-                    var rating = VulnerabilityRating.newBuilder()
-                            .setScore(cvss.getBaseScore())
-                            .setMethod(ScoreMethod.SCORE_METHOD_CVSSV3)
-                            .setVector(cvss.getVectorString())
-                            .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))
-                            .build();
-                    ratings.add(rating);
-                }
+                Optional.ofNullable(cvss).map(cvssx -> VulnerabilityRating.newBuilder()
+                        .setScore(cvssx.getBaseScore())
+                        .setMethod(ScoreMethod.SCORE_METHOD_CVSSV3)
+                        .setVector(cvssx.getVectorString())
+                        .setSeverity(mapSeverity(cvssx.getBaseSeverity().value()))
+                        .build()).ifPresent(rating -> ratings.add(rating));
             });
         }
 
@@ -209,15 +202,12 @@ public final class NvdToCyclonedxParser {
         if (CollectionUtils.isNotEmpty(baseMetricV31)) {
             baseMetricV31.forEach(baseMetric -> {
                 CvssV31Data cvss = baseMetric.getCvssData();
-                if (cvss != null) {
-                    var rating = VulnerabilityRating.newBuilder()
-                            .setScore(cvss.getBaseScore())
-                            .setMethod(ScoreMethod.SCORE_METHOD_CVSSV31)
-                            .setVector(cvss.getVectorString())
-                            .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))
-                            .build();
-                    ratings.add(rating);
-                }
+                Optional.ofNullable(cvss).map(cvss31 -> VulnerabilityRating.newBuilder()
+                        .setScore(cvss.getBaseScore())
+                        .setMethod(ScoreMethod.SCORE_METHOD_CVSSV31)
+                        .setVector(cvss.getVectorString())
+                        .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))
+                        .build()).ifPresent(rating -> ratings.add(rating));
             });
         }
         return ratings;
@@ -241,10 +231,9 @@ public final class NvdToCyclonedxParser {
 
     private static List<ExternalReference> parseReferences(List<Reference> references) {
         List<ExternalReference> externalReferences = new ArrayList<>();
-        references.forEach(reference ->
-                externalReferences.add(ExternalReference.newBuilder()
-                    .setUrl(reference.getUrl())
-                    .build()));
+        references.forEach(reference -> externalReferences.add(ExternalReference.newBuilder()
+                        .setUrl(reference.getUrl())
+                        .build()));
         return externalReferences;
     }
 }

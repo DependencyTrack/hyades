@@ -55,22 +55,23 @@ public class OsvToCyclonedxParser {
 
         Bom.Builder cyclonedxBom = Bom.newBuilder();
         var severity = SEVERITY_UNKNOWN;
-        var osvDto = convertStringToObject(object.toString(), OsvDto.class);
+        var osvDto = deserialize(object.toString(), OsvDto.class);
 
         // initial check if advisory is valid or withdrawn
         if (osvDto == null
-                || (osvDto != null && osvDto.getWithdrawn() != null)) {
+                || (osvDto != null && osvDto.withdrawn() != null)) {
             return cyclonedxBom.build();
         }
         Vulnerability.Builder vulnerability = buildVulnerability(osvDto);
-        if (osvDto.getDatabaseSpecific() != null) {
-            vulnerability.addAllCwes(osvDto.getDatabaseSpecific().getCwes());
-            severity = mapSeverity(osvDto.getDatabaseSpecific().getSeverity());
+        if (osvDto.databaseSpecific() != null) {
+            vulnerability.addAllCwes(osvDto.databaseSpecific().getCwes());
+            //this severity is compared with affected package severities and highest set
+            severity = mapSeverity(osvDto.databaseSpecific().severity());
         }
         vulnerability.addAllReferences(osvDto.getAliases());
         Optional.ofNullable(osvDto.getCredits()).ifPresent(vulnerability::setCredits);
         Optional.ofNullable(osvDto.getReferences().get("ADVISORY")).ifPresent(vulnerability::addAllAdvisories);
-        Optional.ofNullable(osvDto.getReferences().get("EXTERNAL")).ifPresent(references -> cyclonedxBom.addAllExternalReferences(references));
+        Optional.ofNullable(osvDto.getReferences().get("EXTERNAL")).ifPresent(cyclonedxBom::addAllExternalReferences);
 
         //affected ranges
         JSONArray osvAffectedArray = object.optJSONArray("affected");
@@ -151,7 +152,7 @@ public class OsvToCyclonedxParser {
         Collections.sort(osvAffectedPackageSeverities);
         Collections.reverse(osvAffectedPackageSeverities);
         return mapSeverity(
-                String.valueOf(getSeverityByLevel(osvAffectedPackageSeverities.get(0))).toLowerCase());
+                String.valueOf(getSeverityByLevel(osvAffectedPackageSeverities.get(0))));
     }
 
     private static Severity parseAffectedPackageSeverity(JSONObject ecosystemSpecific, JSONObject databaseSpecific) {
@@ -301,10 +302,13 @@ public class OsvToCyclonedxParser {
 
     private static Vulnerability.Builder buildVulnerability(OsvDto osvDto) {
         Vulnerability.Builder vulnerability = Vulnerability.newBuilder();
-        Optional.ofNullable(osvDto.getId()).ifPresent(id -> vulnerability.setId(id));
-        vulnerability.setSource(extractSource(osvDto.getId()));
-        Optional.ofNullable(osvDto.getSummary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
-        Optional.ofNullable(osvDto.getDetails()).ifPresent(summary -> vulnerability.setDetail(summary));
+        Optional.ofNullable(osvDto.id()).ifPresent(id -> vulnerability.setId(id));
+        vulnerability.setSource(extractSource(osvDto.id()));
+        Optional.ofNullable(osvDto.summary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
+        Optional.ofNullable(osvDto.details()).ifPresent(summary -> vulnerability.setDetail(summary));
+        Optional.ofNullable(osvDto.id()).ifPresent(id -> vulnerability.setId(id));
+        Optional.ofNullable(osvDto.summary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
+        Optional.ofNullable(osvDto.details()).ifPresent(summary -> vulnerability.setDetail(summary));
 
         Optional.ofNullable(osvDto.getPublished())
                 .map(published -> published.toInstant())
@@ -324,7 +328,7 @@ public class OsvToCyclonedxParser {
         return cpeObj != null ? cpeObj.optString("purl", null) : null;
     }
 
-    private <T> T convertStringToObject(String stringToConvert, Class<T> type) {
+    private <T>T deserialize(String stringToConvert, Class<T> type) {
         try {
             return this.objectMapper.readValue(stringToConvert, type);
         } catch (Exception ex) {

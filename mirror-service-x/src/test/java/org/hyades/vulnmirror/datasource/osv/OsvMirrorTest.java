@@ -169,7 +169,7 @@ class OsvMirrorTest {
 
     @Test
     void testPerformMirrorMaven() throws Exception {
-        Path testFile = Path.of("src/test/resources/osv/maven.zip");
+        Path testFile = Path.of("src/test/resources/datasource/osv/maven.zip");
         tempZipLocation = getTempFileLocation("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         doReturn(tempZipLocation).when(osvClientMock).downloadEcosystemZip(anyString());

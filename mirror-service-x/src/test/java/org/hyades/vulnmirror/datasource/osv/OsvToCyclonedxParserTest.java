@@ -57,7 +57,7 @@ class OsvToCyclonedxParserTest {
     void testVulnerabilityRangeWithNoRange() throws IOException {
         //Test file has 1 vulnerability with one affected element
         JSONObject jsonObject = getOsvForTestingFromFile(
-                "src/test/resources/osv/osv-vulnerability-no-range.json");
+                "src/test/resources/datasource/osv/osv-vulnerability-no-range.json");
 
         //When
         Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
@@ -79,7 +79,7 @@ class OsvToCyclonedxParserTest {
     void testVulnerabilityRanges() throws IOException {
         //given
         JSONObject jsonObject = getOsvForTestingFromFile(
-                "src/test/resources/osv/osv-vulnerability-with-ranges.json");
+                "src/test/resources/datasource/osv/osv-vulnerability-with-ranges.json");
 
         //when
         Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
@@ -120,7 +120,7 @@ class OsvToCyclonedxParserTest {
     void testParseOsvToBom() throws IOException {
         //given
         JSONObject jsonObject = getOsvForTestingFromFile(
-                "src/test/resources/osv/osv-GHSA-77rv-6vfw-x4gc.json");
+                "src/test/resources/datasource/osv/osv-GHSA-77rv-6vfw-x4gc.json");
 
         //when
         Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
@@ -162,7 +162,7 @@ class OsvToCyclonedxParserTest {
     void testCommitHashRanges() throws IOException {
 
         JSONObject jsonObject = getOsvForTestingFromFile(
-                "src/test/resources/osv/osv-git-commit-hash-ranges.json");
+                "src/test/resources/datasource/osv/osv-git-commit-hash-ranges.json");
         Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
 
         assertNotNull(bom);
