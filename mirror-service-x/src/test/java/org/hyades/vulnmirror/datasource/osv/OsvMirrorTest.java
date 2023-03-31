@@ -62,7 +62,7 @@ class OsvMirrorTest {
 
     @Test
     void testDoMirrorSuccessNotification() throws IOException {
-        Path testFile = Path.of("src/test/resources/osv/osv-download.zip");
+        Path testFile = Path.of("src/test/resources/datasource/osv/osv-download.zip");
         tempZipLocation = getTempFileLocation("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         doReturn(tempZipLocation).when(osvClientMock).downloadEcosystemZip(anyString());
@@ -139,7 +139,7 @@ class OsvMirrorTest {
 
     @Test
     void testPerformMirrorGo() throws Exception {
-        Path testFile = Path.of("src/test/resources/osv/osv-download.zip");
+        Path testFile = Path.of("src/test/resources/datasource/osv/osv-download.zip");
         tempZipLocation = getTempFileLocation("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         doReturn(tempZipLocation).when(osvClientMock).downloadEcosystemZip(anyString());

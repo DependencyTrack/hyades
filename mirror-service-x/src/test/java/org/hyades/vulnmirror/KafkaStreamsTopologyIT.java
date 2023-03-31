@@ -303,20 +303,20 @@ class KafkaStreamsTopologyIT {
             // Ensure the vulnerability details are correct.
             assertThat(results).satisfiesExactlyInAnyOrder(
                     record -> {
-                        assertThat(record.key()).isEqualTo("OSV/GHSA-2chv-87wj-pjv2");
+                        assertThat(record.key()).isEqualTo("OSV/GHSA-2cc5-23r7-vc4v");
                         assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
 
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("GHSA-2chv-87wj-pjv2");
+                        assertThat(vuln.getId()).isEqualTo("GHSA-2cc5-23r7-vc4v");
                         assertThat(vuln.hasSource()).isTrue();
                         assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
                     },
                     record -> {
-                        assertThat(record.key()).isEqualTo("OSV/GHSA-2cpx-6pqp-wf35");
+                        assertThat(record.key()).isEqualTo("OSV/GHSA-2cfc-865j-gm4w");
                         assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
 
                         final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("GHSA-2cpx-6pqp-wf35");
+                        assertThat(vuln.getId()).isEqualTo("GHSA-2cfc-865j-gm4w");
                         assertThat(vuln.hasSource()).isTrue();
                         assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
                     }
@@ -331,6 +331,7 @@ class KafkaStreamsTopologyIT {
                     .awaitCompletion()
                     .getRecords();
             assertThat(notifications).hasSize(1);
+            assertThat(notifications.get(0).value().getContent().equalsIgnoreCase("OSV mirroring completed for ecosystem: Maven"));
         }
 
     }
