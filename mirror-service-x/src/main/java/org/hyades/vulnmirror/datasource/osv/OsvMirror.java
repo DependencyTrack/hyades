@@ -70,7 +70,7 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
                 out.append(line);
             }
             var json = new JSONObject(out.toString());
-            Bom osvAdvisory = org.cyclonedx.proto.v1_4.Bom.newBuilder().build();//new OsvToCyclonedxParser(this.objectMapper).parse(json);
+            Bom osvAdvisory = new OsvToCyclonedxParser(this.objectMapper).parse(json);
             if (osvAdvisory != null) {
                 publishIfChanged(osvAdvisory);
             }
