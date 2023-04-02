@@ -48,21 +48,29 @@ message ScanKey {
   string component_uuid = 2;
 }
 
-message ScanResult {
-  // Key of the scan that produced this result.
-  ScanKey key = 1;
-
+message ScannerResult {
   // The scanner that produced this result.
-  Scanner scanner = 2;
+  Scanner scanner = 1;
 
   // Status of the scan.
-  ScanStatus status = 3;
+  ScanStatus status = 2;
 
   // Vulnerabilities identified in the scan.
-  repeated org.hyades.vuln.v1.Vulnerability vulnerabilities = 4;
+  repeated org.hyades.vuln.v1.Vulnerability vulnerabilities = 3;
 
   // Reason for scan failure.
-  optional string failure_reason = 5;
+  optional string failure_reason = 4;
+}
+
+message ScanResult {
+  // Key of the scan.
+  // Redundant, because results are keyed by ScanKey anyway.
+  // The key is included to make processing and re-keying of
+  // results smoother for consumers.
+  ScanKey key = 1;
+
+  // Results of all applicable scanners.
+  repeated ScannerResult scanner_results = 2;
 }
 
 enum ScanStatus {

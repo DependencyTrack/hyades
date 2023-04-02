@@ -8,7 +8,7 @@ import "org/hyades/vulnanalysis/v1/vuln_analysis.proto";
 option java_multiple_files = true;
 option java_package = "org.hyades.proto.vulnanalysis.internal.v1beta1";
 
-message ExpectedScans {
+message ExpectedScannerResults {
   // Scanners for which a scan result is expected.
   repeated org.hyades.vulnanalysis.v1.Scanner scanners = 1;
 
@@ -16,9 +16,9 @@ message ExpectedScans {
   optional bool tombstone = 2;
 }
 
-message Scans {
-  // Scan statuses per scanner.
-  map<string, org.hyades.vulnanalysis.v1.ScanStatus> statuses = 1;
+message ScannerResultAggregate {
+  // Scanner results by scanner name.
+  map<string, org.hyades.vulnanalysis.v1.ScannerResult> results = 1;
 
   // Whether this event represents a tombstone.
   optional bool tombstone = 2;
