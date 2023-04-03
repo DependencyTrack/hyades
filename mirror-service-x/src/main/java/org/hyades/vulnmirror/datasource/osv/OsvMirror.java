@@ -59,7 +59,7 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
     }
 
     private void parseZipInputAndPublishIfChanged(ZipInputStream zipIn) throws IOException, ExecutionException, InterruptedException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(zipIn));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(zipIn, Charset.defaultCharset()));
         ZipEntry zipEntry = zipIn.getNextEntry();
         while (zipEntry != null) {
 
