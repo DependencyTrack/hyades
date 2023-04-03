@@ -62,4 +62,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Test
+      env:
+        OSSINDEX_USERNAME: ${{ secrets.OSSINDEX_USERNAME }}
+        OSSINDEX_TOKEN: ${{ secrets.OSSINDEX_TOKEN }}
       run: mvn -pl e2e clean verify -Pe2e-all
