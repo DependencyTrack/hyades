@@ -68,11 +68,11 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
             while ((line = reader.readLine()) != null) {
                 out.append(line);
             }
-                var json = new JSONObject(out.toString());
-                Bom bov = new OsvToCyclonedxParser(this.objectMapper).parse(json);
-                if (bov != null) {
-                    publishIfChanged(bov);
-                }
+            var json = new JSONObject(out.toString());
+            Bom bov = new OsvToCyclonedxParser(this.objectMapper).parse(json);
+            if (bov != null) {
+                publishIfChanged(bov);
+            }
             zipEntry = zipIn.getNextEntry();
             reader = new BufferedReader(new InputStreamReader(zipIn));
         }
@@ -81,16 +81,24 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
     }
 
     @Override
-    public Future<?> doMirror(String ecosystem) {
+    public Future<?> doMirror(String ecosystems) {
         return executorService.submit(() -> {
-            try {
-                performMirror(ecosystem);
-                dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
-                        "OSV mirroring completed for ecosystem: " + ecosystem);
-            } catch (Exception e) {
-                LOGGER.error("An unexpected error occurred mirroring the contents of ecosystem:" + ecosystem, e);
+            if (ecosystems != null) {
+                for (String ecosystem : ecosystems.split(",")) {
+                    try {
+                        performMirror(ecosystem);
+                        dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
+                                "OSV mirroring completed for ecosystem: " + ecosystem);
+                    } catch (Exception e) {
+                        LOGGER.error("An unexpected error occurred mirroring the contents of ecosystem:" + ecosystem, e);
+                        dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,
+                                "An error occurred mirroring the contents of ecosystem :" + ecosystem + " for OSV. Check log for details.");
+                    }
+                }
+            } else {
+                LOGGER.error("Ecosystem was passed as null");
                 dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,
-                        "An error occurred mirroring the contents of ecosystem :" + ecosystem + " for OSV. Check log for details.");
+                        "Tried to mirror null ecosystem for OSV.");
             }
         });
     }
