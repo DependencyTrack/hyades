@@ -25,9 +25,9 @@
 | `dtrack.vuln-analysis.component`                                                  | 3          |                          |
 | `dtrack.vuln-analysis.result`                                                     | 3          |                          |
 | `dtrack.vulnerability`                                                            | 3          | `cleanup.policy=compact` |
-| `dtrack.vulnerability.mirror.nvd`                                                 | 1          |                          |
-| `dtrack.vulnerability.mirror.osv`                                                 | 3          |                          |
-| `hyades-mirror-service-nvd-last-modified-epoch-store-changelog`                   | 1          |                          |
+| `dtrack.vulnerability.digest`                                                     | 1          | `cleanup.policy=compact` |
+| `dtrack.vulnerability.mirror.command`                                             | 1          |                          |
+| `dtrack.vulnerability.mirror.state`                                               | 1          | `cleanup.policy=compact` |
 | `hyades-repository-meta-analyzer-command-by-purl-coordinates-repartition`         | 3          |                          |
 | `hyades-vulnerability-analyzer-completed-scans-table-changelog`                   | 3          |                          |
 | `hyades-vulnerability-analyzer-completed-scans-table-last-update-store-changelog` | 3          |                          |
