@@ -5,10 +5,11 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.hyades.notification.model.NotificationGroup;
-import org.hyades.notification.model.NotificationScope;
 import org.hyades.notification.model.NotificationLevel;
 import org.hyades.notification.model.NotificationRule;
+import org.hyades.notification.model.NotificationScope;
 import org.hyades.notification.publisher.ConsolePublisher;
+import org.hyades.proto.notification.v1.BackReference;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.Component;
 import org.hyades.proto.notification.v1.Level;
@@ -25,7 +26,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
@@ -134,8 +134,9 @@ class NotificationRouterTest {
                                 .setUuid(projectUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(projectUuid.toString()))
+                        .setAffectedProjects(BackReference.newBuilder()
+                                .setApiUri("foo")
+                                .setFrontendUri("bar"))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -169,8 +170,9 @@ class NotificationRouterTest {
                                 .setUuid(UUID.randomUUID().toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(projectUuid.toString()))
+                        .setAffectedProjects(BackReference.newBuilder()
+                                .setApiUri("foo")
+                                .setFrontendUri("bar"))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -202,8 +204,9 @@ class NotificationRouterTest {
                                 .setUuid(projectUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(projectUuid.toString()))
+                        .setAffectedProjects(BackReference.newBuilder()
+                                .setApiUri("foo")
+                                .setFrontendUri("bar"))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -577,8 +580,9 @@ class NotificationRouterTest {
                                 .setUuid(grandChildUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(grandChildUuid.toString()))
+                        .setAffectedProjects(BackReference.newBuilder()
+                                .setApiUri("foo")
+                                .setFrontendUri("bar"))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -622,8 +626,9 @@ class NotificationRouterTest {
                                 .setUuid(grandChildUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(grandChildUuid.toString()))
+                        .setAffectedProjects(BackReference.newBuilder()
+                                .setApiUri("foo")
+                                .setFrontendUri("bar"))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -665,8 +670,9 @@ class NotificationRouterTest {
                                 .setUuid(grandChildUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(grandChildUuid.toString()))
+                        .setAffectedProjects(BackReference.newBuilder()
+                                .setApiUri("foo")
+                                .setFrontendUri("bar"))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -697,57 +703,14 @@ class NotificationRouterTest {
                                 .setUuid(projectUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(projectUuid.toString()))
+                        .setAffectedProjects(BackReference.newBuilder()
+                                .setApiUri("foo")
+                                .setFrontendUri("bar"))
                         .build()))
                 .build();
         // Ok, let's test this
         notificationRouter.inform(notification);
         verify(consolePublisherMock).inform(eq(notification), any());
-    }
-
-    @Test
-    @TestTransaction
-    void testInformWithValidMatchingProjectLimitingRule() throws Exception {
-        final BigInteger publisherId = createConsolePublisher();
-        // Creates a new rule and defines when the rule should be triggered (notifyOn)
-        final BigInteger ruleId = createRule("Test Rule",
-                NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL,
-                NotificationGroup.NEW_VULNERABILITY, publisherId);
-        // Creates a project which will later be matched on
-        final UUID projectUuid = UUID.randomUUID();
-        final BigInteger projectId = createProject("Test Project", "1.0", true, projectUuid);
-        addProjectToRule(projectId, ruleId);
-        // Creates a new notification
-        final var notification = Notification.newBuilder()
-                .setScope(SCOPE_PORTFOLIO)
-                .setGroup(GROUP_NEW_VULNERABILITY)
-                .setLevel(LEVEL_INFORMATIONAL)
-                .setSubject(Any.pack(NewVulnerabilitySubject.newBuilder()
-                        .setComponent(Component.newBuilder()
-                                .setUuid(UUID.randomUUID().toString()))
-                        .setProject(Project.newBuilder()
-                                .setUuid(projectUuid.toString()))
-                        .setVulnerability(Vulnerability.newBuilder()
-                                .setUuid(UUID.randomUUID().toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(projectUuid.toString()))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(UUID.randomUUID().toString()))
-                        .build()))
-                .build();
-        // Ok, let's test this
-        notificationRouter.inform(notification);
-        final var notificationCaptor = ArgumentCaptor.forClass(Notification.class);
-        verify(consolePublisherMock).inform(notificationCaptor.capture(), any());
-        assertThat(notificationCaptor.getValue().getSubject().is(NewVulnerabilitySubject.class)).isTrue();
-        final var subject = notificationCaptor.getValue().getSubject().unpack(NewVulnerabilitySubject.class);
-        assertThat(subject.hasComponent()).isTrue();
-        assertThat(subject.getProject().getUuid()).isEqualTo(projectUuid.toString());
-        assertThat(subject.hasVulnerability()).isTrue();
-        assertThat(subject.getAffectedProjectsList()).satisfiesExactly(
-                project -> assertThat(project.getUuid()).isEqualTo(projectUuid.toString())
-        );
     }
 
     private BigInteger createConsolePublisher() {
