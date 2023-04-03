@@ -60,7 +60,7 @@ public class OsvToCyclonedxParser {
         // initial check if advisory is valid or withdrawn
         if (osvDto == null
                 || (osvDto != null && osvDto.withdrawn() != null)) {
-            return cyclonedxBom.build();
+            return null;
         }
         Vulnerability.Builder vulnerability = buildVulnerability(osvDto);
         if (osvDto.databaseSpecific() != null) {

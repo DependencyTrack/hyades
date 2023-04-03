@@ -31,7 +31,6 @@ import org.hyades.resolver.CweResolver;
 import org.hyades.vulnmirror.datasource.Datasource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,7 +61,7 @@ public final class NvdToCyclonedxParser {
                 .setDescription(parseDescription(cveItem.getDescriptions()))
                 .addAllRatings(parseCveImpact(cveItem.getMetrics()));
         //.addAllCwes(cveItem.getWeaknesses() != null ? parseCwes(cveItem.getWeaknesses()) : null)
-        if(cveItem.getWeaknesses()!=null){
+        if (cveItem.getWeaknesses() != null) {
             cdxVuln.addAllCwes(parseCwes(cveItem.getWeaknesses()));
         }
         Optional.ofNullable(cveItem.getPublished())

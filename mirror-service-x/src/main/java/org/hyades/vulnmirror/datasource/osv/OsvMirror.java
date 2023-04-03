@@ -70,8 +70,7 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
             }
                 var json = new JSONObject(out.toString());
                 Bom bov = new OsvToCyclonedxParser(this.objectMapper).parse(json);
-                // if deserialized osvDto has a withdrawn date then the bov returned is "" and need not be processed further
-                if (bov != null && !bov.toString().equals("")) {
+                if (bov != null) {
                     publishIfChanged(bov);
                 }
             zipEntry = zipIn.getNextEntry();

@@ -1,6 +1,5 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
-import io.github.jeremylong.nvdlib.NvdApiException;
 import io.github.jeremylong.nvdlib.NvdCveApi;
 import io.github.jeremylong.nvdlib.nvd.DefCveItem;
 import io.micrometer.core.instrument.Timer;
@@ -83,8 +82,7 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
             }
 
             updateState(new NvdMirrorState(apiClient.getLastModifiedRequest()));
-        }
-        finally {
+        } finally {
             final long durationNanos = durationSample.stop(durationTimer);
             LOGGER.info("Mirroring of CVEs completed in {}", Duration.ofNanos(durationNanos));
         }
