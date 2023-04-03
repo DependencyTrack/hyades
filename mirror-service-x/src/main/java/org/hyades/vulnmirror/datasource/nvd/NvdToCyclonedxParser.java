@@ -60,7 +60,6 @@ public final class NvdToCyclonedxParser {
                 .setId(cveItem.getId())
                 .setDescription(parseDescription(cveItem.getDescriptions()))
                 .addAllRatings(parseCveImpact(cveItem.getMetrics()));
-        //.addAllCwes(cveItem.getWeaknesses() != null ? parseCwes(cveItem.getWeaknesses()) : null)
         if (cveItem.getWeaknesses() != null) {
             cdxVuln.addAllCwes(parseCwes(cveItem.getWeaknesses()));
         }

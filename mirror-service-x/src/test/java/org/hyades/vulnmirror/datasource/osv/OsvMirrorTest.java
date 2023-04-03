@@ -186,11 +186,11 @@ class OsvMirrorTest {
 
         assertThat(vulnRecords).satisfiesExactly(
                 record -> {
-                    assertThat(record.key()).isEqualTo("OSV/GHSA-fxqr-px2m-fvc2");
+                    assertThat(record.key()).isEqualTo("OSV/GHSA-2cc5-23r7-vc4v");
                     assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
 
                     final Vulnerability vuln = record.value().getVulnerabilities(0);
-                    assertThat(vuln.getId()).isEqualTo("GHSA-fxqr-px2m-fvc2");
+                    assertThat(vuln.getId()).isEqualTo("GHSA-2cc5-23r7-vc4v");
                     assertThat(vuln.hasSource()).isTrue();
                     assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
                 }
