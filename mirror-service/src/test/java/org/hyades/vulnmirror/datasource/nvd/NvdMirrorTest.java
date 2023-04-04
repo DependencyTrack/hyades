@@ -140,7 +140,7 @@ class NvdMirrorTest {
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
                 .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                 .withAutoCommit()
-                .fromTopics(KafkaTopic.VULNERABILITY.getName(), 1, Duration.ofSeconds(5))
+                .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 1, Duration.ofSeconds(5))
                 .awaitCompletion()
                 .getRecords();
 
