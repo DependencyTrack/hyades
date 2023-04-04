@@ -14,12 +14,13 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -28,7 +29,6 @@ import java.util.zip.ZipInputStream;
 
 import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.hyades.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
-import static org.hyades.vulnmirror.datasource.util.FileUtil.deleteFileAndDir;
 
 @ApplicationScoped
 public class OsvMirror extends AbstractDatasourceMirror<Void> {
@@ -51,10 +51,9 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
 
     public void performMirror(String ecosystem) throws IOException, ExecutionException, InterruptedException {
         Path ecosystemZip = client.downloadEcosystemZip(ecosystem);
-        try (InputStream inputStream = new FileInputStream(ecosystemZip.toFile());
+        try (InputStream inputStream = Files.newInputStream(ecosystemZip, StandardOpenOption.DELETE_ON_CLOSE);
              ZipInputStream zipInput = new ZipInputStream(inputStream)) {
             parseZipInputAndPublishIfChanged(zipInput);
-            deleteFileAndDir(ecosystemZip);
         }
 
     }
@@ -90,6 +89,9 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
                         performMirror(ecosystem);
                         dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
                                 "OSV mirroring completed for ecosystem: " + ecosystem);
+                    } catch (InterruptedException e) {
+                        LOGGER.warn("Thread was interrupted", e);
+                        Thread.currentThread().interrupt();
                     } catch (Exception e) {
                         LOGGER.error("An unexpected error occurred mirroring the contents of ecosystem:" + ecosystem, e);
                         dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,

@@ -32,8 +32,6 @@ import static org.hyades.proto.notification.v1.Group.GROUP_DATASOURCE_MIRRORING;
 import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.hyades.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 import static org.hyades.proto.notification.v1.Scope.SCOPE_SYSTEM;
-import static org.hyades.vulnmirror.datasource.util.FileUtil.deleteFileAndDir;
-import static org.hyades.vulnmirror.datasource.util.FileUtil.getTempFileLocation;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -54,16 +52,16 @@ class OsvMirrorTest {
     private Path tempZipLocation;
 
     @AfterEach
-    void afterEach() {
-        if (tempZipLocation != null) {
-            deleteFileAndDir(tempZipLocation);
+    void afterEach() throws Exception {
+        if (tempZipLocation != null && Files.exists(tempZipLocation)) {
+            Files.delete(tempZipLocation);
         }
     }
 
     @Test
     void testDoMirrorSuccessNotification() throws IOException {
         Path testFile = Path.of("src/test/resources/datasource/osv/osv-download.zip");
-        tempZipLocation = getTempFileLocation("test", ".zip");
+        tempZipLocation = Files.createTempFile("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         doReturn(tempZipLocation).when(osvClientMock).downloadEcosystemZip(anyString());
         assertThatNoException().isThrownBy(() -> osvMirror.doMirror("Maven").get());
@@ -140,7 +138,7 @@ class OsvMirrorTest {
     @Test
     void testPerformMirrorGo() throws Exception {
         Path testFile = Path.of("src/test/resources/datasource/osv/osv-download.zip");
-        tempZipLocation = getTempFileLocation("test", ".zip");
+        tempZipLocation = Files.createTempFile("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         doReturn(tempZipLocation).when(osvClientMock).downloadEcosystemZip(anyString());
 
@@ -170,7 +168,7 @@ class OsvMirrorTest {
     @Test
     void testPerformMirrorMaven() throws Exception {
         Path testFile = Path.of("src/test/resources/datasource/osv/maven.zip");
-        tempZipLocation = getTempFileLocation("test", ".zip");
+        tempZipLocation = Files.createTempFile("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         doReturn(tempZipLocation).when(osvClientMock).downloadEcosystemZip(anyString());
 

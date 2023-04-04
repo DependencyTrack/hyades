@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface OsvConfig {
 
     @WithDefault("https://osv-vulnerabilities.storage.googleapis.com")
-    Optional<String> baseurl();
+    Optional<String> baseUrl();
 
 }

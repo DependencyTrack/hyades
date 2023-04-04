@@ -58,6 +58,9 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
                 mirrorInternal();
                 dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
                         "Mirroring of GitHub Advisories completed successfully.");
+            } catch (InterruptedException e) {
+                LOGGER.warn("Thread was interrupted", e);
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 LOGGER.error("An unexpected error occurred mirroring the contents of GitHub Advisories", e);
                 dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,

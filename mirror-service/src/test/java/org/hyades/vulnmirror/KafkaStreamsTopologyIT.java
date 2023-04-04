@@ -267,7 +267,7 @@ class KafkaStreamsTopologyIT {
                         new TestResourceEntry(KafkaCompanionResource.class),
                         new TestResourceEntry(
                                 WireMockTestResource.class,
-                                Map.of("serverUrlProperty", "mirror.datasource.osv.baseurl")
+                                Map.of("serverUrlProperty", "mirror.datasource.osv.base-url")
                         ));
             }
         }
@@ -331,7 +331,7 @@ class KafkaStreamsTopologyIT {
                     .awaitCompletion()
                     .getRecords();
             assertThat(notifications).hasSize(1);
-            assertThat(notifications.get(0).value().getContent().equalsIgnoreCase("OSV mirroring completed for ecosystem: Maven"));
+            assertThat(notifications.get(0).value().getContent()).isEqualToIgnoringCase("OSV mirroring completed for ecosystem: Maven");
         }
 
     }
@@ -347,7 +347,7 @@ class KafkaStreamsTopologyIT {
                         new TestResourceEntry(KafkaCompanionResource.class),
                         new TestResourceEntry(
                                 WireMockTestResource.class,
-                                Map.of("serverUrlProperty", "mirror.datasource.osv.baseurl")
+                                Map.of("serverUrlProperty", "mirror.datasource.osv.base-url")
                         ));
             }
         }
@@ -434,8 +434,8 @@ class KafkaStreamsTopologyIT {
                     .awaitCompletion()
                     .getRecords();
             assertThat(notifications).hasSize(2);
-            assertThat(notifications.get(0).value().getContent().equalsIgnoreCase("OSV mirroring completed for ecosystem: Maven"));
-            assertThat(notifications.get(0).value().getContent().equalsIgnoreCase("OSV mirroring completed for ecosystem: Go"));
+            assertThat(notifications.get(0).value().getContent()).isEqualToIgnoringCase("OSV mirroring completed for ecosystem: Maven");
+            assertThat(notifications.get(0).value().getContent()).isEqualToIgnoringCase("OSV mirroring completed for ecosystem: Go");
         }
 
     }

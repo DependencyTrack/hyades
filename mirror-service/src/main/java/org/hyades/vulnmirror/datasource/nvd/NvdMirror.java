@@ -52,6 +52,9 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
                 mirrorInternal();
                 dispatchNotification(LEVEL_INFORMATIONAL, NOTIFICATION_TITLE,
                         "Mirroring of the National Vulnerability Database completed successfully.");
+            } catch (InterruptedException e) {
+                LOGGER.warn("Thread was interrupted", e);
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 LOGGER.error("An unexpected error occurred mirroring the contents of the National Vulnerability Database", e);
                 dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,
