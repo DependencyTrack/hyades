@@ -1,4 +1,4 @@
-package org.hyades.exception;
+package org.hyades.notification.publisher;
 
 public class PublisherException extends RuntimeException {
 

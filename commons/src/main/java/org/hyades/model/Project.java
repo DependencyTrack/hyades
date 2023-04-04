@@ -170,13 +170,13 @@ public class Project implements Serializable {
     private UUID uuid;
 
     /**
-     * Convenience field which will contain the date of the last entry in the {@link Bom} table
+     * Convenience field which will contain the date of the last entry in the BOM table
      */
     @Column(name = "LAST_BOM_IMPORTED")
     private Date lastBomImport;
 
     /**
-     * Convenience field which will contain the format of the last entry in the {@link Bom} table
+     * Convenience field which will contain the format of the last entry in the BOM table
      */
     @Column(name = "LAST_BOM_IMPORTED_FORMAT")
     private String lastBomImportFormat;
