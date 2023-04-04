@@ -53,8 +53,9 @@ for topic_name in "${vuln_analysis_topics[@]}"; do
   create_topic "$topic_name" "${VULN_ANALYSIS_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_ANALYSIS_TOPICS_RETENTION_MS:-43200000}"
 done
 
-create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.osv" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
-create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.nvd" "${VULN_MIRROR_TOPICS_PARTITIONS:-1}" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
+create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.command" "1" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
+create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.state" "1" "cleanup.policy=compact"
+create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.digest" "1" "cleanup.policy=compact"
 create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
 
 echo "All topics created successfully"
