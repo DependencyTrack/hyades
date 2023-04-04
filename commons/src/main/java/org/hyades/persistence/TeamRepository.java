@@ -1,12 +1,12 @@
 package org.hyades.persistence;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import org.hibernate.jpa.QueryHints;
 import org.hyades.model.Team;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,13 +21,15 @@ public class TeamRepository implements PanacheRepository<Team> {
 
     @SuppressWarnings("unchecked")
     public List<Team> findByNotificationRule(final long notificationRuleId) {
-        final Query query = entityManager.createNativeQuery("""
-                SELECT * FROM "TEAM" AS "T"
-                    INNER JOIN "NOTIFICATIONRULE_TEAMS" AS "NT" ON "NT"."TEAM_ID" = "T"."ID"
-                WHERE "NT"."NOTIFICATIONRULE_ID" = :ruleId  
-                """, Team.class);
-        query.setParameter("ruleId", notificationRuleId);
-        return query.getResultList();
+        return entityManager
+                .createNativeQuery("""
+                        SELECT * FROM "TEAM" AS "T"
+                            INNER JOIN "NOTIFICATIONRULE_TEAMS" AS "NT" ON "NT"."TEAM_ID" = "T"."ID"
+                        WHERE "NT"."NOTIFICATIONRULE_ID" = :ruleId  
+                        """, Team.class)
+                .setParameter("ruleId", notificationRuleId)
+                .setHint(QueryHints.HINT_READONLY, true)
+                .getResultList();
     }
 
 }
