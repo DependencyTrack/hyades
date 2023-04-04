@@ -15,7 +15,6 @@
     <module>repository-meta-analyzer</module>
     <module>proto</module>
     <module>vulnerability-analyzer</module>
-    <module>mirror-service-x</module>
     <module>e2e</module>
   </modules>
 
@@ -31,6 +30,7 @@
     <lib.assertj.version>3.24.2</lib.assertj.version>
     <lib.checkstyle.version>10.9.3</lib.checkstyle.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
+    <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
@@ -93,6 +93,12 @@
         <groupId>us.springett</groupId>
         <artifactId>cpe-parser</artifactId>
         <version>${lib.cpe-parser.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>${lib.commons-collections4.version}</version>
       </dependency>
 
       <dependency>
