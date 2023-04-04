@@ -36,9 +36,9 @@ class KafkaStreamsTopologyProducer {
                         .withName(processorNameConsume(KafkaTopic.VULNERABILITY_MIRROR_COMMAND)));
 
         final KStream<String, byte[]> vulnerabilityStream = streamsBuilder
-                .stream(KafkaTopic.NEW_VULNERABILITY.getName(), Consumed
+                .stream(KafkaTopic.VULNERABILITY.getName(), Consumed
                         .with(Serdes.String(), Serdes.ByteArray())
-                        .withName(processorNameConsume(KafkaTopic.NEW_VULNERABILITY)));
+                        .withName(processorNameConsume(KafkaTopic.VULNERABILITY)));
 
         // Handle mirror commands, where the key of the command event refers to the
         // data source that shall be mirrored. Events with invalid data sources will

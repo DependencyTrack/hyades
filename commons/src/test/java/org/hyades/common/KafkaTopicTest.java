@@ -23,12 +23,12 @@ public class KafkaTopicTest {
         @Test
         void testKafkaTopicConfigWithPrefix() {
             System.setProperty("api.topic.prefix", "customPrefix.");
-            assertEquals("customPrefix.dtrack.vulnerability.mirror.osv", KafkaTopic.MIRROR_OSV.getName());
+            assertEquals("customPrefix.dtrack.vulnerability.mirror.command", KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName());
         }
     }
 
     @Test
     void testKafkaTopicConfig() {
-        assertEquals("dtrack.vulnerability.mirror.osv", KafkaTopic.MIRROR_OSV.getName());
+        assertEquals("dtrack.vulnerability.mirror.command", KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName());
     }
 }

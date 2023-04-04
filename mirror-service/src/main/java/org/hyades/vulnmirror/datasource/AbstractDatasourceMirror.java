@@ -104,7 +104,7 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
         if (!Arrays.equals(vulnDigestStore.get(datasource, vulnId), bovDigest)) {
             logger.debug("{} has changed", recordKey);
             kafkaProducer.send(new ProducerRecord<>(
-                    KafkaTopic.NEW_VULNERABILITY.getName(), recordKey, serializedBov)).get();
+                    KafkaTopic.VULNERABILITY.getName(), recordKey, serializedBov)).get();
         } else {
             logger.debug("{} did not change", recordKey);
         }

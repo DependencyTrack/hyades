@@ -100,7 +100,7 @@ class KafkaStreamsTopologyIT {
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
                     .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                     .withAutoCommit()
-                    .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
+                    .fromTopics(KafkaTopic.VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
                     .awaitCompletion()
                     .getRecords();
 
@@ -204,7 +204,7 @@ class KafkaStreamsTopologyIT {
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
                     .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                     .withAutoCommit()
-                    .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
+                    .fromTopics(KafkaTopic.VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
                     .awaitCompletion()
                     .getRecords();
 
@@ -296,7 +296,7 @@ class KafkaStreamsTopologyIT {
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
                     .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                     .withAutoCommit()
-                    .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 2, Duration.ofSeconds(15))
+                    .fromTopics(KafkaTopic.VULNERABILITY.getName(), 2, Duration.ofSeconds(15))
                     .awaitCompletion()
                     .getRecords();
 
@@ -381,7 +381,7 @@ class KafkaStreamsTopologyIT {
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
                     .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                     .withAutoCommit()
-                    .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 4, Duration.ofSeconds(15))
+                    .fromTopics(KafkaTopic.VULNERABILITY.getName(), 4, Duration.ofSeconds(15))
                     .awaitCompletion()
                     .getRecords();
 
