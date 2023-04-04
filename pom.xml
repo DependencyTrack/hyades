@@ -47,7 +47,7 @@
     <quarkus.platform.version>2.16.5.Final</quarkus.platform.version>
 
     <!-- Plugin Versions -->
-    <plugin.jacoco.version>0.8.8</plugin.jacoco.version>
+    <plugin.jacoco.version>0.8.9</plugin.jacoco.version>
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
     <!-- Tool Versions -->
