@@ -22,7 +22,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
-import org.hyades.exception.PublisherException;
 import org.hyades.model.ConfigProperty;
 import org.hyades.model.ConfigPropertyConstants;
 import org.hyades.persistence.ConfigPropertyRepository;
