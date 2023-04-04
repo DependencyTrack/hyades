@@ -64,7 +64,7 @@ class GitHubMirrorTest {
         when(apiClientFactoryMock.create(anyLong()))
                 .thenReturn(apiClientMock);
 
-        assertThatNoException().isThrownBy(() -> githubMirror.doMirror().get());
+        assertThatNoException().isThrownBy(() -> githubMirror.doMirror(null).get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
@@ -97,7 +97,7 @@ class GitHubMirrorTest {
         when(apiClientFactoryMock.create(anyLong()))
                 .thenReturn(apiClientMock);
 
-        assertThatNoException().isThrownBy(() -> githubMirror.doMirror().get());
+        assertThatNoException().isThrownBy(() -> githubMirror.doMirror(null).get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))

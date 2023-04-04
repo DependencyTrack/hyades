@@ -59,7 +59,7 @@ class KafkaStreamsTopologyProducer {
                 .foreach((datasource, value) -> datasourceMirrors.stream()
                                 .filter(mirror -> mirror.supportsDatasource(datasource))
                                 .findAny()
-                                .ifPresent(DatasourceMirror::doMirror),
+                                .ifPresent(datasourceMirror -> datasourceMirror.doMirror(value)),
                         Named.as("execute_mirror"));
 
         // For every successfully mirrored vulnerability, calculate the SHA-256 digest

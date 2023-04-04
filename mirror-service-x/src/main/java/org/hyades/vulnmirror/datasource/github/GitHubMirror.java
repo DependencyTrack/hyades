@@ -52,7 +52,7 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
     }
 
     @Override
-    public Future<?> doMirror() {
+    public Future<?> doMirror(String ecosystem) {
         return executorService.submit(() -> {
             try {
                 mirrorInternal();

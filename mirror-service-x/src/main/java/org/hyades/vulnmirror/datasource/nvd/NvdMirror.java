@@ -46,7 +46,7 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
     }
 
     @Override
-    public Future<?> doMirror() {
+    public Future<?> doMirror(String ecosystem) {
         return executorService.submit(() -> {
             try {
                 mirrorInternal();
@@ -75,7 +75,6 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
                     LOGGER.warn("No cve item in response from Nvd. Skipping to next item");
                     continue;
                 }
-
                 for (final DefCveItem cveItem : cveItems) {
                     final Bom bov = NvdToCyclonedxParser.parse(cveItem);
                     publishIfChanged(bov);

@@ -9,6 +9,7 @@ import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
 import org.cyclonedx.proto.v1_4.ScoreMethod;
 import org.cyclonedx.proto.v1_4.Severity;
+import org.cyclonedx.proto.v1_4.Source;
 import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.cyclonedx.proto.v1_4.VulnerabilityAffectedVersions;
 import org.cyclonedx.proto.v1_4.VulnerabilityAffects;
@@ -45,7 +46,7 @@ public class OsvToCyclonedxParser {
     private final ObjectMapper objectMapper;
 
     @Inject
-    public OsvToCyclonedxParser(@Named("objectMapper") final ObjectMapper objectMapper) {
+    public OsvToCyclonedxParser(@Named("osvObjectMapper") final ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -59,7 +60,7 @@ public class OsvToCyclonedxParser {
         // initial check if advisory is valid or withdrawn
         if (osvDto == null
                 || (osvDto != null && osvDto.withdrawn() != null)) {
-            return cyclonedxBom.build();
+            return null;
         }
         Vulnerability.Builder vulnerability = buildVulnerability(osvDto);
         if (osvDto.databaseSpecific() != null) {
@@ -109,7 +110,7 @@ public class OsvToCyclonedxParser {
             }
             VulnerabilityAffects versionRangeAffected = getAffectedPackageVersionRange(osvAffectedObj, ecoSystem);
             VulnerabilityAffects rangeWithBomReference = VulnerabilityAffects.newBuilder(versionRangeAffected)
-                            .setRef(bomReference).build();
+                    .setRef(bomReference).build();
             affects.add(rangeWithBomReference);
         }
         return affects;
@@ -302,6 +303,10 @@ public class OsvToCyclonedxParser {
     private static Vulnerability.Builder buildVulnerability(OsvDto osvDto) {
         Vulnerability.Builder vulnerability = Vulnerability.newBuilder();
         Optional.ofNullable(osvDto.id()).ifPresent(id -> vulnerability.setId(id));
+        vulnerability.setSource(extractSource(osvDto.id()));
+        Optional.ofNullable(osvDto.summary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
+        Optional.ofNullable(osvDto.details()).ifPresent(summary -> vulnerability.setDetail(summary));
+        Optional.ofNullable(osvDto.id()).ifPresent(id -> vulnerability.setId(id));
         Optional.ofNullable(osvDto.summary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
         Optional.ofNullable(osvDto.details()).ifPresent(summary -> vulnerability.setDetail(summary));
 
@@ -330,6 +335,16 @@ public class OsvToCyclonedxParser {
             LOGGER.error("Failed to parse Json object into Bom {}", ex);
         }
         return null;
+    }
+
+    private static Source extractSource(String vulnId) {
+        final String sourceId = vulnId.split("-")[0];
+        var source = Source.newBuilder();
+        return switch (sourceId) {
+            case "GHSA" -> source.setName("GITHUB").build();
+            case "CVE" -> source.setName("NVD").build();
+            default -> source.setName("OSV").build();
+        };
     }
 }
 

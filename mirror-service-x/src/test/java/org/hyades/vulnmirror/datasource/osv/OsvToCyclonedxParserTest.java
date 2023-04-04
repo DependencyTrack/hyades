@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class OsvToCyclonedxParserTest {
 
     @Inject
-    @Named("objectMapper")
+    @Named("osvObjectMapper")
     ObjectMapper mapper;
 
     @Test
