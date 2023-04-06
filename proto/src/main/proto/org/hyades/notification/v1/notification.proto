@@ -49,6 +49,7 @@ enum Group {
   GROUP_VEX_PROCESSED = 14;
   GROUP_POLICY_VIOLATION = 15;
   GROUP_PROJECT_CREATED = 16;
+  GROUP_BOM_PROCESSING_FAILED = 17;
 }
 
 message BomConsumedOrProcessedSubject {
@@ -56,6 +57,14 @@ message BomConsumedOrProcessedSubject {
   bytes bom = 2;
   string format = 3;
   string spec_version = 4;
+}
+
+message BomProcessingFailedSubject {
+  Project project = 1;
+  bytes bom = 2;
+  string format = 3;
+  string spec_version = 4;
+  string cause = 5;
 }
 
 message NewVulnerabilitySubject {
