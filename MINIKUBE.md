@@ -1,4 +1,4 @@
-# Minikube deployment
+# Minikube/ Openshift deployment
 
 ### Prerequisites
 * minikube installation on target machine
@@ -10,8 +10,9 @@
 * ```shell
   docker-compose up
   ```
-
-### Deployment Steps
+* For openshift deployment, one should have a running cluster on openshift and access to the same.
+* 
+### Deployment Steps for Minikube
 
 * ```shell
   cd vulnerability-analyzer
@@ -27,15 +28,20 @@ app:
   serviceType: ClusterIP
   image: <local path to image>
   envs:
+    QUARKUS_DATASOURCE_JDBC_URL: test
+    QUARKUS_LOG_CATEGORY_ORG_APACHE_KAFKA_LEVEL: WARN
+    SCANNER_SNYK_API_VERSION: 2023-03-29~beta
     KAFKA_BOOTSTRAP_SERVERS: test
     SCANNER_SNYK_ENABLED: "true"
+    SCANNER_SNYK_API_BASE_URL: https://api.snyk.io
     QUARKUS_DATASOURCE_USERNAME: test
     SCANNER_OSSINDEX_ENABLED: "false"
-    QUARKUS_DATASOURCE_JDBC_URL: test
     SCANNER_OSSINDEX_API_TOKEN: test
     SCANNER_OSSINDEX_API_USERNAME: test
     QUARKUS_DATASOURCE_PASSWORD: test
+    SCANNER_OSSINDEX_API_BASE_URL: https://ossindex.sonatype.org
     SCANNER_SNYK_API_ORG_ID: test
+    KAFKA_SSL_ENABLED: "false"
     QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: test
     SCANNER_SNYK_API_TOKENS: test
 ```
@@ -54,17 +60,10 @@ minikube dashboard
 ```
 
 ### Testing the minikube deployment
-* To send a new event to the dtrack.vuln-analysis.component topic, open http://localhost:28080/topics/dtrack.vuln-analysis.component?o=-1&p=-1&q&s=50#messages
-    * Publish a new message by using Actions>> Publish Message
-        * An example message value is:
-      ```json
-      {
-      "name": "test3",
-      "purl": "pkg:maven/cyclonedx-core-java@7.1.3",
-      "group": "g1",
-      "uuid": "438232c4-3b43-4c12-ad3c-eae522c6d158",
-      "author": "test3"
-      }
-      ```
-        * The corresponding key to set would be 438232c4-3b43-4c12-ad3c-eae522c6d158
-    * Once the message is sent, you can go to the dtrack.vuln-analysis.component.purl topic in the redpanda console and would be able to see a corresponding message that has been processed by the vulnerability analyzer that was deployed using minikube
+* An end to end test can be conducted by running *docker compose up* on hyades project and then turning on the hyades-apiserver, frontend and for example the vulnerability-analyzer from the minikube deployment.
+* Once a component is added to a project in the frontend then the component sent for scanning should also be visible on *dtrack.vuln-analysis.component* topic. 
+* Once the analysis is complete, the result would be visible on *dtrack.vuln-analysis.result* topic and the frontend as well.
+
+
+### Deployment Steps for OpenShift
+* The deployment.yaml generated in running ```mvn clean install``` in the above minikube deployment can be used for an openshift based deployment as well.
