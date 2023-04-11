@@ -1,0 +1,32 @@
+---
+app:
+  serviceType: ClusterIP
+  livenessProbe:
+    failureThreshold: 3
+    periodSeconds: 10
+    timeoutSeconds: 10
+    successThreshold: 1
+    initialDelaySeconds: 5
+    httpGet:
+      path: /q/health/live
+      scheme: HTTP
+      port: 8093
+  image: ghcr.io/dependencytrack/hyades-mirror-service:1.0.0-snapshot
+  readinessProbe:
+    failureThreshold: 3
+    timeoutSeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    initialDelaySeconds: 5
+    httpGet:
+      path: /q/health/ready
+      scheme: HTTP
+      port: 8093
+  envs:
+    KAFKA_BOOTSTRAP_SERVERS: host.minikube.internal:9093
+    api:
+      topic:
+        prefix: ""
+    QUARKUS_LOG_CATEGORY_ORG_APACHE_KAFKA_LEVEL: WARN
+    KAFKA_SSL_ENABLED: "\"false\""
+    QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS: host.minikube.internal:9093
