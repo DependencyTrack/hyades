@@ -31,6 +31,7 @@ import org.hyades.notification.publisher.PublisherException;
 import org.hyades.notification.publisher.SendMailPublisher;
 import org.hyades.persistence.TeamRepository;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
+import org.hyades.proto.notification.v1.BomProcessingFailedSubject;
 import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
 import org.hyades.proto.notification.v1.NewVulnerableDependencySubject;
 import org.hyades.proto.notification.v1.Notification;
@@ -191,6 +192,9 @@ public class NotificationRouter {
         } else if (notification.getScope() == SCOPE_PORTFOLIO
                 && notification.getSubject().is(BomConsumedOrProcessedSubject.class)) {
             limitToProject(rules, result, notification, notification.getSubject().unpack(BomConsumedOrProcessedSubject.class).getProject());
+        } else if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(BomProcessingFailedSubject.class)) {
+            limitToProject(rules, result, notification, notification.getSubject().unpack(BomProcessingFailedSubject.class).getProject());
         } else if (notification.getScope() == SCOPE_PORTFOLIO
                 && notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
             limitToProject(rules, result, notification, notification.getSubject().unpack(VexConsumedOrProcessedSubject.class).getProject());

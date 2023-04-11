@@ -41,6 +41,7 @@ public final class ModelConverter {
             case GROUP_PROJECT_AUDIT_CHANGE -> NotificationGroup.PROJECT_AUDIT_CHANGE;
             case GROUP_BOM_CONSUMED -> NotificationGroup.BOM_CONSUMED;
             case GROUP_BOM_PROCESSED -> NotificationGroup.BOM_PROCESSED;
+            case GROUP_BOM_PROCESSING_FAILED -> NotificationGroup.BOM_PROCESSING_FAILED;
             case GROUP_VEX_CONSUMED -> NotificationGroup.VEX_CONSUMED;
             case GROUP_VEX_PROCESSED -> NotificationGroup.VEX_PROCESSED;
             case GROUP_POLICY_VIOLATION -> NotificationGroup.POLICY_VIOLATION;

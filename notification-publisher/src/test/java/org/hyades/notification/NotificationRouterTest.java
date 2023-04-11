@@ -5,11 +5,12 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import org.hyades.notification.model.NotificationGroup;
-import org.hyades.notification.model.NotificationScope;
 import org.hyades.notification.model.NotificationLevel;
 import org.hyades.notification.model.NotificationRule;
+import org.hyades.notification.model.NotificationScope;
 import org.hyades.notification.publisher.ConsolePublisher;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
+import org.hyades.proto.notification.v1.BomProcessingFailedSubject;
 import org.hyades.proto.notification.v1.Component;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
@@ -37,11 +38,13 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyades.proto.notification.v1.Group.GROUP_BOM_CONSUMED;
 import static org.hyades.proto.notification.v1.Group.GROUP_BOM_PROCESSED;
+import static org.hyades.proto.notification.v1.Group.GROUP_BOM_PROCESSING_FAILED;
 import static org.hyades.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
 import static org.hyades.proto.notification.v1.Group.GROUP_NEW_VULNERABLE_DEPENDENCY;
 import static org.hyades.proto.notification.v1.Group.GROUP_POLICY_VIOLATION;
 import static org.hyades.proto.notification.v1.Group.GROUP_PROJECT_AUDIT_CHANGE;
 import static org.hyades.proto.notification.v1.Group.GROUP_VEX_CONSUMED;
+import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.hyades.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 import static org.hyades.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 import static org.mockito.ArgumentMatchers.any;
@@ -545,6 +548,45 @@ class NotificationRouterTest {
 
     @Test
     @TestTransaction
+    void testResolveRulesLimitedToProjectForBomProcessingFailedNotification() throws Exception {
+        final UUID projectUuidA = UUID.randomUUID();
+        final BigInteger projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+
+        final UUID projectUuidB = UUID.randomUUID();
+        createProject("Project B", "2.0", true, projectUuidB);
+
+        final BigInteger publisherId = createConsolePublisher();
+        final BigInteger ruleId = createRule("Limit To Test Rule",
+                NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL,
+                NotificationGroup.BOM_PROCESSING_FAILED, publisherId);
+        addProjectToRule(projectIdA, ruleId);
+
+        final var notificationProjectA = Notification.newBuilder()
+                .setScope(SCOPE_PORTFOLIO)
+                .setGroup(GROUP_BOM_PROCESSING_FAILED)
+                .setLevel(LEVEL_ERROR)
+                .setSubject(Any.pack(BomProcessingFailedSubject.newBuilder()
+                        .setProject(Project.newBuilder()
+                                .setUuid(projectUuidA.toString()))
+                        .build()))
+                .build();
+
+        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+                rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
+        );
+
+        final var notificationProjectB = Notification.newBuilder(notificationProjectA)
+                .setSubject(Any.pack(BomProcessingFailedSubject.newBuilder()
+                        .setProject(Project.newBuilder()
+                                .setUuid(projectUuidB.toString()))
+                        .build()))
+                .build();
+
+        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+    }
+
+    @Test
+    @TestTransaction
     void testResolveRulesWithAffectedChild() throws Exception {
         final BigInteger publisherId = createConsolePublisher();
         // Creates a new rule and defines when the rule should be triggered (notifyOn)
@@ -759,7 +801,7 @@ class NotificationRouterTest {
     }
 
     private BigInteger createRule(final String name, final NotificationScope scope, final NotificationLevel level,
-                           final NotificationGroup group, final BigInteger publisherId) {
+                                  final NotificationGroup group, final BigInteger publisherId) {
         return (BigInteger) entityManager.createNativeQuery("""            
                         INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
                             (true, :name, :publisherId, :notifyOn, false, :level, :scope, '6b1fee41-4178-4a23-9d1b-e9df79de8e62')
