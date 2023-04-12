@@ -18,7 +18,6 @@
  */
 package org.hyades.notification;
 
-import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.hyades.model.Project;
 import org.hyades.model.Team;
@@ -51,9 +50,6 @@ import javax.transaction.Transactional;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.hyades.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 import static org.hyades.proto.notification.v1.Scope.SCOPE_SYSTEM;
@@ -105,9 +101,9 @@ public class NotificationRouter {
 
                     final List<Team> ruleTeams = teamRepository.findByNotificationRule(rule.getId());
                     if (publisherClass != SendMailPublisher.class || ruleTeams.isEmpty()) {
-                        publisher.inform(restrictNotificationToRuleProjects(notification, rule), notificationPublisherConfig);
+                        publisher.inform(notification, notificationPublisherConfig);
                     } else {
-                        ((SendMailPublisher) publisher).inform(restrictNotificationToRuleProjects(notification, rule), notificationPublisherConfig, ruleTeams);
+                        ((SendMailPublisher) publisher).inform(notification, notificationPublisherConfig, ruleTeams);
                     }
 
 
@@ -120,29 +116,6 @@ public class NotificationRouter {
                 LOGGER.error("An error occured during the publication of the notification", publisherException);
             }
         }
-    }
-
-    public Notification restrictNotificationToRuleProjects(Notification initialNotification, NotificationRule rule) throws InvalidProtocolBufferException {
-        Notification.Builder restrictedNotification = Notification.newBuilder(initialNotification);
-        if (canRestrictNotificationToRuleProjects(initialNotification, rule)) {
-            Set<String> ruleProjectsUuids = rule.getProjects().stream().map(Project::getUuid).map(UUID::toString).collect(Collectors.toSet());
-            if (initialNotification.getSubject().is(NewVulnerabilitySubject.class)) {
-                final var initialSubject = initialNotification.getSubject().unpack(NewVulnerabilitySubject.class);
-                Set<org.hyades.proto.notification.v1.Project> restrictedProjects = initialSubject.getAffectedProjectsList().stream().filter(project -> ruleProjectsUuids.contains(project.getUuid())).collect(Collectors.toSet());
-                restrictedNotification.setSubject(Any.pack(NewVulnerabilitySubject.newBuilder(initialSubject)
-                        .clearAffectedProjects()
-                        .addAllAffectedProjects(restrictedProjects)
-                        .build()));
-            }
-        }
-        return restrictedNotification.build();
-    }
-
-    private boolean canRestrictNotificationToRuleProjects(Notification initialNotification, NotificationRule rule) {
-        return (initialNotification.getSubject().is(NewVulnerabilitySubject.class)
-                || initialNotification.getSubject().is(VulnerabilityAnalysisDecisionChangeSubject.class))
-                && rule.getProjects() != null
-                && rule.getProjects().size() > 0;
     }
 
     List<NotificationRule> resolveRules(final Notification notification) throws InvalidProtocolBufferException {

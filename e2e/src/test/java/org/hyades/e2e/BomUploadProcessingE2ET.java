@@ -213,13 +213,10 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                 "source": "INTERNAL",
                                 "severity": "UNASSIGNED"
                               },
-                              "affectedProjects": [
-                                {
-                                  "uuid": "${json-unit.any-string}",
-                                  "name": "foo",
-                                  "version": "bar"
-                                }
-                              ],
+                              "affectedProjects": {
+                                "apiUri": "/api/v1/vulnerability/source/INTERNAL/vuln/INT-123/projects",
+                                "frontendUri": "/vulnerabilities/INTERNAL/INT-123/affectedProjects"
+                              },
                               "vulnerabilityAnalysisLevel": "BOM_UPLOAD_ANALYSIS"
                             }
                           }

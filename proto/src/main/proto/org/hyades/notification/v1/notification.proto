@@ -52,6 +52,14 @@ enum Group {
   GROUP_BOM_PROCESSING_FAILED = 17;
 }
 
+message BackReference {
+  // URI to the API endpoint from which additional information can be fetched.
+  optional string api_uri = 1;
+
+  // URI to the frontend where additional information can be seen.
+  optional string frontend_uri = 2;
+}
+
 message BomConsumedOrProcessedSubject {
   Project project = 1;
   bytes bom = 2;
@@ -71,7 +79,7 @@ message NewVulnerabilitySubject {
   Component component = 1;
   Project project = 2;
   Vulnerability vulnerability = 3;
-  repeated Project affected_projects = 4;
+  BackReference affected_projects = 4;
   optional string vulnerability_analysis_level = 5;
 }
 
