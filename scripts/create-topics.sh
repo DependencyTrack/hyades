@@ -47,6 +47,7 @@ done
 
 vuln_analysis_topics=(
   "${API_TOPIC_PREFIX:-}dtrack.vuln-analysis.component"
+  "${API_TOPIC_PREFIX:-}dtrack.vuln-analysis.scanner.result"
   "${API_TOPIC_PREFIX:-}dtrack.vuln-analysis.result"
 )
 for topic_name in "${vuln_analysis_topics[@]}"; do
