@@ -2,6 +2,7 @@ package org.hyades.vulnmirror.datasource.nvd;
 
 import io.github.jeremylong.nvdlib.NvdCveApi;
 import io.github.jeremylong.nvdlib.nvd.DefCveItem;
+import io.github.resilience4j.retry.Retry;
 import io.micrometer.core.instrument.Timer;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;
@@ -30,19 +31,24 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
     private static final String NOTIFICATION_TITLE = "NVD Mirroring";
 
     private final NvdApiClientFactory apiClientFactory;
+
     private final ExecutorService executorService;
     private final Timer durationTimer;
+
+    private final Retry retry;
+
 
     NvdMirror(final NvdApiClientFactory apiClientFactory,
               @Named("nvdExecutorService") final ExecutorService executorService,
               final MirrorStateStore mirrorStateStore,
               final VulnerabilityDigestStore vulnDigestStore,
               final Producer<String, byte[]> kafkaProducer,
-              @Named("nvdDurationTimer") final Timer durationTimer) {
+              @Named("nvdDurationTimer") final Timer durationTimer, @Named("nvdMirrorRetry") final Retry retry) {
         super(Datasource.NVD, mirrorStateStore, vulnDigestStore, kafkaProducer, NvdMirrorState.class);
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
         this.durationTimer = durationTimer;
+        this.retry = retry;
     }
 
     @Override
@@ -55,15 +61,16 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
             } catch (InterruptedException e) {
                 LOGGER.warn("Thread was interrupted", e);
                 Thread.currentThread().interrupt();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOGGER.error("An unexpected error occurred mirroring the contents of the National Vulnerability Database", e);
                 dispatchNotification(LEVEL_ERROR, NOTIFICATION_TITLE,
-                        "An error occurred mirroring the contents of the National Vulnerability Database. Check log for details.");
+                        "An error occurred mirroring the contents of the National Vulnerability Database, cause being: " + e + ". Check log for details.");
             }
         });
     }
 
-    void mirrorInternal() throws Exception {
+    void mirrorInternal() throws Throwable {
+
         long lastModified = getState()
                 .map(NvdMirrorState::lastModifiedEpochSeconds)
                 .orElse(0L);
@@ -73,7 +80,7 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
 
         try (final NvdCveApi apiClient = apiClientFactory.createApiClient(lastModified)) {
             while (apiClient.hasNext()) {
-                final Collection<DefCveItem> cveItems = apiClient.next();
+                final Collection<DefCveItem> cveItems = this.retry.executeCheckedSupplier(apiClient::next);
                 if (cveItems == null) {
                     LOGGER.warn("No cve item in response from Nvd. Skipping to next item");
                     continue;
