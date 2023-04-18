@@ -1,7 +1,6 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonParseException;
 import io.github.jeremylong.nvdlib.NvdApiException;
 import io.github.jeremylong.nvdlib.NvdCveApi;
 import io.github.jeremylong.nvdlib.nvd.DefCveItem;
