@@ -121,7 +121,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: dependencytrack/frontend:4.7.0
+    image: dependencytrack/frontend:4.8.0
     container_name: dt-frontend
     environment:
       API_BASE_URL: "http://localhost:8080"
