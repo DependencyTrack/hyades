@@ -226,6 +226,8 @@ services:
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.bom-processed
                 valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.bom-processing-failed
+                valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.configuration
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.datasource-mirroring
@@ -265,6 +267,8 @@ services:
               - topicName: dtrack.vuln-analysis.result
                 keyProtoType: org.hyades.vulnanalysis.v1.ScanKey
                 valueProtoType: org.hyades.vulnanalysis.v1.ScanResult
+              - topicName: dtrack.vulnerability
+                valueProtoType: org.cyclonedx.v1_4.Bom
             fileSystem:
               enabled: true
               paths: ["/etc/protos"]
