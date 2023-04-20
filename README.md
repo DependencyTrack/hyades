@@ -54,7 +54,7 @@ See [`CONFIGURATION.md`](CONFIGURATION.md).
 #### Building
 
 ```shell
-./mvnw clean install -DskipTests
+mvn clean install -DskipTests
 ```
 
 #### Running locally
@@ -69,7 +69,7 @@ docker compose up -d
 To launch individual services execute the `quarkus:dev` Maven goal for the respective module:
 
 ```shell
-./mvnw -pl vulnerability-analyzer quarkus:dev
+mvn -pl vulnerability-analyzer quarkus:dev
 ```
 
 Make sure you've [built](#building) the project at least once, otherwise the above command will fail.
@@ -85,7 +85,7 @@ Make sure you've [built](#building) the project at least once, otherwise the abo
 To execute the unit tests for all Hyades modules:
 
 ```shell
-./mvnw clean verify
+mvn clean verify
 ```
 
 #### End-To-End Testing 🧟
@@ -100,13 +100,13 @@ To execute the unit tests for all Hyades modules:
 To execute end-to-end tests as part of the build:
 
 ```shell
-./mvnw clean verify -Pe2e-all
+mvn clean verify -Pe2e-all
 ```
 
 To execute *only* the end-to-end tests:
 
 ```shell
-./mvnw -pl e2e clean verify -Pe2e-all
+mvn -pl e2e clean verify -Pe2e-all
 ```
 
 #### Load Testing 🚀
