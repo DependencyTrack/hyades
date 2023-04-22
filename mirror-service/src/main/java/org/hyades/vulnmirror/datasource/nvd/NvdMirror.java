@@ -1,7 +1,7 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
-import io.github.jeremylong.nvdlib.NvdCveApi;
-import io.github.jeremylong.nvdlib.nvd.DefCveItem;
+import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
+import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
 import io.github.resilience4j.retry.Retry;
 import io.micrometer.core.instrument.Timer;
 import org.apache.kafka.clients.producer.Producer;
@@ -17,7 +17,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.chrono.ChronoZonedDateTime;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -78,7 +80,7 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
         LOGGER.info("Mirroring CVEs that were modified since {}", Instant.ofEpochSecond(lastModified));
         final Timer.Sample durationSample = Timer.start();
 
-        try (final NvdCveApi apiClient = apiClientFactory.createApiClient(lastModified)) {
+        try (final NvdCveClient apiClient = apiClientFactory.createApiClient(lastModified)) {
             while (apiClient.hasNext()) {
                 final Collection<DefCveItem> cveItems = this.retry.executeCheckedSupplier(apiClient::next);
                 if (cveItems == null) {
@@ -91,7 +93,10 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
                 }
             }
 
-            updateState(new NvdMirrorState(apiClient.getLastModifiedRequest()));
+            // lastUpdated is null when nothing changed
+            Optional.ofNullable(apiClient.getLastUpdated())
+                    .map(ChronoZonedDateTime::toEpochSecond)
+                    .ifPresent(epochSeconds -> updateState(new NvdMirrorState(epochSeconds)));
         } finally {
             final long durationNanos = durationSample.stop(durationTimer);
             LOGGER.info("Mirroring of CVEs completed in {}", Duration.ofNanos(durationNanos));

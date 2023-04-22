@@ -1,9 +1,9 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.jeremylong.nvdlib.NvdApiException;
-import io.github.jeremylong.nvdlib.NvdCveApi;
-import io.github.jeremylong.nvdlib.nvd.DefCveItem;
+import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
+import io.github.jeremylong.openvulnerability.client.nvd.NvdApiException;
+import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
@@ -23,6 +23,9 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.apache.commons.io.IOUtils.resourceToByteArray;
@@ -57,7 +60,7 @@ class NvdMirrorTest {
 
     @Test
     void testDoMirrorSuccessNotification() {
-        final var apiClientMock = mock(NvdCveApi.class);
+        final var apiClientMock = mock(NvdCveClient.class);
         when(apiClientMock.hasNext())
                 .thenReturn(false);
 
@@ -88,7 +91,7 @@ class NvdMirrorTest {
 
     @Test
     void testDoMirrorFailureNotification() {
-        final var apiClientMock = mock(NvdCveApi.class);
+        final var apiClientMock = mock(NvdCveClient.class);
         when(apiClientMock.hasNext())
                 .thenReturn(true);
         when(apiClientMock.next())
@@ -124,14 +127,14 @@ class NvdMirrorTest {
     void testMirrorInternal() throws Exception {
         final var item = objectMapper.readValue(resourceToByteArray("/datasource/nvd/cve.json"), DefCveItem.class);
 
-        final var apiClientMock = mock(NvdCveApi.class);
+        final var apiClientMock = mock(NvdCveClient.class);
         when(apiClientMock.hasNext())
                 .thenReturn(true)
                 .thenReturn(false);
         when(apiClientMock.next())
                 .thenReturn(List.of(item));
-        when(apiClientMock.getLastModifiedRequest())
-                .thenReturn(1679922240L);
+        when(apiClientMock.getLastUpdated())
+                .thenReturn(ZonedDateTime.ofInstant(Instant.ofEpochSecond(1679922240L), ZoneOffset.UTC));
 
         when(apiClientFactoryMock.createApiClient(anyLong()))
                 .thenReturn(apiClientMock);
@@ -167,7 +170,7 @@ class NvdMirrorTest {
 
     @Test
     void testRetryInCaseOfTwoConsecutiveExceptions() throws IOException {
-        final var apiClientMock = mock(NvdCveApi.class);
+        final var apiClientMock = mock(NvdCveClient.class);
         final var item = objectMapper.readValue(resourceToByteArray("/datasource/nvd/cve.json"), DefCveItem.class);
 
         when(apiClientMock.hasNext())
@@ -177,8 +180,8 @@ class NvdMirrorTest {
                 .thenThrow(NvdApiException.class)
                 .thenThrow(NvdApiException.class)
                 .thenReturn(List.of(item));
-        when(apiClientMock.getLastModifiedRequest())
-                .thenReturn(1679922240L);
+        when(apiClientMock.getLastUpdated())
+                .thenReturn(ZonedDateTime.ofInstant(Instant.ofEpochSecond(1679922240L), ZoneOffset.UTC));
 
         when(apiClientFactoryMock.createApiClient(anyLong()))
                 .thenReturn(apiClientMock);
@@ -211,7 +214,7 @@ class NvdMirrorTest {
 
     @Test
     void testRetryWithDoMirrorInCaseOfThreeConsecutiveExceptions() throws IOException {
-        final var apiClientMock = mock(NvdCveApi.class);
+        final var apiClientMock = mock(NvdCveClient.class);
         final var item = objectMapper.readValue(resourceToByteArray("/datasource/nvd/cve.json"), DefCveItem.class);
 
         when(apiClientMock.hasNext())
@@ -222,8 +225,8 @@ class NvdMirrorTest {
                 .thenThrow(NvdApiException.class)
                 .thenThrow(NvdApiException.class)
                 .thenReturn(List.of(item));
-        when(apiClientMock.getLastModifiedRequest())
-                .thenReturn(1679922240L);
+        when(apiClientMock.getLastUpdated())
+                .thenReturn(ZonedDateTime.ofInstant(Instant.ofEpochSecond(1679922240L), ZoneOffset.UTC));
 
         when(apiClientFactoryMock.createApiClient(anyLong()))
                 .thenReturn(apiClientMock);
@@ -244,7 +247,7 @@ class NvdMirrorTest {
                     assertThat(record.value().getGroup()).isEqualTo(GROUP_DATASOURCE_MIRRORING);
                     assertThat(record.value().getLevel()).isEqualTo(LEVEL_ERROR);
                     assertThat(record.value().getTitle()).isEqualTo("NVD Mirroring");
-                    assertThat(record.value().getContent()).contains("io.github.jeremylong.nvdlib.NvdApiException");
+                    assertThat(record.value().getContent()).contains("io.github.jeremylong.openvulnerability.client.nvd.NvdApiException");
                 }
         );
 
@@ -252,7 +255,7 @@ class NvdMirrorTest {
 
     @Test
     void testRetryWithMirrorInternalInCaseOfThreeConsecutiveExceptions() throws IOException {
-        final var apiClientMock = mock(NvdCveApi.class);
+        final var apiClientMock = mock(NvdCveClient.class);
         final var item = objectMapper.readValue(resourceToByteArray("/datasource/nvd/cve.json"), DefCveItem.class);
 
         when(apiClientMock.hasNext())

@@ -1,7 +1,7 @@
 package org.hyades.vulnmirror.datasource.github;
 
-import io.github.jeremylong.ghsa.GitHubSecurityAdvisoryClient;
-import io.github.jeremylong.ghsa.SecurityAdvisory;
+import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClient;
+import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import io.micrometer.core.instrument.Timer;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;

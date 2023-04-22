@@ -1,14 +1,14 @@
 package org.hyades.vulnmirror.datasource.github;
 
-import io.github.jeremylong.ghsa.GitHubSecurityAdvisoryClient;
-import io.github.jeremylong.ghsa.GitHubSecurityAdvisoryClientBuilder;
+import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClient;
+import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClientBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import static io.github.jeremylong.ghsa.GitHubSecurityAdvisoryClientBuilder.aGitHubSecurityAdvisoryClient;
+import static io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClientBuilder.aGitHubSecurityAdvisoryClient;
 
 @ApplicationScoped
 class GitHubApiClientFactory {

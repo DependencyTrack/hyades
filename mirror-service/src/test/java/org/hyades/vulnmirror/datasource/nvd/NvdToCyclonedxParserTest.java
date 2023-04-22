@@ -3,7 +3,7 @@ package org.hyades.vulnmirror.datasource.nvd;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.github.jeremylong.nvdlib.nvd.DefCveItem;
+import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.ScoreMethod;
 import org.cyclonedx.proto.v1_4.Severity;
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -51,7 +52,9 @@ class NvdToCyclonedxParserTest {
         VulnerabilityRating rating = vulnerability.getRatingsList().get(0);
         assertEquals(ScoreMethod.SCORE_METHOD_CVSSV2, rating.getMethod());
         assertEquals("AV:L/AC:L/Au:N/C:P/I:P/A:P", rating.getVector());
-        assertEquals(4.6, rating.getScore());
+
+        //rating.getScore() returns 4.599999904632568...
+        assertEquals(4.6, rating.getScore(), 0.1);
         assertEquals(Severity.SEVERITY_MEDIUM, rating.getSeverity());
 
         assertEquals(2, vulnerability.getAffectsList().size());

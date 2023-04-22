@@ -4,8 +4,8 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.github.packageurl.PackageURLBuilder;
 import com.google.protobuf.Timestamp;
-import io.github.jeremylong.ghsa.CWEs;
-import io.github.jeremylong.ghsa.SecurityAdvisory;
+import io.github.jeremylong.openvulnerability.client.ghsa.CWEs;
+import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyclonedx.proto.v1_4.Bom;
@@ -72,7 +72,7 @@ public class GitHubAdvisoryToCdxParser {
                 CollectionUtils.isNotEmpty(advisory.getVulnerabilities().getEdges())) {
 
             for (int i = 0; i < advisory.getVulnerabilities().getEdges().size(); i++) {
-                io.github.jeremylong.ghsa.Vulnerability gitHubVulnerability = advisory.getVulnerabilities().getEdges().get(i);
+                io.github.jeremylong.openvulnerability.client.ghsa.Vulnerability gitHubVulnerability = advisory.getVulnerabilities().getEdges().get(i);
                 PackageURL purl = generatePurlFromGitHubVulnerability(gitHubVulnerability);
                 if (purl == null) {
                     //drop mapping if purl is null
@@ -130,7 +130,7 @@ public class GitHubAdvisoryToCdxParser {
         return externalReferences;
     }
 
-    private static VulnerabilityAffectedVersions parseVersionRangeAffected(final io.github.jeremylong.ghsa.Vulnerability vuln) {
+    private static VulnerabilityAffectedVersions parseVersionRangeAffected(final io.github.jeremylong.openvulnerability.client.ghsa.Vulnerability vuln) {
 
         final PackageURL purl = generatePurlFromGitHubVulnerability(vuln);
         if (purl == null) return null;
@@ -190,7 +190,7 @@ public class GitHubAdvisoryToCdxParser {
         return cwes;
     }
 
-    private static PackageURL generatePurlFromGitHubVulnerability(final io.github.jeremylong.ghsa.Vulnerability vuln) {
+    private static PackageURL generatePurlFromGitHubVulnerability(final io.github.jeremylong.openvulnerability.client.ghsa.Vulnerability vuln) {
         final String purlType = mapGitHubEcosystemToPurlType(vuln.getPackage().getEcosystem());
         try {
             if (purlType != null) {

@@ -1,6 +1,6 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
-import io.github.jeremylong.nvdlib.NvdApiException;
+import io.github.jeremylong.openvulnerability.client.nvd.NvdApiException;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
