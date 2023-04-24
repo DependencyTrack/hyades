@@ -44,7 +44,7 @@
     <lib.pebble.version>3.2.0</lib.pebble.version>
     <lib.quarkus-helm.version>0.2.8</lib.quarkus-helm.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
-    <lib.vulns-lib.version>2.0.4</lib.vulns-lib.version>
+    <lib.open.vulnerability.clients.version>3.0.0</lib.open.vulnerability.clients.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>2.16.6.Final</quarkus.platform.version>
@@ -115,18 +115,8 @@
 
       <dependency>
         <groupId>io.github.jeremylong</groupId>
-        <artifactId>data-source</artifactId>
-        <version>${lib.vulns-lib.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.jeremylong</groupId>
-        <artifactId>gh-advisory-lib</artifactId>
-        <version>${lib.vulns-lib.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.jeremylong</groupId>
-        <artifactId>nvd-lib</artifactId>
-        <version>${lib.vulns-lib.version}</version>
+        <artifactId>open-vulnerability-clients</artifactId>
+        <version>${lib.open.vulnerability.clients.version}</version>
       </dependency>
 
       <dependency>

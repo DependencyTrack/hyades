@@ -1,7 +1,7 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
-import io.github.jeremylong.nvdlib.NvdCveApi;
-import io.github.jeremylong.nvdlib.NvdCveApiBuilder;
+import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
+import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClientBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.time.Instant;
@@ -17,8 +17,8 @@ class NvdApiClientFactory {
         this.config = config;
     }
 
-    NvdCveApi createApiClient(final long lastModifiedEpochSeconds) {
-        final NvdCveApiBuilder builder = NvdCveApiBuilder.aNvdCveApi();
+    NvdCveClient createApiClient(final long lastModifiedEpochSeconds) {
+        final NvdCveClientBuilder builder = NvdCveClientBuilder.aNvdCveApi();
 
         config.baseUrl().ifPresent(builder::withEndpoint);
         config.apiKey().ifPresent(apiKey -> {

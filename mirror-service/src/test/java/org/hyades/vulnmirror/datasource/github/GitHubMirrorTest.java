@@ -1,8 +1,8 @@
 package org.hyades.vulnmirror.datasource.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.jeremylong.ghsa.GitHubSecurityAdvisoryClient;
-import io.github.jeremylong.ghsa.SecurityAdvisory;
+import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClient;
+import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
