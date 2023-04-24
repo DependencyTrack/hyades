@@ -33,17 +33,19 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
     final GitHubApiClientFactory apiClientFactory;
     private final ExecutorService executorService;
     private final Timer durationTimer;
+    private final GitHubConfig config;
 
     GitHubMirror(final GitHubApiClientFactory apiClientFactory,
                  @Named("githubExecutorService") final ExecutorService executorService,
                  final MirrorStateStore mirrorStateStore,
                  final VulnerabilityDigestStore vulnDigestStore,
                  final Producer<String, byte[]> kafkaProducer,
-                 @Named("githubDurationTimer") final Timer durationTimer) {
+                 @Named("githubDurationTimer") final Timer durationTimer, GitHubConfig config) {
         super(Datasource.GITHUB, mirrorStateStore, vulnDigestStore, kafkaProducer, GitHubMirrorState.class);
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
         this.durationTimer = durationTimer;
+        this.config = config;
     }
 
     @Override
@@ -80,7 +82,7 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
         try (final GitHubSecurityAdvisoryClient apiClient = apiClientFactory.create(lastModified)) {
             while (apiClient.hasNext()) {
                 for (final SecurityAdvisory advisory : apiClient.next()) {
-                    Bom bov =  GitHubAdvisoryToCdxParser.parse(advisory);
+                    Bom bov =  GitHubAdvisoryToCdxParser.parse(advisory, this.config.aliasSyncEnabled());
                     publishIfChanged(bov);
                 }
             }

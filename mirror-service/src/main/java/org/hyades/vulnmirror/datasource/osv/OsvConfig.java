@@ -11,4 +11,6 @@ public interface OsvConfig {
     @WithDefault("https://osv-vulnerabilities.storage.googleapis.com")
     Optional<String> baseUrl();
 
+    @WithDefault("false")
+    boolean aliasSyncEnabled();
 }

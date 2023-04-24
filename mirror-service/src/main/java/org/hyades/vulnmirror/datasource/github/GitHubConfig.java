@@ -1,6 +1,7 @@
 package org.hyades.vulnmirror.datasource.github;
 
 import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
 
 import java.util.Optional;
 
@@ -11,4 +12,6 @@ public interface GitHubConfig {
 
     Optional<String> apiKey();
 
+    @WithDefault("false")
+    boolean aliasSyncEnabled();
 }

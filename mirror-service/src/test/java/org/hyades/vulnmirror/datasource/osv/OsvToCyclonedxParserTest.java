@@ -60,7 +60,7 @@ class OsvToCyclonedxParserTest {
                 "src/test/resources/datasource/osv/osv-vulnerability-no-range.json");
 
         //When
-        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, true);
 
         //Then
         assertNotNull(bom);
@@ -82,7 +82,7 @@ class OsvToCyclonedxParserTest {
                 "src/test/resources/datasource/osv/osv-vulnerability-with-ranges.json");
 
         //when
-        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, false);
         List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
 
         //then
@@ -117,13 +117,13 @@ class OsvToCyclonedxParserTest {
     }
 
     @Test
-    void testParseOsvToBom() throws IOException {
+    void testParseOsvToBomWithAliasEnabled() throws IOException {
         //given
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/datasource/osv/osv-GHSA-77rv-6vfw-x4gc.json");
 
         //when
-        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, true);
 
         //then
         assertNotNull(bom);
@@ -159,11 +159,30 @@ class OsvToCyclonedxParserTest {
     }
 
     @Test
+    void testParseOsvToBomWithAliasDisabled() throws IOException {
+        //given
+        JSONObject jsonObject = getOsvForTestingFromFile(
+                "src/test/resources/datasource/osv/osv-GHSA-77rv-6vfw-x4gc.json");
+
+        //when
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, false);
+
+        //then
+        assertNotNull(bom);
+
+        List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
+        assertNotNull(vulnerabilities);
+        assertEquals(1, vulnerabilities.size());
+        Vulnerability vulnerability = vulnerabilities.get(0);
+        assertEquals(0, vulnerability.getReferencesList().size());
+    }
+
+    @Test
     void testCommitHashRanges() throws IOException {
 
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/datasource/osv/osv-git-commit-hash-ranges.json");
-        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject);
+        Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, true);
 
         assertNotNull(bom);
         Vulnerability vulnerability = bom.getVulnerabilitiesList().get(0);
