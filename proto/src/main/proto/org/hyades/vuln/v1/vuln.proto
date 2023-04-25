@@ -70,4 +70,5 @@ message Vulnerability {
   repeated Reference references = 9;
   repeated int32 cwes = 10;
   repeated Alias aliases = 11;
+  optional string recommendation = 12;
 }
