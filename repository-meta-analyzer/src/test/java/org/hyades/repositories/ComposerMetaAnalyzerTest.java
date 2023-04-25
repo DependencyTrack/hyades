@@ -37,6 +37,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -180,14 +181,41 @@ class ComposerMetaAnalyzerTest {
         );
     }
 
+    @Test
+    void testAnalyzerGetsUnexpectedResponseContentCausingLatestVersionBeingNull() throws Exception {
+        Component component = new Component();
+        component.setPurl(new PackageURL("pkg:composer/magento/adobe-ims@v1.0.0"));
+        final File packagistFile = getResourceFile("magento", "adobe-ims");
+
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/p/magento/adobe-ims.json")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                .withBody(getTestData(packagistFile))
+                );
+
+        analyzer.analyze(component);
+        MetaModel metaModel = analyzer.analyze(component);
+
+        Assertions.assertNull(metaModel.getLatestVersion());
+    }
+
+
     private static File getResourceFile(String namespace, String name) throws Exception {
         return new File(
-                Thread.currentThread().getContextClassLoader()
-                        .getResource(String.format(
-                                "unit/repositories/https---repo.packagist.org-p-%s-%s.json",
-                                namespace,
-                                name
-                        ))
+                Objects.requireNonNull(Thread.currentThread().getContextClassLoader()
+                                .getResource(String.format(
+                                        "unit/repositories/https---repo.packagist.org-p-%s-%s.json",
+                                        namespace,
+                                        name
+                                )))
                         .toURI()
         );
     }
