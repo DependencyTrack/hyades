@@ -47,7 +47,7 @@ public class GitHubAdvisoryToCdxParser {
 
         VulnerabilityRating.Builder rating = VulnerabilityRating.newBuilder()
                 .setSeverity(mapSeverity(advisory.getSeverity().value()))
-                .setScore(advisory.getCvss().getScore());
+                .setScore(advisory.getCvss().getScore().doubleValue());
 
         Optional.ofNullable(advisory.getCvss().getVectorString()).ifPresent(rating::setVector);
         vuln.addRatings(rating.build());
