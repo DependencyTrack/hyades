@@ -32,7 +32,8 @@ class RepositoryAnalyzerFactoryTest {
             "pkg:npm/foo, true",
             "pkg:nuget/foo, true",
             "pkg:pypi/foo, true",
-            "pkg:rpm/foo, false"
+            "pkg:rpm/foo, false",
+            "pkg:cpan/foo, true"
     })
     void testHasApplicableAnalyzer(final String purl, final boolean expectedResult) throws MalformedPackageURLException {
         assertThat(analyzerFactory.hasApplicableAnalyzer(new PackageURL(purl))).isEqualTo(expectedResult);
@@ -52,7 +53,8 @@ class RepositoryAnalyzerFactoryTest {
             "pkg:maven/foo/bar",
             "pkg:npm/foo/bar",
             "pkg:nuget/foo/bar",
-            "pkg:pypi/foo/bar"
+            "pkg:pypi/foo/bar",
+            "pkg:cpan/foo/bar"
     })
     void testCreateAnalyzer(final String purl) throws MalformedPackageURLException {
         assertThat(analyzerFactory.createAnalyzer(new PackageURL(purl))).isPresent();

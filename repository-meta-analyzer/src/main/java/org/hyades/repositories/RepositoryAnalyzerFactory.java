@@ -20,7 +20,8 @@ public class RepositoryAnalyzerFactory {
             PackageURL.StandardTypes.MAVEN, MavenMetaAnalyzer::new,
             PackageURL.StandardTypes.NPM, NpmMetaAnalyzer::new,
             PackageURL.StandardTypes.NUGET, NugetMetaAnalyzer::new,
-            PackageURL.StandardTypes.PYPI, PypiMetaAnalyzer::new
+            PackageURL.StandardTypes.PYPI, PypiMetaAnalyzer::new,
+            "cpan", CpanMetaAnalyzer::new
     );
 
     private final CloseableHttpClient httpClient;

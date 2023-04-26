@@ -37,6 +37,7 @@ public enum RepositoryType {
     COMPOSER,
     CARGO,
     GO_MODULES,
+    CPAN,
     UNSUPPORTED;
 
     /**
@@ -64,6 +65,8 @@ public enum RepositoryType {
             return CARGO;
         } else if (PackageURL.StandardTypes.GOLANG.equals(type)) {
             return GO_MODULES;
+        } else if ("cpan".equals(type)) { // Not defined in StandardTypes
+            return CPAN;
         }
         return UNSUPPORTED;
     }
