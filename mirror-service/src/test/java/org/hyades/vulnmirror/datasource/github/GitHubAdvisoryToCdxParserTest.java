@@ -34,7 +34,7 @@ class GitHubAdvisoryToCdxParserTest {
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         SecurityAdvisory securityAdvisory = MAPPER.readValue(jsonString, SecurityAdvisory.class);
 
-        Bom bom = GitHubAdvisoryToCdxParser.parse(securityAdvisory);
+        Bom bom = GitHubAdvisoryToCdxParser.parse(securityAdvisory, true);
 
         List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
 
@@ -120,7 +120,7 @@ class GitHubAdvisoryToCdxParserTest {
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         SecurityAdvisory securityAdvisory = MAPPER.readValue(jsonString, SecurityAdvisory.class);
 
-        Bom bom = GitHubAdvisoryToCdxParser.parse(securityAdvisory);
+        Bom bom = GitHubAdvisoryToCdxParser.parse(securityAdvisory, true);
 
         List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
 
@@ -206,5 +206,21 @@ class GitHubAdvisoryToCdxParserTest {
                     assertThat(reference.getUrl()).isEqualTo("https://github.com/advisories/GHSA-p82g-2xpp-m5r3");
                 }
         );
+    }
+
+    @Test
+    public void testAliasSyncDisabled() throws IOException {
+
+        //given
+        String jsonFile = "src/test/resources/datasource/github/advisory-02.json";
+        String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
+        SecurityAdvisory securityAdvisory = MAPPER.readValue(jsonString, SecurityAdvisory.class);
+
+        Bom bom = GitHubAdvisoryToCdxParser.parse(securityAdvisory, false);
+        List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
+
+        assertNotNull(vulnerabilities);
+        assertEquals(1, bom.getVulnerabilitiesCount());
+        assertThat(vulnerabilities.get(0).getReferencesList()).isNullOrEmpty();
     }
 }

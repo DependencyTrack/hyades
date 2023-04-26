@@ -50,7 +50,7 @@ public class OsvToCyclonedxParser {
         this.objectMapper = objectMapper;
     }
 
-    public Bom parse(JSONObject object) {
+    public Bom parse(JSONObject object, boolean aliasSyncEnabled) {
         Objects.requireNonNull(object, "Json object cannot be null");
 
         Bom.Builder cyclonedxBom = Bom.newBuilder();
@@ -68,7 +68,9 @@ public class OsvToCyclonedxParser {
             //this severity is compared with affected package severities and highest set
             severity = mapSeverity(osvDto.databaseSpecific().severity());
         }
-        vulnerability.addAllReferences(osvDto.getAliases());
+        if (aliasSyncEnabled) {
+            vulnerability.addAllReferences(osvDto.getAliases());
+        }
         Optional.ofNullable(osvDto.getCredits()).ifPresent(vulnerability::setCredits);
         Optional.ofNullable(osvDto.getReferences().get("ADVISORY")).ifPresent(vulnerability::addAllAdvisories);
         Optional.ofNullable(osvDto.getReferences().get("EXTERNAL")).ifPresent(cyclonedxBom::addAllExternalReferences);

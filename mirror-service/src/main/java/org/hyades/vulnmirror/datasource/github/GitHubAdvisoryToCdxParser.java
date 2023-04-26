@@ -37,7 +37,7 @@ public class GitHubAdvisoryToCdxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubAdvisoryToCdxParser.class);
 
-    public static Bom parse(final SecurityAdvisory advisory) {
+    public static Bom parse(final SecurityAdvisory advisory, boolean aliasSyncEnabled) {
         final Vulnerability.Builder vuln = Vulnerability.newBuilder()
                 .setSource(Source.newBuilder().setName(Datasource.GITHUB.name()).build())
                 .setId(advisory.getGhsaId())
@@ -52,7 +52,11 @@ public class GitHubAdvisoryToCdxParser {
         Optional.ofNullable(advisory.getCvss().getVectorString()).ifPresent(rating::setVector);
         vuln.addRatings(rating.build());
 
-        Optional.ofNullable(mapVulnerabilityReferences(advisory)).ifPresent(vuln::addAllReferences);
+        // Alias is mapped only if aliasSync is enabled
+        if (aliasSyncEnabled) {
+            Optional.ofNullable(mapVulnerabilityReferences(advisory)).ifPresent(vuln::addAllReferences);
+        }
+
         Optional.ofNullable(advisory.getPublishedAt())
                 .map(published -> published.toInstant())
                 .map(instant -> Timestamp.newBuilder().setSeconds(instant.getEpochSecond()))

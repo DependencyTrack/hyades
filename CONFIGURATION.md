@@ -8,7 +8,8 @@ options that are expected to be changed by users.
 
 ### Kafka Topic Configuration
 
-Kafka topics (including internal topics) can be configured with custom prefix. In order to provide custom prefix, below environment variable can be used.
+Kafka topics (including internal topics) can be configured with custom prefix. In order to provide custom prefix, below
+environment variable can be used.
 
 | Environment Variable               | Description                     | Default      | Required  |
 |:-----------------------------------|:--------------------------------|:-------------|:---------:|
@@ -34,7 +35,8 @@ Kafka topics (including internal topics) can be configured with custom prefix. I
 
 > **Note**
 > Refer
-> to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/notification-publisher/src/main/resources/application.properties)
+>
+to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/notification-publisher/src/main/resources/application.properties)
 > for a complete overview of available config options.
 
 ### Repository Meta Analyzer
@@ -50,35 +52,57 @@ Kafka topics (including internal topics) can be configured with custom prefix. I
 
 > **Note**
 > Refer
-> to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/repository-meta-analyzer/src/main/resources/application.properties)
+>
+to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/repository-meta-analyzer/src/main/resources/application.properties)
 > for a complete overview of available config options.
 
 ### Vulnerability Analyzer
 
-| Environment Variable                      | Description                                           | Default          |       Required       |
-|:------------------------------------------|:------------------------------------------------------|:-----------------|:--------------------:|
-| `QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS` | Comma-separated list of Kafka servers                 | `localhost:9092` |          ✅           |
-| `KAFKA_STREAMS_NUM_STREAM_THREADS`        | Number of Kafka Streams threads                       | `3`              |          ❌           |
-| `QUARKUS_DATASOURCE_DB_KIND`              | The database type                                     | `postgresql`     |          ✅           |
-| `QUARKUS_DATASOURCE_JDBC_URL`             | The database JDBC URL                                 | -                |          ✅           |
-| `QUARKUS_DATASOURCE_USERNAME`             | The database username                                 | -                |          ✅           |
-| `QUARKUS_DATASOURCE_PASSWORD`             | The database password                                 | -                |          ✅           |
-| `SCANNER_INTERNAL_ENABLED`                | Enable the internal vulnerability scanner             | `true`           |          ❌           |
-| `SCANNER_OSSINDEX_ENABLED`                | Enable the OSS Index vulnerability scanner            | `true`           |          ❌           |
-| `SCANNER_OSSINDEX_API_USERNAME`           | OSS Index API username                                | -                |          ❌           |
-| `SCANNER_OSSINDEX_API_TOKEN`              | OSS Index API token                                   | -                |          ❌           |
-| `SCANNER_OSSINDEX_BATCH_INTERVAL`         | Max time to wait before submitting incomplete batches | `5S`             |          ❌           |
-| `SCANNER_SNYK_ENABLED`                    | Enable the Snyk vulnerability scanner                 | `false`          |          ❌           |
+| Environment Variable                      | Description                                           | Default          |       Required      |
+|:------------------------------------------|:------------------------------------------------------|:-----------------|:-------------------:|
+| `QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS` | Comma-separated list of Kafka servers                 | `localhost:9092` |          ✅          |
+| `KAFKA_SSL_ENABLED`                       | SSL enabled for using kafka broker                    | `false`          |          ❌          |
+| `KAFKA_STREAMS_NUM_STREAM_THREADS`        | Number of Kafka Streams threads                       | `3`              |          ❌          |
+| `QUARKUS_DATASOURCE_DB_KIND`              | The database type                                     | `postgresql`     |          ✅          |
+| `QUARKUS_DATASOURCE_JDBC_URL`             | The database JDBC URL                                 | -                |          ✅          |
+| `QUARKUS_DATASOURCE_USERNAME`             | The database username                                 | -                |          ✅          |
+| `QUARKUS_DATASOURCE_PASSWORD`             | The database password                                 | -                |          ✅          |
+| `SCANNER_INTERNAL_ENABLED`                | Enable the internal vulnerability scanner             | `true`           |          ❌          |
+| `SCANNER_OSSINDEX_ENABLED`                | Enable the OSS Index vulnerability scanner            | `true`           |          ❌          |
+| `SCANNER_OSSINDEX_API_USERNAME`           | OSS Index API username                                | -                |          ❌          |
+| `SCANNER_OSSINDEX_API_TOKEN`              | OSS Index API token                                   | -                |          ❌          |
+| `SCANNER_OSSINDEX_BATCH_INTERVAL`         | Max time to wait before submitting incomplete batches | `5S`             |          ❌          |
+| `SCANNER_SNYK_ENABLED`                    | Enable the Snyk vulnerability scanner                 | `false`          |          ❌          |
 | `SCANNER_SNYK_API_ORG_ID`                 | Snyk organization ID                                  | -                | When Snyk is enabled |
 | `SCANNER_SNYK_API_TOKENS`                 | Comma-separated list of Snyk API tokens               | -                | When Snyk is enabled |
 | `SCANNER_SNYK_API_VERSION`                | Version of the Snyk API to use                        | `2022-12-15`     | When Snyk is enabled |
 | `SCANNER_SNYK_SEVERITY_SOURCE`            | Preferred source of vulnerability severities          | `NVD`            | When Snyk is enabled |
 | `SCANNER_SNYK_BATCH_INTERVAL`             | Max time to wait before submitting incomplete batches | `5S`             | When Snyk is enabled |
 | `SCANNER_SNYK_BATCH_SIZE`                 | Max size of batch at which it will be submitted       | `100`            | When Snyk is enabled |
+| `SCANNER_SNYK_ALIAS_SYNC_ENABLED`         | Alias synching enabled for snyk analyzer              | `false`          |          ❌          |
+| `SCANNER_OSS_ALIAS_SYNC_ENABLED`          | Alias synching enabled for oss index analyzer         | `false`          |          ❌          |
+| `SCANNER_INTERNAL_ALIAS_SYNC_ENABLED`     | Alias synching enabled for internal analyzer          | `false`          |          ❌          |
+> **Note**
+> Refer
+>
+to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/vulnerability-analyzer/src/main/resources/application.properties)
+> for a complete overview of available config options.
+
+
+### Mirror Service
+
+| Environment Variable                          | Description                                  | Default          |       Required      |
+|:----------------------------------------------|:---------------------------------------------|:-----------------|:-------------------:|
+| `QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS`     | Comma-separated list of Kafka servers        | `localhost:9092` |          ✅          |
+| `KAFKA_SSL_ENABLED`                           | SSL enabled for using kafka broker           | `false`          |          ❌          |
+| `KAFKA_STREAMS_NUM_STREAM_THREADS`            | Number of Kafka Streams threads              | `3`              |          ❌          |
+| `MIRROR_DATASOURCE_GITHUB_ALIAS_SYNC_ENABLED` | Alias synching enabled for github mirroring  | `false`          |          ❌          |
+| `MIRROR_DATASOURCE_OSV_ALIAS_SYNC_ENABLED`    | Alias synching enabled for osv mirroring     | `false`          |          ❌          |
 
 > **Note**
 > Refer
-> to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/vulnerability-analyzer/src/main/resources/application.properties)
+>
+to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/mirror-service/src/main/resources/application.properties)
 > for a complete overview of available config options.
 
 [Quarkus docs]: https://quarkus.io/guides/config-reference#configuration-sources

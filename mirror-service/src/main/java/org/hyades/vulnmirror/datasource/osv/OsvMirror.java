@@ -38,15 +38,17 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
     private final ExecutorService executorService;
     private final OsvClient client;
     private final ObjectMapper objectMapper;
+    private final OsvConfig osvConfig;
 
     public OsvMirror(@Named("osvExecutorService") ExecutorService executorService, OsvClient client,
                      @Named("osvObjectMapper") ObjectMapper objectMapper, final MirrorStateStore mirrorStateStore,
                      final VulnerabilityDigestStore vulnDigestStore,
-                     final Producer<String, byte[]> bovProducer) {
+                     final Producer<String, byte[]> bovProducer, OsvConfig osvConfig) {
         super(Datasource.OSV, mirrorStateStore, vulnDigestStore, bovProducer, Void.class);
         this.executorService = executorService;
         this.client = client;
         this.objectMapper = objectMapper;
+        this.osvConfig = osvConfig;
     }
 
     public void performMirror(String ecosystem) throws IOException, ExecutionException, InterruptedException {
@@ -69,7 +71,7 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
                 out.append(line);
             }
             var json = new JSONObject(out.toString());
-            Bom bov = new OsvToCyclonedxParser(this.objectMapper).parse(json);
+            Bom bov = new OsvToCyclonedxParser(this.objectMapper).parse(json, this.osvConfig.aliasSyncEnabled());
             if (bov != null) {
                 publishIfChanged(bov);
             }
