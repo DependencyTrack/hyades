@@ -83,7 +83,6 @@ public class CpanMetaAnalyzer extends AbstractMetaAnalyzer {
 
     @Override
     public String getName() {
-        return null;
+        return this.getClass().getSimpleName();
     }
-
 }
