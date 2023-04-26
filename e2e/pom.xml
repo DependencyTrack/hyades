@@ -10,6 +10,10 @@
     </parent>
     <artifactId>e2e</artifactId>
 
+    <properties>
+        <lib.log4j-over-slf4j.version>2.0.6</lib.log4j-over-slf4j.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -44,6 +48,12 @@
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail-junit5</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${lib.log4j-over-slf4j.version}</version>
         </dependency>
     </dependencies>
 

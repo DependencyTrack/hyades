@@ -13,6 +13,7 @@
     <properties>
         <project.parentBaseDir>${project.basedir}/..</project.parentBaseDir>
         <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
+        <lib.log4j-over-slf4j.version>2.0.6</lib.log4j-over-slf4j.version>
     </properties>
 
     <dependencies>
@@ -122,6 +123,12 @@
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-micrometer</artifactId>
             <version>${lib.resilience4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${lib.log4j-over-slf4j.version}</version>
         </dependency>
     </dependencies>
 
