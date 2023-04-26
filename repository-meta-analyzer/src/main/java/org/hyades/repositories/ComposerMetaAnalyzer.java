@@ -23,6 +23,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.hyades.model.Component;
+import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
 import org.json.JSONObject;
@@ -131,6 +132,8 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
             });
         } catch (IOException | org.apache.http.ParseException e) {
             handleRequestException(LOGGER, e);
+        } catch (Exception ex) {
+            throw new MetaAnalyzerException(ex);
         }
 
         return meta;

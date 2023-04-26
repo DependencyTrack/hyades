@@ -20,6 +20,7 @@ package org.hyades.repositories;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.hyades.model.Component;
+import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
 
@@ -73,6 +74,7 @@ public interface IMetaAnalyzer {
      * The component to analyze.
      * @param component the component to analyze
      * @return a MetaModel object
+     * @throws MetaAnalyzerException in case of any issue during metadata generation
      * @since 3.1.0
      */
     MetaModel analyze(Component component);

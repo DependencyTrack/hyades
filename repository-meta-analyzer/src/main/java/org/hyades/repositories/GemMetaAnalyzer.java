@@ -22,6 +22,7 @@ import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.hyades.model.Component;
+import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
 import org.json.JSONObject;
@@ -80,6 +81,8 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
 
             } catch (IOException e) {
                 handleRequestException(LOGGER, e);
+            } catch (Exception ex) {
+                throw new MetaAnalyzerException(ex);
             }
         }
         return meta;

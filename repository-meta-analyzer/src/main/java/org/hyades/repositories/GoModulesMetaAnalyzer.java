@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.hyades.model.Component;
+import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
 import org.json.JSONObject;
@@ -77,6 +78,8 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
             }
         } catch (org.apache.http.ParseException | IOException e) {
             handleRequestException(LOGGER, e);
+        } catch (Exception ex) {
+            throw new MetaAnalyzerException(ex);
         }
 
         return successMeta;
@@ -108,6 +111,8 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
             handleRequestException(LOGGER, e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (Exception ex) {
+            throw new MetaAnalyzerException(ex);
         }
         return meta;
     }
