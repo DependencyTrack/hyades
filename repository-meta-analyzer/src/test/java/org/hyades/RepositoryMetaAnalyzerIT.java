@@ -122,7 +122,7 @@ class RepositoryMetaAnalyzerIT {
                     assertThat(result.hasLatestVersion()).isTrue();
                     assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
                     assertThat(result.hasPublished()).isTrue();
-                    assertThat(result.getPublished().getSeconds()).isEqualTo(1664395172);
+                    assertThat(result.getPublished().getSeconds()).isEqualTo(1664402372);
                 }
         );
     }

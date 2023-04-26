@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.util.TimeZone;
 
 /**
  * @author Steve Springett
@@ -104,7 +106,9 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
 
                 final String commitTimestamp = jsonObject.getString("Time");
                 if (StringUtils.isNotBlank(commitTimestamp)) { // Time is optional
-                    meta.setPublishedTimestamp(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(commitTimestamp));
+                    final var dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                    dateFormat.setTimeZone(TimeZone.getTimeZone(ZoneOffset.UTC));
+                    meta.setPublishedTimestamp(dateFormat.parse(commitTimestamp));
                 }
             }
         } catch (ParseException e) {
