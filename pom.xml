@@ -48,7 +48,7 @@
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>2.16.6.Final</quarkus.platform.version>
-    <lib.log4j-over-slf4j.version>2.0.6</lib.log4j-over-slf4j.version>
+    <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
 
     <!-- Plugin Versions -->
     <plugin.jacoco.version>0.8.10</plugin.jacoco.version>
