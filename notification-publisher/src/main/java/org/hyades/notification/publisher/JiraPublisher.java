@@ -31,7 +31,7 @@ public class JiraPublisher extends AbstractWebhookPublisher implements Publisher
 
     @Override
     public String getDestinationUrl(final JsonObject config) {
-        final String baseUrl = configPropertyRepository.findByGroupAndName(JIRA_URL.getGroupName(), JIRA_URL.getPropertyName()).getPropertyValue();
+        final String baseUrl = config.getString(CONFIG_DESTINATION);
             return (baseUrl.endsWith("/") ? baseUrl : baseUrl + '/') + "rest/api/2/issue";
     }
 
