@@ -82,7 +82,7 @@ public class SendMailPublisher implements Publisher {
     private void sendNotification(Notification notification, JsonObject config, String[] destinations) throws InvalidProtocolBufferException {
         PebbleTemplate template = getTemplate(config);
         String mimeType = getTemplateMimeType(config);
-        final String content = prepareTemplate(notification, template, configPropertyRepository);
+        final String content = prepareTemplate(notification, template, configPropertyRepository, config);
         if (destinations == null || content == null) {
             LOGGER.warn("A destination or template was not found. Skipping notification");
             return;

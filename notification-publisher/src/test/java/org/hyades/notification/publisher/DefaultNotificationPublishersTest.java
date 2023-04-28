@@ -33,7 +33,7 @@ public class DefaultNotificationPublishersTest {
         Assertions.assertEquals("EMAIL", DefaultNotificationPublishers.EMAIL.name());
         Assertions.assertEquals("CONSOLE", DefaultNotificationPublishers.CONSOLE.name());
         Assertions.assertEquals("WEBHOOK", DefaultNotificationPublishers.WEBHOOK.name());
-        // Assertions.assertEquals("JIRA", DefaultNotificationPublishers.JIRA.name());
+         Assertions.assertEquals("JIRA", DefaultNotificationPublishers.JIRA.name());
     }
 
     @Test
@@ -96,14 +96,14 @@ public class DefaultNotificationPublishersTest {
         Assertions.assertTrue(DefaultNotificationPublishers.WEBHOOK.isDefaultPublisher());
     }
 
-//    @Test
-//    public void testJira() {
-//        Assertions.assertEquals("Jira", DefaultNotificationPublishers.JIRA.getPublisherName());
-//        Assertions.assertEquals("Creates a Jira issue in a configurable Jira instance and queue", DefaultNotificationPublishers.JIRA.getPublisherDescription());
-//        Assertions.assertEquals(JiraPublisher.class, DefaultNotificationPublishers.JIRA.getPublisherClass());
-//        Assertions.assertEquals("/templates/notification/publisher/jira.peb", DefaultNotificationPublishers.JIRA.getPublisherTemplateFile());
-//        Assertions.assertEquals(MediaType.APPLICATION_JSON, DefaultNotificationPublishers.JIRA.getTemplateMimeType());
-//        Assertions.assertTrue(DefaultNotificationPublishers.JIRA.isDefaultPublisher());
-//    }
+    @Test
+    public void testJira() {
+        Assertions.assertEquals("Jira", DefaultNotificationPublishers.JIRA.getPublisherName());
+        Assertions.assertEquals("Creates a Jira issue in a configurable Jira instance and queue", DefaultNotificationPublishers.JIRA.getPublisherDescription());
+        Assertions.assertEquals(JiraPublisher.class, DefaultNotificationPublishers.JIRA.getPublisherClass());
+        Assertions.assertEquals("/templates/notification/publisher/jira.peb", DefaultNotificationPublishers.JIRA.getPublisherTemplateFile());
+        Assertions.assertEquals(MediaType.APPLICATION_JSON, DefaultNotificationPublishers.JIRA.getTemplateMimeType());
+        Assertions.assertTrue(DefaultNotificationPublishers.JIRA.isDefaultPublisher());
+    }
 
 }
