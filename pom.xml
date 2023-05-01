@@ -41,7 +41,7 @@
     <lib.maven-artifact.version>4.0.0-alpha-5</lib.maven-artifact.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20230227</lib.org-json.version>
-    <lib.pebble.version>3.2.0</lib.pebble.version>
+    <lib.pebble.version>3.2.1</lib.pebble.version>
     <lib.quarkus-helm.version>0.2.8</lib.quarkus-helm.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
     <lib.open.vulnerability.clients.version>4.0.1</lib.open.vulnerability.clients.version>
