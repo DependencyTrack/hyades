@@ -99,7 +99,7 @@ services:
       # Default would be 90% of available memory,
       # which can cause problems on some workstations.
       # For production deployments, the default should be used.
-      EXTRA_JAVA_OPTS: "-Xmx2g"
+      EXTRA_JAVA_OPTIONS: "-Xmx2g"
       SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
       ALPINE_DATABASE_MODE: "external"
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
@@ -110,6 +110,7 @@ services:
       ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_NUM_STREAM_THREADS: "6"
+      KAFKA_STREAMS_METRICS_RECORDING_LEVEL: "DEBUG"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
