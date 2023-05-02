@@ -3,6 +3,10 @@ package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
+import org.hyades.common.SecretDecryptor;
+import org.hyades.model.ConfigProperty;
 import org.hyades.proto.notification.v1.Notification;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,8 +17,10 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.ws.rs.core.HttpHeaders;
 import java.util.Base64;
+import java.util.Map;
 
 import static org.hyades.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
 import static org.hyades.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
@@ -24,7 +30,19 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
+@TestProfile(JiraPublisherTest.TestProfile.class)
 public class JiraPublisherTest {
+
+    public static class TestProfile implements QuarkusTestProfile {
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.of(
+                    "client.http.config.proxy-timeout-connection", "20",
+                    "client.http.config.proxy-timeout-pool", "40",
+                    "client.http.config.proxy-timeout-socket", "20"
+            );
+        }
+    }
 
     @Inject
     JiraPublisher publisher;
@@ -33,6 +51,9 @@ public class JiraPublisherTest {
     EntityManager entityManager;
 
     private static ClientAndServer mockServer;
+
+    @Inject
+    SecretDecryptor secretDecryptor;
 
     @BeforeAll
     public static void beforeClass() {
@@ -62,18 +83,24 @@ public class JiraPublisherTest {
 
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('integrations', 'general', 'STRING', 'jira.url', 'http://localhost:1080');
+                                    ('general', 'integrations', 'STRING', 'jira.url', 'http://localhost:1080');
                 """).executeUpdate();
 
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('integrations', 'general', 'STRING', 'jira.username', 'test');
+                                    ('general', 'integrations', 'STRING', 'jira.username', 'test');
                 """).executeUpdate();
 
-        entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('integrations', 'general', 'ENCRYPTEDSTRING', 'jira.password', 'encr');
-                """).executeUpdate();
+        String q = "INSERT INTO CONFIGPROPERTY (DESCRIPTION, GROUPNAME, PROPERTYTYPE, PROPERTYNAME, PROPERTYVALUE)"
+                + " VALUES ('general', 'integrations', 'ENCRYPTEDSTRING', 'jira.password', ':encr')";
+        entityManager.createNativeQuery(q)
+                        .setParameter("encr", secretDecryptor.encryptAsString(jiraPassword))
+                .executeUpdate();
+
+//        entityManager.createNativeQuery("""
+//                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
+//                                    ('general', 'integrations', 'ENCRYPTEDSTRING', 'jira.password', ':encr');
+//                """).executeUpdate();
 
         final var notification = Notification.newBuilder()
                 .setScope(SCOPE_PORTFOLIO)

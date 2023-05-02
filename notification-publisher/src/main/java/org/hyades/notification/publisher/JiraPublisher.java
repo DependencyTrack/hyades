@@ -11,7 +11,6 @@ import javax.json.JsonObject;
 import java.util.Map;
 
 import static org.hyades.model.ConfigPropertyConstants.JIRA_PASSWORD;
-import static org.hyades.model.ConfigPropertyConstants.JIRA_URL;
 import static org.hyades.model.ConfigPropertyConstants.JIRA_USERNAME;
 
 @ApplicationScoped
@@ -32,7 +31,7 @@ public class JiraPublisher extends AbstractWebhookPublisher implements Publisher
     @Override
     public String getDestinationUrl(final JsonObject config) {
         final String baseUrl = config.getString(CONFIG_DESTINATION);
-            return (baseUrl.endsWith("/") ? baseUrl : baseUrl + '/') + "rest/api/2/issue";
+        return (baseUrl.endsWith("/") ? baseUrl : baseUrl + '/') + "rest/api/2/issue";
     }
 
     @Override
