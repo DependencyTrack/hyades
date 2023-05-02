@@ -43,6 +43,7 @@ nb-configuration.xml
 secret.key
 !commons/src/test/resources/secret.key
 !repository-meta-analyzer/src/test/resources/secret.key
+!notification-publisher/src/test/resources/secret.key
 
 # Host volume mount for demo
 apiserver-data/

@@ -69,7 +69,7 @@ public class SecretDecryptor {
      * @see <a href="https://github.com/stevespringett/Alpine/blob/alpine-parent-2.2.0/alpine-infra/src/main/java/alpine/security/crypto/DataEncryption.java">Alpine DataEncryption</a>
      */
     public String encryptAsString(final String text) throws Exception {
-        return new String(encryptAsBytes(text));
+        return Base64.getEncoder().encodeToString(encryptAsBytes(text));
     }
 
     /**

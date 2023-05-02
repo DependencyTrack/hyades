@@ -89,10 +89,11 @@ public class JiraPublisherTest {
                                     ('general', 'integrations', 'STRING', 'jira.username', 'test');
                 """).executeUpdate();
 
-        String q = "INSERT INTO CONFIGPROPERTY (DESCRIPTION, GROUPNAME, PROPERTYTYPE, PROPERTYNAME, PROPERTYVALUE)"
-                + " VALUES ('general', 'integrations', 'ENCRYPTEDSTRING', 'jira.password', :encryptedPassword)";
-        entityManager.createNativeQuery(q)
-                        .setParameter("encryptedPassword", secretDecryptor.encryptAsString(jiraPassword))
+        entityManager.createNativeQuery("""
+                        INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
+                            ('general', 'integrations', 'ENCRYPTEDSTRING', 'jira.password', :encryptedPassword);
+                        """)
+                .setParameter("encryptedPassword", secretDecryptor.encryptAsString(jiraPassword))
                 .executeUpdate();
 
         final var notification = Notification.newBuilder()
@@ -103,7 +104,7 @@ public class JiraPublisherTest {
                 .setContent("This is only a test")
                 .build();
 
-        final JsonObject config = getConfig("http://localhost:1080");
+        final JsonObject config = getConfig("http://localhost:1040");
         publisher.inform(notification, config);
     }
 
