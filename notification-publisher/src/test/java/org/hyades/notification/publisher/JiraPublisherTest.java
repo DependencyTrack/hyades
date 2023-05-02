@@ -6,7 +6,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import org.hyades.common.SecretDecryptor;
-import org.hyades.model.ConfigProperty;
 import org.hyades.proto.notification.v1.Notification;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +16,6 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.ws.rs.core.HttpHeaders;
 import java.util.Base64;
 import java.util.Map;
@@ -92,15 +90,10 @@ public class JiraPublisherTest {
                 """).executeUpdate();
 
         String q = "INSERT INTO CONFIGPROPERTY (DESCRIPTION, GROUPNAME, PROPERTYTYPE, PROPERTYNAME, PROPERTYVALUE)"
-                + " VALUES ('general', 'integrations', 'ENCRYPTEDSTRING', 'jira.password', ':encr')";
+                + " VALUES ('general', 'integrations', 'ENCRYPTEDSTRING', 'jira.password', :encryptedPassword)";
         entityManager.createNativeQuery(q)
-                        .setParameter("encr", secretDecryptor.encryptAsString(jiraPassword))
+                        .setParameter("encryptedPassword", secretDecryptor.encryptAsString(jiraPassword))
                 .executeUpdate();
-
-//        entityManager.createNativeQuery("""
-//                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-//                                    ('general', 'integrations', 'ENCRYPTEDSTRING', 'jira.password', ':encr');
-//                """).executeUpdate();
 
         final var notification = Notification.newBuilder()
                 .setScope(SCOPE_PORTFOLIO)
