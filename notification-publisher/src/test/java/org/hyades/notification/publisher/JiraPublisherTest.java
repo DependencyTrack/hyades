@@ -28,7 +28,20 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
+@TestProfile(JiraPublisherTest.TestProfile.class)
 public class JiraPublisherTest {
+
+    public static class TestProfile implements QuarkusTestProfile {
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.of(
+                    "quarkus.kafka.snappy.enabled", "false",
+                    "client.http.config.proxy-timeout-connection", "20",
+                    "client.http.config.proxy-timeout-pool", "40",
+                    "client.http.config.proxy-timeout-socket", "20"
+            );
+        }
+    }
 
     @Inject
     JiraPublisher publisher;
