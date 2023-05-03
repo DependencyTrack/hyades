@@ -18,56 +18,24 @@
  */
 package org.hyades.notification.publisher;
 
-import javax.ws.rs.core.MediaType;
-
 public enum DefaultNotificationPublishers {
 
-    SLACK("Slack", "Publishes notifications to a Slack channel", SlackPublisher.class, "/templates/notification/publisher/slack.peb", MediaType.APPLICATION_JSON, true),
-    MS_TEAMS("Microsoft Teams", "Publishes notifications to a Microsoft Teams channel", MsTeamsPublisher.class, "/templates/notification/publisher/msteams.peb", MediaType.APPLICATION_JSON, true),
-    MATTERMOST("Mattermost", "Publishes notifications to a Mattermost channel", MattermostPublisher.class, "/templates/notification/publisher/mattermost.peb", MediaType.APPLICATION_JSON, true),
-    EMAIL("Email", "Sends notifications to an email address", SendMailPublisher.class, "/templates/notification/publisher/email.peb", MediaType.TEXT_PLAIN, true),
-    CONSOLE("Console", "Displays notifications on the system console", ConsolePublisher.class, "/templates/notification/publisher/console.peb", MediaType.TEXT_PLAIN, true),
-    WEBHOOK("Outbound Webhook", "Publishes notifications to a configurable endpoint", WebhookPublisher.class, "/templates/notification/publisher/webhook.peb", MediaType.APPLICATION_JSON, true),
-    CS_WEBEX("Cisco Webex", "Publishes notifications to a Cisco Webex Teams channel", CsWebexPublisher.class, "/templates/notification/publisher/cswebex.peb", MediaType.APPLICATION_JSON, true);
+    SLACK("Slack"),
+    MS_TEAMS("Microsoft Teams"),
+    MATTERMOST("Mattermost"),
+    EMAIL("Email"),
+    CONSOLE("Console"),
+    WEBHOOK("Outbound Webhook"),
+    CS_WEBEX("Cisco Webex"),
+    JIRA("Jira");
 
     private String name;
-    private String description;
-    private Class publisherClass;
-    private String templateFile;
-    private String templateMimeType;
-    private boolean defaultPublisher;
 
-    DefaultNotificationPublishers(final String name, final String description, final Class publisherClass,
-                                  final String templateFile, final String templateMimeType, final boolean defaultPublisher) {
+    DefaultNotificationPublishers(final String name) {
         this.name = name;
-        this.description = description;
-        this.publisherClass = publisherClass;
-        this.templateFile = templateFile;
-        this.templateMimeType = templateMimeType;
-        this.defaultPublisher = defaultPublisher;
     }
 
     public String getPublisherName() {
         return name;
-    }
-
-    public String getPublisherDescription() {
-        return description;
-    }
-
-    public Class getPublisherClass() {
-        return publisherClass;
-    }
-
-    public String getPublisherTemplateFile() {
-        return templateFile;
-    }
-
-    public String getTemplateMimeType() {
-        return templateMimeType;
-    }
-
-    public boolean isDefaultPublisher() {
-        return defaultPublisher;
     }
 }

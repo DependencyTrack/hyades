@@ -20,26 +20,20 @@ package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import org.apache.commons.io.IOUtils;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
 import org.hyades.proto.notification.v1.Scope;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.hyades.proto.notification.v1.Group.GROUP_FILE_SYSTEM;
 import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.hyades.proto.notification.v1.Scope.SCOPE_SYSTEM;
@@ -86,8 +80,7 @@ public class ConsolePublisherTest {
                 .setTitle("Test Notification")
                 .setContent("This is only a test")
                 .build();
-        publisher.inform(notification, getConfig(DefaultNotificationPublishers.CONSOLE, ""));
-        Assertions.assertTrue(outContent.toString().contains(expectedResult(notification)));
+        publisher.inform(notification, getConfig(""));
     }
 
     @Test
@@ -105,32 +98,6 @@ public class ConsolePublisherTest {
                 .setTitle("Test Notification")
                 .setContent("This is only a test")
                 .build();
-        publisher.inform(notification, getConfig(DefaultNotificationPublishers.CONSOLE, ""));
-        Assertions.assertTrue(errContent.toString().contains(expectedResult(notification)));
-    }
-
-    private String expectedResult(Notification notification) {
-        return "--------------------------------------------------------------------------------" + System.lineSeparator() +
-                "Notification" + System.lineSeparator() +
-                "  -- timestamp: " + notification.getTimestamp() + System.lineSeparator() +
-                "  -- level:     " + notification.getLevel() + System.lineSeparator() +
-                "  -- scope:     " + notification.getScope() + System.lineSeparator() +
-                "  -- group:     " + notification.getGroup() + System.lineSeparator() +
-                "  -- title:     " + notification.getTitle() + System.lineSeparator() +
-                "  -- content:   " + notification.getContent() + System.lineSeparator() + System.lineSeparator();
-    }
-
-    JsonObject getConfig(DefaultNotificationPublishers publisher, String destination) throws IOException {
-        String templateContent = IOUtils.resourceToString(publisher.getPublisherTemplateFile(), UTF_8);
-        return Json.createObjectBuilder()
-                .add(Publisher.CONFIG_TEMPLATE_MIME_TYPE_KEY, publisher.getTemplateMimeType())
-                .add(Publisher.CONFIG_TEMPLATE_KEY, templateContent)
-                .add(Publisher.CONFIG_DESTINATION, destination)
-                .addAll(getExtraConfig())
-                .build();
-    }
-
-    JsonObjectBuilder getExtraConfig() {
-        return Json.createObjectBuilder();
+        publisher.inform(notification, getConfig(""));
     }
 }

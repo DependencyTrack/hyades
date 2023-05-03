@@ -2,7 +2,6 @@ package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
@@ -15,13 +14,10 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
 import javax.inject.Inject;
-import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
-import java.io.IOException;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -67,7 +63,7 @@ public class MattermostPublisherTest {
                                     ('mattermost', 'general', 'STRING', 'base.url', 'http://localhost:1090/mychannel');
                 """).executeUpdate();
 
-        JsonObject config = getConfig(DefaultNotificationPublishers.MATTERMOST, "http://localhost:1090/mychannel");
+        JsonObject config = getConfig("http://localhost:1090/mychannel");
         final var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)
@@ -76,19 +72,5 @@ public class MattermostPublisherTest {
                 .setContent("This is only a test")
                 .build();
         publisher.inform(notification, config);
-    }
-
-    JsonObject getConfig(DefaultNotificationPublishers publisher, String destination) throws IOException {
-        String templateContent = IOUtils.resourceToString(publisher.getPublisherTemplateFile(), UTF_8);
-        return Json.createObjectBuilder()
-                .add(Publisher.CONFIG_TEMPLATE_MIME_TYPE_KEY, publisher.getTemplateMimeType())
-                .add(Publisher.CONFIG_TEMPLATE_KEY, templateContent)
-                .add(Publisher.CONFIG_DESTINATION, destination)
-                .addAll(getExtraConfig())
-                .build();
-    }
-
-    JsonObjectBuilder getExtraConfig() {
-        return Json.createObjectBuilder();
     }
 }

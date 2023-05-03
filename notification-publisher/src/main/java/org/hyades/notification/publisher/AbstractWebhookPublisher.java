@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.json.JsonObject;
+import java.util.Base64;
 
 public abstract class AbstractWebhookPublisher implements Publisher {
 
@@ -45,8 +46,8 @@ public abstract class AbstractWebhookPublisher implements Publisher {
             logger.warn("No configuration found. Skipping notification.");
             return;
         }
-        final String destination = config.getString("destination");
-        final String content = prepareTemplate(notification, template, configPropertyRepository);
+        final String destination = getDestinationUrl(config);
+        final String content = prepareTemplate(notification, template, configPropertyRepository, config);
         if (destination == null || content == null) {
             logger.warn("A destination or template was not found. Skipping notification");
             return;
@@ -56,6 +57,16 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         final String mimeType = getTemplateMimeType(config);
         request.addHeader("content-type", mimeType);
         request.addHeader("accept", mimeType);
+        final BasicAuthCredentials credentials;
+        try {
+            credentials = getBasicAuthCredentials();
+        } catch (PublisherException e) {
+            logger.warn("An error occurred during the retrieval of credentials needed for notification publication. Skipping notification", e);
+            return;
+        }
+        if (credentials != null) {
+            request.addHeader("Authorization", getBasicAuthenticationHeader(credentials.user(), credentials.password()));
+        }
         StringEntity entity = new StringEntity(content);
         request.setEntity(entity);
         final CloseableHttpResponse response = httpClient.execute(request);
@@ -68,5 +79,20 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         }
     }
 
+    private static final String getBasicAuthenticationHeader(String username, String password) {
+        String valueToEncode = username + ":" + password;
+        return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
+    }
+
+    protected BasicAuthCredentials getBasicAuthCredentials() throws Exception {
+        return null;
+    }
+
+    protected record BasicAuthCredentials(String user, String password) {
+    }
+
+    protected String getDestinationUrl(final JsonObject config) {
+        return config.getString(CONFIG_DESTINATION);
+    }
 }
 

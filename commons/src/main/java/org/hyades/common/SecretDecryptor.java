@@ -59,6 +59,20 @@ public class SecretDecryptor {
     }
 
     /**
+     * Encrypts the specified string using AES-256.
+     * <p>
+     * Ported from Alpine's {@code DataEncryption} class.
+     *
+     * @param text the text to encrypt
+     * @return the encrypted string
+     * @throws Exception a number of exceptions may be thrown
+     * @see <a href="https://github.com/stevespringett/Alpine/blob/alpine-parent-2.2.0/alpine-infra/src/main/java/alpine/security/crypto/DataEncryption.java">Alpine DataEncryption</a>
+     */
+    public String encryptAsString(final String text) throws Exception {
+        return Base64.getEncoder().encodeToString(encryptAsBytes(text));
+    }
+
+    /**
      * Encrypts the specified plainText using AES-256.
      * <p>
      * Ported from Alpine's {@code DataEncryption} class.

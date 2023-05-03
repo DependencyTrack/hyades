@@ -74,64 +74,67 @@ public interface Publisher {
         }
     }
 
-    default String prepareTemplate(final Notification notification, final PebbleTemplate template, final ConfigPropertyRepository configPropertyRepository) throws InvalidProtocolBufferException {
+    default String prepareTemplate(final Notification notification, final PebbleTemplate template, final ConfigPropertyRepository configPropertyRepository, JsonObject config) throws InvalidProtocolBufferException {
 
-            final ConfigProperty baseUrlProperty = configPropertyRepository.findByGroupAndName(
-                    ConfigPropertyConstants.GENERAL_BASE_URL.getGroupName(),
-                    ConfigPropertyConstants.GENERAL_BASE_URL.getPropertyName()
-            );
+        final ConfigProperty baseUrlProperty = configPropertyRepository.findByGroupAndName(
+                ConfigPropertyConstants.GENERAL_BASE_URL.getGroupName(),
+                ConfigPropertyConstants.GENERAL_BASE_URL.getPropertyName()
+        );
 
-            final Map<String, Object> context = new HashMap<>();
-            final long epochSecond = notification.getTimestamp().getSeconds();
-            context.put("timestampEpochSecond", epochSecond);
-            context.put("timestamp", notification.getTimestamp().toString());
-            context.put("notification", notification);
-            if (baseUrlProperty != null && baseUrlProperty.getPropertyValue() != null) {
-                context.put("baseUrl", baseUrlProperty.getPropertyValue().replaceAll("/$", ""));
-            } else {
-                context.put("baseUrl", "");
-            }
+        final Map<String, Object> context = new HashMap<>();
+        final long epochSecond = notification.getTimestamp().getSeconds();
+        context.put("timestampEpochSecond", epochSecond);
+        context.put("timestamp", notification.getTimestamp().toString());
+        context.put("notification", notification);
+        if (baseUrlProperty != null && baseUrlProperty.getPropertyValue() != null) {
+            context.put("baseUrl", baseUrlProperty.getPropertyValue().replaceAll("/$", ""));
+        } else {
+            context.put("baseUrl", "");
+        }
 
-            if (notification.getScope() == SCOPE_PORTFOLIO) {
-                if (notification.getSubject().is(NewVulnerabilitySubject.class)) {
-                    final var subject = notification.getSubject().unpack(NewVulnerabilitySubject.class);
-                    context.put("subject", subject);
-                    context.put("subjectJson", JsonFormat.printer().print(subject));
-                } else if (notification.getSubject().is(NewVulnerableDependencySubject.class)) {
-                    final var subject = notification.getSubject().unpack(NewVulnerableDependencySubject.class);
-                    context.put("subject", subject);
-                    context.put("subjectJson", JsonFormat.printer().print(subject));
-                } else if (notification.getSubject().is(VulnerabilityAnalysisDecisionChangeSubject.class)) {
-                    final var subject = notification.getSubject().unpack(VulnerabilityAnalysisDecisionChangeSubject.class);
-                    context.put("subject", subject);
-                    context.put("subjectJson", JsonFormat.printer().print(subject));
-                } else if (notification.getSubject().is(PolicyViolationAnalysisDecisionChangeSubject.class)) {
-                    final var subject = notification.getSubject().unpack(PolicyViolationAnalysisDecisionChangeSubject.class);
-                    context.put("subject", subject);
-                    context.put("subjectJson", JsonFormat.printer().print(subject));
-                } else if (notification.getSubject().is(BomConsumedOrProcessedSubject.class)) {
-                    final var subject = notification.getSubject().unpack(BomConsumedOrProcessedSubject.class);
-                    context.put("subject", subject);
-                    context.put("subjectJson", JsonFormat.printer().print(subject));
-                } else if (notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
-                    final var subject = notification.getSubject().unpack(VexConsumedOrProcessedSubject.class);
-                    context.put("subject", subject);
-                    context.put("subjectJson", JsonFormat.printer().print(subject));
-                } else if (notification.getSubject().is(PolicyViolationSubject.class)) {
-                    final var subject = notification.getSubject().unpack(PolicyViolationSubject.class);
-                    context.put("subject", subject);
-                    context.put("subjectJson", JsonFormat.printer().print(subject));
-                }
-            }
-
-            try (Writer writer = new StringWriter()) {
-                template.evaluate(writer, context);
-                return writer.toString();
-            } catch (IOException e) {
-                LoggerFactory.getLogger(this.getClass()).error("An error was encountered evaluating template", e);
-                return null;
+        if (notification.getScope() == SCOPE_PORTFOLIO) {
+            if (notification.getSubject().is(NewVulnerabilitySubject.class)) {
+                final var subject = notification.getSubject().unpack(NewVulnerabilitySubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            } else if (notification.getSubject().is(NewVulnerableDependencySubject.class)) {
+                final var subject = notification.getSubject().unpack(NewVulnerableDependencySubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            } else if (notification.getSubject().is(VulnerabilityAnalysisDecisionChangeSubject.class)) {
+                final var subject = notification.getSubject().unpack(VulnerabilityAnalysisDecisionChangeSubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            } else if (notification.getSubject().is(PolicyViolationAnalysisDecisionChangeSubject.class)) {
+                final var subject = notification.getSubject().unpack(PolicyViolationAnalysisDecisionChangeSubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            } else if (notification.getSubject().is(BomConsumedOrProcessedSubject.class)) {
+                final var subject = notification.getSubject().unpack(BomConsumedOrProcessedSubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            } else if (notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
+                final var subject = notification.getSubject().unpack(VexConsumedOrProcessedSubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            } else if (notification.getSubject().is(PolicyViolationSubject.class)) {
+                final var subject = notification.getSubject().unpack(PolicyViolationSubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
             }
         }
-    //}
 
+        enrichTemplateContext(context, config);
+
+        try (Writer writer = new StringWriter()) {
+            template.evaluate(writer, context);
+            return writer.toString();
+        } catch (IOException e) {
+            LoggerFactory.getLogger(this.getClass()).error("An error was encountered evaluating template", e);
+            return null;
+        }
+    }
+
+    default void enrichTemplateContext(final Map<String, Object> context, JsonObject config) {
+    }
 }

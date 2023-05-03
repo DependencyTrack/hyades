@@ -46,7 +46,7 @@ public class ConsolePublisher implements Publisher {
     }
 
     public void inform(final Notification notification, final JsonObject config) throws Exception {
-        final String content = prepareTemplate(notification, getTemplate(config), configPropertyRepository);
+        final String content = prepareTemplate(notification, getTemplate(config), configPropertyRepository, config);
         if (content == null) {
             LOGGER.warn("A template was not found. Skipping notification");
             return;
