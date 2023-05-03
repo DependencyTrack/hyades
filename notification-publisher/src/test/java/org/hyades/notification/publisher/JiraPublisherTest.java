@@ -86,7 +86,7 @@ public class JiraPublisherTest {
 
         entityManager.createNativeQuery("""
                 INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('general', 'integrations', 'STRING', 'jira.username', 'test');
+                                    ('general', 'integrations', 'STRING', 'jira.username', 'jiraUser');
                 """).executeUpdate();
 
         entityManager.createNativeQuery("""
@@ -106,6 +106,7 @@ public class JiraPublisherTest {
 
         final JsonObject config = getConfig("http://localhost:1040");
         publisher.inform(notification, config);
+        mockServer.verify(request);
     }
 
     JsonObject getConfig(String destination) {
