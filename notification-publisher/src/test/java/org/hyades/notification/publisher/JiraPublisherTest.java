@@ -28,19 +28,7 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
-@TestProfile(JiraPublisherTest.TestProfile.class)
 public class JiraPublisherTest {
-
-    public static class TestProfile implements QuarkusTestProfile {
-        @Override
-        public Map<String, String> getConfigOverrides() {
-            return Map.of(
-                    "client.http.config.proxy-timeout-connection", "20",
-                    "client.http.config.proxy-timeout-pool", "40",
-                    "client.http.config.proxy-timeout-socket", "20"
-            );
-        }
-    }
 
     @Inject
     JiraPublisher publisher;
@@ -55,7 +43,7 @@ public class JiraPublisherTest {
 
     @BeforeAll
     public static void beforeClass() {
-        mockServer = startClientAndServer(1040);
+        mockServer = startClientAndServer(1080);
     }
 
     @AfterAll
@@ -104,7 +92,7 @@ public class JiraPublisherTest {
                 .setContent("This is only a test")
                 .build();
 
-        final JsonObject config = getConfig("http://localhost:1040");
+        final JsonObject config = getConfig("http://localhost:1080");
         publisher.inform(notification, config);
         mockServer.verify(request);
     }
