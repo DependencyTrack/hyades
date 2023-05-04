@@ -87,7 +87,7 @@ public class NotificationRouter {
                 NotificationPublisher notificationPublisher = rule.getPublisher();
                 // final Class<?> publisherClass = Class.forName(notificationPublisher.getPublisherClass());
                 // FIXME: The fully qualified class name is not known by us, because it refers to the org.dependencytrack package
-                final Class<?> publisherClass = Class.forName(notificationPublisher.getPublisherClass());
+                final Class<?> publisherClass = Class.forName("org.hyades.notification.publisher."+notificationPublisher.getPublisherClass());
                 if (Publisher.class.isAssignableFrom(publisherClass)) {
                     // Instead of instantiating publisher classes ad-hoc, look the up in the CDI context.
                     // This way publishers can make use of dependency injection.
