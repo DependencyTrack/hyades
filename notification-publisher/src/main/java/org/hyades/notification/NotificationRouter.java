@@ -24,6 +24,7 @@ import org.hyades.model.Team;
 import org.hyades.notification.model.NotificationPublisher;
 import org.hyades.notification.model.NotificationRule;
 import org.hyades.notification.model.NotificationScope;
+import org.hyades.notification.model.PublisherClass;
 import org.hyades.notification.persistence.NotificationRuleRepository;
 import org.hyades.notification.publisher.Publisher;
 import org.hyades.notification.publisher.PublisherException;
@@ -85,10 +86,8 @@ public class NotificationRouter {
             }
             try {
                 NotificationPublisher notificationPublisher = rule.getPublisher();
-                // final Class<?> publisherClass = Class.forName(notificationPublisher.getPublisherClass());
-                // FIXME: The fully qualified class name is not known by us, because it refers to the org.dependencytrack package
-                final Class<?> publisherClass = Class.forName(notificationPublisher.getPublisherClass().replaceAll("^org\\.dependencytrack\\.", "org.hyades."));
-                if (Publisher.class.isAssignableFrom(publisherClass)) {
+                final Class<?> publisherClass = PublisherClass.getPublisherClass(notificationPublisher.getPublisherClass());
+                if (publisherClass != null && Publisher.class.isAssignableFrom(publisherClass)) {
                     // Instead of instantiating publisher classes ad-hoc, look the up in the CDI context.
                     // This way publishers can make use of dependency injection.
                     // TODO: Ensure all publisher implementations are available in CDI
