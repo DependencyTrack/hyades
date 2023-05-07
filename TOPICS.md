@@ -31,7 +31,6 @@
 | `dtrack.vulnerability.mirror.state`<sup>2</sup>                                                   | 1          | `cleanup.policy=compact` |
 | `hyades-repository-meta-analyzer-command-by-purl-coordinates-repartition`<sup>1B</sup>            | 3          |                          |
 | `hyades-vulnerability-analyzer-completed-scans-table-changelog`<sup>1C</sup>                      | 3          | `cleanup.policy=compact` |
-| `hyades-vulnerability-analyzer-completed-scans-table-last-update-store-changelog`<sup>1C</sup>    | 3          | `cleanup.policy=compact` |
 | `hyades-vulnerability-analyzer-expected-scanner-results-last-update-store-changelog`<sup>1C</sup> | 3          | `cleanup.policy=compact` |
 | `hyades-vulnerability-analyzer-expected-scanner-results-table-changelog`<sup>1C</sup>             | 3          | `cleanup.policy=compact` |
 | `hyades-vulnerability-analyzer-ossindex-batch-store-changelog`<sup>1D</sup>                       | 3          | `cleanup.policy=compact` |

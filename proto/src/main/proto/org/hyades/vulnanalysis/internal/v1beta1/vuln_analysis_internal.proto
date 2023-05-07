@@ -3,6 +3,7 @@ syntax = "proto3";
 // Internal API for Hyades vulnerability analysis.
 package org.hyades.vulnanalysis.internal.v1beta1;
 
+import "google/protobuf/timestamp.proto";
 import "org/hyades/vulnanalysis/v1/vuln_analysis.proto";
 
 option java_multiple_files = true;
@@ -20,8 +21,11 @@ message ScannerResultAggregate {
   // Scanner results by scanner name.
   map<string, org.hyades.vulnanalysis.v1.ScannerResult> results = 1;
 
-  // Whether this event represents a tombstone.
-  optional bool tombstone = 2;
+  // When the aggregate was last updated.
+  optional google.protobuf.Timestamp last_updated = 3;
+
+  reserved 2;
+  reserved "tombstone";
 }
 
 message ScanTask {
