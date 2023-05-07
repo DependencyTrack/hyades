@@ -1,7 +1,7 @@
 package org.hyades.util;
 
-import org.hyades.notification.model.NotificationGroup;
-import org.hyades.notification.model.NotificationLevel;
+import org.hyades.persistence.model.NotificationGroup;
+import org.hyades.persistence.model.NotificationLevel;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 

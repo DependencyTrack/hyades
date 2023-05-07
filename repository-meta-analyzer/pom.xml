@@ -13,13 +13,12 @@
 
   <properties>
     <project.parentBaseDir>${project.basedir}/..</project.parentBaseDir>
-    <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.hyades</groupId>
-      <artifactId>commons</artifactId>
+      <artifactId>commons-persistence</artifactId>
       <exclusions>
         <exclusion>
           <!--
@@ -65,10 +64,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-apache-httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -122,12 +117,6 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
-      <version>${lib.log4j-over-slf4j.version}</version>
     </dependency>
   </dependencies>
 

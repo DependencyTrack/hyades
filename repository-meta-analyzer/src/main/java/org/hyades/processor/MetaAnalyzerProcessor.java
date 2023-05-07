@@ -10,9 +10,9 @@ import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.hyades.common.SecretDecryptor;
 import org.hyades.model.MetaAnalyzerCacheKey;
 import org.hyades.model.MetaModel;
-import org.hyades.model.Repository;
-import org.hyades.model.RepositoryType;
-import org.hyades.persistence.RepoEntityRepository;
+import org.hyades.persistence.model.Repository;
+import org.hyades.persistence.model.RepositoryType;
+import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.IMetaAnalyzer;
@@ -123,7 +123,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         try {
             // Analyzers still work with "legacy" data models,
             // allowing us to avoid major refactorings of the original code.
-            final var analyzerComponent = new org.hyades.model.Component();
+            final var analyzerComponent = new org.hyades.persistence.model.Component();
             analyzerComponent.setPurl(component.getPurl());
             metaModel = analyzer.analyze(analyzerComponent);
         } catch (Exception e) {

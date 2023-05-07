@@ -24,7 +24,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.hyades.commonutil.HttpUtil;
-import org.hyades.model.Component;
+import org.hyades.persistence.model.Component;
 import org.slf4j.Logger;
 
 import java.io.IOException;

@@ -20,7 +20,7 @@ package org.hyades.notification.publisher;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
-import org.hyades.persistence.ConfigPropertyRepository;
+import org.hyades.persistence.repository.ConfigPropertyRepository;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
 import org.slf4j.Logger;

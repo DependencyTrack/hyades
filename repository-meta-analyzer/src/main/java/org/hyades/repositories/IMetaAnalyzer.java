@@ -19,10 +19,10 @@
 package org.hyades.repositories;
 
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.hyades.model.Component;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
-import org.hyades.model.RepositoryType;
+import org.hyades.persistence.model.Component;
+import org.hyades.persistence.model.RepositoryType;
 
 /**
  * Interface that defines Repository Meta Analyzers.

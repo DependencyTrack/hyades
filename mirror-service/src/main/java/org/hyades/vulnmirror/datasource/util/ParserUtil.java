@@ -14,9 +14,6 @@ import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_LOW;
 import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_MEDIUM;
 import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_NONE;
 import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_UNKNOWN;
-import static org.hyades.model.Vulnerability.Source.GITHUB;
-import static org.hyades.model.Vulnerability.Source.NVD;
-import static org.hyades.model.Vulnerability.Source.OSV;
 
 public class ParserUtil {
 
@@ -32,7 +29,7 @@ public class ParserUtil {
     }
 
     public static Severity mapSeverity(String severity) {
-        if(severity == null) {
+        if (severity == null) {
             return SEVERITY_UNKNOWN;
         }
         return switch (severity) {
@@ -49,9 +46,9 @@ public class ParserUtil {
     public static String extractSource(String vulnId) {
         String sourceId = vulnId.split("-")[0];
         return switch (sourceId) {
-            case "GHSA" -> GITHUB.name();
-            case "CVE" -> NVD.name();
-            default -> OSV.name();
+            case "GHSA" -> "GITHUB";
+            case "CVE" -> "NVD";
+            default -> "OSV";
         };
     }
 

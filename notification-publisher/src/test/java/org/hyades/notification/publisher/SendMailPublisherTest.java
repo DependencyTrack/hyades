@@ -2,7 +2,7 @@ package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import org.hyades.model.Team;
+import org.hyades.persistence.model.Team;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

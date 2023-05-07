@@ -19,17 +19,16 @@
 package org.hyades.notification;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.hyades.model.Project;
-import org.hyades.model.Team;
-import org.hyades.notification.model.NotificationPublisher;
-import org.hyades.notification.model.NotificationRule;
-import org.hyades.notification.model.NotificationScope;
-import org.hyades.notification.model.PublisherClass;
-import org.hyades.notification.persistence.NotificationRuleRepository;
 import org.hyades.notification.publisher.Publisher;
 import org.hyades.notification.publisher.PublisherException;
 import org.hyades.notification.publisher.SendMailPublisher;
-import org.hyades.persistence.TeamRepository;
+import org.hyades.persistence.model.NotificationPublisher;
+import org.hyades.persistence.model.NotificationRule;
+import org.hyades.persistence.model.NotificationScope;
+import org.hyades.persistence.model.Project;
+import org.hyades.persistence.model.Team;
+import org.hyades.persistence.repository.NotificationRuleRepository;
+import org.hyades.persistence.repository.TeamRepository;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.BomProcessingFailedSubject;
 import org.hyades.proto.notification.v1.NewVulnerabilitySubject;

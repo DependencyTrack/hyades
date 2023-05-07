@@ -18,6 +18,8 @@
  */
 package org.hyades.model;
 
+import org.hyades.persistence.model.Component;
+
 import java.io.Serializable;
 import java.util.Date;
 

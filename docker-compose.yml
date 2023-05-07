@@ -143,7 +143,7 @@ services:
       - "5432:5432"
     volumes:
       - "postgres-data:/var/lib/postgresql/data"
-      - "./commons/src/main/resources/migrations/postgres:/docker-entrypoint-initdb.d"
+      - "./commons-persistence/src/main/resources/migrations/postgres:/docker-entrypoint-initdb.d"
     restart: unless-stopped
 
   redpanda:
