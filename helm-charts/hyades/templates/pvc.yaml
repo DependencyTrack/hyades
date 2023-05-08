@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "vulnAnalyzerName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vulnAnalyzerLabels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Values.vulnAnalyzer.persistentVolume.className }}
+  resources:
+    requests:
+      storage: {{ .Values.vulnAnalyzer.persistentVolume.size }}
+  accessModes:
+  - ReadWriteOnce
