@@ -5,9 +5,9 @@ metadata:
   name: {{ include "vulnAnalyzerName" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "vulnAnalyzerSelectorLabels" }}
+    {{- include "vulnAnalyzerSelectorLabels" . }}
 spec:
-  serviceName: {{ include "vulnAnalyzerName" }}
+  serviceName: {{ include "vulnAnalyzerName" . }}
   replicas: {{ .Values.vulnAnalyzer.replicas }}
   selector:
     matchLabels:
@@ -15,27 +15,31 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "vulnAnalyzerLabels" . | nindent 8 }}
+        {{- include "vulnAnalyzerSelectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.common.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "vulnAnalyzerName" . }}
         image: {{ include "vulnAnalyzerImage" . }}
         imagePullPolicy: {{ .Values.vulnAnalyzer.image.pullPolicy }}
-        {{- with .Values.common.image.pullSecrets }}
-        imagePullSecrets: {{- toYaml . | nindent 6 }}
-        {{- end }}
         resources:
           {{- toYaml .Values.vulnAnalyzer.resources | nindent 12 }}
+        env:
+        - name: KAFKA_STREAMS_STATE_DIR
+          value: /var/lib/kafka-streams
         envFrom:
         - configMapRef:
-            name: {{ include "vulnAnalyzerName" }}
+            name: {{ include "vulnAnalyzerName" . }}
         ports:
         - name: web
           containerPort: 8092
           protocol: TCP
         volumeMounts:
         - name: kafka-streams-state
-          mountPath: /tmp/kafka-streams
+          mountPath: /var/lib/kafka-streams
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -56,11 +60,20 @@ spec:
           periodSeconds: 15
           successThreshold: 1
           timeoutSeconds: 5
+      {{- if not .Values.vulnAnalyzer.persistentVolume.enabled }}
       volumes:
       - name: kafka-streams-state
-        {{- if .Values.vulnAnalyzer.persistentVolume.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ include "vulnAnalyzerName" . }}
-        {{- else }}
         emptyDir: { }
-        {{- end }}
+      {{- end }}
+  {{- if .Values.vulnAnalyzer.persistentVolume.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: kafka-streams-state
+    spec:
+      storageClassName: {{ .Values.vulnAnalyzer.persistentVolume.className }}
+      resources:
+        requests:
+          storage: {{ .Values.vulnAnalyzer.persistentVolume.size }}
+      accessModes:
+      - ReadWriteOnce
+  {{- end }}

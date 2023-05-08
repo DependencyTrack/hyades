@@ -19,13 +19,13 @@ vulnAnalyzer:
   persistentVolume:
     enabled: false
     className: ""
-    size: 5Gi
+    size: 2Gi
   config:
     KAFKA_BOOTSTRAP_SERVERS: "host.minikube.internal:9093"
     KAFKA_STREAMS_NUM_STREAM_THREADS: "6"
     # STATE_STORE_TYPE: "rocks_db"
     # STATE_STORE_ROCKS_DB_COMPACTION_STYLE: ""
     # STATE_STORE_ROCKS_DB_COMPRESSION_TYPE: ""
-    QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://host.minikube.internal/dtrack"
+    QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://host.minikube.internal:5432/dtrack"
     QUARKUS_DATASOURCE_USERNAME: "dtrack"
     QUARKUS_DATASOURCE_PASSWORD: "dtrack"
