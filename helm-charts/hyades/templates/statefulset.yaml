@@ -26,10 +26,7 @@ spec:
         image: {{ include "vulnAnalyzerImage" . }}
         imagePullPolicy: {{ .Values.vulnAnalyzer.image.pullPolicy }}
         resources:
-          {{- toYaml .Values.vulnAnalyzer.resources | nindent 12 }}
-        env:
-        - name: KAFKA_STREAMS_STATE_DIR
-          value: /var/lib/kafka-streams
+          {{- toYaml .Values.vulnAnalyzer.resources | nindent 10 }}
         envFrom:
         - configMapRef:
             name: {{ include "vulnAnalyzerName" . }}
@@ -39,7 +36,7 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: kafka-streams-state
-          mountPath: /var/lib/kafka-streams
+          mountPath: /tmp/kafka-streams
         livenessProbe:
           httpGet:
             scheme: HTTP

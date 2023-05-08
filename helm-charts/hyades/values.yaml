@@ -18,9 +18,10 @@ vulnAnalyzer:
       memory: 2Gi
   persistentVolume:
     enabled: false
-    className: ""
+    className: "standard"
     size: 2Gi
   config:
+    # QUARKUS_LOG_CATEGORY__ORG_APACHE_KAFKA__LEVEL: INFO
     KAFKA_BOOTSTRAP_SERVERS: "host.minikube.internal:9093"
     KAFKA_STREAMS_NUM_STREAM_THREADS: "6"
     # STATE_STORE_TYPE: "rocks_db"
