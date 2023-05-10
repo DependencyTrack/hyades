@@ -28,7 +28,7 @@
 
     <!-- Dependency Versions -->
     <lib.assertj.version>3.24.2</lib.assertj.version>
-    <lib.checkstyle.version>10.10.0</lib.checkstyle.version>
+    <lib.checkstyle.version>10.11.0</lib.checkstyle.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
