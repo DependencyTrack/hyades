@@ -59,10 +59,10 @@ class NvdToCyclonedxParserTest {
 
         assertEquals(2, vulnerability.getAffectsList().size());
         assertEquals(bomRef, vulnerability.getAffectsList().get(0).getRef());
-        assertEquals("vers:cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*/2.2.0|2.2.13",
+        assertEquals("vers:generic/2.2.0|2.2.13",
                 vulnerability.getAffectsList().get(0).getVersionsList().get(0).getRange());
         assertEquals(bomRef, vulnerability.getAffectsList().get(1).getRef());
-        assertEquals("vers:cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*/2.3.0|2.3.18",
+        assertEquals("vers:generic/2.3.0|2.3.18",
                 vulnerability.getAffectsList().get(1).getVersionsList().get(0).getRange());
     }
 }

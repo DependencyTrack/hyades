@@ -118,7 +118,8 @@ public final class NvdToCyclonedxParser {
         bovUpdated.set(bovWrapper.bov);
         vulnerabilityAffects.setRef(bovWrapper.object);
 
-        String uniVersionRange = "vers:" + cpeMatch.getCriteria() + "/";
+        // Using 'generic' as versioning scheme for NVD due to lack of package data
+        String uniVersionRange = "vers:generic/";
         var versionRange = VulnerabilityAffectedVersions.newBuilder();
         if (cpeMatch.getVersionStartIncluding() != null) {
             uniVersionRange += cpeMatch.getVersionStartIncluding() + "|";
