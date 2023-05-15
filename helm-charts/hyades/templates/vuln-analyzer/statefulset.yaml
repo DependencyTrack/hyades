@@ -1,0 +1,108 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "hyades.vulnAnalyzerName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.vulnAnalyzerLabels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "hyades.vulnAnalyzerName" . }}
+  replicas: {{ .Values.vulnAnalyzer.replicas }}
+  selector:
+    matchLabels: {{- include "hyades.vulnAnalyzerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "hyades.vulnAnalyzerSelectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
+        {{- with .Values.vulnAnalyzer.annotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.common.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ include "hyades.vulnAnalyzerName" . }}
+        image: {{ include "hyades.vulnAnalyzerImage" . }}
+        imagePullPolicy: {{ .Values.vulnAnalyzer.image.pullPolicy }}
+        {{- with .Values.vulnAnalyzer.command }}
+        command: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.vulnAnalyzer.args }}
+        args: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        resources: {{- toYaml .Values.vulnAnalyzer.resources | nindent 10 }}
+        env:
+        - name: QUARKUS_DATASOURCE_JDBC_URL
+          value: {{ .Values.common.database.jdbcUrl | quote }}
+        {{- with .Values.common.database.username }}
+        - name: QUARKUS_DATASOURCE_USERNAME
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with .Values.common.database.password }}
+        - name: QUARKUS_DATASOURCE_PASSWORD
+          value: {{ . | quote }}
+        {{- end }}
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: {{ .Values.common.kafka.bootstrapServers | quote }}
+        - name: KAFKA_STREAMS_GROUP_INSTANCE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        {{- with .Values.common.kafka.topicPrefix }}
+        - name: API_TOPIC_PREFIX
+          value: {{ . | quote }}
+        {{- end }}
+        {{- range $k, $v := .Values.vulnAnalyzer.env }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+        {{- end }}
+        {{- with .Values.vulnAnalyzer.envFrom }}
+        envFrom: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: web
+          containerPort: 8092
+          protocol: TCP
+        volumeMounts:
+        - name: kafka-streams-state
+          mountPath: /tmp/kafka-streams
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /q/health/live
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /q/health/ready
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+      {{- if not .Values.vulnAnalyzer.persistentVolume.enabled }}
+      volumes:
+      - name: kafka-streams-state
+        emptyDir: { }
+      {{- end }}
+  {{- if .Values.vulnAnalyzer.persistentVolume.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: kafka-streams-state
+    spec:
+      storageClassName: {{ .Values.vulnAnalyzer.persistentVolume.className }}
+      resources:
+        requests:
+          storage: {{ .Values.vulnAnalyzer.persistentVolume.size }}
+      accessModes:
+      - ReadWriteOnce
+  {{- end }}

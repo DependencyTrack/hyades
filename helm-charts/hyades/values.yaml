@@ -1,14 +1,84 @@
+---
 common:
+  nameOverride: ""
+  fullnameOverride: ""
   image:
     registry: ghcr.io
-    pullSecrets: []
+    pullSecrets: [ ]
+  database:
+    jdbcUrl: ""
+    username: ""
+    password: ""
+  kafka:
+    bootstrapServers: ""
+    topicPrefix: ""
+
+mirrorService:
+  annotations: { }
+  replicas: 1
+  image:
+    repository: dependencytrack/hyades-mirror-service
+    tag: latest-native
+    pullPolicy: Always
+  command: [ ]
+  args: [ ]
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  env: [ ]
+  envFrom: [ ]
+
+notificationPublisher:
+  enabled: true
+  annotations: { }
+  image:
+    repository: dependencytrack/hyades-notification-publisher
+    tag: latest-native
+    pullPolicy: Always
+  command: [ ]
+  args: [ ]
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  env: [ ]
+  envFrom: [ ]
+
+repoMetaAnalyzer:
+  annotations: { }
+  replicas: 1
+  image:
+    repository: dependencytrack/hyades-repository-meta-analyzer
+    tag: latest-native
+    pullPolicy: Always
+  command: [ ]
+  args: [ ]
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  env: [ ]
+  envFrom: [ ]
 
 vulnAnalyzer:
+  annotations: { }
   replicas: 1
   image:
     repository: dependencytrack/hyades-vulnerability-analyzer
     tag: latest-native
     pullPolicy: Always
+  command: [ ]
+  args: [ ]
   resources:
     requests:
       cpu: 500m
@@ -18,15 +88,7 @@ vulnAnalyzer:
       memory: 2Gi
   persistentVolume:
     enabled: false
-    className: "standard"
+    className: ""
     size: 2Gi
-  config:
-    # QUARKUS_LOG_CATEGORY__ORG_APACHE_KAFKA__LEVEL: INFO
-    KAFKA_BOOTSTRAP_SERVERS: "host.minikube.internal:9093"
-    KAFKA_STREAMS_NUM_STREAM_THREADS: "6"
-    # STATE_STORE_TYPE: "rocks_db"
-    # STATE_STORE_ROCKS_DB_COMPACTION_STYLE: ""
-    # STATE_STORE_ROCKS_DB_COMPRESSION_TYPE: ""
-    QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://host.minikube.internal:5432/dtrack"
-    QUARKUS_DATASOURCE_USERNAME: "dtrack"
-    QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+  env: [ ]
+  envFrom: [ ]

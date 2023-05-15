@@ -1,0 +1,81 @@
+{{- if .Values.notificationPublisher.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: {{- include "hyades.notificationPublisherLabels" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- include "hyades.notificationPublisherSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "hyades.notificationPublisherSelectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
+        {{- with .Values.notificationPublisher.annotations }}
+          {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+      - name: {{ include "hyades.notificationPublisherName" . }}
+        image: {{ include "hyades.notificationPublisherImage" . }}
+        imagePullPolicy: {{ .Values.notificationPublisher.image.pullPolicy }}
+        {{- with .Values.notificationPublisher.command }}
+        command: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.notificationPublisher.args }}
+        args: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.notificationPublisher.resources | nindent 10 }}
+        env:
+        - name: QUARKUS_DATASOURCE_JDBC_URL
+          value: {{ .Values.common.database.jdbcUrl | quote }}
+        {{- with .Values.common.database.username }}
+        - name: QUARKUS_DATASOURCE_USERNAME
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with .Values.common.database.password }}
+        - name: QUARKUS_DATASOURCE_PASSWORD
+          value: {{ . | quote }}
+        {{- end }}
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: {{ .Values.common.kafka.bootstrapServers | quote }}
+        {{- with .Values.common.kafka.topicPrefix }}
+        - name: API_TOPIC_PREFIX
+          value: {{ . | quote }}
+        {{- end }}
+        {{- range $k, $v := .Values.notificationPublisher.env }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+        {{- end }}
+        {{- with .Values.notificationPublisher.envFrom }}
+        envFrom: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: web
+          containerPort: 8090
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /q/health/live
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /q/health/ready
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+{{- end }}

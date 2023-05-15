@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: {{- include "hyades.mirrorServiceSelectorLabels" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- include "hyades.mirrorServiceSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "hyades.mirrorServiceSelectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
+        {{- with .Values.mirrorService.annotations }}
+          {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+      - name: {{ include "hyades.mirrorServiceName" . }}
+        image: {{ include "hyades.mirrorServiceImage" . }}
+        imagePullPolicy: {{ .Values.mirrorService.image.pullPolicy }}
+        {{- with .Values.mirrorService.command }}
+        command: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.mirrorService.args }}
+        args: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.mirrorService.resources | nindent 10 }}
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: {{ .Values.common.kafka.bootstrapServers | quote }}
+        {{- with .Values.common.kafka.topicPrefix }}
+        - name: API_TOPIC_PREFIX
+          value: {{ . | quote }}
+        {{- end }}
+        {{- range $k, $v := .Values.mirrorService.env }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+        {{- end }}
+        {{- with .Values.mirrorService.envFrom }}
+        envFrom: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: web
+          containerPort: 8093
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /q/health/live
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /q/health/ready
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5

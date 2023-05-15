@@ -1,0 +1,18 @@
+---
+common:
+  database:
+    jdbcUrl: "jdbc:postgresql://host.minikube.internal:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
+  kafka:
+    bootstrapServers: "host.minikube.internal:9093"
+
+vulnAnalyzer:
+  replicas: 2
+  persistentVolume:
+    enabled: true
+    className: "standard"
+  env:
+    KAFKA_STREAMS_NUM_STREAM_THREADS: "6"
+    STATE_STORE_TYPE: "rocks_db"
+    STATE_STORE_ROCKS_DB_COMPRESSION_TYPE: "zstd_compression"
