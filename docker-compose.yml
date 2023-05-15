@@ -109,7 +109,7 @@ services:
       ALPINE_METRICS_ENABLED: "true"
       ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_NUM_STREAM_THREADS: "6"
+      KAFKA_NUM_STREAM_THREADS: "15" # Default number of input partitions is 15
       KAFKA_STREAMS_METRICS_RECORDING_LEVEL: "DEBUG"
     ports:
       - "127.0.0.1:8080:8080"
@@ -192,14 +192,15 @@ services:
     user: "0" # Ensure user can read create-topics.sh
     environment:
       REDPANDA_BROKERS: "dt-redpanda:29092"
-      # api topic prefix to be used when a required prefix is expected on topics created by redpanda
-      API_TOPIC_PREFIX: ""
+      # API_TOPIC_PREFIX: ""
       # NOTIFICATION_TOPICS_PARTITIONS: "3"
       # NOTIFICATION_TOPICS_RETENTION_MS: "43200000" # 12h
       # REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
       # REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
       # VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
       # VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
+      # VULN_ANALYSIS_RESULT_TOPIC_PARTITIONS: "3"
+      # VULN_ANALYSIS_RESULT_TOPIC_RETENTION_MS: "43200000" # 12h
       # VULN_MIRROR_TOPICS_PARTITIONS: "3"
       # VULN_MIRROR_TOPICS_RETENTION_MS: "43200000" # 12h
     volumes:

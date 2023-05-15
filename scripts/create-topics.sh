@@ -3,7 +3,13 @@
 set -euxo pipefail
 
 function create_topic() {
-  if ! output=$(rpk topic create "$1" --partitions "$2" --topic-config "$3"); then
+  topic_config_flags=""
+  argument_configs=($3)
+  for cfg in "${argument_configs[@]}"; do
+    topic_config_flags="${topic_config_flags} --topic-config ${cfg}"
+  done
+
+  if ! output=$(rpk topic create "$1" --partitions "$2" $topic_config_flags); then
     # Don't fail the script when the rpk command failed because the topic already exists.
     if [[ "$output" != *"TOPIC_ALREADY_EXISTS"* ]]; then
       exit 2
@@ -48,15 +54,16 @@ done
 vuln_analysis_topics=(
   "${API_TOPIC_PREFIX:-}dtrack.vuln-analysis.component"
   "${API_TOPIC_PREFIX:-}dtrack.vuln-analysis.scanner.result"
-  "${API_TOPIC_PREFIX:-}dtrack.vuln-analysis.result"
 )
 for topic_name in "${vuln_analysis_topics[@]}"; do
   create_topic "$topic_name" "${VULN_ANALYSIS_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_ANALYSIS_TOPICS_RETENTION_MS:-43200000}"
 done
 
+create_topic "${API_TOPIC_PREFIX:-}dtrack.vuln-analysis.result" "${VULN_ANALYSIS_RESULT_TOPIC_PARTITIONS:-3}" "retention.ms=${VULN_ANALYSIS_RESULT_TOPIC_RETENTION_MS:-43200000}"
+
 create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.command" "1" "retention.ms=${VULN_MIRROR_TOPICS_RETENTION_MS:-43200000}"
-create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.state" "1" "cleanup.policy=compact"
-create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.digest" "1" "cleanup.policy=compact"
+create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.state" "1" "cleanup.policy=compact segment.bytes=67108864 max.compaction.lag.ms=0"
+create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability.digest" "1" "cleanup.policy=compact segment.bytes=134217728"
 create_topic "${API_TOPIC_PREFIX:-}dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
 
 echo "All topics created successfully"
