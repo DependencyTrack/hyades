@@ -2,7 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels: {{- include "hyades.repoMetaAnalyzerSelectorLabels" . }}
+  name: {{ include "hyades.repoMetaAnalyzerName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.repoMetaAnalyzerSelectorLabels" .  | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -46,11 +48,11 @@ spec:
         - name: API_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
-        {{- range $k, $v := .Values.repoMetaAnalyzer.env }}
+        {{- range $k, $v := .Values.repoMetaAnalyzer.extraEnv }}
         - name: {{ $k }}
           value: {{ $v | quote }}
         {{- end }}
-        {{- with .Values.repoMetaAnalyzer.envFrom }}
+        {{- with .Values.repoMetaAnalyzer.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}
         {{- end }}
         ports:
@@ -62,18 +64,18 @@ spec:
             scheme: HTTP
             port: web
             path: /q/health/live
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 5
+          failureThreshold: {{ .Values.repoMetaAnalyzer.probes.liveness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.repoMetaAnalyzer.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.repoMetaAnalyzer.probes.liveness.periodSeconds }}
+          successThreshold: {{ .Values.repoMetaAnalyzer.probes.liveness.successThreshold }}
+          timeoutSeconds: {{ .Values.repoMetaAnalyzer.probes.liveness.timeoutSeconds }}
         readinessProbe:
           httpGet:
             scheme: HTTP
             port: web
             path: /q/health/ready
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 5
+          failureThreshold: {{ .Values.repoMetaAnalyzer.probes.readiness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.repoMetaAnalyzer.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.repoMetaAnalyzer.probes.readiness.periodSeconds }}
+          successThreshold: {{ .Values.repoMetaAnalyzer.probes.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.repoMetaAnalyzer.probes.readiness.timeoutSeconds }}

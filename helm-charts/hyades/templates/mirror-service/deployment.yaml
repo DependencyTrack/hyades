@@ -1,8 +1,11 @@
+{{- if .Values.mirrorService.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels: {{- include "hyades.mirrorServiceSelectorLabels" . }}
+  name: {{ include "hyades.mirrorServiceName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.mirrorServiceSelectorLabels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -36,11 +39,11 @@ spec:
         - name: API_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
-        {{- range $k, $v := .Values.mirrorService.env }}
+        {{- range $k, $v := .Values.mirrorService.extraEnv }}
         - name: {{ $k }}
           value: {{ $v | quote }}
         {{- end }}
-        {{- with .Values.mirrorService.envFrom }}
+        {{- with .Values.mirrorService.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}
         {{- end }}
         ports:
@@ -52,18 +55,19 @@ spec:
             scheme: HTTP
             port: web
             path: /q/health/live
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 5
+          failureThreshold: {{ .Values.mirrorService.probes.liveness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.mirrorService.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.mirrorService.probes.liveness.periodSeconds }}
+          successThreshold: {{ .Values.mirrorService.probes.liveness.successThreshold }}
+          timeoutSeconds: {{ .Values.mirrorService.probes.liveness.timeoutSeconds }}
         readinessProbe:
           httpGet:
             scheme: HTTP
             port: web
             path: /q/health/ready
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 5
+          failureThreshold: {{ .Values.mirrorService.probes.readiness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.mirrorService.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.mirrorService.probes.readiness.periodSeconds }}
+          successThreshold: {{ .Values.mirrorService.probes.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.mirrorService.probes.readiness.timeoutSeconds }}
+  {{- end }}

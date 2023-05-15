@@ -3,9 +3,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels: {{- include "hyades.notificationPublisherLabels" . }}
+  name: {{ include "hyades.notificationPublisherName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.notificationPublisherLabels" .  | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.notificationPublisher.replicaCount }}
   selector:
     matchLabels: {{- include "hyades.notificationPublisherSelectorLabels" . | nindent 6 }}
   template:
@@ -47,11 +49,11 @@ spec:
         - name: API_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
-        {{- range $k, $v := .Values.notificationPublisher.env }}
+        {{- range $k, $v := .Values.notificationPublisher.extraEnv }}
         - name: {{ $k }}
           value: {{ $v | quote }}
         {{- end }}
-        {{- with .Values.notificationPublisher.envFrom }}
+        {{- with .Values.notificationPublisher.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}
         {{- end }}
         ports:
@@ -63,19 +65,19 @@ spec:
             scheme: HTTP
             port: web
             path: /q/health/live
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 5
+          failureThreshold: {{ .Values.notificationPublisher.probes.liveness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.notificationPublisher.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.notificationPublisher.probes.liveness.periodSeconds }}
+          successThreshold: {{ .Values.notificationPublisher.probes.liveness.successThreshold }}
+          timeoutSeconds: {{ .Values.notificationPublisher.probes.liveness.timeoutSeconds }}
         readinessProbe:
           httpGet:
             scheme: HTTP
             port: web
             path: /q/health/ready
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 5
+          failureThreshold: {{ .Values.notificationPublisher.probes.readiness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.notificationPublisher.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.notificationPublisher.probes.readiness.periodSeconds }}
+          successThreshold: {{ .Values.notificationPublisher.probes.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.notificationPublisher.probes.readiness.timeoutSeconds }}
 {{- end }}

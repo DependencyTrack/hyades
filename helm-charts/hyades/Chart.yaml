@@ -3,3 +3,7 @@ name: hyades
 version: 0.1.0
 type: application
 appVersion: 1.0.0-SNAPSHOT
+home: https://github.com/DependencyTrack/hyades
+maintainers:
+- name: The Dependency-Track Authors
+  url: https://github.com/DependencyTrack

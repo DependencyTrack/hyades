@@ -113,6 +113,50 @@ mvn -pl e2e clean verify -Pe2e-all
 
 See [`load-tests`](load-tests).
 
+### Deployment 🚢
+
+The recommended way to deploy Hyades is via Helm. Our [chart](./helm-charts/hyades) is not officially published
+to any repository yet, so for now you'll have to clone this repository to access it.
+
+The chart does *not* include:
+
+* a database
+* a Kafka-compatible broker
+* the API server
+* the frontend
+
+While API server and frontend will eventually be included, database and Kafka broker will not.
+
+Helm charts to deploy Kafka brokers to Kubernetes are provided by both [Strimzi](https://strimzi.io/) 
+and [Redpanda](https://github.com/redpanda-data/helm-charts). 
+
+#### Minikube
+
+Deploying to a local [Minikube](https://minikube.sigs.k8s.io/docs/) cluster is a great way to get started.
+
+> **Note**  
+> For now, services not included in the Helm chart are deployed using Docker Compose.
+
+1. Start PostgreSQL and Redpanda via Docker Compose
+```shell
+docker compose up -d
+```
+2. Start the API server and frontend
+```shell
+docker compose up -d apiserver frontend
+```
+3. Start a local Minikube cluster
+```shell
+minikube start
+```
+4. Deploy Hyades
+```shell
+helm install hyades ./helm-charts/ \
+  -n hyades --create-namespace \
+  -f ./helm-charts/hyades/values.yaml \
+  -f ./helm-charts/hyades/values-minikube.yaml
+```
+
 ### Monitoring 📊
 
 #### Metrics
