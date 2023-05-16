@@ -4,7 +4,7 @@ common:
   fullnameOverride: ""
   image:
     registry: ghcr.io
-    pullSecrets: [ ]
+    pullSecrets: []
   database:
     jdbcUrl: ""
     username: ""
@@ -15,13 +15,13 @@ common:
 
 mirrorService:
   enabled: true
-  annotations: { }
+  annotations: {}
   image:
     repository: dependencytrack/hyades-mirror-service
     tag: latest-native
     pullPolicy: Always
-  command: [ ]
-  args: [ ]
+  command: []
+  args: []
   resources:
     requests:
       cpu: 500m
@@ -29,8 +29,8 @@ mirrorService:
     limits:
       cpu: "2"
       memory: 2Gi
-  extraEnv: { }
-  extraEnvFrom: [ ]
+  extraEnv: {}
+  extraEnvFrom: []
   probes:
     liveness:
       failureThreshold: 3
@@ -48,13 +48,13 @@ mirrorService:
 notificationPublisher:
   enabled: true
   replicaCount: 1
-  annotations: { }
+  annotations: {}
   image:
     repository: dependencytrack/hyades-notification-publisher
     tag: latest-native
     pullPolicy: Always
-  command: [ ]
-  args: [ ]
+  command: []
+  args: []
   resources:
     requests:
       cpu: 500m
@@ -62,8 +62,8 @@ notificationPublisher:
     limits:
       cpu: "2"
       memory: 2Gi
-  extraEnv: { }
-  extraEnvFrom: [ ]
+  extraEnv: {}
+  extraEnvFrom: []
   probes:
     liveness:
       failureThreshold: 3
@@ -79,14 +79,14 @@ notificationPublisher:
       timeoutSeconds: 5
 
 repoMetaAnalyzer:
-  annotations: { }
+  annotations: {}
   replicaCount: 1
   image:
     repository: dependencytrack/hyades-repository-meta-analyzer
     tag: latest-native
     pullPolicy: Always
-  command: [ ]
-  args: [ ]
+  command: []
+  args: []
   resources:
     requests:
       cpu: 500m
@@ -94,8 +94,8 @@ repoMetaAnalyzer:
     limits:
       cpu: "2"
       memory: 2Gi
-  extraEnv: { }
-  extraEnvFrom: [ ]
+  extraEnv: {}
+  extraEnvFrom: []
   probes:
     liveness:
       failureThreshold: 3
@@ -111,14 +111,14 @@ repoMetaAnalyzer:
       timeoutSeconds: 5
 
 vulnAnalyzer:
-  annotations: { }
+  annotations: {}
   replicaCount: 1
   image:
     repository: dependencytrack/hyades-vulnerability-analyzer
     tag: latest-native
     pullPolicy: Always
-  command: [ ]
-  args: [ ]
+  command: []
+  args: []
   resources:
     requests:
       cpu: 500m
@@ -130,8 +130,8 @@ vulnAnalyzer:
     enabled: false
     className: ""
     size: 2Gi
-  extraEnv: { }
-  extraEnvFrom: [ ]
+  extraEnv: {}
+  extraEnvFrom: []
   probes:
     liveness:
       failureThreshold: 3

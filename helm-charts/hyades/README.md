@@ -8,7 +8,7 @@
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| The Dependency-Track Authors |  | <https://github.com/DependencyTrack> |
+| nscuro | <nscuro@protonmail.com> | <https://github.com/nscuro> |
 
 ## Values
 
