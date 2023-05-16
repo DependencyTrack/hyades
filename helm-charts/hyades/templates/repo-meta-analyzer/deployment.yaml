@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.repoMetaAnalyzerSelectorLabels" .  | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.repoMetaAnalyzer.replicaCount }}
   selector:
     matchLabels: {{- include "hyades.repoMetaAnalyzerSelectorLabels" . | nindent 6 }}
   template:
@@ -19,6 +19,9 @@ spec:
           {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.common.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: {{ include "hyades.repoMetaAnalyzerName" . }}
         image: {{ include "hyades.repoMetaAnalyzerImage" . }}

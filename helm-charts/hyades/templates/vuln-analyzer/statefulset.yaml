@@ -21,7 +21,7 @@ spec:
         {{- end }}
     spec:
       {{- with .Values.common.image.pullSecrets }}
-      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
       containers:
       - name: {{ include "hyades.vulnAnalyzerName" . }}
