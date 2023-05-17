@@ -18,8 +18,11 @@
  */
 package org.hyades.notification.publisher;
 
+import com.google.protobuf.Any;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import org.hyades.proto.notification.v1.Bom;
+import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
@@ -37,6 +40,7 @@ import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.hyades.proto.notification.v1.Group.GROUP_FILE_SYSTEM;
 import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.hyades.proto.notification.v1.Scope.SCOPE_SYSTEM;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 public class ConsolePublisherTest {
@@ -80,7 +84,35 @@ public class ConsolePublisherTest {
                 .setTitle("Test Notification")
                 .setContent("This is only a test")
                 .build();
-        publisher.inform(notification, getConfig(""));
+        publisher.inform(notification, getConfig("CONSOLE", ""));
+        System.out.println("outContent: " + outContent);
+        assertTrue(outContent.toString().contains(expectedResult(notification)));
+    }
+
+    @Test
+    @TestTransaction
+    public void testOutputStreamForBomConsumed() throws Exception {
+        entityManager.createNativeQuery("""
+                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
+                                    ('console', 'general', 'STRING', 'base.url', '');
+                """).executeUpdate();
+
+        final var notification = Notification.newBuilder()
+                .setScope(Scope.SCOPE_PORTFOLIO)
+                .setLevel(Level.LEVEL_INFORMATIONAL)
+                .setGroup(Group.GROUP_BOM_CONSUMED)
+                .setTitle("Test Notification")
+                .setContent("This is only a test")
+                .setSubject(Any.pack(BomConsumedOrProcessedSubject.newBuilder()
+                        .setBom(Bom.newBuilder()
+                                .setContent("BOM Content")
+                                .setFormat("CycloneDx")
+                                .setSpecVersion("1.0.0").build())
+                        .build()))
+                .build();
+        publisher.inform(notification, getConfig("CONSOLE", ""));
+        System.out.println("outContent: " + outContent);
+        assertTrue(outContent.toString().contains(expectedResult(notification)));
     }
 
     @Test
@@ -98,6 +130,17 @@ public class ConsolePublisherTest {
                 .setTitle("Test Notification")
                 .setContent("This is only a test")
                 .build();
-        publisher.inform(notification, getConfig(""));
+        publisher.inform(notification, getConfig("CONSOLE", ""));
+    }
+
+    private String expectedResult(Notification notification) {
+        return "--------------------------------------------------------------------------------" + System.lineSeparator() +
+                "Notification" + System.lineSeparator() +
+                "  -- timestamp: " + notification.getTimestamp() + System.lineSeparator() +
+                "  -- level:     " + notification.getLevel() + System.lineSeparator() +
+                "  -- scope:     " + notification.getScope() + System.lineSeparator() +
+                "  -- group:     " + notification.getGroup() + System.lineSeparator() +
+                "  -- title:     " + notification.getTitle() + System.lineSeparator() +
+                "  -- content:   " + notification.getContent() + System.lineSeparator() + System.lineSeparator();
     }
 }

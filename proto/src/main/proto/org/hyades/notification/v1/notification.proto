@@ -62,17 +62,19 @@ message BackReference {
 
 message BomConsumedOrProcessedSubject {
   Project project = 1;
-  bytes bom = 2;
-  string format = 3;
-  string spec_version = 4;
+  Bom bom = 2;
 }
 
 message BomProcessingFailedSubject {
   Project project = 1;
-  bytes bom = 2;
-  string format = 3;
-  string spec_version = 4;
-  string cause = 5;
+  Bom bom = 2;
+  string cause = 3;
+}
+
+message Bom {
+  string content = 1;
+  string format = 2;
+  string spec_version = 3;
 }
 
 message NewVulnerabilitySubject {

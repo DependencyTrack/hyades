@@ -80,7 +80,7 @@ public class SlackPublisherTest {
                 INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
                                     ('slack', 'general', 'STRING', 'base.url', 'http://localhost:1070/mychannel');
                 """).executeUpdate();
-        JsonObject config = getConfig("http://localhost:1070/mychannel");
+        JsonObject config = getConfig("SLACK","http://localhost:1070/mychannel");
         final var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)
