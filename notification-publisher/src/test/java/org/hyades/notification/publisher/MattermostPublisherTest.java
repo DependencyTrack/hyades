@@ -63,7 +63,7 @@ public class MattermostPublisherTest {
                                     ('mattermost', 'general', 'STRING', 'base.url', 'http://localhost:1090/mychannel');
                 """).executeUpdate();
 
-        JsonObject config = getConfig("http://localhost:1090/mychannel");
+        JsonObject config = getConfig("MATTERMOST","http://localhost:1090/mychannel");
         final var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)

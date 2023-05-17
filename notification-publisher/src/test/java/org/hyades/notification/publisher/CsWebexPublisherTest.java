@@ -80,7 +80,7 @@ public class CsWebexPublisherTest {
                                     ('cswebex', 'general', 'STRING', 'base.url', 'http://localhost:1040/mychannel');
                 """).executeUpdate();
 
-        JsonObject config = getConfig("http://localhost:1040/mychannel");
+        JsonObject config = getConfig("WEBEX","http://localhost:1040/mychannel");
         var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)

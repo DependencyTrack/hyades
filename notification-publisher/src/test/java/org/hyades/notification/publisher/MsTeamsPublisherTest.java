@@ -80,7 +80,7 @@ public class MsTeamsPublisherTest {
                                     ('msteams', 'general', 'STRING', 'base.url', 'http://localhost:1060/mychannel');
                 """).executeUpdate();
 
-        JsonObject config = getConfig("http://localhost:1060/mychannel");
+        JsonObject config = getConfig("MS_TEAMS","http://localhost:1060/mychannel");
         final var notification = Notification.newBuilder()
                 .setScope(Scope.SCOPE_PORTFOLIO)
                 .setLevel(Level.LEVEL_INFORMATIONAL)
