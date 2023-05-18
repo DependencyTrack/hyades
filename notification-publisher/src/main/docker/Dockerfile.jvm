@@ -16,6 +16,6 @@ COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
 EXPOSE 8090
 USER 185
 WORKDIR /deployments
-CMD java ${JAVA_OPTS} -jar quarkus-run.jar \
+CMD exec java ${JAVA_OPTS} -jar quarkus-run.jar \
     -Dquarkus.http.host=0.0.0.0 \
     -Djava.util.logging.manager=org.jboss.logmanager.LogManager
