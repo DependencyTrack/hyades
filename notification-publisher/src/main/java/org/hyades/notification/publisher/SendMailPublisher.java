@@ -37,8 +37,10 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -107,17 +109,21 @@ public class SendMailPublisher implements Publisher {
     }
 
     public static String[] parseDestination(final JsonObject config) {
-        String destinationString = config.getString("destination");
-        if ((destinationString == null) || destinationString.isEmpty()) {
+        JsonString destinationString = config.getJsonString("destination");
+        if ((destinationString == null) || destinationString.getString().isEmpty()) {
             return null;
         }
-        return destinationString.split(",");
+        return destinationString.getString().split(",");
     }
 
     String[] parseDestination(final JsonObject config, final List<Team> teams) {
         String[] destination = teams.stream().flatMap(
                         team -> Stream.of(
-                                        Arrays.stream(config.getString("destination").split(",")).filter(Predicate.not(String::isEmpty)),
+                                        Optional.ofNullable(config.getJsonString("destination"))
+                                                .map(JsonString::getString)
+                                                .stream()
+                                                .flatMap(dest -> Arrays.stream(dest.split(",")))
+                                                .filter(Predicate.not(String::isEmpty)),
                                         managedUserRepository.findEmailsByTeam(team.getId()).stream()
                                         // FIXME: The email field of LdapUser and OidcUser is transient and not persisted in the DB
                                         // Maybe this was always a no-op and can safely be removed.
