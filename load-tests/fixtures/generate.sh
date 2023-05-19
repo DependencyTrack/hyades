@@ -16,7 +16,7 @@ while read -r line; do
     then
       echo $line >> "$(pwd)/fixtures/error.txt"
     fi
-done < "$(pwd)/load-tests/fixtures/images.txt"
+done < "$(pwd)/fixtures/images.txt"
 
 #for file in "$(pwd)/fixtures/generated"/*.cdx.json; do
 #  echo "\"$file\""
