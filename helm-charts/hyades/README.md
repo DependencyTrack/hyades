@@ -9,6 +9,9 @@
 | Name | Email | Url |
 | ---- | ------ | --- |
 | nscuro | <nscuro@protonmail.com> | <https://github.com/nscuro> |
+| mehab | <meha.bhargava@citi.com> | <https://github.com/mehab> |
+| sahibamittal | <sahiba.mittal@citi.com> | <https://github.com/sahibamittal> |
+| VithikaS | <vithika.shukla@citi.com> | <https://github.com/VithikaS> |
 
 ## Values
 
