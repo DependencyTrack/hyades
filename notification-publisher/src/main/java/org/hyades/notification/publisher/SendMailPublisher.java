@@ -29,7 +29,7 @@ import org.hyades.model.ConfigProperty;
 import org.hyades.model.ConfigPropertyConstants;
 import org.hyades.model.Team;
 import org.hyades.persistence.ConfigPropertyRepository;
-import org.hyades.persistence.ManagedUserRepository;
+import org.hyades.persistence.UserRepository;
 import org.hyades.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -51,15 +52,14 @@ public class SendMailPublisher implements Publisher {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendMailPublisher.class);
     private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
 
-    private final ManagedUserRepository managedUserRepository;
-
+    private final UserRepository userRepository;
     private final ConfigPropertyRepository configPropertyRepository;
 
     @Inject
     Mailer mailer;
 
-    public SendMailPublisher(final ManagedUserRepository managedUserRepository, final ConfigPropertyRepository configPropertyRepository) {
-        this.managedUserRepository = managedUserRepository;
+    public SendMailPublisher(final UserRepository userRepository, final ConfigPropertyRepository configPropertyRepository) {
+        this.userRepository = userRepository;
         this.configPropertyRepository = configPropertyRepository;
     }
 
@@ -124,11 +124,7 @@ public class SendMailPublisher implements Publisher {
                                                 .stream()
                                                 .flatMap(dest -> Arrays.stream(dest.split(",")))
                                                 .filter(Predicate.not(String::isEmpty)),
-                                        managedUserRepository.findEmailsByTeam(team.getId()).stream()
-                                        // FIXME: The email field of LdapUser and OidcUser is transient and not persisted in the DB
-                                        // Maybe this was always a no-op and can safely be removed.
-                                        //Optional.ofNullable(team.getLdapUsers()).orElseGet(Collections::emptyList).stream().map(LdapUser::getEmail).filter(Objects::nonNull),
-                                        //Optional.ofNullable(team.getOidcUsers()).orElseGet(Collections::emptyList).stream().map(OidcUser::getEmail).filter(Objects::nonNull)
+                                        Optional.ofNullable(userRepository.findEmailsByTeam(team.getId())).orElseGet(Collections::emptyList).stream()
                                 )
                                 .reduce(Stream::concat)
                                 .orElseGet(Stream::empty)

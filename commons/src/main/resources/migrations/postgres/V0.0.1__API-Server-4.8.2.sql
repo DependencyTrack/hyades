@@ -15,7 +15,6 @@
 --     org.dependencytrack.model.AnalysisComment
 --     org.dependencytrack.model.Bom
 --     org.dependencytrack.model.Component
---     org.dependencytrack.model.ComponentAnalysisCache
 --     org.dependencytrack.model.Cpe
 --     org.dependencytrack.model.Cwe
 --     org.dependencytrack.model.DependencyMetrics
@@ -48,7 +47,7 @@
 CREATE TABLE "COMPONENT"
 (
     "ID" BIGSERIAL,
-    "AUTHOR" varchar(255) NULL,
+    "AUTHOR" text NULL,
     "BLAKE2B_256" varchar(64) NULL,
     "BLAKE2B_384" varchar(96) NULL,
     "BLAKE2B_512" varchar(128) NULL,
@@ -163,6 +162,8 @@ CREATE TABLE "VULNERABILITYSCAN"
     "RECEIVED_RESULTS" int4 NOT NULL,
     "STARTED_AT" timestamptz NOT NULL,
     "STATUS" varchar(255) NOT NULL,
+    "TARGET_IDENTIFIER" varchar(255) NOT NULL,
+    "TARGET_TYPE" varchar(255) NOT NULL,
     "TOKEN" varchar(255) NOT NULL,
     "UPDATED_AT" timestamptz NOT NULL,
     "VERSION" int8 NOT NULL,
@@ -309,6 +310,7 @@ CREATE TABLE "LDAPUSER"
 (
     "ID" BIGSERIAL,
     "DN" varchar(255) NOT NULL,
+    "EMAIL" varchar(255) NULL,
     "USERNAME" varchar(255) NULL,
     CONSTRAINT "LDAPUSER_PK" PRIMARY KEY ("ID")
 );
@@ -401,6 +403,7 @@ CREATE TABLE "TEAM"
 CREATE TABLE "OIDCUSER"
 (
     "ID" BIGSERIAL,
+    "EMAIL" varchar(255) NULL,
     "SUBJECT_IDENTIFIER" varchar(255) NULL,
     "USERNAME" varchar(255) NOT NULL,
     CONSTRAINT "OIDCUSER_PK" PRIMARY KEY ("ID")
@@ -508,20 +511,6 @@ CREATE TABLE "VIOLATIONANALYSIS"
     "PROJECT_ID" int8 NULL,
     "SUPPRESSED" bool NOT NULL,
     CONSTRAINT "VIOLATIONANALYSIS_PK" PRIMARY KEY ("ID")
-);
-
--- Table "COMPONENTANALYSISCACHE" for classes [org.dependencytrack.model.ComponentAnalysisCache]
-CREATE TABLE "COMPONENTANALYSISCACHE"
-(
-    "ID" BIGSERIAL,
-    "CACHE_TYPE" varchar(255) NOT NULL,
-    "LAST_OCCURRENCE" timestamptz NOT NULL,
-    "RESULT" text NULL,
-    "TARGET" varchar(255) NOT NULL,
-    "TARGET_HOST" varchar(255) NOT NULL,
-    "TARGET_TYPE" varchar(255) NOT NULL,
-    "UUID" varchar(36) NOT NULL,
-    CONSTRAINT "COMPONENTANALYSISCACHE_PK" PRIMARY KEY ("ID")
 );
 
 -- Table "APIKEY" for classes [alpine.model.ApiKey]
@@ -1155,12 +1144,6 @@ CREATE INDEX "VIOLATIONANALYSIS_N49" ON "VIOLATIONANALYSIS" ("PROJECT_ID");
 CREATE INDEX "VIOLATIONANALYSIS_N51" ON "VIOLATIONANALYSIS" ("COMPONENT_ID");
 
 CREATE INDEX "VIOLATIONANALYSIS_N50" ON "VIOLATIONANALYSIS" ("POLICYVIOLATION_ID");
-
-
--- Constraints for table "COMPONENTANALYSISCACHE" for class(es) [org.dependencytrack.model.ComponentAnalysisCache]
-ALTER TABLE "COMPONENTANALYSISCACHE" ADD CONSTRAINT "COMPONENTANALYSISCACHE_UUID_IDX" UNIQUE ("UUID");
-
-ALTER TABLE "COMPONENTANALYSISCACHE" ADD CONSTRAINT "COMPONENTANALYSISCACHE_COMPOSITE_IDX" UNIQUE ("CACHE_TYPE","TARGET_HOST","TARGET_TYPE","TARGET");
 
 
 -- Constraints for table "APIKEY" for class(es) [alpine.model.ApiKey]
