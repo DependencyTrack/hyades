@@ -1,0 +1,8 @@
+---
+common:
+  database:
+    jdbcUrl: "jdbc:postgresql://host.minikube.internal:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
+  kafka:
+    bootstrapServers: "host.minikube.internal:9093"

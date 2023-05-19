@@ -1,0 +1,86 @@
+{{- if .Values.notificationPublisher.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hyades.notificationPublisherName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.notificationPublisherLabels" .  | nindent 4 }}
+spec:
+  replicas: {{ .Values.notificationPublisher.replicaCount }}
+  selector:
+    matchLabels: {{- include "hyades.notificationPublisherSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "hyades.notificationPublisherSelectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /q/metrics
+        {{- with .Values.notificationPublisher.annotations }}
+          {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.common.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: {{ include "hyades.notificationPublisherName" . }}
+        image: {{ include "hyades.notificationPublisherImage" . }}
+        imagePullPolicy: {{ .Values.notificationPublisher.image.pullPolicy }}
+        {{- with .Values.notificationPublisher.command }}
+        command: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.notificationPublisher.args }}
+        args: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.notificationPublisher.resources | nindent 10 }}
+        env:
+        - name: QUARKUS_DATASOURCE_JDBC_URL
+          value: {{ .Values.common.database.jdbcUrl | quote }}
+        {{- with .Values.common.database.username }}
+        - name: QUARKUS_DATASOURCE_USERNAME
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with .Values.common.database.password }}
+        - name: QUARKUS_DATASOURCE_PASSWORD
+          value: {{ . | quote }}
+        {{- end }}
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: {{ .Values.common.kafka.bootstrapServers | quote }}
+        {{- with .Values.common.kafka.topicPrefix }}
+        - name: API_TOPIC_PREFIX
+          value: {{ . | quote }}
+        {{- end }}
+        {{- range $k, $v := .Values.notificationPublisher.extraEnv }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+        {{- end }}
+        {{- with .Values.notificationPublisher.extraEnvFrom }}
+        envFrom: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: web
+          containerPort: 8090
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /q/health/live
+          failureThreshold: {{ .Values.notificationPublisher.probes.liveness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.notificationPublisher.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.notificationPublisher.probes.liveness.periodSeconds }}
+          successThreshold: {{ .Values.notificationPublisher.probes.liveness.successThreshold }}
+          timeoutSeconds: {{ .Values.notificationPublisher.probes.liveness.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /q/health/ready
+          failureThreshold: {{ .Values.notificationPublisher.probes.readiness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.notificationPublisher.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.notificationPublisher.probes.readiness.periodSeconds }}
+          successThreshold: {{ .Values.notificationPublisher.probes.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.notificationPublisher.probes.readiness.timeoutSeconds }}
+{{- end }}
