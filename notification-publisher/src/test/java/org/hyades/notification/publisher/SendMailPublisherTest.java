@@ -16,6 +16,10 @@ public class SendMailPublisherTest {
         Assertions.assertArrayEquals(new String[]{"john@doe.com"}, SendMailPublisher.parseDestination(config));
     }
 
+    @Test
+    public void testNullDestination() {
+        Assertions.assertArrayEquals(null, SendMailPublisher.parseDestination(Json.createObjectBuilder().build()));
+    }
 
     @Test
     public void testMultipleDestinations() {
@@ -23,7 +27,6 @@ public class SendMailPublisherTest {
         Assertions.assertArrayEquals(new String[]{"john@doe.com", "steve@jobs.org"},
                 SendMailPublisher.parseDestination(config));
     }
-
 
     @Test
     public void testEmptyDestinations() {
