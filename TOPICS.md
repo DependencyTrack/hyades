@@ -3,10 +3,10 @@
 | Name                                                                                              | Partitions | Config                                                                              |
 |:--------------------------------------------------------------------------------------------------|:-----------|:------------------------------------------------------------------------------------|
 | `dtrack-apiserver-processed-vuln-scan-result-by-scan-token-repartition`<sup>1A</sup>              | 3          |                                                                                     |
-| `dtrack-apiserver-vuln-scan-result-by-component-uuid-repartition`<sup>1A</sup>                    | 3          |                                                                                     |
 | `dtrack.notification.analyzer`                                                                    | 3          |                                                                                     |
 | `dtrack.notification.bom-consumed`                                                                | 3          |                                                                                     |
 | `dtrack.notification.bom-processed`                                                               | 3          |                                                                                     |
+| `dtrack.notification.bom-processing-failed`                                                       | 3          |                                                                                     |
 | `dtrack.notification.configuration`                                                               | 3          |                                                                                     |
 | `dtrack.notification.datasource-mirroring`                                                        | 3          |                                                                                     |
 | `dtrack.notification.file-system`                                                                 | 3          |                                                                                     |
