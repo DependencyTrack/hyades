@@ -4,9 +4,7 @@
 |:--------------------------------------------------------------------------------------------------|:-----------|:------------------------------------------------------------------------------------|
 | `dtrack-apiserver-processed-vuln-scan-result-by-scan-token-repartition`<sup>1A</sup>              | 3          |                                                                                     |
 | `dtrack.notification.analyzer`                                                                    | 3          |                                                                                     |
-| `dtrack.notification.bom-consumed`                                                                | 3          |                                                                                     |
-| `dtrack.notification.bom-processed`                                                               | 3          |                                                                                     |
-| `dtrack.notification.bom-processing-failed`                                                       | 3          |                                                                                     |
+| `dtrack.notification.bom`                                                                         | 3          |                                                                                     |
 | `dtrack.notification.configuration`                                                               | 3          |                                                                                     |
 | `dtrack.notification.datasource-mirroring`                                                        | 3          |                                                                                     |
 | `dtrack.notification.file-system`                                                                 | 3          |                                                                                     |
@@ -18,8 +16,7 @@
 | `dtrack.notification.project-audit-change`                                                        | 3          |                                                                                     |
 | `dtrack.notification.project-created`                                                             | 3          |                                                                                     |
 | `dtrack.notification.repository`                                                                  | 3          |                                                                                     |
-| `dtrack.notification.vex-consumed`                                                                | 3          |                                                                                     |
-| `dtrack.notification.vex-processed`                                                               | 3          |                                                                                     |
+| `dtrack.notification.vex`                                                                         | 3          |                                                                                     |
 | `dtrack.repo-meta-analysis.component`<sup>1B</sup>                                                | 3          |                                                                                     |
 | `dtrack.repo-meta-analysis.result`                                                                | 3          |                                                                                     |
 | `dtrack.vuln-analysis.component`<sup>1C</sup>                                                     | 3          |                                                                                     |

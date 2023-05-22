@@ -224,11 +224,7 @@ services:
             mappings:
               - topicName: dtrack.notification.analyzer
                 valueProtoType: org.hyades.notification.v1.Notification
-              - topicName: dtrack.notification.bom-consumed
-                valueProtoType: org.hyades.notification.v1.Notification
-              - topicName: dtrack.notification.bom-processed
-                valueProtoType: org.hyades.notification.v1.Notification
-              - topicName: dtrack.notification.bom-processing-failed
+              - topicName: dtrack.notification.bom
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.configuration
                 valueProtoType: org.hyades.notification.v1.Notification
@@ -252,9 +248,7 @@ services:
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.repository
                 valueProtoType: org.hyades.notification.v1.Notification
-              - topicName: dtrack.notification.vex-consumed
-                valueProtoType: org.hyades.notification.v1.Notification
-              - topicName: dtrack.notification.vex-processed
+              - topicName: dtrack.notification.vex
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.repo-meta-analysis.component
                 valueProtoType: org.hyades.repometaanalysis.v1.AnalysisCommand

@@ -6,8 +6,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 public enum KafkaTopic {
 
     NOTIFICATION_ANALYZER("dtrack.notification.analyzer"),
-    NOTIFICATION_BOM_CONSUMED("dtrack.notification.bom-consumed"),
-    NOTIFICATION_BOM_PROCESSED("dtrack.notification.bom-processed"),
+    NOTIFICATION_BOM("dtrack.notification.bom"),
     NOTIFICATION_CONFIGURATION("dtrack.notification.configuration"),
     NOTIFICATION_DATASOURCE_MIRRORING("dtrack.notification.datasource-mirroring"),
     NOTIFICATION_FILE_SYSTEM("dtrack.notification.file-system"),
@@ -18,8 +17,7 @@ public enum KafkaTopic {
     NOTIFICATION_POLICY_VIOLATION("dtrack.notification.policy-violation"),
     NOTIFICATION_PROJECT_AUDIT_CHANGE("dtrack.notification.project-audit-change"),
     NOTIFICATION_REPOSITORY("dtrack.notification.repository"),
-    NOTIFICATION_VEX_CONSUMED("dtrack.notification.vex-consumed"),
-    NOTIFICATION_VEX_PROCESSED("dtrack.notification.vex-processed"),
+    NOTIFICATION_VEX("dtrack.notification.vex"),
     REPO_META_ANALYSIS_COMMAND("dtrack.repo-meta-analysis.component"),
     REPO_META_ANALYSIS_RESULT("dtrack.repo-meta-analysis.result"),
     VULN_ANALYSIS_SCANNER_RESULT("dtrack.vuln-analysis.scanner.result"),
