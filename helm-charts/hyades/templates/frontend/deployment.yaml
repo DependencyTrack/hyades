@@ -1,0 +1,69 @@
+{{- if .Values.frontend.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hyades.frontendName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.frontendSelectorLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels: {{- include "hyades.frontendSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "hyades.frontendSelectorLabels" . | nindent 8 }}
+      {{- with .Values.frontend.annotations }}
+      annotations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.common.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: {{ include "hyades.frontendName" . }}
+        image: {{ include "hyades.frontendImage" . }}
+        imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        {{- with .Values.frontend.command }}
+        command: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.frontend.args }}
+        args: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.frontend.resources | nindent 10 }}
+        env:
+        - name: API_BASE_URL
+          value: {{ .Values.frontend.apiBaseUrl | quote }}
+        {{- range $k, $v := .Values.frontend.extraEnv }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+        {{- end }}
+        {{- with .Values.frontend.extraEnvFrom }}
+        envFrom: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: web
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /
+          failureThreshold: {{ .Values.frontend.probes.liveness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.frontend.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.frontend.probes.liveness.periodSeconds }}
+          successThreshold: {{ .Values.frontend.probes.liveness.successThreshold }}
+          timeoutSeconds: {{ .Values.frontend.probes.liveness.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /
+          failureThreshold: {{ .Values.frontend.probes.readiness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.frontend.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.frontend.probes.readiness.periodSeconds }}
+          successThreshold: {{ .Values.frontend.probes.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.frontend.probes.readiness.timeoutSeconds }}
+  {{- end }}

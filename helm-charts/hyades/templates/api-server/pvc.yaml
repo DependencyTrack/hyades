@@ -1,0 +1,14 @@
+{{- if and .Values.apiServer.enabled .Values.apiServer.persistentVolume.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
+  name: {{ include "hyades.apiServerName" . }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: {{ .Values.apiServer.persistentVolume.className | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.apiServer.persistentVolume.size }}
+{{- end }}

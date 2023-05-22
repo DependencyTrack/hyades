@@ -1,0 +1,108 @@
+{{- if .Values.apiServer.enabled }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "hyades.apiServerName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "hyades.apiServerName" . }}
+  replicas: 1
+  selector:
+    matchLabels: {{- include "hyades.apiServerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "hyades.apiServerSelectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        {{- with .Values.apiServer.annotations }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.common.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: {{ include "hyades.apiServerName" . }}
+        image: {{ include "hyades.apiServerImage" . }}
+        imagePullPolicy: {{ .Values.apiServer.image.pullPolicy }}
+        {{- with .Values.apiServer.command }}
+        command: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.apiServer.args }}
+        args: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        resources: {{- toYaml .Values.apiServer.resources | nindent 10 }}
+        env:
+        - name: ALPINE_METRICS_ENABLED
+          value: "true"
+        - name: ALPINE_DATABASE_MODE
+          value: "external"
+        - name: ALPINE_DATABASE_DRIVER
+          value: "org.postgresql.Driver" # TODO: Compute correct driver based on JDBC URL
+        - name: ALPINE_DATABASE_URL
+          value: {{ .Values.common.database.jdbcUrl | quote }}
+        {{- with .Values.common.database.username }}
+        - name: ALPINE_DATABASE_USERNAME
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with .Values.common.database.password }}
+        - name: ALPINE_DATABASE_PASSWORD
+          value: {{ . | quote }}
+        {{- end }}
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: {{ .Values.common.kafka.bootstrapServers | quote }}
+        {{- with .Values.common.kafka.topicPrefix }}
+        - name: API_TOPIC_PREFIX
+          value: {{ . | quote }}
+        {{- end }}
+        {{- range $k, $v := .Values.apiServer.extraEnv }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+        {{- end }}
+        {{- with .Values.apiServer.extraEnvFrom }}
+        envFrom: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: web
+          containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: tmp
+          mountPath: /tmp
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /health/live
+          failureThreshold: {{ .Values.apiServer.probes.liveness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.apiServer.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.apiServer.probes.liveness.periodSeconds }}
+          successThreshold: {{ .Values.apiServer.probes.liveness.successThreshold }}
+          timeoutSeconds: {{ .Values.apiServer.probes.liveness.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /health/ready
+          failureThreshold: {{ .Values.apiServer.probes.readiness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.apiServer.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.apiServer.probes.readiness.periodSeconds }}
+          successThreshold: {{ .Values.apiServer.probes.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
+      volumes:
+      {{- if .Values.apiServer.persistentVolume.enabled }}
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "hyades.apiServerName" . }}
+      {{- else }}
+      - name: data
+        emptyDir: { }
+      {{- end }}
+      - name: tmp
+        emptyDir: { }
+{{- end }}
