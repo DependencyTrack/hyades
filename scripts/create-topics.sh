@@ -23,8 +23,7 @@ rpk cluster health --watch --exit-when-healthy \
 
 notification_topics=(
   "${API_TOPIC_PREFIX:-}dtrack.notification.analyzer"
-  "${API_TOPIC_PREFIX:-}dtrack.notification.bom-consumed"
-  "${API_TOPIC_PREFIX:-}dtrack.notification.bom-processed"
+  "${API_TOPIC_PREFIX:-}dtrack.notification.bom"
   "${API_TOPIC_PREFIX:-}dtrack.notification.configuration"
   "${API_TOPIC_PREFIX:-}dtrack.notification.datasource-mirroring"
   "${API_TOPIC_PREFIX:-}dtrack.notification.file-system"
@@ -36,8 +35,7 @@ notification_topics=(
   "${API_TOPIC_PREFIX:-}dtrack.notification.project-audit-change"
   "${API_TOPIC_PREFIX:-}dtrack.notification.project-created"
   "${API_TOPIC_PREFIX:-}dtrack.notification.repository"
-  "${API_TOPIC_PREFIX:-}dtrack.notification.vex-consumed"
-  "${API_TOPIC_PREFIX:-}dtrack.notification.vex-processed"
+  "${API_TOPIC_PREFIX:-}dtrack.notification.vex"
 )
 for topic_name in "${notification_topics[@]}"; do
   create_topic "$topic_name" "${NOTIFICATION_TOPICS_PARTITIONS:-3}" "retention.ms=${NOTIFICATION_TOPICS_RETENTION_MS:-43200000}"
