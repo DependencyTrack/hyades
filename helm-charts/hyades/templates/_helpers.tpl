@@ -66,7 +66,7 @@ app.kubernetes.io/component: mirror-service
 {{- end -}}
 
 {{- define "hyades.mirrorServiceImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.mirrorService.image.repository }}:{{ .Values.mirrorService.image.tag }}
+{{ .Values.common.image.registry }}/{{ .Values.mirrorService.image.repository }}:{{ .Values.mirrorService.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 
@@ -88,7 +88,7 @@ app.kubernetes.io/component: notification-publisher
 {{- end -}}
 
 {{- define "hyades.notificationPublisherImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.notificationPublisher.image.repository }}:{{ .Values.notificationPublisher.image.tag }}
+{{ .Values.common.image.registry }}/{{ .Values.notificationPublisher.image.repository }}:{{ .Values.notificationPublisher.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 
@@ -110,7 +110,7 @@ app.kubernetes.io/component: repository-meta-analyzer
 {{- end -}}
 
 {{- define "hyades.repoMetaAnalyzerImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.repoMetaAnalyzer.image.repository }}:{{ .Values.repoMetaAnalyzer.image.tag }}
+{{ .Values.common.image.registry }}/{{ .Values.repoMetaAnalyzer.image.repository }}:{{ .Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 
@@ -132,5 +132,5 @@ app.kubernetes.io/component: vulnerability-analyzer
 {{- end -}}
 
 {{- define "hyades.vulnAnalyzerImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.vulnAnalyzer.image.repository }}:{{ .Values.vulnAnalyzer.image.tag }}
+{{ .Values.common.image.registry }}/{{ .Values.vulnAnalyzer.image.repository }}:{{ .Values.vulnAnalyzer.image.tag | default .Chart.AppVersion }}
 {{- end -}}
