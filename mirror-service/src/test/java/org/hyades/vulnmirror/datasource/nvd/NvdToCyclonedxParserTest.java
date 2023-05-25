@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -64,6 +63,31 @@ class NvdToCyclonedxParserTest {
         assertEquals(bomRef, vulnerability.getAffectsList().get(1).getRef());
         assertEquals("vers:generic/2.3.0|2.3.18",
                 vulnerability.getAffectsList().get(1).getVersionsList().get(0).getRange());
+    }
+
+    @Test
+    public void testVulnerabilityParsingWithNoRanges() throws IOException {
+
+        String jsonFile = "src/test/resources/datasource/nvd/cve.json";
+        String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
+        DefCveItem cveItem = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(new JavaTimeModule()).readValue(jsonString, DefCveItem.class);
+
+        Bom result = NvdToCyclonedxParser.parse(cveItem);
+        assertNotNull(result);
+
+        assertEquals(1, result.getComponentsList().size());
+        assertEquals("cpe:2.3:a:thinkcmf:thinkcmf:6.0.7:*:*:*:*:*:*:*", result.getComponentsList().get(0).getCpe());
+        String bomRef = result.getComponentsList().get(0).getBomRef();
+
+        assertEquals(1, result.getVulnerabilitiesList().size());
+        Vulnerability vulnerability = result.getVulnerabilitiesList().get(0);
+        assertEquals("CVE-2022-40489", vulnerability.getId());
+
+        assertEquals(1, vulnerability.getAffectsList().size());
+        assertEquals(bomRef, vulnerability.getAffectsList().get(0).getRef());
+        assertEquals(0, vulnerability.getAffectsList().get(0).getVersionsCount());
     }
 }
 
