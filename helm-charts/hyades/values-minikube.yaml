@@ -6,3 +6,17 @@ common:
     password: "dtrack"
   kafka:
     bootstrapServers: "host.minikube.internal:9093"
+
+apiServer:
+  enabled: true
+  resources:
+    requests:
+      cpu: "2"
+      memory: 2Gi
+    limits:
+      cpu: "4"
+      memory: 3Gi
+  extraEnv:
+    EXTRA_JAVA_OPTIONS: "-Xmx2g"
+    SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
+    KAFKA_NUM_STREAM_THREADS: "12"

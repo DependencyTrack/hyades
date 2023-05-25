@@ -48,6 +48,71 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 
+{{/*
+API server labels
+*/}}
+{{- define "hyades.apiServerLabels" -}}
+{{ include "hyades.commonLabels" . }}
+{{ include "hyades.apiServerSelectorLabels" . }}
+{{- end -}}
+
+{{/*
+API server selector labels
+*/}}
+{{- define "hyades.apiServerSelectorLabels" -}}
+{{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/component: api-server
+{{- end -}}
+
+{{/*
+API server name
+*/}}
+{{- define "hyades.apiServerName" -}}
+{{ .Release.Name }}-api-server
+{{- end -}}
+
+{{/*
+API server image
+*/}}
+{{- define "hyades.apiServerImage" -}}
+{{ .Values.common.image.registry }}/{{ .Values.apiServer.image.repository }}:{{ .Values.apiServer.image.tag }}
+{{- end -}}
+
+
+{{/*
+Frontend labels
+*/}}
+{{- define "hyades.frontendLabels" -}}
+{{ include "hyades.commonLabels" . }}
+{{ include "hyades.frontendSelectorLabels" . }}
+{{- end -}}
+
+{{/*
+Frontend selector labels
+*/}}
+{{- define "hyades.frontendSelectorLabels" -}}
+{{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/component: frontend
+{{- end -}}
+
+{{/*
+Frontend name
+*/}}
+{{- define "hyades.frontendName" -}}
+{{ .Release.Name }}-frontend
+{{- end -}}
+
+{{/*
+Frontend image
+*/}}
+{{- define "hyades.frontendImage" -}}
+docker.io/{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+{{- end -}}
+
+
+{{/*
+Mirror service labels
+*/}}
 {{- define "hyades.mirrorServiceLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.mirrorServiceSelectorLabels" . }}
@@ -61,15 +126,24 @@ Mirror service selector labels
 app.kubernetes.io/component: mirror-service
 {{- end -}}
 
+{{/*
+Mirror service name
+*/}}
 {{- define "hyades.mirrorServiceName" -}}
 {{ .Release.Name }}-mirror-service
 {{- end -}}
 
+{{/*
+Mirror service image
+*/}}
 {{- define "hyades.mirrorServiceImage" -}}
 {{ .Values.common.image.registry }}/{{ .Values.mirrorService.image.repository }}:{{ .Values.mirrorService.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 
+{{/*
+Notification publisher labels
+*/}}
 {{- define "hyades.notificationPublisherLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.notificationPublisherSelectorLabels" . }}
@@ -83,15 +157,24 @@ Notification publisher selector labels
 app.kubernetes.io/component: notification-publisher
 {{- end -}}
 
+{{/*
+Notification publisher name
+*/}}
 {{- define "hyades.notificationPublisherName" -}}
 {{ .Release.Name }}-notification-publisher
 {{- end -}}
 
+{{/*
+Notification publisher image
+*/}}
 {{- define "hyades.notificationPublisherImage" -}}
 {{ .Values.common.image.registry }}/{{ .Values.notificationPublisher.image.repository }}:{{ .Values.notificationPublisher.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 
+{{/*
+Repository metadata analyzer labels
+*/}}
 {{- define "hyades.repoMetaAnalyzerLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.repoMetaAnalyzerSelectorLabels" . }}
@@ -105,15 +188,24 @@ Repository metadata analyzer selector labels
 app.kubernetes.io/component: repository-meta-analyzer
 {{- end -}}
 
+{{/*
+Repository metadata analyzer name
+*/}}
 {{- define "hyades.repoMetaAnalyzerName" -}}
 {{ .Release.Name }}-repository-meta-analyzer
 {{- end -}}
 
+{{/*
+Repository metadata analyzer image
+*/}}
 {{- define "hyades.repoMetaAnalyzerImage" -}}
 {{ .Values.common.image.registry }}/{{ .Values.repoMetaAnalyzer.image.repository }}:{{ .Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
 
+{{/*
+Vulnerability analyzer labels
+*/}}
 {{- define "hyades.vulnAnalyzerLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.vulnAnalyzerSelectorLabels" . }}
@@ -127,10 +219,16 @@ Vulnerability analyzer selector labels
 app.kubernetes.io/component: vulnerability-analyzer
 {{- end -}}
 
+{{/*
+Vulnerability analyzer name
+*/}}
 {{- define "hyades.vulnAnalyzerName" -}}
 {{ .Release.Name }}-vulnerability-analyzer
 {{- end -}}
 
+{{/*
+Vulnerability analyzer image
+*/}}
 {{- define "hyades.vulnAnalyzerImage" -}}
 {{ .Values.common.image.registry }}/{{ .Values.vulnAnalyzer.image.repository }}:{{ .Values.vulnAnalyzer.image.tag | default .Chart.AppVersion }}
 {{- end -}}

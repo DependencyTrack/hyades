@@ -13,6 +13,88 @@ common:
     bootstrapServers: ""
     topicPrefix: ""
 
+apiServer:
+  enabled: false
+  annotations: {}
+  image:
+    repository: dependencytrack/hyades-apiserver
+    tag: snapshot
+    pullPolicy: Always
+  command: []
+  args: []
+  resources:
+    requests:
+      cpu: "2"
+      memory: 4Gi
+    limits:
+      cpu: "4"
+      memory: 8Gi
+  persistentVolume:
+    enabled: false
+    className: ""
+    size: 5Gi
+  extraEnv: {}
+  extraEnvFrom: []
+  probes:
+    liveness:
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 5
+    readiness:
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 5
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+    annotations: {}
+    hostname: "example.com"
+
+frontend:
+  enabled: false
+  replicaCount: 1
+  annotations: {}
+  image:
+    repository: dependencytrack/frontend
+    tag: 4.8.1
+    pullPolicy: Always
+  command: []
+  args: []
+  resources:
+    requests:
+      cpu: 150m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 128Mi
+  extraEnv: {}
+  extraEnvFrom: []
+  probes:
+    liveness:
+      failureThreshold: 3
+      initialDelaySeconds: 5
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 5
+    readiness:
+      failureThreshold: 3
+      initialDelaySeconds: 5
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 5
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+    annotations: {}
+    hostname: "example.com"
+  apiBaseUrl: ""
+
 mirrorService:
   enabled: true
   annotations: {}
