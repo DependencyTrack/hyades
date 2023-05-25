@@ -95,14 +95,6 @@
       <artifactId>pebble</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkiverse.helm</groupId>
-      <artifactId>quarkus-helm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-kubernetes</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
       <version>${lib.log4j-over-slf4j.version}</version>

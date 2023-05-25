@@ -53,14 +53,6 @@
             <artifactId>quarkus-container-image-docker</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkiverse.helm</groupId>
-            <artifactId>quarkus-helm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-kubernetes</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.github.jeremylong</groupId>
             <artifactId>open-vulnerability-clients</artifactId>
         </dependency>

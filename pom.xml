@@ -162,12 +162,6 @@
       </dependency>
 
       <dependency>
-        <groupId>io.quarkiverse.helm</groupId>
-        <artifactId>quarkus-helm</artifactId>
-        <version>${lib.quarkus-helm.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>${lib.xercesimpl.version}</version>

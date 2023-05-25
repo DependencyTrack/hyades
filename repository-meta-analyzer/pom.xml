@@ -122,14 +122,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.quarkiverse.helm</groupId>
-      <artifactId>quarkus-helm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-kubernetes</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
     </dependency>
