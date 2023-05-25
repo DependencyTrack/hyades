@@ -39,6 +39,7 @@
     <lib.json-unit.version>2.38.0</lib.json-unit.version>
     <lib.kafka.version>3.4.0</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-5</lib.maven-artifact.version>
+    <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20230227</lib.org-json.version>
     <lib.pebble.version>3.2.1</lib.pebble.version>
@@ -153,6 +154,18 @@
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-streams-test-utils</artifactId>
         <version>${lib.kafka.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.mweirauch</groupId>
+        <artifactId>micrometer-jvm-extras</artifactId>
+        <version>${lib.micrometer-jvm-extras.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
