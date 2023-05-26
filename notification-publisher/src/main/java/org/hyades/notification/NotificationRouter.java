@@ -19,6 +19,7 @@
 package org.hyades.notification;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import org.hyades.model.Project;
 import org.hyades.model.Team;
 import org.hyades.notification.model.NotificationPublisher;
@@ -47,7 +48,6 @@ import javax.enterprise.inject.spi.CDI;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.transaction.Transactional;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +70,23 @@ public class NotificationRouter {
         this.teamRepository = teamRepository;
     }
 
-    @Transactional
     public void inform(final Notification notification) throws Exception {
+        // Workaround for the fact that we can't currently use @Transactional.
+        // Even read-only operations require an active transaction in Quarkus,
+        // but @Transactional only works when the caller of the method is also
+        // a CDI-managed bean. Because we invoke the inform method from Kafka Streams,
+        // the caller is not CDI-managed. If we move away from KS for he notification
+        // publisher, we can use @Transactional again.
+        QuarkusTransaction.joiningExisting().run(() -> {
+            try {
+                informInternal(notification);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void informInternal(final Notification notification) throws Exception {
         for (final NotificationRule rule : resolveRules(notification)) {
 
             // Not all publishers need configuration (i.e. ConsolePublisher)
