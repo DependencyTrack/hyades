@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "hyades.frontendName" . }}
+  name: {{ include "hyades.frontendFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.frontendSelectorLabels" . | nindent 4 }}
 spec:

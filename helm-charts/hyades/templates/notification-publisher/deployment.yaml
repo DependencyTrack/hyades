@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "hyades.notificationPublisherName" . }}
+  name: {{ include "hyades.notificationPublisherFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.notificationPublisherLabels" .  | nindent 4 }}
 spec:

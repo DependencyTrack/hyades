@@ -2,11 +2,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "hyades.vulnAnalyzerName" . }}
+  name: {{ include "hyades.vulnAnalyzerFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.vulnAnalyzerLabels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "hyades.vulnAnalyzerName" . }}
+  serviceName: {{ include "hyades.vulnAnalyzerFullname" . }}
   replicas: {{ .Values.vulnAnalyzer.replicaCount }}
   selector:
     matchLabels: {{- include "hyades.vulnAnalyzerSelectorLabels" . | nindent 6 }}

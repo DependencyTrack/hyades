@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "hyades.apiServerName" . }}
+  name: {{ include "hyades.apiServerFullname" . }}
   {{- with .Values.apiServer.ingress.annotations }}
   annotations: {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -15,7 +15,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ include "hyades.apiServerName" . }}
+            name: {{ include "hyades.apiServerFullname" . }}
             port:
               name: web
 {{- end }}

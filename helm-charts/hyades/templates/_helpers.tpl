@@ -1,24 +1,24 @@
 {{/*
 Expand the name of the chart.
+The name is truncated to 38 characters, as the longest suffix being added to it is 25 characters long.
 */}}
 {{- define "hyades.name" -}}
-{{- default .Chart.Name .Values.common.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.common.nameOverride | trunc 38 | trimSuffix "-" }}
 {{- end -}}
 
 {{/*
 Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
+The name is truncated to 38 characters, as the longest suffix being added to it is 25 characters long.
 */}}
 {{- define "hyades.fullname" -}}
 {{- if .Values.common.fullnameOverride -}}
-{{- .Values.common.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- .Values.common.fullnameOverride | trunc 38 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.common.nameOverride -}}
 {{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- .Release.Name | trunc 38 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 38 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -36,6 +36,7 @@ Common labels
 {{- define "hyades.commonLabels" -}}
 helm.sh/chart: {{ include "hyades.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/part-of: {{ include "hyades.name" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -43,7 +44,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Common selector labels
 */}}
 {{- define "hyades.commonSelectorLabels" -}}
-app.kubernetes.io/name: {{ include "hyades.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
@@ -61,6 +61,7 @@ API server selector labels
 */}}
 {{- define "hyades.apiServerSelectorLabels" -}}
 {{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/name: {{ printf "%s-api-server" (include "hyades.name" .) }}
 app.kubernetes.io/component: api-server
 {{- end -}}
 
@@ -68,14 +69,21 @@ app.kubernetes.io/component: api-server
 API server name
 */}}
 {{- define "hyades.apiServerName" -}}
-{{ .Release.Name }}-api-server
+{{- printf "%s-api-server" (include "hyades.name" .) -}}
+{{- end -}}
+
+{{/*
+API server fully qualified name
+*/}}
+{{- define "hyades.apiServerFullname" -}}
+{{- printf "%s-api-server" (include "hyades.fullname" .) -}}
 {{- end -}}
 
 {{/*
 API server image
 */}}
 {{- define "hyades.apiServerImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.apiServer.image.repository }}:{{ .Values.apiServer.image.tag }}
+{{- printf "%s/%s:%s" .Values.common.image.registry .Values.apiServer.image.repository (.Values.apiServer.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -92,6 +100,7 @@ Frontend selector labels
 */}}
 {{- define "hyades.frontendSelectorLabels" -}}
 {{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/name: {{ printf "%s-frontend" (include "hyades.name" .) }}
 app.kubernetes.io/component: frontend
 {{- end -}}
 
@@ -99,14 +108,21 @@ app.kubernetes.io/component: frontend
 Frontend name
 */}}
 {{- define "hyades.frontendName" -}}
-{{ .Release.Name }}-frontend
+{{- printf "%s-frontend" (include "hyades.name" .) -}}
+{{- end -}}
+
+{{/*
+Frontend fully qualified name
+*/}}
+{{- define "hyades.frontendFullname" -}}
+{{- printf "%s-frontend" (include "hyades.fullname" .) -}}
 {{- end -}}
 
 {{/*
 Frontend image
 */}}
 {{- define "hyades.frontendImage" -}}
-docker.io/{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+{{- printf "%s/%s:%s" "docker.io" .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -123,6 +139,7 @@ Mirror service selector labels
 */}}
 {{- define "hyades.mirrorServiceSelectorLabels" -}}
 {{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/name: {{ printf "%s-mirror-service" (include "hyades.name" .) }}
 app.kubernetes.io/component: mirror-service
 {{- end -}}
 
@@ -130,14 +147,21 @@ app.kubernetes.io/component: mirror-service
 Mirror service name
 */}}
 {{- define "hyades.mirrorServiceName" -}}
-{{ .Release.Name }}-mirror-service
+{{- printf "%s-mirror-service" (include "hyades.name" .) -}}
+{{- end -}}
+
+{{/*
+Mirror service fully qualified name
+*/}}
+{{- define "hyades.mirrorServiceFullname" -}}
+{{- printf "%s-mirror-service" (include "hyades.fullname" .) -}}
 {{- end -}}
 
 {{/*
 Mirror service image
 */}}
 {{- define "hyades.mirrorServiceImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.mirrorService.image.repository }}:{{ .Values.mirrorService.image.tag | default .Chart.AppVersion }}
+{{- printf "%s/%s:%s" .Values.common.image.registry .Values.mirrorService.image.repository (.Values.mirrorService.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -154,6 +178,7 @@ Notification publisher selector labels
 */}}
 {{- define "hyades.notificationPublisherSelectorLabels" -}}
 {{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/name: {{ printf "%s-notification-publisher" (include "hyades.name" .) }}
 app.kubernetes.io/component: notification-publisher
 {{- end -}}
 
@@ -161,14 +186,21 @@ app.kubernetes.io/component: notification-publisher
 Notification publisher name
 */}}
 {{- define "hyades.notificationPublisherName" -}}
-{{ .Release.Name }}-notification-publisher
+{{- printf "%s-notification-publisher" (include "hyades.name" .) -}}
+{{- end -}}
+
+{{/*
+Notification publisher fully qualified name
+*/}}
+{{- define "hyades.notificationPublisherFullname" -}}
+{{- printf "%s-notification-publisher" (include "hyades.fullname" .) -}}
 {{- end -}}
 
 {{/*
 Notification publisher image
 */}}
 {{- define "hyades.notificationPublisherImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.notificationPublisher.image.repository }}:{{ .Values.notificationPublisher.image.tag | default .Chart.AppVersion }}
+{{- printf "%s/%s:%s" .Values.common.image.registry .Values.notificationPublisher.image.repository (.Values.notificationPublisher.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -185,6 +217,7 @@ Repository metadata analyzer selector labels
 */}}
 {{- define "hyades.repoMetaAnalyzerSelectorLabels" -}}
 {{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/name: {{ printf "%s-repository-meta-analyzer" (include "hyades.name" .) }}
 app.kubernetes.io/component: repository-meta-analyzer
 {{- end -}}
 
@@ -192,14 +225,21 @@ app.kubernetes.io/component: repository-meta-analyzer
 Repository metadata analyzer name
 */}}
 {{- define "hyades.repoMetaAnalyzerName" -}}
-{{ .Release.Name }}-repository-meta-analyzer
+{{- printf "%s-repository-meta-analyzer" (include "hyades.name" .) -}}
+{{- end -}}
+
+{{/*
+Repository metadata analyzer fully qualified name
+*/}}
+{{- define "hyades.repoMetaAnalyzerFullname" -}}
+{{- printf "%s-repository-meta-analyzer" (include "hyades.fullname" .) -}}
 {{- end -}}
 
 {{/*
 Repository metadata analyzer image
 */}}
 {{- define "hyades.repoMetaAnalyzerImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.repoMetaAnalyzer.image.repository }}:{{ .Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion }}
+{{- printf "%s/%s:%s" .Values.common.image.registry .Values.repoMetaAnalyzer.image.repository (.Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -216,6 +256,7 @@ Vulnerability analyzer selector labels
 */}}
 {{- define "hyades.vulnAnalyzerSelectorLabels" -}}
 {{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/name: {{ printf "%s-vulnerability-analyzer" (include "hyades.name" .) }}
 app.kubernetes.io/component: vulnerability-analyzer
 {{- end -}}
 
@@ -223,12 +264,19 @@ app.kubernetes.io/component: vulnerability-analyzer
 Vulnerability analyzer name
 */}}
 {{- define "hyades.vulnAnalyzerName" -}}
-{{ .Release.Name }}-vulnerability-analyzer
+{{- printf "%s-vulnerability-analyzer" (include "hyades.name" .) -}}
+{{- end -}}
+
+{{/*
+Vulnerability analyzer fully qualified name
+*/}}
+{{- define "hyades.vulnAnalyzerFullname" -}}
+{{- printf "%s-vulnerability-analyzer" (include "hyades.fullname" .) -}}
 {{- end -}}
 
 {{/*
 Vulnerability analyzer image
 */}}
 {{- define "hyades.vulnAnalyzerImage" -}}
-{{ .Values.common.image.registry }}/{{ .Values.vulnAnalyzer.image.repository }}:{{ .Values.vulnAnalyzer.image.tag | default .Chart.AppVersion }}
+{{- printf "%s/%s:%s" .Values.common.image.registry .Values.vulnAnalyzer.image.repository (.Values.vulnAnalyzer.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
