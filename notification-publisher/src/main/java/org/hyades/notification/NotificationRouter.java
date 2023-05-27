@@ -19,6 +19,7 @@
 package org.hyades.notification;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.hyades.model.Project;
 import org.hyades.model.Team;
 import org.hyades.notification.model.NotificationPublisher;
@@ -71,6 +72,7 @@ public class NotificationRouter {
     }
 
     @Transactional
+    @Incoming("notifications")
     public void inform(final Notification notification) throws Exception {
         for (final NotificationRule rule : resolveRules(notification)) {
 
