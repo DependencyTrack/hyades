@@ -6,8 +6,6 @@ import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
-import io.quarkus.test.junit.QuarkusTestProfile;
-import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
@@ -30,25 +28,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusIntegrationTest
-@TestProfile(RepositoryMetaAnalyzerIT.TestProfile.class)
 @QuarkusTestResource(KafkaCompanionResource.class)
 @QuarkusTestResource(WireMockTestResource.class)
 class RepositoryMetaAnalyzerIT {
-
-    public static class TestProfile implements QuarkusTestProfile {
-
-        @Override
-        public Map<String, String> getConfigOverrides() {
-            return Map.of(
-                    "quarkus.flyway.migrate-at-start", "true"
-            );
-        }
-    }
 
     @InjectKafkaCompanion
     KafkaCompanion kafkaCompanion;
