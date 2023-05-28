@@ -39,11 +39,13 @@ jobs:
         RESOURCES_INCLUDES=""
         RESOURCES_EXCLUDES=""
         if [[ "${{ matrix.arch.name }}" == "arm64" ]]; then
-          # Include RocksDB JNI library for aarch64 when building for arm64.
+          # When depending on Kafka Streams, include RocksDB JNI library for aarch64.
           # Quarkus only includes the x64 library variant per default.
           # https://github.com/quarkusio/quarkus/issues/30545
-          RESOURCES_INCLUDES="librocksdbjni-linux-aarch64.so"
-          RESOURCES_EXCLUDES="librocksdbjni-linux64.so"
+          if grep -i 'kafka-streams' ${{ inputs.module }}/pom.xml > /dev/null; then
+            RESOURCES_INCLUDES="librocksdbjni-linux-aarch64.so"
+            RESOURCES_EXCLUDES="librocksdbjni-linux64.so"
+          fi
         
           # When snappy compression is enabled, include the respective JNI library
           # for aarch64 when building for arm64. Quarkus only includes the x64 library variant per default.
