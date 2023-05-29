@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "hyades.repoMetaAnalyzerName" . }}
+  name: {{ include "hyades.repoMetaAnalyzerFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.repoMetaAnalyzerSelectorLabels" .  | nindent 4 }}
 spec:
