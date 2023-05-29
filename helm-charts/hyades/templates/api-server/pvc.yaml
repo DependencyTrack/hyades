@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
-  name: {{ include "hyades.apiServerName" . }}
+  name: {{ include "hyades.apiServerFullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce

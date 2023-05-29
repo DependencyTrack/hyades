@@ -3,11 +3,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "hyades.apiServerName" . }}
+  name: {{ include "hyades.apiServerFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "hyades.apiServerName" . }}
+  serviceName: {{ include "hyades.apiServerFullname" . }}
   replicas: 1
   selector:
     matchLabels: {{- include "hyades.apiServerSelectorLabels" . | nindent 6 }}
@@ -98,7 +98,7 @@ spec:
       {{- if .Values.apiServer.persistentVolume.enabled }}
       - name: data
         persistentVolumeClaim:
-          claimName: {{ include "hyades.apiServerName" . }}
+          claimName: {{ include "hyades.apiServerFullname" . }}
       {{- else }}
       - name: data
         emptyDir: { }

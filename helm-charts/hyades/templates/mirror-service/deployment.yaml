@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "hyades.mirrorServiceName" . }}
+  name: {{ include "hyades.mirrorServiceFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.mirrorServiceSelectorLabels" . | nindent 4 }}
 spec:
