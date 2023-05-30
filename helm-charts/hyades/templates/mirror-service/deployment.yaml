@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: {{ include "hyades.mirrorServiceFullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "hyades.mirrorServiceSelectorLabels" . | nindent 4 }}
+  labels: {{- include "hyades.mirrorServiceLabels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
