@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: {{ include "hyades.frontendFullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "hyades.frontendSelectorLabels" . | nindent 4 }}
+  labels: {{- include "hyades.frontendLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.frontend.replicaCount }}
   selector:
