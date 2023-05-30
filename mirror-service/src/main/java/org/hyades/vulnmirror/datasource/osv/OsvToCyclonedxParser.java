@@ -133,10 +133,12 @@ public class OsvToCyclonedxParser {
             });
         }
         // if ranges are not available or only commit hash range is available, look for versions
-        if (versions != null && versions.length() > 0) {
-            var versionRange = VulnerabilityAffectedVersions.newBuilder();
-            versionRange.setVersion(generateVersionSpecifier(versions, ecoSystem));
-            versionRanges.add(versionRange.build());
+        if (versions != null) {
+            versions.forEach(version -> {
+                var versionRange = VulnerabilityAffectedVersions.newBuilder();
+                versionRange.setVersion(String.valueOf(version));
+                versionRanges.add(versionRange.build());
+            });
         }
         versionRangeAffected.addAllVersions(versionRanges);
         return versionRangeAffected.build();
@@ -183,19 +185,6 @@ public class OsvToCyclonedxParser {
         Optional.ofNullable(purl).ifPresent(packagePurl -> component.setPurl(packagePurl));
 
         return component.build();
-    }
-
-    private static String generateVersionSpecifier(JSONArray versions, String ecosystem) {
-        String uniVersionRange = "vers:";
-        if (ecosystem != null) {
-            uniVersionRange += ecosystem;
-        }
-        uniVersionRange += "/";
-
-        for (int i = 0; i < versions.length(); i++) {
-            uniVersionRange += versions.getString(i) + "|";
-        }
-        return StringUtils.chop(uniVersionRange);
     }
 
     private static List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject affectedRange, JSONObject range, String ecoSystem) {
