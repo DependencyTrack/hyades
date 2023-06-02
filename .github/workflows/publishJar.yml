@@ -2,7 +2,7 @@ name: Publish Jar
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/vulnanalysisCompleteNotification" ]
 
 jobs:
   publish-container-image:

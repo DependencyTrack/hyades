@@ -97,7 +97,6 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .filter(publisher -> publisher.name().equals("Outbound Webhook"))
                 .findAny()
                 .orElseThrow(() -> new AssertionError("Unable to find webhook notification publisher"));
-
         // Create an email alert for NEW_VULNERABILITY notifications and point it to GreenMail.
         final NotificationRule emailRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "email", "PORTFOLIO", "INFORMATIONAL", new Publisher(emailPublisher.uuid())));
@@ -126,6 +125,18 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .willReturn(aResponse()
                         .withStatus(201)));
 
+        //Create a webhook notification for PROJECT_VULN_ANALYSIS_COMPLETE notifications and point it to WireMock.
+        final NotificationRule webhookAnalysisCompleteRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
+                "analysisComplete", "PORTFOLIO", "INFORMATIONAL", new Publisher(webhookPublisher.uuid())));
+        apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(webhookAnalysisCompleteRule.uuid(), webhookAnalysisCompleteRule.name(), true,
+                "INFORMATIONAL", Set.of("PROJECT_VULN_ANALYSIS_COMPLETE"), """
+                {
+                  "destination": "http://host.testcontainers.internal:%d/notification"
+                }
+                """.formatted(wireMock.getPort())));
+        wireMock.stubFor(post(urlPathEqualTo("/notification"))
+                .willReturn(aResponse()
+                        .withStatus(201)));
         // Create a new internal vulnerability for jackson-databind.
         apiServerClient.createVulnerability(new CreateVulnerabilityRequest("INT-123", List.of(
                 new AffectedComponent("PURL", "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.2", "EXACT")
@@ -167,9 +178,49 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
         await("NEW_VULNERABILITY webhook notification")
                 .atMost(Duration.ofSeconds(5))
                 .untilAsserted(this::verifyWebhookNotification);
+        await("PROJECT_VULN_ANALYSIS_COMPLETE email notification")
+                .atMost(Duration.ofSeconds(5))
+                .untilAsserted(this::verifyAnalysisCompleteWebhookNotification);
         await("NEW_VULNERABILITY email notification")
                 .atMost(Duration.ofSeconds(5))
                 .untilAsserted(this::verifyEmailNotification);
+    }
+
+    private void verifyAnalysisCompleteWebhookNotification() {
+        wireMock.verify(postRequestedFor(urlPathEqualTo("/notification"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification": {
+                            "level": "LEVEL_INFORMATIONAL",
+                            "scope": "SCOPE_PORTFOLIO",
+                            "group": "GROUP_PROJECT_VULN_ANALYSIS_COMPLETE",
+                            "timestamp": "${json-unit.any-string}",
+                            "title": "New Vulnerability Identified on Project: [foo : bar]",
+                            "content": "INT-123",
+                            "subject": {
+                              "component": {
+                                "uuid": "${json-unit.any-string}",
+                                "group": "com.fasterxml.jackson.core",
+                                "name": "jackson-databind",
+                                "version": "2.13.2.2",
+                                "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.2?type=jar",
+                                "md5": "055c97cb488b0956801e13abcc2a0cfe",
+                                "sha1": "ffeb635597d093509f33e1e94274d14be610f933",
+                                "sha256": "efb86b148712a838b94b3cfc95769785a116b3461f709b4cc510055a58b804b2",
+                                "sha512": "0e9398591d86f80f16fc2d6ff0dda3e7821033e2c59472981eaab61443be3d77198655682905b85260fb2186a2cf0f33988aff689a49bb54e56c07e02f607e8a"
+                              },
+                              "vulnerability": {
+                                "uuid": "${json-unit.any-string}",
+                                "vulnId": "INT-123",
+                                "source": "INTERNAL",
+                                "severity": "UNASSIGNED"
+                              }
+                            }
+                          }
+                        }
+                        """)
+                )
+        );
     }
 
     private void verifyEmailNotification() throws MessagingException {
