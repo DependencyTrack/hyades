@@ -46,6 +46,7 @@ public final class ModelConverter {
             case GROUP_VEX_PROCESSED -> NotificationGroup.VEX_PROCESSED;
             case GROUP_POLICY_VIOLATION -> NotificationGroup.POLICY_VIOLATION;
             case GROUP_PROJECT_CREATED -> NotificationGroup.PROJECT_CREATED;
+            case GROUP_PROJECT_VULN_ANALYSIS_COMPLETE -> NotificationGroup.PROJECT_VULN_ANALYSIS_COMPLETE;
             default -> throw new IllegalArgumentException("Unknown group: " + group);
         };
     }

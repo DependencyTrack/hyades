@@ -146,7 +146,7 @@ public class NotificationRouter {
             // NOTE: This logic is slightly different from what is implemented in limitToProject()
             for (final NotificationRule rule : result) {
                 if (rule.getNotifyOn().contains(convert(notification.getGroup()))) {
-                    if (rule.getProjects() != null && rule.getProjects().size() > 0
+                    if (rule.getProjects() != null && !rule.getProjects().isEmpty()
                             && subject.hasComponent() && subject.hasProject()) {
                         for (final Project project : rule.getProjects()) {
                             if (subject.getProject().getUuid().equals(project.getUuid().toString()) || (Boolean.TRUE.equals(rule.isNotifyChildren() && checkIfChildrenAreAffected(project, subject.getProject().getUuid())))) {
@@ -198,7 +198,7 @@ public class NotificationRouter {
                                 final Notification notification, final org.hyades.proto.notification.v1.Project limitToProject) {
         for (final NotificationRule rule : rules) {
             if (rule.getNotifyOn().contains(convert(notification.getGroup()))) {
-                if (rule.getProjects() != null && rule.getProjects().size() > 0) {
+                if (rule.getProjects() != null && !rule.getProjects().isEmpty()) {
                     for (final Project project : rule.getProjects()) {
                         if (project.getUuid().toString().equals(limitToProject.getUuid()) || (Boolean.TRUE.equals(rule.isNotifyChildren()) && checkIfChildrenAreAffected(project, limitToProject.getUuid()))) {
                             applicableRules.add(rule);

@@ -40,6 +40,8 @@ notification_topics=(
 for topic_name in "${notification_topics[@]}"; do
   create_topic "$topic_name" "${NOTIFICATION_TOPICS_PARTITIONS:-3}" "retention.ms=${NOTIFICATION_TOPICS_RETENTION_MS:-43200000}"
 done
+create_topic "${API_TOPIC_PREFIX:-}dtrack.notification.project-vuln-analysis-complete" "${NOTIFICATION_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact" "retention.ms=${NOTIFICATION_TOPICS_RETENTION_MS:-43200000}"
+
 
 repo_meta_analysis_topics=(
   "${API_TOPIC_PREFIX:-}dtrack.repo-meta-analysis.component"
