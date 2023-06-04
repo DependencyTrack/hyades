@@ -4,6 +4,8 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.Topology;
@@ -19,10 +21,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import java.math.BigInteger;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -86,7 +84,7 @@ public class WireMockNotificationPublisherTest {
         stubFor(get("/instance-dsl").willReturn(ok()));
         final var publisherConfig = "{\"destination\":\"" + wireMockServer.url("/instance-dsl") + "\"}";
 
-        final var publisherId = (BigInteger) entityManager.createNativeQuery("""
+        final var publisherId = (Long) entityManager.createNativeQuery("""
                 INSERT INTO "NOTIFICATIONPUBLISHER" ("DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID") VALUES
                     (true, 'foo', 'org.hyades.notification.publisher.WebhookPublisher', 'template','text/plain', '1781db56-51a8-462a-858c-6030a2341dfc')
                 RETURNING "ID";
