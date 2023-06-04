@@ -3,6 +3,8 @@ package org.hyades.e2e;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetup;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.hyades.apiserver.model.BomProcessingResponse;
 import org.hyades.apiserver.model.BomUploadRequest;
 import org.hyades.apiserver.model.BomUploadResponse;
@@ -23,8 +25,6 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
