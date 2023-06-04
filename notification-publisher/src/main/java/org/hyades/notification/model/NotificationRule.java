@@ -23,12 +23,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import org.hyades.common.TrimmedStringDeserializer;
-import org.hyades.model.Project;
-import org.hyades.notification.persistence.NotificationLevelConverter;
-import org.hyades.notification.persistence.NotificationScopeConverter;
-import org.hyades.persistence.UUIDConverter;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -44,6 +38,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hyades.common.TrimmedStringDeserializer;
+import org.hyades.model.Project;
+import org.hyades.notification.persistence.NotificationLevelConverter;
+import org.hyades.notification.persistence.NotificationScopeConverter;
+import org.hyades.persistence.UUIDConverter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import org.hyades.common.TrimmedStringDeserializer;
-import org.hyades.persistence.UUIDConverter;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -19,6 +16,9 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hyades.common.TrimmedStringDeserializer;
+import org.hyades.persistence.UUIDConverter;
+
 import java.io.Serializable;
 import java.util.UUID;
 /**

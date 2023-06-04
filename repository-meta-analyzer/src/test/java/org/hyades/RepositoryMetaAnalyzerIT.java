@@ -9,6 +9,7 @@ import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
@@ -22,7 +23,6 @@ import org.hyades.util.WireMockTestResource.InjectWireMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import jakarta.ws.rs.core.MediaType;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

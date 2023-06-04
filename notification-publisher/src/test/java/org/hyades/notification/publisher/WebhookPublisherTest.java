@@ -21,6 +21,9 @@ package org.hyades.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
+import jakarta.persistence.EntityManager;
 import org.apache.http.HttpHeaders;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
@@ -31,10 +34,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
-
-import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
-import jakarta.persistence.EntityManager;
 
 import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;

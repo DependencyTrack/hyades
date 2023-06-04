@@ -18,8 +18,8 @@
  */
 package org.hyades.resolver;
 
-import org.hyades.model.Cwe;
 import org.apache.commons.lang3.StringUtils;
+import org.hyades.model.Cwe;
 
 /**
  * Attempts to resolve an internal CWE object from a string

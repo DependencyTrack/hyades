@@ -3,6 +3,7 @@ package org.hyades.vulnmirror.state;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.SerializationException;
@@ -12,7 +13,6 @@ import org.hyades.vulnmirror.datasource.Datasource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Objects;

@@ -2,6 +2,7 @@ package org.hyades;
 
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.Topology;
@@ -15,8 +16,6 @@ import org.hyades.proto.notification.v1.Scope;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import jakarta.inject.Inject;
 
 @QuarkusTest
 public class NotificationPublisherTopologyTest {

@@ -2,13 +2,13 @@ package org.hyades.persistence;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.hyades.model.Repository;
 import org.hyades.model.RepositoryType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import java.util.List;
 
 @QuarkusTest

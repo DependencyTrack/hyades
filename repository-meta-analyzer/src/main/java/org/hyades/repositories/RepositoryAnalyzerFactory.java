@@ -1,10 +1,10 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import org.apache.http.impl.client.CloseableHttpClient;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
+import org.apache.http.impl.client.CloseableHttpClient;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;

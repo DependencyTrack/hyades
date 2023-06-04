@@ -29,10 +29,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import org.hyades.common.TrimmedStringDeserializer;
-import org.hyades.persistence.ClassifierToStringConverter;
-import org.hyades.persistence.UUIDConverter;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -47,6 +43,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hyades.common.TrimmedStringDeserializer;
+import org.hyades.persistence.ClassifierToStringConverter;
+import org.hyades.persistence.UUIDConverter;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;

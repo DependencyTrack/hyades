@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.google.protobuf.Timestamp;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
@@ -22,8 +24,6 @@ import org.slf4j.LoggerFactory;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.Score;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

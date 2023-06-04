@@ -2,6 +2,7 @@ package org.hyades.persistence;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+
 import java.util.UUID;
 
 import static java.util.Optional.ofNullable;

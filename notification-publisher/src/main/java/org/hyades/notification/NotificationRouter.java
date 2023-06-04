@@ -19,6 +19,13 @@
 package org.hyades.notification;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.UnsatisfiedResolutionException;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.transaction.Transactional;
 import org.hyades.model.Project;
 import org.hyades.model.Team;
 import org.hyades.notification.model.NotificationPublisher;
@@ -41,13 +48,6 @@ import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.jboss.logging.Logger;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.UnsatisfiedResolutionException;
-import jakarta.enterprise.inject.spi.CDI;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-import jakarta.transaction.Transactional;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;

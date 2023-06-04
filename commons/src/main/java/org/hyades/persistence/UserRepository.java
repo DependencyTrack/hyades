@@ -1,10 +1,10 @@
 package org.hyades.persistence;
 
-import org.hibernate.jpa.QueryHints;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import org.hibernate.jpa.QueryHints;
+
 import java.util.List;
 
 @ApplicationScoped

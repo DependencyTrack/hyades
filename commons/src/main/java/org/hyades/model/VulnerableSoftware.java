@@ -19,8 +19,6 @@
 package org.hyades.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import org.hyades.persistence.UUIDConverter;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -32,6 +30,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import org.hyades.persistence.UUIDConverter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

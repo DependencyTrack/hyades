@@ -1,8 +1,9 @@
 package org.hyades.persistence;
 
-import org.hyades.common.IConfigProperty;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.hyades.common.IConfigProperty;
+
 import static java.util.Optional.ofNullable;
 
 @Converter(autoApply = true)

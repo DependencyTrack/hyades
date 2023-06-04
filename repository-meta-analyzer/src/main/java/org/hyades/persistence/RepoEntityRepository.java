@@ -2,11 +2,11 @@ package org.hyades.persistence;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.hibernate.jpa.QueryHints;
 import org.hyades.model.Repository;
 import org.hyades.model.RepositoryType;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped

@@ -5,6 +5,11 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
+import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.persistence.EntityManager;
+import jakarta.ws.rs.core.HttpHeaders;
 import org.hyades.common.SecretDecryptor;
 import org.hyades.proto.notification.v1.Notification;
 import org.junit.jupiter.api.AfterAll;
@@ -12,11 +17,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 
-import jakarta.inject.Inject;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.persistence.EntityManager;
-import jakarta.ws.rs.core.HttpHeaders;
 import java.util.Base64;
 import java.util.Map;
 

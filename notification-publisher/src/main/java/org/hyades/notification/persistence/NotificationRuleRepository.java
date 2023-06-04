@@ -2,12 +2,12 @@ package org.hyades.notification.persistence;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.hibernate.jpa.QueryHints;
 import org.hyades.notification.model.NotificationLevel;
 import org.hyades.notification.model.NotificationRule;
 import org.hyades.notification.model.NotificationScope;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped

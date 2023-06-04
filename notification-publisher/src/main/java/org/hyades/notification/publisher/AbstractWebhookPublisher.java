@@ -19,6 +19,9 @@
 package org.hyades.notification.publisher;
 
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.json.JsonObject;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -28,9 +31,6 @@ import org.hyades.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.json.JsonObject;
 import java.util.Base64;
 
 public abstract class AbstractWebhookPublisher implements Publisher {

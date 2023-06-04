@@ -8,9 +8,6 @@ package org.hyades.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import org.hyades.common.IConfigProperty;
-import org.hyades.persistence.PropertyTypeConverter;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -20,6 +17,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hyades.common.IConfigProperty;
+import org.hyades.persistence.PropertyTypeConverter;
 
 @Entity
 @Table(name = "CONFIGPROPERTY")

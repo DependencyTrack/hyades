@@ -1,5 +1,15 @@
 package org.hyades.apiserver;
 
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.hyades.apiserver.model.BomProcessingResponse;
 import org.hyades.apiserver.model.BomUploadRequest;
@@ -15,16 +25,6 @@ import org.hyades.apiserver.model.Project;
 import org.hyades.apiserver.model.Team;
 import org.hyades.apiserver.model.UpdateNotificationRuleRequest;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.UUID;
 

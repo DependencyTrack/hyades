@@ -1,12 +1,12 @@
 package org.hyades.persistence;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import org.hibernate.jpa.QueryHints;
-import org.hyades.model.Team;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import org.hibernate.jpa.QueryHints;
+import org.hyades.model.Team;
+
 import java.util.List;
 
 @ApplicationScoped

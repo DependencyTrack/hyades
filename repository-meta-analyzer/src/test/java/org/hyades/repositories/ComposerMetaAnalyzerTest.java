@@ -19,12 +19,11 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import io.quarkus.test.junit.QuarkusTest;
+import org.apache.http.HttpHeaders;
 import org.apache.http.impl.client.HttpClients;
 import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
 import org.hyades.model.RepositoryType;
-import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
-import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;

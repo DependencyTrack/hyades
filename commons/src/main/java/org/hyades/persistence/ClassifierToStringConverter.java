@@ -1,10 +1,8 @@
 package org.hyades.persistence;
 
-import org.hyades.model.Classifier;
-
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.hyades.model.Classifier;
 
 import static java.util.Optional.ofNullable;
 

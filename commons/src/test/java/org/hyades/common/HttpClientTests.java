@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
+import jakarta.inject.Inject;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -19,7 +20,6 @@ import org.junit.platform.suite.api.Suite;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
-import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.Map;
 

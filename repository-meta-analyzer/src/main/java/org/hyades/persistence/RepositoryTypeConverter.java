@@ -1,9 +1,10 @@
 package org.hyades.persistence;
 
 
-import org.hyades.model.RepositoryType;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.hyades.model.RepositoryType;
+
 import static java.util.Optional.ofNullable;
 
 @Converter(autoApply = true)

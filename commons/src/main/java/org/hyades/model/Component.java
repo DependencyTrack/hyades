@@ -28,10 +28,6 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import org.hyades.common.TrimmedStringDeserializer;
-import org.hyades.persistence.UUIDConverter;
-import org.apache.commons.lang3.StringUtils;
-
 import jakarta.json.JsonObject;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -42,6 +38,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.apache.commons.lang3.StringUtils;
+import org.hyades.common.TrimmedStringDeserializer;
+import org.hyades.persistence.UUIDConverter;
+
 import java.io.Serializable;
 import java.util.UUID;
 

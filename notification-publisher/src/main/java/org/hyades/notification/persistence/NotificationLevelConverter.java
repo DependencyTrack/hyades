@@ -1,9 +1,9 @@
 package org.hyades.notification.persistence;
 
-import org.hyades.notification.model.NotificationLevel;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.hyades.notification.model.NotificationLevel;
+
 import static java.util.Optional.ofNullable;
 
 @Converter(autoApply = true)
