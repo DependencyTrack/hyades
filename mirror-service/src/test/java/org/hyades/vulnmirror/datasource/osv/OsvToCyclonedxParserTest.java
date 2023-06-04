@@ -13,8 +13,8 @@ import org.cyclonedx.proto.v1_4.VulnerabilityRating;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

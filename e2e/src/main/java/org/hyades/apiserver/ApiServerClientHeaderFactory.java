@@ -2,8 +2,8 @@ package org.hyades.apiserver;
 
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 public class ApiServerClientHeaderFactory implements ClientHeadersFactory {
 

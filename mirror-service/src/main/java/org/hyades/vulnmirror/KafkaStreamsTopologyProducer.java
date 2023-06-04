@@ -16,8 +16,8 @@ import org.hyades.vulnmirror.datasource.DatasourceMirror;
 import org.hyades.vulnmirror.state.StateStoreUpdater;
 import org.hyades.vulnmirror.state.StateStores;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Produces;
 
 import static org.apache.kafka.streams.state.Stores.inMemoryKeyValueStore;
 import static org.apache.kafka.streams.state.Stores.keyValueStoreBuilder;

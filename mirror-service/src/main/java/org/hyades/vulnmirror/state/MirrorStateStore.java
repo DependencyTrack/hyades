@@ -12,7 +12,7 @@ import org.hyades.vulnmirror.datasource.Datasource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Objects;

@@ -11,7 +11,7 @@ import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class MetaAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<PackageURL, Component, AnalysisResult> {

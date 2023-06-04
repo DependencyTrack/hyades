@@ -7,7 +7,7 @@ import org.hyades.notification.model.NotificationLevel;
 import org.hyades.notification.model.NotificationRule;
 import org.hyades.notification.model.NotificationScope;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped

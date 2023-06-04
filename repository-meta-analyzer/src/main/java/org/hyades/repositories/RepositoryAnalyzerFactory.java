@@ -3,8 +3,8 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.impl.client.CloseableHttpClient;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;

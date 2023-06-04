@@ -20,7 +20,7 @@ import org.hyades.proto.notification.v1.Notification;
 import org.hyades.vulnmirror.TestConstants;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;

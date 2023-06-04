@@ -6,7 +6,7 @@ import org.hibernate.jpa.QueryHints;
 import org.hyades.model.Repository;
 import org.hyades.model.RepositoryType;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped

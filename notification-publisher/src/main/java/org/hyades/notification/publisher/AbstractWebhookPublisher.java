@@ -28,9 +28,9 @@ import org.hyades.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.json.JsonObject;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.json.JsonObject;
 import java.util.Base64;
 
 public abstract class AbstractWebhookPublisher implements Publisher {

@@ -5,7 +5,7 @@ import io.quarkus.panache.common.Parameters;
 import org.hibernate.jpa.QueryHints;
 import org.hyades.model.ConfigProperty;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ConfigPropertyRepository implements PanacheRepository<ConfigProperty> {

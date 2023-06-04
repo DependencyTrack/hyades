@@ -6,8 +6,8 @@ import org.hyades.common.SecretDecryptor;
 import org.hyades.persistence.ConfigPropertyRepository;
 import org.hyades.proto.notification.v1.Notification;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.json.JsonObject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.json.JsonObject;
 import java.util.Map;
 
 import static org.hyades.model.ConfigPropertyConstants.JIRA_PASSWORD;

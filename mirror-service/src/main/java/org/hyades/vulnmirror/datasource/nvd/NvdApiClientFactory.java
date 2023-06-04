@@ -3,7 +3,7 @@ package org.hyades.vulnmirror.datasource.nvd;
 import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
 import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClientBuilder;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;

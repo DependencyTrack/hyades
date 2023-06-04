@@ -3,7 +3,7 @@ package org.hyades.vulnmirror.datasource.github;
 import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClient;
 import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClientBuilder;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;

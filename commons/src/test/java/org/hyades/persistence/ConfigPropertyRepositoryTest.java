@@ -7,8 +7,8 @@ import org.hyades.model.ConfigPropertyConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 @QuarkusTest
 class ConfigPropertyRepositoryTest {

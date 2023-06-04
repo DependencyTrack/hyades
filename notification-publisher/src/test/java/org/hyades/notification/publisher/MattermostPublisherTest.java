@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
-import javax.inject.Inject;
-import javax.json.JsonObject;
-import javax.persistence.EntityManager;
+import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
+import jakarta.persistence.EntityManager;
 
 import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;

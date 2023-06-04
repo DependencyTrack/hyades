@@ -20,7 +20,7 @@ import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
