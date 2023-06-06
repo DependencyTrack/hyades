@@ -17,8 +17,9 @@
  * Copyright (c) Steve Springett. All Rights Reserved.
  */
 package org.hyades.model;
-import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ClassifierTest {
 

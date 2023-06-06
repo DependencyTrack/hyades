@@ -19,8 +19,8 @@
 package org.hyades.model;
 
 
-import org.hyades.common.IConfigProperty.PropertyType;
 import org.apache.commons.lang3.SystemUtils;
+import org.hyades.common.IConfigProperty.PropertyType;
 
 public enum
 ConfigPropertyConstants {

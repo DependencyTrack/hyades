@@ -2,6 +2,8 @@ package org.hyades.vulnmirror.datasource.osv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
 import org.cyclonedx.proto.v1_4.ExternalReference;
@@ -13,8 +15,6 @@ import org.cyclonedx.proto.v1_4.VulnerabilityRating;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

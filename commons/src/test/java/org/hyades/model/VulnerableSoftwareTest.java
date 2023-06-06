@@ -20,6 +20,7 @@ package org.hyades.model;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 import java.util.UUID;
 
 public class VulnerableSoftwareTest {

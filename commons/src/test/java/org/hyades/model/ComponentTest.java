@@ -20,9 +20,10 @@ package org.hyades.model;
 
 import com.github.packageurl.PackageURL;
 import com.github.packageurl.PackageURLBuilder;
-import org.junit.jupiter.api.Test;
-import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 public class ComponentTest {
 
