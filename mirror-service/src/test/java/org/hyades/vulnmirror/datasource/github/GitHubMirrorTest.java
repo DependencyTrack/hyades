@@ -9,6 +9,7 @@ import io.quarkus.test.junit.mockito.InjectMock;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
+import jakarta.inject.Inject;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.cyclonedx.proto.v1_4.Bom;
@@ -19,7 +20,6 @@ import org.hyades.proto.notification.v1.Notification;
 import org.hyades.vulnmirror.TestConstants;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;

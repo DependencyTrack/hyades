@@ -20,12 +20,11 @@ package org.hyades.notification.publisher;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
 import org.hyades.persistence.ConfigPropertyRepository;
 import org.hyades.proto.notification.v1.Notification;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.json.JsonObject;
 
 @ApplicationScoped
 @Startup // Force bean creation even though no direct injection points exist

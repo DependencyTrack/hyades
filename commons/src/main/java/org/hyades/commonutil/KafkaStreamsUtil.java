@@ -1,7 +1,7 @@
 package org.hyades.commonutil;
 
-import org.hyades.common.KafkaTopic;
 import org.apache.commons.lang3.StringUtils;
+import org.hyades.common.KafkaTopic;
 
 public final class KafkaStreamsUtil {
 
