@@ -171,8 +171,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .untilAsserted(this::verifyEmailNotification);
     }
 
-    private void verifyEmailNotification() throws MessagingException {
-        assertThat(greenMail.getReceivedMessages().length).isEqualTo(1);
+    private void verifyEmailNotification() {
+        assertThat(greenMail.getReceivedMessages()).hasSize(1);
         final MimeMessage email = greenMail.getReceivedMessages()[0];
         // assertThat(email.getSubject()).isEqualTo("[Dependency-Track] New Vulnerability Identified on Project: [foo : bar]"); // TODO
         // assertThat(email.getContent()).asString().matches(""); // TODO
