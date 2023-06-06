@@ -2,13 +2,12 @@ package org.hyades.notification.health;
 
 import io.confluent.parallelconsumer.ParallelEoSStreamProcessor;
 import io.confluent.parallelconsumer.ParallelStreamProcessor;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Liveness;
 import org.hyades.proto.notification.v1.Notification;
-
-import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Basic liveness check for the Confluent Parallel Consumer.
