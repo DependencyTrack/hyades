@@ -71,10 +71,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-apache-httpclient</artifactId>
     </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>io.quarkus</groupId>

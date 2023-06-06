@@ -3,6 +3,7 @@ package org.hyades.processor;
 import com.github.packageurl.PackageURL;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.streams.processor.api.FixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyProcessorSupplier;
 import org.hyades.common.SecretDecryptor;
@@ -10,8 +11,6 @@ import org.hyades.persistence.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class MetaAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<PackageURL, Component, AnalysisResult> {

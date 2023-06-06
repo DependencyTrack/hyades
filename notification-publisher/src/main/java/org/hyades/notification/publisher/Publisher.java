@@ -22,6 +22,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import jakarta.json.JsonObject;
 import org.hyades.model.ConfigProperty;
 import org.hyades.model.ConfigPropertyConstants;
 import org.hyades.persistence.ConfigPropertyRepository;
@@ -36,7 +37,6 @@ import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.slf4j.LoggerFactory;
 
-import javax.json.JsonObject;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
