@@ -53,6 +53,9 @@ public final class NvdToCyclonedxParser {
         }
     }
 
+    // Using 'generic' as versioning scheme for NVD due to lack of package data
+    private static final String UNI_VERS_RANGE = "vers:generic/";
+
     public static Bom parse(DefCveItem nvdVuln) {
         CveItem cveItem = nvdVuln.getCve();
         Vulnerability.Builder cdxVuln = Vulnerability.newBuilder()
@@ -118,24 +121,25 @@ public final class NvdToCyclonedxParser {
         bovUpdated.set(bovWrapper.bov);
         vulnerabilityAffects.setRef(bovWrapper.object);
 
-        // Using 'generic' as versioning scheme for NVD due to lack of package data
-        String uniVersionRange = "vers:generic/";
+        String rangeSpecifier = "";
         var versionRange = VulnerabilityAffectedVersions.newBuilder();
         if (cpeMatch.getVersionStartIncluding() != null) {
-            uniVersionRange += cpeMatch.getVersionStartIncluding() + "|";
+            rangeSpecifier = cpeMatch.getVersionStartIncluding() + "|";
         }
         if (cpeMatch.getVersionStartExcluding() != null) {
-            uniVersionRange += cpeMatch.getVersionStartExcluding() + "|";
+            rangeSpecifier += cpeMatch.getVersionStartExcluding() + "|";
         }
         if (cpeMatch.getVersionEndIncluding() != null) {
-            uniVersionRange += cpeMatch.getVersionEndIncluding() + "|";
+            rangeSpecifier += cpeMatch.getVersionEndIncluding() + "|";
         }
         if (cpeMatch.getVersionEndExcluding() != null) {
-            uniVersionRange += cpeMatch.getVersionEndExcluding() + "|";
+            rangeSpecifier += cpeMatch.getVersionEndExcluding() + "|";
         }
 
-        versionRange.setRange(StringUtils.chop(uniVersionRange));
-        vulnerabilityAffects.addVersions(versionRange);
+        if (!StringUtils.isBlank(rangeSpecifier)) {
+            versionRange.setRange(StringUtils.chop(UNI_VERS_RANGE + rangeSpecifier));
+            vulnerabilityAffects.addVersions(versionRange);
+        }
         return new BovWrapper(bovUpdated.get(), vulnerabilityAffects.build());
     }
 

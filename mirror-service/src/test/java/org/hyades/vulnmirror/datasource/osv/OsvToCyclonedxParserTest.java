@@ -103,17 +103,19 @@ class OsvToCyclonedxParserTest {
 
         List<VulnerabilityAffectedVersions> versions1 = affectedPack1.getVersionsList();
         assertNotNull(versions1);
-        assertEquals("vers:maven/1.0.0.RELEASE|1.0.1.RELEASE", versions1.get(0).getVersion());
+        assertEquals("1.0.0.RELEASE", versions1.get(0).getVersion());
+        assertEquals("1.0.1.RELEASE", versions1.get(1).getVersion());
 
         VulnerabilityAffects affectedPack3 = affected.get(3);
         assertEquals(components.get(1).getBomRef(), affectedPack3.getRef());
 
         List<VulnerabilityAffectedVersions> versions3 = affectedPack3.getVersionsList();
         assertNotNull(versions3);
-        assertEquals(3, versions3.size());
+        assertEquals(4, versions3.size());
         assertEquals("vers:maven/>=3", versions3.get(0).getRange());
         assertEquals("vers:maven/>=4|<5", versions3.get(1).getRange());
-        assertEquals("vers:maven/1.0.0.RELEASE|2.0.9.RELEASE", versions3.get(2).getVersion());
+        assertEquals("1.0.0.RELEASE", versions3.get(2).getVersion());
+        assertEquals("2.0.9.RELEASE", versions3.get(3).getVersion());
     }
 
     @Test
