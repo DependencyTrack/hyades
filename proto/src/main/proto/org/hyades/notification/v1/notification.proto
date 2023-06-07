@@ -210,6 +210,7 @@ message ComponentAnalysisCompleteSubject{
 }
 
 message ProjectAnalysisCompleteSubject{
-  repeated ComponentAnalysisCompleteSubject component_analysis_complete = 1;
+  Project project = 1;
+  repeated ComponentAnalysisCompleteSubject component_analysis_complete = 2;
 
 }
