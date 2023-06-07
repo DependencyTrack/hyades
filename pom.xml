@@ -67,7 +67,7 @@
     <sonar.exclusions>e2e/**/*</sonar.exclusions>
 
     <skipITs>true</skipITs>
-    <surefire-plugin.version>3.1.0</surefire-plugin.version>
+    <surefire-plugin.version>3.1.2</surefire-plugin.version>
   </properties>
 
   <dependencyManagement>
