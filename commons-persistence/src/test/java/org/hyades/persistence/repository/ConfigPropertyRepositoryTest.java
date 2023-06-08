@@ -4,11 +4,10 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.hyades.persistence.model.ConfigProperty;
 import org.hyades.persistence.model.ConfigPropertyConstants;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
 @QuarkusTest
 class ConfigPropertyRepositoryTest {

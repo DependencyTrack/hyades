@@ -1,6 +1,7 @@
 package org.hyades.common.cwe;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
+
 import java.util.HashMap;
 import java.util.Map;
 

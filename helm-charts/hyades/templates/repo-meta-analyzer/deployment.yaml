@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "hyades.repoMetaAnalyzerFullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "hyades.repoMetaAnalyzerSelectorLabels" .  | nindent 4 }}
+  labels: {{- include "hyades.repoMetaAnalyzerLabels" .  | nindent 4 }}
 spec:
   replicas: {{ .Values.repoMetaAnalyzer.replicaCount }}
   selector:

@@ -2,6 +2,8 @@ package org.hyades.vulnmirror.state;
 
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.CDI;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
@@ -9,8 +11,6 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
 import java.time.Duration;
 
 import static org.apache.kafka.streams.StoreQueryParameters.fromNameAndType;

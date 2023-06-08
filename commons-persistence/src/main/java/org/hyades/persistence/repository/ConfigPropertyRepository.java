@@ -2,10 +2,9 @@ package org.hyades.persistence.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.hibernate.jpa.QueryHints;
 import org.hyades.persistence.model.ConfigProperty;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ConfigPropertyRepository implements PanacheRepository<ConfigProperty> {

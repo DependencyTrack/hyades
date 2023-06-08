@@ -25,6 +25,7 @@ import io.pebbletemplates.pebble.template.PebbleTemplate;
 import org.hyades.persistence.model.ConfigProperty;
 import org.hyades.persistence.model.ConfigPropertyConstants;
 import org.hyades.persistence.repository.ConfigPropertyRepository;
+import jakarta.json.JsonObject;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
 import org.hyades.proto.notification.v1.NewVulnerableDependencySubject;
@@ -35,7 +36,6 @@ import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.slf4j.LoggerFactory;
 
-import javax.json.JsonObject;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;

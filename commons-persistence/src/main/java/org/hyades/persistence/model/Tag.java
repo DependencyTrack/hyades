@@ -20,12 +20,14 @@ package org.hyades.persistence.model;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,7 +50,12 @@ public class Tag {
     private String name;
 
     @OrderBy("name ASC")
-    @OneToMany(mappedBy = "id")
+    @ManyToMany
+    @JoinTable(
+            name = "PROJECTS_TAGS",
+            joinColumns = @JoinColumn(name = "TAG_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID")
+    )
     private List<Project> projects;
 
     public long getId() {

@@ -19,6 +19,20 @@
 package org.hyades.notification;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.confluent.parallelconsumer.PCRetriableException;
+import io.confluent.parallelconsumer.ParallelStreamProcessor;
+import io.quarkus.narayana.jta.QuarkusTransaction;
+import io.quarkus.runtime.StartupEvent;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.UnsatisfiedResolutionException;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.hibernate.QueryTimeoutException;
 import org.hyades.notification.publisher.Publisher;
 import org.hyades.notification.publisher.PublisherException;
 import org.hyades.notification.publisher.SendMailPublisher;
@@ -40,14 +54,8 @@ import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.jboss.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
-import javax.enterprise.inject.spi.CDI;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.transaction.Transactional;
 import java.io.StringReader;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,17 +68,52 @@ public class NotificationRouter {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
 
+    private final ParallelStreamProcessor<String, Notification> parallelConsumer;
     private final NotificationRuleRepository ruleRepository;
     private final TeamRepository teamRepository;
 
-    public NotificationRouter(final NotificationRuleRepository ruleRepository,
+    public NotificationRouter(final ParallelStreamProcessor<String, Notification> parallelConsumer,
+                              final NotificationRuleRepository ruleRepository,
                               final TeamRepository teamRepository) {
+        this.parallelConsumer = parallelConsumer;
         this.ruleRepository = ruleRepository;
         this.teamRepository = teamRepository;
     }
 
-    @Transactional
-    public void inform(final Notification notification) throws Exception {
+    void onStart(@Observes final StartupEvent event) {
+        parallelConsumer.poll(pollCtx -> {
+            try {
+                inform(pollCtx.value());
+            } catch (RuntimeException e) {
+                final Throwable rootCause = ExceptionUtils.getRootCause(e);
+                if (rootCause instanceof ConnectTimeoutException
+                        || rootCause instanceof QueryTimeoutException
+                        || rootCause instanceof SocketTimeoutException) {
+                    LOGGER.warn("Encountered retryable exception", e);
+                    throw new PCRetriableException(e);
+                }
+
+                LOGGER.error("Encountered non-retryable exception; Skipping", e);
+            }
+        });
+    }
+
+    public void inform(final Notification notification) {
+        // Workaround for the fact that we can't currently use @Transactional.
+        // Even read-only operations require an active transaction in Quarkus,
+        // but @Transactional only works when the caller of the method is also
+        // a CDI-managed bean. Because we invoke the inform method from the
+        // Parallel Consumer thread pool, the caller is not CDI-managed.
+        QuarkusTransaction.joiningExisting().run(() -> {
+            try {
+                informInternal(notification);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void informInternal(final Notification notification) throws Exception {
         for (final NotificationRule rule : resolveRules(notification)) {
 
             // Not all publishers need configuration (i.e. ConsolePublisher)

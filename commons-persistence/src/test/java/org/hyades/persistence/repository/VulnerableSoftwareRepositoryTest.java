@@ -4,11 +4,11 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.VulnerableSoftware;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.UUID;
 

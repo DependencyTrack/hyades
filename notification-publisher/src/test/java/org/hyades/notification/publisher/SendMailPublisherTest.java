@@ -3,14 +3,13 @@ package org.hyades.notification.publisher;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.hyades.persistence.model.Team;
+import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.persistence.EntityManager;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -262,8 +261,8 @@ public class SendMailPublisherTest {
                 );
     }
 
-    private BigInteger createManagedUser(final String username, final String email) {
-        return (BigInteger) entityManager.createNativeQuery("""
+    private Long createManagedUser(final String username, final String email) {
+        return (Long) entityManager.createNativeQuery("""
                         INSERT INTO "MANAGEDUSER" ("USERNAME", "EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED") VALUES
                             (:username, :email, 'password', false, NOW(), true, false)
                         RETURNING "ID";
@@ -273,8 +272,8 @@ public class SendMailPublisherTest {
                 .getSingleResult();
     }
 
-    private BigInteger createLdapUser(final String username, final String email) {
-        return (BigInteger) entityManager.createNativeQuery("""
+    private Long createLdapUser(final String username, final String email) {
+        return (Long) entityManager.createNativeQuery("""
                         INSERT INTO "LDAPUSER" ("USERNAME", "EMAIL", "DN") VALUES
                             (:username, :email, :dn)
                         RETURNING "ID";
@@ -285,8 +284,8 @@ public class SendMailPublisherTest {
                 .getSingleResult();
     }
 
-    private BigInteger createOidcUser(final String username, final String email) {
-        return (BigInteger) entityManager.createNativeQuery("""
+    private Long createOidcUser(final String username, final String email) {
+        return (Long) entityManager.createNativeQuery("""
                         INSERT INTO "OIDCUSER" ("USERNAME", "EMAIL") VALUES
                             (:username, :email)
                         RETURNING "ID";
@@ -297,10 +296,10 @@ public class SendMailPublisherTest {
     }
 
     private Team createTeam(final String name,
-                            final Collection<BigInteger> managedUserIds,
-                            final Collection<BigInteger> ldapUserIds,
-                            final Collection<BigInteger> oidcUserIds) {
-        final var teamId = (BigInteger) entityManager.createNativeQuery("""
+                            final Collection<Long> managedUserIds,
+                            final Collection<Long> ldapUserIds,
+                            final Collection<Long> oidcUserIds) {
+        final var teamId = (Long) entityManager.createNativeQuery("""
                         INSERT INTO "TEAM" ("NAME", "UUID") VALUES 
                             (:name, :uuid)
                         RETURNING "ID";
@@ -310,7 +309,7 @@ public class SendMailPublisherTest {
                 .getSingleResult();
 
         if (managedUserIds != null) {
-            for (final BigInteger managedUserId : managedUserIds) {
+            for (final Long managedUserId : managedUserIds) {
                 entityManager.createNativeQuery("""
                                 INSERT INTO "MANAGEDUSERS_TEAMS" ("MANAGEDUSER_ID", "TEAM_ID") VALUES 
                                     (:userId, :teamId);
@@ -322,7 +321,7 @@ public class SendMailPublisherTest {
         }
 
         if (ldapUserIds != null) {
-            for (final BigInteger ldapUserId : ldapUserIds) {
+            for (final Long ldapUserId : ldapUserIds) {
                 entityManager.createNativeQuery("""
                                 INSERT INTO "LDAPUSERS_TEAMS" ("LDAPUSER_ID", "TEAM_ID") VALUES 
                                     (:userId, :teamId);
@@ -334,7 +333,7 @@ public class SendMailPublisherTest {
         }
 
         if (oidcUserIds != null) {
-            for (final BigInteger oidcUserId : oidcUserIds) {
+            for (final Long oidcUserId : oidcUserIds) {
                 entityManager.createNativeQuery("""
                                 INSERT INTO "OIDCUSERS_TEAMS" ("OIDCUSERS_ID", "TEAM_ID") VALUES 
                                     (:userId, :teamId);
@@ -346,7 +345,7 @@ public class SendMailPublisherTest {
         }
 
         final var team = new Team();
-        team.setId(teamId.longValue());
+        team.setId(teamId);
         team.setName(name);
         return team;
     }

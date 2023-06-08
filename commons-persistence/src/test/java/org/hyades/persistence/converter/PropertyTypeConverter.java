@@ -3,8 +3,8 @@ package org.hyades.persistence.converter;
 
 import org.hyades.persistence.model.IConfigProperty;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import static java.util.Optional.ofNullable;
 

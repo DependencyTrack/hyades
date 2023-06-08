@@ -4,11 +4,11 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.hyades.persistence.model.Repository;
 import org.hyades.persistence.model.RepositoryType;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import java.util.List;
 
 @QuarkusTest

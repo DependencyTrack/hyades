@@ -28,9 +28,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2.1.0
+      uses: docker/setup-qemu-action@v2.2.0
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2.5.0
+      uses: docker/setup-buildx-action@v2.6.0
       with:
         install: true
     - name: Build Native Image
@@ -39,11 +39,13 @@ jobs:
         RESOURCES_INCLUDES=""
         RESOURCES_EXCLUDES=""
         if [[ "${{ matrix.arch.name }}" == "arm64" ]]; then
-          # Include RocksDB JNI library for aarch64 when building for arm64.
+          # When depending on Kafka Streams, include RocksDB JNI library for aarch64.
           # Quarkus only includes the x64 library variant per default.
           # https://github.com/quarkusio/quarkus/issues/30545
-          RESOURCES_INCLUDES="librocksdbjni-linux-aarch64.so"
-          RESOURCES_EXCLUDES="librocksdbjni-linux64.so"
+          if grep -i 'kafka-streams' ${{ inputs.module }}/pom.xml > /dev/null; then
+            RESOURCES_INCLUDES="librocksdbjni-linux-aarch64.so"
+            RESOURCES_EXCLUDES="librocksdbjni-linux64.so"
+          fi
         
           # When snappy compression is enabled, include the respective JNI library
           # for aarch64 when building for arm64. Quarkus only includes the x64 library variant per default.
@@ -91,9 +93,9 @@ jobs:
         name: native-image-arm64
         path: ${{ inputs.module }}/target/arm64
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2.1.0
+      uses: docker/setup-qemu-action@v2.2.0
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2.5.0
+      uses: docker/setup-buildx-action@v2.6.0
       with:
         install: true
     - name: Docker login

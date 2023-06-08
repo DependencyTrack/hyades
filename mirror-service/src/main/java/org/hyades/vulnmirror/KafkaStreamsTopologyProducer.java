@@ -1,5 +1,7 @@
 package org.hyades.vulnmirror;
 
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Produces;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.serialization.Serdes;
@@ -15,9 +17,6 @@ import org.hyades.vulnmirror.datasource.Datasource;
 import org.hyades.vulnmirror.datasource.DatasourceMirror;
 import org.hyades.vulnmirror.state.StateStoreUpdater;
 import org.hyades.vulnmirror.state.StateStores;
-
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
 
 import static org.apache.kafka.streams.state.Stores.inMemoryKeyValueStore;
 import static org.apache.kafka.streams.state.Stores.keyValueStoreBuilder;
