@@ -40,8 +40,8 @@
 | `hyades-vulnerability-analyzer-snyk-retry-store-changelog`<sup>1E</sup>                           | 3          | `cleanup.policy=compact`<br/>`segment.bytes=67108864`<br/>`max.compaction.lag.ms=0` |
 
 *<sup>1X</sup> The topic is subject to [co-partitioning requirements](#co-partitioning-requirements)*  
-*<sup>1D</sup> To use this notification, the PROJECT_VULN_ANALYSIS_COMPLETE group needs to be manually added through api call to the notify on condition
-The put request to be executed is [here](https://github.com/DependencyTrack/hyades-apiserver/blob/main/src/main/java/org/dependencytrack/resources/v1/NotificationRuleResource.java#L100) *
+*<sup>3</sup> To use this notification, the PROJECT_VULN_ANALYSIS_COMPLETE group needs to be manually added through api call to the notify on condition
+The put request to be executed is [here](https://github.com/DependencyTrack/hyades-apiserver/blob/main/src/main/java/org/dependencytrack/resources/v1/NotificationRuleResource.java#L100)<br/>*
 *<sup>2</sup> The partition number of this topic should not be changed*
 
 ## Co-Partitioning Requirements
