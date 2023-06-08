@@ -97,7 +97,6 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .filter(publisher -> publisher.name().equals("Outbound Webhook"))
                 .findAny()
                 .orElseThrow(() -> new AssertionError("Unable to find webhook notification publisher"));
-
         // Create an email alert for NEW_VULNERABILITY notifications and point it to GreenMail.
         final NotificationRule emailRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "email", "PORTFOLIO", "INFORMATIONAL", new Publisher(emailPublisher.uuid())));
@@ -172,8 +171,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .untilAsserted(this::verifyEmailNotification);
     }
 
-    private void verifyEmailNotification() throws MessagingException {
-        assertThat(greenMail.getReceivedMessages().length).isEqualTo(1);
+    private void verifyEmailNotification() {
+        assertThat(greenMail.getReceivedMessages()).hasSize(1);
         final MimeMessage email = greenMail.getReceivedMessages()[0];
         // assertThat(email.getSubject()).isEqualTo("[Dependency-Track] New Vulnerability Identified on Project: [foo : bar]"); // TODO
         // assertThat(email.getContent()).asString().matches(""); // TODO
