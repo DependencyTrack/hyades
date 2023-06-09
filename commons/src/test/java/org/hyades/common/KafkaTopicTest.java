@@ -9,10 +9,10 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-public class KafkaTopicTest {
+class KafkaTopicTest {
 
     @io.quarkus.test.junit.TestProfile(KafkaTopicTest.TestProfile.class)
-    public static class TestProfile implements QuarkusTestProfile {
+    static class TestProfile implements QuarkusTestProfile {
         @Override
         public Map<String, String> getConfigOverrides() {
             return Map.of(

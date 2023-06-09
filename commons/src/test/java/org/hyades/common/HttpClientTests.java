@@ -67,45 +67,46 @@ public class HttpClientTests {
 
 
         @Test
-         void clientCreatedTest() {
-            CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry);
-            new MockServerClient("localhost", mockServer.getPort())
-                    .when(
-                            request()
-                                    .withMethod("GET")
-                                    .withPath("/hello")
-                    )
-                    .respond(
-                            response()
-                                    .withStatusCode(200)
-                                    .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                    .withBody("hello test")
-                    );
-            HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
-            try {
-                CloseableHttpResponse response = client.execute(request);
-                Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
-                String stringResponse = EntityUtils.toString(response.getEntity());
-                Assertions.assertEquals("hello test", stringResponse);
-            } catch (IOException ex) {
-                System.out.println("exception occurred: " + ex.getMessage());
-            }
+        void clientCreatedTest() throws IOException {
+            try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
+                new MockServerClient("localhost", mockServer.getPort())
+                        .when(
+                                request()
+                                        .withMethod("GET")
+                                        .withPath("/hello")
+                        )
+                        .respond(
+                                response()
+                                        .withStatusCode(200)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                        .withBody("hello test")
+                        );
+                HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
+                try {
+                    CloseableHttpResponse response = client.execute(request);
+                    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+                    String stringResponse = EntityUtils.toString(response.getEntity());
+                    Assertions.assertEquals("hello test", stringResponse);
+                } catch (IOException ex) {
+                    System.out.println("exception occurred: " + ex.getMessage());
+                }
 
-            request = new HttpGet("https://localhost:1080/hello");
-            try {
-                CloseableHttpResponse response = client.execute(request);
-                Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
-                String stringResponse = EntityUtils.toString(response.getEntity());
-                Assertions.assertEquals("hello test", stringResponse);
-            } catch (IOException ex) {
-                System.out.println("exception occurred: " + ex.getMessage());
+                request = new HttpGet("https://localhost:1080/hello");
+                try {
+                    CloseableHttpResponse response = client.execute(request);
+                    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+                    String stringResponse = EntityUtils.toString(response.getEntity());
+                    Assertions.assertEquals("hello test", stringResponse);
+                } catch (IOException ex) {
+                    System.out.println("exception occurred: " + ex.getMessage());
+                }
             }
         }
     }
 
     @QuarkusTest
     @TestProfile(HttpClientConfigWithProxyTest.TestProfile.class)
-    public static class HttpClientConfigWithProxyTest{
+    public static class HttpClientConfigWithProxyTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
             public Map<String, String> getConfigOverrides() {
@@ -167,7 +168,7 @@ public class HttpClientTests {
 
     @QuarkusTest
     @TestProfile(HttpClientConfigWithNoProxyTest.TestProfile.class)
-    public static class HttpClientConfigWithNoProxyTest{
+    public static class HttpClientConfigWithNoProxyTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
             public Map<String, String> getConfigOverrides() {
@@ -230,7 +231,7 @@ public class HttpClientTests {
 
     @QuarkusTest
     @TestProfile(HttpClientConfigWithNoProxyStarTest.TestProfile.class)
-    public static class HttpClientConfigWithNoProxyStarTest{
+    public static class HttpClientConfigWithNoProxyStarTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
             public Map<String, String> getConfigOverrides() {
@@ -293,7 +294,7 @@ public class HttpClientTests {
 
     @QuarkusTest
     @TestProfile(HttpClientConfigWithNoProxyDomainTest.TestProfile.class)
-    public static class HttpClientConfigWithNoProxyDomainTest{
+    public static class HttpClientConfigWithNoProxyDomainTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
             public Map<String, String> getConfigOverrides() {
