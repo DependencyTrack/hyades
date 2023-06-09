@@ -125,7 +125,7 @@ public class AbstractE2ET {
     private GenericContainer<?> createNotificationPublisherContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
-                .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
