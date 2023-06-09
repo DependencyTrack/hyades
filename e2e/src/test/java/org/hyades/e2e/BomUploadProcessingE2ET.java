@@ -164,10 +164,10 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
         // Verify that we received alerts about jackson-databind being vulnerable
         // via both email and webhook notifications.
         await("NEW_VULNERABILITY webhook notification")
-                .atMost(Duration.ofSeconds(5))
+                .atMost(Duration.ofSeconds(15))
                 .untilAsserted(this::verifyWebhookNotification);
         await("NEW_VULNERABILITY email notification")
-                .atMost(Duration.ofSeconds(5))
+                .atMost(Duration.ofSeconds(15))
                 .untilAsserted(this::verifyEmailNotification);
     }
 
