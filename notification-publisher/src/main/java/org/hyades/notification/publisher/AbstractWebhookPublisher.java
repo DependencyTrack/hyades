@@ -69,14 +69,15 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         }
         StringEntity entity = new StringEntity(content);
         request.setEntity(entity);
-        final CloseableHttpResponse response = httpClient.execute(request);
-
-        if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {
-            logger.error("An error was encountered publishing notification to " + publisherName);
-            logger.error("HTTP Status : " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
-            logger.error("Destination: " + destination);
-            logger.debug(content);
+        try (final CloseableHttpResponse response = httpClient.execute(request);) {
+            if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {
+                logger.error("An error was encountered publishing notification to " + publisherName);
+                logger.error("HTTP Status : " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+                logger.error("Destination: " + destination);
+                logger.debug(content);
+            }
         }
+
     }
 
     private static final String getBasicAuthenticationHeader(String username, String password) {

@@ -50,6 +50,7 @@ enum Group {
   GROUP_POLICY_VIOLATION = 15;
   GROUP_PROJECT_CREATED = 16;
   GROUP_BOM_PROCESSING_FAILED = 17;
+  GROUP_PROJECT_VULN_ANALYSIS_COMPLETE = 18;
 }
 
 message BackReference {
@@ -202,4 +203,14 @@ message PolicyViolationAnalysis {
   PolicyViolation policy_violation = 3;
   optional string state = 4;
   optional bool suppressed = 5;
+}
+message ComponentAnalysisCompleteSubject{
+  Component component = 1;
+  repeated Vulnerability vulnerability = 2;
+}
+
+message ProjectAnalysisCompleteSubject{
+  Project project = 1;
+  repeated ComponentAnalysisCompleteSubject component_analysis_complete = 2;
+
 }
