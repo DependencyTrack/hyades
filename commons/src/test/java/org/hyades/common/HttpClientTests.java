@@ -6,6 +6,7 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -77,14 +78,13 @@ public class HttpClientTests {
                         )
                         .respond(
                                 response()
-                                        .withStatusCode(200)
+                                        .withStatusCode(HttpStatus.SC_OK)
                                         .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                                         .withBody("hello test")
                         );
                 HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
-                try {
-                    CloseableHttpResponse response = client.execute(request);
-                    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+                try (CloseableHttpResponse response = client.execute(request)) {
+                    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
                     String stringResponse = EntityUtils.toString(response.getEntity());
                     Assertions.assertEquals("hello test", stringResponse);
                 } catch (IOException ex) {
@@ -92,9 +92,8 @@ public class HttpClientTests {
                 }
 
                 request = new HttpGet("https://localhost:1080/hello");
-                try {
-                    CloseableHttpResponse response = client.execute(request);
-                    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+                try (CloseableHttpResponse response = client.execute(request)) {
+                    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
                     String stringResponse = EntityUtils.toString(response.getEntity());
                     Assertions.assertEquals("hello test", stringResponse);
                 } catch (IOException ex) {
@@ -139,28 +138,28 @@ public class HttpClientTests {
         }
 
         @Test
-        void clientCreatedWithProxyInfoTest() {
-            CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry);
-            new MockServerClient("localhost", mockServer.getPort())
-                    .when(
-                            request()
-                                    .withMethod("GET")
-                                    .withPath("/hello")
-                    )
-                    .respond(
-                            response()
-                                    .withStatusCode(200)
-                                    .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                    .withBody("hello test")
-                    );
-            HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
-            try {
-                CloseableHttpResponse response = client.execute(request);
-                Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
-                String stringResponse = EntityUtils.toString(response.getEntity());
-                Assertions.assertEquals("hello test", stringResponse);
-            } catch (IOException ex) {
-                System.out.println("exception occurred: " + ex.getMessage());
+        void clientCreatedWithProxyInfoTest() throws IOException {
+            try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
+                new MockServerClient("localhost", mockServer.getPort())
+                        .when(
+                                request()
+                                        .withMethod("GET")
+                                        .withPath("/hello")
+                        )
+                        .respond(
+                                response()
+                                        .withStatusCode(HttpStatus.SC_OK)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                        .withBody("hello test")
+                        );
+                HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
+                try (CloseableHttpResponse response = client.execute(request)) {
+                    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+                    String stringResponse = EntityUtils.toString(response.getEntity());
+                    Assertions.assertEquals("hello test", stringResponse);
+                } catch (IOException ex) {
+                    System.out.println("exception occurred: " + ex.getMessage());
+                }
             }
         }
 
@@ -202,28 +201,28 @@ public class HttpClientTests {
         }
 
         @Test
-        void clientCreatedWithProxyInfoTest() {
-            CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry);
-            new MockServerClient("localhost", mockServer.getPort())
-                    .when(
-                            request()
-                                    .withMethod("GET")
-                                    .withPath("/hello")
-                    )
-                    .respond(
-                            response()
-                                    .withStatusCode(200)
-                                    .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                    .withBody("hello test")
-                    );
-            HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
-            try {
-                CloseableHttpResponse response = client.execute(request);
-                Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
-                String stringResponse = EntityUtils.toString(response.getEntity());
-                Assertions.assertEquals("hello test", stringResponse);
-            } catch (IOException ex) {
-                System.out.println("exception occurred: " + ex.getMessage());
+        void clientCreatedWithProxyInfoTest() throws IOException {
+            try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
+                new MockServerClient("localhost", mockServer.getPort())
+                        .when(
+                                request()
+                                        .withMethod("GET")
+                                        .withPath("/hello")
+                        )
+                        .respond(
+                                response()
+                                        .withStatusCode(HttpStatus.SC_OK)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                        .withBody("hello test")
+                        );
+                HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
+                try (CloseableHttpResponse response = client.execute(request)) {
+                    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+                    String stringResponse = EntityUtils.toString(response.getEntity());
+                    Assertions.assertEquals("hello test", stringResponse);
+                } catch (IOException ex) {
+                    System.out.println("exception occurred: " + ex.getMessage());
+                }
             }
         }
 
@@ -265,28 +264,28 @@ public class HttpClientTests {
         }
 
         @Test
-        void clientCreatedWithProxyInfoTest() {
-            CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry);
-            new MockServerClient("localhost", mockServer.getPort())
-                    .when(
-                            request()
-                                    .withMethod("GET")
-                                    .withPath("/hello")
-                    )
-                    .respond(
-                            response()
-                                    .withStatusCode(200)
-                                    .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                    .withBody("hello test")
-                    );
-            HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
-            try {
-                CloseableHttpResponse response = client.execute(request);
-                Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
-                String stringResponse = EntityUtils.toString(response.getEntity());
-                Assertions.assertEquals("hello test", stringResponse);
-            } catch (IOException ex) {
-                System.out.println("exception occurred: " + ex.getMessage());
+        void clientCreatedWithProxyInfoTest() throws IOException {
+            try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
+                new MockServerClient("localhost", mockServer.getPort())
+                        .when(
+                                request()
+                                        .withMethod("GET")
+                                        .withPath("/hello")
+                        )
+                        .respond(
+                                response()
+                                        .withStatusCode(HttpStatus.SC_OK)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                        .withBody("hello test")
+                        );
+                HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
+                try (CloseableHttpResponse response = client.execute(request)) {
+                    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+                    String stringResponse = EntityUtils.toString(response.getEntity());
+                    Assertions.assertEquals("hello test", stringResponse);
+                } catch (IOException ex) {
+                    System.out.println("exception occurred: " + ex.getMessage());
+                }
             }
         }
 
@@ -327,28 +326,28 @@ public class HttpClientTests {
         }
 
         @Test
-        void clientCreatedWithProxyInfoTest() {
-            CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry);
-            new MockServerClient("localhost", mockServer.getPort())
-                    .when(
-                            request()
-                                    .withMethod("GET")
-                                    .withPath("/hello")
-                    )
-                    .respond(
-                            response()
-                                    .withStatusCode(200)
-                                    .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                    .withBody("hello test")
-                    );
-            HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
-            try {
-                CloseableHttpResponse response = client.execute(request);
-                Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
-                String stringResponse = EntityUtils.toString(response.getEntity());
-                Assertions.assertEquals("hello test", stringResponse);
-            } catch (IOException ex) {
-                System.out.println("exception occurred: " + ex.getMessage());
+        void clientCreatedWithProxyInfoTest() throws IOException {
+            try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
+                new MockServerClient("localhost", mockServer.getPort())
+                        .when(
+                                request()
+                                        .withMethod("GET")
+                                        .withPath("/hello")
+                        )
+                        .respond(
+                                response()
+                                        .withStatusCode(200)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                        .withBody("hello test")
+                        );
+                HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
+                try (CloseableHttpResponse response = client.execute(request)) {
+                    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+                    String stringResponse = EntityUtils.toString(response.getEntity());
+                    Assertions.assertEquals("hello test", stringResponse);
+                } catch (IOException ex) {
+                    System.out.println("exception occurred: " + ex.getMessage());
+                }
             }
         }
 
