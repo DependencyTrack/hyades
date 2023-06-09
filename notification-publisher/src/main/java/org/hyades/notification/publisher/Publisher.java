@@ -32,7 +32,7 @@ import org.hyades.proto.notification.v1.NewVulnerableDependencySubject;
 import org.hyades.proto.notification.v1.Notification;
 import org.hyades.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
 import org.hyades.proto.notification.v1.PolicyViolationSubject;
-import org.hyades.proto.notification.v1.ProjectAnalysisCompleteSubject;
+import org.hyades.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
 import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.slf4j.LoggerFactory;
@@ -122,8 +122,8 @@ public interface Publisher {
                 final var subject = notification.getSubject().unpack(PolicyViolationSubject.class);
                 context.put("subject", subject);
                 context.put("subjectJson", JsonFormat.printer().print(subject));
-            } else if (notification.getSubject().is(ProjectAnalysisCompleteSubject.class)) {
-                final var subject = notification.getSubject().unpack(ProjectAnalysisCompleteSubject.class);
+            } else if (notification.getSubject().is(ProjectVulnAnalysisCompleteSubject.class)) {
+                final var subject = notification.getSubject().unpack(ProjectVulnAnalysisCompleteSubject.class);
                 context.put("subject", subject);
                 context.put("subjectJson", JsonFormat.printer().print(subject));
             }

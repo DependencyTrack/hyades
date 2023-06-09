@@ -204,13 +204,13 @@ message PolicyViolationAnalysis {
   optional string state = 4;
   optional bool suppressed = 5;
 }
-message ComponentAnalysisCompleteSubject{
+message ComponentVulnAnalysisCompleteSubject{
   Component component = 1;
   repeated Vulnerability vulnerability = 2;
 }
 
-message ProjectAnalysisCompleteSubject{
+message ProjectVulnAnalysisCompleteSubject{
   Project project = 1;
-  repeated ComponentAnalysisCompleteSubject component_analysis_complete = 2;
+  repeated ComponentVulnAnalysisCompleteSubject component_analysis_complete = 2;
 
 }
