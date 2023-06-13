@@ -62,10 +62,10 @@ import org.hyades.config.HttpClientConfig;
 import org.jboss.logging.Logger;
 
 import javax.net.ssl.SSLContext;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -87,7 +87,7 @@ public final class HttpClientConfiguration {
      * @return a PooledHttpClient object with optional proxy settings
      */
 
-    private HttpClientConfig httpClientConfig;
+    private final HttpClientConfig httpClientConfig;
 
     @Inject
     HttpClientConfiguration(HttpClientConfig config) {
@@ -151,18 +151,18 @@ public final class HttpClientConfiguration {
                 connectionManager = new PoolingHttpClientConnectionManager(registry);
                 new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, applicationName).bindTo(meterRegistry);
 
-                connectionManager.setMaxTotal(200);
-                connectionManager.setDefaultMaxPerRoute(20);
+                connectionManager.setMaxTotal(httpClientConfig.maxTotalConnections());
+                connectionManager.setDefaultMaxPerRoute(httpClientConfig.maxDefaultConnectionsPerRoute());
                 clientBuilder.setConnectionManager(connectionManager);
-                clientBuilder.setConnectionManagerShared(true);
+                clientBuilder.setConnectionManagerShared(httpClientConfig.isConnectionManagerShared());
             } catch (KeyManagementException | KeyStoreException | NoSuchAlgorithmException e) {
                 LOGGER.warn("An error occurred while configuring proxy", e);
             }
         } else {
             connectionManager = new PoolingHttpClientConnectionManager();
             new PoolingHttpClientConnectionManagerMetricsBinder(connectionManager, applicationName).bindTo(meterRegistry);
-            connectionManager.setMaxTotal(200);
-            connectionManager.setDefaultMaxPerRoute(20);
+            connectionManager.setMaxTotal(httpClientConfig.maxTotalConnections());
+            connectionManager.setDefaultMaxPerRoute(httpClientConfig.maxDefaultConnectionsPerRoute());
             clientBuilder.setConnectionManager(connectionManager);
         }
 
@@ -270,12 +270,12 @@ public final class HttpClientConfiguration {
             if (proxyInfo == null) {
                 proxyInfo = buildfromEnvironment("http_proxy");
             }
-        } catch (MalformedURLException | SecurityException | UnsupportedEncodingException e) {
+        } catch (MalformedURLException | SecurityException e) {
             LOGGER.warn("Could not parse proxy settings from environment", e);
         }
         if (proxyInfo != null) {
             for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-                if ("NO_PROXY".equals(entry.getKey().toUpperCase())) {
+                if ("NO_PROXY".equalsIgnoreCase(entry.getKey())) {
                     proxyInfo.setNoProxy(System.getenv(entry.getKey()).split(","));
                     break;
                 }
@@ -294,7 +294,7 @@ public final class HttpClientConfiguration {
      * @throws SecurityException     if the environment variable cannot be retrieved
      */
     private static ProxyInfo buildfromEnvironment(final String variable)
-            throws MalformedURLException, SecurityException, UnsupportedEncodingException {
+            throws MalformedURLException, SecurityException {
 
         if (variable == null) {
             return null;
@@ -303,7 +303,7 @@ public final class HttpClientConfiguration {
 
         String proxy = null;
         for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-            if (variable.toUpperCase().equals(entry.getKey().toUpperCase())) {
+            if (variable.equalsIgnoreCase(entry.getKey())) {
                 proxy = System.getenv(entry.getKey());
                 break;
             }
@@ -317,11 +317,11 @@ public final class HttpClientConfiguration {
             if (proxyUrl.getUserInfo() != null) {
                 final String[] credentials = proxyUrl.getUserInfo().split(":");
                 if (credentials.length > 0) {
-                    final String username = URLDecoder.decode(credentials[0], "UTF-8");
+                    final String username = URLDecoder.decode(credentials[0], StandardCharsets.UTF_8);
                     parseProxyUsername(proxyInfo, username);
                 }
                 if (credentials.length == 2) {
-                    proxyInfo.setPassword(URLDecoder.decode(credentials[1], "UTF-8"));
+                    proxyInfo.setPassword(URLDecoder.decode(credentials[1], StandardCharsets.UTF_8));
                 }
             }
         }
