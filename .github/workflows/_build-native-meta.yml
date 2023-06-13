@@ -6,6 +6,8 @@ on:
         required: true
         description: "Name of the Maven module to build"
 
+permissions: { }
+
 jobs:
   build-native-image:
     name: Build Native Image
@@ -20,17 +22,17 @@ jobs:
       fail-fast: true
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # tag=v3.5.3
     - name: Set up JDK
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # tag=v3.11.0
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2.2.0
+      uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # tag=v2.2.0
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2.6.0
+      uses: docker/setup-buildx-action@6a58db7e0d21ca03e6c44877909e80e45217eed2 # tag=v2.6.0
       with:
         install: true
     - name: Build Native Image
@@ -67,7 +69,7 @@ jobs:
       run: |-
         mvn -pl commons,commons-persistence,proto,${{ inputs.module }} test-compile failsafe:integration-test -Pnative
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # tag=v3.1.2
       with:
         name: native-image-${{ matrix.arch.name }}
         path: |-
@@ -76,37 +78,39 @@ jobs:
   build-container-image:
     name: Build Container Image
     runs-on: ubuntu-latest
+    permissions:
+      packages: write # Required to push images to ghcr.io
     timeout-minutes: 5
     needs:
     - build-native-image
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # tag=v3.5.3
     - name: Download amd64 Binary
-      uses: actions/download-artifact@v3.0.2
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # tag=v3.0.2
       with:
         name: native-image-amd64
         path: ${{ inputs.module }}/target/amd64
     - name: Download arm64 Binary
-      uses: actions/download-artifact@v3.0.2
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # tag=v3.0.2
       with:
         name: native-image-arm64
         path: ${{ inputs.module }}/target/arm64
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2.2.0
+      uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # tag=v2.2.0
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2.6.0
+      uses: docker/setup-buildx-action@6a58db7e0d21ca03e6c44877909e80e45217eed2 # tag=v2.6.0
       with:
         install: true
     - name: Docker login
-      uses: docker/login-action@v2
+      uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # tag=v2.2.0
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
       if: ${{ startsWith(github.repository, 'DependencyTrack/') }}
     - name: Build Container Image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@44ea916f6c540f9302d50c2b1e5a8dc071f15cdf # tag=v4.1.0
       with:
         context: ./${{ inputs.module }}
         file: ./${{ inputs.module }}/src/main/docker/Dockerfile.native-multiarch

@@ -12,6 +12,8 @@ on:
     - "pom.xml"
   workflow_dispatch: { }
 
+permissions: { }
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -21,3 +23,5 @@ jobs:
     uses: ./.github/workflows/_build-native-meta.yml
     with:
       module: notification-publisher
+    permissions:
+      packages: write # Required to push images to ghcr.io

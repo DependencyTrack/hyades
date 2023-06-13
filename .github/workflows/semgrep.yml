@@ -32,10 +32,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout project source
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # tag=v3.5.3
 
       # Scan code using project's configuration on https://semgrep.dev/manage
-      - uses: returntocorp/semgrep-action@7120226e55a1ddb7624bbf600148b716c82f2745
+      - uses: returntocorp/semgrep-action@316a1751c53ffb6689b8726910e8204ffb591b4f # tag=v0.51.0
         with:
           publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
           publishDeployment: ${{ secrets.SEMGREP_DEPLOYMENT_ID }}
@@ -43,7 +43,7 @@ jobs:
 
       # Upload SARIF file generated in previous step
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@1245696032ecf7d39f87d54daa406e22ddf769a8 # v2.3.6
         with:
           sarif_file: semgrep.sarif
         if: always()
