@@ -7,7 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.streams.processor.api.FixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyProcessorSupplier;
 import org.hyades.common.SecretDecryptor;
-import org.hyades.persistence.RepoEntityRepository;
+import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;

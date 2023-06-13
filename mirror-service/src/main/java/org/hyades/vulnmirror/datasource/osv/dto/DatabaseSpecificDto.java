@@ -3,7 +3,7 @@ package org.hyades.vulnmirror.datasource.osv.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import org.hyades.resolver.CweResolver;
+import org.hyades.common.cwe.CweResolver;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -9,6 +9,7 @@
 
   <modules>
     <module>commons</module>
+    <module>commons-persistence</module>
     <module>mirror-service</module>
     <module>notification-publisher</module>
     <module>repository-meta-analyzer</module>
@@ -43,8 +44,8 @@
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20230227</lib.org-json.version>
     <lib.pebble.version>3.2.1</lib.pebble.version>
-    <lib.quarkus-helm.version>0.2.8</lib.quarkus-helm.version>
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
+    <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
     <lib.open.vulnerability.clients.version>4.1.0</lib.open.vulnerability.clients.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
@@ -83,6 +84,11 @@
       <dependency>
         <groupId>org.hyades</groupId>
         <artifactId>commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hyades</groupId>
+        <artifactId>commons-persistence</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -134,6 +140,11 @@
       </dependency>
       <dependency>
         <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-retry</artifactId>
+        <version>${lib.resilience4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.resilience4j</groupId>
         <artifactId>resilience4j-micrometer</artifactId>
         <version>${lib.resilience4j.version}</version>
       </dependency>
@@ -172,6 +183,12 @@
             <artifactId>micrometer-core</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.package-url</groupId>
+        <artifactId>packageurl-java</artifactId>
+        <version>${lib.packageurl-java.version}</version>
       </dependency>
 
       <dependency>
@@ -224,12 +241,6 @@
         <groupId>com.icegreen</groupId>
         <artifactId>greenmail-junit5</artifactId>
         <version>${lib.greenmail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>log4j-over-slf4j</artifactId>
-        <version>${lib.log4j-over-slf4j.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

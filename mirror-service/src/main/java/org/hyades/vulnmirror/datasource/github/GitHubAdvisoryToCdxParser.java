@@ -17,7 +17,7 @@ import org.cyclonedx.proto.v1_4.VulnerabilityAffectedVersions;
 import org.cyclonedx.proto.v1_4.VulnerabilityAffects;
 import org.cyclonedx.proto.v1_4.VulnerabilityRating;
 import org.cyclonedx.proto.v1_4.VulnerabilityReference;
-import org.hyades.resolver.CweResolver;
+import org.hyades.common.cwe.CweResolver;
 import org.hyades.vulnmirror.datasource.Datasource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

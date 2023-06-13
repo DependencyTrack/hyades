@@ -20,10 +20,10 @@ package org.hyades.notification.publisher;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
+import org.hyades.persistence.repository.ConfigPropertyRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.json.JsonObject;
-import org.hyades.persistence.ConfigPropertyRepository;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
 import org.slf4j.Logger;

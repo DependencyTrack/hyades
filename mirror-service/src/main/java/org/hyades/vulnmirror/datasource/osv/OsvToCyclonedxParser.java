@@ -32,10 +32,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_UNKNOWN;
+import static org.hyades.common.model.Severity.getSeverityByLevel;
 import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV2Score;
 import static org.hyades.commonutil.VulnerabilityUtil.normalizedCvssV3Score;
 import static org.hyades.commonutil.VulnerabilityUtil.trimSummary;
-import static org.hyades.model.Severity.getSeverityByLevel;
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.getBomRefIfComponentExists;
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 

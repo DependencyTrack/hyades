@@ -20,9 +20,9 @@ package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
 import org.apache.http.impl.client.HttpClients;
-import org.hyades.model.Component;
 import org.hyades.model.MetaModel;
-import org.hyades.model.RepositoryType;
+import org.hyades.persistence.model.Component;
+import org.hyades.persistence.model.RepositoryType;
 import org.hyades.util.ComponentVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

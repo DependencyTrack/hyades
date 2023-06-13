@@ -5,13 +5,13 @@ import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.JsonObject;
 import org.hyades.common.SecretDecryptor;
-import org.hyades.persistence.ConfigPropertyRepository;
+import org.hyades.persistence.repository.ConfigPropertyRepository;
 import org.hyades.proto.notification.v1.Notification;
 
 import java.util.Map;
 
-import static org.hyades.model.ConfigPropertyConstants.JIRA_PASSWORD;
-import static org.hyades.model.ConfigPropertyConstants.JIRA_USERNAME;
+import static org.hyades.persistence.model.ConfigPropertyConstants.JIRA_PASSWORD;
+import static org.hyades.persistence.model.ConfigPropertyConstants.JIRA_USERNAME;
 
 @ApplicationScoped
 @Startup // Force bean creation even though no direct injection points exist
