@@ -123,7 +123,6 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 """.formatted(wireMock.getPort())));
 
         //Create notification rule for project vulnerability analysis complete
-        // Create a webhook alert for NEW_VULNERABILITY notifications and point it to WireMock.
         final NotificationRule projectVulnAnalysisCompleteWebhookRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "projectVulnAnalysisCompleteWebhookRule", "PORTFOLIO", "INFORMATIONAL", new Publisher(webhookPublisher.uuid())));
         apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(projectVulnAnalysisCompleteWebhookRule.uuid(), projectVulnAnalysisCompleteWebhookRule.name(), true,
