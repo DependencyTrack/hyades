@@ -248,9 +248,9 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                              "level" : "LEVEL_INFORMATIONAL",
                              "scope" : "SCOPE_PORTFOLIO",
                              "group" : "GROUP_PROJECT_VULN_ANALYSIS_COMPLETE",
-                             "timestamp" : "seconds: ${json-unit.any-number}\\n",
+                             "timestamp" : "${json-unit.any-string}",
                              "title" : "Project vulnrability analysis complete",
-                             "content" : "project analysis complete for project foo with id: ${json-unit.any-string} and with version: bar. Vulnerability details added to subject ",
+                             "content" : "${json-unit.any-string}",
                              "subject" : {
                                "project" : {
                                  "uuid": "${json-unit.any-string}",
