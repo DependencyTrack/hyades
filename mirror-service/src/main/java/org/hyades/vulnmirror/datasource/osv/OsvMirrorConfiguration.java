@@ -22,7 +22,7 @@ class OsvMirrorConfiguration {
                 .namingPattern("hyades-mirror-osv-%d")
                 .uncaughtExceptionHandler((thread, exception) -> {
                     final Logger logger = LoggerFactory.getLogger(OsvMirror.class);
-                    logger.error("An uncaught exception was thrown while mirroring NVD", exception);
+                    logger.error("An uncaught exception was thrown while mirroring OSV", exception);
                 })
                 .build();
 

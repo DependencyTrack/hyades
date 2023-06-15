@@ -99,8 +99,12 @@ public class OsvToCyclonedxParser {
             JSONObject osvAffectedObj = osvAffectedArray.getJSONObject(i);
             String purl = parsePackageUrl(osvAffectedObj);
             try {
-                packageUrl = new PackageURL(purl);
-                ecoSystem = packageUrl.getType();
+                if (purl != null) {
+                    packageUrl = new PackageURL(purl);
+                    ecoSystem = packageUrl.getType();
+                } else {
+                    LOGGER.debug("Package url was null");
+                }
             } catch (MalformedPackageURLException ex) {
                 LOGGER.info("Error while parsing purl: {}", purl, ex);
             }
@@ -319,7 +323,7 @@ public class OsvToCyclonedxParser {
         return cpeObj != null ? cpeObj.optString("purl", null) : null;
     }
 
-    private <T>T deserialize(String stringToConvert, Class<T> type) {
+    private <T> T deserialize(String stringToConvert, Class<T> type) {
         try {
             return this.objectMapper.readValue(stringToConvert, type);
         } catch (Exception ex) {
