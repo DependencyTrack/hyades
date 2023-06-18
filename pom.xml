@@ -47,6 +47,7 @@
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
     <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
     <lib.open.vulnerability.clients.version>4.1.0</lib.open.vulnerability.clients.version>
+    <lib.snappy-java.version>1.1.10.1</lib.snappy-java.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>3.1.2.Final</quarkus.platform.version>
@@ -195,6 +196,16 @@
         <groupId>io.pebbletemplates</groupId>
         <artifactId>pebble</artifactId>
         <version>${lib.pebble.version}</version>
+      </dependency>
+
+      <dependency>
+        <!--
+          Managing snappy-java to fix GHSA-qcwq-55hx-v3vh, GHSA-fjpj-2g6w-x25r, and GHSA-pqr6-cmr2-h8hf.
+          Snappy is introduced via kafka-clients; Once kafka-clients bumps its snappy-java version, we can remove this.
+        -->
+        <groupId>org.xerial.snappy</groupId>
+        <artifactId>snappy-java</artifactId>
+        <version>${lib.snappy-java.version}</version>
       </dependency>
 
       <dependency>
