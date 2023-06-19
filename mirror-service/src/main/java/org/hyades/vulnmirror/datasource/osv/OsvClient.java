@@ -30,7 +30,7 @@ public class OsvClient {
     private final OsvConfig osvConfig;
 
     @Inject
-    public OsvClient(@Named("osvHttpClient") final CloseableHttpClient httpClient, final OsvConfig osvConfig) {
+    public OsvClient(@Named("httpClient") final CloseableHttpClient httpClient, final OsvConfig osvConfig) {
         this.httpClient = httpClient;
         this.osvConfig = osvConfig;
     }
