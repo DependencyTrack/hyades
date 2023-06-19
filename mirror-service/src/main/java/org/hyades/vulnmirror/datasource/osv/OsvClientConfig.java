@@ -6,17 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 @Dependent
 public class OsvClientConfig {
-
-    @Produces
-    @Named("osvHttpClient")
-    public CloseableHttpClient httpClient() {
-        return HttpClientBuilder.create().build();
-    }
 
     @Produces
     @Named("osvObjectMapper")
