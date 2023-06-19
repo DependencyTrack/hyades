@@ -13,12 +13,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 public class OsvClientConfig {
 
     @Produces
-    @Named("osvHttpClient")
-    public CloseableHttpClient httpClient() {
-        return HttpClientBuilder.create().build();
-    }
-
-    @Produces
     @Named("osvObjectMapper")
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper()
