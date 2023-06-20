@@ -248,7 +248,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                              "scope" : "SCOPE_PORTFOLIO",
                              "group" : "GROUP_PROJECT_VULN_ANALYSIS_COMPLETE",
                              "timestamp" : "${json-unit.any-string}",
-                             "title" : "Project vulnrability analysis complete",
+                             "title" : "Project vulnerability analysis complete",
                              "content" : "${json-unit.any-string}",
                              "subject" : {
                                "project" : {
@@ -256,7 +256,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                  "name" : "foo",
                                  "version" : "bar"
                                },
-                               "componentAnalysisComplete" : [ {
+                               "findings" : [ {
                                  "component" : {
                                    "uuid": "${json-unit.any-string}",
                                    "group" : "com.fasterxml.jackson.core",
@@ -272,9 +272,6 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                    "uuid": "${json-unit.any-string}",
                                    "vulnId" : "INT-123",
                                    "source" : "INTERNAL",
-                                   "title" : "NA",
-                                   "subTitle" : "NA",
-                                   "recommendation" : "NA",
                                    "severity" : "UNASSIGNED"
                                  } ]
                                } ]
