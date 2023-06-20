@@ -38,7 +38,7 @@
     <lib.failsafe.version>3.3.1</lib.failsafe.version>
     <lib.greenmail.version>2.0.0</lib.greenmail.version>
     <lib.json-unit.version>2.38.0</lib.json-unit.version>
-    <lib.kafka.version>3.4.1</lib.kafka.version>
+    <lib.kafka.version>3.5.0</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-5</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
@@ -47,9 +47,10 @@
     <lib.resilience4j.version>2.0.2</lib.resilience4j.version>
     <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
     <lib.open.vulnerability.clients.version>4.1.0</lib.open.vulnerability.clients.version>
+    <lib.snappy-java.version>1.1.10.1</lib.snappy-java.version>
     <lib.wiremock.version>2.35.0</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>3.1.0.Final</quarkus.platform.version>
+    <quarkus.platform.version>3.1.2.Final</quarkus.platform.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
 
     <!-- Plugin Versions -->
@@ -195,6 +196,16 @@
         <groupId>io.pebbletemplates</groupId>
         <artifactId>pebble</artifactId>
         <version>${lib.pebble.version}</version>
+      </dependency>
+
+      <dependency>
+        <!--
+          Managing snappy-java to fix GHSA-qcwq-55hx-v3vh, GHSA-fjpj-2g6w-x25r, and GHSA-pqr6-cmr2-h8hf.
+          Snappy is introduced via kafka-clients; Once kafka-clients bumps its snappy-java version, we can remove this.
+        -->
+        <groupId>org.xerial.snappy</groupId>
+        <artifactId>snappy-java</artifactId>
+        <version>${lib.snappy-java.version}</version>
       </dependency>
 
       <dependency>
