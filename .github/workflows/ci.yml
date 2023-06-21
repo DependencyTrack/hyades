@@ -68,4 +68,5 @@ jobs:
         mvn -pl commons,commons-persistence,proto,${{ matrix.module }} clean install -Pnative -DskipTests
     - name: Test Native Image
       run: |-
-        mvn -pl commons,commons-persistence,proto,${{ matrix.module }} test-compile failsafe:integration-test -Pnative
+        mvn -pl commons,commons-persistence,proto,${{ matrix.module }} \
+        test-compile failsafe:integration-test failsafe:verify -Pnative
