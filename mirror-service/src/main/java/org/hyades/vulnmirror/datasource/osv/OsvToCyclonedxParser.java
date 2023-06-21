@@ -99,12 +99,8 @@ public class OsvToCyclonedxParser {
             JSONObject osvAffectedObj = osvAffectedArray.getJSONObject(i);
             String purl = parsePackageUrl(osvAffectedObj);
             try {
-                if (purl != null) {
-                    packageUrl = new PackageURL(purl);
-                    ecoSystem = packageUrl.getType();
-                } else {
-                    LOGGER.debug("Package url was null");
-                }
+                packageUrl = new PackageURL(purl);
+                ecoSystem = packageUrl.getType();
             } catch (MalformedPackageURLException ex) {
                 LOGGER.info("Error while parsing purl: {}", purl, ex);
             }
