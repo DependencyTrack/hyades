@@ -319,7 +319,7 @@ public class OsvToCyclonedxParser {
         return cpeObj != null ? cpeObj.optString("purl", null) : null;
     }
 
-    private <T>T deserialize(String stringToConvert, Class<T> type) {
+    private <T> T deserialize(String stringToConvert, Class<T> type) {
         try {
             return this.objectMapper.readValue(stringToConvert, type);
         } catch (Exception ex) {
