@@ -101,6 +101,7 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
         // TODO: Maybe perform some more validation here?
 
         final String recordKey = "%s/%s".formatted(datasource, vulnId);
+        LoggerFactory.getLogger(getClass()).info("Serializing " + bov);
         final byte[] serializedBov = bovSerializer.serialize("", bov);
         final byte[] bovDigest = DigestUtils.getSha256Digest().digest(serializedBov);
 
