@@ -5,8 +5,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serializer;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.hyades.common.KafkaTopic;
+import org.hyades.proto.KafkaProtobufSerializer;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.Notification;
@@ -23,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
 
+    private final Serializer<Bom> bovSerializer = new KafkaProtobufSerializer<>();
     private Datasource datasource;
     public MirrorStateStore mirrorStateStore;
     private VulnerabilityDigestStore vulnDigestStore;
@@ -98,7 +101,7 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
         // TODO: Maybe perform some more validation here?
 
         final String recordKey = "%s/%s".formatted(datasource, vulnId);
-        final byte[] serializedBov = bov.toByteArray();
+        final byte[] serializedBov = bovSerializer.serialize("", bov);
         final byte[] bovDigest = DigestUtils.getSha256Digest().digest(serializedBov);
 
         if (!Arrays.equals(vulnDigestStore.get(datasource, vulnId), bovDigest)) {
