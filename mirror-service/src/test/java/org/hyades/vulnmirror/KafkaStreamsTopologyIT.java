@@ -10,7 +10,6 @@ import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import jakarta.ws.rs.core.MediaType;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -25,7 +24,6 @@ import org.hyades.util.WireMockTestResource.InjectWireMock;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.List;
@@ -207,7 +205,7 @@ class KafkaStreamsTopologyIT {
                     .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                     .withAutoCommit()
                     .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
-                    .awaitCompletion((throwable, canceled) -> LoggerFactory.getLogger(KafkaStreamsTopologyIT.class).error(ExceptionUtils.getStackTrace(throwable)))
+                    .awaitCompletion()
                     .getRecords();
 
             // Ensure the vulnerability details are correct.

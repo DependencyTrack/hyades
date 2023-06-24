@@ -5,15 +5,12 @@ import org.apache.kafka.common.errors.SerializationException;
 import org.hyades.proto.vulnanalysis.v1.Component;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class KafkaProtobufSerdeTest {
 
@@ -41,11 +38,12 @@ class KafkaProtobufSerdeTest {
 
     @Test
     @SuppressWarnings({"resource", "rawtypes"})
-    void testSerializationException() throws IOException {
+    void testSerializationException() {
         final var serializer = new KafkaProtobufSerializer<AbstractMessageLite>();
 
         final var mockMessage = mock(AbstractMessageLite.class);
-        doThrow(IllegalStateException.class).when(mockMessage).writeTo(any(OutputStream.class));
+        when(mockMessage.toByteArray())
+                .thenThrow(IllegalStateException.class);
 
         assertThatExceptionOfType(SerializationException.class)
                 .isThrownBy(() -> serializer.serialize("topic", mockMessage))
