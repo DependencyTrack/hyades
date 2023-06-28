@@ -1,0 +1,28 @@
+---
+input:
+  http_server:
+    path: /dtrack/notification/bom-consumed
+    allowed_verbs:
+    - POST
+    timeout: 5s
+    sync_response:
+      status: "202"
+
+pipeline:
+  processors:
+  - mapping: |
+      root.projectName = this.notification.subject.project.name
+      root.projectVersion = this.notification.subject.project.version
+      root.bom = this.notification.subject.bom.content
+      root.autoCreate = true
+
+output:
+  http_client:
+    url: "${HYADES_DST_API_BASE_URL}/api/v1/bom"
+    verb: PUT
+    headers:
+      Content-Type: application/json
+      X-Api-Key: "${HYADES_DST_API_KEY}"
+    max_in_flight: 10
+    # tls:
+    #  skip_cert_verify: true
