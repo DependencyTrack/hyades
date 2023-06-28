@@ -1,0 +1,43 @@
+---
+input:
+  http_server:
+    path: /dtrack/notification/bom-processed
+    allowed_verbs:
+    - POST
+    timeout: 5s
+    sync_response:
+      status: "202"
+
+pipeline:
+  processors:
+  # Extract all information we need to assemble a BOM upload request again.
+  # The project UUID we'll only need temporarily.
+  - mapping: |
+      root.temp.projectUuid = this.notification.subject.project.uuid
+      root.projectName = this.notification.subject.project.name
+      root.projectVersion = this.notification.subject.project.version
+      root.autoCreate = true
+  - branch:
+      processors:
+      # Because the original BOM is not part of the notification anymore
+      # due to Kafka message size constraints, we have to export it from
+      # the API server instead.
+      - http:
+          url: '${HYADES_SRC_API_BASE_URL}/api/v1/bom/cyclonedx/project/${! json().temp.projectUuid }?format=json&variant=inventory'
+          verb: GET
+          headers:
+            X-Api-Key: "${HYADES_SRC_API_KEY}"
+      result_map: |
+        root.bom = this.string().encode("base64")
+        root.temp = deleted()
+
+output:
+  http_client:
+    url: "${HYADES_DST_API_BASE_URL}/api/v1/bom"
+    verb: PUT
+    headers:
+      Content-Type: application/json
+      X-Api-Key: "${HYADES_DST_API_KEY}"
+    max_in_flight: 10
+    # tls:
+    #  skip_cert_verify: true
