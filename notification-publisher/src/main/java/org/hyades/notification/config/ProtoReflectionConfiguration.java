@@ -8,7 +8,6 @@ import org.hyades.proto.notification.v1.Bom;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.BomProcessingFailedSubject;
 import org.hyades.proto.notification.v1.Component;
-import org.hyades.proto.notification.v1.ComponentVulnAnalysisCompleteSubject;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
 import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
@@ -21,7 +20,6 @@ import org.hyades.proto.notification.v1.PolicyViolationAnalysis;
 import org.hyades.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
 import org.hyades.proto.notification.v1.PolicyViolationSubject;
 import org.hyades.proto.notification.v1.Project;
-import org.hyades.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
 import org.hyades.proto.notification.v1.Scope;
 import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.Vulnerability;
@@ -40,7 +38,6 @@ import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubje
                 BomConsumedOrProcessedSubject.class,
                 BomProcessingFailedSubject.class,
                 Component.class,
-                ComponentVulnAnalysisCompleteSubject.class,
                 Group.class,
                 NewVulnerabilitySubject.class,
                 NewVulnerableDependencySubject.class,
@@ -53,7 +50,6 @@ import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubje
                 PolicyViolationAnalysisDecisionChangeSubject.class,
                 PolicyViolationSubject.class,
                 Project.class,
-                ProjectVulnAnalysisCompleteSubject.class,
                 Scope.class,
                 Timestamp.class,
                 VexConsumedOrProcessedSubject.class,
