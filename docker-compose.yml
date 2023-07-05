@@ -145,7 +145,7 @@ services:
     restart: unless-stopped
 
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v23.1.10
+    image: docker.redpanda.com/vectorized/redpanda:v23.1.13
     container_name: dt-redpanda
     command:
       - redpanda
@@ -181,7 +181,7 @@ services:
     restart: unless-stopped
 
   redpanda-init:
-    image: docker.redpanda.com/vectorized/redpanda:v23.1.10
+    image: docker.redpanda.com/vectorized/redpanda:v23.1.13
     container_name: dt-redpanda-init
     depends_on:
       - redpanda
@@ -244,6 +244,8 @@ services:
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.project-created
                 valueProtoType: org.hyades.notification.v1.Notification
+              - topicName: dtrack.notification.project-vuln-analysis-complete
+                valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.repository
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.vex
@@ -274,7 +276,7 @@ services:
     restart: unless-stopped
 
   prometheus:
-    image: prom/prometheus:v2.44.0
+    image: prom/prometheus:v2.45.0
     container_name: dt-prometheus
     ports:
       - "127.0.0.1:9090:9090"
@@ -287,7 +289,7 @@ services:
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana-oss:9.3.14
+    image: grafana/grafana-oss:9.3.16
     container_name: dt-grafana
     depends_on:
       - prometheus
