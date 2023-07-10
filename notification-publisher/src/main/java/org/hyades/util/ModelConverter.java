@@ -33,7 +33,6 @@ public final class ModelConverter {
             case GROUP_DATASOURCE_MIRRORING -> NotificationGroup.DATASOURCE_MIRRORING;
             case GROUP_REPOSITORY -> NotificationGroup.REPOSITORY;
             case GROUP_INTEGRATION -> NotificationGroup.INTEGRATION;
-            case GROUP_INDEXING_SERVICE -> NotificationGroup.INDEXING_SERVICE;
             case GROUP_FILE_SYSTEM -> NotificationGroup.FILE_SYSTEM;
             case GROUP_ANALYZER -> NotificationGroup.ANALYZER;
             case GROUP_NEW_VULNERABILITY -> NotificationGroup.NEW_VULNERABILITY;

@@ -37,7 +37,6 @@ enum Group {
   GROUP_DATASOURCE_MIRRORING = 2;
   GROUP_REPOSITORY = 3;
   GROUP_INTEGRATION = 4;
-  GROUP_INDEXING_SERVICE = 5;
   GROUP_FILE_SYSTEM = 6;
   GROUP_ANALYZER = 7;
   GROUP_NEW_VULNERABILITY = 8;
@@ -51,6 +50,11 @@ enum Group {
   GROUP_PROJECT_CREATED = 16;
   GROUP_BOM_PROCESSING_FAILED = 17;
   GROUP_PROJECT_VULN_ANALYSIS_COMPLETE = 18;
+
+  // Indexing service has been removed as of
+  // https://github.com/DependencyTrack/hyades/issues/661
+  reserved 5;
+  reserved "GROUP_INDEXING_SERVICE";
 }
 
 message BackReference {
