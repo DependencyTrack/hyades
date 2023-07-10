@@ -110,7 +110,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
 
     private Optional<AnalysisResult> analyze(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
         analyzer.setRepositoryBaseUrl(repository.getUrl());
-        if (repository.isInternal()) {
+        if (repository.isAuthenticationRequired()) {
             try {
                 analyzer.setRepositoryUsernameAndPassword(repository.getUsername(), secretDecryptor.decryptAsString(repository.getPassword()));
             } catch (Exception e) {

@@ -89,6 +89,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Repository repository = new Repository();
         repository.setIdentifier("testRepository");
         repository.setInternal(false);
+        repository.setAuthenticationRequired(false);
         repository.setUrl("https://repo1.maven.org/maven2/");
         when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
                 .thenReturn(List.of(repository));
@@ -118,6 +119,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Repository repository = new Repository();
         repository.setIdentifier("testRepository");
         repository.setInternal(false);
+        repository.setAuthenticationRequired(false);
         repository.setUrl("https://repo1.maven.org/maven2/");
         when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
                 .thenReturn(List.of(repository));

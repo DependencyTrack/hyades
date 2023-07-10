@@ -18,13 +18,13 @@
  */
 package org.hyades.persistence.model;
 
-import org.hyades.persistence.converter.RepositoryTypeConverter;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hyades.persistence.converter.RepositoryTypeConverter;
+
 import java.util.UUID;
 
 @Entity
@@ -53,6 +53,9 @@ public class Repository {
 
     @Column(name = "INTERNAL")
     private Boolean internal;
+
+    @Column(name = "AUTHENTICATIONREQUIRED")
+    private Boolean authenticationRequired;
 
     @Column(name = "USERNAME")
     private String username;
@@ -118,6 +121,14 @@ public class Repository {
 
     public void setInternal(Boolean internal) {
         this.internal = internal;
+    }
+
+    public Boolean isAuthenticationRequired() {
+        return authenticationRequired;
+    }
+
+    public void setAuthenticationRequired(boolean authenticationRequired) {
+        this.authenticationRequired = authenticationRequired;
     }
 
     public String getUsername() {
