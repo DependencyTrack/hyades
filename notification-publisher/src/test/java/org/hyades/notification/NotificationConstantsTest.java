@@ -29,11 +29,6 @@ public class NotificationConstantsTest {
         Assertions.assertEquals("NVD Mirroring", NotificationConstants.Title.NVD_MIRROR);
         Assertions.assertEquals("NPM Advisory Mirroring", NotificationConstants.Title.NPM_ADVISORY_MIRROR);
         Assertions.assertEquals("VulnDB Mirroring", NotificationConstants.Title.VULNDB_MIRROR);
-        Assertions.assertEquals("Component Indexing Service", NotificationConstants.Title.COMPONENT_INDEXER);
-        Assertions.assertEquals("License Indexing Service", NotificationConstants.Title.LICENSE_INDEXER);
-        Assertions.assertEquals("Project Indexing Service", NotificationConstants.Title.PROJECT_INDEXER);
-        Assertions.assertEquals("Vulnerability Indexing Service", NotificationConstants.Title.VULNERABILITY_INDEXER);
-        Assertions.assertEquals("Core Indexing Services", NotificationConstants.Title.CORE_INDEXING_SERVICES);
         Assertions.assertEquals("File System Error", NotificationConstants.Title.FILE_SYSTEM_ERROR);
         Assertions.assertEquals("Repository Error", NotificationConstants.Title.REPO_ERROR);
         Assertions.assertEquals("Integration Error", NotificationConstants.Title.INTEGRATION_ERROR);
