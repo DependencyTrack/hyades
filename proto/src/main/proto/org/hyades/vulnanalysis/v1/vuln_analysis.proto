@@ -4,6 +4,7 @@ syntax = "proto3";
 package org.hyades.vulnanalysis.v1;
 
 import "org/hyades/vuln/v1/vuln.proto";
+import "org/cyclonedx/v1_4/cyclonedx.proto";
 
 option java_multiple_files = true;
 option java_package = "org.hyades.proto.vulnanalysis.v1";
@@ -55,8 +56,8 @@ message ScannerResult {
   // Status of the scan.
   ScanStatus status = 2;
 
-  // Vulnerabilities identified in the scan.
-  repeated org.hyades.vuln.v1.Vulnerability vulnerabilities = 3;
+  // Bov identified in the scan.
+  org.cyclonedx.v1_4.Bom bom = 3;
 
   // Reason for scan failure.
   optional string failure_reason = 4;
