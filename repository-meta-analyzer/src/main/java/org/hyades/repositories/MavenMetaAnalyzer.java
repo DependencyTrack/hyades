@@ -107,8 +107,10 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                     handleUnexpectedHttpResponse(LOGGER, url, status.getStatusCode(), status.getReasonPhrase(), component);
                 }
             } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
+                LOGGER.error("Failed to perform repo meta analysis for component with purl:{}", component.getPurl());
                 handleRequestException(LOGGER, e);
             } catch (Exception ex) {
+                LOGGER.error("Failed to perform repo meta analysis for component with purl:{}", component.getPurl());
                 throw new MetaAnalyzerException(ex);
             }
         }
