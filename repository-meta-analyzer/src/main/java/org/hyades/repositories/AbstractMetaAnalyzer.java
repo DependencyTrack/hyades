@@ -26,6 +26,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.hyades.commonutil.HttpUtil;
 import org.hyades.persistence.model.Component;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -37,6 +38,7 @@ import java.io.IOException;
  */
 
 public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected CloseableHttpClient httpClient;
 
@@ -109,6 +111,7 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
         final HttpUriRequest request = new HttpGet(url);
         request.addHeader("accept", "application/json");
         if (username != null || password != null) {
+            logger.debug("Adding user name and password to request provided");
             request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
         }
         return httpClient.execute(request);
