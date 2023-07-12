@@ -19,30 +19,17 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.ResourceArg;
-import io.quarkus.test.junit.QuarkusTest;
 import org.apache.http.impl.client.HttpClients;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
-import org.hyades.util.WireMockTestResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@QuarkusTest
-@QuarkusTestResource(
-        value = WireMockTestResource.class,
-        initArgs = @ResourceArg(name = "serverUrlProperty", value = "scanner.snyk.api.baseurl")
-)
 class MavenMetaAnalyzerTest {
 
     private IMetaAnalyzer analyzer;
-
-    @WireMockTestResource.InjectWireMock
-    WireMockServer wireMockServer;
 
     @BeforeEach
     void beforeEach() {
@@ -94,4 +81,4 @@ class MavenMetaAnalyzerTest {
         Assertions.assertEquals(RepositoryType.PYPI.name(), metaModel.getComponent().getPurl().getType().toUpperCase());
     }
 }
-}
+

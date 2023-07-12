@@ -72,7 +72,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 // We do not want non-internal components being analyzed with internal repositories as
                 // internal repositories are not the source of truth for these components, even if the
                 // repository acts as a proxy to the source of truth. This cannot be assumed.
-                LOGGER.debug("Skipping component with purl "+component.getPurl());
+                LOGGER.debug("Skipping component with purl {} ", component.getPurl());
                 continue;
             }
 
