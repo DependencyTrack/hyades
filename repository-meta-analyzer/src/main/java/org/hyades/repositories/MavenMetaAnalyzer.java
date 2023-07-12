@@ -20,6 +20,7 @@ package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hyades.commonutil.DateUtil;
@@ -81,7 +82,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
             final String url = String.format(baseUrl + REPO_METADATA_URL, mavenGavUrl);
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 final StatusLine status = response.getStatusLine();
-                if (status.getStatusCode() == 200) {
+                if (status.getStatusCode() == HttpStatus.SC_OK) {
                     final HttpEntity entity = response.getEntity();
                     if (entity != null) {
                         try (InputStream in = entity.getContent()) {
