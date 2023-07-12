@@ -27,14 +27,6 @@ public class NotificationConstants {
         public static final String EPSS_MIRROR = "EPSS Mirroring";
         public static final String NPM_ADVISORY_MIRROR = "NPM Advisory Mirroring";
         public static final String VULNDB_MIRROR = "VulnDB Mirroring";
-        public static final String COMPONENT_INDEXER = "Component Indexing Service";
-        public static final String SERVICECOMPONENT_INDEXER = "ServiceComponent Indexing Service";
-        public static final String LICENSE_INDEXER = "License Indexing Service";
-        public static final String CPE_INDEXER = "CPE Indexing Service";
-        public static final String VULNERABLESOFTWARE_INDEXER = "Vulnerable Software Indexer";
-        public static final String PROJECT_INDEXER = "Project Indexing Service";
-        public static final String VULNERABILITY_INDEXER = "Vulnerability Indexing Service";
-        public static final String CORE_INDEXING_SERVICES = "Core Indexing Services";
         public static final String FILE_SYSTEM_ERROR = "File System Error";
         public static final String REPO_ERROR = "Repository Error";
         public static final String ANALYZER_ERROR = "Analyzer Error";
