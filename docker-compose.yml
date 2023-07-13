@@ -230,8 +230,6 @@ services:
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.file-system
                 valueProtoType: org.hyades.notification.v1.Notification
-              - topicName: dtrack.notification.indexing-service
-                valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.integration
                 valueProtoType: org.hyades.notification.v1.Notification
               - topicName: dtrack.notification.new-vulnerability

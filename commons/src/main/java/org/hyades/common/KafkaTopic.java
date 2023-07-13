@@ -10,7 +10,6 @@ public enum KafkaTopic {
     NOTIFICATION_CONFIGURATION("dtrack.notification.configuration"),
     NOTIFICATION_DATASOURCE_MIRRORING("dtrack.notification.datasource-mirroring"),
     NOTIFICATION_FILE_SYSTEM("dtrack.notification.file-system"),
-    NOTIFICATION_INDEXING_SERVICE("dtrack.notification.indexing-service"),
     NOTIFICATION_INTEGRATION("dtrack.notification.integration"),
     NOTIFICATION_NEW_VULNERABILITY("dtrack.notification.new-vulnerability"),
     NOTIFICATION_NEW_VULNERABLE_DEPENDENCY("dtrack.notification.new-vulnerable-dependency"),

@@ -25,7 +25,6 @@ public enum NotificationGroup {
     DATASOURCE_MIRRORING,
     REPOSITORY,
     INTEGRATION,
-    INDEXING_SERVICE,
     FILE_SYSTEM,
     ANALYZER,
 

@@ -27,7 +27,6 @@ notification_topics=(
   "${API_TOPIC_PREFIX:-}dtrack.notification.configuration"
   "${API_TOPIC_PREFIX:-}dtrack.notification.datasource-mirroring"
   "${API_TOPIC_PREFIX:-}dtrack.notification.file-system"
-  "${API_TOPIC_PREFIX:-}dtrack.notification.indexing-service"
   "${API_TOPIC_PREFIX:-}dtrack.notification.integration"
   "${API_TOPIC_PREFIX:-}dtrack.notification.new-vulnerability"
   "${API_TOPIC_PREFIX:-}dtrack.notification.new-vulnerable-dependency"
