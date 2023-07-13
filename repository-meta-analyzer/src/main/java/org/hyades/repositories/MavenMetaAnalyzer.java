@@ -25,7 +25,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.XmlUtil;
-import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -110,9 +109,6 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
             } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
                 LOGGER.error("Failed to perform repo meta analysis for component with purl:{}", component.getPurl());
                 handleRequestException(LOGGER, e);
-            } catch (Exception ex) {
-                LOGGER.error("Failed to perform repo meta analysis for component with purl:{}", component.getPurl());
-                throw new MetaAnalyzerException(ex);
             }
         }
         return meta;

@@ -79,5 +79,15 @@ class MavenMetaAnalyzerTest {
         MetaModel metaModel = analyzer.analyze(component);
         Assertions.assertEquals(RepositoryType.PYPI.name(), metaModel.getComponent().getPurl().getType().toUpperCase());
     }
+
+    @Test
+    void testIOException() {
+        Component component = new Component();
+        component.setPurl("pkg:pypi/com.typesafe.akka/package-does-not-exist@v1.2.0");
+        analyzer.setRepositoryBaseUrl("http://www.does.not.exist.com");
+        MetaModel metaModel = analyzer.analyze(component);
+        Assertions.assertEquals(metaModel.getComponent(), component);
+
+    }
 }
 
