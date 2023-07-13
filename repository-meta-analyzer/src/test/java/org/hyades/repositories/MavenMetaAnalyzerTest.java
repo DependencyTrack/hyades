@@ -41,7 +41,6 @@ class MavenMetaAnalyzerTest {
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:maven/junit/junit@4.12"));
-
         Assertions.assertEquals("MavenMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.MAVEN, analyzer.supportedRepositoryType());
