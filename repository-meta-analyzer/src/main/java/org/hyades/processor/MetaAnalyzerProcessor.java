@@ -172,7 +172,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         // Quarkus has Hibernate L2 cache enabled by default, we just need to opt in to using
         // it for this query: https://quarkus.io/guides/hibernate-orm#caching-of-queries
         // Should be tested whether throughput can be improved this way.
-        return QuarkusTransaction.requiringNew()
+        //changed this to joinexisting because with new transaction, it is not fetching values that were inserted from
+        // existing previous transaction and returning empty result
+        return QuarkusTransaction.joiningExisting()
                 .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 

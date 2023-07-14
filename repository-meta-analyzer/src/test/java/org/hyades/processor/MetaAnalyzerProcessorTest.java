@@ -1,12 +1,15 @@
 package org.hyades.processor;
 
+import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
@@ -55,6 +58,9 @@ class MetaAnalyzerProcessorTest {
 
     @Inject
     RepositoryAnalyzerFactory analyzerFactory;
+
+    @Inject
+    EntityManager entityManager;
 
     @Inject
     @CacheName("metaAnalyzer")
@@ -122,4 +128,43 @@ class MetaAnalyzerProcessorTest {
                 });
 
     }
+
+    @Test
+    @TestTransaction
+    void testInternalRepositoryExternalComponent() throws MalformedPackageURLException {
+        entityManager.createNativeQuery("""
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
+                                    ('MAVEN',true, 'central', true, 'test.com', false,1);
+                """).executeUpdate();
+
+        final TestRecord<PackageURL, Component> inputRecord = new TestRecord<>(new PackageURL("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4"), Component.newBuilder()
+                .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4").setInternal(false).build());
+        inputTopic.pipeInput(inputRecord);
+        assertThat(outputTopic.getQueueSize()).isEqualTo(1);
+        assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
+                record -> {
+                    assertThat(record.key().getType()).isEqualTo(RepositoryType.MAVEN.toString().toLowerCase());
+                });
+
+    }
+
+    @Test
+    @TestTransaction
+    void testExternalRepositoryInternalComponent() throws MalformedPackageURLException {
+        entityManager.createNativeQuery("""
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
+                                    ('MAVEN',true, 'central', false, 'test.com', false,1);
+                """).executeUpdate();
+
+        final TestRecord<PackageURL, Component> inputRecord = new TestRecord<>(new PackageURL("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4"), Component.newBuilder()
+                .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4").setInternal(true).build());
+        inputTopic.pipeInput(inputRecord);
+        assertThat(outputTopic.getQueueSize()).isEqualTo(1);
+        assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
+                record -> {
+                    assertThat(record.key().getType()).isEqualTo(RepositoryType.MAVEN.toString().toLowerCase());
+                });
+
+    }
+
 }
