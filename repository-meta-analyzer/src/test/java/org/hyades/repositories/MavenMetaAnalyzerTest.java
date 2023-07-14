@@ -89,5 +89,10 @@ class MavenMetaAnalyzerTest {
         Assertions.assertEquals(metaModel.getComponent(), component);
 
     }
+
+    @Test
+    void testInvalidPurl(){
+
+    }
 }
 
