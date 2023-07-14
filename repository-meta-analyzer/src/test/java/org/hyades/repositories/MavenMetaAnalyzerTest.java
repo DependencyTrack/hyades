@@ -41,7 +41,6 @@ class MavenMetaAnalyzerTest {
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:maven/junit/junit@4.12"));
-
         Assertions.assertEquals("MavenMetaAnalyzer", analyzer.getName());
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.MAVEN, analyzer.supportedRepositoryType());
@@ -63,4 +62,32 @@ class MavenMetaAnalyzerTest {
         Assertions.assertNotNull(metaModel.getLatestVersion());
         Assertions.assertNotNull(metaModel.getPublishedTimestamp());
     }
+
+    @Test
+    void testComponentWithNullPurl() {
+        Component component = new Component();
+        Assertions.assertFalse(analyzer.isApplicable(component));
+        MetaModel metaModel = analyzer.analyze(component);
+        Assertions.assertNull(metaModel.getComponent().getPurl());
+    }
+
+    @Test
+    void testComponentWithNonMavenPurl() {
+        Component component = new Component();
+        component.setPurl("pkg:pypi/com.typesafe.akka/package-does-not-exist@v1.2.0");
+        Assertions.assertFalse(analyzer.isApplicable(component));
+        MetaModel metaModel = analyzer.analyze(component);
+        Assertions.assertEquals(RepositoryType.PYPI.name(), metaModel.getComponent().getPurl().getType().toUpperCase());
+    }
+
+    @Test
+    void testIOException() {
+        Component component = new Component();
+        component.setPurl("pkg:pypi/com.typesafe.akka/package-does-not-exist@v1.2.0");
+        analyzer.setRepositoryBaseUrl("http://www.does.not.exist.com");
+        MetaModel metaModel = analyzer.analyze(component);
+        Assertions.assertEquals(metaModel.getComponent(), component);
+
+    }
 }
+
