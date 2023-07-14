@@ -37,7 +37,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 @TestProfile(NotificationRouterIT.TestProfile.class)
 @QuarkusTestResource(KafkaCompanionResource.class)
 @QuarkusTestResource(WireMockTestResource.class)
-public class NotificationRouterIT {
+class NotificationRouterIT {
 
     public static class TestProfile implements QuarkusTestProfile {
 

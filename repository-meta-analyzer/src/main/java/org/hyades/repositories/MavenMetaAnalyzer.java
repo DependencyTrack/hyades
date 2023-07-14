@@ -20,11 +20,11 @@ package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.XmlUtil;
-import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -81,7 +81,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
             final String url = String.format(baseUrl + REPO_METADATA_URL, mavenGavUrl);
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 final StatusLine status = response.getStatusLine();
-                if (status.getStatusCode() == 200) {
+                if (status.getStatusCode() == HttpStatus.SC_OK) {
                     final HttpEntity entity = response.getEntity();
                     if (entity != null) {
                         try (InputStream in = entity.getContent()) {
@@ -109,9 +109,6 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
             } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
                 LOGGER.error("Failed to perform repo meta analysis for component with purl:{}", component.getPurl());
                 handleRequestException(LOGGER, e);
-            } catch (Exception ex) {
-                LOGGER.error("Failed to perform repo meta analysis for component with purl:{}", component.getPurl());
-                throw new MetaAnalyzerException(ex);
             }
         }
         return meta;

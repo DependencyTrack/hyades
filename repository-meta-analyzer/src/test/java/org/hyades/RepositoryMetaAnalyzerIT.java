@@ -54,8 +54,8 @@ class RepositoryMetaAnalyzerIT {
                 ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                 ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
             final PreparedStatement ps = connection.prepareStatement("""
-                    INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL")
-                    VALUES ('true', 'test', false, NULL, 1, 'GO_MODULES', 'http://localhost:%d');
+                    INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
+                    VALUES ('true', 'test', false, NULL, 1, 'GO_MODULES', 'http://localhost:%d', false);
                     """.formatted(wireMockServer.port()));
             ps.execute();
         }

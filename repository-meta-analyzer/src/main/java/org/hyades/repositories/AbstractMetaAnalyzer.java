@@ -111,7 +111,6 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
         final HttpUriRequest request = new HttpGet(url);
         request.addHeader("accept", "application/json");
         if (username != null || password != null) {
-            logger.debug("Adding user name and password to request provided");
             request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
         }
         return httpClient.execute(request);

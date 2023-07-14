@@ -72,6 +72,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 // We do not want non-internal components being analyzed with internal repositories as
                 // internal repositories are not the source of truth for these components, even if the
                 // repository acts as a proxy to the source of truth. This cannot be assumed.
+                LOGGER.debug("Skipping component with purl {} ", component.getPurl());
                 continue;
             }
 
@@ -171,7 +172,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         // Quarkus has Hibernate L2 cache enabled by default, we just need to opt in to using
         // it for this query: https://quarkus.io/guides/hibernate-orm#caching-of-queries
         // Should be tested whether throughput can be improved this way.
-        return QuarkusTransaction.requiringNew()
+        //changed this to joinexisting because with new transaction, it is not fetching values that were inserted from
+        // existing previous transaction and returning empty result
+        return QuarkusTransaction.joiningExisting()
                 .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 
