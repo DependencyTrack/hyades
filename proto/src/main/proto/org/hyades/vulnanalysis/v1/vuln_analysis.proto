@@ -3,7 +3,6 @@ syntax = "proto3";
 // Public API for Hyades vulnerability analysis.
 package org.hyades.vulnanalysis.v1;
 
-import "org/hyades/vuln/v1/vuln.proto";
 import "org/cyclonedx/v1_4/cyclonedx.proto";
 
 option java_multiple_files = true;
