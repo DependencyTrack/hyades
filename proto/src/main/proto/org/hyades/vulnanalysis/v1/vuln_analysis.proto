@@ -51,7 +51,7 @@ message ScanKey {
 
 message ScannerResult {
 
-  reserved "3";
+  reserved 3;
 
   // The scanner that produced this result.
   Scanner scanner = 1;
@@ -60,7 +60,7 @@ message ScannerResult {
   ScanStatus status = 2;
 
   // Vulnerabilities identified in the scan.
-  repeated org.hyades.vuln.v1.Vulnerability vulnerabilities = 3;
+  // repeated org.hyades.vuln.v1.Vulnerability vulnerabilities = 3;
 
   // Reason for scan failure.
   optional string failure_reason = 4;
