@@ -21,6 +21,7 @@ package org.hyades.repositories;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.hyades.commonutil.HttpUtil;
@@ -107,8 +108,17 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
 //        );
     }
 
-    protected CloseableHttpResponse processHttpRequest(String url) throws IOException {
+    protected CloseableHttpResponse processHttpGetRequest(String url) throws IOException {
         final HttpUriRequest request = new HttpGet(url);
+        request.addHeader("accept", "application/json");
+        if (username != null || password != null) {
+            request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
+        }
+        return httpClient.execute(request);
+    }
+
+    protected CloseableHttpResponse processHttpHeadRequest(String url) throws IOException {
+        final HttpUriRequest request = new HttpHead(url);
         request.addHeader("accept", "application/json");
         if (username != null || password != null) {
             request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));

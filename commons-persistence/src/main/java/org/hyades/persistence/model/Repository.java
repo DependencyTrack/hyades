@@ -57,6 +57,9 @@ public class Repository {
     @Column(name = "AUTHENTICATIONREQUIRED")
     private Boolean authenticationRequired;
 
+    @Column(name = "INTEGRITYCHECKENABLED")
+    private Boolean integrityCheck;
+
     @Column(name = "USERNAME")
     private String username;
 
@@ -129,6 +132,14 @@ public class Repository {
 
     public void setAuthenticationRequired(boolean authenticationRequired) {
         this.authenticationRequired = authenticationRequired;
+    }
+
+    public void setIntegrityCheckApplicable(boolean integrityCheck) {
+        this.integrityCheck = integrityCheck;
+    }
+
+    public boolean isIntegrityCheckEnabled() {
+        return this.integrityCheck;
     }
 
     public String getUsername() {

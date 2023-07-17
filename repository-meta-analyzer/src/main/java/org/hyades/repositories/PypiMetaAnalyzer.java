@@ -21,6 +21,7 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -74,7 +75,7 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
         MetaModel successMeta = new MetaModel(component);
         if (component.getPurl() != null) {
             final String url = String.format(baseUrl + API_URL, component.getPurl().getName());
-            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+            try (final CloseableHttpResponse response = processHttpGetRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     successMeta = processSuccessResponse(response, meta);
                 } else {
@@ -87,6 +88,11 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
             }
         }
         return successMeta;
+    }
+
+    @Override
+    public IntegrityModel checkIntegrityOfComponent(Component component) {
+        return null;
     }
 
     private MetaModel processSuccessResponse(CloseableHttpResponse response, MetaModel meta) throws IOException {

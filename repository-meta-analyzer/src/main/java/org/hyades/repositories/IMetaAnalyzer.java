@@ -19,10 +19,13 @@
 package org.hyades.repositories;
 
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
+
+import java.io.IOException;
 
 /**
  * Interface that defines Repository Meta Analyzers.
@@ -78,6 +81,8 @@ public interface IMetaAnalyzer {
      * @since 3.1.0
      */
     MetaModel analyze(Component component);
+
+    IntegrityModel checkIntegrityOfComponent(Component component) throws IOException;
 
     String getName();
 

@@ -8,6 +8,7 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 import org.apache.kafka.streams.processor.api.ContextualFixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.hyades.common.SecretDecryptor;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerCacheKey;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Repository;
@@ -15,6 +16,7 @@ import org.hyades.persistence.model.RepositoryType;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
+import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
 import org.hyades.repositories.IMetaAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
@@ -52,7 +54,6 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         // It only contains the type, namespace and name, but is missing the
         // version and other qualifiers. Some analyzers require the version.
         final PackageURL purl = mustParsePurl(component.getPurl());
-
         final Optional<IMetaAnalyzer> optionalAnalyzer = analyzerFactory.createAnalyzer(purl);
         if (optionalAnalyzer.isEmpty()) {
             LOGGER.debug("No analyzer is capable of analyzing {}", purl);
@@ -65,6 +66,12 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         final IMetaAnalyzer analyzer = optionalAnalyzer.get();
 
         for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
+            if (repository.isIntegrityCheckEnabled()) {
+                LOGGER.info("Will perform integrity check for received component:  {} for repository: {}", component.getPurl(), repository.getIdentifier());
+                Optional<IntegrityResult> result = performIntegrityCheckForComponent(analyzer, repository, component);
+//                result.ifPresent(integrityResult -> context().forward(record
+//                        .withValue(integrityResult)));
+            }
             if ((repository.isInternal() && !component.getInternal())
                     || (!repository.isInternal() && component.getInternal())) {
                 // Internal components should only be analyzed using internal repositories.
@@ -109,9 +116,45 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .withTimestamp(context().currentSystemTimeMs()));
     }
 
+    private Optional<IntegrityResult> performIntegrityCheckForComponent(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
+        analyzer.setRepositoryBaseUrl(repository.getUrl());
+        if (Boolean.TRUE.equals(repository.isAuthenticationRequired())) {
+            try {
+                analyzer.setRepositoryUsernameAndPassword(repository.getUsername(), secretDecryptor.decryptAsString(repository.getPassword()));
+            } catch (Exception e) {
+                LOGGER.error("Failed decrypting password for repository: " + repository.getIdentifier(), e);
+            }
+        }
+
+        LOGGER.debug("Performing integrity check on component: {}", component.getPurl());
+        final IntegrityModel integrityModel;
+        try {
+            // Analyzers still work with "legacy" data models,
+            // allowing us to avoid major refactorings of the original code.
+            final var analyzerComponent = new org.hyades.persistence.model.Component();
+            analyzerComponent.setPurl(component.getPurl());
+            analyzerComponent.setMd5(component.getMd5Hash());
+            analyzerComponent.setSha1(component.getSha1Hash());
+            analyzerComponent.setSha512(component.getSha256Hash());
+            integrityModel = analyzer.checkIntegrityOfComponent(analyzerComponent);
+        } catch (Exception e) {
+            LOGGER.error("Failed to analyze {} using {} with repository {}",
+                    component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
+            return Optional.empty();
+        }
+
+        final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
+                .setMd5HashMatch(integrityModel.isMd5HashMatched())
+                .setUuid(integrityModel.getComponent().getUuid().toString())
+                .setSha1HashMatch(integrityModel.isSha1HashMatched())
+                .setSha256Match(integrityModel.isSha256HashMatched());
+        return Optional.of(resultBuilder.build());
+    }
+
+
     private Optional<AnalysisResult> analyze(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
         analyzer.setRepositoryBaseUrl(repository.getUrl());
-        if (repository.isAuthenticationRequired()) {
+        if (Boolean.TRUE.equals(repository.isAuthenticationRequired())) {
             try {
                 analyzer.setRepositoryUsernameAndPassword(repository.getUsername(), secretDecryptor.decryptAsString(repository.getPassword()));
             } catch (Exception e) {

@@ -19,12 +19,14 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.XmlUtil;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -79,7 +81,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
         if (component.getPurl() != null) {
             final String mavenGavUrl = component.getPurl().getNamespace().replaceAll("\\.", "/") + "/" + component.getPurl().getName();
             final String url = String.format(baseUrl + REPO_METADATA_URL, mavenGavUrl);
-            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+            try (final CloseableHttpResponse response = processHttpGetRequest(url)) {
                 final StatusLine status = response.getStatusLine();
                 if (status.getStatusCode() == HttpStatus.SC_OK) {
                     final HttpEntity entity = response.getEntity();
@@ -112,6 +114,48 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
             }
         }
         return meta;
+    }
+
+    @Override
+    public IntegrityModel checkIntegrityOfComponent(Component component) throws IOException {
+        IntegrityModel integrityModel = new IntegrityModel();
+        integrityModel.setComponent(component);
+        if (component.getPurl() != null) {
+            final String mavenGavUrl = component.getPurl().getNamespace().replaceAll("\\.", "/") + "/" + component.getPurl().getName();
+            final String url = baseUrl + "/" + mavenGavUrl + "/" + component.getPurl().getVersion() + "/" + component.getPurl().getName() + "-" + component.getPurl().getVersion() + ".jar";
+            try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
+                final StatusLine status = response.getStatusLine();
+                if (status.getStatusCode() == HttpStatus.SC_OK) {
+                    Header[] headers = response.getAllHeaders();
+                    String md5 = "";
+                    String sha1 = "";
+                    String sha256 = "";
+                    for (Header header : headers) {
+                        if (header.getName().equals("X-Checksum-MD5")) {
+                            md5 = header.getValue();
+                        } else if (header.getName().equals("X-Checksum-SHA1")) {
+                            sha1 = header.getValue();
+                        } else if (header.getName().equals("X-Checksum-SHA256")) {
+                            sha256 = header.getValue();
+                        }
+                    }
+
+                    if (component.getMd5() != null && component.getMd5().equals(md5)) {
+                        LOGGER.info("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
+                        integrityModel.setMd5HashMatched(true);
+                    }
+                    if (component.getSha1() != null && component.getSha1().equals(sha1)) {
+                        LOGGER.info("Md5 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
+                        integrityModel.setSha1HashMatched(true);
+                    }
+                    if (component.getSha256() != null && component.getSha256().equals(sha256)) {
+                        LOGGER.info("Md5 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
+                        integrityModel.setSha256HashMatched(true);
+                    }
+                }
+            }
+        }
+        return integrityModel;
     }
 
     @Override

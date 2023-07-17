@@ -27,6 +27,16 @@ message AnalysisResult {
   optional google.protobuf.Timestamp published = 4;
 }
 
+message IntegrityResult {
+  // The uuid of the component for which the integrity check was done
+  string uuid = 1;
+  bool md5HashMatch = 2;
+  bool sha1HashMatch = 3;
+  bool sha256Match = 4;
+  // When the latest version was published.
+  optional google.protobuf.Timestamp published = 5;
+}
+
 message Component {
   // Package URL of the component.
   string purl = 1;
@@ -34,4 +44,8 @@ message Component {
   // Whether the component is internal to the organization.
   // Internal components will only be looked up in internal repositories.
   optional bool internal = 2;
+  optional string md5Hash = 3;
+  optional string sha1Hash = 4;
+  optional string sha256Hash = 5;
+  optional string uuid = 6;
 }

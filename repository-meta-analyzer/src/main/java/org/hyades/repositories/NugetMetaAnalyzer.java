@@ -22,6 +22,7 @@ import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -103,9 +104,14 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
         return meta;
     }
 
+    @Override
+    public IntegrityModel checkIntegrityOfComponent(Component component) {
+        return null;
+    }
+
     private boolean performVersionCheck(final MetaModel meta, final Component component) {
         final String url = String.format(versionQueryUrl, component.getPurl().getName().toLowerCase());
-        try (final CloseableHttpResponse response = processHttpRequest(url)) {
+        try (final CloseableHttpResponse response = processHttpGetRequest(url)) {
             if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                 String responseString = EntityUtils.toString(response.getEntity());
                 if (!responseString.equalsIgnoreCase("") && !responseString.equalsIgnoreCase("{}")) {
@@ -145,7 +151,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private boolean performLastPublishedCheck(final MetaModel meta, final Component component) {
         final String url = String.format(registrationUrl, component.getPurl().getName().toLowerCase(), meta.getLatestVersion());
-        try (final CloseableHttpResponse response = processHttpRequest(url)) {
+        try (final CloseableHttpResponse response = processHttpGetRequest(url)) {
             if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                 String stringResponse = EntityUtils.toString(response.getEntity());
                 if (!stringResponse.equalsIgnoreCase("") && !stringResponse.equalsIgnoreCase("{}")) {
@@ -170,7 +176,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     private void initializeEndpoints() {
         final String url = baseUrl + INDEX_URL;
         try {
-            try (final CloseableHttpResponse response = processHttpRequest(url)) {
+            try (final CloseableHttpResponse response = processHttpGetRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String responseString = EntityUtils.toString(response.getEntity());
                     if (responseString != null) {

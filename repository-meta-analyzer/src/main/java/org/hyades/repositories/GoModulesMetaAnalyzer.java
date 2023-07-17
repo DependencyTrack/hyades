@@ -22,6 +22,7 @@ import com.github.packageurl.PackageURL;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -72,7 +73,7 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
 
         final String url = String.format(baseUrl + API_URL, caseEncode(component.getPurl().getNamespace()), caseEncode(component.getPurl().getName()));
 
-        try (final CloseableHttpResponse response = processHttpRequest(url)) {
+        try (final CloseableHttpResponse response = processHttpGetRequest(url)) {
             if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                 successMeta = processResponse(meta, response, component);
             } else {
@@ -85,6 +86,11 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
         }
 
         return successMeta;
+    }
+
+    @Override
+    public IntegrityModel checkIntegrityOfComponent(Component component) {
+        return null;
     }
 
     private MetaModel processResponse(MetaModel meta, CloseableHttpResponse response, Component component) {
