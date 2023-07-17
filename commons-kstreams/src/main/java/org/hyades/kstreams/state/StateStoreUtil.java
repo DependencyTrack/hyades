@@ -1,12 +1,11 @@
-package org.hyades.util;
+package org.hyades.kstreams.state;
 
 import io.smallrye.config.SmallRyeConfig;
 import org.apache.kafka.common.config.TopicConfig;
-import org.apache.kafka.streams.kstream.Materialized.StoreType;
+import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
 import org.apache.kafka.streams.state.Stores;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.hyades.config.StateStoreConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +21,8 @@ public final class StateStoreUtil {
 
     /**
      * Provide a {@link KeyValueBytesStoreSupplier} implementation, depending on whether
-     * {@link StateStoreConfig#type()} is configured to be {@link StoreType#IN_MEMORY}
-     * or {@link StoreType#ROCKS_DB}.
+     * {@link StateStoreConfig#type()} is configured to be {@link Materialized.StoreType#IN_MEMORY}
+     * or {@link Materialized.StoreType#ROCKS_DB}.
      *
      * @param name The name of the store
      * @return A {@link KeyValueBytesStoreSupplier}

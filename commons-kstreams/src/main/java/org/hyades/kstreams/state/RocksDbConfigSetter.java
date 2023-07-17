@@ -1,10 +1,9 @@
-package org.hyades.config;
+package org.hyades.kstreams.state;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.config.SmallRyeConfig;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.hyades.config.StateStoreConfig.RocksDbConfig;
 import org.rocksdb.Options;
 
 import java.util.Map;
@@ -12,7 +11,7 @@ import java.util.Map;
 /**
  * An implementation of {@link RocksDBConfigSetter} for customizing RocksDB.
  * <p>
- * Customizations are configurable via Quarkus Config. Available configuration options are defined in {@link RocksDbConfig}.
+ * Customizations are configurable via Quarkus Config. Available configuration options are defined in {@link StateStoreConfig.RocksDbConfig}.
  *
  * @see <a href="https://kafka.apache.org/34/documentation/streams/developer-guide/config-streams#rocksdb-config-setter">Kafka Streams Documentation</a>
  */

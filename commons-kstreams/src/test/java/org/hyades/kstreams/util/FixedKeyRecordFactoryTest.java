@@ -1,4 +1,4 @@
-package org.hyades.util;
+package org.hyades.kstreams.util;
 
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeaders;

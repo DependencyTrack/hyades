@@ -1,4 +1,4 @@
-package org.hyades.processor.misc;
+package org.hyades.kstreams.processor;
 
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KTable;
@@ -10,7 +10,7 @@ import org.apache.kafka.streams.processor.api.FixedKeyProcessorContext;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.hyades.util.FixedKeyRecordFactory;
+import org.hyades.kstreams.util.FixedKeyRecordFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

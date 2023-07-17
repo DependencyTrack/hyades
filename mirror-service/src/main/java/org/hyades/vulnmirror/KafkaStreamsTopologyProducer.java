@@ -20,8 +20,8 @@ import org.hyades.vulnmirror.state.StateStores;
 
 import static org.apache.kafka.streams.state.Stores.inMemoryKeyValueStore;
 import static org.apache.kafka.streams.state.Stores.keyValueStoreBuilder;
-import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
-import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
+import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameConsume;
+import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameProduce;
 
 class KafkaStreamsTopologyProducer {
 
