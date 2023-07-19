@@ -2,7 +2,7 @@ version: "3"
 
 services:
   notification-publisher:
-    image: ghcr.io/dependencytrack/hyades-notification-publisher:latest-native
+    image: ghcr.io/dependencytrack/hyades-notification-publisher:latest
     depends_on:
       - postgres
       - redpanda
@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   repo-meta-analyzer:
-    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest-native
+    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest
     depends_on:
       - postgres
       - redpanda
@@ -42,7 +42,7 @@ services:
     restart: unless-stopped
 
   vuln-analyzer:
-    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest-native
+    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest
     depends_on:
       - postgres
       - redpanda
@@ -72,7 +72,7 @@ services:
     restart: unless-stopped
 
   mirror-service:
-    image: ghcr.io/dependencytrack/hyades-mirror-service:latest-native
+    image: ghcr.io/dependencytrack/hyades-mirror-service:latest
     depends_on:
       - postgres
       - redpanda
