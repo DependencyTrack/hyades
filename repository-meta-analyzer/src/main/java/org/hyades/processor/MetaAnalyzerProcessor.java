@@ -8,6 +8,7 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 import org.apache.kafka.streams.processor.api.ContextualFixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.hyades.common.SecretDecryptor;
+import org.hyades.model.IntegrityAnalysisCacheKey;
 import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerCacheKey;
 import org.hyades.model.MetaModel;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 
 class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Component, AnalysisResult> {
 
@@ -49,7 +51,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
     public void process(final FixedKeyRecord<PackageURL, Component> record) {
         final PackageURL purlWithoutVersion = record.key();
         final Component component = record.value();
-
+        Optional<IntegrityResult> result = null;
         // NOTE: Do not use purlWithoutVersion for the analysis!
         // It only contains the type, namespace and name, but is missing the
         // version and other qualifiers. Some analyzers require the version.
@@ -66,11 +68,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         final IMetaAnalyzer analyzer = optionalAnalyzer.get();
 
         for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
-            if (repository.isIntegrityCheckEnabled()) {
+            if (repository.isIntegrityCheckEnabled() && (component.hasMd5Hash() || component.hasSha256Hash() || component.hasSha1Hash())) {
                 LOGGER.info("Will perform integrity check for received component:  {} for repository: {}", component.getPurl(), repository.getIdentifier());
-                Optional<IntegrityResult> result = performIntegrityCheckForComponent(analyzer, repository, component);
-//                result.ifPresent(integrityResult -> context().forward(record
-//                        .withValue(integrityResult)));
+                result = performIntegrityCheckForComponent(analyzer, repository, component);
             }
             if ((repository.isInternal() && !component.getInternal())
                     || (!repository.isInternal() && component.getInternal())) {
@@ -79,7 +79,13 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 // We do not want non-internal components being analyzed with internal repositories as
                 // internal repositories are not the source of truth for these components, even if the
                 // repository acts as a proxy to the source of truth. This cannot be assumed.
-                LOGGER.debug("Skipping component with purl {} ", component.getPurl());
+                LOGGER.info("Skipping component with purl {} ", component.getPurl());
+                if (result != null && result.isPresent()) {
+                    LOGGER.debug("Only integrity check result available and thus sending analysis result. Repo meta analysis cannot be performed in this case.");
+                    context().forward(record
+                            .withValue(AnalysisResult.newBuilder().setComponent(component).setIntegrityResult(result.get()).build())
+                            .withTimestamp(context().currentSystemTimeMs()));
+                }
                 continue;
             }
 
@@ -88,35 +94,59 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
             // When that circumstance changes, the cache key must also include the PURL version.
             final var cacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), purlWithoutVersion.canonicalize(), repository.getUrl());
 
+            //putting a separate key for integrity check for the time being in the same cache as meta analysis.
+            // Once the poc is complete the plan is to separate out version check and integrity check and thus have separate caches as well
+
             // Populate results from cache if possible.
             final var cachedResult = getCachedResult(cacheKey);
-            if (cachedResult.isPresent()) {
-                LOGGER.debug("Cache hit (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
+            if (cachedResult != null) {
+                LOGGER.info("Cache hit (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
+                if (result != null && result.isPresent()) {
+                    cachedResult.setIntegrityResult(result.get());
+                }
                 context().forward(record
-                        .withValue(cachedResult.get())
+                        .withValue(cachedResult.build())
                         .withTimestamp(context().currentSystemTimeMs()));
                 return;
             } else {
                 LOGGER.debug("Cache miss (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
             }
 
-            final Optional<AnalysisResult> optionalResult = analyze(analyzer, repository, component);
-            if (optionalResult.isPresent()) {
+            final AnalysisResult.Builder optionalResult = analyze(analyzer, repository, component);
+            if (optionalResult != null) {
+                if (result != null && result.isPresent()) {
+                    optionalResult.setIntegrityResult(result.get());
+                }
                 context().forward(record
-                        .withValue(optionalResult.get())
+                        .withValue(optionalResult.build())
                         .withTimestamp(context().currentSystemTimeMs()));
-                cacheResult(cacheKey, optionalResult.get());
+                cacheResult(cacheKey, optionalResult);
                 return;
             }
         }
-
-        // Produce "empty" result in case no repository did yield a satisfactory result.
-        context().forward(record
-                .withValue(AnalysisResult.newBuilder().setComponent(component).build())
-                .withTimestamp(context().currentSystemTimeMs()));
+        if (result != null && result.isPresent()) {
+            // Produce "empty" result in case no repository did yield a satisfactory result.
+            context().forward(record
+                    .withValue(AnalysisResult.newBuilder().setComponent(component).setIntegrityResult(result.get()).build())
+                    .withTimestamp(context().currentSystemTimeMs()));
+        } else {
+            context().forward(record
+                    .withValue(AnalysisResult.newBuilder().setComponent(component).build())
+                    .withTimestamp(context().currentSystemTimeMs()));
+        }
     }
 
+
     private Optional<IntegrityResult> performIntegrityCheckForComponent(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
+
+        final var integrityResultCacheKey = new IntegrityAnalysisCacheKey(analyzer.getName(), repository.getUrl(), UUID.fromString(component.getUuid()));
+        final var integrityAnalysisCacheResult = getCachedResult(integrityResultCacheKey);
+        if (integrityAnalysisCacheResult != null && integrityAnalysisCacheResult.isPresent()) {
+            LOGGER.info("Cache hit for integrity result (analyzer: {}, url: {}, repository: {})", analyzer.getName(), repository.getUrl(), component.getUuid());
+            return integrityAnalysisCacheResult;
+        } else {
+            LOGGER.debug("Cache miss (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), repository.getUrl(), component.getUuid());
+        }
         analyzer.setRepositoryBaseUrl(repository.getUrl());
         if (Boolean.TRUE.equals(repository.isAuthenticationRequired())) {
             try {
@@ -135,7 +165,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
             analyzerComponent.setPurl(component.getPurl());
             analyzerComponent.setMd5(component.getMd5Hash());
             analyzerComponent.setSha1(component.getSha1Hash());
-            analyzerComponent.setSha512(component.getSha256Hash());
+            analyzerComponent.setSha256(component.getSha256Hash());
+            UUID uuid = UUID.fromString(component.getUuid());
+            analyzerComponent.setUuid(uuid);
             integrityModel = analyzer.checkIntegrityOfComponent(analyzerComponent);
         } catch (Exception e) {
             LOGGER.error("Failed to analyze {} using {} with repository {}",
@@ -148,11 +180,12 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .setUuid(integrityModel.getComponent().getUuid().toString())
                 .setSha1HashMatch(integrityModel.isSha1HashMatched())
                 .setSha256Match(integrityModel.isSha256HashMatched());
+        cacheResult(integrityResultCacheKey, resultBuilder.build());
         return Optional.of(resultBuilder.build());
     }
 
 
-    private Optional<AnalysisResult> analyze(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
+    private AnalysisResult.Builder analyze(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
         analyzer.setRepositoryBaseUrl(repository.getUrl());
         if (Boolean.TRUE.equals(repository.isAuthenticationRequired())) {
             try {
@@ -173,7 +206,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         } catch (Exception e) {
             LOGGER.error("Failed to analyze {} using {} with repository {}",
                     component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
-            return Optional.empty();
+            return null;
         }
 
         final AnalysisResult.Builder resultBuilder = AnalysisResult.newBuilder()
@@ -185,13 +218,11 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 resultBuilder.setPublished(Timestamp.newBuilder()
                         .setSeconds(metaModel.getPublishedTimestamp().getTime() / 1000));
             }
-            final AnalysisResult result = resultBuilder.build();
             LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
                     component.getPurl(), repository.getIdentifier(), repository.getType());
-            return Optional.of(result);
+            return resultBuilder;
         }
-
-        return Optional.empty();
+        return null;
     }
 
     private PackageURL mustParsePurl(final String purl) {
@@ -221,9 +252,22 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 
-    private Optional<AnalysisResult> getCachedResult(final MetaAnalyzerCacheKey cacheKey) {
+    private AnalysisResult.Builder getCachedResult(final MetaAnalyzerCacheKey cacheKey) {
         try {
-            final AnalysisResult cachedResult = cache.<MetaAnalyzerCacheKey, AnalysisResult>get(cacheKey,
+            return cache.<MetaAnalyzerCacheKey, AnalysisResult.Builder>get(cacheKey,
+                    key -> {
+                        // null values would be cached, so throw an exception instead.
+                        // See https://quarkus.io/guides/cache#let-exceptions-bubble-up
+                        throw new NoSuchElementException();
+                    }).await().indefinitely();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Optional<IntegrityResult> getCachedResult(final IntegrityAnalysisCacheKey cacheKey) {
+        try {
+            final IntegrityResult cachedResult = cache.<IntegrityAnalysisCacheKey, IntegrityResult>get(cacheKey,
                     key -> {
                         // null values would be cached, so throw an exception instead.
                         // See https://quarkus.io/guides/cache#let-exceptions-bubble-up
@@ -235,7 +279,11 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         }
     }
 
-    private void cacheResult(final MetaAnalyzerCacheKey cacheKey, final AnalysisResult result) {
+    private void cacheResult(final MetaAnalyzerCacheKey cacheKey, final AnalysisResult.Builder result) {
+        cache.get(cacheKey, key -> result).await().indefinitely();
+    }
+
+    private void cacheResult(final IntegrityAnalysisCacheKey cacheKey, final IntegrityResult result) {
         cache.get(cacheKey, key -> result).await().indefinitely();
     }
 

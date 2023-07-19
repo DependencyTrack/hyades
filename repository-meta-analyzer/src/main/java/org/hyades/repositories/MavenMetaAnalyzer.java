@@ -139,16 +139,16 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                             sha256 = header.getValue();
                         }
                     }
-
-                    if (component.getMd5() != null && component.getMd5().equals(md5)) {
+                    //md5, sha1 or sha256 still "" means that the source of truth repo does not have this hash info and in that case, if there is a match with the others it is a valid component
+                    if (component.getMd5() != null && (component.getMd5().equals(md5)) || md5.equals("")) {
                         LOGGER.info("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
                         integrityModel.setMd5HashMatched(true);
                     }
-                    if (component.getSha1() != null && component.getSha1().equals(sha1)) {
+                    if (component.getSha1() != null && (component.getSha1().equals(sha1) || sha1.equals(""))) {
                         LOGGER.info("Md5 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
                         integrityModel.setSha1HashMatched(true);
                     }
-                    if (component.getSha256() != null && component.getSha256().equals(sha256)) {
+                    if (component.getSha256() != null && (component.getSha256().equals(sha256)) || sha256.equals("")) {
                         LOGGER.info("Md5 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
                         integrityModel.setSha256HashMatched(true);
                     }

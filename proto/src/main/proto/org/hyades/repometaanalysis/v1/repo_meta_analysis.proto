@@ -15,7 +15,7 @@ message AnalysisCommand {
 
 message AnalysisResult {
   // The component this result is for.
-  Component component = 1;
+  optional Component component = 1;
 
   // Identifier of the repository where the result was found.
   optional string repository = 2;
@@ -25,6 +25,8 @@ message AnalysisResult {
 
   // When the latest version was published.
   optional google.protobuf.Timestamp published = 4;
+
+  optional IntegrityResult integrity_result = 5;
 }
 
 message IntegrityResult {
@@ -33,8 +35,6 @@ message IntegrityResult {
   bool md5HashMatch = 2;
   bool sha1HashMatch = 3;
   bool sha256Match = 4;
-  // When the latest version was published.
-  optional google.protobuf.Timestamp published = 5;
 }
 
 message Component {
