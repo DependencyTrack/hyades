@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static org.apache.kafka.streams.state.Stores.keyValueStoreBuilder;
-import static org.hyades.kstreams.state.StateStoreUtil.configurableKeyValueStore;
-import static org.hyades.kstreams.state.StateStoreUtil.defaultChangelogTopicConfig;
+import static org.hyades.kstreams.statestore.StateStoreUtil.configurableKeyValueStore;
+import static org.hyades.kstreams.statestore.StateStoreUtil.defaultChangelogTopicConfig;
 
 public class TombstoneEmittingProcessorSupplier<K, V> implements FixedKeyProcessorSupplier<K, V, V> {
 

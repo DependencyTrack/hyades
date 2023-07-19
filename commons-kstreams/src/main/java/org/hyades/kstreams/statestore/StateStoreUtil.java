@@ -1,20 +1,16 @@
-package org.hyades.kstreams.state;
+package org.hyades.kstreams.statestore;
 
-import io.smallrye.config.SmallRyeConfig;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
-import org.apache.kafka.streams.state.Stores;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hyades.common.config.QuarkusConfigUtil;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
+
+import static org.apache.kafka.streams.state.Stores.inMemoryKeyValueStore;
+import static org.apache.kafka.streams.state.Stores.persistentKeyValueStore;
 
 public final class StateStoreUtil {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StateStoreUtil.class);
 
     private StateStoreUtil() {
     }
@@ -28,20 +24,13 @@ public final class StateStoreUtil {
      * @return A {@link KeyValueBytesStoreSupplier}
      */
     public static KeyValueBytesStoreSupplier configurableKeyValueStore(final String name) {
-        final StateStoreConfig stateStoreConfig;
-        try {
-            final SmallRyeConfig config = ConfigProvider.getConfig().unwrap(SmallRyeConfig.class);
-            stateStoreConfig = config.getConfigMapping(StateStoreConfig.class);
-        } catch (NoSuchElementException | IllegalStateException e) {
-            // When running tests without @QuarkusTest, resolving of the ConfigMapping will not work.
-            LOGGER.debug("State store config could not be resolved; Falling back to in-memory store", e);
-            return Stores.inMemoryKeyValueStore(name);
-        }
-
-        return switch (stateStoreConfig.type()) {
-            case IN_MEMORY -> Stores.inMemoryKeyValueStore(name);
-            case ROCKS_DB -> Stores.persistentKeyValueStore(name);
-        };
+        return QuarkusConfigUtil.getConfigMapping(StateStoreConfig.class)
+                .map(StateStoreConfig::type)
+                .map(storeType -> switch (storeType) {
+                    case IN_MEMORY -> inMemoryKeyValueStore(name);
+                    case ROCKS_DB -> persistentKeyValueStore(name);
+                })
+                .orElseGet(() -> inMemoryKeyValueStore(name));
     }
 
     /**
