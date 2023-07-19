@@ -6,6 +6,8 @@ import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
@@ -36,14 +38,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Suite
 @SelectClasses(value = {
         RepositoryMetaAnalyzerIT.WithValidPurl.class,
-        RepositoryMetaAnalyzerIT.WithInvalidPurl.class
+        RepositoryMetaAnalyzerIT.WithInvalidPurl.class,
+        RepositoryMetaAnalyzerIT.NoCapableAnalyzer.class,
+        RepositoryMetaAnalyzerIT.InternalAnalyzerNonInternalComponent.class
 })
 class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
     @QuarkusTestResource(WireMockTestResource.class)
+    @TestProfile(WithValidPurl.TestProfile.class)
     static class WithValidPurl {
+
+        public static class TestProfile implements QuarkusTestProfile {}
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -108,10 +115,8 @@ class RepositoryMetaAnalyzerIT {
                     record -> {
                         assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib");
                         assertThat(record.value()).isNotNull();
-
                         final AnalysisResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
-                        assertThat(result.getComponent()).isEqualTo(command.getComponent());
                         assertThat(result.hasRepository()).isTrue();
                         assertThat(result.getRepository()).isEqualTo("test");
                         assertThat(result.hasLatestVersion()).isTrue();
@@ -126,7 +131,10 @@ class RepositoryMetaAnalyzerIT {
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
     @QuarkusTestResource(WireMockTestResource.class)
+    @TestProfile(WithInvalidPurl.TestProfile.class)
     static class WithInvalidPurl {
+
+        public static class TestProfile implements QuarkusTestProfile {}
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -142,7 +150,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
                         INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
-                        VALUES ('true', 'test', false, NULL, 2, 'MAVEN', 'http://localhost:%d', false);
+                        VALUES ('true', 'test', false, NULL, 2, 'NPM', 'http://localhost:%d', false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
             }
@@ -166,6 +174,125 @@ class RepositoryMetaAnalyzerIT {
                     .getRecords();
 
             assertThat(results).isEmpty();
+        }
+    }
+
+    @QuarkusIntegrationTest
+    @QuarkusTestResource(KafkaCompanionResource.class)
+    @QuarkusTestResource(WireMockTestResource.class)
+    @TestProfile(NoCapableAnalyzer.TestProfile.class)
+    static class NoCapableAnalyzer {
+
+        public static class TestProfile implements QuarkusTestProfile {}
+
+        @InjectKafkaCompanion
+        KafkaCompanion kafkaCompanion;
+
+        @InjectWireMock
+        WireMockServer wireMockServer;
+
+        @BeforeEach
+        void beforeEach() throws Exception {
+            try (final Connection connection = DriverManager.getConnection(
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.jdbc.url", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
+                final PreparedStatement ps = connection.prepareStatement("""
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
+                        VALUES ('true', 'test', false, NULL, 2, 'CPAN', 'http://localhost:%d', false);
+                        """.formatted(wireMockServer.port()));
+                ps.execute();
+            }
+        }
+
+        @Test
+        void test() {
+            final var command = AnalysisCommand.newBuilder()
+                    .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                            .setPurl("pkg:github/github.com/acme/acme-lib@9.1.1"))
+                    .build();
+
+            kafkaCompanion
+                    .produce(Serdes.String(), new KafkaProtobufSerde<>(AnalysisCommand.parser()))
+                    .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), "foo", command));
+
+            final List<ConsumerRecord<String, AnalysisResult>> results = kafkaCompanion
+                    .consume(Serdes.String(), new KafkaProtobufSerde<>(AnalysisResult.parser()))
+                    .fromTopics(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), 1, Duration.ofSeconds(5))
+                    .awaitCompletion()
+                    .getRecords();
+            assertThat(results).satisfiesExactly(
+                    record -> {
+                        assertThat(record.key()).isEqualTo("pkg:github/github.com/acme/acme-lib");
+                        assertThat(record.value()).isNotNull();
+                        final AnalysisResult result = record.value();
+                        assertThat(result.hasComponent()).isTrue();
+                        assertThat(result.getComponent()).isEqualTo(command.getComponent());
+                        assertThat(result.hasRepository()).isFalse();
+                        assertThat(result.hasLatestVersion()).isFalse();
+                        assertThat(result.hasPublished()).isFalse();
+                    }
+            );
+        }
+    }
+
+    @QuarkusIntegrationTest
+    @QuarkusTestResource(KafkaCompanionResource.class)
+    @QuarkusTestResource(WireMockTestResource.class)
+    @TestProfile(InternalAnalyzerNonInternalComponent.TestProfile.class)
+    static class InternalAnalyzerNonInternalComponent {
+
+        public static class TestProfile implements QuarkusTestProfile {}
+
+        @InjectKafkaCompanion
+        KafkaCompanion kafkaCompanion;
+
+        @InjectWireMock
+        WireMockServer wireMockServer;
+
+        @BeforeEach
+        void beforeEach() throws Exception {
+            try (final Connection connection = DriverManager.getConnection(
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.jdbc.url", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
+                final PreparedStatement ps = connection.prepareStatement("""
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
+                        VALUES ('true', 'test', true, NULL, 2, 'MAVEN', 'http://localhost:%d', false);
+                        """.formatted(wireMockServer.port()));
+                ps.execute();
+            }
+        }
+
+        @Test
+        void test() {
+            final var command = AnalysisCommand.newBuilder()
+                    .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                            .setPurl("pkg:golang/github.com/acme/acme-lib@9.1.1")
+                            .setInternal(false))
+                    .build();
+
+            kafkaCompanion
+                    .produce(Serdes.String(), new KafkaProtobufSerde<>(AnalysisCommand.parser()))
+                    .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), "foo", command));
+
+            final List<ConsumerRecord<String, AnalysisResult>> results = kafkaCompanion
+                    .consume(Serdes.String(), new KafkaProtobufSerde<>(AnalysisResult.parser()))
+                    .fromTopics(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), 1, Duration.ofSeconds(5))
+                    .awaitCompletion()
+                    .getRecords();
+            assertThat(results).satisfiesExactly(
+                    record -> {
+                        assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib");
+                        assertThat(record.value()).isNotNull();
+                        final AnalysisResult result = record.value();
+                        assertThat(result.hasComponent()).isTrue();
+                        assertThat(result.getComponent()).isEqualTo(command.getComponent());
+                        assertThat(result.hasRepository()).isFalse();
+                        assertThat(result.hasLatestVersion()).isFalse();
+                        assertThat(result.hasPublished()).isFalse();
+                    }
+            );
         }
     }
 }
