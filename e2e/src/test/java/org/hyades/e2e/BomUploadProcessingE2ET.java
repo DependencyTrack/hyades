@@ -201,7 +201,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_NEW_VULNERABILITY",
                             "timestamp": "${json-unit.any-string}",
-                            "title": "New Vulnerability Identified on Project: [foo : bar]",
+                            "title": "New Vulnerability Identified on Project: [pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war]",
                             "content": "INT-123",
                             "subject": {
                               "component": {
@@ -218,7 +218,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                               "project": {
                                 "uuid": "${json-unit.any-string}",
                                 "name": "foo",
-                                "version": "bar"
+                                "version": "bar",
+                                "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war"
                               },
                               "vulnerability": {
                                 "uuid": "${json-unit.any-string}",
@@ -254,7 +255,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                "project" : {
                                  "uuid": "${json-unit.any-string}",
                                  "name" : "foo",
-                                 "version" : "bar"
+                                 "version" : "bar",
+                                 "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war"
                                },
                                "findings" : [ {
                                  "component" : {
