@@ -30,6 +30,7 @@ import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
+import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -139,18 +140,48 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                             sha256 = header.getValue();
                         }
                     }
-                    //md5, sha1 or sha256 still "" means that the source of truth repo does not have this hash info and in that case, if there is a match with the others it is a valid component
-                    if (component.getMd5() != null && (component.getMd5().equals(md5)) || md5.equals("")) {
-                        LOGGER.info("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
-                        integrityModel.setMd5HashMatched(true);
+                    if (component.getMd5() == null) {
+                        integrityModel.setMd5HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
+                    } else if (component.getSha1() == null) {
+                        integrityModel.setSha1HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
+                    } else if (component.getSha256() == null) {
+                        integrityModel.setSha256HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
                     }
-                    if (component.getSha1() != null && (component.getSha1().equals(sha1) || sha1.equals(""))) {
-                        LOGGER.info("Md5 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
-                        integrityModel.setSha1HashMatched(true);
+
+                    if (md5.equals("")) {
+                        integrityModel.setMd5HashMatched(HashMatchStatus.UNKNOWN);
+                    } else if (sha1.equals("")) {
+                        integrityModel.setSha1HashMatched(HashMatchStatus.UNKNOWN);
+                    } else if (sha256.equals("")) {
+                        integrityModel.setSha256HashMatched(HashMatchStatus.UNKNOWN);
                     }
-                    if (component.getSha256() != null && (component.getSha256().equals(sha256)) || sha256.equals("")) {
-                        LOGGER.info("Md5 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
-                        integrityModel.setSha256HashMatched(true);
+                    if (integrityModel.isMd5HashMatched() == null) {
+                        //md5, sha1 or sha256 still "" means that the source of truth repo does not have this hash info and in that case, if there is a match with the others it is a valid component
+                        if (component.getMd5() != null && component.getMd5().equals(md5)) {
+                            LOGGER.info("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
+                            integrityModel.setMd5HashMatched(HashMatchStatus.PASS);
+                        } else {
+                            LOGGER.info("Md5 hash did not match: expected value :{}, actual value: {}", component.getMd5(), md5);
+                            integrityModel.setMd5HashMatched(HashMatchStatus.FAIL);
+                        }
+                    }
+                    if (integrityModel.isSha1HashMatched() == null) {
+                        if (component.getSha1() != null && component.getSha1().equals(sha1)) {
+                            LOGGER.info("Md5 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
+                            integrityModel.setSha1HashMatched(HashMatchStatus.PASS);
+                        } else {
+                            LOGGER.info("sha1 hash did not match: expected value :{}, actual value: {}", component.getSha1(), sha1);
+                            integrityModel.setSha1HashMatched(HashMatchStatus.FAIL);
+                        }
+                    }
+                    if (integrityModel.isSha256HashMatched() == null) {
+                        if (component.getSha256() != null && component.getSha256().equals(sha256)) {
+                            LOGGER.info("Md5 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
+                            integrityModel.setSha256HashMatched(HashMatchStatus.PASS);
+                        } else {
+                            LOGGER.info("sha256 hash did not match: expected value :{}, actual value: {}", component.getSha256(), sha256);
+                            integrityModel.setSha256HashMatched(HashMatchStatus.FAIL);
+                        }
                     }
                 }
             }

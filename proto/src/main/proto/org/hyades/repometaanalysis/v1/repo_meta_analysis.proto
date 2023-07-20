@@ -32,15 +32,22 @@ message AnalysisResult {
 message IntegrityResult {
   // The uuid of the component for which the integrity check was done
   string uuid = 1;
-  bool md5HashMatch = 2;
-  bool sha1HashMatch = 3;
-  bool sha256Match = 4;
+  HashMatchStatus md5HashMatch = 2;
+  HashMatchStatus sha1HashMatch = 3;
+  HashMatchStatus sha256Match = 4;
+  string url = 5;
+  double componentId = 6;
 }
 
+enum HashMatchStatus {
+  PASS = 0;
+  FAIL = 1;
+  UNKNOWN = 2;
+  COMPONENT_MISSING_HASH = 3;
+}
 message Component {
   // Package URL of the component.
   string purl = 1;
-
   // Whether the component is internal to the organization.
   // Internal components will only be looked up in internal repositories.
   optional bool internal = 2;
@@ -48,4 +55,5 @@ message Component {
   optional string sha1Hash = 4;
   optional string sha256Hash = 5;
   optional string uuid = 6;
+  optional double componentId = 7;
 }

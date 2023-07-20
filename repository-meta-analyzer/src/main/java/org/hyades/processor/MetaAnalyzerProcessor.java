@@ -114,13 +114,16 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
 
             final AnalysisResult.Builder optionalResult = analyze(analyzer, repository, component);
             if (optionalResult != null) {
+                cacheResult(cacheKey, optionalResult);
                 if (result != null && result.isPresent()) {
                     optionalResult.setIntegrityResult(result.get());
+                } else {
+                    optionalResult.setIntegrityResult((IntegrityResult) null);
                 }
                 context().forward(record
                         .withValue(optionalResult.build())
                         .withTimestamp(context().currentSystemTimeMs()));
-                cacheResult(cacheKey, optionalResult);
+
                 return;
             }
         }
@@ -168,6 +171,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
             analyzerComponent.setSha256(component.getSha256Hash());
             UUID uuid = UUID.fromString(component.getUuid());
             analyzerComponent.setUuid(uuid);
+            analyzerComponent.setId((long) component.getComponentId());
             integrityModel = analyzer.checkIntegrityOfComponent(analyzerComponent);
         } catch (Exception e) {
             LOGGER.error("Failed to analyze {} using {} with repository {}",
@@ -179,7 +183,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .setMd5HashMatch(integrityModel.isMd5HashMatched())
                 .setUuid(integrityModel.getComponent().getUuid().toString())
                 .setSha1HashMatch(integrityModel.isSha1HashMatched())
-                .setSha256Match(integrityModel.isSha256HashMatched());
+                .setSha256Match(integrityModel.isSha256HashMatched())
+                .setComponentId(integrityModel.getComponent().getId())
+                .setUrl(repository.getUrl());
         cacheResult(integrityResultCacheKey, resultBuilder.build());
         return Optional.of(resultBuilder.build());
     }
