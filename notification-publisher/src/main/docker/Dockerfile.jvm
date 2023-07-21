@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjdk-alpine-musl:17.0.6
+FROM bellsoft/liberica-openjdk-alpine-musl:20.0.2
 
 ENV JAVA_OPTS=""
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
