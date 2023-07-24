@@ -17,6 +17,7 @@ import org.hyades.persistence.model.RepositoryType;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
+import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
 import org.hyades.repositories.IMetaAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
@@ -68,10 +69,22 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         final IMetaAnalyzer analyzer = optionalAnalyzer.get();
 
         for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
-            if (repository.isIntegrityCheckEnabled() && (component.hasMd5Hash() || component.hasSha256Hash() || component.hasSha1Hash())) {
-                LOGGER.info("Will perform integrity check for received component:  {} for repository: {}", component.getPurl(), repository.getIdentifier());
-                result = performIntegrityCheckForComponent(analyzer, repository, component);
+            if (repository.isIntegrityCheckEnabled()) {
+                if ((component.hasMd5Hash() || component.hasSha256Hash() || component.hasSha1Hash())) {
+                    LOGGER.info("Will perform integrity check for received component:  {} for repository: {}", component.getPurl(), repository.getIdentifier());
+                    result = performIntegrityCheckForComponent(analyzer, repository, component);
+                } else {
+                    final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
+                            .setMd5HashMatch(HashMatchStatus.COMPONENT_MISSING_HASH)
+                            .setUuid(component.getUuid())
+                            .setSha1HashMatch(HashMatchStatus.COMPONENT_MISSING_HASH)
+                            .setSha256Match(HashMatchStatus.COMPONENT_MISSING_HASH)
+                            .setComponentId(component.getComponentId())
+                            .setUrl(repository.getUrl());
+                    result = Optional.of(resultBuilder.build());
+                }
             }
+
             if ((repository.isInternal() && !component.getInternal())
                     || (!repository.isInternal() && component.getInternal())) {
                 // Internal components should only be analyzed using internal repositories.
@@ -117,8 +130,6 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 cacheResult(cacheKey, optionalResult);
                 if (result != null && result.isPresent()) {
                     optionalResult.setIntegrityResult(result.get());
-                } else {
-                    optionalResult.setIntegrityResult((IntegrityResult) null);
                 }
                 context().forward(record
                         .withValue(optionalResult.build())
