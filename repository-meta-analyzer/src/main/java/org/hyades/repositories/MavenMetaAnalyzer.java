@@ -132,11 +132,11 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                     String sha1 = "";
                     String sha256 = "";
                     for (Header header : headers) {
-                        if (header.getName().equals("X-Checksum-MD5")) {
+                        if (header.getName().equalsIgnoreCase("X-Checksum-MD5")) {
                             md5 = header.getValue();
-                        } else if (header.getName().equals("X-Checksum-SHA1")) {
+                        } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA1")) {
                             sha1 = header.getValue();
-                        } else if (header.getName().equals("X-Checksum-SHA256")) {
+                        } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA256")) {
                             sha256 = header.getValue();
                         }
                     }
