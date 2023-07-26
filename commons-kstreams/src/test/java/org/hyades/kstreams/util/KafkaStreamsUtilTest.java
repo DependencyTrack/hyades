@@ -1,4 +1,4 @@
-package org.hyades.commonutil;
+package org.hyades.kstreams.util;
 
 import org.hyades.common.KafkaTopic;
 import org.junit.jupiter.api.Assertions;

@@ -24,8 +24,8 @@ import org.hyades.repositories.IntegrityAnalyzerFactory;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
 
-import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
-import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
+import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameConsume;
+import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameProduce;
 
 public class RepositoryMetaAnalyzerTopology {
 
