@@ -1,4 +1,4 @@
-package org.hyades.commonutil;
+package org.hyades.kstreams.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hyades.common.KafkaTopic;

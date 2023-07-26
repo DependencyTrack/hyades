@@ -1,4 +1,4 @@
-package org.hyades.processor.misc;
+package org.hyades.kstreams.processor;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;

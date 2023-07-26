@@ -1,4 +1,4 @@
-package org.hyades.util;
+package org.hyades.kstreams.util;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.apache.kafka.common.header.Headers;

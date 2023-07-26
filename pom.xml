@@ -9,6 +9,7 @@
 
   <modules>
     <module>commons</module>
+    <module>commons-kstreams</module>
     <module>commons-persistence</module>
     <module>mirror-service</module>
     <module>notification-publisher</module>
@@ -85,6 +86,11 @@
       <dependency>
         <groupId>org.hyades</groupId>
         <artifactId>commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hyades</groupId>
+        <artifactId>commons-kstreams</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

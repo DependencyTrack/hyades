@@ -1,4 +1,4 @@
-package org.hyades.config;
+package org.hyades.kstreams.statestore;
 
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;

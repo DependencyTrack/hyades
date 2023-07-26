@@ -1,13 +1,13 @@
-package org.hyades.config;
+package org.hyades.kstreams.statestore;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import io.smallrye.config.SmallRyeConfig;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.hyades.config.StateStoreConfig.RocksDbConfig;
+import org.hyades.kstreams.statestore.StateStoreConfig.RocksDbConfig;
 import org.rocksdb.Options;
 
 import java.util.Map;
+
+import static org.hyades.common.config.QuarkusConfigUtil.getConfigMapping;
 
 /**
  * An implementation of {@link RocksDBConfigSetter} for customizing RocksDB.
@@ -21,15 +21,17 @@ public class RocksDbConfigSetter implements RocksDBConfigSetter {
 
     @Override
     public void setConfig(final String storeName, final Options options, final Map<String, Object> configs) {
-        final SmallRyeConfig config = ConfigProvider.getConfig().unwrap(SmallRyeConfig.class);
-        final StateStoreConfig stateStoreConfig = config.getConfigMapping(StateStoreConfig.class);
-
-        stateStoreConfig.rocksDb().compactionStyle().ifPresent(options::setCompactionStyle);
-        stateStoreConfig.rocksDb().compressionType().ifPresent(options::setCompressionType);
+        getConfigMapping(StateStoreConfig.class)
+                .map(StateStoreConfig::rocksDb)
+                .ifPresent(config -> {
+                    config.compactionStyle().ifPresent(options::setCompactionStyle);
+                    config.compressionType().ifPresent(options::setCompressionType);
+                });
     }
 
     @Override
     public void close(final String storeName, final Options options) {
+        // Nothing to close here.
     }
 
 }
