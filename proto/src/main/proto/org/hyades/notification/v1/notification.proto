@@ -216,5 +216,5 @@ message ComponentVulnAnalysisCompleteSubject{
 message ProjectVulnAnalysisCompleteSubject{
   Project project = 1;
   repeated ComponentVulnAnalysisCompleteSubject findings = 2;
-
+  string status = 3;
 }
