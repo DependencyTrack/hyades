@@ -220,6 +220,6 @@ message ProjectVulnAnalysisCompleteSubject{
 }
 
 enum ProjectVulnAnalysisStatus {
-  FAILED = 0;
-  COMPLETED = 1;
+  PROJECT_VULN_ANALYSIS_FAILED = 0;
+  PROJECT_VULN_ANALYSIS_COMPLETED = 1;
 }
