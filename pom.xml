@@ -34,7 +34,7 @@
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
     <lib.confluent-parallel-consumer.version>0.5.2.5</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
-    <lib.cvss-calculator.version>1.4.1</lib.cvss-calculator.version>
+    <lib.cvss-calculator.version>1.4.2</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
     <lib.greenmail.version>2.0.0</lib.greenmail.version>
