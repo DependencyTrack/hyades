@@ -44,6 +44,8 @@ done
 repo_meta_analysis_topics=(
   "${API_TOPIC_PREFIX:-}dtrack.repo-meta-analysis.component"
   "${API_TOPIC_PREFIX:-}dtrack.repo-meta-analysis.result"
+  "${API_TOPIC_PREFIX:-}dtrack.integrity-analysis.component"
+  "${API_TOPIC_PREFIX:-}dtrack.integrity-analysis.result"
 )
 for topic_name in "${repo_meta_analysis_topics[@]}"; do
   create_topic "$topic_name" "${REPO_META_ANALYSIS_TOPICS_PARTITIONS:-3}" "retention.ms=${REPO_META_ANALYSIS_TOPICS_RETENTION_MS:-43200000}"

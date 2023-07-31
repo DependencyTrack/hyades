@@ -25,18 +25,21 @@ message AnalysisResult {
 
   // When the latest version was published.
   optional google.protobuf.Timestamp published = 4;
-
-  optional IntegrityResult integrity_result = 5;
 }
 
 message IntegrityResult {
-  // The uuid of the component for which the integrity check was done
-  string uuid = 1;
+  // The Component for which the integrity check was done
+  Component component = 1;
+  //md5 hash match status of component
   HashMatchStatus md5HashMatch = 2;
+  //sha1 hash match status of component
   HashMatchStatus sha1HashMatch = 3;
+  //sha256 hash match status of component
   HashMatchStatus sha256Match = 4;
-  string url = 5;
-  double componentId = 6;
+  //Identifier of the repository with which the hashes were compared
+  string repository = 5;
+  // When was the integrity check done
+  optional google.protobuf.Timestamp published = 6;
 }
 
 enum HashMatchStatus {

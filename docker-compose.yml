@@ -263,6 +263,8 @@ services:
                 valueProtoType: org.hyades.vulnanalysis.v1.ScanResult
               - topicName: dtrack.vulnerability
                 valueProtoType: org.cyclonedx.v1_4.Bom
+              - topicName: dtrack.integrity-analysis.component
+                valueProtoType: org.hyades.repometaanalysis.v1.AnalysisCommand
             fileSystem:
               enabled: true
               paths: ["/etc/protos"]

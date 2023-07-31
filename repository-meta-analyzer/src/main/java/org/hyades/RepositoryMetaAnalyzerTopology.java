@@ -13,13 +13,18 @@ import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Repartitioned;
 import org.hyades.common.KafkaTopic;
+import org.hyades.processor.IntegrityAnalyzerProcessorSupplier;
 import org.hyades.processor.MetaAnalyzerProcessorSupplier;
 import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
+import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
+import org.hyades.repositories.IntegrityAnalyzerFactory;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
+
+import java.util.TreeMap;
 
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.commonutil.KafkaStreamsUtil.processorNameProduce;
@@ -29,13 +34,16 @@ public class RepositoryMetaAnalyzerTopology {
     @Produces
     @SuppressWarnings({"resource", "java:S2095"}) // Ignore linter warnings about Serdes having to be closed
     public Topology topology(final RepositoryAnalyzerFactory analyzerFactory,
-                             final MetaAnalyzerProcessorSupplier analyzerProcessorSupplier) {
+                             final MetaAnalyzerProcessorSupplier analyzerProcessorSupplier,
+                             final IntegrityAnalyzerFactory integrityAnalyzerFactory,
+                             final IntegrityAnalyzerProcessorSupplier integrityAnalyzerProcessorSupplier) {
         final var streamsBuilder = new StreamsBuilder();
 
         final var purlSerde = new KafkaPurlSerde();
         final var analysisCommandSerde = new KafkaProtobufSerde<>(AnalysisCommand.parser());
         final var scanResultSerde = new KafkaProtobufSerde<>(AnalysisResult.parser());
 
+        //repo meta analysis command stream start
         final KStream<PackageURL, AnalysisCommand> commandStream = streamsBuilder
                 .stream(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), Consumed
                         .with(Serdes.String(), analysisCommandSerde) // Key can be in arbitrary format
@@ -75,7 +83,38 @@ public class RepositoryMetaAnalyzerTopology {
                                         .with(purlSerde, scanResultSerde)
                                         .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "empty_result"))))
                         .withName("-not-found"));
+        // repo meta analysis stream end
 
+        // integrity check stresam start
+        final var integrityResultSerde = new KafkaProtobufSerde<>(IntegrityResult.parser());
+        final KStream<String, AnalysisCommand> integrityCheckCommandStream = streamsBuilder
+                .stream(KafkaTopic.INTEGRITY_ANALYSIS_COMMAND.getName(), Consumed
+                        .with(Serdes.String(), analysisCommandSerde)
+                        .withName(processorNameConsume(KafkaTopic.INTEGRITY_ANALYSIS_COMMAND))).
+                filter((key, scanCommand) -> scanCommand.hasComponent() && isValidPurl(scanCommand.getComponent().getPurl()),
+                        Named.as("filter_components_with_valid_purl_ic"))
+                .selectKey((key, command) -> mustParsePurlCoordinates(key),
+                        Named.as("re-key_to_purl_coordinates_for_ic"))
+                .repartition(Repartitioned
+                        .with(Serdes.String(), analysisCommandSerde)
+                        .withName("integrity-check-by-purl-coordinates"));
+
+        integrityCheckCommandStream.mapValues((componentAndPurl, command) -> command.getComponent(), Named.as("map_to_integrity_check_for_component"))
+                .split(Named.as("applicable_integrity_checker"))
+                .branch((componentAndPurl, component) -> {
+                            try {
+                                return integrityAnalyzerFactory.hasApplicableAnalyzer(new PackageURL(componentAndPurl.split("_")[1]));
+                            } catch (MalformedPackageURLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        },
+                        Branched.withConsumer(stream -> stream
+                                .processValues(integrityAnalyzerProcessorSupplier, Named.as("check_integrity_of_component"))
+                                .to(KafkaTopic.INTEGRITY_ANALYSIS_RESULT.getName(),
+                                        Produced.with(Serdes.String(), integrityResultSerde)
+                                                .withName(processorNameProduce(KafkaTopic.INTEGRITY_ANALYSIS_RESULT, "integrity_check_result")))));
+
+        //integrity check stream end
         return streamsBuilder.build();
     }
 
@@ -93,6 +132,21 @@ public class RepositoryMetaAnalyzerTopology {
             final var parsedPurl = new PackageURL(purl);
             return new PackageURL(parsedPurl.getType(), parsedPurl.getNamespace(),
                     parsedPurl.getName(), null, null, null);
+        } catch (MalformedPackageURLException e) {
+            throw new IllegalStateException("""
+                    The provided PURL is invalid, even though it should have been
+                    validated in a previous processing step
+                    """, e);
+        }
+    }
+
+    private String mustParsePurlCoordinates(final String componentIdAndpurl) {
+        try {
+            String purl = componentIdAndpurl.split("_")[1];
+            final var parsedPurl = new PackageURL(purl);
+            new PackageURL(parsedPurl.getType(), parsedPurl.getNamespace(),
+                    parsedPurl.getName(), parsedPurl.getVersion(), (TreeMap<String, String>) parsedPurl.getQualifiers(), null);
+            return componentIdAndpurl;
         } catch (MalformedPackageURLException e) {
             throw new IllegalStateException("""
                     The provided PURL is invalid, even though it should have been

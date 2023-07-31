@@ -122,8 +122,12 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
         IntegrityModel integrityModel = new IntegrityModel();
         integrityModel.setComponent(component);
         if (component.getPurl() != null) {
+            String type = "jar";
+            if (component.getPurl().getQualifiers() != null) {
+                type = component.getPurl().getQualifiers().getOrDefault("type", "jar");
+            }
             final String mavenGavUrl = component.getPurl().getNamespace().replaceAll("\\.", "/") + "/" + component.getPurl().getName();
-            final String url = baseUrl + "/" + mavenGavUrl + "/" + component.getPurl().getVersion() + "/" + component.getPurl().getName() + "-" + component.getPurl().getVersion() + ".jar";
+            final String url = baseUrl + "/" + mavenGavUrl + "/" + component.getPurl().getVersion() + "/" + component.getPurl().getName() + "-" + component.getPurl().getVersion() + "." + type;
             try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
                 final StatusLine status = response.getStatusLine();
                 if (status.getStatusCode() == HttpStatus.SC_OK) {
@@ -140,11 +144,11 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                             sha256 = header.getValue();
                         }
                     }
-                    if (component.getMd5() == null) {
+                    if (component.getMd5() == null || component.getMd5().equals("")) {
                         integrityModel.setMd5HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
-                    } else if (component.getSha1() == null) {
+                    } else if (component.getSha1() == null || component.getSha1().equals("")) {
                         integrityModel.setSha1HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
-                    } else if (component.getSha256() == null) {
+                    } else if (component.getSha256() == null || component.getSha256().equals("")) {
                         integrityModel.setSha256HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
                     }
 
@@ -158,28 +162,28 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                     if (integrityModel.isMd5HashMatched() == null) {
                         //md5, sha1 or sha256 still "" means that the source of truth repo does not have this hash info and in that case, if there is a match with the others it is a valid component
                         if (component.getMd5() != null && component.getMd5().equals(md5)) {
-                            LOGGER.info("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
+                            LOGGER.debug("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
                             integrityModel.setMd5HashMatched(HashMatchStatus.PASS);
                         } else {
-                            LOGGER.info("Md5 hash did not match: expected value :{}, actual value: {}", component.getMd5(), md5);
+                            LOGGER.debug("Md5 hash did not match: expected value :{}, actual value: {}", component.getMd5(), md5);
                             integrityModel.setMd5HashMatched(HashMatchStatus.FAIL);
                         }
                     }
                     if (integrityModel.isSha1HashMatched() == null) {
                         if (component.getSha1() != null && component.getSha1().equals(sha1)) {
-                            LOGGER.info("Md5 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
+                            LOGGER.debug("sha1 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
                             integrityModel.setSha1HashMatched(HashMatchStatus.PASS);
                         } else {
-                            LOGGER.info("sha1 hash did not match: expected value :{}, actual value: {}", component.getSha1(), sha1);
+                            LOGGER.debug("sha1 hash did not match: expected value :{}, actual value: {}", component.getSha1(), sha1);
                             integrityModel.setSha1HashMatched(HashMatchStatus.FAIL);
                         }
                     }
                     if (integrityModel.isSha256HashMatched() == null) {
                         if (component.getSha256() != null && component.getSha256().equals(sha256)) {
-                            LOGGER.info("Md5 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
+                            LOGGER.debug("sha256 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
                             integrityModel.setSha256HashMatched(HashMatchStatus.PASS);
                         } else {
-                            LOGGER.info("sha256 hash did not match: expected value :{}, actual value: {}", component.getSha256(), sha256);
+                            LOGGER.debug("sha256 hash did not match: expected value :{}, actual value: {}", component.getSha256(), sha256);
                             integrityModel.setSha256HashMatched(HashMatchStatus.FAIL);
                         }
                     }
