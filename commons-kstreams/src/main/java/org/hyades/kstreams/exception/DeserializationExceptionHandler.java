@@ -7,6 +7,7 @@ import org.hyades.kstreams.exception.ExceptionHandlerConfig.ThresholdsConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.util.Map;
 
@@ -27,8 +28,8 @@ public class DeserializationExceptionHandler extends AbstractThresholdBasedExcep
                 .orElse(null));
     }
 
-    DeserializationExceptionHandler(final Duration exceptionThresholdInterval, final int exceptionThresholdCount) {
-        super(exceptionThresholdInterval, exceptionThresholdCount);
+    DeserializationExceptionHandler(final Clock clock, final Duration exceptionThresholdInterval, final int exceptionThresholdCount) {
+        super(clock, exceptionThresholdInterval, exceptionThresholdCount);
     }
 
     /**

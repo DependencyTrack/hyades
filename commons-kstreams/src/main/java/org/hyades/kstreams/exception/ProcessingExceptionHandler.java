@@ -6,6 +6,7 @@ import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class ProcessingExceptionHandler implements StreamsUncaughtExceptionHandl
             "org.hibernate.QueryTimeoutException"
     );
 
+    private final Clock clock;
     private final Map<Class<? extends Throwable>, ExceptionOccurrence> transientExceptionOccurrences;
     private final Duration transientExceptionThresholdInterval;
     private final int transientExceptionThresholdCount;
@@ -37,13 +39,16 @@ public class ProcessingExceptionHandler implements StreamsUncaughtExceptionHandl
 
     @SuppressWarnings("unused")
     ProcessingExceptionHandler(final ExceptionHandlerConfig config) {
+        this.clock = Clock.systemUTC();
         this.transientExceptionOccurrences = new ConcurrentHashMap<>();
         this.transientExceptionThresholdInterval = config.thresholds().processing().interval();
         this.transientExceptionThresholdCount = config.thresholds().processing().count();
     }
 
-    ProcessingExceptionHandler(final Duration transientExceptionThresholdInterval,
+    ProcessingExceptionHandler(final Clock clock,
+                               final Duration transientExceptionThresholdInterval,
                                final int transientExceptionThresholdCount) {
+        this.clock = clock;
         this.transientExceptionOccurrences = new ConcurrentHashMap<>();
         this.transientExceptionThresholdInterval = transientExceptionThresholdInterval;
         this.transientExceptionThresholdCount = transientExceptionThresholdCount;
@@ -59,7 +64,7 @@ public class ProcessingExceptionHandler implements StreamsUncaughtExceptionHandl
         if (isTransient(rootCause)) {
             final ExceptionOccurrence occurrence = transientExceptionOccurrences
                     .compute(rootCause.getClass(), (key, oldValue) -> {
-                        final Instant now = Instant.now();
+                        final Instant now = Instant.now(clock);
                         if (oldValue == null) {
                             return new ExceptionOccurrence(now, 1);
                         }
