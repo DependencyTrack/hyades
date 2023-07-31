@@ -216,5 +216,10 @@ message ComponentVulnAnalysisCompleteSubject{
 message ProjectVulnAnalysisCompleteSubject{
   Project project = 1;
   repeated ComponentVulnAnalysisCompleteSubject findings = 2;
-  string status = 3;
+  ProjectVulnAnalysisStatus status = 3;
+}
+
+enum ProjectVulnAnalysisStatus {
+  FAILED = 0;
+  COMPLETED = 1;
 }
