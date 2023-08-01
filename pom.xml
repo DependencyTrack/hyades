@@ -28,9 +28,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:https://github.com/DependencyTrack/hyades.git</connection>
-    <url>https://github.com/DependencyTrack/hyades.git</url>
-    <developerConnection>scm:git:https://github.com/DependencyTrack/hyades.git</developerConnection>
+    <connection>${scm.connection}</connection>
+    <developerConnection>${scm.developer.connection}</developerConnection>
+    <url>${scm.url}</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -76,6 +76,11 @@
 
     <!-- Tool Versions -->
     <tool.protoc.version>com.google.protobuf:protoc:3.21.12</tool.protoc.version>
+
+    <!-- Default SCM Properties -->
+    <scm.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.connection>
+    <scm.developer.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.developer.connection>
+    <scm.url>https://github.com/DependencyTrack/hyades.git</scm.url>
 
     <!-- SonarCloud -->
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -461,6 +466,33 @@
       <properties>
         <skipITs>false</skipITs>
         <quarkus.package.type>native</quarkus.package.type>
+      </properties>
+    </profile>
+
+    <profile>
+      <!--
+        When running in GitHub Actions, the SCM connection must be via HTTPS
+        so that the GITHUB_TOKEN injected by Actions can be used to authenticate.
+        In other environments, SSH keys should be used instead.
+
+        Additionally, this allows for SCM connections to be dependent on the
+        repository the GHA workflow is executed on, making it possible to test
+        the e.g. the release process in forks, without having to modify the POM.
+
+        For details on the environment variables used, see:
+          https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+      -->
+      <id>github-actions</id>
+      <activation>
+        <property>
+          <name>env.GITHUB_ACTIONS</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <scm.connection>scm:git:https://github.com/${env.GITHUB_REPOSITORY}.git</scm.connection>
+        <scm.developer.connection>scm:git:https://github.com/${env.GITHUB_REPOSITORY}.git</scm.developer.connection>
+        <scm.url>https://github.com/${env.GITHUB_REPOSITORY}.git</scm.url>
       </properties>
     </profile>
   </profiles>
