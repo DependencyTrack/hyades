@@ -116,4 +116,4 @@ jobs:
         file: ./${{ inputs.module }}/src/main/docker/Dockerfile.native-multiarch
         platforms: linux/amd64,linux/arm64
         push: ${{ startsWith(github.repository, 'DependencyTrack/') }}
-        tags: ghcr.io/dependencytrack/hyades-${{ inputs.module }}:latest-native
+        tags: ghcr.io/dependencytrack/hyades-${{ inputs.module }}:snapshot-native
