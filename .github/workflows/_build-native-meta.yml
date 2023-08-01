@@ -59,7 +59,7 @@ jobs:
         echo "Including resources: ${RESOURCES_INCLUDES:-None}"
         echo "Excluding resources: ${RESOURCES_EXCLUDES:-None}"
         mvn clean package -Pnative -pl commons,commons-kstreams,commons-persistence,proto,${{ inputs.module }} -DskipTests \
-          -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-graalvmce-builder-image:22.3-java17 \
+          -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.0-java17 \
           -Dquarkus.native.container-build=true \
           -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch.name }}' \
           -Dquarkus.native.resources.includes="$RESOURCES_INCLUDES" \
