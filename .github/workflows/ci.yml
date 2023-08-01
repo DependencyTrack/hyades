@@ -57,9 +57,15 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Set up GraalVM
-      uses: graalvm/setup-graalvm@v1
+      uses: graalvm/setup-graalvm@d1891786152ae96fee67f86c3a1eae596291bbed # tag=v1.1.2
       with:
-        version: 'latest'
+        # NOTE: Do NOT use the Oracle GraalVM distribution, as that is causing issues
+        # with Protobuf serialization. GraalVM Community 17.0.8 and Mandrel 23.0 have
+        # both been tested to work. We're using GraalVM CE for now because installing
+        # Mandrel via this action doesn't work quite right.
+        #   https://github.com/DependencyTrack/hyades/issues/641
+        #   https://github.com/quarkusio/quarkus/issues/35125
+        distribution: 'graalvm-community'
         java-version: '17'
         components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -68,5 +74,5 @@ jobs:
         mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ matrix.module }} clean install -Pnative -DskipTests
     - name: Test Native Image
       run: |-
-        mvn -pl commons,commons-persistence,proto,${{ matrix.module }} \
+        mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ matrix.module }} \
         test-compile failsafe:integration-test failsafe:verify -Pnative

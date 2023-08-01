@@ -7,6 +7,7 @@ import org.hyades.kstreams.exception.ExceptionHandlerConfig.ThresholdsConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.util.Map;
 
@@ -26,9 +27,10 @@ public class ProductionExceptionHandler extends AbstractThresholdBasedExceptionH
                 .orElse(null));
     }
 
-    ProductionExceptionHandler(final Duration exceptionThresholdInterval,
+    ProductionExceptionHandler(final Clock clock,
+                               final Duration exceptionThresholdInterval,
                                final int exceptionThresholdCount) {
-        super(exceptionThresholdInterval, exceptionThresholdCount);
+        super(clock, exceptionThresholdInterval, exceptionThresholdCount);
     }
 
     /**
