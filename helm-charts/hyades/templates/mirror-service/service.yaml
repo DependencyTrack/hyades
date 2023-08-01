@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hyades.mirrorServiceFullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.mirrorServiceLabels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  ports:
+    - port: 80
+      targetPort: web
+  selector: {{- include "hyades.mirrorServiceSelectorLabels" . | nindent 4 }}
