@@ -1,5 +1,6 @@
 package org.hyades.processor;
 
+import com.github.packageurl.PackageURL;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -12,7 +13,7 @@ import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
 import org.hyades.repositories.IntegrityAnalyzerFactory;
 
 @ApplicationScoped
-public class IntegrityAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<String, Component, IntegrityResult> {
+public class IntegrityAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<PackageURL, Component, IntegrityResult> {
     private final RepoEntityRepository repoEntityRepository;
     private final IntegrityAnalyzerFactory integrityAnalyzerFactory;
     private final SecretDecryptor secretDecryptor;
@@ -29,7 +30,7 @@ public class IntegrityAnalyzerProcessorSupplier implements FixedKeyProcessorSupp
     }
 
     @Override
-    public FixedKeyProcessor<String, Component, IntegrityResult> get() {
+    public FixedKeyProcessor<PackageURL, Component, IntegrityResult> get() {
         return new IntegrityAnalyzerProcessor(repoEntityRepository, integrityAnalyzerFactory, secretDecryptor, cache);
     }
 }

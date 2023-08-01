@@ -265,6 +265,8 @@ services:
                 valueProtoType: org.cyclonedx.v1_4.Bom
               - topicName: dtrack.integrity-analysis.component
                 valueProtoType: org.hyades.repometaanalysis.v1.AnalysisCommand
+              - topicName: dtrack.integrity-analysis.result
+                valueProtoType: org.hyades.repometaanalysis.v1.IntegrityResult
             fileSystem:
               enabled: true
               paths: ["/etc/protos"]

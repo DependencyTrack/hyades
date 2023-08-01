@@ -139,9 +139,13 @@ public class ComposerMetaAnalyzer extends AbstractMetaAnalyzer {
 
         return meta;
     }
+    @Override
+    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
+        return null;
+    }
 
     @Override
-    public IntegrityModel checkIntegrityOfComponent(Component component) {
+    public CloseableHttpResponse getResponse(PackageURL packageURL) throws IOException {
         return null;
     }
 

@@ -18,6 +18,8 @@
  */
 package org.hyades.repositories;
 
+import com.github.packageurl.PackageURL;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
@@ -82,7 +84,9 @@ public interface IMetaAnalyzer {
      */
     MetaModel analyze(Component component);
 
-    IntegrityModel checkIntegrityOfComponent(Component component) throws IOException;
+    IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) throws IOException;
+
+    CloseableHttpResponse getResponse(PackageURL packageURL) throws IOException;
 
     String getName();
 

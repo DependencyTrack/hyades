@@ -8,7 +8,6 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 import org.apache.kafka.streams.processor.api.ContextualFixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.hyades.common.SecretDecryptor;
-import org.hyades.model.IntegrityAnalysisCacheKey;
 import org.hyades.model.MetaAnalyzerCacheKey;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Repository;
@@ -16,7 +15,6 @@ import org.hyades.persistence.model.RepositoryType;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
-import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
 import org.hyades.repositories.IMetaAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
@@ -191,20 +189,6 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                     }).await().indefinitely();
         } catch (Exception e) {
             return null;
-        }
-    }
-
-    private Optional<IntegrityResult> getCachedResult(final IntegrityAnalysisCacheKey cacheKey) {
-        try {
-            final IntegrityResult cachedResult = cache.<IntegrityAnalysisCacheKey, IntegrityResult>get(cacheKey,
-                    key -> {
-                        // null values would be cached, so throw an exception instead.
-                        // See https://quarkus.io/guides/cache#let-exceptions-bubble-up
-                        throw new NoSuchElementException();
-                    }).await().indefinitely();
-            return Optional.of(cachedResult);
-        } catch (Exception e) {
-            return Optional.empty();
         }
     }
 

@@ -1,6 +1,7 @@
 package org.hyades.repositories;
 
 
+import com.github.packageurl.PackageURL;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -83,7 +84,12 @@ public class CpanMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
-    public IntegrityModel checkIntegrityOfComponent(Component component) throws IOException {
+    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
+        return null;
+    }
+
+    @Override
+    public CloseableHttpResponse getResponse(PackageURL packageURL) throws IOException {
         return null;
     }
 

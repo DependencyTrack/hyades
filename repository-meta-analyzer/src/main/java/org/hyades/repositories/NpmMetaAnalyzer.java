@@ -100,7 +100,12 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
-    public IntegrityModel checkIntegrityOfComponent(Component component) {
+    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
+        return null;
+    }
+
+    @Override
+    public CloseableHttpResponse getResponse(PackageURL packageURL) throws IOException {
         return null;
     }
 

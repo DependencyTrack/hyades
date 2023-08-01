@@ -5,6 +5,7 @@ import com.github.packageurl.PackageURL;
 import com.google.protobuf.Timestamp;
 import io.quarkus.cache.Cache;
 import io.quarkus.narayana.jta.QuarkusTransaction;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.kafka.streams.processor.api.ContextualFixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.hyades.common.SecretDecryptor;
@@ -26,7 +27,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
-public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<String, Component, IntegrityResult> {
+public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Component, IntegrityResult> {
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrityAnalyzerProcessor.class);
     private final RepoEntityRepository repoEntityRepository;
     private final IntegrityAnalyzerFactory integrityAnalyzerFactory;
@@ -44,7 +45,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Stri
     }
 
     @Override
-    public void process(FixedKeyRecord<String, Component> record) {
+    public void process(FixedKeyRecord<PackageURL, Component> record) {
         final Component component = record.value();
         IntegrityResult result;
         // NOTE: Do not use purlWithoutVersion for the analysis!
@@ -64,7 +65,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Stri
         for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
             if (repository.isIntegrityCheckEnabled()) {
                 if ((component.hasMd5Hash() || component.hasSha256Hash() || component.hasSha1Hash())) {
-                    LOGGER.info("Will perform integrity check for received component:  {} for repository: {}", component.getPurl(), repository.getIdentifier());
+                    LOGGER.debug("Will perform integrity check for received component:  {} for repository: {}", component.getPurl(), repository.getIdentifier());
                     result = performIntegrityCheckForComponent(analyzer, repository, component);
                 } else {
                     final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
@@ -113,11 +114,42 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Stri
 
     private IntegrityResult performIntegrityCheckForComponent(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
 
-        final var integrityResultCacheKey = new IntegrityAnalysisCacheKey(repository.getIdentifier(), repository.getUrl(), UUID.fromString(component.getUuid()), component.getPurl());
+        final var integrityResultCacheKey = new IntegrityAnalysisCacheKey(repository.getIdentifier(), repository.getUrl(), component.getPurl());
         final var integrityAnalysisCacheResult = getCachedResult(integrityResultCacheKey);
         if (integrityAnalysisCacheResult != null) {
             LOGGER.debug("Cache hit for integrity result (analyzer: {}, url: {}, component purl: {})", analyzer.getName(), repository.getUrl(), component.getPurl());
-            return integrityAnalysisCacheResult;
+            final var analyzerComponent = new org.hyades.persistence.model.Component();
+            analyzerComponent.setPurl(component.getPurl());
+            analyzerComponent.setMd5(component.getMd5Hash());
+            analyzerComponent.setSha1(component.getSha1Hash());
+            analyzerComponent.setSha256(component.getSha256Hash());
+            UUID uuid = UUID.fromString(component.getUuid());
+            analyzerComponent.setUuid(uuid);
+            analyzerComponent.setId((long) component.getComponentId());
+            try {
+                IntegrityModel integrityModel = analyzer.checkIntegrityOfComponent(analyzerComponent, integrityAnalysisCacheResult);
+                Component component1 = Component.newBuilder().setPurl(integrityModel.getComponent().getPurl().toString())
+                        .setInternal(integrityModel.getComponent().isInternal())
+                        .setMd5Hash(integrityModel.getComponent().getMd5())
+                        .setSha1Hash(integrityModel.getComponent().getSha1())
+                        .setSha256Hash(integrityModel.getComponent().getSha256())
+                        .setUuid(integrityModel.getComponent().getUuid().toString())
+                        .setComponentId(integrityModel.getComponent().getId()).build();
+
+                final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
+                        .setMd5HashMatch(integrityModel.isMd5HashMatched())
+                        .setComponent(component1)
+                        .setSha1HashMatch(integrityModel.isSha1HashMatched())
+                        .setSha256Match(integrityModel.isSha256HashMatched())
+                        .setRepository(repository.getUrl())
+                        .setPublished(Timestamp.newBuilder().setSeconds(System.currentTimeMillis()));
+                return resultBuilder.build();
+            } catch (Exception ex) {
+                LOGGER.error("Failed to analyze {} using {} with repository {}",
+                        component.getPurl(), analyzer.getName(), repository.getIdentifier(), ex);
+                return null;
+            }
+
         } else {
             LOGGER.debug("Cache miss for integrity check (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), repository.getUrl(), component.getUuid());
             analyzer.setRepositoryBaseUrl(repository.getUrl());
@@ -142,7 +174,9 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Stri
                 UUID uuid = UUID.fromString(component.getUuid());
                 analyzerComponent.setUuid(uuid);
                 analyzerComponent.setId((long) component.getComponentId());
-                integrityModel = analyzer.checkIntegrityOfComponent(analyzerComponent);
+                CloseableHttpResponse response = analyzer.getResponse(new PackageURL(component.getPurl()));
+                cacheResult(integrityResultCacheKey, response);
+                integrityModel = analyzer.checkIntegrityOfComponent(analyzerComponent, response);
             } catch (Exception e) {
                 LOGGER.error("Failed to analyze {} using {} with repository {}",
                         component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
@@ -162,18 +196,17 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Stri
                     .setSha256Match(integrityModel.isSha256HashMatched())
                     .setRepository(repository.getUrl())
                     .setPublished(Timestamp.newBuilder().setSeconds(System.currentTimeMillis()));
-            cacheResult(integrityResultCacheKey, resultBuilder.build());
             return resultBuilder.build();
         }
     }
 
-    private void cacheResult(final IntegrityAnalysisCacheKey cacheKey, final IntegrityResult result) {
+    private void cacheResult(final IntegrityAnalysisCacheKey cacheKey, final CloseableHttpResponse result) {
         cache.get(cacheKey, key -> result).await().indefinitely();
     }
 
-    private IntegrityResult getCachedResult(final IntegrityAnalysisCacheKey cacheKey) {
+    private CloseableHttpResponse getCachedResult(final IntegrityAnalysisCacheKey cacheKey) {
         try {
-            return cache.<IntegrityAnalysisCacheKey, IntegrityResult>get(cacheKey,
+            return cache.<IntegrityAnalysisCacheKey, CloseableHttpResponse>get(cacheKey,
                     key -> {
                         // null values would be cached, so throw an exception instead.
                         // See https://quarkus.io/guides/cache#let-exceptions-bubble-up
