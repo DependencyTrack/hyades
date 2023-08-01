@@ -216,5 +216,11 @@ message ComponentVulnAnalysisCompleteSubject{
 message ProjectVulnAnalysisCompleteSubject{
   Project project = 1;
   repeated ComponentVulnAnalysisCompleteSubject findings = 2;
+  ProjectVulnAnalysisStatus status = 3;
+}
 
+enum ProjectVulnAnalysisStatus {
+  PROJECT_VULN_ANALYSIS_STATUS_UNSPECIFIED = 0;
+  PROJECT_VULN_ANALYSIS_STATUS_FAILED = 1;
+  PROJECT_VULN_ANALYSIS_STATUS_COMPLETED = 2;
 }

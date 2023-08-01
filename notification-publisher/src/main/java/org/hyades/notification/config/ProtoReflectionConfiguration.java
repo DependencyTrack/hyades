@@ -22,6 +22,7 @@ import org.hyades.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSub
 import org.hyades.proto.notification.v1.PolicyViolationSubject;
 import org.hyades.proto.notification.v1.Project;
 import org.hyades.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
+import org.hyades.proto.notification.v1.ProjectVulnAnalysisStatus;
 import org.hyades.proto.notification.v1.Scope;
 import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.Vulnerability;
@@ -54,6 +55,7 @@ import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubje
                 PolicyViolationSubject.class,
                 Project.class,
                 ProjectVulnAnalysisCompleteSubject.class,
+                ProjectVulnAnalysisStatus.class,
                 Scope.class,
                 Timestamp.class,
                 VexConsumedOrProcessedSubject.class,
