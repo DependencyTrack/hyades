@@ -276,7 +276,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                    "source" : "INTERNAL",
                                    "severity" : "UNASSIGNED"
                                  } ]
-                               } ]
+                               } ],
+                               "status" : "PROJECT_VULN_ANALYSIS_STATUS_COMPLETED"
                              }
                            }
                          }
