@@ -57,15 +57,15 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Set up GraalVM
-      uses: graalvm/setup-graalvm@d1891786152ae96fee67f86c3a1eae596291bbed # tag=v1.1.2
+      uses: graalvm/setup-graalvm@c569e64c0b240dbe83c17275c08f6717d4bfc2fa # tag=v1
       with:
         # NOTE: Do NOT use the Oracle GraalVM distribution, as that is causing issues
         # with Protobuf serialization. GraalVM Community 17.0.8 and Mandrel 23.0 have
-        # both been tested to work. We're using GraalVM CE for now because installing
-        # Mandrel via this action doesn't work quite right.
+        # both been tested to work.
         #   https://github.com/DependencyTrack/hyades/issues/641
         #   https://github.com/quarkusio/quarkus/issues/35125
-        distribution: 'graalvm-community'
+        distribution: 'mandrel'
+        version: 'mandrel-latest'
         java-version: '17'
         components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
