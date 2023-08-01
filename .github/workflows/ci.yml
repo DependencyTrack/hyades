@@ -59,6 +59,7 @@ jobs:
     - name: Set up GraalVM
       uses: graalvm/setup-graalvm@v1
       with:
+        distribution: 'mandrel-latest'
         version: 'latest'
         java-version: '17'
         components: 'native-image'
