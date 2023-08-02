@@ -9,14 +9,26 @@ common:
 
 apiServer:
   enabled: true
+  replicaCount: 2
   resources:
     requests:
       cpu: "2"
-      memory: 2Gi
+      memory: 1Gi
     limits:
       cpu: "4"
-      memory: 3Gi
+      memory: 2Gi
+  service:
+    type: NodePort
+    nodePort: 30080
   extraEnv:
     EXTRA_JAVA_OPTIONS: "-Xmx2g"
     SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
-    KAFKA_NUM_STREAM_THREADS: "12"
+    KAFKA_NUM_STREAM_THREADS: "6"
+
+frontend:
+  enabled: true
+  replicaCount: 2
+  service:
+    type: NodePort
+    nodePort: 30081
+  apiBaseUrl: "http://localhost:30080"

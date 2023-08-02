@@ -47,6 +47,7 @@ apiServer:
       timeoutSeconds: 5
   service:
     type: ClusterIP
+    nodePort: ~
   ingress:
     enabled: false
     annotations: {}
@@ -86,6 +87,7 @@ frontend:
       timeoutSeconds: 5
   service:
     type: ClusterIP
+    nodePort: ~
   ingress:
     enabled: false
     annotations: {}

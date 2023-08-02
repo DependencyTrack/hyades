@@ -141,21 +141,19 @@ Deploying to a local [Minikube](https://minikube.sigs.k8s.io/docs/) cluster is a
 ```shell
 docker compose up -d
 ```
-2. Start the API server and frontend
+2. Start a local Minikube cluster, exposing `NodePort`s for API server (`30080`) and frontend (`30081`)
 ```shell
-docker compose up -d apiserver frontend
+minikube start --ports 30080:30080,30081:30081
 ```
-3. Start a local Minikube cluster
-```shell
-minikube start
-```
-4. Deploy Hyades
+3. Deploy Hyades
 ```shell
 helm install hyades ./helm-charts/ \
   -n hyades --create-namespace \
   -f ./helm-charts/hyades/values.yaml \
   -f ./helm-charts/hyades/values-minikube.yaml
 ```
+4. Wait a moment for all deployments to become *ready*
+5. Visit `http://localhost:30081` in your browser to access the frontend
 
 ### Monitoring 📊
 

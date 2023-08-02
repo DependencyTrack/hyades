@@ -29,9 +29,6 @@
 | apiServer.ingress.annotations | object | `{}` |  |
 | apiServer.ingress.enabled | bool | `false` |  |
 | apiServer.ingress.hostname | string | `"example.com"` |  |
-| apiServer.persistentVolume.className | string | `""` |  |
-| apiServer.persistentVolume.enabled | bool | `false` |  |
-| apiServer.persistentVolume.size | string | `"5Gi"` |  |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
 | apiServer.probes.liveness.initialDelaySeconds | int | `10` |  |
 | apiServer.probes.liveness.periodSeconds | int | `15` |  |
@@ -42,10 +39,12 @@
 | apiServer.probes.readiness.periodSeconds | int | `15` |  |
 | apiServer.probes.readiness.successThreshold | int | `1` |  |
 | apiServer.probes.readiness.timeoutSeconds | int | `5` |  |
+| apiServer.replicaCount | int | `1` |  |
 | apiServer.resources.limits.cpu | string | `"4"` |  |
 | apiServer.resources.limits.memory | string | `"8Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
 | apiServer.resources.requests.memory | string | `"4Gi"` |  |
+| apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
 | common.database.jdbcUrl | string | `""` |  |
 | common.database.password | string | `""` |  |
@@ -84,6 +83,7 @@
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
 | frontend.resources.requests.memory | string | `"64Mi"` |  |
+| frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |
 | mirrorService.annotations | object | `{}` |  |
 | mirrorService.args | list | `[]` |  |
