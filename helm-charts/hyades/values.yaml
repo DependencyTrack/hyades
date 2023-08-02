@@ -15,6 +15,7 @@ common:
 
 apiServer:
   enabled: false
+  replicaCount: 1
   annotations: {}
   image:
     repository: dependencytrack/hyades-apiserver
@@ -29,10 +30,6 @@ apiServer:
     limits:
       cpu: "4"
       memory: 8Gi
-  persistentVolume:
-    enabled: false
-    className: ""
-    size: 5Gi
   extraEnv: {}
   extraEnvFrom: []
   probes:

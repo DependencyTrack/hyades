@@ -1,14 +1,13 @@
 {{- if .Values.apiServer.enabled }}
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "hyades.apiServerFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "hyades.apiServerFullname" . }}
-  replicas: 1
+  replicas: {{ .Values.apiServer.replicaCount }}
   selector:
     matchLabels: {{- include "hyades.apiServerSelectorLabels" . | nindent 6 }}
   template:
@@ -95,14 +94,8 @@ spec:
           successThreshold: {{ .Values.apiServer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
       volumes:
-      {{- if .Values.apiServer.persistentVolume.enabled }}
-      - name: data
-        persistentVolumeClaim:
-          claimName: {{ include "hyades.apiServerFullname" . }}
-      {{- else }}
       - name: data
         emptyDir: { }
-      {{- end }}
       - name: tmp
         emptyDir: { }
 {{- end }}
