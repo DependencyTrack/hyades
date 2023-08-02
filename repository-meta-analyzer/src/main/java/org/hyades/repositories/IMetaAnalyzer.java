@@ -18,10 +18,10 @@
  */
 package org.hyades.repositories;
 
+import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -47,6 +47,7 @@ public interface IMetaAnalyzer {
     /**
      * Sets the base URL for the repository being used. If not specified, IMetaAnalyzer implementations
      * should fall back to a default value (if one is available).
+     *
      * @param baseUrl the base URL to the repository
      * @since 3.1.0
      */
@@ -55,6 +56,7 @@ public interface IMetaAnalyzer {
     /**
      * Sets the username and password (or access token) to use for authentication with the repository. Should not be used for repositories that do not
      * use Basic authentication.
+     *
      * @param username the username for access to the repository.
      * @param password the password or access token to be used for the repository.
      * @since 4.6.0
@@ -63,12 +65,14 @@ public interface IMetaAnalyzer {
 
     /**
      * Returns the type of repositry the analyzer supports.
+     *
      * @since 3.1.0
      */
     RepositoryType supportedRepositoryType();
 
     /**
      * Returns whether or not the analyzer is capable of supporting the ecosystem of the component.
+     *
      * @param component the component to analyze
      * @return true if analyzer can be used for this component, false if not
      * @since 3.1.0
@@ -77,6 +81,7 @@ public interface IMetaAnalyzer {
 
     /**
      * The component to analyze.
+     *
      * @param component the component to analyze
      * @return a MetaModel object
      * @throws MetaAnalyzerException in case of any issue during metadata generation
@@ -84,10 +89,7 @@ public interface IMetaAnalyzer {
      */
     MetaModel analyze(Component component);
 
-    IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) throws IOException;
-
-    CloseableHttpResponse getResponse(PackageURL packageURL) throws IOException;
-
     String getName();
 
+    CloseableHttpResponse getResponse(PackageURL packageURL) throws MalformedPackageURLException, IOException;
 }

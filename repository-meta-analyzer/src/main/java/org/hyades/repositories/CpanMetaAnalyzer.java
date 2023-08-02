@@ -5,7 +5,6 @@ import com.github.packageurl.PackageURL;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -56,7 +55,7 @@ public class CpanMetaAnalyzer extends AbstractMetaAnalyzer {
             final String url = String.format(baseUrl + API_URL, packageName);
             try (final CloseableHttpResponse response = processHttpGetRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                    if (response.getEntity()!=null) {
+                    if (response.getEntity() != null) {
                         String responseString = EntityUtils.toString(response.getEntity());
                         var jsonObject = new JSONObject(responseString);
                         final String latest = jsonObject.optString("version");
@@ -81,11 +80,6 @@ public class CpanMetaAnalyzer extends AbstractMetaAnalyzer {
             }
         }
         return meta;
-    }
-
-    @Override
-    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
-        return null;
     }
 
     @Override

@@ -22,7 +22,6 @@ import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -105,12 +104,7 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
-    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
-        return null;
-    }
-
-    @Override
-    public CloseableHttpResponse getResponse(PackageURL packageURL) throws IOException {
+    public CloseableHttpResponse getResponse(PackageURL packageURL) {
         return null;
     }
 

@@ -18,10 +18,12 @@
  */
 package org.hyades.repositories;
 
+import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -91,13 +93,23 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
-    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
-        return null;
-    }
-
-    @Override
-    public CloseableHttpResponse getResponse(PackageURL packageURL) throws IOException {
-        return null;
+    public CloseableHttpResponse getResponse(PackageURL packageURL) throws MalformedPackageURLException {
+        if (packageURL != null) {
+            String type = "tar.gz";
+            if (packageURL.getQualifiers() != null) {
+                type = packageURL.getQualifiers().getOrDefault("type", "tar.gz");
+            }
+            final String pythonUrl = baseUrl + "/" + API_URL + "/" + packageURL.getName() + "/" + "/" + packageURL.getName() + "-" + packageURL.getVersion() + "." + type;
+            try (final CloseableHttpResponse response = processHttpHeadRequest(pythonUrl)) {
+                final StatusLine status = response.getStatusLine();
+                if (status.getStatusCode() == HttpStatus.SC_OK) {
+                    return response;
+                }
+            } catch (IOException ex) {
+                throw new MetaAnalyzerException(ex);
+            }
+        }
+        throw new MalformedPackageURLException("Purl sent for component integrity check is null");
     }
 
     private MetaModel processSuccessResponse(CloseableHttpResponse response, MetaModel meta) throws IOException {

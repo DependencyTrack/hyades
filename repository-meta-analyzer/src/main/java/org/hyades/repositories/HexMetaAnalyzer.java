@@ -21,7 +21,6 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -84,7 +83,7 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
             try (final CloseableHttpResponse response = processHttpGetRequest(url)) {
                 String jsonString = EntityUtils.toString(response.getEntity());
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
-                    if(!jsonString.equalsIgnoreCase("") && !jsonString.equalsIgnoreCase("{}")) {
+                    if (!jsonString.equalsIgnoreCase("") && !jsonString.equalsIgnoreCase("{}")) {
                         JSONObject jsonObject = new JSONObject(jsonString);
                         successMeta = processResponse(meta, jsonObject);
                     }
@@ -101,14 +100,10 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
-    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
-        return null;
-    }
-
-    @Override
     public CloseableHttpResponse getResponse(PackageURL packageURL) throws IOException {
         return null;
     }
+
     private MetaModel processResponse(MetaModel meta, JSONObject response) {
         if (response != null) {
             if (response.optJSONArray("releases") != null && response.optJSONArray("releases").length() > 0) {

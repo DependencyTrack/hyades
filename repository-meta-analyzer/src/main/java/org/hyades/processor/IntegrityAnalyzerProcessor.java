@@ -5,12 +5,14 @@ import com.github.packageurl.PackageURL;
 import com.google.protobuf.Timestamp;
 import io.quarkus.cache.Cache;
 import io.quarkus.narayana.jta.QuarkusTransaction;
+import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.kafka.streams.processor.api.ContextualFixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.hyades.common.SecretDecryptor;
 import org.hyades.model.IntegrityAnalysisCacheKey;
 import org.hyades.model.IntegrityModel;
+import org.hyades.model.MetaAnalyzerException;
 import org.hyades.persistence.model.Repository;
 import org.hyades.persistence.model.RepositoryType;
 import org.hyades.persistence.repository.RepoEntityRepository;
@@ -127,7 +129,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
             analyzerComponent.setUuid(uuid);
             analyzerComponent.setId((long) component.getComponentId());
             try {
-                IntegrityModel integrityModel = analyzer.checkIntegrityOfComponent(analyzerComponent, integrityAnalysisCacheResult);
+                IntegrityModel integrityModel = checkIntegrityOfComponent(analyzerComponent, integrityAnalysisCacheResult);
                 Component component1 = Component.newBuilder().setPurl(integrityModel.getComponent().getPurl().toString())
                         .setInternal(integrityModel.getComponent().isInternal())
                         .setMd5Hash(integrityModel.getComponent().getMd5())
@@ -162,7 +164,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
             }
 
             LOGGER.debug("Performing integrity check on component: {}", component.getPurl());
-            final IntegrityModel integrityModel;
+            IntegrityModel integrityModel = new IntegrityModel();
             try {
                 // Analyzers still work with "legacy" data models,
                 // allowing us to avoid major refactorings of the original code.
@@ -174,9 +176,14 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                 UUID uuid = UUID.fromString(component.getUuid());
                 analyzerComponent.setUuid(uuid);
                 analyzerComponent.setId((long) component.getComponentId());
-                CloseableHttpResponse response = analyzer.getResponse(new PackageURL(component.getPurl()));
-                cacheResult(integrityResultCacheKey, response);
-                integrityModel = analyzer.checkIntegrityOfComponent(analyzerComponent, response);
+                try (CloseableHttpResponse response = analyzer.getResponse(new PackageURL(component.getPurl()))) {
+                    cacheResult(integrityResultCacheKey, response);
+                    integrityModel = checkIntegrityOfComponent(analyzerComponent, response);
+                } catch (Exception ex) {
+                    LOGGER.warn("Head request for maven integrity failed. Not caching response");
+                    throw new MetaAnalyzerException(ex);
+
+                }
             } catch (Exception e) {
                 LOGGER.error("Failed to analyze {} using {} with repository {}",
                         component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
@@ -216,4 +223,72 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
             return null;
         }
     }
+
+    public IntegrityModel checkIntegrityOfComponent(org.hyades.persistence.model.Component component, CloseableHttpResponse response) {
+        IntegrityModel integrityModel = new IntegrityModel();
+        integrityModel.setComponent(component);
+        try (response) {
+            Header[] headers = response.getAllHeaders();
+            String md5 = "";
+            String sha1 = "";
+            String sha256 = "";
+            for (Header header : headers) {
+                if (header.getName().equalsIgnoreCase("X-Checksum-MD5")) {
+                    md5 = header.getValue();
+                } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA1")) {
+                    sha1 = header.getValue();
+                } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA256")) {
+                    sha256 = header.getValue();
+                }
+            }
+            if (component.getMd5() == null || component.getMd5().equals("")) {
+                integrityModel.setMd5HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
+            } else if (component.getSha1() == null || component.getSha1().equals("")) {
+                integrityModel.setSha1HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
+            } else if (component.getSha256() == null || component.getSha256().equals("")) {
+                integrityModel.setSha256HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
+            }
+
+            if (md5.equals("")) {
+                integrityModel.setMd5HashMatched(HashMatchStatus.UNKNOWN);
+            } else if (sha1.equals("")) {
+                integrityModel.setSha1HashMatched(HashMatchStatus.UNKNOWN);
+            } else if (sha256.equals("")) {
+                integrityModel.setSha256HashMatched(HashMatchStatus.UNKNOWN);
+            }
+            if (integrityModel.isMd5HashMatched() == null) {
+                //md5, sha1 or sha256 still "" means that the source of truth repo does not have this hash info and in that case, if there is a match with the others it is a valid component
+                if (component.getMd5() != null && component.getMd5().equals(md5)) {
+                    LOGGER.debug("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
+                    integrityModel.setMd5HashMatched(HashMatchStatus.PASS);
+                } else {
+                    LOGGER.debug("Md5 hash did not match: expected value :{}, actual value: {}", component.getMd5(), md5);
+                    integrityModel.setMd5HashMatched(HashMatchStatus.FAIL);
+                }
+            }
+            if (integrityModel.isSha1HashMatched() == null) {
+                if (component.getSha1() != null && component.getSha1().equals(sha1)) {
+                    LOGGER.debug("sha1 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
+                    integrityModel.setSha1HashMatched(HashMatchStatus.PASS);
+                } else {
+                    LOGGER.debug("sha1 hash did not match: expected value :{}, actual value: {}", component.getSha1(), sha1);
+                    integrityModel.setSha1HashMatched(HashMatchStatus.FAIL);
+                }
+            }
+            if (integrityModel.isSha256HashMatched() == null) {
+                if (component.getSha256() != null && component.getSha256().equals(sha256)) {
+                    LOGGER.debug("sha256 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
+                    integrityModel.setSha256HashMatched(HashMatchStatus.PASS);
+                } else {
+                    LOGGER.debug("sha256 hash did not match: expected value :{}, actual value: {}", component.getSha256(), sha256);
+                    integrityModel.setSha256HashMatched(HashMatchStatus.FAIL);
+                }
+            }
+        } catch (Exception ex) {
+            LOGGER.error("An error occurred while performing head request for component: " + ex);
+        }
+
+        return integrityModel;
+    }
+
 }
