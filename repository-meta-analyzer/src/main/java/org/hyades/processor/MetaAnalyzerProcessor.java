@@ -71,7 +71,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 // We do not want non-internal components being analyzed with internal repositories as
                 // internal repositories are not the source of truth for these components, even if the
                 // repository acts as a proxy to the source of truth. This cannot be assumed.
-                LOGGER.info("Skipping component with purl {} ", component.getPurl());
+                LOGGER.debug("Skipping component with purl {} ", component.getPurl());
                 continue;
             }
 
@@ -80,26 +80,23 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
             // When that circumstance changes, the cache key must also include the PURL version.
             final var cacheKey = new MetaAnalyzerCacheKey(analyzer.getName(), purlWithoutVersion.canonicalize(), repository.getUrl());
 
-            //putting a separate key for integrity check for the time being in the same cache as meta analysis.
-            // Once the poc is complete the plan is to separate out version check and integrity check and thus have separate caches as well
-
             // Populate results from cache if possible.
             final var cachedResult = getCachedResult(cacheKey);
             if (cachedResult != null) {
                 LOGGER.debug("Cache hit (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
                 context().forward(record
-                        .withValue(cachedResult.build())
+                        .withValue(cachedResult)
                         .withTimestamp(context().currentSystemTimeMs()));
                 return;
             } else {
                 LOGGER.debug("Cache miss (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
             }
 
-            final AnalysisResult.Builder optionalResult = analyze(analyzer, repository, component);
-            if (optionalResult != null) {
-                cacheResult(cacheKey, optionalResult);
+            final Optional<AnalysisResult> optionalResult = analyze(analyzer, repository, component);
+            if (optionalResult.isPresent()) {
+                cacheResult(cacheKey, optionalResult.get());
                 context().forward(record
-                        .withValue(optionalResult.build())
+                        .withValue(optionalResult.get())
                         .withTimestamp(context().currentSystemTimeMs()));
 
                 return;
@@ -112,7 +109,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
     }
 
 
-    private AnalysisResult.Builder analyze(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
+    private Optional<AnalysisResult> analyze(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
         analyzer.setRepositoryBaseUrl(repository.getUrl());
         if (Boolean.TRUE.equals(repository.isAuthenticationRequired())) {
             try {
@@ -133,7 +130,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         } catch (Exception e) {
             LOGGER.error("Failed to analyze {} using {} with repository {}",
                     component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
-            return null;
+            return Optional.empty();
         }
 
         final AnalysisResult.Builder resultBuilder = AnalysisResult.newBuilder()
@@ -147,9 +144,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
             }
             LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
                     component.getPurl(), repository.getIdentifier(), repository.getType());
-            return resultBuilder;
+            return Optional.of(resultBuilder.build());
         }
-        return null;
+        return Optional.empty();
     }
 
     private PackageURL mustParsePurl(final String purl) {
@@ -179,9 +176,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 
-    private AnalysisResult.Builder getCachedResult(final MetaAnalyzerCacheKey cacheKey) {
+    private AnalysisResult getCachedResult(final MetaAnalyzerCacheKey cacheKey) {
         try {
-            return cache.<MetaAnalyzerCacheKey, AnalysisResult.Builder>get(cacheKey,
+            return cache.<MetaAnalyzerCacheKey, AnalysisResult>get(cacheKey,
                     key -> {
                         // null values would be cached, so throw an exception instead.
                         // See https://quarkus.io/guides/cache#let-exceptions-bubble-up
@@ -192,7 +189,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         }
     }
 
-    private void cacheResult(final MetaAnalyzerCacheKey cacheKey, final AnalysisResult.Builder result) {
+    private void cacheResult(final MetaAnalyzerCacheKey cacheKey, final AnalysisResult result) {
         cache.get(cacheKey, key -> result).await().indefinitely();
     }
 

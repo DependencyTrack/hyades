@@ -15,7 +15,7 @@ message AnalysisCommand {
 
 message AnalysisResult {
   // The component this result is for.
-  optional Component component = 1;
+  Component component = 1;
 
   // Identifier of the repository where the result was found.
   optional string repository = 2;
@@ -39,7 +39,7 @@ message IntegrityResult {
   //Identifier of the repository with which the hashes were compared
   string repository = 5;
   // When was the integrity check done
-  optional google.protobuf.Timestamp published = 6;
+  google.protobuf.Timestamp published = 6;
 }
 
 enum HashMatchStatus {
