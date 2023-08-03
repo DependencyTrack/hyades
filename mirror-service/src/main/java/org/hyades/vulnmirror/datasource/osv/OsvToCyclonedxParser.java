@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.Score;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -274,7 +275,7 @@ public class OsvToCyclonedxParser {
             var rating = VulnerabilityRating.newBuilder();
             double score = cvss.calculateScore().getBaseScore();
             rating.setVector(vector);
-            rating.setScore(score);
+            rating.setScore(Double.parseDouble(NumberFormat.getInstance().format(score)));
             String type = cvssObj.optString("type", null);
 
             if (type != null && type.equalsIgnoreCase("CVSS_V3")) {

@@ -22,6 +22,7 @@ import org.hyades.vulnmirror.datasource.Datasource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,7 @@ public class GitHubAdvisoryToCdxParser {
 
         VulnerabilityRating.Builder rating = VulnerabilityRating.newBuilder()
                 .setSeverity(mapSeverity(advisory.getSeverity().value()))
-                .setScore(advisory.getCvss().getScore().doubleValue());
+                .setScore(Double.parseDouble(NumberFormat.getInstance().format(advisory.getCvss().getScore())));
 
         Optional.ofNullable(advisory.getCvss().getVectorString()).ifPresent(rating::setVector);
         vuln.addRatings(rating.build());
