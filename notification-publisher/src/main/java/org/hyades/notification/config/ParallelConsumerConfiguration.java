@@ -35,7 +35,7 @@ class ParallelConsumerConfiguration {
         final KafkaConsumer<String, Notification> consumer = createConsumer(kafkaConfig);
         this.consumerMetrics = new KafkaClientMetrics(consumer);
         this.consumerMetrics.bindTo(meterRegistry);
-        this.parallelConsumer = createParallelConsumer(consumer, parallelConsumerConfig);
+        this.parallelConsumer = createParallelConsumer(consumer, parallelConsumerConfig, meterRegistry);
     }
 
     void onStop(@Observes final ShutdownEvent event) {
@@ -55,7 +55,8 @@ class ParallelConsumerConfiguration {
 
     private static ParallelStreamProcessor<String, Notification> createParallelConsumer(
             final KafkaConsumer<String, Notification> consumer,
-            final ParallelConsumerConfig parallelConsumerConfig) {
+            final ParallelConsumerConfig parallelConsumerConfig,
+            final MeterRegistry meterRegistry) {
         final var parallelConsumerOptions = ParallelConsumerOptions.<String, Notification>builder()
                 .consumer(consumer)
                 .maxConcurrency(parallelConsumerConfig.maxConcurrency())
@@ -66,6 +67,7 @@ class ParallelConsumerConfiguration {
                             .apply(recordCtx.getNumberOfFailedAttempts());
                     return Duration.ofMillis(delayMillis);
                 })
+                .meterRegistry(meterRegistry)
                 .build();
 
         final ParallelStreamProcessor<String, Notification> parallelConsumer = ParallelStreamProcessor
