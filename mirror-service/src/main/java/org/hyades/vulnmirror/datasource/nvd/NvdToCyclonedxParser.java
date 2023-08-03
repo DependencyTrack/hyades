@@ -30,6 +30,7 @@ import org.cyclonedx.proto.v1_4.VulnerabilityRating;
 import org.hyades.common.cwe.CweResolver;
 import org.hyades.vulnmirror.datasource.Datasource;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -182,7 +183,7 @@ public final class NvdToCyclonedxParser {
             baseMetricV2.forEach(baseMetric -> {
                 CvssV20 cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss).map(cvss20 -> VulnerabilityRating.newBuilder()
-                        .setScore(cvss20.getBaseScore().doubleValue())
+                        .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvss20.getBaseScore())))
                         .setMethod(ScoreMethod.SCORE_METHOD_CVSSV2)
                         .setVector(cvss20.getVectorString())
                         .setSeverity(mapSeverity(baseMetric.getBaseSeverity()))
@@ -196,7 +197,7 @@ public final class NvdToCyclonedxParser {
             baseMetricV3.forEach(baseMetric -> {
                 CvssV30Data cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss).map(cvssx -> VulnerabilityRating.newBuilder()
-                        .setScore(cvssx.getBaseScore().doubleValue())
+                        .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvssx.getBaseScore())))
                         .setMethod(ScoreMethod.SCORE_METHOD_CVSSV3)
                         .setVector(cvssx.getVectorString())
                         .setSeverity(mapSeverity(cvssx.getBaseSeverity().value()))
@@ -210,7 +211,7 @@ public final class NvdToCyclonedxParser {
             baseMetricV31.forEach(baseMetric -> {
                 CvssV31Data cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss).map(cvss31 -> VulnerabilityRating.newBuilder()
-                        .setScore(cvss.getBaseScore().doubleValue())
+                        .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvss.getBaseScore())))
                         .setMethod(ScoreMethod.SCORE_METHOD_CVSSV31)
                         .setVector(cvss.getVectorString())
                         .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))
