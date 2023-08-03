@@ -37,6 +37,10 @@ spec:
         env:
         - name: ALPINE_METRICS_ENABLED
           value: "true"
+        {{- if (include "hyades.secretKeySecretName" .) }}
+        - name: ALPINE_SECRET_KEY_PATH
+          value: "/var/run/secrets/secret.key"
+        {{- end }}
         - name: ALPINE_DATABASE_MODE
           value: "external"
         - name: ALPINE_DATABASE_DRIVER
@@ -73,6 +77,12 @@ spec:
           mountPath: /data
         - name: tmp
           mountPath: /tmp
+        {{- if (include "hyades.secretKeySecretName" .) }}
+        - name: secret-key
+          subPath: secret.key
+          mountPath: /var/run/secrets/secret.key
+          readOnly: true
+        {{- end }}
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -98,4 +108,9 @@ spec:
         emptyDir: { }
       - name: tmp
         emptyDir: { }
+      {{- with (include "hyades.secretKeySecretName" .) }}
+      - name: secret-key
+        secret:
+          secretName: {{ . }}
+      {{- end }}
 {{- end }}

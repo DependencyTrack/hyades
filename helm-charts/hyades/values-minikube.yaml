@@ -6,6 +6,8 @@ common:
     password: "dtrack"
   kafka:
     bootstrapServers: "host.minikube.internal:9093"
+  secretKey:
+    createSecret: true
 
 apiServer:
   enabled: true
@@ -21,7 +23,7 @@ apiServer:
     type: NodePort
     nodePort: 30080
   extraEnv:
-    EXTRA_JAVA_OPTIONS: "-Xmx2g"
+    EXTRA_JAVA_OPTIONS: "-Xmx2g -Dlogback.configurationFile=logback-json.xml"
     SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
     KAFKA_NUM_STREAM_THREADS: "6"
 

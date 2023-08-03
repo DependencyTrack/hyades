@@ -55,6 +55,8 @@
 | common.kafka.bootstrapServers | string | `""` |  |
 | common.kafka.topicPrefix | string | `""` |  |
 | common.nameOverride | string | `""` |  |
+| common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment |
+| common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret |
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |

@@ -35,6 +35,10 @@ spec:
         resources:
           {{- toYaml .Values.repoMetaAnalyzer.resources | nindent 10 }}
         env:
+        {{- if (include "hyades.secretKeySecretName" .) }}
+        - name: SECRET_KEY_PATH
+          value: "/var/run/secrets/secret.key"
+        {{- end }}
         - name: QUARKUS_DATASOURCE_JDBC_URL
           value: {{ .Values.common.database.jdbcUrl | quote }}
         {{- with .Values.common.database.username }}
@@ -62,6 +66,15 @@ spec:
         - name: web
           containerPort: 8091
           protocol: TCP
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        {{- if (include "hyades.secretKeySecretName" .) }}
+        - name: secret-key
+          subPath: secret.key
+          mountPath: /var/run/secrets/secret.key
+          readOnly: true
+        {{- end }}
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -82,3 +95,11 @@ spec:
           periodSeconds: {{ .Values.repoMetaAnalyzer.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.repoMetaAnalyzer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.repoMetaAnalyzer.probes.readiness.timeoutSeconds }}
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      {{- with (include "hyades.secretKeySecretName" .) }}
+      - name: secret-key
+        secret:
+          secretName: {{ . }}
+      {{- end }}

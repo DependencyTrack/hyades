@@ -12,6 +12,11 @@ common:
   kafka:
     bootstrapServers: ""
     topicPrefix: ""
+  secretKey:
+    # -- Whether the chart should generate a secret key upon deployment
+    createSecret: false
+    # -- Use the secret key defined in an existing secret
+    existingSecretName: ""
 
 apiServer:
   enabled: false

@@ -122,10 +122,6 @@ The chart does *not* include:
 
 * a database
 * a Kafka-compatible broker
-* the API server
-* the frontend
-
-While API server and frontend will eventually be included, database and Kafka broker will not.
 
 Helm charts to deploy Kafka brokers to Kubernetes are provided by both [Strimzi](https://strimzi.io/) 
 and [Redpanda](https://github.com/redpanda-data/helm-charts). 
@@ -147,12 +143,17 @@ minikube start --ports 30080:30080,30081:30081
 ```
 3. Deploy Hyades
 ```shell
-helm install hyades ./helm-charts/ \
+helm install hyades ./helm-charts/hyades \
   -n hyades --create-namespace \
   -f ./helm-charts/hyades/values.yaml \
   -f ./helm-charts/hyades/values-minikube.yaml
 ```
 4. Wait a moment for all deployments to become *ready*
+```shell
+kubectl -n hyades rollout status deployment \
+  --selector 'app.kubernetes.io/instance=hyades' \
+  --watch --timeout 3m
+```
 5. Visit `http://localhost:30081` in your browser to access the frontend
 
 ### Monitoring 📊
