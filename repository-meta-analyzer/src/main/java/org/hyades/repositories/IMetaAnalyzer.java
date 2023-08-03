@@ -22,6 +22,7 @@ import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -91,5 +92,8 @@ public interface IMetaAnalyzer {
 
     String getName();
 
-    CloseableHttpResponse getResponse(PackageURL packageURL) throws MalformedPackageURLException, IOException;
+    CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws MalformedPackageURLException, IOException;
+
+    IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response);
+
 }

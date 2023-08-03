@@ -50,7 +50,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(WithValidPurl.TestProfile.class)
     static class WithValidPurl {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -70,8 +71,8 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
-                        VALUES ('true', 'test', false, NULL, 1, 'GO_MODULES', 'http://localhost:%d', false);
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITYCHECKENABLED")
+                        VALUES ('true', 'test', false, NULL, 1, 'GO_MODULES', 'http://localhost:%d', false, false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
             }
@@ -134,7 +135,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(WithInvalidPurl.TestProfile.class)
     static class WithInvalidPurl {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -149,8 +151,8 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
-                        VALUES ('true', 'test', false, NULL, 2, 'NPM', 'http://localhost:%d', false);
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITYCHECKENABLED")
+                        VALUES ('true', 'test', false, NULL, 2, 'NPM', 'http://localhost:%d', false, false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
             }
@@ -183,7 +185,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(NoCapableAnalyzer.TestProfile.class)
     static class NoCapableAnalyzer {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -198,8 +201,8 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
-                        VALUES ('true', 'test', false, NULL, 2, 'CPAN', 'http://localhost:%d', false);
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITYCHECKENABLED")
+                        VALUES ('true', 'test', false, NULL, 2, 'CPAN', 'http://localhost:%d', false, false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
             }
@@ -242,7 +245,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(InternalAnalyzerNonInternalComponent.TestProfile.class)
     static class InternalAnalyzerNonInternalComponent {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -257,8 +261,8 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
-                        VALUES ('true', 'test', true, NULL, 2, 'MAVEN', 'http://localhost:%d', false);
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITYCHECKENABLED")
+                        VALUES ('true', 'test', true, NULL, 2, 'MAVEN', 'http://localhost:%d', false, false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
             }

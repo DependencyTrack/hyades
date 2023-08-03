@@ -21,6 +21,7 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -89,12 +90,17 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
-    public CloseableHttpResponse getResponse(PackageURL packageURL) {
+    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) {
         return null;
     }
 
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
+        return null;
     }
 }
