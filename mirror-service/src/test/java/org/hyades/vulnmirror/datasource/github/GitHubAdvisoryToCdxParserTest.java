@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.withPrecision;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -139,8 +138,7 @@ class GitHubAdvisoryToCdxParserTest {
                     assertThat(vulnerability.getRatingsList()).satisfiesExactly(
                             rating -> {
                                 assertThat(rating.getSeverity()).isEqualTo(Severity.SEVERITY_MEDIUM);
-                                //the double is returning 5.400000095367432
-                                assertThat(rating.getScore()).isEqualTo(5.4, withPrecision(1d));
+                                assertThat(rating.getScore()).isEqualTo(5.4);
                                 assertThat(rating.getVector()).isEqualTo("CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N");
                             });
                     assertThat(vulnerability.getCwesList()).satisfiesExactly(
