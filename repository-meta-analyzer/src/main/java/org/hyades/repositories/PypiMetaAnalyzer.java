@@ -24,7 +24,6 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -152,8 +151,4 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
         return this.getClass().getSimpleName();
     }
 
-    @Override
-    public IntegrityModel checkIntegrityOfComponent(Component component, CloseableHttpResponse response) {
-        return null;
-    }
 }

@@ -87,7 +87,7 @@ public class RepositoryMetaAnalyzerTopology {
         final var integrityResultSerde = new KafkaProtobufSerde<>(IntegrityResult.parser());
         final KStream<PackageURL, AnalysisCommand> integrityCheckCommandStream = streamsBuilder
                 .stream(KafkaTopic.INTEGRITY_ANALYSIS_COMMAND.getName(), Consumed
-                        .with(purlSerde, analysisCommandSerde)
+                        .with(Serdes.String(), analysisCommandSerde)
                         .withName(processorNameConsume(KafkaTopic.INTEGRITY_ANALYSIS_COMMAND))).
                 filter((key, scanCommand) -> scanCommand.hasComponent() && isValidPurl(scanCommand.getComponent().getPurl()),
                         Named.as("filter_components_with_valid_purl_ic"))
