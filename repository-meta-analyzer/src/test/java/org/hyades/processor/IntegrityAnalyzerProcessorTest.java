@@ -104,9 +104,9 @@ class IntegrityAnalyzerProcessorTest {
         assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
                 record -> {
                     assertThat(record.key().getType()).isEqualTo(RepositoryType.MAVEN.toString().toLowerCase(),
-                            assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber()),
-                            assertThat(record.value().getSha1HashMatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber()),
-                            assertThat(record.value().getSha256MatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber()));
+                            assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber()),
+                            assertThat(record.value().getSha1HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber()),
+                            assertThat(record.value().getSha256HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber()));
                 });
     }
 
@@ -148,9 +148,9 @@ class IntegrityAnalyzerProcessorTest {
         assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
                 record -> {
                     assertThat(record.key().getType()).isEqualTo(RepositoryType.MAVEN.toString().toLowerCase());
-                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.COMPONENT_MISSING_HASH.getNumber());
-                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.COMPONENT_MISSING_HASH.getNumber());
-                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.COMPONENT_MISSING_HASH.getNumber());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
                 });
 
     }
@@ -170,9 +170,9 @@ class IntegrityAnalyzerProcessorTest {
         assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
                 record -> {
                     assertThat(record.key().getType()).isEqualTo(RepositoryType.MAVEN.toString().toLowerCase());
-                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber());
-                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber());
-                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber());
                 });
 
     }

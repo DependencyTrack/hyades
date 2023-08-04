@@ -182,9 +182,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
         inputTopic.pipeInput("pkg:maven/com.fasterxml.jackson.core/jackson-databind", command);
         final KeyValue<String, IntegrityResult> record = outputTopic.readKeyValue();
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
-        Assertions.assertEquals(HashMatchStatus.PASS.getNumber(), record.value.getSha256MatchValue());
-        Assertions.assertEquals(HashMatchStatus.PASS.getNumber(), record.value.getSha1HashMatchValue());
-        Assertions.assertEquals(HashMatchStatus.PASS.getNumber(), record.value.getMd5HashMatchValue());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getSha256HashMatchValue());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getSha1HashMatchValue());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getMd5HashMatchValue());
     }
 
     @Test
@@ -233,8 +233,8 @@ class RepositoryIntegrityAnalysisTopologyTest {
         final KeyValue<String, IntegrityResult> record = outputTopic.readKeyValue();
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.value.getComponent().getPurl());
-        Assertions.assertEquals(HashMatchStatus.FAIL.getNumber(), record.value.getMd5HashMatchValue());
-        Assertions.assertEquals(HashMatchStatus.PASS.getNumber(), record.value.getSha1HashMatchValue());
-        Assertions.assertEquals(HashMatchStatus.PASS.getNumber(), record.value.getSha256MatchValue());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_FAIL.getNumber(), record.value.getMd5HashMatchValue());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getSha1HashMatchValue());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getSha256HashMatchValue());
     }
 }

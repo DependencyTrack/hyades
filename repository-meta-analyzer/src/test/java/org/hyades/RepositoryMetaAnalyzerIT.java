@@ -204,9 +204,9 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(record.value()).isNotNull();
                         final IntegrityResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
-                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.COMPONENT_MISSING_HASH_VALUE);
-                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.COMPONENT_MISSING_HASH_VALUE);
-                        assertThat(result.getSha256MatchValue()).isEqualTo(HashMatchStatus.COMPONENT_MISSING_HASH_VALUE);
+                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
+                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
+                        assertThat(result.getSha256HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
                     }
             );
         }
@@ -284,9 +284,9 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(record.value()).isNotNull();
                         final IntegrityResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
-                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.PASS.getNumber());
-                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.PASS.getNumber());
-                        assertThat(result.getSha256MatchValue()).isEqualTo(HashMatchStatus.PASS.getNumber());
+                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber());
+                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber());
+                        assertThat(result.getSha256HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber());
                     }
             );
         }
@@ -364,9 +364,9 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(record.value()).isNotNull();
                         final IntegrityResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
-                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.FAIL.getNumber());
-                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.FAIL.getNumber());
-                        assertThat(result.getSha256MatchValue()).isEqualTo(HashMatchStatus.FAIL.getNumber());
+                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_FAIL.getNumber());
+                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_FAIL.getNumber());
+                        assertThat(result.getSha256HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_FAIL.getNumber());
                     }
             );
         }
@@ -441,9 +441,9 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(record.value()).isNotNull();
                         final IntegrityResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
-                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber());
-                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber());
-                        assertThat(result.getSha256MatchValue()).isEqualTo(HashMatchStatus.UNKNOWN.getNumber());
+                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber());
+                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber());
+                        assertThat(result.getSha256HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN.getNumber());
                     }
             );
         }

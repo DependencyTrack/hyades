@@ -71,10 +71,10 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                     result = performIntegrityCheckForComponent(analyzer, repository, component);
                 } else {
                     final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
-                            .setMd5HashMatch(HashMatchStatus.COMPONENT_MISSING_HASH)
+                            .setMd5HashMatch(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH)
                             .setComponent(component)
-                            .setSha1HashMatch(HashMatchStatus.COMPONENT_MISSING_HASH)
-                            .setSha256Match(HashMatchStatus.COMPONENT_MISSING_HASH)
+                            .setSha1HashMatch(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH)
+                            .setSha256HashMatch(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH)
                             .setRepository(repository.getIdentifier());
                     result = resultBuilder.build();
 
@@ -86,8 +86,8 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
         // Produce "empty" result in case no repository did yield a satisfactory result.
         context().forward(record
                 .withValue(IntegrityResult.newBuilder().setComponent(component)
-                        .setMd5HashMatch(HashMatchStatus.UNKNOWN).setSha1HashMatch(HashMatchStatus.UNKNOWN)
-                        .setSha256Match(HashMatchStatus.UNKNOWN).build())
+                        .setMd5HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN).setSha1HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN)
+                        .setSha256HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN).build())
                 .withTimestamp(context().currentSystemTimeMs()));
     }
 
@@ -146,7 +146,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                         .setMd5HashMatch(integrityModel.isMd5HashMatched())
                         .setComponent(component1)
                         .setSha1HashMatch(integrityModel.isSha1HashMatched())
-                        .setSha256Match(integrityModel.isSha256HashMatched())
+                        .setSha256HashMatch(integrityModel.isSha256HashMatched())
                         .setRepository(repository.getUrl())
                         .setPublished(Timestamp.newBuilder().setSeconds(System.currentTimeMillis()));
                 return resultBuilder.build();
@@ -204,7 +204,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                     .setMd5HashMatch(integrityModel.isMd5HashMatched())
                     .setComponent(component1)
                     .setSha1HashMatch(integrityModel.isSha1HashMatched())
-                    .setSha256Match(integrityModel.isSha256HashMatched())
+                    .setSha256HashMatch(integrityModel.isSha256HashMatched())
                     .setRepository(repository.getUrl())
                     .setPublished(Timestamp.newBuilder().setSeconds(System.currentTimeMillis()));
             return resultBuilder.build();
@@ -246,50 +246,50 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                 }
             }
             if (component.getMd5() == null || component.getMd5().equals("")) {
-                integrityModel.setMd5HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
+                integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
             }
             if (component.getSha1() == null || component.getSha1().equals("")) {
-                integrityModel.setSha1HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
+                integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
             }
             if (component.getSha256() == null || component.getSha256().equals("")) {
-                integrityModel.setSha256HashMatched(HashMatchStatus.COMPONENT_MISSING_HASH);
+                integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
             }
 
             if (md5.equals("")) {
-                integrityModel.setMd5HashMatched(HashMatchStatus.UNKNOWN);
+                integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN);
             }
             if (sha1.equals("")) {
-                integrityModel.setSha1HashMatched(HashMatchStatus.UNKNOWN);
+                integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN);
             }
             if (sha256.equals("")) {
-                integrityModel.setSha256HashMatched(HashMatchStatus.UNKNOWN);
+                integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN);
             }
             if (integrityModel.isMd5HashMatched() == null) {
                 //md5, sha1 or sha256 still "" means that the source of truth repo does not have this hash info and in that case, if there is a match with the others it is a valid component
                 if (component.getMd5() != null && component.getMd5().equals(md5)) {
                     LOGGER.debug("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
-                    integrityModel.setMd5HashMatched(HashMatchStatus.PASS);
+                    integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_PASS);
                 } else {
                     LOGGER.debug("Md5 hash did not match: expected value :{}, actual value: {}", component.getMd5(), md5);
-                    integrityModel.setMd5HashMatched(HashMatchStatus.FAIL);
+                    integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_FAIL);
                 }
             }
             if (integrityModel.isSha1HashMatched() == null) {
                 if (component.getSha1() != null && component.getSha1().equals(sha1)) {
                     LOGGER.debug("sha1 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
-                    integrityModel.setSha1HashMatched(HashMatchStatus.PASS);
+                    integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_PASS);
                 } else {
                     LOGGER.debug("sha1 hash did not match: expected value :{}, actual value: {}", component.getSha1(), sha1);
-                    integrityModel.setSha1HashMatched(HashMatchStatus.FAIL);
+                    integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_FAIL);
                 }
             }
             if (integrityModel.isSha256HashMatched() == null) {
                 if (component.getSha256() != null && component.getSha256().equals(sha256)) {
                     LOGGER.debug("sha256 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
-                    integrityModel.setSha256HashMatched(HashMatchStatus.PASS);
+                    integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_PASS);
                 } else {
                     LOGGER.debug("sha256 hash did not match: expected value :{}, actual value: {}", component.getSha256(), sha256);
-                    integrityModel.setSha256HashMatched(HashMatchStatus.FAIL);
+                    integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_FAIL);
                 }
             }
         } catch (Exception ex) {

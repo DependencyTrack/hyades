@@ -31,11 +31,11 @@ message IntegrityResult {
   // The Component for which the integrity check was done
   Component component = 1;
   //md5 hash match status of component
-  HashMatchStatus md5HashMatch = 2;
+  HashMatchStatus md5_hash_match = 2;
   //sha1 hash match status of component
-  HashMatchStatus sha1HashMatch = 3;
+  HashMatchStatus sha1_hash_match = 3;
   //sha256 hash match status of component
-  HashMatchStatus sha256Match = 4;
+  HashMatchStatus sha256_hash_match = 4;
   //Identifier of the repository with which the hashes were compared
   string repository = 5;
   // When was the integrity check done
@@ -43,10 +43,10 @@ message IntegrityResult {
 }
 
 enum HashMatchStatus {
-  PASS = 0;
-  FAIL = 1;
-  UNKNOWN = 2;
-  COMPONENT_MISSING_HASH = 3;
+  HASH_MATCH_STATUS_PASS = 0;
+  HASH_MATCH_STATUS_FAIL = 1;
+  HASH_MATCH_STATUS_UNKNOWN = 2;
+  HASH_MATCH_STATUS_COMPONENT_MISSING_HASH = 3;
 }
 message Component {
   // Package URL of the component.
@@ -54,9 +54,9 @@ message Component {
   // Whether the component is internal to the organization.
   // Internal components will only be looked up in internal repositories.
   optional bool internal = 2;
-  optional string md5Hash = 3;
-  optional string sha1Hash = 4;
-  optional string sha256Hash = 5;
+  optional string md5_hash = 3;
+  optional string sha1_hash = 4;
+  optional string sha256_hash = 5;
   optional string uuid = 6;
-  optional double componentId = 7;
+  optional double component_id = 7;
 }
