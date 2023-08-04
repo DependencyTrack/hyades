@@ -53,6 +53,11 @@ apiServer:
   service:
     type: ClusterIP
     nodePort: ~
+  serviceMonitor:
+    enabled: false
+    namespace: monitoring
+    scrapeInternal: 15s
+    scrapeTimeout: 30s
   ingress:
     enabled: false
     annotations: {}

@@ -11,7 +11,7 @@ common:
 
 apiServer:
   enabled: true
-  replicaCount: 2
+  replicaCount: 1
   resources:
     requests:
       cpu: "2"
@@ -23,13 +23,13 @@ apiServer:
     type: NodePort
     nodePort: 30080
   extraEnv:
-    EXTRA_JAVA_OPTIONS: "-Xmx2g -Dlogback.configurationFile=logback-json.xml"
+    EXTRA_JAVA_OPTIONS: "-Xmx2g"
     SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
-    KAFKA_NUM_STREAM_THREADS: "6"
+    KAFKA_NUM_STREAM_THREADS: "12"
 
 frontend:
   enabled: true
-  replicaCount: 2
+  replicaCount: 1
   service:
     type: NodePort
     nodePort: 30081
