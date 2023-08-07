@@ -90,7 +90,7 @@ public class RepositoryMetaAnalyzerTopology {
                         .withName(processorNameConsume(KafkaTopic.INTEGRITY_ANALYSIS_COMMAND))).
                 filter((key, scanCommand) -> scanCommand.hasComponent() && isValidPurl(scanCommand.getComponent().getPurl()),
                         Named.as("filter_components_with_valid_purl_ic"))
-                .selectKey((key, command) -> mustParsePurlCoordinatesWithoutVersion(key.toString()),
+                .selectKey((key, command) -> mustParsePurlCoordinatesWithoutVersion(key),
                         Named.as("re-key_to_purl_coordinates_for_ic"))
                 .repartition(Repartitioned
                         .with(purlSerde, analysisCommandSerde)
@@ -102,7 +102,9 @@ public class RepositoryMetaAnalyzerTopology {
                             try {
                                 return integrityAnalyzerFactory.hasApplicableAnalyzer(new PackageURL(componentAndPurl.toString()));
                             } catch (MalformedPackageURLException e) {
-                                throw new RuntimeException(e);
+                                throw new IllegalStateException("""
+                                        The provided PURL is invalid.
+                                        """, e);
                             }
                         },
                         Branched.withConsumer(stream -> stream

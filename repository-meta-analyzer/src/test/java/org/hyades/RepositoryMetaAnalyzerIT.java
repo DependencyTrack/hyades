@@ -204,9 +204,9 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(record.value()).isNotNull();
                         final IntegrityResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
-                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
-                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
-                        assertThat(result.getSha256HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
+                        assertThat(result.getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
+                        assertThat(result.getSha1HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
+                        assertThat(result.getSha256HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
                     }
             );
         }

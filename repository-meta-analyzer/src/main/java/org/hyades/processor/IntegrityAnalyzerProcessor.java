@@ -47,8 +47,8 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
     }
 
     @Override
-    public void process(FixedKeyRecord<PackageURL, Component> record) {
-        final Component component = record.value();
+    public void process(FixedKeyRecord<PackageURL, Component> inputRecord) {
+        final Component component = inputRecord.value();
         IntegrityResult result;
         // NOTE: Do not use purlWithoutVersion for the analysis!
         // It only contains the type, namespace and name, but is missing the
@@ -57,7 +57,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
         final Optional<IMetaAnalyzer> optionalAnalyzer = integrityAnalyzerFactory.createAnalyzer(purl);
         if (optionalAnalyzer.isEmpty()) {
             LOGGER.debug("No analyzer is capable of analyzing {}", purl);
-            context().forward(record
+            context().forward(inputRecord
                     .withValue(IntegrityResult.newBuilder().setComponent(component).build())
                     .withTimestamp(context().currentSystemTimeMs()));
             return;
@@ -79,12 +79,12 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                     result = resultBuilder.build();
 
                 }
-                context().forward(record.withValue(result).withTimestamp(context().currentSystemTimeMs()));
+                context().forward(inputRecord.withValue(result).withTimestamp(context().currentSystemTimeMs()));
                 return;
             }
         }
         // Produce "empty" result in case no repository did yield a satisfactory result.
-        context().forward(record
+        context().forward(inputRecord
                 .withValue(IntegrityResult.newBuilder().setComponent(component)
                         .setMd5HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN).setSha1HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN)
                         .setSha256HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN).build())
