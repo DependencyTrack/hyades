@@ -10,6 +10,11 @@
     </parent>
     <artifactId>proto</artifactId>
 
+    <properties>
+        <cyclonedx.skip>true</cyclonedx.skip>
+        <project.parentBaseDir>${project.basedir}/..</project.parentBaseDir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.google.protobuf</groupId>

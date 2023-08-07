@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  workflow_dispatch: { }
+
+permissions: { }
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # Required to create releases
+      packages: write # Required to push images to ghcr.io
+    if: "${{ github.repository_owner == 'DependencyTrack' }}"
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # tag=v3.5.3
+    - name: Set up JDK
+      uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # tag=v3.12.0
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # tag=v2.2.0
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@4c0219f9ac95b02789c1075625400b2acbff50b1 # tag=v2.9.1
+      with:
+        install: true
+    - name: Docker login
+      uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # tag=v2.2.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Perform Release
+      run: |-
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        
+        BUILD_ARGS=(
+          '-Dcheckstyle.skip'
+          '-DskipTests'
+          '-Dquarkus.container-image.registry=ghcr.io'
+          "-Dquarkus.container-image.group=${{ github.repository_owner }}"
+          '-Dquarkus.container-image.additional-tags=latest'
+          '-Dquarkus.container-image.build=true'
+          '-Dquarkus.container-image.push=true'
+          '-Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64'
+        )
+        
+        mvn -B release:prepare \
+          -DpreparationGoals="clean cyclonedx:makeBom verify" \
+          -Darguments="${BUILD_ARGS[*]}"
+    - name: Determine Release Tag
+      id: determine-release-tag
+      run: |-
+        TAG_NAME="$(sed -nr 's/^scm.tag=(v[0-9.]+)$/\1/p' release.properties)"
+        echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+    - name: Create GitHub Release
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      run: |-
+        gh release create "${{ steps.determine-release-tag.outputs.TAG_NAME }}" \
+          --target ${{ github.ref_name }} \
+          --verify-tag \
+          --generate-notes
+    - name: Upload BOMs to GitHub Release
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      run: |-
+        gh release upload "${{ steps.determine-release-tag.outputs.TAG_NAME }}" \
+          ./*/target/*.cdx.json --clobber
