@@ -25,7 +25,7 @@ import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
-import org.hyades.repositories.IntegrityAnalyzerFactory;
+import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -58,7 +58,7 @@ class IntegrityAnalyzerProcessorTest {
     RepoEntityRepository repoEntityRepository;
 
     @Inject
-    IntegrityAnalyzerFactory analyzerFactory;
+    RepositoryAnalyzerFactory analyzerFactory;
 
     @Inject
     EntityManager entityManager;

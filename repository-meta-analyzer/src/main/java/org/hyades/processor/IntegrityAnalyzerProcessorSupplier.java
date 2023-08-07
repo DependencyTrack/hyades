@@ -10,17 +10,17 @@ import org.hyades.common.SecretDecryptor;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
-import org.hyades.repositories.IntegrityAnalyzerFactory;
+import org.hyades.repositories.RepositoryAnalyzerFactory;
 
 @ApplicationScoped
 public class IntegrityAnalyzerProcessorSupplier implements FixedKeyProcessorSupplier<PackageURL, Component, IntegrityResult> {
     private final RepoEntityRepository repoEntityRepository;
-    private final IntegrityAnalyzerFactory integrityAnalyzerFactory;
+    private final RepositoryAnalyzerFactory integrityAnalyzerFactory;
     private final SecretDecryptor secretDecryptor;
     private final Cache cache;
 
     public IntegrityAnalyzerProcessorSupplier(final RepoEntityRepository repoEntityRepository,
-                                              final IntegrityAnalyzerFactory integrityAnalyzerFactory,
+                                              final RepositoryAnalyzerFactory integrityAnalyzerFactory,
                                               final SecretDecryptor secretDecryptor,
                                               @CacheName("integrityAnalyzer") final Cache cache) {
         this.repoEntityRepository = repoEntityRepository;

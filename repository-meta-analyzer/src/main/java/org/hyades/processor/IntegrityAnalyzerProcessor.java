@@ -20,7 +20,7 @@ import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
 import org.hyades.repositories.IMetaAnalyzer;
-import org.hyades.repositories.IntegrityAnalyzerFactory;
+import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,12 +32,12 @@ import java.util.UUID;
 public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Component, IntegrityResult> {
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrityAnalyzerProcessor.class);
     private final RepoEntityRepository repoEntityRepository;
-    private final IntegrityAnalyzerFactory integrityAnalyzerFactory;
+    private final RepositoryAnalyzerFactory integrityAnalyzerFactory;
     private final SecretDecryptor secretDecryptor;
     private final Cache cache;
 
     IntegrityAnalyzerProcessor(final RepoEntityRepository repoEntityRepository,
-                               final IntegrityAnalyzerFactory integrityAnalyzerFactory,
+                               final RepositoryAnalyzerFactory integrityAnalyzerFactory,
                                final SecretDecryptor secretDecryptor,
                                final Cache cache) {
         this.repoEntityRepository = repoEntityRepository;

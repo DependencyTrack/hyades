@@ -32,7 +32,7 @@ import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
 import org.hyades.repositories.IMetaAnalyzer;
-import org.hyades.repositories.IntegrityAnalyzerFactory;
+import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +54,7 @@ class RepositoryIntegrityAnalysisTopologyTest {
     Topology topology;
 
     @InjectMock
-    IntegrityAnalyzerFactory analyzerFactoryMock;
+    RepositoryAnalyzerFactory analyzerFactoryMock;
 
 
     @InjectMock
@@ -97,6 +97,7 @@ class RepositoryIntegrityAnalysisTopologyTest {
     void afterEach() {
         testDriver.close();
         cache.invalidateAll();
+
     }
 
     @Test
@@ -182,9 +183,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
         inputTopic.pipeInput("pkg:maven/com.fasterxml.jackson.core/jackson-databind", command);
         final KeyValue<String, IntegrityResult> record = outputTopic.readKeyValue();
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
-        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getSha256HashMatchValue());
-        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getSha1HashMatchValue());
-        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getMd5HashMatchValue());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS, record.value.getSha256HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS, record.value.getSha1HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS, record.value.getMd5HashMatch());
     }
 
     @Test
@@ -199,11 +200,11 @@ class RepositoryIntegrityAnalysisTopologyTest {
     }
 
     @Test
-    void testMetaOutput() throws IOException, MalformedPackageURLException {
+    void testMetaOutputPass() throws IOException, MalformedPackageURLException {
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
-                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2")
-                        .setMd5Hash("098f6bcd4621d373cade4e832627b4f5")
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.2")
+                        .setMd5Hash("098f6bcd4621d373cade4e832627b4f6")
                         .setSha1Hash("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3")
                         .setSha256Hash("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
                         .setUuid(UUID.randomUUID().toString()))
@@ -227,14 +228,130 @@ class RepositoryIntegrityAnalysisTopologyTest {
         when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
                 .thenReturn(List.of(repository));
 
-        inputTopic.pipeInput("pkg:maven/com.fasterxml.jackson.core/jackson-databind", command);
+        inputTopic.pipeInput("pkg:maven/com.fasterxml.jackson.core/jackson-core", command);
 
         Assertions.assertEquals(1, outputTopic.getQueueSize());
         final KeyValue<String, IntegrityResult> record = outputTopic.readKeyValue();
-        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
-        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.value.getComponent().getPurl());
-        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_FAIL.getNumber(), record.value.getMd5HashMatchValue());
-        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getSha1HashMatchValue());
-        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber(), record.value.getSha256HashMatchValue());
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-core", record.key);
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.2", record.value.getComponent().getPurl());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS, record.value.getMd5HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS, record.value.getSha1HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_PASS, record.value.getSha256HashMatch());
+    }
+
+    @Test
+    void testMetaOutputComponentMissingHash() throws IOException, MalformedPackageURLException {
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind1@2.13.2")
+                        .setMd5Hash("")
+                        .setSha1Hash("")
+                        .setSha256Hash("")
+                        .setUuid(UUID.randomUUID().toString()))
+                .build();
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        Header[] headers = new Header[]{
+                new BasicHeader("X-CheckSum-MD5", "098f6bcd4621d373cade4e832627b4f6"),
+                new BasicHeader("X-Checksum-SHA1", "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"),
+                new BasicHeader("X-Checksum-SHA256", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
+        };
+        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK"));
+        when(response.getAllHeaders()).thenReturn(headers);
+
+        when(analyzerMock.getIntegrityCheckResponse(any())).thenReturn(response);
+        Repository repository = new Repository();
+        repository.setIdentifier("testRepository");
+        repository.setInternal(false);
+        repository.setAuthenticationRequired(false);
+        repository.setIntegrityCheckApplicable(true);
+        repository.setUrl("http://localhost");
+        when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
+                .thenReturn(List.of(repository));
+
+        inputTopic.pipeInput("pkg:maven/com.fasterxml.jackson.core/jackson-databind1", command);
+
+        Assertions.assertEquals(1, outputTopic.getQueueSize());
+        final KeyValue<String, IntegrityResult> record = outputTopic.readKeyValue();
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind1", record.key);
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind1@2.13.2", record.value.getComponent().getPurl());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH, record.value.getMd5HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH, record.value.getSha1HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH, record.value.getSha256HashMatch());
+    }
+
+    @Test
+    void testMetaOutputSourceMissingHash() throws IOException, MalformedPackageURLException {
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind2@2.13.2")
+                        .setMd5Hash("098f6bcd4621d373cade4e832627b4f5")
+                        .setSha1Hash("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3")
+                        .setSha256Hash("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
+                        .setUuid(UUID.randomUUID().toString()))
+                .build();
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        Header[] headers = new Header[]{};
+        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK"));
+        when(response.getAllHeaders()).thenReturn(headers);
+
+        when(analyzerMock.getIntegrityCheckResponse(any())).thenReturn(response);
+        Repository repository = new Repository();
+        repository.setIdentifier("testRepository");
+        repository.setInternal(false);
+        repository.setAuthenticationRequired(false);
+        repository.setIntegrityCheckApplicable(true);
+        repository.setUrl("http://localhost");
+        when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
+                .thenReturn(List.of(repository));
+
+        inputTopic.pipeInput("pkg:maven/com.fasterxml.jackson.core/jackson-databind2", command);
+
+        Assertions.assertEquals(1, outputTopic.getQueueSize());
+        final KeyValue<String, IntegrityResult> record = outputTopic.readKeyValue();
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind2", record.key);
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind2@2.13.2", record.value.getComponent().getPurl());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN, record.value.getMd5HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN, record.value.getSha1HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN, record.value.getSha256HashMatch());
+    }
+
+    @Test
+    void testMetaOutputFail() throws IOException, MalformedPackageURLException {
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind3@2.13.2")
+                        .setMd5Hash("098f6bcd4621d373cade4e832627b4f6")
+                        .setSha1Hash("a94a8fe5ccb19ba61c4c0873d391e987982fvbd3")
+                        .setSha256Hash("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
+                        .setUuid(UUID.randomUUID().toString()))
+                .build();
+        CloseableHttpResponse response = mock(CloseableHttpResponse.class);
+        Header[] headers = new Header[]{
+                new BasicHeader("X-CheckSum-MD5", "098f6bcd4621d373cade4e832627b4f5"),
+                new BasicHeader("X-Checksum-SHA1", "a94a8fe5ccb19ba61c4c0873d341e987982fbbd3"),
+                new BasicHeader("X-Checksum-SHA256", "9f86d081884c7d659a2feaa0f55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
+        };
+        when(response.getStatusLine()).thenReturn(new BasicStatusLine(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK"));
+        when(response.getAllHeaders()).thenReturn(headers);
+
+        when(analyzerMock.getIntegrityCheckResponse(any())).thenReturn(response);
+        Repository repository = new Repository();
+        repository.setIdentifier("testRepository");
+        repository.setInternal(false);
+        repository.setAuthenticationRequired(false);
+        repository.setIntegrityCheckApplicable(true);
+        repository.setUrl("http://localhost");
+        when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
+                .thenReturn(List.of(repository));
+
+        inputTopic.pipeInput("pkg:maven/com.fasterxml.jackson.core/jackson-databind3", command);
+
+        Assertions.assertEquals(1, outputTopic.getQueueSize());
+        final KeyValue<String, IntegrityResult> record = outputTopic.readKeyValue();
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind3", record.key);
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind3@2.13.2", record.value.getComponent().getPurl());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_FAIL, record.value.getMd5HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_FAIL, record.value.getSha1HashMatch());
+        Assertions.assertEquals(HashMatchStatus.HASH_MATCH_STATUS_FAIL, record.value.getSha256HashMatch());
     }
 }

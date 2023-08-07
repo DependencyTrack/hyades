@@ -18,23 +18,49 @@
  */
 package org.hyades.repositories;
 
+import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.http.Body;
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import jakarta.ws.rs.core.MediaType;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.HttpClients;
+import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import java.io.IOException;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 class MavenMetaAnalyzerTest {
 
     private IMetaAnalyzer analyzer;
+    @RegisterExtension
+    static WireMockExtension wireMock = WireMockExtension.newInstance()
+            .options(wireMockConfig().dynamicPort())
+            .build();
 
     @BeforeEach
     void beforeEach() {
+
         analyzer = new MavenMetaAnalyzer();
         analyzer.setHttpClient(HttpClients.createDefault());
+    }
+
+    @AfterEach
+    void afterEach() {
+        wireMock.resetAll();
     }
 
     @Test
@@ -87,6 +113,50 @@ class MavenMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl("http://www.does.not.exist.com");
         MetaModel metaModel = analyzer.analyze(component);
         Assertions.assertEquals(metaModel.getComponent(), component);
+
+    }
+
+    @Test
+    void testGetResponsePurlNull() throws IOException, MalformedPackageURLException {
+        PackageURL packageURL = null;
+        CloseableHttpResponse response = analyzer.getIntegrityCheckResponse(packageURL);
+        Assertions.assertNull(response);
+    }
+
+    @Test
+    void testGetResponse200() throws IOException, MalformedPackageURLException {
+        PackageURL packageURL = new PackageURL("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23");
+        wireMock.stubFor(WireMock.head(WireMock.anyUrl()).withHeader("accept", containing("application/json"))
+                .willReturn(WireMock.aResponse()
+                        .withStatus(200)
+                        .withResponseBody(Body.ofBinaryOrText("""
+                                                                    
+                                """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
+                        )
+                        .withHeader("X-CheckSum-MD5", "098f6bcd4621d373cade4e832627b4f6")
+                        .withHeader("X-Checksum-SHA1", "a94a8fe5ccb19ba61c4c0873d341e987982fbbd3")
+                        .withHeader("X-Checksum-SHA256", "9f86d081884c7d659a2feaa0f55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")));
+        analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
+        CloseableHttpResponse response1 = analyzer.getIntegrityCheckResponse(packageURL);
+        Assertions.assertEquals(HttpStatus.SC_OK, response1.getStatusLine().getStatusCode());
+        Assertions.assertEquals("098f6bcd4621d373cade4e832627b4f6", response1.getFirstHeader("X-CheckSum-MD5").getValue());
+        Assertions.assertEquals("a94a8fe5ccb19ba61c4c0873d341e987982fbbd3", response1.getFirstHeader("X-CheckSum-SHA1").getValue());
+        Assertions.assertEquals("9f86d081884c7d659a2feaa0f55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", response1.getFirstHeader("X-CheckSum-SHA256").getValue());
+    }
+
+    @Test
+    void testGetResponse404() throws  MalformedPackageURLException {
+        PackageURL packageURL = new PackageURL("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23");
+        wireMock.stubFor(WireMock.head(WireMock.anyUrl()).withHeader("accept", containing("application/json"))
+                .willReturn(WireMock.aResponse()
+                        .withStatus(404)
+                        .withResponseBody(Body.ofBinaryOrText("""
+                                                                    
+                                """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
+                        )
+                ));
+        analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
+        Assertions.assertThrows(MetaAnalyzerException.class, () -> analyzer.getIntegrityCheckResponse(packageURL));
 
     }
 }

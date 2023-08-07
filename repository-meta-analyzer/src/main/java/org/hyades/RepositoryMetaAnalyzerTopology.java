@@ -20,7 +20,6 @@ import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
-import org.hyades.repositories.IntegrityAnalyzerFactory;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
 
@@ -33,7 +32,7 @@ public class RepositoryMetaAnalyzerTopology {
     @SuppressWarnings({"resource", "java:S2095"}) // Ignore linter warnings about Serdes having to be closed
     public Topology topology(final RepositoryAnalyzerFactory analyzerFactory,
                              final MetaAnalyzerProcessorSupplier analyzerProcessorSupplier,
-                             final IntegrityAnalyzerFactory integrityAnalyzerFactory,
+                             final RepositoryAnalyzerFactory integrityAnalyzerFactory,
                              final IntegrityAnalyzerProcessorSupplier integrityAnalyzerProcessorSupplier) {
         final var streamsBuilder = new StreamsBuilder();
 

@@ -20,8 +20,6 @@ package org.hyades.repositories;
 
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.hyades.model.MetaAnalyzerException;
@@ -103,22 +101,7 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
 
     @Override
     public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws MalformedPackageURLException {
-        if (packageURL != null) {
-            String type = "tgz";
-            if (packageURL.getQualifiers() != null) {
-                type = packageURL.getQualifiers().getOrDefault("type", "tgz");
-            }
-            final String npmUrl = baseUrl + "/" + packageURL.getName() + "/-/" + packageURL.getName() + "-" + packageURL.getVersion() + "." + type;
-            try (final CloseableHttpResponse response = processHttpHeadRequest(npmUrl)) {
-                final StatusLine status = response.getStatusLine();
-                if (status.getStatusCode() == HttpStatus.SC_OK) {
-                    return response;
-                }
-            } catch (IOException ex) {
-                throw new MetaAnalyzerException(ex);
-            }
-        }
-        throw new MalformedPackageURLException("Purl sent for component integrity check is null");
+        return null;
     }
 
     @Override
