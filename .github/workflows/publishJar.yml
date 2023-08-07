@@ -37,7 +37,7 @@ jobs:
         run: |-
           mvn clean install -DskipTests \
             -Dquarkus.container-image.registry=ghcr.io \
-            -Dquarkus.container-image.group=${{ github.repository_owner }} \
+            -Dquarkus.container-image.group=${GITHUB_REPOSITORY_OWNER,,} \
             -Dquarkus.container-image.additional-tags=snapshot \
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
