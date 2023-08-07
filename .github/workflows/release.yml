@@ -44,7 +44,7 @@ jobs:
           '-Dcheckstyle.skip'
           '-DskipTests'
           '-Dquarkus.container-image.registry=ghcr.io'
-          "-Dquarkus.container-image.group=${{ github.repository_owner }}"
+          "-Dquarkus.container-image.group=${GITHUB_REPOSITORY_OWNER,,}"
           '-Dquarkus.container-image.additional-tags=latest'
           '-Dquarkus.container-image.build=true'
           '-Dquarkus.container-image.push=true'
