@@ -13,7 +13,9 @@ release.properties
 bin/
 
 # IntelliJ
-.idea
+.idea/*
+!.idea/icon.svg
+!.idea/runConfigurations/
 *.ipr
 *.iml
 *.iws
