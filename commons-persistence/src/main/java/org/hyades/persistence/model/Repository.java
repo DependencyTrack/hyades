@@ -25,6 +25,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.hyades.persistence.converter.RepositoryTypeConverter;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -120,15 +121,15 @@ public class Repository {
     }
 
     public void setInternal(Boolean internal) {
-        this.internal = internal;
+        this.internal = Optional.ofNullable(internal).orElse(false);
     }
 
     public Boolean isAuthenticationRequired() {
         return authenticationRequired;
     }
 
-    public void setAuthenticationRequired(boolean authenticationRequired) {
-        this.authenticationRequired = authenticationRequired;
+    public void setAuthenticationRequired(Boolean authenticationRequired) {
+        this.authenticationRequired = Optional.ofNullable(authenticationRequired).orElse(false);
     }
 
     public String getUsername() {
