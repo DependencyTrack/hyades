@@ -52,10 +52,10 @@ public class Repository {
     private boolean enabled;
 
     @Column(name = "INTERNAL")
-    private Boolean internal;
+    private boolean internal;
 
     @Column(name = "AUTHENTICATIONREQUIRED")
-    private Boolean authenticationRequired;
+    private boolean authenticationRequired;
 
     @Column(name = "USERNAME")
     private String username;
@@ -115,15 +115,15 @@ public class Repository {
         this.enabled = enabled;
     }
 
-    public Boolean isInternal() {
+    public boolean isInternal() {
         return internal;
     }
 
-    public void setInternal(Boolean internal) {
+    public void setInternal(boolean internal) {
         this.internal = internal;
     }
 
-    public Boolean isAuthenticationRequired() {
+    public boolean isAuthenticationRequired() {
         return authenticationRequired;
     }
 
