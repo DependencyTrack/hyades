@@ -18,7 +18,6 @@
  */
 package org.hyades.repositories;
 
-import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -97,11 +96,6 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
             }
         }
         return meta;
-    }
-
-    @Override
-    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws MalformedPackageURLException {
-        return null;
     }
 
     @Override

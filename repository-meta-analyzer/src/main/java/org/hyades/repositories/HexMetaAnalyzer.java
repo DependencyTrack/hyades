@@ -99,11 +99,6 @@ public class HexMetaAnalyzer extends AbstractMetaAnalyzer {
         return successMeta;
     }
 
-    @Override
-    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws IOException {
-        return null;
-    }
-
     private MetaModel processResponse(MetaModel meta, JSONObject response) {
         if (response != null) {
             if (response.optJSONArray("releases") != null && response.optJSONArray("releases").length() > 0) {

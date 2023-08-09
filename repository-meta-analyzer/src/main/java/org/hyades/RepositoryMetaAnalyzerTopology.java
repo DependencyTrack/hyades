@@ -102,10 +102,9 @@ public class RepositoryMetaAnalyzerTopology {
                             try {
                                 return integrityAnalyzerFactory.hasApplicableAnalyzer(new PackageURL(componentAndPurl.toString()));
                             } catch (MalformedPackageURLException e) {
-                                throw new IllegalStateException("""
-                                        The provided PURL is invalid.
-                                        """, e);
+                                //log message and return
                             }
+                            return false;
                         },
                         Branched.withConsumer(stream -> stream
                                 .processValues(integrityAnalyzerProcessorSupplier, Named.as("check_integrity_of_component"))

@@ -82,10 +82,10 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
 
             // Populate results from cache if possible.
             final var cachedResult = getCachedResult(cacheKey);
-            if (cachedResult != null) {
+            if (cachedResult.isPresent()) {
                 LOGGER.debug("Cache hit (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
                 context().forward(record
-                        .withValue(cachedResult)
+                        .withValue(cachedResult.get())
                         .withTimestamp(context().currentSystemTimeMs()));
                 return;
             } else {
@@ -143,9 +143,10 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 resultBuilder.setPublished(Timestamp.newBuilder()
                         .setSeconds(metaModel.getPublishedTimestamp().getTime() / 1000));
             }
+            final AnalysisResult result = resultBuilder.build();
             LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
                     component.getPurl(), repository.getIdentifier(), repository.getType());
-            return Optional.of(resultBuilder.build());
+            return Optional.of(result);
         }
         return Optional.empty();
     }
@@ -177,16 +178,17 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 
-    private AnalysisResult getCachedResult(final MetaAnalyzerCacheKey cacheKey) {
+    private Optional<AnalysisResult> getCachedResult(final MetaAnalyzerCacheKey cacheKey) {
         try {
-            return cache.<MetaAnalyzerCacheKey, AnalysisResult>get(cacheKey,
+            final AnalysisResult cachedResult = cache.<MetaAnalyzerCacheKey, AnalysisResult>get(cacheKey,
                     key -> {
                         // null values would be cached, so throw an exception instead.
                         // See https://quarkus.io/guides/cache#let-exceptions-bubble-up
                         throw new NoSuchElementException();
                     }).await().indefinitely();
+            return Optional.of(cachedResult);
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 

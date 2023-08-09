@@ -91,6 +91,8 @@ public interface IMetaAnalyzer {
 
     String getName();
 
-    CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws MalformedPackageURLException, IOException;
+    default CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws MalformedPackageURLException, IOException {
+        return null;
+    }
 
 }

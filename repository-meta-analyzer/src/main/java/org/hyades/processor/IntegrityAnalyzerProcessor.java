@@ -24,6 +24,7 @@ import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -148,7 +149,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                         .setSha1HashMatch(integrityModel.isSha1HashMatched())
                         .setSha256HashMatch(integrityModel.isSha256HashMatched())
                         .setRepository(repository.getUrl())
-                        .setPublished(Timestamp.newBuilder().setSeconds(System.currentTimeMillis()));
+                        .setPublished(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
                 return resultBuilder.build();
             } catch (Exception ex) {
                 LOGGER.error("Failed to analyze {} using {} with repository {}",
@@ -170,8 +171,6 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
             LOGGER.debug("Performing integrity check on component: {}", component.getPurl());
             IntegrityModel integrityModel = new IntegrityModel();
             try {
-                // Analyzers still work with "legacy" data models,
-                // allowing us to avoid major refactorings of the original code.
                 final var analyzerComponent = new org.hyades.persistence.model.Component();
                 analyzerComponent.setPurl(component.getPurl());
                 analyzerComponent.setMd5(component.getMd5Hash());
@@ -185,7 +184,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                     integrityModel = checkIntegrityOfComponent(analyzerComponent, response);
                 } catch (Exception ex) {
                     LOGGER.warn("Head request for maven integrity failed. Not caching response");
-                    throw new MetaAnalyzerException(ex);
+                    throw new MetaAnalyzerException("Head request for maven integrity failed. Not caching response", ex);
 
                 }
             } catch (Exception e) {
@@ -206,7 +205,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                     .setSha1HashMatch(integrityModel.isSha1HashMatched())
                     .setSha256HashMatch(integrityModel.isSha256HashMatched())
                     .setRepository(repository.getUrl())
-                    .setPublished(Timestamp.newBuilder().setSeconds(System.currentTimeMillis()));
+                    .setPublished(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
             return resultBuilder.build();
         }
     }
@@ -245,13 +244,13 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                     sha256 = header.getValue();
                 }
             }
-            if (component.getMd5() == null || component.getMd5().equals("")) {
+            if (component.getMd5().isEmpty()) {
                 integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
             }
-            if (component.getSha1() == null || component.getSha1().equals("")) {
+            if (component.getSha1().isEmpty()) {
                 integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
             }
-            if (component.getSha256() == null || component.getSha256().equals("")) {
+            if (component.getSha256().isEmpty()) {
                 integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
             }
 

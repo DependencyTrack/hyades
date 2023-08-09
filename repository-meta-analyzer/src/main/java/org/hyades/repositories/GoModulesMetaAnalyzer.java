@@ -87,11 +87,6 @@ public class GoModulesMetaAnalyzer extends AbstractMetaAnalyzer {
         return successMeta;
     }
 
-    @Override
-    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) {
-        return null;
-    }
-
     private MetaModel processResponse(MetaModel meta, CloseableHttpResponse response, Component component) {
         try {
             String jsonString = EntityUtils.toString(response.getEntity());

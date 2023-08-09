@@ -24,6 +24,7 @@ import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
 import org.hyades.util.WireMockTestResource;
 import org.hyades.util.WireMockTestResource.InjectWireMock;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.SelectClasses;
@@ -100,6 +101,12 @@ class RepositoryMetaAnalyzerIT {
                                     }
                                      """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
                             )));
+        }
+
+        @AfterEach
+        void afterEach() {
+            kafkaCompanion.close();
+            wireMockServer.shutdown();
         }
 
         @Test
@@ -181,6 +188,13 @@ class RepositoryMetaAnalyzerIT {
                             .withHeader("X-Checksum-SHA256", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")));
         }
 
+
+        @AfterEach
+        void afterEach() {
+            kafkaCompanion.close();
+            wireMockServer.shutdown();
+        }
+
         @Test
         void test() {
             final var command = AnalysisCommand.newBuilder()
@@ -255,6 +269,12 @@ class RepositoryMetaAnalyzerIT {
                             .withHeader("X-Checksum-MD5", "098f6bcd4621d373cade4e832627b4f6")
                             .withHeader("X-Checksum-SHA1", "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3")
                             .withHeader("X-Checksum-SHA256", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")));
+        }
+
+        @AfterEach
+        void afterEach() {
+            kafkaCompanion.close();
+            wireMockServer.shutdown();
         }
 
         @Test
@@ -337,6 +357,12 @@ class RepositoryMetaAnalyzerIT {
                             .withHeader("X-Checksum-SHA256", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a68")));
         }
 
+        @AfterEach
+        void afterEach() {
+            kafkaCompanion.close();
+            wireMockServer.shutdown();
+        }
+
         @Test
         void test() {
             final var command = AnalysisCommand.newBuilder()
@@ -386,6 +412,13 @@ class RepositoryMetaAnalyzerIT {
 
         @InjectWireMock
         WireMockServer wireMockServer;
+
+        @AfterEach
+        void afterEach()
+        {
+            kafkaCompanion.close();
+            wireMockServer.shutdown();
+        }
 
         @BeforeEach
         void beforeEach() throws Exception {
@@ -452,11 +485,7 @@ class RepositoryMetaAnalyzerIT {
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
     @QuarkusTestResource(WireMockTestResource.class)
-    @TestProfile(WithInvalidPurl.TestProfile.class)
     static class WithInvalidPurl {
-
-        public static class TestProfile implements QuarkusTestProfile {
-        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -478,6 +507,11 @@ class RepositoryMetaAnalyzerIT {
             }
         }
 
+        @AfterEach
+        void afterEach() {
+            kafkaCompanion.close();
+            wireMockServer.shutdown();
+        }
         @Test
         void test() {
             final var command = AnalysisCommand.newBuilder()
@@ -528,6 +562,12 @@ class RepositoryMetaAnalyzerIT {
             }
         }
 
+        @AfterEach
+        void afterEach() {
+            kafkaCompanion.close();
+            wireMockServer.shutdown();
+        }
+
         @Test
         void test() {
             final var command = AnalysisCommand.newBuilder()
@@ -573,6 +613,12 @@ class RepositoryMetaAnalyzerIT {
 
         @InjectWireMock
         WireMockServer wireMockServer;
+
+        @AfterEach
+        void afterEach() {
+            kafkaCompanion.close();
+            wireMockServer.shutdown();
+        }
 
         @BeforeEach
         void beforeEach() throws Exception {

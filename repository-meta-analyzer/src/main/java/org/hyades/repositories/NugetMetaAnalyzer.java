@@ -103,11 +103,6 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
         return meta;
     }
 
-    @Override
-    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) {
-        return null;
-    }
-
     private boolean performVersionCheck(final MetaModel meta, final Component component) {
         final String url = String.format(versionQueryUrl, component.getPurl().getName().toLowerCase());
         try (final CloseableHttpResponse response = processHttpGetRequest(url)) {

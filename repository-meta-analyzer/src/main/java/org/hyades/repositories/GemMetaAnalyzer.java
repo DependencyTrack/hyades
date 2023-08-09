@@ -89,11 +89,6 @@ public class GemMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     @Override
-    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) {
-        return null;
-    }
-
-    @Override
     public String getName() {
         return this.getClass().getSimpleName();
     }

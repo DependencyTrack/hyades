@@ -18,7 +18,6 @@
  */
 package org.hyades.repositories;
 
-import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -88,11 +87,6 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
             }
         }
         return successMeta;
-    }
-
-    @Override
-    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws MalformedPackageURLException {
-        return null;
     }
 
     private MetaModel processSuccessResponse(CloseableHttpResponse response, MetaModel meta) throws IOException {
