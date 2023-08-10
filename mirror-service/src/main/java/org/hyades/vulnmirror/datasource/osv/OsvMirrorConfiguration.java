@@ -4,6 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.hyades.vulnmirror.datasource.util.LoggingRejectedExecutionHandler;
+import org.hyades.vulnmirror.datasource.util.LoggingUncaughtExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,16 +20,15 @@ class OsvMirrorConfiguration {
     @ApplicationScoped
     @Named("osvExecutorService")
     ExecutorService executorService() {
+        final Logger osvMirrorLogger = LoggerFactory.getLogger(OsvMirror.class);
+
         final var threadFactory = new BasicThreadFactory.Builder()
                 .namingPattern("hyades-mirror-osv-%d")
-                .uncaughtExceptionHandler((thread, exception) -> {
-                    final Logger logger = LoggerFactory.getLogger(OsvMirror.class);
-                    logger.error("An uncaught exception was thrown while mirroring OSV", exception);
-                })
+                .uncaughtExceptionHandler(new LoggingUncaughtExceptionHandler(osvMirrorLogger))
                 .build();
 
         return new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1), threadFactory);
+                new LinkedBlockingQueue<>(1), threadFactory, new LoggingRejectedExecutionHandler(osvMirrorLogger));
     }
 
 }
