@@ -137,7 +137,7 @@ class IntegrityAnalyzerProcessorTest {
     @TestTransaction
     void testIntegrityCheckEnabled() throws MalformedPackageURLException {
         entityManager.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITYCHECKENABLED", "RESOLUTION_ORDER") VALUES
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED", "RESOLUTION_ORDER") VALUES
                                     ('MAVEN',true, 'central', false, 'test.com', false, true,1);
                 """).executeUpdate();
 
@@ -159,7 +159,7 @@ class IntegrityAnalyzerProcessorTest {
     @TestTransaction
     void testIntegrityCheckDisabled() throws MalformedPackageURLException {
         entityManager.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITYCHECKENABLED", "RESOLUTION_ORDER") VALUES
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED", "RESOLUTION_ORDER") VALUES
                                     ('MAVEN',true, 'central', false, 'test.com', false, false,1);
                 """).executeUpdate();
 

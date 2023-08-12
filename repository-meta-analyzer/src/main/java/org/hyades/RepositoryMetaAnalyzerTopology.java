@@ -22,11 +22,14 @@ import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameProduce;
 
 public class RepositoryMetaAnalyzerTopology {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryMetaAnalyzerTopology.class);
 
     @Produces
     @SuppressWarnings({"resource", "java:S2095"}) // Ignore linter warnings about Serdes having to be closed
@@ -102,8 +105,10 @@ public class RepositoryMetaAnalyzerTopology {
                             try {
                                 return integrityAnalyzerFactory.hasApplicableAnalyzer(new PackageURL(componentAndPurl.toString()));
                             } catch (MalformedPackageURLException e) {
-                                //log message and return
+                                LOGGER.warn("Received record has invalid purl in the key", e);
                             }
+                           /* only returning false here as this exception is not likely to happen with the purl in the key already validated
+                            at a previous step. If it does happen, do not want to interrupt the processing with rethrow of exception */
                             return false;
                         },
                         Branched.withConsumer(stream -> stream

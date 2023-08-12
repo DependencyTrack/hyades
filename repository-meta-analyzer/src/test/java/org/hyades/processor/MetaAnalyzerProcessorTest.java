@@ -133,7 +133,7 @@ class MetaAnalyzerProcessorTest {
     @TestTransaction
     void testInternalRepositoryExternalComponent() throws MalformedPackageURLException {
         entityManager.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATION_REQUIRED", "RESOLUTION_ORDER") VALUES
                                     ('MAVEN',true, 'central', true, 'test.com', false,1);
                 """).executeUpdate();
 
@@ -152,7 +152,7 @@ class MetaAnalyzerProcessorTest {
     @TestTransaction
     void testExternalRepositoryInternalComponent() throws MalformedPackageURLException {
         entityManager.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATION_REQUIRED", "RESOLUTION_ORDER") VALUES
                                     ('MAVEN',true, 'central', false, 'test.com', false,1);
                 """).executeUpdate();
 

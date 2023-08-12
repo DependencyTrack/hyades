@@ -55,10 +55,10 @@ public class Repository {
     @Column(name = "INTERNAL")
     private Boolean internal;
 
-    @Column(name = "AUTHENTICATIONREQUIRED")
+    @Column(name = "AUTHENTICATION_REQUIRED")
     private Boolean authenticationRequired;
 
-    @Column(name = "INTEGRITYCHECKENABLED")
+    @Column(name = "INTEGRITY_CHECK_ENABLED")
     private Boolean integrityCheck;
 
     @Column(name = "USERNAME")
