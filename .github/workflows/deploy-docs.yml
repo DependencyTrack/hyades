@@ -33,8 +33,8 @@ jobs:
           VERSION=`yq -p=xml '.project.version' pom.xml`
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Configure Git User
-          run: |-
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        run: |-
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Deploy
         run: mike deploy --push --update-aliases ${{ steps.determine_version.outputs.version }} latest
