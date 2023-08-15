@@ -19,10 +19,10 @@ As of now, Hyades is capable of:
 
 * Performing vulnerability analysis using scanners that leverage:
   * Dependency-Track's internal vulnerability database
-  * [OSS Index]
-  * [Snyk]
+  * [OSS Index](https://ossindex.sonatype.org/)
+  * [Snyk](https://snyk.io/)
 * Gathering component metadata (e.g. latest available version) from remote repositories
-* Sending [notifications] via all channels supported by the original API server (E-Mail, Webhook, etc.)
+* Sending [notifications](https://docs.dependencytrack.org/integrations/notifications/) via all channels supported by the original API server (E-Mail, Webhook, etc.)
 
 Here's a rough overview of the architecture:
 
