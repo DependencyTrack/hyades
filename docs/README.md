@@ -192,7 +192,7 @@ data source. Additionally, dashboards for the following services are automatical
 
 The provided `docker-compose.yml` includes an instance of [Redpanda Console](https://github.com/redpanda-data/console)
 to aid with gaining insight into what's happening in the message broker. Among many other things, it can be used to
-inspect messages inside any given topic:
+inspect messages inside any given topic.
 
 ![Redpanda Console - Messages](./images/redpanda-console_messages.png)
 
