@@ -7,7 +7,6 @@ on:
       - mkdocs.yml
     branches:
       - main
-      - issue-745-mkdocs
 
 permissions: { }
 
