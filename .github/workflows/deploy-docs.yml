@@ -31,6 +31,6 @@ jobs:
         id: determine_version
         run: |-
           VERSION=`yq -p=xml '.project.version' pom.xml`
-          echo "::set-output name=version::${VERSION}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Deploy
         run: mike deploy --push --update-aliases ${{ steps.determine_version.outputs.version }} latest
