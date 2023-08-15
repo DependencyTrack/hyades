@@ -1,0 +1,60 @@
+  site_name: Hyades
+  site_url: https://github.com/DependencyTrack/hyades/blob/main/README.md
+
+  repo_name: DependencyTrack/hyades
+  repo_url: https://github.com/DependencyTrack/hyades
+
+  theme:
+    name: material
+    palette:
+      - scheme: default
+        media: "(prefers-color-scheme: light)"
+        toggle:
+          icon: material/brightness-7
+          name: Switch to dark mode
+      - scheme: slate
+        media: "(prefers-color-scheme: dark)"
+        toggle:
+          icon: material/brightness-4
+          name: Switch to light mode
+    features:
+      - navigation.instant
+      - navigation.tracking
+      - navigation.tabs
+      - navigation.tabs.sticky
+      - navigation.top
+      - search.highlight
+      - search.share
+
+  extra:
+    version:
+      provider: mike
+    social:
+      - icon: fontawesome/brands/slack
+        link: https://dependencytrack.org/slack
+      - icon: fontawesome/brands/github
+        link: https://github.com/DependencyTrack
+      - icon: fontawesome/brands/docker
+        link: https://hub.docker.com/u/dependencytrack
+      - icon: fontawesome/brands/twitter
+        link: https://twitter.com/DependencyTrack
+
+  markdown_extensions:
+    - pymdownx.highlight:
+        anchor_linenums: true
+    - pymdownx.superfences
+    - tables
+
+  plugins:
+    - search
+
+  nav:
+    - Home: README.md
+    - Workflow: design/01-workflow-state-tracking.md
+    - Code of Conduct: CODE_OF_CONDUCT.md
+    - Configuration: CONFIGURATION.md
+    - Contributing: CONTRIBUTING.md
+    - Demo: DEMO.md
+    - Security: SECURITY.md
+    - Topics: TOPICS.md
+    - WTF: WTF.md
