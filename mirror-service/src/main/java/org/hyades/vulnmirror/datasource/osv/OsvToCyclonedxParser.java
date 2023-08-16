@@ -301,7 +301,7 @@ public class OsvToCyclonedxParser {
         vulnerability.setSource(extractSource(osvDto.id()));
         Optional.ofNullable(osvDto.summary()).ifPresent(summary -> vulnerability.addProperties(
                 Property.newBuilder().setName(TITLE_PROPERTY_NAME).setValue(trimSummary(summary)).build()));
-        Optional.ofNullable(osvDto.details()).ifPresent(details -> vulnerability.setDetail(details));
+        Optional.ofNullable(osvDto.details()).ifPresent(details -> vulnerability.setDescription(details));
 
         Optional.ofNullable(osvDto.getPublished())
                 .map(published -> published.toInstant())

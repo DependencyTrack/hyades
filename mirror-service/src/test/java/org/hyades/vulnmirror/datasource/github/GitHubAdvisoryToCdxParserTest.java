@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hyades.vulnmirror.datasource.github.GitHubAdvisoryToCdxParser.TITLE_PROPERTY_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -50,7 +51,8 @@ class GitHubAdvisoryToCdxParserTest {
                     assertThat(vulnerability.getDescription()).isEqualTo("In Bootstrap 4 before 4.3.1 and " +
                             "Bootstrap 3 before 3.4.1, XSS is possible in the tooltip or popover data-template attribute. " +
                             "For more information, see: https://blog.getbootstrap.com/2019/02/13/bootstrap-4-3-1-and-3-4-1/");
-                    assertThat(vulnerability.getDetail()).isEqualTo("Moderate severity vulnerability that affects " +
+                    assertThat(vulnerability.getProperties(0).getName()).isEqualTo(TITLE_PROPERTY_NAME);
+                    assertThat(vulnerability.getProperties(0).getValue()).isEqualTo("Moderate severity vulnerability that affects " +
                             "Bootstrap.Less, bootstrap, and bootstrap.sass");
                     assertThat(vulnerability.getRatingsList()).satisfiesExactly(
                             rating -> {
@@ -134,7 +136,8 @@ class GitHubAdvisoryToCdxParserTest {
                     assertThat(vulnerability.getId()).isEqualTo("GHSA-p82g-2xpp-m5r3");
                     assertThat(vulnerability.getSource().getName()).isEqualTo("GITHUB");
                     assertThat(vulnerability.getDescription()).isEqualTo("Versions of `dojo` prior to 1.2.0 are vulnerable to Cross-Site Scripting (XSS). The package fails to sanitize HTML code in user-controlled input, allowing attackers to execute arbitrary JavaScript in the victim\'s browser.\n\n\n## Recommendation\n\nUpgrade to version 1.2.0 or later.");
-                    assertThat(vulnerability.getDetail()).isEqualTo("Cross-Site Scripting in dojo");
+                    assertThat(vulnerability.getProperties(0).getName()).isEqualTo(TITLE_PROPERTY_NAME);
+                    assertThat(vulnerability.getProperties(0).getValue()).isEqualTo("Cross-Site Scripting in dojo");
                     assertThat(vulnerability.getRatingsList()).satisfiesExactly(
                             rating -> {
                                 assertThat(rating.getSeverity()).isEqualTo(Severity.SEVERITY_MEDIUM);
