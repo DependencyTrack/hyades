@@ -34,6 +34,9 @@ class NvdToCyclonedxParserTest {
                         {
                            "components": [{
                              "bomRef": "042fda35-385a-52e5-b7ec-be420329a9ab",
+                             "type": "CLASSIFICATION_OPERATING_SYSTEM",
+                             "publisher": "linux",
+                             "name": "linux_kernel",
                              "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*"
                            }],
                            "externalReferences": [{
@@ -50,7 +53,10 @@ class NvdToCyclonedxParserTest {
                                "score": 4.6,
                                "severity": "SEVERITY_MEDIUM",
                                "method": "SCORE_METHOD_CVSSV2",
-                               "vector": "AV:L/AC:L/Au:N/C:P/I:P/A:P"
+                               "vector": "AV:L/AC:L/Au:N/C:P/I:P/A:P",
+                               "source": {
+                                 "name": "NVD"
+                               }
                              }],
                              "cwes": [777],
                              "description": "Linux kernel before 2.3.18 or 2.2.13pre15, with SLIP and PPP options, allows local unprivileged users to forge IP packets via the TIOCSETD option on tty devices.",
@@ -59,12 +65,9 @@ class NvdToCyclonedxParserTest {
                              "affects": [{
                                "ref": "042fda35-385a-52e5-b7ec-be420329a9ab",
                                "versions": [{
-                                 "range": "vers:generic/2.2.0|2.2.13"
-                               }]
-                             }, {
-                               "ref": "042fda35-385a-52e5-b7ec-be420329a9ab",
-                               "versions": [{
-                                 "range": "vers:generic/2.3.0|2.3.18"
+                                 "range": "vers:generic/>=2.2.0|<=2.2.13"
+                               }, {
+                                 "range": "vers:generic/>2.3.0|<2.3.18"
                                }]
                              }]
                            }]
@@ -88,6 +91,9 @@ class NvdToCyclonedxParserTest {
                         {
                            "components": [{
                              "bomRef": "02cd44fb-2f0a-569b-a508-1e179e123e38",
+                             "type": "CLASSIFICATION_APPLICATION",
+                             "publisher": "thinkcmf",
+                             "name": "thinkcmf",
                              "cpe": "cpe:2.3:a:thinkcmf:thinkcmf:6.0.7:*:*:*:*:*:*:*"
                            }],
                            "externalReferences": [{
@@ -102,14 +108,20 @@ class NvdToCyclonedxParserTest {
                                "score": 8.8,
                                "severity": "SEVERITY_HIGH",
                                "method": "SCORE_METHOD_CVSSV31",
-                               "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                               "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                               "source": {
+                                 "name": "NVD"
+                               }
                              }],
                              "cwes": [352],
                              "description": "ThinkCMF version 6.0.7 is affected by a Cross Site Request Forgery (CSRF) vulnerability that allows a Super Administrator user to be injected into administrative users.",
                              "published": "2022-12-01T05:15:11Z",
                              "updated": "2022-12-02T17:17:02Z",
                              "affects": [{
-                               "ref": "02cd44fb-2f0a-569b-a508-1e179e123e38"
+                               "ref": "02cd44fb-2f0a-569b-a508-1e179e123e38",
+                               "versions": [{
+                                 "version": "6.0.7"
+                               }]
                              }]
                            }]
                          }
