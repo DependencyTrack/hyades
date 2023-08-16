@@ -1,24 +1,29 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.protobuf.util.JsonFormat;
 import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
 import io.github.jeremylong.openvulnerability.client.nvd.NvdApiException;
 import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import jakarta.inject.Inject;
+import net.javacrumbs.jsonunit.core.Option;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Vulnerability;
+import org.hamcrest.Matchers;
 import org.hyades.common.KafkaTopic;
 import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.notification.v1.Notification;
 import org.hyades.vulnmirror.TestConstants;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -28,6 +33,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.apache.commons.io.IOUtils.resourceToByteArray;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -57,6 +63,17 @@ class NvdMirrorTest {
 
     @InjectKafkaCompanion
     KafkaCompanion kafkaCompanion;
+
+    @AfterEach
+    void afterEach() {
+        // Publish tombstones to the vulnerability digest topic for all vulnerabilities used in this test.
+        kafkaCompanion.produce(Serdes.String(), Serdes.ByteArray())
+                .fromRecords(List.of(
+                        new ProducerRecord<>(KafkaTopic.VULNERABILITY_DIGEST.getName(), "NVD/CVE-1999-1341", null),
+                        new ProducerRecord<>(KafkaTopic.VULNERABILITY_DIGEST.getName(), "NVD/CVE-2022-40489", null)
+                ))
+                .awaitCompletion();
+    }
 
     @Test
     void testDoMirrorSuccessNotification() {
@@ -142,7 +159,7 @@ class NvdMirrorTest {
         assertThatNoException().isThrownBy(() -> nvdMirror.mirrorInternal());
         verify(apiClientFactoryMock).createApiClient(eq(0L));
 
-        final List<ConsumerRecord<String, Bom>> vulnRecords = kafkaCompanion
+        final List<ConsumerRecord<String, Bom>> bovRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
                 .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                 .withAutoCommit()
@@ -150,17 +167,53 @@ class NvdMirrorTest {
                 .awaitCompletion()
                 .getRecords();
 
-        assertThat(vulnRecords).satisfiesExactly(
-                record -> {
-                    assertThat(record.key()).isEqualTo("NVD/CVE-2022-40489");
-                    assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
+        assertThat(bovRecords).satisfiesExactly(record -> {
+            assertThat(record.key()).isEqualTo("NVD/CVE-2022-40489");
+            assertThat(record.value()).isNotNull();
+        });
 
-                    final Vulnerability vuln = record.value().getVulnerabilities(0);
-                    assertThat(vuln.getId()).isEqualTo("CVE-2022-40489");
-                    assertThat(vuln.hasSource()).isTrue();
-                    assertThat(vuln.getSource().getName()).isEqualTo("NVD");
-                }
-        );
+        // FIXME: affects.versions should report version 6.0.7; https://github.com/DependencyTrack/hyades/issues/733
+        assertThatJson(JsonFormat.printer().print(bovRecords.get(0).value()))
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .withMatcher("vuln-description", Matchers.allOf(
+                        Matchers.startsWith("ThinkCMF version 6.0.7 is affected by a"),
+                        Matchers.hasLength(168)))
+                .isEqualTo("""
+                        {
+                          "components": [
+                            {
+                              "bomRef": "02cd44fb-2f0a-569b-a508-1e179e123e38",
+                              "cpe": "cpe:2.3:a:thinkcmf:thinkcmf:6.0.7:*:*:*:*:*:*:*"
+                            }
+                          ],
+                          "vulnerabilities": [
+                            {
+                              "id": "CVE-2022-40489",
+                              "source": { "name": "NVD" },
+                              "description": "${json-unit.matches:vuln-description}",
+                              "cwes": [ 352 ],
+                              "published": "2022-12-01T05:15:11Z",
+                              "updated": "2022-12-02T17:17:02Z",
+                              "ratings": [
+                                {
+                                  "method": "SCORE_METHOD_CVSSV31",
+                                  "score": 8.8,
+                                  "severity": "SEVERITY_HIGH",
+                                  "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                                }
+                              ],
+                              "affects": [
+                                {
+                                  "ref": "02cd44fb-2f0a-569b-a508-1e179e123e38"
+                                }
+                              ]
+                            }
+                          ],
+                          "externalReferences": [
+                            { "url": "https://github.com/thinkcmf/thinkcmf/issues/736" }
+                          ]
+                        }
+                        """);
 
         // Trigger a mirror operation one more time.
         // Verify that this time the previously stored "last updated" timestamp is used.

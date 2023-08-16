@@ -1,5 +1,6 @@
 package org.hyades.vulnmirror.datasource.github;
 
+import com.fasterxml.uuid.Generators;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.github.packageurl.PackageURLBuilder;
@@ -37,6 +38,7 @@ import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 public class GitHubAdvisoryToCdxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubAdvisoryToCdxParser.class);
+    private static final UUID UUID_V5_NAMESPACE = UUID.fromString("d13c94df-c6b7-4e5c-9d5b-96d77078eee8");
 
     public static Bom parse(final SecurityAdvisory advisory, boolean aliasSyncEnabled) {
         final Vulnerability.Builder vuln = Vulnerability.newBuilder()
@@ -86,7 +88,7 @@ public class GitHubAdvisoryToCdxParser {
                 VulnerabilityAffects.Builder vulnerabilityAffects = VulnerabilityAffects.newBuilder();
                 String bomRef = getBomRefIfComponentExists(bom.build(), purl.getCoordinates());
                 if (bomRef == null) {
-                    UUID uuid = UUID.randomUUID();
+                    UUID uuid = Generators.nameBasedGenerator(UUID_V5_NAMESPACE).generate(purl.getCoordinates());
                     Component component = Component.newBuilder()
                             .setBomRef(uuid.toString())
                             .setPurl(purl.getCoordinates())
