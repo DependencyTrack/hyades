@@ -233,6 +233,7 @@ class OsvMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
+        // FIXME: Individual versions should not be listed when a range is provided by the source
         assertThatJson(JsonFormat.printer().print(vulnRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .withMatcher("vuln-description", Matchers.allOf(
