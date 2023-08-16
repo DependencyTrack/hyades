@@ -13,6 +13,7 @@ import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import jakarta.inject.Inject;
 import net.javacrumbs.jsonunit.core.Option;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.hamcrest.Matchers;
@@ -20,6 +21,7 @@ import org.hyades.common.KafkaTopic;
 import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.notification.v1.Notification;
 import org.hyades.vulnmirror.TestConstants;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -57,6 +59,16 @@ class GitHubMirrorTest {
 
     @InjectKafkaCompanion
     KafkaCompanion kafkaCompanion;
+
+    @AfterEach
+    void afterEach() {
+        // Publish tombstones to the vulnerability digest topic for all vulnerabilities used in this test.
+        kafkaCompanion.produce(Serdes.String(), Serdes.ByteArray())
+                .fromRecords(List.of(
+                        new ProducerRecord<>(KafkaTopic.VULNERABILITY_DIGEST.getName(), "GITHUB/GHSA-fxwm-579q-49qq", null)
+                ))
+                .awaitCompletion();
+    }
 
     @Test
     void testDoMirrorSuccessNotification() {

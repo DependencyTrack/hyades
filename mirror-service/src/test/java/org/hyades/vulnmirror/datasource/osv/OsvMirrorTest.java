@@ -10,6 +10,7 @@ import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import jakarta.inject.Inject;
 import net.javacrumbs.jsonunit.core.Option;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.hamcrest.Matchers;
@@ -56,6 +57,14 @@ class OsvMirrorTest {
 
     @AfterEach
     void afterEach() throws Exception {
+        // Publish tombstones to the vulnerability digest topic for all vulnerabilities used in this test.
+        kafkaCompanion.produce(Serdes.String(), Serdes.ByteArray())
+                .fromRecords(List.of(
+                        new ProducerRecord<>(KafkaTopic.VULNERABILITY_DIGEST.getName(), "OSV/GO-2020-0023", null),
+                        new ProducerRecord<>(KafkaTopic.VULNERABILITY_DIGEST.getName(), "OSV/GHSA-2cc5-23r7-vc4v", null)
+                ))
+                .awaitCompletion();
+
         if (tempZipLocation != null && Files.exists(tempZipLocation)) {
             Files.delete(tempZipLocation);
         }
