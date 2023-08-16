@@ -154,6 +154,9 @@ class GitHubMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
+        // FIXME: rating.score should not report 0.0 when neither a vector, nor a pre-calculated score is provided by the source
+        // FIXME: affects should not have duplicate entries for the same ref; Accumulate multiple versions under one affects node instead
+        // FIXME: vers ranges should not include whitespace
         assertThatJson(JsonFormat.printer().print(vulnRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .withMatcher("vuln-description", Matchers.allOf(
