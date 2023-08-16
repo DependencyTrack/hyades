@@ -233,6 +233,125 @@ class OsvMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
+        assertThatJson(JsonFormat.printer().print(vulnRecords.get(0).value()))
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .withMatcher("vuln-description", Matchers.allOf(
+                        Matchers.startsWith("### Impact"),
+                        Matchers.hasLength(952)))
+                .isEqualTo("""
+                        {
+                          "components": [
+                            {
+                              "bomRef": "2a24a29f-9ff3-52b8-bc81-471f326a5b3e",
+                              "name": "io.ratpack:ratpack-session",
+                              "purl": "pkg:maven/io.ratpack/ratpack-session"
+                            }
+                          ],
+                          "vulnerabilities": [
+                            {
+                              "id": "GHSA-2cc5-23r7-vc4v",
+                              "source": { "name": "GITHUB" },
+                              "description": "Ratpack's default client side session signing key is highly predictable",
+                              "detail": "${json-unit.matches:vuln-description}",
+                              "cwes": [ 330, 340 ],
+                              "published": "2021-07-01T17:02:26Z",
+                              "updated": "2023-03-28T05:45:27Z",
+                              "ratings": [
+                                {
+                                  "method": "SCORE_METHOD_CVSSV3",
+                                  "score": 4.4,
+                                  "severity": "SEVERITY_MEDIUM",
+                                  "vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"
+                                }
+                              ],
+                              "advisories": [
+                                { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29480" }
+                              ],
+                              "affects": [
+                                {
+                                  "ref": "2a24a29f-9ff3-52b8-bc81-471f326a5b3e",
+                                  "versions": [
+                                    { "range": "vers:maven/>=0|<1.9.0" },
+                                    { "version": "0.9.0" },
+                                    { "version": "0.9.1" },
+                                    { "version": "0.9.10" },
+                                    { "version": "0.9.11" },
+                                    { "version": "0.9.12" },
+                                    { "version": "0.9.13" },
+                                    { "version": "0.9.14" },
+                                    { "version": "0.9.15" },
+                                    { "version": "0.9.16" },
+                                    { "version": "0.9.17" },
+                                    { "version": "0.9.18" },
+                                    { "version": "0.9.19" },
+                                    { "version": "0.9.2" },
+                                    { "version": "0.9.3" },
+                                    { "version": "0.9.4" },
+                                    { "version": "0.9.5" },
+                                    { "version": "0.9.6" },
+                                    { "version": "0.9.7" },
+                                    { "version": "0.9.8" },
+                                    { "version": "0.9.9" },
+                                    { "version": "1.0.0" },
+                                    { "version": "1.0.0-rc-1" },
+                                    { "version": "1.0.0-rc-2" },
+                                    { "version": "1.0.0-rc-3" },
+                                    { "version": "1.1.0" },
+                                    { "version": "1.1.1" },
+                                    { "version": "1.2.0" },
+                                    { "version": "1.2.0-RC-1" },
+                                    { "version": "1.2.0-rc-2" },
+                                    { "version": "1.3.0" },
+                                    { "version": "1.3.0-rc-1" },
+                                    { "version": "1.3.0-rc-2" },
+                                    { "version": "1.3.1" },
+                                    { "version": "1.3.2" },
+                                    { "version": "1.3.3" },
+                                    { "version": "1.4.0" },
+                                    { "version": "1.4.0-rc-1" },
+                                    { "version": "1.4.0-rc-2" },
+                                    { "version": "1.4.0-rc-3" },
+                                    { "version": "1.4.1" },
+                                    { "version": "1.4.2" },
+                                    { "version": "1.4.3" },
+                                    { "version": "1.4.4" },
+                                    { "version": "1.4.5" },
+                                    { "version": "1.4.6" },
+                                    { "version": "1.5.0" },
+                                    { "version": "1.5.1" },
+                                    { "version": "1.5.2" },
+                                    { "version": "1.5.3" },
+                                    { "version": "1.5.4" },
+                                    { "version": "1.6.0" },
+                                    { "version": "1.6.0-rc-1" },
+                                    { "version": "1.6.0-rc-2" },
+                                    { "version": "1.6.0-rc-3" },
+                                    { "version": "1.6.0-rc-4" },
+                                    { "version": "1.6.1" },
+                                    { "version": "1.7.0" },
+                                    { "version": "1.7.1" },
+                                    { "version": "1.7.2" },
+                                    { "version": "1.7.3" },
+                                    { "version": "1.7.4" },
+                                    { "version": "1.7.5" },
+                                    { "version": "1.7.6" },
+                                    { "version": "1.8.0" },
+                                    { "version": "1.8.1" },
+                                    { "version": "1.8.2" },
+                                    { "version": "1.9.0-rc-1" },
+                                    { "version": "1.9.0-rc-2" }
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "externalReferences": [
+                            { "url": "https://github.com/ratpack/ratpack/security/advisories/GHSA-2cc5-23r7-vc4v" },
+                            { "url": "https://github.com/ratpack/ratpack" },
+                            { "url": "https://github.com/ratpack/ratpack/blob/29434f7ac6fd4b36a4495429b70f4c8163100332/ratpack-session/src/main/java/ratpack/session/clientside/ClientSideSessionConfig.java#L29" }
+                          ]
+                        }
+                        """);
         // FIXME: Individual versions should not be listed when a range is provided by the source
         assertThatJson(JsonFormat.printer().print(vulnRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
