@@ -1,5 +1,6 @@
 package org.hyades.vulnmirror.datasource.nvd;
 
+import com.fasterxml.uuid.Generators;
 import com.google.protobuf.Timestamp;
 import io.github.jeremylong.openvulnerability.client.nvd.Config;
 import io.github.jeremylong.openvulnerability.client.nvd.CpeMatch;
@@ -43,6 +44,8 @@ import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
  * Parser and processor of NVD data feeds.
  */
 public final class NvdToCyclonedxParser {
+
+    private static final UUID UUID_V5_NAMESPACE = UUID.fromString("cb83f395-69ff-4b1c-83f9-c461ebd06279");
 
     public static class BovWrapper<T> {
         public final Bom bov;
@@ -152,7 +155,8 @@ public final class NvdToCyclonedxParser {
                 return new BovWrapper(cdxBom, existingComponent.get().getBomRef());
             }
         }
-        UUID uuid = UUID.randomUUID();
+
+        UUID uuid = Generators.nameBasedGenerator(UUID_V5_NAMESPACE).generate(cpe);
         Component component = Component.newBuilder()
                 .setBomRef(uuid.toString())
                 .setCpe(cpe)

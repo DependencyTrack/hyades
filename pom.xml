@@ -52,6 +52,7 @@
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
     <lib.greenmail.version>2.0.0</lib.greenmail.version>
+    <lib.java-uuid-generator.version>4.2.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>3.0.0</lib.json-unit.version>
     <lib.kafka.version>3.5.1</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-7</lib.maven-artifact.version>
@@ -146,6 +147,12 @@
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-core-java</artifactId>
         <version>${lib.cyclonedx-java.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.uuid</groupId>
+        <artifactId>java-uuid-generator</artifactId>
+        <version>${lib.java-uuid-generator.version}</version>
       </dependency>
 
       <dependency>
