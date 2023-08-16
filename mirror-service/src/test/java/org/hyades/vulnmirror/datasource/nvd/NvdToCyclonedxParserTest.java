@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NvdToCyclonedxParserTest {
 
@@ -42,7 +43,7 @@ class NvdToCyclonedxParserTest {
         Vulnerability vulnerability = result.getVulnerabilitiesList().get(0);
         assertEquals("CVE-1999-1341", vulnerability.getId());
         assertEquals("NVD", vulnerability.getSource().getName());
-        assertNotNull(vulnerability.getDescription());
+        assertTrue(vulnerability.getDescription().startsWith("Linux kernel before"));
 
         assertEquals(1, vulnerability.getCwesList().size());
         assertEquals(777, vulnerability.getCwesList().get(0));

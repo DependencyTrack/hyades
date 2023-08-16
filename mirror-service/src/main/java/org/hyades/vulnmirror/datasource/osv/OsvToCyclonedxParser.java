@@ -9,6 +9,7 @@ import jakarta.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
+import org.cyclonedx.proto.v1_4.Property;
 import org.cyclonedx.proto.v1_4.ScoreMethod;
 import org.cyclonedx.proto.v1_4.Severity;
 import org.cyclonedx.proto.v1_4.Source;
@@ -43,6 +44,8 @@ import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 public class OsvToCyclonedxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
+
+    private static final String TITLE_PROPERTY_NAME = "dependency-track:vuln:title";
 
     private final ObjectMapper objectMapper;
 
@@ -296,11 +299,9 @@ public class OsvToCyclonedxParser {
         Vulnerability.Builder vulnerability = Vulnerability.newBuilder();
         Optional.ofNullable(osvDto.id()).ifPresent(id -> vulnerability.setId(id));
         vulnerability.setSource(extractSource(osvDto.id()));
-        Optional.ofNullable(osvDto.summary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
-        Optional.ofNullable(osvDto.details()).ifPresent(summary -> vulnerability.setDetail(summary));
-        Optional.ofNullable(osvDto.id()).ifPresent(id -> vulnerability.setId(id));
-        Optional.ofNullable(osvDto.summary()).ifPresent(summary -> vulnerability.setDescription(trimSummary(summary)));
-        Optional.ofNullable(osvDto.details()).ifPresent(summary -> vulnerability.setDetail(summary));
+        Optional.ofNullable(osvDto.summary()).ifPresent(summary -> vulnerability.addProperties(
+                Property.newBuilder().setName(TITLE_PROPERTY_NAME).setValue(trimSummary(summary)).build()));
+        Optional.ofNullable(osvDto.details()).ifPresent(details -> vulnerability.setDetail(details));
 
         Optional.ofNullable(osvDto.getPublished())
                 .map(published -> published.toInstant())
