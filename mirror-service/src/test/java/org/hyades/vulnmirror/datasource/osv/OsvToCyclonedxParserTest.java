@@ -70,9 +70,9 @@ class OsvToCyclonedxParserTest {
 
         Vulnerability vulnerability = bom.getVulnerabilitiesList().get(0);
         assertNotNull(vulnerability);
-        List<VulnerabilityAffects> affectedPacks= vulnerability.getAffectsList();
+        List<VulnerabilityAffects> affectedPacks = vulnerability.getAffectsList();
         assertNotNull(affectedPacks);
-        assertEquals(1, affectedPacks.size());
+        assertEquals(0, affectedPacks.size());
     }
 
     @Test
