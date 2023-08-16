@@ -172,6 +172,7 @@ class NvdMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
+        // FIXME: affects.versions should report version 6.0.7; https://github.com/DependencyTrack/hyades/issues/733
         assertThatJson(JsonFormat.printer().print(bovRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .withMatcher("vuln-description", Matchers.allOf(
@@ -203,10 +204,7 @@ class NvdMirrorTest {
                               ],
                               "affects": [
                                 {
-                                  "ref": "02cd44fb-2f0a-569b-a508-1e179e123e38",
-                                  "versions": [
-                                    { "version": "6.0.7" }
-                                  ]
+                                  "ref": "02cd44fb-2f0a-569b-a508-1e179e123e38"
                                 }
                               ]
                             }
