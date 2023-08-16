@@ -1,6 +1,7 @@
 package org.hyades.vulnmirror.datasource.osv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.uuid.Generators;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.google.protobuf.Timestamp;
@@ -43,6 +44,7 @@ import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 public class OsvToCyclonedxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
+    private static final UUID UUID_V5_NAMESPACE = UUID.fromString("ffbefd63-724d-47b6-8d98-3deb06361885");
 
     private final ObjectMapper objectMapper;
 
@@ -81,7 +83,7 @@ public class OsvToCyclonedxParser {
         if (osvAffectedArray != null) {
             // affected packages and versions
             // low-priority severity assignment
-            vulnerability.addAllAffects(parseAffectedRanges(osvAffectedArray, cyclonedxBom));
+            vulnerability.addAllAffects(parseAffectedRanges(vulnerability.getId(), osvAffectedArray, cyclonedxBom));
             severity = parseSeverity(osvAffectedArray);
         }
 
@@ -91,7 +93,7 @@ public class OsvToCyclonedxParser {
         return cyclonedxBom.build();
     }
 
-    private static List<VulnerabilityAffects> parseAffectedRanges(JSONArray osvAffectedArray, Bom.Builder bom) {
+    private static List<VulnerabilityAffects> parseAffectedRanges(final String vulnId, JSONArray osvAffectedArray, Bom.Builder bom) {
         PackageURL packageUrl;
         String ecoSystem = null;
         List<VulnerabilityAffects> affects = new ArrayList<>();
@@ -99,11 +101,16 @@ public class OsvToCyclonedxParser {
         for (int i = 0; i < osvAffectedArray.length(); i++) {
             JSONObject osvAffectedObj = osvAffectedArray.getJSONObject(i);
             String purl = parsePackageUrl(osvAffectedObj);
+            if (purl == null) {
+                LOGGER.debug("affected node at index {} for vulnerability {} does not provide a PURL; Skipping", i, vulnId);
+                continue;
+            }
             try {
                 packageUrl = new PackageURL(purl);
                 ecoSystem = packageUrl.getType();
             } catch (MalformedPackageURLException ex) {
-                LOGGER.info("Error while parsing purl: {}", purl, ex);
+                LOGGER.warn("Failed to parse PURL \"{}\" from affected node at index {} for vulnerability {}", purl, i, vulnId, ex);
+                continue;
             }
             String bomReference = getBomRefIfComponentExists(bom.build(), purl);
             if (bomReference == null) {
@@ -178,11 +185,11 @@ public class OsvToCyclonedxParser {
     }
 
     private static Component createNewComponentWithPurl(JSONObject osvAffectedObj, String purl) {
-        JSONObject cpeObj = osvAffectedObj.optJSONObject("package");
-        UUID uuid = UUID.randomUUID();
+        JSONObject packageObj = osvAffectedObj.optJSONObject("package");
+        UUID uuid = Generators.nameBasedGenerator(UUID_V5_NAMESPACE).generate(purl);
         Component.Builder component = Component.newBuilder()
                 .setBomRef(uuid.toString());
-        Optional.ofNullable(cpeObj.optString("name", null)).ifPresent(name -> component.setName(name));
+        Optional.ofNullable(packageObj.optString("name", null)).ifPresent(name -> component.setName(name));
         Optional.ofNullable(purl).ifPresent(packagePurl -> component.setPurl(packagePurl));
 
         return component.build();
@@ -316,8 +323,8 @@ public class OsvToCyclonedxParser {
     }
 
     private static String parsePackageUrl(JSONObject osvAffectedObj) {
-        JSONObject cpeObj = osvAffectedObj.optJSONObject("package");
-        return cpeObj != null ? cpeObj.optString("purl", null) : null;
+        JSONObject packageObj = osvAffectedObj.optJSONObject("package");
+        return packageObj != null ? packageObj.optString("purl", null) : null;
     }
 
     private <T> T deserialize(String stringToConvert, Class<T> type) {
