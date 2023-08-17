@@ -187,7 +187,7 @@ class OsvMirrorTest {
                             {
                               "id": "GO-2020-0023",
                               "source": { "name": "OSV" },
-                              "detail": "${json-unit.matches:vuln-description}",
+                              "description": "${json-unit.matches:vuln-description}",
                               "published": "2022-06-09T07:01:32Z",
                               "updated": "2022-06-09T07:01:32Z",
                               "ratings": [
@@ -252,8 +252,7 @@ class OsvMirrorTest {
                             {
                               "id": "GHSA-2cc5-23r7-vc4v",
                               "source": { "name": "GITHUB" },
-                              "description": "Ratpack's default client side session signing key is highly predictable",
-                              "detail": "${json-unit.matches:vuln-description}",
+                              "description": "${json-unit.matches:vuln-description}",
                               "cwes": [ 330, 340 ],
                               "published": "2021-07-01T17:02:26Z",
                               "updated": "2023-03-28T05:45:27Z",
@@ -267,6 +266,12 @@ class OsvMirrorTest {
                               ],
                               "advisories": [
                                 { "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-29480" }
+                              ],
+                              "properties": [
+                                  {
+                                    "name": "dependency-track:vuln:title",
+                                    "value": "Ratpack's default client side session signing key is highly predictable"
+                                  }
                               ],
                               "affects": [
                                 {

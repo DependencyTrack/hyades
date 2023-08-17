@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
 import org.cyclonedx.proto.v1_4.ExternalReference;
+import org.cyclonedx.proto.v1_4.Property;
 import org.cyclonedx.proto.v1_4.Source;
 import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.cyclonedx.proto.v1_4.VulnerabilityAffectedVersions;
@@ -31,6 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.hyades.commonutil.VulnerabilityUtil.trimSummary;
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.getBomRefIfComponentExists;
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapGitHubEcosystemToPurlType;
 import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
@@ -38,6 +40,7 @@ import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 public class GitHubAdvisoryToCdxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubAdvisoryToCdxParser.class);
+    static final String TITLE_PROPERTY_NAME = "dependency-track:vuln:title";
     private static final UUID UUID_V5_NAMESPACE = UUID.fromString("d13c94df-c6b7-4e5c-9d5b-96d77078eee8");
 
     public static Bom parse(final SecurityAdvisory advisory, boolean aliasSyncEnabled) {
@@ -45,8 +48,10 @@ public class GitHubAdvisoryToCdxParser {
                 .setSource(Source.newBuilder().setName(Datasource.GITHUB.name()).build())
                 .setId(advisory.getGhsaId())
                 .setDescription(Optional.ofNullable(advisory.getDescription()).orElse(""))
-                .setDetail(Optional.ofNullable(advisory.getSummary()).orElse(""))
                 .addAllCwes(parseCwes(advisory.getCwes()));
+
+        Optional.ofNullable(advisory.getSummary()).ifPresent(title -> vuln.addProperties(
+                Property.newBuilder().setName(TITLE_PROPERTY_NAME).setValue(trimSummary(title)).build()));
 
         VulnerabilityRating.Builder rating = VulnerabilityRating.newBuilder()
                 .setSeverity(mapSeverity(advisory.getSeverity().value()))

@@ -195,7 +195,12 @@ class GitHubMirrorTest {
                               "id": "GHSA-fxwm-579q-49qq",
                               "source": { "name": "GITHUB" },
                               "description": "${json-unit.matches:vuln-description}",
-                              "detail": "Moderate severity vulnerability that affects Bootstrap.Less, bootstrap, and bootstrap.sass",
+                              "properties": [
+                                  {
+                                    "name": "dependency-track:vuln:title",
+                                    "value": "Moderate severity vulnerability that affects Bootstrap.Less, bootstrap, and bootstrap.sass"
+                                  }
+                              ],
                               "published": "2019-02-22T20:54:40Z",
                               "updated": "2021-12-03T14:54:43Z",
                               "ratings": [
