@@ -73,7 +73,7 @@ class RepositoryMetaAnalyzerTopologyTest {
 
         when(analyzerFactoryMock.hasApplicableAnalyzer(any(PackageURL.class)))
                 .thenReturn(true);
-        when(analyzerFactoryMock.createAnalyzer(any(PackageURL.class)))
+        when(analyzerFactoryMock.createMetaAnalyzer(any(PackageURL.class)))
                 .thenReturn(Optional.of(analyzerMock));
     }
 

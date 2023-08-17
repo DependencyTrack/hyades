@@ -19,7 +19,7 @@ import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
-import org.hyades.repositories.IMetaAnalyzer;
+import org.hyades.repositories.IntegrityAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +55,8 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
         // It only contains the type, namespace and name, but is missing the
         // version and other qualifiers. Some analyzers require the version.
         final PackageURL purl = mustParsePurl(component.getPurl());
-        final Optional<IMetaAnalyzer> optionalAnalyzer = integrityAnalyzerFactory.createAnalyzer(purl);
-        if (optionalAnalyzer.isEmpty()) {
+        final Optional<IntegrityAnalyzer> integrityAnalyzer = integrityAnalyzerFactory.createIntegrityAnalyzer(purl);
+        if (integrityAnalyzer.isEmpty()) {
             LOGGER.debug("No analyzer is capable of analyzing {}", purl);
             context().forward(inputRecord
                     .withValue(IntegrityResult.newBuilder().setComponent(component).build())
@@ -64,7 +64,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
             return;
         }
 
-        final IMetaAnalyzer analyzer = optionalAnalyzer.get();
+        final IntegrityAnalyzer analyzer = integrityAnalyzer.get();
         for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
             if (repository.isIntegrityCheckEnabled()) {
                 if ((component.hasMd5Hash() || component.hasSha256Hash() || component.hasSha1Hash())) {
@@ -119,7 +119,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                 .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 
-    private IntegrityResult performIntegrityCheckForComponent(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
+    private IntegrityResult performIntegrityCheckForComponent(final IntegrityAnalyzer analyzer, final Repository repository, final Component component) {
 
         final var integrityResultCacheKey = new IntegrityAnalysisCacheKey(repository.getIdentifier(), repository.getUrl(), component.getPurl());
         final var integrityAnalysisCacheResult = getCachedResult(integrityResultCacheKey);

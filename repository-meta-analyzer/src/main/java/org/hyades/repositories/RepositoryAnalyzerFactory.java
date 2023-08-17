@@ -24,6 +24,10 @@ public class RepositoryAnalyzerFactory {
             "cpan", CpanMetaAnalyzer::new
     );
 
+    private static final Map<String, Supplier<IntegrityAnalyzer>> INTEGRITY_ANALYZER_SUPPLIERS = Map.of(
+            PackageURL.StandardTypes.MAVEN, MavenMetaAnalyzer::new
+    );
+
     private final CloseableHttpClient httpClient;
 
     RepositoryAnalyzerFactory(@Named("httpClient") final CloseableHttpClient httpClient) {
@@ -34,16 +38,23 @@ public class RepositoryAnalyzerFactory {
         return ANALYZER_SUPPLIERS.containsKey(purl.getType());
     }
 
-    public Optional<IMetaAnalyzer> createAnalyzer(final PackageURL purl) {
+    public Optional<IMetaAnalyzer> createMetaAnalyzer(final PackageURL purl) {
         final Supplier<IMetaAnalyzer> analyzerSupplier = ANALYZER_SUPPLIERS.get(purl.getType());
         if (analyzerSupplier == null) {
             return Optional.empty();
         }
-
-
         final IMetaAnalyzer analyzer = analyzerSupplier.get();
         analyzer.setHttpClient(httpClient);
         return Optional.of(analyzer);
     }
 
+    public Optional<IntegrityAnalyzer> createIntegrityAnalyzer(final PackageURL purl) {
+        final Supplier<IntegrityAnalyzer> analyzerSupplier = INTEGRITY_ANALYZER_SUPPLIERS.get(purl.getType());
+        if (analyzerSupplier == null) {
+            return Optional.empty();
+        }
+        final IntegrityAnalyzer analyzer = analyzerSupplier.get();
+        analyzer.setHttpClient(httpClient);
+        return Optional.of(analyzer);
+    }
 }

@@ -50,7 +50,7 @@ import java.io.InputStream;
  * @author Steve Springett
  * @since 3.1.0
  */
-public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
+public class MavenMetaAnalyzer extends AbstractMetaAnalyzer implements IntegrityAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://repo1.maven.org/maven2";
     private static final String REPO_METADATA_URL = "/%s/maven-metadata.xml";

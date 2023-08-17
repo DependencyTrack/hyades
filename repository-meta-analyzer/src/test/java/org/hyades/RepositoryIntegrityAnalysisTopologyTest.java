@@ -23,7 +23,6 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.hyades.common.KafkaTopic;
 import org.hyades.model.IntegrityAnalysisCacheKey;
-import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Repository;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.KafkaProtobufDeserializer;
@@ -31,7 +30,7 @@ import org.hyades.proto.KafkaProtobufSerializer;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
 import org.hyades.proto.repometaanalysis.v1.IntegrityResult;
-import org.hyades.repositories.IMetaAnalyzer;
+import org.hyades.repositories.IntegrityAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -67,7 +66,7 @@ class RepositoryIntegrityAnalysisTopologyTest {
     private TopologyTestDriver testDriver;
     private TestInputTopic<String, AnalysisCommand> inputTopic;
     private TestOutputTopic<String, IntegrityResult> outputTopic;
-    private IMetaAnalyzer analyzerMock;
+    private IntegrityAnalyzer analyzerMock;
 
 
     @BeforeEach
@@ -80,16 +79,13 @@ class RepositoryIntegrityAnalysisTopologyTest {
                 KafkaTopic.INTEGRITY_ANALYSIS_RESULT.getName(),
                 new StringDeserializer(), new KafkaProtobufDeserializer<>(IntegrityResult.parser()));
 
-        analyzerMock = mock(IMetaAnalyzer.class);
+        analyzerMock = mock(IntegrityAnalyzer.class);
 
         when(analyzerFactoryMock.hasApplicableAnalyzer(any(PackageURL.class)))
                 .thenReturn(true);
-        when(analyzerFactoryMock.createAnalyzer(any(PackageURL.class)))
+        when(analyzerFactoryMock.createIntegrityAnalyzer(any(PackageURL.class)))
                 .thenReturn(Optional.of(analyzerMock));
 
-        final MetaModel outputMetaModel = new MetaModel();
-        outputMetaModel.setLatestVersion("test");
-        when(analyzerMock.analyze(any())).thenReturn(outputMetaModel);
         when(analyzerMock.getName()).thenReturn("testAnalyzer");
     }
 

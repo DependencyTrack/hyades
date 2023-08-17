@@ -51,7 +51,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         // It only contains the type, namespace and name, but is missing the
         // version and other qualifiers. Some analyzers require the version.
         final PackageURL purl = mustParsePurl(component.getPurl());
-        final Optional<IMetaAnalyzer> optionalAnalyzer = analyzerFactory.createAnalyzer(purl);
+        final Optional<IMetaAnalyzer> optionalAnalyzer = analyzerFactory.createMetaAnalyzer(purl);
         if (optionalAnalyzer.isEmpty()) {
             LOGGER.debug("No analyzer is capable of analyzing {}", purl);
             context().forward(record

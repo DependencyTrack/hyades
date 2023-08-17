@@ -40,7 +40,7 @@ class RepositoryAnalyzerFactoryTest {
 
     @Test
     void testCreateAnalyzerWithUnsupportedPurl() throws MalformedPackageURLException {
-        assertThat(analyzerFactory.createAnalyzer(new PackageURL("pkg:foo/bar"))).isEmpty();
+        assertThat(analyzerFactory.createMetaAnalyzer(new PackageURL("pkg:foo/bar"))).isEmpty();
     }
 
     @ParameterizedTest
@@ -56,7 +56,7 @@ class RepositoryAnalyzerFactoryTest {
             "pkg:cpan/foo/bar"
     })
     void testCreateAnalyzer(final String purl) throws MalformedPackageURLException {
-        assertThat(analyzerFactory.createAnalyzer(new PackageURL(purl))).isPresent();
+        assertThat(analyzerFactory.createMetaAnalyzer(new PackageURL(purl))).isPresent();
     }
 
 }

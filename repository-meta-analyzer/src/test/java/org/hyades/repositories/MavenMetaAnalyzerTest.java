@@ -45,7 +45,8 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 
 class MavenMetaAnalyzerTest {
 
-    private IMetaAnalyzer analyzer;
+    private MavenMetaAnalyzer analyzer;
+
     @RegisterExtension
     static WireMockExtension wireMock = WireMockExtension.newInstance()
             .options(wireMockConfig().dynamicPort())
