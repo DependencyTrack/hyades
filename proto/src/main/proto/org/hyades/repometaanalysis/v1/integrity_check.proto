@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// Public API for Hyades repository meta analysis.
+package org.hyades.repometaanalysis.v1;
+
+import "google/protobuf/timestamp.proto";
+import "repo_meta_analysis.proto";
+
+option java_multiple_files = true;
+option java_package = "org.hyades.proto.repometaanalysis.v1";
+
+message IntegrityResult {
+  // The Component for which the integrity check was done
+  Component component = 1;
+  //md5 hash match status of component
+  HashMatchStatus md5_hash_match = 2;
+  //sha1 hash match status of component
+  HashMatchStatus sha1_hash_match = 3;
+  //sha256 hash match status of component
+  HashMatchStatus sha256_hash_match = 4;
+  //Identifier of the repository with which the hashes were compared
+  string repository = 5;
+  // When was the integrity check updated
+  google.protobuf.Timestamp updated = 6;
+}
+
+enum HashMatchStatus {
+  HASH_MATCH_STATUS_UNSPECIFIED = 0;
+  HASH_MATCH_STATUS_PASS = 1;
+  HASH_MATCH_STATUS_FAIL = 2;
+  HASH_MATCH_STATUS_UNKNOWN = 3;
+  HASH_MATCH_STATUS_COMPONENT_MISSING_HASH = 4;
+}

@@ -132,7 +132,6 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
             analyzerComponent.setSha256(component.getSha256Hash());
             UUID uuid = UUID.fromString(component.getUuid());
             analyzerComponent.setUuid(uuid);
-            analyzerComponent.setId((long) component.getComponentId());
             try {
                 IntegrityModel integrityModel = checkIntegrityOfComponent(analyzerComponent, integrityAnalysisCacheResult);
                 Component component1 = Component.newBuilder().setPurl(integrityModel.getComponent().getPurl().toString())
@@ -140,8 +139,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                         .setMd5Hash(integrityModel.getComponent().getMd5())
                         .setSha1Hash(integrityModel.getComponent().getSha1())
                         .setSha256Hash(integrityModel.getComponent().getSha256())
-                        .setUuid(integrityModel.getComponent().getUuid().toString())
-                        .setComponentId(integrityModel.getComponent().getId()).build();
+                        .setUuid(integrityModel.getComponent().getUuid().toString()).build();
 
                 final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
                         .setMd5HashMatch(integrityModel.isMd5HashMatched())
@@ -149,7 +147,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                         .setSha1HashMatch(integrityModel.isSha1HashMatched())
                         .setSha256HashMatch(integrityModel.isSha256HashMatched())
                         .setRepository(repository.getUrl())
-                        .setPublished(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
+                        .setUpdated(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
                 return resultBuilder.build();
             } catch (Exception ex) {
                 LOGGER.error("Failed to analyze {} using {} with repository {}",
@@ -178,7 +176,6 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                 analyzerComponent.setSha256(component.getSha256Hash());
                 UUID uuid = UUID.fromString(component.getUuid());
                 analyzerComponent.setUuid(uuid);
-                analyzerComponent.setId((long) component.getComponentId());
                 try (CloseableHttpResponse response = analyzer.getIntegrityCheckResponse(new PackageURL(component.getPurl()))) {
                     cacheResult(integrityResultCacheKey, response);
                     integrityModel = checkIntegrityOfComponent(analyzerComponent, response);
@@ -197,15 +194,14 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                     .setMd5Hash(integrityModel.getComponent().getMd5())
                     .setSha1Hash(integrityModel.getComponent().getSha1())
                     .setSha256Hash(integrityModel.getComponent().getSha256())
-                    .setUuid(integrityModel.getComponent().getUuid().toString())
-                    .setComponentId(integrityModel.getComponent().getId()).build();
+                    .setUuid(integrityModel.getComponent().getUuid().toString()).build();
             final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
                     .setMd5HashMatch(integrityModel.isMd5HashMatched())
                     .setComponent(component1)
                     .setSha1HashMatch(integrityModel.isSha1HashMatched())
                     .setSha256HashMatch(integrityModel.isSha256HashMatched())
                     .setRepository(repository.getUrl())
-                    .setPublished(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
+                    .setUpdated(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
             return resultBuilder.build();
         }
     }
