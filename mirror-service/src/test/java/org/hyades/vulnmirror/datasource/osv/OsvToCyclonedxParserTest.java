@@ -1,17 +1,13 @@
 package org.hyades.vulnmirror.datasource.osv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.protobuf.util.JsonFormat;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import net.javacrumbs.jsonunit.core.Option;
 import org.cyclonedx.proto.v1_4.Bom;
-import org.cyclonedx.proto.v1_4.Component;
-import org.cyclonedx.proto.v1_4.ExternalReference;
-import org.cyclonedx.proto.v1_4.ScoreMethod;
 import org.cyclonedx.proto.v1_4.Vulnerability;
-import org.cyclonedx.proto.v1_4.VulnerabilityAffectedVersions;
-import org.cyclonedx.proto.v1_4.VulnerabilityAffects;
-import org.cyclonedx.proto.v1_4.VulnerabilityRating;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
@@ -20,12 +16,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_CRITICAL;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.hyades.commonutil.VulnerabilityUtil.trimSummary;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 class OsvToCyclonedxParserTest {
@@ -63,16 +58,28 @@ class OsvToCyclonedxParserTest {
         Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, true);
 
         //Then
-        assertNotNull(bom);
-        assertNotNull(bom.getVulnerabilitiesList());
-        assertEquals(1, bom.getVulnerabilitiesList().size());
-
-
-        Vulnerability vulnerability = bom.getVulnerabilitiesList().get(0);
-        assertNotNull(vulnerability);
-        List<VulnerabilityAffects> affectedPacks = vulnerability.getAffectsList();
-        assertNotNull(affectedPacks);
-        assertEquals(0, affectedPacks.size());
+        assertThatJson(JsonFormat.printer().print(bom))
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                           "vulnerabilities": [{
+                             "id": "GSD-2022-1000008",
+                             "source": {
+                               "name": "OSV"
+                             },
+                             "ratings": [{
+                               "severity": "SEVERITY_UNKNOWN"
+                             }],
+                             "description": "faker.js had it's version updated to 6.6.6 in NPM (which reports it as having 2,571 dependent packages that rely upon it) and the GitHub repo has been wiped of content. This appears to have been done intentionally as the repo only has a single commit (so it was likjely deleted, recreated and a single commit with \\"endgame\\" added). It appears that both GitHub and NPM have locked out the original developer accountbut that the faker.js package is still broken. Please note that this issue is directly related to GSD-2022-1000007 and appears to be part of the same incident. A fork of the repo with the original code appears to now be available at https://github.com/faker-js/faker",
+                             "published": "2022-01-09T02:46:05Z",
+                             "updated": "2022-01-09T11:37:01Z",
+                             "properties": [{
+                               "name": "dependency-track:vuln:title",
+                               "value": "faker.js 6.6.6 is broken and the developer has wiped the original GitHub repo"
+                             }]
+                           }]
+                         }
+                        """);
     }
 
     @Test
@@ -83,39 +90,107 @@ class OsvToCyclonedxParserTest {
 
         //when
         Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, false);
-        List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
 
         //then
-        List<Component> components = bom.getComponentsList();
-        assertNotNull(components);
-        assertEquals(2, components.size());
-
-        assertNotNull(vulnerabilities);
-        assertNotNull(vulnerabilities.get(0));
-        List<VulnerabilityAffects> affected = vulnerabilities.get(0).getAffectsList();
-
-        assertNotNull(affected);
-        assertEquals(7, affected.size());
-
-
-        VulnerabilityAffects affectedPack1 = affected.get(0);
-        assertEquals(components.get(0).getBomRef(), affectedPack1.getRef());
-
-        List<VulnerabilityAffectedVersions> versions1 = affectedPack1.getVersionsList();
-        assertNotNull(versions1);
-        assertEquals("1.0.0.RELEASE", versions1.get(0).getVersion());
-        assertEquals("1.0.1.RELEASE", versions1.get(1).getVersion());
-
-        VulnerabilityAffects affectedPack3 = affected.get(3);
-        assertEquals(components.get(1).getBomRef(), affectedPack3.getRef());
-
-        List<VulnerabilityAffectedVersions> versions3 = affectedPack3.getVersionsList();
-        assertNotNull(versions3);
-        assertEquals(4, versions3.size());
-        assertEquals("vers:maven/>=3", versions3.get(0).getRange());
-        assertEquals("vers:maven/>=4|<5", versions3.get(1).getRange());
-        assertEquals("1.0.0.RELEASE", versions3.get(2).getVersion());
-        assertEquals("2.0.9.RELEASE", versions3.get(3).getVersion());
+        assertThatJson(JsonFormat.printer().print(bom))
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                           "components": [{
+                             "bomRef": "5db9b99f-8362-5c69-bddb-5c9258f8d93e",
+                             "name": "org.springframework.security.oauth:spring-security-oauth2",
+                             "purl": "pkg:maven/org.springframework.security.oauth/spring-security-oauth2"
+                           }, {
+                             "bomRef": "1697132c-6230-5a5c-938d-f918e9c67279",
+                             "name": "org.springframework.security.oauth:spring-security-oauth",
+                             "purl": "pkg:maven/org.springframework.security.oauth/spring-security-oauth"
+                           }],
+                           "vulnerabilities": [{
+                             "id": "GSD-2022-1000008",
+                             "source": {
+                               "name": "OSV"
+                             },
+                             "ratings": [{
+                               "severity": "SEVERITY_UNKNOWN"
+                             }],
+                             "description": "faker.js had it's version updated to 6.6.6 in NPM (which reports it as having 2,571 dependent packages that rely upon it) and the GitHub repo has been wiped of content. This appears to have been done intentionally as the repo only has a single commit (so it was likjely deleted, recreated and a single commit with \\"endgame\\" added). It appears that both GitHub and NPM have locked out the original developer accountbut that the faker.js package is still broken. Please note that this issue is directly related to GSD-2022-1000007 and appears to be part of the same incident. A fork of the repo with the original code appears to now be available at https://github.com/faker-js/faker",
+                             "published": "2022-01-09T02:46:05Z",
+                             "updated": "2022-01-09T11:37:01Z",
+                             "affects": [{
+                               "ref": "5db9b99f-8362-5c69-bddb-5c9258f8d93e",
+                               "versions": [{
+                                 "version": "1.0.0.RELEASE"
+                               }, {
+                                 "version": "1.0.1.RELEASE"
+                               }]
+                             }, {
+                               "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
+                               "versions": [{
+                                 "range": "vers:maven/>=0|<2.0.17"
+                               }, {
+                                 "version": "1.0.0.RELEASE"
+                               }, {
+                                 "version": "2.0.9.RELEASE"
+                               }]
+                             }, {
+                               "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
+                               "versions": [{
+                                 "range": "vers:maven/>=1|<2"
+                               }, {
+                                 "range": "vers:maven/>=3|<4"
+                               }, {
+                                 "range": "vers:maven/>=0|<1"
+                               }, {
+                                 "version": "1.0.0.RELEASE"
+                               }, {
+                                 "version": "2.0.9.RELEASE"
+                               }]
+                             }, {
+                               "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
+                               "versions": [{
+                                 "range": "vers:maven/>=3"
+                               }, {
+                                 "range": "vers:maven/>=4|<5"
+                               }, {
+                                 "version": "1.0.0.RELEASE"
+                               }, {
+                                 "version": "2.0.9.RELEASE"
+                               }]
+                             }, {
+                               "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
+                               "versions": [{
+                                 "range": "vers:maven/>=3.1.0|<3.3.0"
+                               }, {
+                                 "version": "1.0.0.RELEASE"
+                               }, {
+                                 "version": "2.0.9.RELEASE"
+                               }]
+                             }, {
+                               "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
+                               "versions": [{
+                                 "range": "vers:maven/>=10|<13"
+                               }, {
+                                 "version": "1.0.0.RELEASE"
+                               }, {
+                                 "version": "2.0.9.RELEASE"
+                               }]
+                             }, {
+                               "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
+                               "versions": [{
+                                 "range": "vers:maven/>=10|<= 29."
+                               }, {
+                                 "version": "1.0.0.RELEASE"
+                               }, {
+                                 "version": "2.0.9.RELEASE"
+                               }]
+                             }],
+                             "properties": [{
+                               "name": "dependency-track:vuln:title",
+                               "value": "faker.js 6.6.6 is broken and the developer has wiped the original GitHub repo"
+                             }]
+                           }]
+                         }
+                        """);
     }
 
     @Test
@@ -128,40 +203,58 @@ class OsvToCyclonedxParserTest {
         Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, true);
 
         //then
-        assertNotNull(bom);
-        List<Component> components = bom.getComponentsList();
-        assertNotNull(components);
-        Component component = components.get(0);
-        assertEquals("org.springframework.security.oauth:spring-security-oauth", component.getName());
-        assertEquals("pkg:maven/org.springframework.security.oauth/spring-security-oauth", component.getPurl());
-
-        List<ExternalReference> externalReferences = bom.getExternalReferencesList();
-        assertNotNull(externalReferences);
-        assertEquals(4, externalReferences.size());
-
-        List<Vulnerability> vulnerabilities = bom.getVulnerabilitiesList();
-        assertNotNull(vulnerabilities);
-        assertEquals(1, vulnerabilities.size());
-        Vulnerability vulnerability = vulnerabilities.get(0);
-        assertEquals("GHSA-77rv-6vfw-x4gc", vulnerability.getId());
-        assertEquals("GITHUB", vulnerability.getSource().getName());
-        assertEquals("dependency-track:vuln:title", vulnerability.getProperties(0).getName());
-        assertTrue(vulnerability.getProperties(0).getValue().startsWith("Critical severity vulnerability"));
-        assertTrue(vulnerability.getDescription().startsWith("Spring Security OAuth"));
-
-        List<VulnerabilityRating> ratings = vulnerability.getRatingsList();
-        assertNotNull(ratings);
-        VulnerabilityRating rating = ratings.get(0);
-        assertEquals(SEVERITY_CRITICAL, rating.getSeverity());
-        assertEquals(9.0, rating.getScore());
-        assertEquals(ScoreMethod.SCORE_METHOD_CVSSV3, rating.getMethod());
-        assertEquals("CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H", rating.getVector());
-
-        assertEquals(601, vulnerability.getCwesList().get(0));
-        assertEquals(2, vulnerability.getAdvisoriesList().size());
-        assertEquals(2, vulnerability.getCredits().getIndividualsList().size());
-        assertEquals(8, vulnerability.getAffectsList().size());
-        assertEquals("CVE-2019-3778", vulnerability.getReferencesList().get(0).getId());
+        assertThatJson(JsonFormat.printer().print(bom))
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                            "components": [{
+                              "bomRef": "1697132c-6230-5a5c-938d-f918e9c67279",
+                              "name": "org.springframework.security.oauth:spring-security-oauth",
+                              "purl": "pkg:maven/org.springframework.security.oauth/spring-security-oauth"
+                            }],
+                            "vulnerabilities": [{
+                              "id": "GHSA-77rv-6vfw-x4gc",
+                              "source": {
+                                "name": "GITHUB"
+                              },
+                              "references": [{
+                                "id": "CVE-2019-3778",
+                                "source": {
+                                  "name": "NVD"
+                                }
+                              }],
+                              "ratings": [{
+                                "score": 9.0,
+                                "severity": "SEVERITY_CRITICAL",
+                                "method": "SCORE_METHOD_CVSSV3",
+                                "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H"
+                              }],
+                              "cwes": [601],
+                              "description": "Spring Security OAuth, versions 2.3 prior to 2.3.5, and 2.2 prior to 2.2.4, and 2.1 prior to 2.1.4, and 2.0 prior to 2.0.17, and older unsupported versions could be susceptible to an open redirector attack that can leak an authorization code.\\n\\nA malicious user or attacker can craft a request to the authorization endpoint using the authorization code grant type, and specify a manipulated redirection URI via the \\"redirect_uri\\" parameter. This can cause the authorization server to redirect the resource owner user-agent to a URI under the control of the attacker with the leaked authorization code.\\n\\nThis vulnerability exposes applications that meet all of the following requirements: Act in the role of an Authorization Server (e.g. @EnableAuthorizationServer) and uses the DefaultRedirectResolver in the AuthorizationEndpoint. \\n\\nThis vulnerability does not expose applications that: Act in the role of an Authorization Server and uses a different RedirectResolver implementation other than DefaultRedirectResolver, act in the role of a Resource Server only (e.g. @EnableResourceServer), act in the role of a Client only (e.g. @EnableOAuthClient).",
+                              "published": "2019-03-14T15:39:30Z",
+                              "updated": "2022-06-09T07:01:32Z",
+                              "credits": {
+                                "individuals": [{
+                                  "name": "Skywalker"
+                                }, {
+                                  "name": "Solo"
+                                }]
+                              },
+                              "affects": [{
+                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
+                                "versions": [{
+                                  "range": "vers:maven/>=0|<2.0.17"
+                                }, {
+                                  "version": "1.0.0.RELEASE"
+                                }]
+                              }],
+                              "properties": [{
+                                "name": "dependency-track:vuln:title",
+                                "value": "Critical severity vulnerability that affects org.springframework.security.oauth:spring-security-oauth and org.springframework.security.oauth:spring-security-oauth2"
+                              }]
+                            }]
+                          }
+                        """);
     }
 
     @Test
@@ -189,13 +282,44 @@ class OsvToCyclonedxParserTest {
         JSONObject jsonObject = getOsvForTestingFromFile(
                 "src/test/resources/datasource/osv/osv-git-commit-hash-ranges.json");
         Bom bom = new OsvToCyclonedxParser(mapper).parse(jsonObject, true);
-
-        assertNotNull(bom);
-        Vulnerability vulnerability = bom.getVulnerabilitiesList().get(0);
-        assertEquals("OSV-2021-1820", vulnerability.getId());
-        assertEquals(1, vulnerability.getAffectsList().size());
-        assertTrue(vulnerability.getAffectsList().get(0).getVersionsList().get(0).getRange().isEmpty());
-        assertNotNull(vulnerability.getAffectsList().get(0).getVersionsList().get(0).getVersion());
+        assertThatJson(JsonFormat.printer().print(bom))
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                           "components": [{
+                             "bomRef": "0b2df828-6b6c-554d-a0a5-70b7bfa9c7ea",
+                             "name": "radare2",
+                             "purl": "pkg:generic/radare2"
+                           }],
+                           "externalReferences": [{
+                             "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id\\u003d48098"
+                           }],
+                           "vulnerabilities": [{
+                             "id": "OSV-2021-1820",
+                             "source": {
+                               "name": "OSV"
+                             },
+                             "ratings": [{
+                               "severity": "SEVERITY_MEDIUM"
+                             }],
+                             "description": "details",
+                             "published": "2022-06-19T00:00:52Z",
+                             "updated": "2022-06-19T00:00:52Z",
+                             "affects": [{
+                               "ref": "0b2df828-6b6c-554d-a0a5-70b7bfa9c7ea",
+                               "versions": [{
+                                 "version": "5.4.0-git"
+                               }, {
+                                 "version": "release-5.0.0"
+                               }]
+                             }],
+                             "properties": [{
+                               "name": "dependency-track:vuln:title",
+                               "value": "Heap-buffer-overflow in r_str_utf8_codepoint"
+                             }]
+                           }]
+                         }
+                        """);
     }
 
     private static JSONObject getOsvForTestingFromFile(String jsonFile) throws IOException {
