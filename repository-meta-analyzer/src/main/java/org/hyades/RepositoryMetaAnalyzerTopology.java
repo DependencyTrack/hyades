@@ -43,7 +43,14 @@ public class RepositoryMetaAnalyzerTopology {
         final var analysisCommandSerde = new KafkaProtobufSerde<>(AnalysisCommand.parser());
         final var scanResultSerde = new KafkaProtobufSerde<>(AnalysisResult.parser());
 
-        //repo meta analysis command stream start
+        createRepoMetaAnalysisStream(analyzerFactory, analyzerProcessorSupplier, streamsBuilder, purlSerde, analysisCommandSerde, scanResultSerde);
+
+        createIntegrityCheckStream(integrityAnalyzerFactory, integrityAnalyzerProcessorSupplier, streamsBuilder, purlSerde, analysisCommandSerde);
+
+        return streamsBuilder.build();
+    }
+
+    private void createRepoMetaAnalysisStream(RepositoryAnalyzerFactory analyzerFactory, MetaAnalyzerProcessorSupplier analyzerProcessorSupplier, StreamsBuilder streamsBuilder, KafkaPurlSerde purlSerde, KafkaProtobufSerde<AnalysisCommand> analysisCommandSerde, KafkaProtobufSerde<AnalysisResult> scanResultSerde) {
         final KStream<PackageURL, AnalysisCommand> commandStream = streamsBuilder
                 .stream(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), Consumed
                         .with(Serdes.String(), analysisCommandSerde) // Key can be in arbitrary format
@@ -56,7 +63,7 @@ public class RepositoryMetaAnalyzerTopology {
                 //
                 // Because we can't enforce this format on the keys of the input topic without causing
                 // serialization exceptions, we're left with this mandatory key change.
-                .selectKey((key, command) -> mustParsePurlCoordinatesWithoutVersion(command.getComponent().getPurl()),
+                .selectKey((key, command) -> parsePurlCoordinates(command.getComponent().getPurl(), false),
                         Named.as("re-key_to_purl_coordinates"))
                 // Force a repartition to ensure that the ordering guarantees we want, based on the
                 // previous re-keying operation, are effective.
@@ -83,42 +90,38 @@ public class RepositoryMetaAnalyzerTopology {
                                         .with(purlSerde, scanResultSerde)
                                         .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "empty_result"))))
                         .withName("-not-found"));
-        // repo meta analysis stream end
+    }
 
-        // integrity check stresam start
+    private void createIntegrityCheckStream(RepositoryAnalyzerFactory integrityAnalyzerFactory, IntegrityAnalyzerProcessorSupplier integrityAnalyzerProcessorSupplier, StreamsBuilder streamsBuilder, KafkaPurlSerde purlSerde, KafkaProtobufSerde<AnalysisCommand> analysisCommandSerde) {
         final var integrityResultSerde = new KafkaProtobufSerde<>(IntegrityResult.parser());
         final KStream<PackageURL, AnalysisCommand> integrityCheckCommandStream = streamsBuilder
                 .stream(KafkaTopic.INTEGRITY_ANALYSIS_COMMAND.getName(), Consumed
                         .with(Serdes.String(), analysisCommandSerde)
-                        .withName(processorNameConsume(KafkaTopic.INTEGRITY_ANALYSIS_COMMAND))).
-                filter((key, scanCommand) -> scanCommand.hasComponent() && isValidPurl(scanCommand.getComponent().getPurl()),
+                        .withName(processorNameConsume(KafkaTopic.INTEGRITY_ANALYSIS_COMMAND)))
+                .filter((key, scanCommand) -> scanCommand.hasComponent() && isValidPurl(scanCommand.getComponent().getPurl()),
                         Named.as("filter_components_with_valid_purl_ic"))
-                .selectKey((key, command) -> mustParsePurlCoordinatesWithoutVersion(key),
+                .selectKey((key, command) -> parsePurlCoordinates(key, true),
                         Named.as("re-key_to_purl_coordinates_for_ic"))
                 .repartition(Repartitioned
                         .with(purlSerde, analysisCommandSerde)
                         .withName("integrity-check-by-purl-coordinates"));
 
         integrityCheckCommandStream.mapValues((componentAndPurl, command) -> command.getComponent(), Named.as("map_to_integrity_check_for_component"))
-                .split(Named.as("applicable_integrity_checker"))
-                .branch((componentAndPurl, component) -> {
+                .filter((componentAndPurl, component) -> {
                             try {
                                 return integrityAnalyzerFactory.hasApplicableAnalyzer(new PackageURL(componentAndPurl.toString()));
                             } catch (MalformedPackageURLException e) {
                                 LOGGER.warn("Received record has invalid purl in the key", e);
                             }
-                           /* only returning false here as this exception is not likely to happen with the purl in the key already validated
+                            /* only returning false here as this exception is not likely to happen with the purl in the key already validated
                             at a previous step. If it does happen, do not want to interrupt the processing with rethrow of exception */
                             return false;
                         },
-                        Branched.withConsumer(stream -> stream
-                                .processValues(integrityAnalyzerProcessorSupplier, Named.as("check_integrity_of_component"))
-                                .to(KafkaTopic.INTEGRITY_ANALYSIS_RESULT.getName(),
-                                        Produced.with(purlSerde, integrityResultSerde)
-                                                .withName(processorNameProduce(KafkaTopic.INTEGRITY_ANALYSIS_RESULT, "integrity_check_result")))));
-
-        //integrity check stream end
-        return streamsBuilder.build();
+                        Named.as("applicable_integrity_checker"))
+                .processValues(integrityAnalyzerProcessorSupplier, Named.as("check_integrity_of_component"))
+                .to(KafkaTopic.INTEGRITY_ANALYSIS_RESULT.getName(),
+                        Produced.with(purlSerde, integrityResultSerde)
+                                .withName(processorNameProduce(KafkaTopic.INTEGRITY_ANALYSIS_RESULT, "integrity_check_result")));
     }
 
     private boolean isValidPurl(final String purl) {
@@ -130,11 +133,11 @@ public class RepositoryMetaAnalyzerTopology {
         }
     }
 
-    private PackageURL mustParsePurlCoordinatesWithoutVersion(final String purl) {
+    private PackageURL parsePurlCoordinates(final String purl, final boolean versionRequired) {
         try {
             final var parsedPurl = new PackageURL(purl);
             return new PackageURL(parsedPurl.getType(), parsedPurl.getNamespace(),
-                    parsedPurl.getName(), null, null, null);
+                    parsedPurl.getName(), versionRequired ? parsedPurl.getVersion() : null, null, null);
         } catch (MalformedPackageURLException e) {
             throw new IllegalStateException("""
                     The provided PURL is invalid, even though it should have been
