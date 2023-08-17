@@ -144,6 +144,10 @@ class OsvToCyclonedxParserTest {
         assertEquals(1, vulnerabilities.size());
         Vulnerability vulnerability = vulnerabilities.get(0);
         assertEquals("GHSA-77rv-6vfw-x4gc", vulnerability.getId());
+        assertEquals("GITHUB", vulnerability.getSource().getName());
+        assertEquals("dependency-track:vuln:title", vulnerability.getProperties(0).getName());
+        assertTrue(vulnerability.getProperties(0).getValue().startsWith("Critical severity vulnerability"));
+        assertTrue(vulnerability.getDescription().startsWith("Spring Security OAuth"));
 
         List<VulnerabilityRating> ratings = vulnerability.getRatingsList();
         assertNotNull(ratings);
