@@ -1,7 +1,7 @@
 {
   "id": "OSV-2021-1820",
   "summary": "Heap-buffer-overflow in r_str_utf8_codepoint",
-  "details": "OSS-Fuzz report: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=48098\n\n```\nCrash type: Heap-buffer-overflow READ 1\nCrash state:\nr_str_utf8_codepoint\nr_str_char_fullwidth\nr_str_len_utf8_ansi\n```\n",
+  "details": "details",
   "modified": "2022-06-19T00:00:52.240913Z",
   "published": "2022-06-19T00:00:52.240583Z",
   "references": [
@@ -32,27 +32,7 @@
         }
       ],
       "versions": [
-        "4.4.0",
-        "4.5.1",
-        "5.0.0",
-        "5.1.0",
-        "5.1.1",
-        "5.2.0",
-        "5.2.1",
-        "5.3.0",
-        "5.3.1",
-        "5.4.0",
         "5.4.0-git",
-        "5.4.2",
-        "5.5.0",
-        "5.5.2",
-        "5.5.4",
-        "5.6.0",
-        "5.6.2",
-        "5.6.4",
-        "5.6.6",
-        "5.6.8",
-        "5.7.0",
         "release-5.0.0"
       ],
       "ecosystem_specific": {
