@@ -243,14 +243,35 @@ public final class NvdToCyclonedxParser {
                 // When the only constraint is an exact version match, populate the version field
                 // instead of the range field. We do this despite vers supporting such cases, too,
                 // e.g. via "vers:generic/1.2.3", to be more explicit.
-                affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setVersion(versConstraints.get(0).getRight()));
+
+                // CPEs with exact version matches can appear multiple times for the same CVE.
+                // For example:
+                //   * CVE-2014-6032 contains "cpe:2.3:a:f5:big-ip_application_security_manager:10.2.0:*:*:*:*:*:*:*" twice
+                //   * CVE-2021-0002 contains "cpe:2.3:o:fedoraproject:fedora:35:*:*:*:*:*:*:*" twice
+                // See:
+                //   * https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2014-6032
+                //   * https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-0002
+                final boolean shouldAddVersion = affectsBuilder.getVersionsList().stream()
+                        .filter(VulnerabilityAffectedVersions::hasVersion)
+                        .map(VulnerabilityAffectedVersions::getVersion)
+                        .noneMatch(versConstraints.get(0).getRight()::equals);
+                if (shouldAddVersion) {
+                    affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setVersion(versConstraints.get(0).getRight()));
+                }
             } else {
                 // Using 'generic' as versioning scheme for NVD due to lack of package data.
                 final String vers = "vers:generic/" + versConstraints.stream()
                         .map(constraint -> constraint.getLeft() + URLEncoder.encode(constraint.getRight(), StandardCharsets.UTF_8))
                         .collect(Collectors.joining("|"));
 
-                affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setRange(vers));
+                // Similar to how we do it for exact version matches, avoid duplicate ranges.
+                final boolean shouldAddRange = affectsBuilder.getVersionsList().stream()
+                        .filter(VulnerabilityAffectedVersions::hasRange)
+                        .map(VulnerabilityAffectedVersions::getRange)
+                        .noneMatch(vers::equals);
+                if (shouldAddRange) {
+                    affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setRange(vers));
+                }
             }
         }
 
