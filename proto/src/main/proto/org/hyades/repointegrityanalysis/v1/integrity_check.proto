@@ -1,13 +1,12 @@
 syntax = "proto3";
 
-// Public API for Hyades repository meta analysis.
-package org.hyades.repometaanalysis.v1;
+// Public API for Hyades repository integrity analysis.
+package org.hyades.repointegrityanalysis.v1;
 
 import "google/protobuf/timestamp.proto";
-import "repo_meta_analysis.proto";
 
 option java_multiple_files = true;
-option java_package = "org.hyades.proto.repometaanalysis.v1";
+option java_package = "org.hyades.proto.repointegrityanalysis.v1";
 
 message IntegrityResult {
   // The Component for which the integrity check was done
@@ -30,4 +29,16 @@ enum HashMatchStatus {
   HASH_MATCH_STATUS_FAIL = 2;
   HASH_MATCH_STATUS_UNKNOWN = 3;
   HASH_MATCH_STATUS_COMPONENT_MISSING_HASH = 4;
+}
+
+message Component {
+  // Package URL of the component.
+  string purl = 1;
+  // Whether the component is internal to the organization.
+  // Internal components will only be looked up in internal repositories.
+  optional bool internal = 2;
+  optional string md5_hash = 3;
+  optional string sha1_hash = 4;
+  optional string sha256_hash = 5;
+  optional string uuid = 6;
 }
