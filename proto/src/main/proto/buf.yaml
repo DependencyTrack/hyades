@@ -3,6 +3,8 @@ name: github.com/DependencyTrack/hyades
 lint:
   ignore:
   - org/cyclonedx/v1_4/cyclonedx.proto
+  - org/hyades/repometaanalysis/v1/integrity_check.proto
 breaking:
   ignore:
   - org/cyclonedx/v1_4/cyclonedx.proto
+  - org/hyades/repometaanalysis/v1/integrity_check.proto
