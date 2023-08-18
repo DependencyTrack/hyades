@@ -78,16 +78,13 @@ class GitHubAdvisoryToCdxParserTest {
                                "ref": "3c41e06b-5923-5392-a1e3-64a630c97591",
                                "versions": [{
                                  "range": "vers:nuget/>= 4.0.0|< 4.3.1"
+                               }, {
+                                 "range": "vers:nuget/>= 3.0.0|< 3.4.1"
                                }]
                              }, {
                                "ref": "e5dc290a-c649-5f73-b814-c9a47690a48a",
                                "versions": [{
                                  "range": "vers:nuget/< 4.3.1"
-                               }]
-                             }, {
-                               "ref": "3c41e06b-5923-5392-a1e3-64a630c97591",
-                               "versions": [{
-                                 "range": "vers:nuget/>= 3.0.0|< 3.4.1"
                                }]
                              }, {
                                "ref": "c8e5d671-0b0d-5fda-a404-730615325a7f",
@@ -247,7 +244,7 @@ class GitHubAdvisoryToCdxParserTest {
                              "affects": [{
                                "ref": "0ad65af0-d85e-58fb-ad0b-f7c0a6356d8f",
                                "versions": [{
-                                 "range": "vers:npm/\\u003c 1.2.0"
+                                 "range": "vers:npm/< 1.2.0"
                                }]
                              }],
                              "properties": [{
