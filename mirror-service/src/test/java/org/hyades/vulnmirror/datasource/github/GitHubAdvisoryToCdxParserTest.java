@@ -65,8 +65,11 @@ class GitHubAdvisoryToCdxParserTest {
                                }
                              }],
                              "ratings": [{
-                               "score": 0.0,
-                               "severity": "SEVERITY_MEDIUM"
+                               "method": "SCORE_METHOD_OTHER",
+                               "severity": "SEVERITY_MEDIUM",
+                               "source": {
+                                 "name": "GITHUB"
+                               }
                              }],
                              "description": "In Bootstrap 4 before 4.3.1 and Bootstrap 3 before 3.4.1, XSS is possible in the tooltip or popover data-template attribute. For more information, see: https://blog.getbootstrap.com/2019/02/13/bootstrap-4-3-1-and-3-4-1/",
                              "published": "2019-02-22T20:54:40Z",
@@ -157,9 +160,13 @@ class GitHubAdvisoryToCdxParserTest {
                                }
                              }],
                              "ratings": [{
+                               "method": "SCORE_METHOD_CVSSV3",
                                "score": 5.4,
                                "severity": "SEVERITY_MEDIUM",
-                               "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+                               "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
+                               "source": {
+                                 "name": "GITHUB"
+                               }
                              }],
                              "cwes": [79],
                              "description": "Versions of `dojo` prior to 1.2.0 are vulnerable to Cross-Site Scripting (XSS). The package fails to sanitize HTML code in user-controlled input, allowing attackers to execute arbitrary JavaScript in the victim\\u0027s browser.\\n\\n\\n## Recommendation\\n\\nUpgrade to version 1.2.0 or later.",
@@ -225,9 +232,13 @@ class GitHubAdvisoryToCdxParserTest {
                                "name": "GITHUB"
                              },
                              "ratings": [{
+                               "method": "SCORE_METHOD_CVSSV3",
                                "score": 5.4,
                                "severity": "SEVERITY_MEDIUM",
-                               "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+                               "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
+                               "source": {
+                                 "name": "GITHUB"
+                               }
                              }],
                              "cwes": [79],
                              "description": "Versions of `dojo` prior to 1.2.0 are vulnerable to Cross-Site Scripting (XSS). The package fails to sanitize HTML code in user-controlled input, allowing attackers to execute arbitrary JavaScript in the victim\\u0027s browser.\\n\\n\\n## Recommendation\\n\\nUpgrade to version 1.2.0 or later.",
