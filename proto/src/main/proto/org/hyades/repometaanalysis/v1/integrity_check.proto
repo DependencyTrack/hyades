@@ -18,8 +18,8 @@ message IntegrityResult {
   HashMatchStatus sha1_hash_match = 3;
   //sha256 hash match status of component
   HashMatchStatus sha256_hash_match = 4;
-  //Identifier of the repository with which the hashes were compared
-  string repository = 5;
+  //URL of the repository with which the hashes were compared
+  string repository_url = 5;
   // When was the integrity check updated
   google.protobuf.Timestamp updated = 6;
 }

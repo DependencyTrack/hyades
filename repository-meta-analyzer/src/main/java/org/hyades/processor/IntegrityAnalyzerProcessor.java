@@ -76,11 +76,13 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                             .setComponent(component)
                             .setSha1HashMatch(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH)
                             .setSha256HashMatch(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH)
-                            .setRepository(repository.getIdentifier());
+                            .setRepositoryUrl(repository.getIdentifier());
                     result = resultBuilder.build();
 
                 }
-                context().forward(inputRecord.withValue(result).withTimestamp(context().currentSystemTimeMs()));
+                if (result != null) {
+                    context().forward(inputRecord.withValue(result).withTimestamp(context().currentSystemTimeMs()));
+                }
                 return;
             }
         }
@@ -150,16 +152,18 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
             }
 
             LOGGER.debug("Performing integrity check on component: {}", component.getPurl());
-            IntegrityModel integrityModel = new IntegrityModel();
                 try (CloseableHttpResponse response = analyzer.getIntegrityCheckResponse(new PackageURL(component.getPurl()))) {
-                    cacheResult(integrityResultCacheKey, response);
-                    integrityModel = checkIntegrityOfComponent(persistentComponent, response);
+                    if (response != null) {
+                        cacheResult(integrityResultCacheKey, response);
+                        var integrityModel = checkIntegrityOfComponent(persistentComponent, response);
+                        return getIntegrityResult(repository, integrityModel);
+                    }
                 } catch (Exception ex) {
                     LOGGER.warn("Head request for maven integrity failed. Not caching response");
                     throw new MetaAnalyzerException("Head request for maven integrity failed. Not caching response", ex);
 
                 }
-            return getIntegrityResult(repository, integrityModel);
+            return null;
         }
     }
 
@@ -193,7 +197,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                 .setComponent(analyzerComponent)
                 .setSha1HashMatch(integrityModel.isSha1HashMatched())
                 .setSha256HashMatch(integrityModel.isSha256HashMatched())
-                .setRepository(repository.getUrl())
+                .setRepositoryUrl(repository.getUrl())
                 .setUpdated(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
         return resultBuilder.build();
     }
