@@ -152,17 +152,16 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
             }
 
             LOGGER.debug("Performing integrity check on component: {}", component.getPurl());
-                try (CloseableHttpResponse response = analyzer.getIntegrityCheckResponse(new PackageURL(component.getPurl()))) {
-                    if (response != null) {
-                        cacheResult(integrityResultCacheKey, response);
-                        var integrityModel = checkIntegrityOfComponent(persistentComponent, response);
-                        return getIntegrityResult(repository, integrityModel);
-                    }
-                } catch (Exception ex) {
-                    LOGGER.warn("Head request for maven integrity failed. Not caching response");
-                    throw new MetaAnalyzerException("Head request for maven integrity failed. Not caching response", ex);
-
+            try {
+                var response = analyzer.getIntegrityCheckResponse(component.getPurl());
+                if (response != null) {
+                    cacheResult(integrityResultCacheKey, response);
+                    var integrityModel = checkIntegrityOfComponent(persistentComponent, response);
+                    return getIntegrityResult(repository, integrityModel);
                 }
+            } catch (Exception ex) {
+                LOGGER.error("Failed to perform integrity check on component with purl:{} {}", component.getPurl(), ex);
+            }
             return null;
         }
     }

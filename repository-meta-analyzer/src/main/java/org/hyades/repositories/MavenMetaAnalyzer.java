@@ -123,8 +123,9 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer implements Integrity
     }
 
     @Override
-    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws MalformedPackageURLException, IOException {
-        if (packageURL != null) {
+    public CloseableHttpResponse getIntegrityCheckResponse(String purl) throws MalformedPackageURLException {
+        if (purl != null) {
+            var packageURL = new PackageURL(purl);
             String type = "jar";
             if (packageURL.getQualifiers() != null) {
                 type = packageURL.getQualifiers().getOrDefault("type", "jar");
@@ -138,6 +139,9 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer implements Integrity
                 } else {
                     throw new MetaAnalyzerException("Response status returned is not 200: " + response.getStatusLine().getStatusCode());
                 }
+            } catch (Exception ex) {
+                LOGGER.warn("Head request for maven integrity failed. Not caching response");
+                throw new MetaAnalyzerException("Head request for maven integrity failed. Not caching response", ex);
             }
         }
         return null;

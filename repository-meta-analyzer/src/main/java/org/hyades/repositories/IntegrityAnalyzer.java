@@ -17,7 +17,7 @@ public interface IntegrityAnalyzer {
 
     String getName();
 
-    default CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) throws MalformedPackageURLException, IOException {
+    default CloseableHttpResponse getIntegrityCheckResponse(String purl) throws MalformedPackageURLException {
         return null;
     }
 

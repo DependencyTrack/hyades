@@ -38,8 +38,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import java.io.IOException;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
@@ -118,15 +116,13 @@ class MavenMetaAnalyzerTest {
     }
 
     @Test
-    void testGetResponsePurlNull() throws IOException, MalformedPackageURLException {
-        PackageURL packageURL = null;
-        CloseableHttpResponse response = analyzer.getIntegrityCheckResponse(packageURL);
+    void testGetResponsePurlNull() throws MalformedPackageURLException {
+        CloseableHttpResponse response = analyzer.getIntegrityCheckResponse(null);
         Assertions.assertNull(response);
     }
 
     @Test
-    void testGetResponse200() throws IOException, MalformedPackageURLException {
-        PackageURL packageURL = new PackageURL("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23");
+    void testGetResponse200() throws MalformedPackageURLException {
         wireMock.stubFor(WireMock.head(WireMock.anyUrl()).withHeader("accept", containing("application/json"))
                 .willReturn(WireMock.aResponse()
                         .withStatus(200)
@@ -138,7 +134,7 @@ class MavenMetaAnalyzerTest {
                         .withHeader("X-Checksum-SHA1", "a94a8fe5ccb19ba61c4c0873d341e987982fbbd3")
                         .withHeader("X-Checksum-SHA256", "9f86d081884c7d659a2feaa0f55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")));
         analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
-        CloseableHttpResponse response1 = analyzer.getIntegrityCheckResponse(packageURL);
+        CloseableHttpResponse response1 = analyzer.getIntegrityCheckResponse("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23");
         Assertions.assertEquals(HttpStatus.SC_OK, response1.getStatusLine().getStatusCode());
         Assertions.assertEquals("098f6bcd4621d373cade4e832627b4f6", response1.getFirstHeader("X-CheckSum-MD5").getValue());
         Assertions.assertEquals("a94a8fe5ccb19ba61c4c0873d341e987982fbbd3", response1.getFirstHeader("X-CheckSum-SHA1").getValue());
@@ -146,8 +142,7 @@ class MavenMetaAnalyzerTest {
     }
 
     @Test
-    void testGetResponse404() throws  MalformedPackageURLException {
-        PackageURL packageURL = new PackageURL("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23");
+    void testGetResponse404() {
         wireMock.stubFor(WireMock.head(WireMock.anyUrl()).withHeader("accept", containing("application/json"))
                 .willReturn(WireMock.aResponse()
                         .withStatus(404)
@@ -157,8 +152,7 @@ class MavenMetaAnalyzerTest {
                         )
                 ));
         analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
-        Assertions.assertThrows(MetaAnalyzerException.class, () -> analyzer.getIntegrityCheckResponse(packageURL));
-
+        Assertions.assertThrows(MetaAnalyzerException.class, () -> analyzer.getIntegrityCheckResponse("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23"));
     }
 }
 
