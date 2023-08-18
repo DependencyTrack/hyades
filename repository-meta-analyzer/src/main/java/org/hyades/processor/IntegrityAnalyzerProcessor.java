@@ -123,32 +123,15 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
 
         final var integrityResultCacheKey = new IntegrityAnalysisCacheKey(repository.getIdentifier(), repository.getUrl(), component.getPurl());
         final var integrityAnalysisCacheResult = getCachedResult(integrityResultCacheKey);
+        final org.hyades.persistence.model.Component persistentComponent = createPersistentComponent(analyzer, repository, component);
+
+        if (persistentComponent == null) return null;
+
         if (integrityAnalysisCacheResult != null) {
             LOGGER.debug("Cache hit for integrity result (analyzer: {}, url: {}, component purl: {})", analyzer.getName(), repository.getUrl(), component.getPurl());
-            final var analyzerComponent = new org.hyades.persistence.model.Component();
-            analyzerComponent.setPurl(component.getPurl());
-            analyzerComponent.setMd5(component.getMd5Hash());
-            analyzerComponent.setSha1(component.getSha1Hash());
-            analyzerComponent.setSha256(component.getSha256Hash());
-            UUID uuid = UUID.fromString(component.getUuid());
-            analyzerComponent.setUuid(uuid);
             try {
-                IntegrityModel integrityModel = checkIntegrityOfComponent(analyzerComponent, integrityAnalysisCacheResult);
-                Component component1 = Component.newBuilder().setPurl(integrityModel.getComponent().getPurl().toString())
-                        .setInternal(integrityModel.getComponent().isInternal())
-                        .setMd5Hash(integrityModel.getComponent().getMd5())
-                        .setSha1Hash(integrityModel.getComponent().getSha1())
-                        .setSha256Hash(integrityModel.getComponent().getSha256())
-                        .setUuid(integrityModel.getComponent().getUuid().toString()).build();
-
-                final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
-                        .setMd5HashMatch(integrityModel.isMd5HashMatched())
-                        .setComponent(component1)
-                        .setSha1HashMatch(integrityModel.isSha1HashMatched())
-                        .setSha256HashMatch(integrityModel.isSha256HashMatched())
-                        .setRepository(repository.getUrl())
-                        .setUpdated(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
-                return resultBuilder.build();
+                IntegrityModel integrityModel = checkIntegrityOfComponent(persistentComponent, integrityAnalysisCacheResult);
+                return getIntegrityResult(repository, integrityModel);
             } catch (Exception ex) {
                 LOGGER.error("Failed to analyze {} using {} with repository {}",
                         component.getPurl(), analyzer.getName(), repository.getIdentifier(), ex);
@@ -168,42 +151,51 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
 
             LOGGER.debug("Performing integrity check on component: {}", component.getPurl());
             IntegrityModel integrityModel = new IntegrityModel();
-            try {
-                final var analyzerComponent = new org.hyades.persistence.model.Component();
-                analyzerComponent.setPurl(component.getPurl());
-                analyzerComponent.setMd5(component.getMd5Hash());
-                analyzerComponent.setSha1(component.getSha1Hash());
-                analyzerComponent.setSha256(component.getSha256Hash());
-                UUID uuid = UUID.fromString(component.getUuid());
-                analyzerComponent.setUuid(uuid);
                 try (CloseableHttpResponse response = analyzer.getIntegrityCheckResponse(new PackageURL(component.getPurl()))) {
                     cacheResult(integrityResultCacheKey, response);
-                    integrityModel = checkIntegrityOfComponent(analyzerComponent, response);
+                    integrityModel = checkIntegrityOfComponent(persistentComponent, response);
                 } catch (Exception ex) {
                     LOGGER.warn("Head request for maven integrity failed. Not caching response");
                     throw new MetaAnalyzerException("Head request for maven integrity failed. Not caching response", ex);
 
                 }
-            } catch (Exception e) {
-                LOGGER.error("Failed to analyze {} using {} with repository {}",
-                        component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
-                return null;
-            }
-            Component component1 = Component.newBuilder().setPurl(integrityModel.getComponent().getPurl().toString())
-                    .setInternal(integrityModel.getComponent().isInternal())
-                    .setMd5Hash(integrityModel.getComponent().getMd5())
-                    .setSha1Hash(integrityModel.getComponent().getSha1())
-                    .setSha256Hash(integrityModel.getComponent().getSha256())
-                    .setUuid(integrityModel.getComponent().getUuid().toString()).build();
-            final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
-                    .setMd5HashMatch(integrityModel.isMd5HashMatched())
-                    .setComponent(component1)
-                    .setSha1HashMatch(integrityModel.isSha1HashMatched())
-                    .setSha256HashMatch(integrityModel.isSha256HashMatched())
-                    .setRepository(repository.getUrl())
-                    .setUpdated(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
-            return resultBuilder.build();
+            return getIntegrityResult(repository, integrityModel);
         }
+    }
+
+    private org.hyades.persistence.model.Component createPersistentComponent(IntegrityAnalyzer analyzer, Repository repository, Component component) {
+        final var persistentComponent = new org.hyades.persistence.model.Component();
+        try {
+            persistentComponent.setPurl(component.getPurl());
+            persistentComponent.setMd5(component.getMd5Hash());
+            persistentComponent.setSha1(component.getSha1Hash());
+            persistentComponent.setSha256(component.getSha256Hash());
+            UUID uuid = UUID.fromString(component.getUuid());
+            persistentComponent.setUuid(uuid);
+        } catch (Exception e) {
+            LOGGER.error("Failed to analyze {} using {} with repository {}",
+                    component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
+            return null;
+        }
+        return persistentComponent;
+    }
+
+    private IntegrityResult getIntegrityResult(Repository repository, IntegrityModel integrityModel) {
+        Component analyzerComponent = Component.newBuilder().setPurl(integrityModel.getComponent().getPurl().toString())
+                .setInternal(integrityModel.getComponent().isInternal())
+                .setMd5Hash(integrityModel.getComponent().getMd5())
+                .setSha1Hash(integrityModel.getComponent().getSha1())
+                .setSha256Hash(integrityModel.getComponent().getSha256())
+                .setUuid(integrityModel.getComponent().getUuid().toString()).build();
+
+        final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
+                .setMd5HashMatch(integrityModel.isMd5HashMatched())
+                .setComponent(analyzerComponent)
+                .setSha1HashMatch(integrityModel.isSha1HashMatched())
+                .setSha256HashMatch(integrityModel.isSha256HashMatched())
+                .setRepository(repository.getUrl())
+                .setUpdated(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
+        return resultBuilder.build();
     }
 
     private void cacheResult(final IntegrityAnalysisCacheKey cacheKey, final CloseableHttpResponse result) {
