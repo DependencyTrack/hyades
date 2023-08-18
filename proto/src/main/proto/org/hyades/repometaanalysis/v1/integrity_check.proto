@@ -30,3 +30,15 @@ enum HashMatchStatus {
   HASH_MATCH_STATUS_UNKNOWN = 3;
   HASH_MATCH_STATUS_COMPONENT_MISSING_HASH = 4;
 }
+
+message Component {
+  // Package URL of the component.
+  string purl = 1;
+  // Whether the component is internal to the organization.
+  // Internal components will only be looked up in internal repositories.
+  optional bool internal = 2;
+  optional string md5_hash = 3;
+  optional string sha1_hash = 4;
+  optional string sha256_hash = 5;
+  optional string uuid = 6;
+}
