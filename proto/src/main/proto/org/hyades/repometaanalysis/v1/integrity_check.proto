@@ -4,7 +4,6 @@ syntax = "proto3";
 package org.hyades.repometaanalysis.v1;
 
 import "google/protobuf/timestamp.proto";
-import "repo_meta_analysis.proto";
 
 option java_multiple_files = true;
 option java_package = "org.hyades.proto.repometaanalysis.v1";
