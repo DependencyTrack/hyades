@@ -166,7 +166,6 @@ class GitHubMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
-        // FIXME: affects should not have duplicate entries for the same ref; Accumulate multiple versions under one affects node instead
         // FIXME: vers ranges should not include whitespace
         assertThatJson(JsonFormat.printer().print(vulnRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
@@ -213,12 +212,7 @@ class GitHubMirrorTest {
                                 {
                                   "ref": "3c41e06b-5923-5392-a1e3-64a630c97591",
                                   "versions": [
-                                    { "range": "vers:nuget/>= 3.0.0|< 3.4.1" }
-                                  ]
-                                },
-                                {
-                                  "ref": "3c41e06b-5923-5392-a1e3-64a630c97591",
-                                  "versions": [
+                                    { "range": "vers:nuget/>= 3.0.0|< 3.4.1" },
                                     { "range": "vers:nuget/>= 4.0.0|< 4.3.1" }
                                   ]
                                 },
