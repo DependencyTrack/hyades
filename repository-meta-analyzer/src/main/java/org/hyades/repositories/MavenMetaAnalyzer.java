@@ -31,7 +31,7 @@ import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
-import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
+import org.hyades.proto.repointegrityanalysis.v1.HashMatchStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

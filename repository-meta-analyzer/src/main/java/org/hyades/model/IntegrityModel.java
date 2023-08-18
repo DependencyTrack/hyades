@@ -1,7 +1,7 @@
 package org.hyades.model;
 
 import org.hyades.persistence.model.Component;
-import org.hyades.proto.repometaanalysis.v1.HashMatchStatus;
+import org.hyades.proto.repointegrityanalysis.v1.HashMatchStatus;
 
 import java.io.Serializable;
 import java.util.Date;
