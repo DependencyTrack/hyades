@@ -214,7 +214,7 @@ class RepositoryMetaAnalyzerIT {
 
             assertThat(results).satisfiesExactly(
                     record -> {
-                        assertThat(record.key()).isEqualTo("pkg:maven/com.fasterxml.jackson.core/jackson-databind");
+                        assertThat(record.key()).isEqualTo("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.2");
                         assertThat(record.value()).isNotNull();
                         final IntegrityResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
