@@ -79,7 +79,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED")
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
                         VALUES ('true', 'test', false, NULL, 1, 'GO_MODULES', 'http://localhost:%d', false, false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
@@ -170,7 +170,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED")
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
                         VALUES ('true', 'test', false, NULL, 1, 'MAVEN', 'http://localhost:%d', false, true);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
@@ -253,7 +253,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED")
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
                         VALUES ('true', 'test', false, NULL, 1, 'MAVEN', 'http://localhost:%d', false, true);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
@@ -339,7 +339,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED")
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
                         VALUES ('true', 'test', false, NULL, 1, 'MAVEN', 'http://localhost:%d', false, true);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
@@ -432,7 +432,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED")
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
                         VALUES ('true', 'test', false, NULL, 1, 'MAVEN', 'http://localhost:%d', false, true);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
@@ -500,7 +500,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED")
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
                         VALUES ('true', 'test', false, NULL, 2, 'NPM', 'http://localhost:%d', false, false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
@@ -555,7 +555,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED")
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
                         VALUES ('true', 'test', false, NULL, 2, 'CPAN', 'http://localhost:%d', false, false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
@@ -627,7 +627,7 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATION_REQUIRED", "INTEGRITY_CHECK_ENABLED")
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
                         VALUES ('true', 'test', true, NULL, 2, 'MAVEN', 'http://localhost:%d', false, false);
                         """.formatted(wireMockServer.port()));
                 ps.execute();
