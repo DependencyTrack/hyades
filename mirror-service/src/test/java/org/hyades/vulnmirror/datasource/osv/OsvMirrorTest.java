@@ -197,7 +197,7 @@ class OsvMirrorTest {
                                 {
                                   "ref": "2aa501b7-09d2-5bb7-88cc-41d599869255",
                                   "versions": [
-                                    { "range": "vers:golang/>=0|<0.0.0-20170426191122-ca1404ee6e83" }
+                                    { "range": "vers:golang/<0.0.0-20170426191122-ca1404ee6e83" }
                                   ]
                                 }
                               ]
@@ -233,7 +233,6 @@ class OsvMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
-        // FIXME: Individual versions should not be listed when a range is provided by the source
         assertThatJson(JsonFormat.printer().print(vulnRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .withMatcher("vuln-description", Matchers.allOf(
@@ -277,75 +276,7 @@ class OsvMirrorTest {
                                 {
                                   "ref": "2a24a29f-9ff3-52b8-bc81-471f326a5b3e",
                                   "versions": [
-                                    { "range": "vers:maven/>=0|<1.9.0" },
-                                    { "version": "0.9.0" },
-                                    { "version": "0.9.1" },
-                                    { "version": "0.9.10" },
-                                    { "version": "0.9.11" },
-                                    { "version": "0.9.12" },
-                                    { "version": "0.9.13" },
-                                    { "version": "0.9.14" },
-                                    { "version": "0.9.15" },
-                                    { "version": "0.9.16" },
-                                    { "version": "0.9.17" },
-                                    { "version": "0.9.18" },
-                                    { "version": "0.9.19" },
-                                    { "version": "0.9.2" },
-                                    { "version": "0.9.3" },
-                                    { "version": "0.9.4" },
-                                    { "version": "0.9.5" },
-                                    { "version": "0.9.6" },
-                                    { "version": "0.9.7" },
-                                    { "version": "0.9.8" },
-                                    { "version": "0.9.9" },
-                                    { "version": "1.0.0" },
-                                    { "version": "1.0.0-rc-1" },
-                                    { "version": "1.0.0-rc-2" },
-                                    { "version": "1.0.0-rc-3" },
-                                    { "version": "1.1.0" },
-                                    { "version": "1.1.1" },
-                                    { "version": "1.2.0" },
-                                    { "version": "1.2.0-RC-1" },
-                                    { "version": "1.2.0-rc-2" },
-                                    { "version": "1.3.0" },
-                                    { "version": "1.3.0-rc-1" },
-                                    { "version": "1.3.0-rc-2" },
-                                    { "version": "1.3.1" },
-                                    { "version": "1.3.2" },
-                                    { "version": "1.3.3" },
-                                    { "version": "1.4.0" },
-                                    { "version": "1.4.0-rc-1" },
-                                    { "version": "1.4.0-rc-2" },
-                                    { "version": "1.4.0-rc-3" },
-                                    { "version": "1.4.1" },
-                                    { "version": "1.4.2" },
-                                    { "version": "1.4.3" },
-                                    { "version": "1.4.4" },
-                                    { "version": "1.4.5" },
-                                    { "version": "1.4.6" },
-                                    { "version": "1.5.0" },
-                                    { "version": "1.5.1" },
-                                    { "version": "1.5.2" },
-                                    { "version": "1.5.3" },
-                                    { "version": "1.5.4" },
-                                    { "version": "1.6.0" },
-                                    { "version": "1.6.0-rc-1" },
-                                    { "version": "1.6.0-rc-2" },
-                                    { "version": "1.6.0-rc-3" },
-                                    { "version": "1.6.0-rc-4" },
-                                    { "version": "1.6.1" },
-                                    { "version": "1.7.0" },
-                                    { "version": "1.7.1" },
-                                    { "version": "1.7.2" },
-                                    { "version": "1.7.3" },
-                                    { "version": "1.7.4" },
-                                    { "version": "1.7.5" },
-                                    { "version": "1.7.6" },
-                                    { "version": "1.8.0" },
-                                    { "version": "1.8.1" },
-                                    { "version": "1.8.2" },
-                                    { "version": "1.9.0-rc-1" },
-                                    { "version": "1.9.0-rc-2" }
+                                    { "range": "vers:maven/<1.9.0" }
                                   ]
                                 }
                               ]
