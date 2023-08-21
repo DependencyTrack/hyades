@@ -210,10 +210,8 @@ public final class NvdToCyclonedxParser {
                     } else if (lowerBoundConstraint == null && "*".equals(cpe.getVersion())) {
                         // If we have neither upper, nor lower bound, and the CPE version
                         // is a wildcard, all versions are vulnerable, and we can safely use a vers wildcard.
-
-                        // We currently do not want to ingest wildcard ranges.
-                        // versConstraints.add("*");
-                        LOGGER.debug("Encountered wildcard version range in {} for {}; Skipping", cpeMatch, cveId);
+                        // Note that wildcard ranges will currently be ignored by the API server.
+                        versConstraints.add(Pair.of("*", null));
                         continue;
                     }
                 }
@@ -261,7 +259,13 @@ public final class NvdToCyclonedxParser {
             } else {
                 // Using 'generic' as versioning scheme for NVD due to lack of package data.
                 final String vers = "vers:generic/" + versConstraints.stream()
-                        .map(constraint -> constraint.getLeft() + URLEncoder.encode(constraint.getRight(), StandardCharsets.UTF_8))
+                        .map(constraint -> {
+                            if (constraint.getLeft().equals("*")) {
+                                return "*";
+                            }
+
+                            return constraint.getLeft() + URLEncoder.encode(constraint.getRight(), StandardCharsets.UTF_8);
+                        })
                         .collect(Collectors.joining("|"));
 
                 // Similar to how we do it for exact version matches, avoid duplicate ranges.
