@@ -67,13 +67,14 @@ import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 public final class NvdToCyclonedxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NvdToCyclonedxParser.class);
-    private static final Source SOURCE = Source.newBuilder().setName(Datasource.NVD.name()).build();
+    private static final Source SOURCE_GITHUB = Source.newBuilder().setName(Datasource.GITHUB.name()).build();
+    private static final Source SOURCE_NVD = Source.newBuilder().setName(Datasource.NVD.name()).build();
     private static final UUID UUID_V5_NAMESPACE = UUID.fromString("cb83f395-69ff-4b1c-83f9-c461ebd06279");
 
     public static Bom parse(DefCveItem nvdVuln) {
         CveItem cveItem = nvdVuln.getCve();
         final Vulnerability.Builder vulnBuilder = Vulnerability.newBuilder()
-                .setSource(SOURCE)
+                .setSource(SOURCE_NVD)
                 .setId(cveItem.getId())
                 .setDescription(parseDescription(cveItem.getDescriptions()))
                 .addAllRatings(parseCveImpact(cveItem.getMetrics()));
@@ -198,21 +199,25 @@ public final class NvdToCyclonedxParser {
             if (lowerBoundConstraint != null && upperBoundConstraint != null) {
                 versConstraints.add(lowerBoundConstraint);
                 versConstraints.add(upperBoundConstraint);
-            }
-            if (lowerBoundConstraint == null && upperBoundConstraint != null) {
+            } else if (lowerBoundConstraint == null && upperBoundConstraint != null) {
                 versConstraints.add(upperBoundConstraint);
+            } else if (lowerBoundConstraint != null && upperBoundConstraint == null) {
+                versConstraints.add(lowerBoundConstraint);
             } else {
+                // The CpeMatch does not define a version range, but the CPE itself can
+                // still give us the information we need. The version field can either be:
+                //   * an exact version (e.g. "1.0.0")
+                //   * a wildcard matching all versions ("*")
+                //   * a "not applicable", matching no version at all ("-")
                 if (trimToNull(cpe.getVersion()) != null) {
-                    if (lowerBoundConstraint == null && !"*".equals(cpe.getVersion()) && !"-".equals(cpe.getVersion())) {
+                    if (!"*".equals(cpe.getVersion()) && !"-".equals(cpe.getVersion())) {
                         // If we have neither upper, nor lower bound, and the CPE version
                         // is not a wildcard, only a specific version is vulnerable.
                         versConstraints.add(Pair.of("=", cpe.getVersion()));
-                    } else if (lowerBoundConstraint == null && "*".equals(cpe.getVersion())) {
+                    } else if ("*".equals(cpe.getVersion())) {
                         // If we have neither upper, nor lower bound, and the CPE version
                         // is a wildcard, all versions are vulnerable, and we can safely use a vers wildcard.
-                        // Note that wildcard ranges will currently be ignored by the API server.
                         versConstraints.add(Pair.of("*", null));
-                        continue;
                     }
                 }
             }
@@ -327,7 +332,7 @@ public final class NvdToCyclonedxParser {
                                 .setMethod(ScoreMethod.SCORE_METHOD_CVSSV2)
                                 .setVector(cvss20.getVectorString())
                                 .setSeverity(mapSeverity(baseMetric.getBaseSeverity()))
-                                .setSource(SOURCE)
+                                .setSource(determineMetricSource(baseMetric.getSource()))
                                 .build())
                         .ifPresent(ratings::add);
             });
@@ -344,7 +349,7 @@ public final class NvdToCyclonedxParser {
                                 .setMethod(ScoreMethod.SCORE_METHOD_CVSSV3)
                                 .setVector(cvssx.getVectorString())
                                 .setSeverity(mapSeverity(cvssx.getBaseSeverity().value()))
-                                .setSource(SOURCE)
+                                .setSource(determineMetricSource(baseMetric.getSource()))
                                 .build())
                         .ifPresent(ratings::add);
             });
@@ -361,7 +366,7 @@ public final class NvdToCyclonedxParser {
                                 .setMethod(ScoreMethod.SCORE_METHOD_CVSSV31)
                                 .setVector(cvss.getVectorString())
                                 .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))
-                                .setSource(SOURCE)
+                                .setSource(determineMetricSource(baseMetric.getSource()))
                                 .build())
                         .ifPresent(ratings::add);
             });
@@ -392,4 +397,22 @@ public final class NvdToCyclonedxParser {
                 .build()));
         return externalReferences;
     }
+
+    private static Source determineMetricSource(final String source) {
+        // If the vulnerability was originally reported to GitHub as a GHSA,
+        // and GitHub registered an accompanying CVE, the GitHub rating will
+        // be listed by the NVD as well.
+        if ("nvd@nist.gov".equals(source)) {
+            return SOURCE_NVD;
+        } else if ("security-advisories@github.com".equals(source)) {
+            return SOURCE_GITHUB;
+        }
+
+        // Fall back to NVD if we don't recognize the source.
+        // The if statement above may be refined over time as we encounter more
+        // sources reporting ratings. There's no documentation on this, so at
+        // the moment we only know about GitHub as alternative source.
+        return SOURCE_NVD;
+    }
+
 }
