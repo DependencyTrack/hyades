@@ -250,5 +250,211 @@ class NvdToCyclonedxParserTest {
                         """);
     }
 
+    @Test
+    void testParseWithWildcardVersions() throws Exception {
+        final byte[] cveBytes = IOUtils.resourceToByteArray("/datasource/nvd/CVE-2022-31022-all-versions-vulnerable.json");
+        final DefCveItem cveItem = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(new JavaTimeModule()).readValue(cveBytes, DefCveItem.class);
+
+        final Bom bov = NvdToCyclonedxParser.parse(cveItem);
+        assertThatJson(JsonFormat.printer().print(bov))
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                            "components": [
+                                {
+                                    "type": "CLASSIFICATION_APPLICATION",
+                                    "bomRef": "5f74f433-6fa5-54e0-95db-d8aae7c74e6c",
+                                    "publisher": "couchbase",
+                                    "name": "bleve",
+                                    "cpe": "cpe:2.3:a:couchbase:bleve:*:*:*:*:*:*:*:*"
+                                }
+                            ],
+                            "externalReferences": [
+                                {
+                                    "url": "https://github.com/blevesearch/bleve/commit/1c7509d6a17d36f265c90b4e8f4e3a3182fe79ff"
+                                },
+                                {
+                                    "url": "https://github.com/blevesearch/bleve/security/advisories/GHSA-9w9f-6mg8-jp7w"
+                                }
+                            ],
+                            "vulnerabilities": [
+                                {
+                                    "id": "CVE-2022-31022",
+                                    "source": {
+                                        "name": "NVD"
+                                    },
+                                    "ratings": [
+                                        {
+                                            "source": {
+                                                "name": "NVD"
+                                            },
+                                            "score": 2.1,
+                                            "severity": "SEVERITY_LOW",
+                                            "method": "SCORE_METHOD_CVSSV2",
+                                            "vector": "AV:L/AC:L/Au:N/C:N/I:P/A:N"
+                                        },
+                                        {
+                                            "source": {
+                                                "name": "NVD"
+                                            },
+                                            "score": 5.5,
+                                            "severity": "SEVERITY_MEDIUM",
+                                            "method": "SCORE_METHOD_CVSSV31",
+                                            "vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+                                        },
+                                        {
+                                            "source": {
+                                                "name": "GITHUB"
+                                            },
+                                            "score": 6.2,
+                                            "severity": "SEVERITY_MEDIUM",
+                                            "method": "SCORE_METHOD_CVSSV31",
+                                            "vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+                                        }
+                                    ],
+                                    "cwes": [
+                                        288,
+                                        306
+                                    ],
+                                    "description": "Bleve is a text indexing library for go. Bleve includes HTTP utilities under bleve/http package, that are used by its sample application. These HTTP methods pave way for exploitation of a node’s filesystem where the bleve index resides, if the user has used bleve’s own HTTP (bleve/http) handlers for exposing the access to the indexes. For instance, the CreateIndexHandler (`http/index_create.go`) and DeleteIndexHandler (`http/index_delete.go`) enable an attacker to create a bleve index (directory structure) anywhere where the user running the server has the write permissions and to delete recursively any directory owned by the same user account. Users who have used the bleve/http package for exposing access to bleve index without the explicit handling for the Role Based Access Controls(RBAC) of the index assets would be impacted by this issue. There is no patch for this issue because the http package is purely intended to be used for demonstration purposes. Bleve was never designed handle the RBACs, nor it was ever advertised to be used in that way. The collaborators of this project have decided to stay away from adding any authentication or authorization to bleve project at the moment. The bleve/http package is mainly for demonstration purposes and it lacks exhaustive validation of the user inputs as well as any authentication and authorization measures. It is recommended to not use bleve/http in production use cases.",
+                                    "published": "2022-06-01T20:15:08Z",
+                                    "updated": "2022-06-09T14:13:24Z",
+                                    "affects": [
+                                        {
+                                            "ref": "5f74f433-6fa5-54e0-95db-d8aae7c74e6c",
+                                            "versions": [
+                                                {
+                                                    "range": "vers:generic/*"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                        """);
+    }
+
+    @Test
+    void testParseWithCvssV3Rating() throws Exception {
+        final byte[] cveBytes = IOUtils.resourceToByteArray("/datasource/nvd/CVE-2017-5638-cvssv3-rating.json");
+        final DefCveItem cveItem = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(new JavaTimeModule()).readValue(cveBytes, DefCveItem.class);
+
+        final Bom bov = NvdToCyclonedxParser.parse(cveItem);
+        assertThatJson(JsonFormat.printer().print(bov))
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                            "components": [
+                                {
+                                    "type": "CLASSIFICATION_APPLICATION",
+                                    "bomRef": "3161d532-0c28-587a-9e56-9e590da32f70",
+                                    "publisher": "apache",
+                                    "name": "struts",
+                                    "cpe": "cpe:2.3:a:apache:struts:2.3.6:*:*:*:*:*:*:*"
+                                },
+                                {
+                                    "type": "CLASSIFICATION_APPLICATION",
+                                    "bomRef": "667c89dc-403d-5dfc-bca5-8e1914e64efe",
+                                    "publisher": "apache",
+                                    "name": "struts",
+                                    "cpe": "cpe:2.3:a:apache:struts:2.3.5:*:*:*:*:*:*:*"
+                                },
+                                {
+                                    "type": "CLASSIFICATION_APPLICATION",
+                                    "bomRef": "673da2aa-f90a-53f1-a6ff-37eee4cafd3b",
+                                    "publisher": "apache",
+                                    "name": "struts",
+                                    "cpe": "cpe:2.3:a:apache:struts:2.5:*:*:*:*:*:*:*"
+                                },
+                                {
+                                    "type": "CLASSIFICATION_APPLICATION",
+                                    "bomRef": "b6a598c6-bdab-550a-92ea-88a9d72473a6",
+                                    "publisher": "apache",
+                                    "name": "struts",
+                                    "cpe": "cpe:2.3:a:apache:struts:2.5.1:*:*:*:*:*:*:*"
+                                }
+                            ],
+                            "externalReferences": [
+                                {
+                                    "url": "http://blog.talosintelligence.com/2017/03/apache-0-day-exploited.html"
+                                }
+                            ],
+                            "vulnerabilities": [
+                                {
+                                    "id": "CVE-2017-5638",
+                                    "source": {
+                                        "name": "NVD"
+                                    },
+                                    "ratings": [
+                                        {
+                                            "source": {
+                                                "name": "NVD"
+                                            },
+                                            "score": 10.0,
+                                            "severity": "SEVERITY_HIGH",
+                                            "method": "SCORE_METHOD_CVSSV2",
+                                            "vector": "AV:N/AC:L/Au:N/C:C/I:C/A:C"
+                                        },
+                                        {
+                                            "source": {
+                                                "name": "NVD"
+                                            },
+                                            "score": 10.0,
+                                            "severity": "SEVERITY_CRITICAL",
+                                            "method": "SCORE_METHOD_CVSSV3",
+                                            "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+                                        }
+                                    ],
+                                    "cwes": [
+                                        20
+                                    ],
+                                    "description": "The Jakarta Multipart parser in Apache Struts 2 2.3.x before 2.3.32 and 2.5.x before 2.5.10.1 has incorrect exception handling and error-message generation during file-upload attempts, which allows remote attackers to execute arbitrary commands via a crafted Content-Type, Content-Disposition, or Content-Length HTTP header, as exploited in the wild in March 2017 with a Content-Type header containing a #cmd= string.",
+                                    "published": "2017-03-11T02:59:00Z",
+                                    "updated": "2021-02-24T12:15:16Z",
+                                    "affects": [
+                                        {
+                                            "ref": "3161d532-0c28-587a-9e56-9e590da32f70",
+                                            "versions": [
+                                                {
+                                                    "version": "2.3.6"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "ref": "667c89dc-403d-5dfc-bca5-8e1914e64efe",
+                                            "versions": [
+                                                {
+                                                    "version": "2.3.5"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "ref": "673da2aa-f90a-53f1-a6ff-37eee4cafd3b",
+                                            "versions": [
+                                                {
+                                                    "version": "2.5"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "ref": "b6a598c6-bdab-550a-92ea-88a9d72473a6",
+                                            "versions": [
+                                                {
+                                                    "version": "2.5.1"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                        """);
+    }
+
 }
 
