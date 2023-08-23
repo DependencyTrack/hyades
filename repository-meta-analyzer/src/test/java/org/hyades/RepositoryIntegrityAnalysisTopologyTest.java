@@ -333,6 +333,46 @@ class RepositoryIntegrityAnalysisTopologyTest {
         Assertions.assertEquals(HASH_MATCH_STATUS_FAIL, record.value.getSha256HashMatch());
     }
 
+    @Test
+    void testMetaOutputPassInternalRepo() throws MalformedPackageURLException {
+        var uuid = UUID.randomUUID();
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:npm/@apollo/federation@0.19.1")
+                        .setMd5Hash("098f6bcd4621d373cade4e832627b4f6")
+                        .setSha1Hash("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3")
+                        .setSha256Hash("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")
+                        .setUuid(uuid.toString()))
+                .build();
+
+        var integrityModelMock = createMockIntegrityModel(command);
+        integrityModelMock.setMd5HashMatched(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setSha1HashMatched(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setSha256HashMatched(HASH_MATCH_STATUS_PASS);
+        when(analyzerMock.getIntegrityModel(any())).thenReturn(integrityModelMock);
+
+        Repository repository = new Repository();
+        repository.setIdentifier("testRepository");
+        repository.setInternal(true);
+        repository.setAuthenticationRequired(true);
+        repository.setUsername("username");
+        repository.setPassword("password");
+        repository.setIntegrityCheckApplicable(true);
+        repository.setUrl("http://localhost");
+        when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
+                .thenReturn(List.of(repository));
+
+        inputTopic.pipeInput("pkg:npm/@apollo/federation@0.19.1", command);
+
+        Assertions.assertEquals(1, outputTopic.getQueueSize());
+        final KeyValue<String, IntegrityResult> record = outputTopic.readKeyValue();
+        Assertions.assertEquals("pkg:npm/%40apollo/federation@0.19.1", record.key);
+        Assertions.assertEquals("pkg:npm/%40apollo/federation@0.19.1", record.value.getComponent().getPurl());
+        Assertions.assertEquals(HASH_MATCH_STATUS_PASS, record.value.getMd5HashMatch());
+        Assertions.assertEquals(HASH_MATCH_STATUS_PASS, record.value.getSha1HashMatch());
+        Assertions.assertEquals(HASH_MATCH_STATUS_PASS, record.value.getSha256HashMatch());
+    }
+
     private IntegrityModel createMockIntegrityModel(AnalysisCommand analysisCommand) throws MalformedPackageURLException {
         var component = new Component();
         var analysisComponent = analysisCommand.getComponent();

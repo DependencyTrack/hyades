@@ -25,13 +25,18 @@ import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -39,7 +44,7 @@ class NpmMetaAnalyzerTest {
 
     private static ClientAndServer mockServer;
 
-    private IMetaAnalyzer analyzer;
+    private NpmMetaAnalyzer analyzer;
 
     @BeforeAll
     static void beforeClass() {
@@ -62,11 +67,11 @@ class NpmMetaAnalyzerTest {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:npm/qunit@2.7.0"));
 
-        Assertions.assertEquals("NpmMetaAnalyzer", analyzer.getName());
-        Assertions.assertTrue(analyzer.isApplicable(component));
-        Assertions.assertEquals(RepositoryType.NPM, analyzer.supportedRepositoryType());
+        assertEquals("NpmMetaAnalyzer", analyzer.getName());
+        assertTrue(analyzer.isApplicable(component));
+        assertEquals(RepositoryType.NPM, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);
-        Assertions.assertNotNull(metaModel.getLatestVersion());
+        assertNotNull(metaModel.getLatestVersion());
         //Assert.assertNotNull(metaModel.getPublishedTimestamp()); // todo: not yet supported
     }
 
@@ -89,8 +94,8 @@ class NpmMetaAnalyzerTest {
 
         MetaModel metaModel = analyzer.analyze(component);
 
-        Assertions.assertNull(metaModel.getLatestVersion());
-        Assertions.assertNull(
+        assertNull(metaModel.getLatestVersion());
+        assertNull(
                 metaModel.getPublishedTimestamp()
         );
     }
@@ -112,12 +117,45 @@ class NpmMetaAnalyzerTest {
                                 .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 );
 
-        MetaModel metaModel = analyzer.analyze(component);
+        var metaModel = analyzer.analyze(component);
 
-        Assertions.assertNull(metaModel.getLatestVersion());
-        Assertions.assertNull(
+        assertNull(metaModel.getLatestVersion());
+        assertNull(
                 metaModel.getPublishedTimestamp()
         );
+    }
+
+    @Test
+    void testAnalyzerReturnIntegrityResult() {
+        Component component = new Component();
+        component.setUuid(UUID.randomUUID());
+        component.setPurl("pkg:npm/typo3/package-empty-result@v1.2.0");
+        component.setMd5("md5hash");
+        component.setSha1("sha1hash");
+        component.setSha256("sha256hash");
+        component.setInternal(true);
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                                .withPath("/typo3/package-empty-result/-/typo3/package-empty-result-v1.2.0.tgz")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader("X-Checksum-MD5", "md5hash")
+                                .withHeader("X-Checksum-SHA1", "sha1hash")
+                                .withHeader("X-Checksum-SHA256", "sha256hash")
+                );
+
+        var integrityModel = analyzer.getIntegrityModel(component);
+
+        assertNotNull(integrityModel);
+        assertEquals("pkg:npm/typo3/package-empty-result@v1.2.0", integrityModel.getComponent().getPurl().toString());
+        assertEquals("md5hash", integrityModel.getComponent().getMd5());
+        assertEquals("sha1hash", integrityModel.getComponent().getSha1());
+        assertEquals("sha256hash", integrityModel.getComponent().getSha256());
     }
 
     @Test
@@ -140,8 +178,8 @@ class NpmMetaAnalyzerTest {
 
         MetaModel metaModel = analyzer.analyze(component);
 
-        Assertions.assertNull(metaModel.getLatestVersion());
-        Assertions.assertNull(
+        assertNull(metaModel.getLatestVersion());
+        assertNull(
                 metaModel.getPublishedTimestamp()
         );
     }

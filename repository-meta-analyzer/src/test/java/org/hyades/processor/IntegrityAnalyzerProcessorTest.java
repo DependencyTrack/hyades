@@ -27,18 +27,27 @@ import org.hyades.proto.repointegrityanalysis.v1.IntegrityResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockserver.client.MockServerClient;
+import org.mockserver.integration.ClientAndServer;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
-@TestProfile(MetaAnalyzerProcessorTest.TestProfile.class)
+@TestProfile(IntegrityAnalyzerProcessorTest.TestProfile.class)
 class IntegrityAnalyzerProcessorTest {
+
+    private static ClientAndServer mockServer;
 
     public static class TestProfile implements QuarkusTestProfile {
         @Override
@@ -70,6 +79,11 @@ class IntegrityAnalyzerProcessorTest {
     @Inject
     SecretDecryptor secretDecryptor;
 
+    @BeforeAll
+    static void beforeClass() {
+        mockServer = ClientAndServer.startClientAndServer(1080);
+    }
+
     @BeforeEach
     void beforeEach() {
         final var processorSupplier = new IntegrityAnalyzerProcessorSupplier(repoEntityRepository, analyzerFactory, secretDecryptor, cache);
@@ -93,6 +107,11 @@ class IntegrityAnalyzerProcessorTest {
     void afterEach() {
         testDriver.close();
         cache.invalidateAll().await().indefinitely();
+    }
+
+    @AfterAll
+    static void afterClass() {
+        mockServer.stop();
     }
 
     @Test
@@ -151,6 +170,51 @@ class IntegrityAnalyzerProcessorTest {
                     assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
                     assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
                     assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH.getNumber());
+                });
+
+    }
+
+    @Test
+    @TestTransaction
+    void testIntegrityCheckEnabledNpm() throws Exception {
+        entityManager.createNativeQuery("""
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED", "RESOLUTION_ORDER", "USERNAME", "PASSWORD") VALUES
+                                    ('NPM',true, 'artifactory-npm', true, :url, true, true,1, 'username', :encryptedPassword);
+                """)
+                .setParameter("encryptedPassword", secretDecryptor.encryptAsString("password"))
+                .setParameter("url", String.format("http://localhost:%d", mockServer.getPort()))
+                .executeUpdate();
+
+        final TestRecord<PackageURL, Component> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"), Component.newBuilder()
+                .setUuid(UUID.randomUUID().toString())
+                .setPurl("pkg:npm/@apollo/federation@0.19.1")
+                .setMd5Hash("md5hash")
+                .setSha1Hash("sha1hash")
+                .setSha256Hash("sha256hash")
+                .setInternal(true).build());
+
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                                .withPath("/@apollo/federation/-/@apollo/federation-0.19.1.tgz")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader("X-Checksum-MD5", "md5hash")
+                                .withHeader("X-Checksum-SHA1", "sha1hash")
+                                .withHeader("X-Checksum-SHA256", "sha256hash")
+                );
+
+        inputTopic.pipeInput(inputRecord);
+        assertThat(outputTopic.getQueueSize()).isEqualTo(1);
+        assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
+                record -> {
+                    assertThat(record.key().getType()).isEqualTo(RepositoryType.NPM.toString().toLowerCase());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber());
+                    assertThat(record.value().getMd5HashMatchValue()).isEqualTo(HashMatchStatus.HASH_MATCH_STATUS_PASS.getNumber());
                 });
 
     }
