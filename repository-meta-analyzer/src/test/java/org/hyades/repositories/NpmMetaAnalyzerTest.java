@@ -159,6 +159,39 @@ class NpmMetaAnalyzerTest {
     }
 
     @Test
+    void testIntegrityResultForPurlWithoutNamespace() {
+        Component component = new Component();
+        component.setUuid(UUID.randomUUID());
+        component.setPurl("pkg:npm/amazon-s3-uri@0.0.1");
+        component.setMd5("md5hash");
+        component.setSha1("sha1hash");
+        component.setSha256("sha256hash");
+        component.setInternal(true);
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                                .withPath("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader("X-Checksum-MD5", "md5hash")
+                                .withHeader("X-Checksum-SHA1", "sha1hash")
+                                .withHeader("X-Checksum-SHA256", "sha256hash")
+                );
+
+        var integrityModel = analyzer.getIntegrityModel(component);
+
+        assertNotNull(integrityModel);
+        assertEquals("pkg:npm/amazon-s3-uri@0.0.1", integrityModel.getComponent().getPurl().toString());
+        assertEquals("md5hash", integrityModel.getComponent().getMd5());
+        assertEquals("sha1hash", integrityModel.getComponent().getSha1());
+        assertEquals("sha256hash", integrityModel.getComponent().getSha256());
+    }
+
+    @Test
     void testAnalyzerReturnEmptyResultWithBraces() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:npm/typo3/package-empty-result@v1.2.0"));

@@ -114,11 +114,16 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer implements IntegrityAn
             if (packageURL.getQualifiers() != null) {
                 type = packageURL.getQualifiers().getOrDefault("type", "tgz");
             }
-            final String npmGavUrl = packageURL.getNamespace().replaceAll("\\.", "/") + "/" + packageURL.getName();
-            final String url = this.baseUrl + "/" + npmGavUrl + "/-/"
-                    + packageURL.getNamespace().replaceAll("\\.", "/")
-                    + "/" + packageURL.getName() + "-" + packageURL.getVersion() + "." + type;
-            LOGGER.info("Calling http using url {}", url);
+            var purlNamespace = packageURL.getNamespace() != null
+                    ? packageURL.getNamespace().replaceAll("\\.", "/")
+                    : null;
+            String npmArtifactoryUrl = "";
+            if (purlNamespace != null) {
+                npmArtifactoryUrl += purlNamespace + "/";
+            }
+            npmArtifactoryUrl += packageURL.getName();
+            final String url = this.baseUrl + "/" + npmArtifactoryUrl + "/-/"
+                    + npmArtifactoryUrl + "-" + packageURL.getVersion() + "." + type;
             try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
                 final StatusLine status = response.getStatusLine();
                 if (status.getStatusCode() == HttpStatus.SC_OK) {
