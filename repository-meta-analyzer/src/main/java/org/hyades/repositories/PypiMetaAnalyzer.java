@@ -19,7 +19,6 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -30,7 +29,6 @@ import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
-import org.hyades.proto.repointegrityanalysis.v1.HashMatchStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;

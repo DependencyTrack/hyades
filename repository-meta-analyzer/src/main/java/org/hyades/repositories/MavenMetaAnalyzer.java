@@ -19,7 +19,6 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -28,11 +27,9 @@ import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.XmlUtil;
 import org.hyades.model.IntegrityAnalyzerException;
 import org.hyades.model.IntegrityModel;
-import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
-import org.hyades.proto.repointegrityanalysis.v1.HashMatchStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
