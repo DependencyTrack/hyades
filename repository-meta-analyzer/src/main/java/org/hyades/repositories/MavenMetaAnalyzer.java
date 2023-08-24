@@ -26,6 +26,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.XmlUtil;
+import org.hyades.model.IntegrityAnalyzerException;
 import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
@@ -124,100 +125,30 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer implements Integrity
         return this.getClass().getSimpleName();
     }
 
-    public CloseableHttpResponse getIntegrityCheckResponse(PackageURL packageURL) {
-        if (packageURL != null) {
-            String type = "jar";
-            if (packageURL.getQualifiers() != null) {
-                type = packageURL.getQualifiers().getOrDefault("type", "jar");
-            }
-            final String mavenGavUrl = packageURL.getNamespace().replaceAll("\\.", "/") + "/" + packageURL.getName();
-            final String url = baseUrl + "/" + mavenGavUrl + "/" + packageURL.getVersion() + "/" + packageURL.getName() + "-" + packageURL.getVersion() + "." + type;
-            try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
-                final StatusLine status = response.getStatusLine();
-                if (status.getStatusCode() == HttpStatus.SC_OK) {
-                    return response;
-                } else {
-                    throw new MetaAnalyzerException("Response status returned is not 200: " + response.getStatusLine().getStatusCode());
-                }
-            } catch (Exception ex) {
-                LOGGER.warn("Head request for maven integrity failed. Not caching response");
-                throw new MetaAnalyzerException("Head request for maven integrity failed. Not caching response", ex);
-            }
-        }
-        return null;
-    }
-
     @Override
     public IntegrityModel getIntegrityModel(Component component) {
         if (component != null) {
-            var response = getIntegrityCheckResponse(component.getPurl());
-            IntegrityModel integrityModel = new IntegrityModel();
-            integrityModel.setComponent(component);
-            try (response) {
-                Header[] headers = response.getAllHeaders();
-                String md5 = "";
-                String sha1 = "";
-                String sha256 = "";
-                for (Header header : headers) {
-                    if (header.getName().equalsIgnoreCase("X-Checksum-MD5")) {
-                        md5 = header.getValue();
-                    } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA1")) {
-                        sha1 = header.getValue();
-                    } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA256")) {
-                        sha256 = header.getValue();
-                    }
+            var packageUrl = component.getPurl();
+            if (packageUrl != null) {
+                String type = "jar";
+                if (packageUrl.getQualifiers() != null) {
+                    type = packageUrl.getQualifiers().getOrDefault("type", "jar");
                 }
-                if (component.getMd5().isEmpty()) {
-                    integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
-                }
-                if (component.getSha1().isEmpty()) {
-                    integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
-                }
-                if (component.getSha256().isEmpty()) {
-                    integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
-                }
+                final String mavenGavUrl = packageUrl.getNamespace().replaceAll("\\.", "/") + "/" + packageUrl.getName();
+                final String url = baseUrl + "/" + mavenGavUrl + "/" + packageUrl.getVersion() + "/" + packageUrl.getName() + "-" + packageUrl.getVersion() + "." + type;
 
-                if (md5.equals("")) {
-                    integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN);
-                }
-                if (sha1.equals("")) {
-                    integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN);
-                }
-                if (sha256.equals("")) {
-                    integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN);
-                }
-                if (integrityModel.isMd5HashMatched() == null) {
-                    //md5, sha1 or sha256 still "" means that the source of truth repo does not have this hash info and in that case, if there is a match with the others it is a valid component
-                    if (component.getMd5() != null && component.getMd5().equals(md5)) {
-                        LOGGER.debug("Md5 hash matched: expected value :{}, actual value: {}", component.getMd5(), md5);
-                        integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_PASS);
+                try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
+                    final StatusLine status = response.getStatusLine();
+                    if (status.getStatusCode() == HttpStatus.SC_OK) {
+                        return extractIntegrityModelFromResponse(component, response);
                     } else {
-                        LOGGER.debug("Md5 hash did not match: expected value :{}, actual value: {}", component.getMd5(), md5);
-                        integrityModel.setMd5HashMatched(HashMatchStatus.HASH_MATCH_STATUS_FAIL);
+                        throw new IntegrityAnalyzerException("Response status returned is not 200: " + response.getStatusLine().getStatusCode());
                     }
+                } catch (Exception ex) {
+                    LOGGER.warn("Head request for maven integrity failed. Not caching response");
+                    throw new IntegrityAnalyzerException("Head request for maven integrity failed. Not caching response", ex);
                 }
-                if (integrityModel.isSha1HashMatched() == null) {
-                    if (component.getSha1() != null && component.getSha1().equals(sha1)) {
-                        LOGGER.debug("sha1 hash matched: expected value: {}, actual value:{} ", component.getSha1(), sha1);
-                        integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_PASS);
-                    } else {
-                        LOGGER.debug("sha1 hash did not match: expected value :{}, actual value: {}", component.getSha1(), sha1);
-                        integrityModel.setSha1HashMatched(HashMatchStatus.HASH_MATCH_STATUS_FAIL);
-                    }
-                }
-                if (integrityModel.isSha256HashMatched() == null) {
-                    if (component.getSha256() != null && component.getSha256().equals(sha256)) {
-                        LOGGER.debug("sha256 hash matched: expected value: {}, actual value:{}", component.getSha256(), sha256);
-                        integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_PASS);
-                    } else {
-                        LOGGER.debug("sha256 hash did not match: expected value :{}, actual value: {}", component.getSha256(), sha256);
-                        integrityModel.setSha256HashMatched(HashMatchStatus.HASH_MATCH_STATUS_FAIL);
-                    }
-                }
-            } catch (Exception ex) {
-                LOGGER.error("An error occurred while performing head request for component: " + ex);
             }
-            return integrityModel;
         }
         return null;
     }

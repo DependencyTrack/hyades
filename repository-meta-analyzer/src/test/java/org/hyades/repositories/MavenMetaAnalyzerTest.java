@@ -18,17 +18,14 @@
  */
 package org.hyades.repositories;
 
-import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import jakarta.ws.rs.core.MediaType;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.HttpClients;
-import org.hyades.model.MetaAnalyzerException;
+import org.hyades.model.IntegrityAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -38,8 +35,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import java.util.UUID;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class MavenMetaAnalyzerTest {
 
@@ -99,7 +100,7 @@ class MavenMetaAnalyzerTest {
     @Test
     void testComponentWithNonMavenPurl() {
         Component component = new Component();
-        component.setPurl("pkg:pypi/com.typesafe.akka/package-does-not-exist@v1.2.0");
+        component.setPurl("pkg:maven/com.typesafe.akka/package-does-not-exist@v1.2.0");
         Assertions.assertFalse(analyzer.isApplicable(component));
         MetaModel metaModel = analyzer.analyze(component);
         Assertions.assertEquals(RepositoryType.PYPI.name(), metaModel.getComponent().getPurl().getType().toUpperCase());
@@ -108,7 +109,7 @@ class MavenMetaAnalyzerTest {
     @Test
     void testIOException() {
         Component component = new Component();
-        component.setPurl("pkg:pypi/com.typesafe.akka/package-does-not-exist@v1.2.0");
+        component.setPurl("pkg:maven/com.typesafe.akka/package-does-not-exist@v1.2.0");
         analyzer.setRepositoryBaseUrl("http://www.does.not.exist.com");
         MetaModel metaModel = analyzer.analyze(component);
         Assertions.assertEquals(metaModel.getComponent(), component);
@@ -122,7 +123,15 @@ class MavenMetaAnalyzerTest {
     }
 
     @Test
-    void testGetResponse200() throws MalformedPackageURLException {
+    void testGetIntegrityModel200() {
+        Component component = new Component();
+        component.setUuid(UUID.randomUUID());
+        component.setPurl("pkg:maven/typo3/package-empty-result@v1.2.0");
+        component.setMd5("md5hash");
+        component.setSha1("sha1hash");
+        component.setSha256("sha256hash");
+        component.setInternal(true);
+
         wireMock.stubFor(WireMock.head(WireMock.anyUrl()).withHeader("accept", containing("application/json"))
                 .willReturn(WireMock.aResponse()
                         .withStatus(200)
@@ -130,29 +139,33 @@ class MavenMetaAnalyzerTest {
                                                                     
                                 """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
                         )
-                        .withHeader("X-CheckSum-MD5", "098f6bcd4621d373cade4e832627b4f6")
-                        .withHeader("X-Checksum-SHA1", "a94a8fe5ccb19ba61c4c0873d341e987982fbbd3")
-                        .withHeader("X-Checksum-SHA256", "9f86d081884c7d659a2feaa0f55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")));
+                        .withHeader("X-CheckSum-MD5", "md5hash")
+                        .withHeader("X-Checksum-SHA1", "sha1hash")
+                        .withHeader("X-Checksum-SHA256", "sha256hash")));
         analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
-        CloseableHttpResponse response = analyzer.getIntegrityCheckResponse(new PackageURL("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23"));
-        Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        Assertions.assertEquals("098f6bcd4621d373cade4e832627b4f6", response.getFirstHeader("X-CheckSum-MD5").getValue());
-        Assertions.assertEquals("a94a8fe5ccb19ba61c4c0873d341e987982fbbd3", response.getFirstHeader("X-CheckSum-SHA1").getValue());
-        Assertions.assertEquals("9f86d081884c7d659a2feaa0f55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", response.getFirstHeader("X-CheckSum-SHA256").getValue());
+        var integrityModel = analyzer.getIntegrityModel(component);
+        assertNotNull(integrityModel);
+        assertEquals("pkg:maven/typo3/package-empty-result@v1.2.0", integrityModel.getComponent().getPurl().toString());
+        assertEquals("md5hash", integrityModel.getComponent().getMd5());
+        assertEquals("sha1hash", integrityModel.getComponent().getSha1());
+        assertEquals("sha256hash", integrityModel.getComponent().getSha256());
     }
 
     @Test
-    void testGetResponse404() {
+    void testGetIntegrityModel404() {
+        Component component = new Component();
+        component.setUuid(UUID.randomUUID());
+        component.setPurl("pkg:maven/typo3/package-empty-result@v1.2.0");
         wireMock.stubFor(WireMock.head(WireMock.anyUrl()).withHeader("accept", containing("application/json"))
                 .willReturn(WireMock.aResponse()
                         .withStatus(404)
                         .withResponseBody(Body.ofBinaryOrText("""
-                                                                    
+
                                 """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
                         )
                 ));
         analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
-        Assertions.assertThrows(MetaAnalyzerException.class, () -> analyzer.getIntegrityCheckResponse(new PackageURL("pkg:maven/com.typesafe.akka/akka-actor_2.13@2.5.23")));
+        Assertions.assertThrows(IntegrityAnalyzerException.class, () -> analyzer.getIntegrityModel(component));
     }
 }
 

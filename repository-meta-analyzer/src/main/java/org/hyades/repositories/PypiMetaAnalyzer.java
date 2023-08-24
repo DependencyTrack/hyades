@@ -19,12 +19,18 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
+import org.apache.http.Header;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.hyades.model.IntegrityAnalyzerException;
+import org.hyades.model.IntegrityModel;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
+import org.hyades.proto.repointegrityanalysis.v1.HashMatchStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -42,7 +48,7 @@ import java.util.Date;
  * @author Steve Springett
  * @since 3.4.0
  */
-public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
+public class PypiMetaAnalyzer extends AbstractMetaAnalyzer implements IntegrityAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PypiMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://pypi.org";
@@ -128,4 +134,36 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
         return this.getClass().getSimpleName();
     }
 
+    @Override
+    public IntegrityModel getIntegrityModel(Component component) {
+        if (component != null) {
+            var packageUrl = component.getPurl();
+            if (packageUrl != null) {
+                String type = "tar.gz";
+                if (packageUrl.getQualifiers() != null) {
+                    type = packageUrl.getQualifiers().getOrDefault("type", "tar.gz");
+                }
+                String pypiArtifactoryUrl = "";
+                if (packageUrl.getNamespace() != null) {
+                    pypiArtifactoryUrl += packageUrl.getNamespace().replaceAll("\\.", "/") + "/";
+                }
+                pypiArtifactoryUrl += packageUrl.getName() + "/" + packageUrl.getVersion();
+                String url = this.baseUrl + "/" + pypiArtifactoryUrl + "/"
+                        + packageUrl.getName() + "-" + packageUrl.getVersion() + "." + type;
+
+                try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
+                    final StatusLine status = response.getStatusLine();
+                    if (status.getStatusCode() == HttpStatus.SC_OK) {
+                        return extractIntegrityModelFromResponse(component, response);
+                    } else {
+                        throw new IntegrityAnalyzerException("Response status returned is not 200: " + response.getStatusLine().getStatusCode());
+                    }
+                } catch (Exception ex) {
+                    LOGGER.warn("Head request for pypi integrity failed. Not caching response");
+                    throw new IntegrityAnalyzerException("Head request for pypi integrity failed. Not caching response", ex);
+                }
+            }
+        }
+        return null;
+    }
 }

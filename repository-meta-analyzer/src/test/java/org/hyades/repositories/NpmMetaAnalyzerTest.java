@@ -21,10 +21,12 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.HttpHeaders;
 import org.apache.http.impl.client.HttpClients;
+import org.hyades.model.IntegrityAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -55,6 +58,11 @@ class NpmMetaAnalyzerTest {
     void beforeEach() {
         analyzer = new NpmMetaAnalyzer();
         analyzer.setHttpClient(HttpClients.createDefault());
+    }
+
+    @AfterEach
+    void afterEach() {
+        mockServer.reset();
     }
 
     @AfterAll
@@ -189,6 +197,25 @@ class NpmMetaAnalyzerTest {
         assertEquals("md5hash", integrityModel.getComponent().getMd5());
         assertEquals("sha1hash", integrityModel.getComponent().getSha1());
         assertEquals("sha256hash", integrityModel.getComponent().getSha256());
+    }
+
+    @Test
+    void testIntegrityAnalyzerException() {
+        Component component = new Component();
+        component.setUuid(UUID.randomUUID());
+        component.setPurl("pkg:npm/amazon-s3-uri@0.0.1");
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                                .withPath("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(400)
+                );
+        assertThrows(IntegrityAnalyzerException.class, () -> analyzer.getIntegrityModel(component));
     }
 
     @Test

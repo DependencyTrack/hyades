@@ -26,7 +26,8 @@ public class RepositoryAnalyzerFactory {
 
     private static final Map<String, Supplier<IntegrityAnalyzer>> INTEGRITY_ANALYZER_SUPPLIERS = Map.of(
             PackageURL.StandardTypes.MAVEN, MavenMetaAnalyzer::new,
-            PackageURL.StandardTypes.NPM, NpmMetaAnalyzer::new
+            PackageURL.StandardTypes.NPM, NpmMetaAnalyzer::new,
+            PackageURL.StandardTypes.PYPI, PypiMetaAnalyzer::new
     );
 
     private final CloseableHttpClient httpClient;
