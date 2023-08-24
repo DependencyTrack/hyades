@@ -100,7 +100,7 @@ class MavenMetaAnalyzerTest {
     @Test
     void testComponentWithNonMavenPurl() {
         Component component = new Component();
-        component.setPurl("pkg:maven/com.typesafe.akka/package-does-not-exist@v1.2.0");
+        component.setPurl("pkg:pypi/com.typesafe.akka/package-does-not-exist@v1.2.0");
         Assertions.assertFalse(analyzer.isApplicable(component));
         MetaModel metaModel = analyzer.analyze(component);
         Assertions.assertEquals(RepositoryType.PYPI.name(), metaModel.getComponent().getPurl().getType().toUpperCase());
