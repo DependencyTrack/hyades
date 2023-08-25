@@ -1,17 +1,14 @@
 package org.hyades.processor;
 
-import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.google.protobuf.Timestamp;
 import io.quarkus.cache.Cache;
-import io.quarkus.narayana.jta.QuarkusTransaction;
 import org.apache.kafka.streams.processor.api.ContextualFixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.hyades.common.SecretDecryptor;
 import org.hyades.model.MetaAnalyzerCacheKey;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Repository;
-import org.hyades.persistence.model.RepositoryType;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
@@ -20,9 +17,11 @@ import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import static org.hyades.util.RepoAnalyzerUtil.getApplicableRepositories;
+import static org.hyades.util.RepoAnalyzerUtil.parsePurl;
 
 class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Component, AnalysisResult> {
 
@@ -50,7 +49,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         // NOTE: Do not use purlWithoutVersion for the analysis!
         // It only contains the type, namespace and name, but is missing the
         // version and other qualifiers. Some analyzers require the version.
-        final PackageURL purl = mustParsePurl(component.getPurl());
+        final PackageURL purl = parsePurl(component.getPurl());
         final Optional<IMetaAnalyzer> optionalAnalyzer = analyzerFactory.createMetaAnalyzer(purl);
         if (optionalAnalyzer.isEmpty()) {
             LOGGER.debug("No analyzer is capable of analyzing {}", purl);
@@ -62,7 +61,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
 
         final IMetaAnalyzer analyzer = optionalAnalyzer.get();
 
-        for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
+        for (Repository repository : getApplicableRepositories(repoEntityRepository, analyzer.supportedRepositoryType())) {
 
             if ((repository.isInternal() && !component.getInternal())
                     || (!repository.isInternal() && component.getInternal())) {
@@ -149,33 +148,6 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
             return Optional.of(result);
         }
         return Optional.empty();
-    }
-
-    private PackageURL mustParsePurl(final String purl) {
-        try {
-            return new PackageURL(purl);
-        } catch (MalformedPackageURLException e) {
-            throw new IllegalStateException("""
-                    The provided PURL is invalid, even though it should have been
-                    validated in a previous processing step
-                    """, e);
-        }
-    }
-
-    private List<Repository> getApplicableRepositories(final RepositoryType repositoryType) {
-        // Hibernate requires an active transaction to perform any sort of interaction
-        // with the database. Because processors can't be CDI beans, we cannot use
-        // @Transactional and the like. Falling back to manual transaction management.
-        //
-        // NOTE: The result of this query can potentially be cached for at least a few minutes.
-        // Executing it for every single component feels excessive.
-        // Quarkus has Hibernate L2 cache enabled by default, we just need to opt in to using
-        // it for this query: https://quarkus.io/guides/hibernate-orm#caching-of-queries
-        // Should be tested whether throughput can be improved this way.
-        //changed this to joinexisting because with new transaction, it is not fetching values that were inserted from
-        // existing previous transaction and returning empty result
-        return QuarkusTransaction.joiningExisting()
-                .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 
     private Optional<AnalysisResult> getCachedResult(final MetaAnalyzerCacheKey cacheKey) {

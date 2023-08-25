@@ -1,17 +1,14 @@
 package org.hyades.processor;
 
-import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.google.protobuf.Timestamp;
 import io.quarkus.cache.Cache;
-import io.quarkus.narayana.jta.QuarkusTransaction;
 import org.apache.kafka.streams.processor.api.ContextualFixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
 import org.hyades.common.SecretDecryptor;
 import org.hyades.model.IntegrityAnalysisCacheKey;
 import org.hyades.model.IntegrityModel;
 import org.hyades.persistence.model.Repository;
-import org.hyades.persistence.model.RepositoryType;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repointegrityanalysis.v1.HashMatchStatus;
 import org.hyades.proto.repointegrityanalysis.v1.IntegrityResult;
@@ -22,10 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.hyades.util.RepoAnalyzerUtil.getApplicableRepositories;
+import static org.hyades.util.RepoAnalyzerUtil.parsePurl;
 
 public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Component, IntegrityResult> {
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrityAnalyzerProcessor.class);
@@ -51,7 +50,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
         // NOTE: Do not use purlWithoutVersion for the analysis!
         // It only contains the type, namespace and name, but is missing the
         // version and other qualifiers. Some analyzers require the version.
-        final PackageURL purl = mustParsePurl(component.getPurl());
+        final PackageURL purl = parsePurl(component.getPurl());
         final Optional<IntegrityAnalyzer> integrityAnalyzer = integrityAnalyzerFactory.createIntegrityAnalyzer(purl);
         if (integrityAnalyzer.isEmpty()) {
             LOGGER.debug("No analyzer is capable of analyzing {}", purl);
@@ -62,7 +61,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
         }
 
         final IntegrityAnalyzer analyzer = integrityAnalyzer.get();
-        for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
+        for (Repository repository : getApplicableRepositories(repoEntityRepository, analyzer.supportedRepositoryType())) {
             if (repository.isIntegrityCheckEnabled()) {
                 if ((component.hasMd5Hash() || component.hasSha256Hash() || component.hasSha1Hash())) {
                     LOGGER.debug("Will perform integrity check for received component:  {} for repository: {}", component.getPurl(), repository.getIdentifier());
@@ -89,33 +88,6 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                         .setMd5HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN).setSha1HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN)
                         .setSha256HashMatch(HashMatchStatus.HASH_MATCH_STATUS_UNKNOWN).build())
                 .withTimestamp(context().currentSystemTimeMs()));
-    }
-
-    private PackageURL mustParsePurl(final String purl) {
-        try {
-            return new PackageURL(purl);
-        } catch (MalformedPackageURLException e) {
-            throw new IllegalStateException("""
-                    The provided PURL is invalid, even though it should have been
-                    validated in a previous processing step
-                    """, e);
-        }
-    }
-
-    private List<Repository> getApplicableRepositories(final RepositoryType repositoryType) {
-        // Hibernate requires an active transaction to perform any sort of interaction
-        // with the database. Because processors can't be CDI beans, we cannot use
-        // @Transactional and the like. Falling back to manual transaction management.
-        //
-        // NOTE: The result of this query can potentially be cached for at least a few minutes.
-        // Executing it for every single component feels excessive.
-        // Quarkus has Hibernate L2 cache enabled by default, we just need to opt in to using
-        // it for this query: https://quarkus.io/guides/hibernate-orm#caching-of-queries
-        // Should be tested whether throughput can be improved this way.
-        //changed this to joinexisting because with new transaction, it is not fetching values that were inserted from
-        // existing previous transaction and returning empty result
-        return QuarkusTransaction.joiningExisting()
-                .call(() -> repoEntityRepository.findEnabledRepositoriesByType(repositoryType));
     }
 
     private IntegrityResult performIntegrityCheckForComponent(final IntegrityAnalyzer analyzer, final Repository repository, final Component component) {
