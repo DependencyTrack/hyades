@@ -156,10 +156,10 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                 .setUuid(integrityModel.getComponent().getUuid().toString()).build();
 
         final IntegrityResult.Builder resultBuilder = IntegrityResult.newBuilder()
-                .setMd5HashMatch(integrityModel.isMd5HashMatched())
+                .setMd5HashMatch(integrityModel.getHashMatchStatusMd5())
                 .setComponent(analyzerComponent)
-                .setSha1HashMatch(integrityModel.isSha1HashMatched())
-                .setSha256HashMatch(integrityModel.isSha256HashMatched())
+                .setSha1HashMatch(integrityModel.getHashMatchStatusSha1())
+                .setSha256HashMatch(integrityModel.getHashMatchStatusSha256())
                 .setRepositoryUrl(repository.getUrl())
                 .setUpdated(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
         return resultBuilder.build();

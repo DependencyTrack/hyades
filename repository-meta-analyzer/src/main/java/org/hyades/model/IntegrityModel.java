@@ -10,32 +10,32 @@ public class IntegrityModel implements Serializable {
 
     private Component component;
     private Date publishedTimestamp;
-    private HashMatchStatus md5HashMatched;
-    private HashMatchStatus sha1HashMatched;
-    private HashMatchStatus sha256HashMatched;
+    private HashMatchStatus hashMatchStatusMd5;
+    private HashMatchStatus hashMatchStatusSha1;
+    private HashMatchStatus hashMatchStatusSha256;
 
-    public HashMatchStatus isMd5HashMatched() {
-        return md5HashMatched;
+    public HashMatchStatus getHashMatchStatusMd5() {
+        return hashMatchStatusMd5;
     }
 
-    public void setMd5HashMatched(HashMatchStatus md5HashMatched) {
-        this.md5HashMatched = md5HashMatched;
+    public void setHashMatchStatusMd5(HashMatchStatus hashMatchStatusMd5) {
+        this.hashMatchStatusMd5 = hashMatchStatusMd5;
     }
 
-    public HashMatchStatus isSha1HashMatched() {
-        return sha1HashMatched;
+    public HashMatchStatus getHashMatchStatusSha1() {
+        return hashMatchStatusSha1;
     }
 
-    public void setSha1HashMatched(HashMatchStatus sha1HashMatched) {
-        this.sha1HashMatched = sha1HashMatched;
+    public void setHashMatchStatusSha1(HashMatchStatus hashMatchStatusSha1) {
+        this.hashMatchStatusSha1 = hashMatchStatusSha1;
     }
 
-    public HashMatchStatus isSha256HashMatched() {
-        return sha256HashMatched;
+    public HashMatchStatus getHashMatchStatusSha256() {
+        return hashMatchStatusSha256;
     }
 
-    public void setSha256HashMatched(HashMatchStatus sha256HashMatched) {
-        this.sha256HashMatched = sha256HashMatched;
+    public void setHashMatchStatusSha256(HashMatchStatus hashMatchStatusSha256) {
+        this.hashMatchStatusSha256 = hashMatchStatusSha256;
     }
 
     public Component getComponent() {

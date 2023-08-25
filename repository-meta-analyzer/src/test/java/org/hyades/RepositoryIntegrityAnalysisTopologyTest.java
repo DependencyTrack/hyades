@@ -108,9 +108,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
                 .build();
 
         var integrityModelMock = createMockIntegrityModel(command);
-        integrityModelMock.setMd5HashMatched(HASH_MATCH_STATUS_PASS);
-        integrityModelMock.setSha1HashMatched(HASH_MATCH_STATUS_PASS);
-        integrityModelMock.setSha256HashMatched(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusMd5(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusSha1(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusSha256(HASH_MATCH_STATUS_PASS);
         when(analyzerMock.getIntegrityModel(any())).thenReturn(integrityModelMock);
 
         // mock repository data
@@ -151,9 +151,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
         repository.setUrl("https://localhost");
 
         var integrityModelMock = createMockIntegrityModel(command);
-        integrityModelMock.setMd5HashMatched(HASH_MATCH_STATUS_PASS);
-        integrityModelMock.setSha1HashMatched(HASH_MATCH_STATUS_PASS);
-        integrityModelMock.setSha256HashMatched(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusMd5(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusSha1(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusSha256(HASH_MATCH_STATUS_PASS);
 
         when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
                 .thenReturn(List.of(repository));
@@ -200,9 +200,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
                 .build();
 
         var integrityModelMock = createMockIntegrityModel(command);
-        integrityModelMock.setMd5HashMatched(HASH_MATCH_STATUS_PASS);
-        integrityModelMock.setSha1HashMatched(HASH_MATCH_STATUS_PASS);
-        integrityModelMock.setSha256HashMatched(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusMd5(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusSha1(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusSha256(HASH_MATCH_STATUS_PASS);
         when(analyzerMock.getIntegrityModel(any())).thenReturn(integrityModelMock);
 
         Repository repository = new Repository();
@@ -236,9 +236,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
                         .setUuid(UUID.randomUUID().toString()))
                 .build();
         var integrityModelMock = createMockIntegrityModel(command);
-        integrityModelMock.setMd5HashMatched(HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
-        integrityModelMock.setSha1HashMatched(HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
-        integrityModelMock.setSha256HashMatched(HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
+        integrityModelMock.setHashMatchStatusMd5(HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
+        integrityModelMock.setHashMatchStatusSha1(HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
+        integrityModelMock.setHashMatchStatusSha256(HASH_MATCH_STATUS_COMPONENT_MISSING_HASH);
 
         when(analyzerMock.getIntegrityModel(any())).thenReturn(integrityModelMock);
         Repository repository = new Repository();
@@ -272,9 +272,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
                         .setUuid(UUID.randomUUID().toString()))
                 .build();
         var integrityModelMock = createMockIntegrityModel(command);
-        integrityModelMock.setMd5HashMatched(HASH_MATCH_STATUS_UNKNOWN);
-        integrityModelMock.setSha1HashMatched(HASH_MATCH_STATUS_UNKNOWN);
-        integrityModelMock.setSha256HashMatched(HASH_MATCH_STATUS_UNKNOWN);
+        integrityModelMock.setHashMatchStatusMd5(HASH_MATCH_STATUS_UNKNOWN);
+        integrityModelMock.setHashMatchStatusSha1(HASH_MATCH_STATUS_UNKNOWN);
+        integrityModelMock.setHashMatchStatusSha256(HASH_MATCH_STATUS_UNKNOWN);
 
         when(analyzerMock.getIntegrityModel(any())).thenReturn(integrityModelMock);
         Repository repository = new Repository();
@@ -308,9 +308,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
                         .setUuid(UUID.randomUUID().toString()))
                 .build();
         var integrityModelMock = createMockIntegrityModel(command);
-        integrityModelMock.setMd5HashMatched(HASH_MATCH_STATUS_FAIL);
-        integrityModelMock.setSha1HashMatched(HASH_MATCH_STATUS_FAIL);
-        integrityModelMock.setSha256HashMatched(HASH_MATCH_STATUS_FAIL);
+        integrityModelMock.setHashMatchStatusMd5(HASH_MATCH_STATUS_FAIL);
+        integrityModelMock.setHashMatchStatusSha1(HASH_MATCH_STATUS_FAIL);
+        integrityModelMock.setHashMatchStatusSha256(HASH_MATCH_STATUS_FAIL);
 
         when(analyzerMock.getIntegrityModel(any())).thenReturn(integrityModelMock);
         Repository repository = new Repository();
@@ -346,9 +346,9 @@ class RepositoryIntegrityAnalysisTopologyTest {
                 .build();
 
         var integrityModelMock = createMockIntegrityModel(command);
-        integrityModelMock.setMd5HashMatched(HASH_MATCH_STATUS_PASS);
-        integrityModelMock.setSha1HashMatched(HASH_MATCH_STATUS_PASS);
-        integrityModelMock.setSha256HashMatched(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusMd5(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusSha1(HASH_MATCH_STATUS_PASS);
+        integrityModelMock.setHashMatchStatusSha256(HASH_MATCH_STATUS_PASS);
         when(analyzerMock.getIntegrityModel(any())).thenReturn(integrityModelMock);
 
         Repository repository = new Repository();
