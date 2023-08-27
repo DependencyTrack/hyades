@@ -7,9 +7,13 @@ scrape_configs:
   - names: [ "redpanda" ]
     type: A
     port: 9644
+
 - job_name: apiserver
   scrape_interval: 15s
   scheme: http
+# static config to be used when running services locally and prometheus in a container
+#  static_configs:
+#    - targets: [ "host.docker.internal:8080" ]
   dns_sd_configs:
   - names: [ "apiserver" ]
     type: A
@@ -18,6 +22,9 @@ scrape_configs:
   scrape_interval: 15s
   scheme: http
   metrics_path: /q/metrics
+# static config to be used when running services locally and prometheus in a container
+#  static_configs:
+#    - targets: [ "host.docker.internal:8090" ]
   dns_sd_configs:
   - names: [ "notification-publisher" ]
     type: A
@@ -26,6 +33,9 @@ scrape_configs:
   scrape_interval: 15s
   scheme: http
   metrics_path: /q/metrics
+# static config to be used when running services locally and prometheus in a container
+#  static_configs:
+#    - targets: [ "host.docker.internal:8091" ]
   dns_sd_configs:
   - names: [ "repo-meta-analyzer" ]
     type: A
@@ -34,6 +44,9 @@ scrape_configs:
   scrape_interval: 15s
   scheme: http
   metrics_path: /q/metrics
+# static config to be used when running services locally and prometheus in a container
+#  static_configs:
+#    - targets: [ "host.docker.internal:8092" ]
   dns_sd_configs:
   - names: [ "vuln-analyzer" ]
     type: A
@@ -43,6 +56,9 @@ scrape_configs:
   scheme: http
   metrics_path: /q/metrics
   dns_sd_configs:
-  - names: [ "mirror-service" ]
-    type: A
-    port: 8093
+    - names: [ "mirror-service" ]
+      type: A
+      port: 8092
+# static config to be used when running services locally and prometheus in a container
+#  static_configs:
+#    - targets: [ "host.docker.internal:8093" ]

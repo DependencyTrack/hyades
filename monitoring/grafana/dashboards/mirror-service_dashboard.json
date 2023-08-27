@@ -237,10 +237,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(kafka_stream_topic_records_consumed_total{instance=~\"$instance\", job=\"mirror-service\"}[1m])) by (topic)",
+          "expr": "sum(rate(kafka_stream_topic_records_consumed_total{instance=~\"$instance\"}[1m])) by (topic)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -334,10 +334,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(kafka_stream_topic_records_produced_total{instance=~\"$instance\", job=\"mirror-service\"}[1m])) by (topic)",
+          "expr": "sum(rate(kafka_stream_topic_records_produced_total{instance=~\"$instance\"}[1m])) by (topic)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -627,10 +627,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(kafka_stream_thread_poll_records_avg{instance=~\"$instance\", job=\"mirror-service\"}) by (instance) >= 0",
+          "expr": "sum(kafka_stream_thread_poll_records_avg{instance=~\"$instance\"}) by (instance) >= 0",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -723,10 +723,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(kafka_stream_thread_process_total{instance=~\"$instance\", job=\"mirror-service\"}[1m])) by (instance)",
+          "expr": "sum(rate(kafka_stream_thread_process_total{instance=~\"$instance\"}[1m])) by (instance)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -734,7 +734,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
           "expr": "sum(rate(kafka_stream_thread_process_total{instance=~\"$instance\"}[1m]))",
@@ -832,10 +832,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(kafka_stream_thread_process_latency_avg{instance=~\"$instance\",job=\"mirror-service\"}) by (instance) >= 0",
+          "expr": "sum(kafka_stream_thread_process_latency_avg{instance=~\"$instance\"}) by (instance) >= 0",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1024,10 +1024,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(kafka_stream_thread_punctuate_latency_avg{instance=~\"$instance\", job=\"mirror-service\"}) by (instance)",
+          "expr": "sum(kafka_stream_thread_punctuate_latency_avg{instance=~\"$instance\"}) by (instance)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1121,10 +1121,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "rate(kafka_consumer_request_total{instance=~\"$instance\", job=\"mirror-service\"}[5m]) ",
+          "expr": "rate(kafka_consumer_request_total{instance=~\"$instance\"}[5m]) ",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1218,10 +1218,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(kafka_stream_state_get_rate{instance=~\"$instance\", job=\"mirror-service\"}) by (in_memory_state_id)",
+          "expr": "sum(kafka_stream_state_get_rate{instance=~\"$instance\"}) by (in_memory_state_id)",
           "legendFormat": "{{in_memory_state_id}} {{thread_id}}",
           "range": true,
           "refId": "A"
@@ -1315,10 +1315,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(kafka_stream_state_put_rate{instance=~\"$instance\", job=\"mirror-service\"}) by (in_memory_state_id)",
+          "expr": "sum(kafka_stream_state_put_rate{instance=~\"$instance\"}) by (in_memory_state_id)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1412,10 +1412,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Prometheus"
+            "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(kafka_stream_state_delete_rate{instance=~\"$instance\", job=\"mirror-service\"}) by (in_memory_state_id)",
+          "expr": "sum(kafka_stream_state_delete_rate{instance=~\"$instance\"}) by (in_memory_state_id)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1433,9 +1433,13 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "prometheus",
