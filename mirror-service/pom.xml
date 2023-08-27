@@ -56,6 +56,10 @@
         </dependency>
         <dependency>
             <groupId>us.springett</groupId>
+            <artifactId>cpe-parser</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>us.springett</groupId>
             <artifactId>cvss-calculator</artifactId>
         </dependency>
 

@@ -1,9 +1,13 @@
 package org.hyades.vulnmirror.datasource.util;
 
 import com.github.packageurl.PackageURL;
+import io.github.jeremylong.openvulnerability.client.nvd.CvssV31;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
 import org.cyclonedx.proto.v1_4.Severity;
+import us.springett.cvss.Cvss;
+import us.springett.cvss.CvssV2;
+import us.springett.cvss.CvssV3;
 
 import java.util.Optional;
 
@@ -26,6 +30,35 @@ public class ParserUtil {
             }
         }
         return null;
+    }
+
+    public static Severity calculateCvssSeverity(final Cvss cvss) {
+        if (cvss == null) {
+            return SEVERITY_UNKNOWN;
+        }
+
+        final double baseScore = cvss.calculateScore().getBaseScore();
+        if (cvss instanceof CvssV3 || cvss instanceof CvssV31) {
+            if (baseScore >= 9) {
+                return SEVERITY_CRITICAL;
+            } else if (baseScore >= 7) {
+                return SEVERITY_HIGH;
+            } else if (baseScore >= 4) {
+                return SEVERITY_MEDIUM;
+            } else if (baseScore > 0) {
+                return SEVERITY_LOW;
+            }
+        } else if (cvss instanceof CvssV2) {
+            if (baseScore >= 7) {
+                return SEVERITY_HIGH;
+            } else if (baseScore >= 4) {
+                return SEVERITY_MEDIUM;
+            } else if (baseScore > 0) {
+                return SEVERITY_LOW;
+            }
+        }
+
+        return SEVERITY_UNKNOWN;
     }
 
     public static Severity mapSeverity(String severity) {

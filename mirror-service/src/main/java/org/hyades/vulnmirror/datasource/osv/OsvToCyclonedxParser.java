@@ -7,7 +7,7 @@ import com.github.packageurl.PackageURL;
 import com.google.protobuf.Timestamp;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
 import org.cyclonedx.proto.v1_4.Property;
@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.Score;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_UNKNOWN;
 import static org.hyades.common.model.Severity.getSeverityByLevel;
@@ -45,6 +48,8 @@ import static org.hyades.vulnmirror.datasource.util.ParserUtil.mapSeverity;
 public class OsvToCyclonedxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
+    private static final Pattern WILDCARD_VERS_PATTERN = Pattern.compile("^vers:\\w+/\\*$");
+    private static final Pattern ZERO_VERSION_PATTERN = Pattern.compile("^0(\\.0)*$");
     private static final UUID UUID_V5_NAMESPACE = UUID.fromString("ffbefd63-724d-47b6-8d98-3deb06361885");
 
     private static final String TITLE_PROPERTY_NAME = "dependency-track:vuln:title";
@@ -121,7 +126,7 @@ public class OsvToCyclonedxParser {
                 bom.addComponents(component);
                 bomReference = component.getBomRef();
             }
-            VulnerabilityAffects versionRangeAffected = getAffectedPackageVersionRange(osvAffectedObj, ecoSystem);
+            VulnerabilityAffects versionRangeAffected = getAffectedPackageVersionRange(vulnId, osvAffectedObj, ecoSystem);
             VulnerabilityAffects rangeWithBomReference = VulnerabilityAffects.newBuilder(versionRangeAffected)
                     .setRef(bomReference).build();
             affects.add(rangeWithBomReference);
@@ -129,7 +134,7 @@ public class OsvToCyclonedxParser {
         return affects;
     }
 
-    private static VulnerabilityAffects getAffectedPackageVersionRange(JSONObject osvAffectedObj, String ecoSystem) {
+    private static VulnerabilityAffects getAffectedPackageVersionRange(final String vulnId, JSONObject osvAffectedObj, String ecoSystem) {
 
         // Ranges and Versions for each affected package
         JSONArray rangesArr = osvAffectedObj.optJSONArray("ranges");
@@ -140,11 +145,27 @@ public class OsvToCyclonedxParser {
         if (rangesArr != null) {
             rangesArr.forEach(item -> {
                 var range = (JSONObject) item;
-                versionRanges.addAll(generateRangeSpecifier(osvAffectedObj, range, ecoSystem));
+                versionRanges.addAll(generateRangeSpecifier(vulnId, osvAffectedObj, range, ecoSystem));
             });
         }
-        // if ranges are not available or only commit hash range is available, look for versions
-        if (versions != null) {
+
+        // OSV expands ranges into exact versions. While this is a nice service to offer, it means
+        // that we'll get duplicate data if we consume both the ranges and exact versions.
+        //
+        // On the other hand, there are cases like https://osv-vulnerabilities.storage.googleapis.com/npm/MAL-2023-995.json,
+        // where the range is expressing a `>=0` constraint, but an exact version (`103.99.99`) is provided.
+        // Consuming only the range, or both range and exact version will yield false positives.
+        //
+        // Thus, we only consume exact versions when either:
+        //   * No ranges could be parsed at all
+        //   * Only wildcard ranges (`>=0`) were parsed
+        // In the latter case, wildcard ranges will be dropped in favor of the exact versions.
+        final boolean hasOnlyWildcardRanges = versionRanges.stream()
+                .map(VulnerabilityAffectedVersions::getRange)
+                .allMatch(WILDCARD_VERS_PATTERN.asPredicate());
+        if ((versionRanges.isEmpty() || hasOnlyWildcardRanges) && versions != null) {
+            versionRanges.clear(); // Remove any existing wildcard ranges.
+
             versions.forEach(version -> {
                 var versionRange = VulnerabilityAffectedVersions.newBuilder();
                 versionRange.setVersion(String.valueOf(version));
@@ -198,9 +219,7 @@ public class OsvToCyclonedxParser {
         return component.build();
     }
 
-    private static List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject affectedRange, JSONObject range, String ecoSystem) {
-
-        List<VulnerabilityAffectedVersions> versionRanges = new ArrayList<>();
+    private static List<VulnerabilityAffectedVersions> generateRangeSpecifier(final String vulnId, JSONObject affectedRange, JSONObject range, String ecoSystem) {
         String rangeType = range.optString("type");
         if (!"ECOSYSTEM".equalsIgnoreCase(rangeType) && !"SEMVER".equalsIgnoreCase(rangeType)) {
             // We can't support ranges of type GIT for now, as evaluating them requires knowledge of
@@ -208,6 +227,7 @@ public class OsvToCyclonedxParser {
             //
             // We're also implicitly excluding ranges of types that we don't yet know of.
             // This is a tradeoff of potentially missing new data vs. flooding our users' database with junk data.
+            LOGGER.warn("{}: Expected range event of type \"introduced\", but got {}; Skipping", vulnId, rangeType);
             return List.of();
         }
 
@@ -216,6 +236,7 @@ public class OsvToCyclonedxParser {
             return List.of();
         }
 
+        final var versionRanges = new ArrayList<VulnerabilityAffectedVersions>();
         for (int i = 0; i < rangeEvents.length(); i++) {
             JSONObject event = rangeEvents.getJSONObject(i);
             String introduced = event.optString("introduced", null);
@@ -225,15 +246,12 @@ public class OsvToCyclonedxParser {
                 //
                 // If events are not sorted, we have no way to tell what the correct order should be.
                 // We make a tradeoff by assuming that ranges are sorted, and potentially skip ranges that aren't.
+                LOGGER.warn("{}: Skipping range event {} in search for an \"introduced\" event", vulnId, event);
                 continue;
             }
-            var versionRange = VulnerabilityAffectedVersions.newBuilder();
-            String uniVersionRange = "vers:";
-            if (ecoSystem != null) {
-                uniVersionRange += ecoSystem;
-            }
-            uniVersionRange += "/";
-            uniVersionRange += ">=" + introduced + "|";
+
+            Pair<String, String> lowerBoundConstraint = Pair.of(">=", introduced);
+            Pair<String, String> upperBoundConstraint = null;
 
             if (i + 1 < rangeEvents.length()) {
                 event = rangeEvents.getJSONObject(i + 1);
@@ -242,28 +260,55 @@ public class OsvToCyclonedxParser {
                 String limit = event.optString("limit", null);
 
                 if (fixed != null) {
-                    uniVersionRange += "<" + fixed + "|";
+                    upperBoundConstraint = Pair.of("<", fixed);
                     i++;
                 } else if (lastAffected != null) {
-                    uniVersionRange += "<=" + lastAffected + "|";
+                    upperBoundConstraint = Pair.of("<=", lastAffected);
                     i++;
                 } else if (limit != null) {
-                    uniVersionRange += "<" + limit + "|";
+                    upperBoundConstraint = Pair.of("<", limit);
                     i++;
                 }
             }
 
             // Special treatment for GitHub: https://github.com/github/advisory-database/issues/470
             JSONObject databaseSpecific = affectedRange.optJSONObject("database_specific");
-            if (databaseSpecific != null) {
+            if (databaseSpecific != null && upperBoundConstraint == null) {
                 String lastAffectedRange = databaseSpecific.optString("last_known_affected_version_range", null);
                 if (lastAffectedRange != null) {
-                    uniVersionRange += lastAffectedRange;
+                    if (lastAffectedRange.startsWith("<=")) {
+                        upperBoundConstraint = Pair.of("<=", lastAffectedRange.replaceFirst("<=", "").trim());
+                    } else if (lastAffectedRange.startsWith("<")) {
+                        upperBoundConstraint = Pair.of("<", lastAffectedRange.replaceFirst("<", "").trim());
+                    } else {
+                        LOGGER.warn("{}: Skipping last_known_affected_version_range in unexpected format: {}", vulnId, lastAffectedRange);
+                    }
                 }
             }
-            versionRange.setRange(StringUtils.chop(uniVersionRange));
-            versionRanges.add(versionRange.build());
+
+            String versConstraints = "";
+            if (!(lowerBoundConstraint.getLeft().equals(">=") && lowerBoundConstraint.getRight().equals("0"))) {
+                // `>=0|<X` is the same as `<X`; Omit `>=0` for brevity.
+                versConstraints += lowerBoundConstraint.getLeft() + URLEncoder.encode(lowerBoundConstraint.getRight(), StandardCharsets.UTF_8);
+                if (upperBoundConstraint != null) {
+                    versConstraints += "|";
+                }
+            } else if ((lowerBoundConstraint.getLeft().equals(">=") && ZERO_VERSION_PATTERN.asPredicate().test(lowerBoundConstraint.getRight()))
+                    && upperBoundConstraint == null) {
+                // `>=0` without upper bound constraint means all versions are affected.
+                // Note that wildcard ranges will currently be ignored by the API server.
+                versConstraints += "*";
+            }
+            if (upperBoundConstraint != null) {
+                versConstraints += upperBoundConstraint.getLeft() + URLEncoder.encode(upperBoundConstraint.getRight(), StandardCharsets.UTF_8);
+            }
+
+            if (!versConstraints.isEmpty()) {
+                var vers = "vers:" + Optional.ofNullable(ecoSystem).orElse("generic") + "/" + versConstraints;
+                versionRanges.add(VulnerabilityAffectedVersions.newBuilder().setRange(vers).build());
+            }
         }
+
         return versionRanges;
     }
 

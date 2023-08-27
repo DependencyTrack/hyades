@@ -166,8 +166,6 @@ class GitHubMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
-        // FIXME: rating.score should not report 0.0 when neither a vector, nor a pre-calculated score is provided by the source
-        // FIXME: affects should not have duplicate entries for the same ref; Accumulate multiple versions under one affects node instead
         // FIXME: vers ranges should not include whitespace
         assertThatJson(JsonFormat.printer().print(vulnRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
@@ -205,20 +203,16 @@ class GitHubMirrorTest {
                               "updated": "2021-12-03T14:54:43Z",
                               "ratings": [
                                 {
+                                  "method": "SCORE_METHOD_OTHER",
                                   "severity": "SEVERITY_MEDIUM",
-                                  "score": 0.0
+                                  "source": { "name": "GITHUB" }
                                 }
                               ],
                               "affects": [
                                 {
                                   "ref": "3c41e06b-5923-5392-a1e3-64a630c97591",
                                   "versions": [
-                                    { "range": "vers:nuget/>= 3.0.0|< 3.4.1" }
-                                  ]
-                                },
-                                {
-                                  "ref": "3c41e06b-5923-5392-a1e3-64a630c97591",
-                                  "versions": [
+                                    { "range": "vers:nuget/>= 3.0.0|< 3.4.1" },
                                     { "range": "vers:nuget/>= 4.0.0|< 4.3.1" }
                                   ]
                                 },

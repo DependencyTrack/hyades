@@ -126,11 +126,7 @@ class OsvToCyclonedxParserTest {
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
                                "versions": [{
-                                 "range": "vers:maven/>=0|<2.0.17"
-                               }, {
-                                 "version": "1.0.0.RELEASE"
-                               }, {
-                                 "version": "2.0.9.RELEASE"
+                                 "range": "vers:maven/<2.0.17"
                                }]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
@@ -139,11 +135,7 @@ class OsvToCyclonedxParserTest {
                                }, {
                                  "range": "vers:maven/>=3|<4"
                                }, {
-                                 "range": "vers:maven/>=0|<1"
-                               }, {
-                                 "version": "1.0.0.RELEASE"
-                               }, {
-                                 "version": "2.0.9.RELEASE"
+                                 "range": "vers:maven/<1"
                                }]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
@@ -151,37 +143,21 @@ class OsvToCyclonedxParserTest {
                                  "range": "vers:maven/>=3"
                                }, {
                                  "range": "vers:maven/>=4|<5"
-                               }, {
-                                 "version": "1.0.0.RELEASE"
-                               }, {
-                                 "version": "2.0.9.RELEASE"
                                }]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
                                "versions": [{
                                  "range": "vers:maven/>=3.1.0|<3.3.0"
-                               }, {
-                                 "version": "1.0.0.RELEASE"
-                               }, {
-                                 "version": "2.0.9.RELEASE"
                                }]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
                                "versions": [{
                                  "range": "vers:maven/>=10|<13"
-                               }, {
-                                 "version": "1.0.0.RELEASE"
-                               }, {
-                                 "version": "2.0.9.RELEASE"
                                }]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
                                "versions": [{
-                                 "range": "vers:maven/>=10|<= 29."
-                               }, {
-                                 "version": "1.0.0.RELEASE"
-                               }, {
-                                 "version": "2.0.9.RELEASE"
+                                 "range": "vers:maven/>=10|<=29.0"
                                }]
                              }],
                              "properties": [{
@@ -243,9 +219,7 @@ class OsvToCyclonedxParserTest {
                               "affects": [{
                                 "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
                                 "versions": [{
-                                  "range": "vers:maven/>=0|<2.0.17"
-                                }, {
-                                  "version": "1.0.0.RELEASE"
+                                  "range": "vers:maven/<2.0.17"
                                 }]
                               }],
                               "properties": [{
@@ -319,6 +293,341 @@ class OsvToCyclonedxParserTest {
                              }]
                            }]
                          }
+                        """);
+    }
+
+    @Test
+    void testParseWithTwoUpperBoundRangeConstraints() throws Exception {
+        final Bom bov = new OsvToCyclonedxParser(mapper).parse(new JSONObject("""
+                {
+                  "id": "GHSA-g42g-737j-qx6j",
+                  "affected": [
+                    {
+                      "package": {
+                        "name": "k8s.io/kubernetes",
+                        "ecosystem": "Go",
+                        "purl": "pkg:golang/k8s.io/kubernetes"
+                      },
+                      "ranges": [
+                        {
+                          "type": "SEMVER",
+                          "events": [
+                            {
+                              "introduced": "0"
+                            },
+                            {
+                              "fixed": "1.18.18"
+                            }
+                          ]
+                        }
+                      ],
+                      "database_specific": {
+                        "last_known_affected_version_range": "<= 1.18.17",
+                        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-g42g-737j-qx6j/GHSA-g42g-737j-qx6j.json"
+                      }
+                    }
+                  ],
+                  "schema_version": "1.4.0",
+                }
+                """
+        ), false);
+
+        assertThatJson(JsonFormat.printer().print(bov))
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                          "components": [
+                            {
+                              "bomRef": "c344ac2f-bbd6-5884-96eb-9aa2e4f73c9f",
+                              "name": "k8s.io/kubernetes",
+                              "purl": "pkg:golang/k8s.io/kubernetes"
+                            }
+                          ],
+                          "vulnerabilities": [
+                            {
+                              "id": "GHSA-g42g-737j-qx6j",
+                              "source": {
+                                "name": "GITHUB"
+                              },
+                              "ratings": [
+                                {
+                                  "severity": "SEVERITY_UNKNOWN"
+                                }
+                              ],
+                              "affects": [
+                                {
+                                  "ref": "c344ac2f-bbd6-5884-96eb-9aa2e4f73c9f",
+                                  "versions": [
+                                    {
+                                      "range": "vers:golang/<1.18.18"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                        """);
+    }
+
+    @Test
+    void testParseWithNoUpperBoundRangeConstraintsAndCallstack() throws Exception {
+        final Bom bov = new OsvToCyclonedxParser(mapper).parse(new JSONObject("""
+                {
+                  "id": "GO-2022-0470",
+                  "affected": [
+                    {
+                      "package": {
+                        "name": "github.com/blevesearch/bleve",
+                        "ecosystem": "Go",
+                        "purl": "pkg:golang/github.com/blevesearch/bleve"
+                      },
+                      "ranges": [
+                        {
+                          "type": "SEMVER",
+                          "events": [
+                            {
+                              "introduced": "0"
+                            }
+                          ]
+                        }
+                      ],
+                      "ecosystem_specific": {
+                        "imports": [
+                          {
+                            "path": "github.com/blevesearch/bleve/http",
+                            "symbols": [
+                              "AliasHandler.ServeHTTP",
+                              "CreateIndexHandler.ServeHTTP",
+                              "DebugDocumentHandler.ServeHTTP",
+                              "DeleteIndexHandler.ServeHTTP",
+                              "DocCountHandler.ServeHTTP",
+                              "DocDeleteHandler.ServeHTTP",
+                              "DocGetHandler.ServeHTTP",
+                              "DocIndexHandler.ServeHTTP",
+                              "GetIndexHandler.ServeHTTP",
+                              "ListFieldsHandler.ServeHTTP",
+                              "SearchHandler.ServeHTTP"
+                            ]
+                          }
+                        ]
+                      },
+                      "database_specific": {
+                        "source": "https://vuln.go.dev/ID/GO-2022-0470.json"
+                      }
+                    }
+                  ],
+                  "schema_version": "1.4.0"
+                }
+                """), false);
+
+        assertThatJson(JsonFormat.printer().print(bov))
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                          "components": [
+                            {
+                              "bomRef": "41c6bd3e-0f2d-5e64-bf6e-60e9648766ce",
+                              "name": "github.com/blevesearch/bleve",
+                              "purl": "pkg:golang/github.com/blevesearch/bleve"
+                            }
+                          ],
+                          "vulnerabilities": [
+                            {
+                              "id": "GO-2022-0470",
+                              "source": {
+                                "name": "OSV"
+                              },
+                              "ratings": [
+                                {
+                                  "severity": "SEVERITY_UNKNOWN"
+                                }
+                              ],
+                              "affects": [
+                                {
+                                  "ref": "41c6bd3e-0f2d-5e64-bf6e-60e9648766ce",
+                                  "versions": [
+                                    {
+                                      "range": "vers:golang/*"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                        """);
+    }
+
+    @Test
+    void testParseWithNoUpperBoundRangeConstraintButExactVersion() throws Exception {
+        final Bom bov = new OsvToCyclonedxParser(mapper).parse(new JSONObject("""
+                {
+                  "id": "MAL-2023-995",
+                  "database_specific": {
+                    "malicious-packages-origins": [
+                      {
+                        "sha256": "1ef8f5064d17e16f308f05ff124d515f803d1acfdc65fa58b4c26a8ac52041b2",
+                        "import_time": "2023-07-30T21:58:15.757828743Z",
+                        "id": "GHSA-jm6g-jr7p-wx98",
+                        "source": "ghsa-malware",
+                        "ranges": [
+                          {
+                            "events": [
+                              {
+                                "introduced": "0"
+                              }
+                            ],
+                            "type": "SEMVER"
+                          }
+                        ],
+                        "modified_time": "2023-01-30T10:11:58Z"
+                      },
+                      {
+                        "sha256": "166aebc1e393edb39572d599a7fa79621c576fedd7713a3fae35fa0e8c641cb7",
+                        "import_time": "2023-08-10T06:15:10.630907695Z",
+                        "versions": [
+                          "103.99.99"
+                        ],
+                        "source": "ossf-package-analysis",
+                        "modified_time": "2023-04-28T12:11:22.820151666Z"
+                      }
+                    ]
+                  },
+                  "affected": [
+                    {
+                      "package": {
+                        "name": "yandex-yt-yson-bindings",
+                        "ecosystem": "npm",
+                        "purl": "pkg:npm/yandex-yt-yson-bindings"
+                      },
+                      "ranges": [
+                        {
+                          "type": "SEMVER",
+                          "events": [
+                            {
+                              "introduced": "0"
+                            }
+                          ]
+                        }
+                      ],
+                      "versions": [
+                        "103.99.99"
+                      ]
+                    }
+                  ],
+                  "schema_version": "1.4.0"
+                }
+                """), false);
+
+        assertThatJson(JsonFormat.printer().print(bov))
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                          "components": [
+                            {
+                              "bomRef": "fecdf35f-ecf3-53bc-8092-957aed047cb5",
+                              "name": "yandex-yt-yson-bindings",
+                              "purl": "pkg:npm/yandex-yt-yson-bindings"
+                            }
+                          ],
+                          "vulnerabilities": [
+                            {
+                              "id": "MAL-2023-995",
+                              "source": {
+                                "name": "OSV"
+                              },
+                              "ratings": [
+                                {
+                                  "severity": "SEVERITY_UNKNOWN"
+                                }
+                              ],
+                              "affects": [
+                                {
+                                  "ref": "fecdf35f-ecf3-53bc-8092-957aed047cb5",
+                                  "versions": [
+                                    {
+                                      "version": "103.99.99"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                        """);
+    }
+
+    @Test
+    void testParseWithConflictingUpperBoundRangeConstraints() throws Exception {
+        final Bom bov = new OsvToCyclonedxParser(mapper).parse(new JSONObject("""
+                {
+                  "id": "GHSA-h4w9-6x78-8vrj",
+                  "affected": [
+                    {
+                      "package": {
+                        "name": "github.com/argoproj/argo-cd",
+                        "ecosystem": "Go",
+                        "purl": "pkg:golang/github.com/argoproj/argo-cd"
+                      },
+                      "ranges": [
+                        {
+                          "type": "SEMVER",
+                          "events": [
+                            {
+                              "introduced": "1.0.0"
+                            },
+                            {
+                              "fixed": "2.1.16"
+                            }
+                          ]
+                        }
+                      ],
+                      "database_specific": {
+                        "last_known_affected_version_range": "<= 1.8.7",
+                        "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/06/GHSA-h4w9-6x78-8vrj/GHSA-h4w9-6x78-8vrj.json"
+                      }
+                    }
+                  ],
+                  "schema_version": "1.4.0"
+                }
+                """), false);
+
+        assertThatJson(JsonFormat.printer().print(bov))
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                          "components": [
+                            {
+                              "bomRef": "3ebcee89-c618-50f3-9123-b2d46d76c360",
+                              "name": "github.com/argoproj/argo-cd",
+                              "purl": "pkg:golang/github.com/argoproj/argo-cd"
+                            }
+                          ],
+                          "vulnerabilities": [
+                            {
+                              "id": "GHSA-h4w9-6x78-8vrj",
+                              "source": {
+                                "name": "GITHUB"
+                              },
+                              "ratings": [
+                                {
+                                  "severity": "SEVERITY_UNKNOWN"
+                                }
+                              ],
+                              "affects": [
+                                {
+                                  "ref": "3ebcee89-c618-50f3-9123-b2d46d76c360",
+                                  "versions": [
+                                    {
+                                      "range": "vers:golang/>=1.0.0|<2.1.16"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
                         """);
     }
 

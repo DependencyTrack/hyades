@@ -172,7 +172,6 @@ class NvdMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
-        // FIXME: affects.versions should report version 6.0.7; https://github.com/DependencyTrack/hyades/issues/733
         assertThatJson(JsonFormat.printer().print(bovRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .withMatcher("vuln-description", Matchers.allOf(
@@ -183,6 +182,9 @@ class NvdMirrorTest {
                           "components": [
                             {
                               "bomRef": "02cd44fb-2f0a-569b-a508-1e179e123e38",
+                              "type": "CLASSIFICATION_APPLICATION",
+                              "publisher": "thinkcmf",
+                              "name": "thinkcmf",
                               "cpe": "cpe:2.3:a:thinkcmf:thinkcmf:6.0.7:*:*:*:*:*:*:*"
                             }
                           ],
@@ -199,12 +201,16 @@ class NvdMirrorTest {
                                   "method": "SCORE_METHOD_CVSSV31",
                                   "score": 8.8,
                                   "severity": "SEVERITY_HIGH",
-                                  "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                                  "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                                  "source": { "name": "NVD" }
                                 }
                               ],
                               "affects": [
                                 {
-                                  "ref": "02cd44fb-2f0a-569b-a508-1e179e123e38"
+                                  "ref": "02cd44fb-2f0a-569b-a508-1e179e123e38",
+                                  "versions": [
+                                    { "version": "6.0.7" }
+                                  ]
                                 }
                               ]
                             }
