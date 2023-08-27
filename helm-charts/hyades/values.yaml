@@ -13,9 +13,9 @@ common:
     bootstrapServers: ""
     topicPrefix: ""
   secretKey:
-    # -- Whether the chart should generate a secret key upon deployment
+    # -- Whether the chart should generate a secret key upon deployment.
     createSecret: false
-    # -- Use the secret key defined in an existing secret
+    # -- Use the secret key defined in an existing secret.
     existingSecretName: ""
 
 apiServer:
@@ -58,6 +58,10 @@ apiServer:
     namespace: monitoring
     scrapeInternal: 15s
     scrapeTimeout: 30s
+  # -- Grace period for pod termination in seconds.
+  # Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown.
+  # Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details.
+  terminationGracePeriodSeconds: 60
   ingress:
     enabled: false
     annotations: {}

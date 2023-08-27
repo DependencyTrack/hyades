@@ -23,6 +23,7 @@ spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.apiServer.terminationGracePeriodSeconds }}
       containers:
       - name: {{ include "hyades.apiServerName" . }}
         image: {{ include "hyades.apiServerImage" . }}
