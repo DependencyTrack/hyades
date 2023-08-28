@@ -32,7 +32,9 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.hibernate.QueryTimeoutException;
+import org.hyades.notification.publisher.PublishContext;
 import org.hyades.notification.publisher.Publisher;
 import org.hyades.notification.publisher.PublisherException;
 import org.hyades.notification.publisher.SendMailPublisher;
@@ -52,8 +54,10 @@ import org.hyades.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSub
 import org.hyades.proto.notification.v1.PolicyViolationSubject;
 import org.hyades.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -66,7 +70,7 @@ import static org.hyades.util.ModelConverter.convert;
 @ApplicationScoped
 public class NotificationRouter {
 
-    private static final Logger LOGGER = Logger.getLogger(NotificationRouter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationRouter.class);
 
     private final ParallelStreamProcessor<String, Notification> parallelConsumer;
     private final NotificationRuleRepository ruleRepository;
@@ -82,23 +86,33 @@ public class NotificationRouter {
 
     void onStart(@Observes final StartupEvent event) {
         parallelConsumer.poll(pollCtx -> {
+            final ConsumerRecord<String, Notification> consumerRecord = pollCtx.getSingleConsumerRecord();
+
+            final PublishContext publishCtx;
             try {
-                inform(pollCtx.value());
+                publishCtx = PublishContext.fromRecord(consumerRecord);
+            } catch (IOException e) {
+                LOGGER.error("");
+                return;
+            }
+
+            try {
+                inform(publishCtx, pollCtx.value());
             } catch (RuntimeException e) {
                 final Throwable rootCause = ExceptionUtils.getRootCause(e);
                 if (rootCause instanceof ConnectTimeoutException
                         || rootCause instanceof QueryTimeoutException
                         || rootCause instanceof SocketTimeoutException) {
-                    LOGGER.warn("Encountered retryable exception", e);
+                    LOGGER.warn("Encountered retryable exception ({})", publishCtx,e);
                     throw new PCRetriableException(e);
                 }
 
-                LOGGER.error("Encountered non-retryable exception; Skipping", e);
+                LOGGER.error("Encountered non-retryable exception; Skipping ({})", publishCtx, e);
             }
         });
     }
 
-    public void inform(final Notification notification) {
+    public void inform(final PublishContext ctx, final Notification notification) {
         // Workaround for the fact that we can't currently use @Transactional.
         // Even read-only operations require an active transaction in Quarkus,
         // but @Transactional only works when the caller of the method is also
@@ -106,15 +120,15 @@ public class NotificationRouter {
         // Parallel Consumer thread pool, the caller is not CDI-managed.
         QuarkusTransaction.joiningExisting().run(() -> {
             try {
-                informInternal(notification);
+                informInternal(ctx, notification);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
-    private void informInternal(final Notification notification) throws Exception {
-        for (final NotificationRule rule : resolveRules(notification)) {
+    private void informInternal(final PublishContext ctx, final Notification notification) throws Exception {
+        for (final NotificationRule rule : resolveRules(ctx, notification)) {
 
             // Not all publishers need configuration (i.e. ConsolePublisher)
             JsonObject config = Json.createObjectBuilder().build();
@@ -123,7 +137,8 @@ public class NotificationRouter {
                      final JsonReader jsonReader = Json.createReader(stringReader)) {
                     config = jsonReader.readObject();
                 } catch (Exception e) {
-                    LOGGER.error("An error occurred while preparing the configuration for the notification publisher", e);
+                    LOGGER.error("An error occurred while preparing the configuration for the notification publisher ({})", ctx.withRule(rule), e);
+                    continue;
                 }
             }
             try {
@@ -142,24 +157,23 @@ public class NotificationRouter {
 
                     final List<Team> ruleTeams = teamRepository.findByNotificationRule(rule.getId());
                     if (publisherClass != SendMailPublisher.class || ruleTeams.isEmpty()) {
-                        publisher.inform(notification, notificationPublisherConfig);
+                        publisher.inform(ctx.withRule(rule), notification, notificationPublisherConfig);
                     } else {
-                        ((SendMailPublisher) publisher).inform(notification, notificationPublisherConfig, ruleTeams);
+                        ((SendMailPublisher) publisher).inform(ctx.withRule(rule), notification, notificationPublisherConfig, ruleTeams);
                     }
-
-
                 } else {
-                    LOGGER.error("The defined notification publisher is not assignable from " + Publisher.class.getCanonicalName());
+                    LOGGER.error("The defined notification publisher is not assignable from {} ({})",
+                            Publisher.class.getCanonicalName(), ctx.withRule(rule));
                 }
             } catch (ClassNotFoundException | UnsatisfiedResolutionException e) {
-                LOGGER.error("An error occurred while instantiating a notification publisher", e);
+                LOGGER.error("An error occurred while instantiating a notification publisher ({})", ctx.withRule(rule), e);
             } catch (PublisherException publisherException) {
-                LOGGER.error("An error occured during the publication of the notification", publisherException);
+                LOGGER.error("An error occurred during the publication of the notification ({})", ctx.withRule(rule), publisherException);
             }
         }
     }
 
-    List<NotificationRule> resolveRules(final Notification notification) throws InvalidProtocolBufferException {
+    List<NotificationRule> resolveRules(final PublishContext ctx, final Notification notification) throws InvalidProtocolBufferException {
         // The notification rules to process for this specific notification
         final List<NotificationRule> rules = new ArrayList<>();
 
@@ -167,14 +181,13 @@ public class NotificationRouter {
             return rules;
         }
 
-
         final NotificationScope scope;
         if (notification.getScope() == SCOPE_PORTFOLIO) {
             scope = NotificationScope.PORTFOLIO;
         } else if (notification.getScope() == SCOPE_SYSTEM) {
             scope = NotificationScope.SYSTEM;
         } else {
-            LOGGER.error("Invalid notification scope: " + notification.getScope());
+            LOGGER.error("Invalid notification scope {} ({})", notification.getScope(), ctx);
             return rules;
         }
 

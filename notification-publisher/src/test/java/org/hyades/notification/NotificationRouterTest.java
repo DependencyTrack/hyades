@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hyades.notification.publisher.PublisherTestUtil.createPublisherContext;
 import static org.hyades.proto.notification.v1.Group.GROUP_BOM_CONSUMED;
 import static org.hyades.proto.notification.v1.Group.GROUP_BOM_PROCESSED;
 import static org.hyades.proto.notification.v1.Group.GROUP_BOM_PROCESSING_FAILED;
@@ -70,13 +71,13 @@ class NotificationRouterTest {
     @Test
     @TestTransaction
     void testResolveRulesWithNullNotification() throws Exception {
-        assertThat(notificationRouter.resolveRules(null)).isEmpty();
+        assertThat(notificationRouter.resolveRules(null, null)).isEmpty();
     }
 
     @Test
     @TestTransaction
     void testResolveRulesWithInvalidNotification() throws Exception {
-        assertThat(notificationRouter.resolveRules(Notification.newBuilder().build())).isEmpty();
+        assertThat(notificationRouter.resolveRules(null, Notification.newBuilder().build())).isEmpty();
     }
 
     @Test
@@ -87,7 +88,7 @@ class NotificationRouterTest {
                 .setLevel(LEVEL_INFORMATIONAL)
                 .setGroup(GROUP_NEW_VULNERABILITY)
                 .build();
-        assertThat(notificationRouter.resolveRules(notification)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notification), notification)).isEmpty();
     }
 
     @Test
@@ -106,7 +107,7 @@ class NotificationRouterTest {
                 .setSubject(Any.pack(NewVulnerabilitySubject.newBuilder().build()))
                 .build();
         // Ok, let's test this
-        final List<NotificationRule> rules = notificationRouter.resolveRules(notification);
+        final List<NotificationRule> rules = notificationRouter.resolveRules(createPublisherContext(notification), notification);
         assertThat(rules).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Test Rule")
         );
@@ -142,7 +143,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
         // Ok, let's test this
-        final List<NotificationRule> rules = notificationRouter.resolveRules(notification);
+        final List<NotificationRule> rules = notificationRouter.resolveRules(createPublisherContext(notification), notification);
         assertThat(rules).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Test Rule")
         );
@@ -178,7 +179,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
         // Ok, let's test this
-        final List<NotificationRule> rules = notificationRouter.resolveRules(notification);
+        final List<NotificationRule> rules = notificationRouter.resolveRules(createPublisherContext(notification), notification);
         assertThat(rules).isEmpty();
     }
 
@@ -212,7 +213,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
         // Ok, let's test this
-        final List<NotificationRule> rules = notificationRouter.resolveRules(notification);
+        final List<NotificationRule> rules = notificationRouter.resolveRules(createPublisherContext(notification), notification);
         assertThat(rules).isEmpty();
     }
 
@@ -237,11 +238,11 @@ class NotificationRouterTest {
                 .build();
 
         if (expectedMatch) {
-            assertThat(notificationRouter.resolveRules(notification)).satisfiesExactly(
+            assertThat(notificationRouter.resolveRules(createPublisherContext(notification), notification)).satisfiesExactly(
                     rule -> assertThat(rule.getName()).isEqualTo("Test Levels Rule")
             );
         } else {
-            assertThat(notificationRouter.resolveRules(notification)).isEmpty();
+            assertThat(notificationRouter.resolveRules(createPublisherContext(notification), notification)).isEmpty();
         }
     }
 
@@ -260,7 +261,7 @@ class NotificationRouterTest {
                 .setLevel(LEVEL_INFORMATIONAL)
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notification)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notification), notification)).isEmpty();
     }
 
     @Test
@@ -292,7 +293,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
         );
 
@@ -307,7 +308,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
     }
 
     @Test
@@ -337,7 +338,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
         );
 
@@ -350,7 +351,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
     }
 
     @Test
@@ -378,7 +379,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
         );
 
@@ -389,7 +390,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
     }
 
     @Test
@@ -417,7 +418,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
         );
 
@@ -428,7 +429,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
     }
 
     @Test
@@ -456,7 +457,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
         );
 
@@ -467,7 +468,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
     }
 
     @Test
@@ -495,7 +496,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
         );
 
@@ -506,7 +507,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
     }
 
     @Test
@@ -534,7 +535,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
         );
 
@@ -545,7 +546,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
     }
 
     @Test
@@ -573,7 +574,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectA)).satisfiesExactly(
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
         );
 
@@ -584,7 +585,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
 
-        assertThat(notificationRouter.resolveRules(notificationProjectB)).isEmpty();
+        assertThat(notificationRouter.resolveRules(createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
     }
 
     @Test
@@ -627,7 +628,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
         // Ok, let's test this
-        final List<NotificationRule> rules = notificationRouter.resolveRules(notification);
+        final List<NotificationRule> rules = notificationRouter.resolveRules(createPublisherContext(notification), notification);
         assertThat(rules).satisfiesExactly(
                 rule -> assertThat(rule.getName()).isEqualTo("Test Rule")
         );
@@ -673,7 +674,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
         // Ok, let's test this
-        final List<NotificationRule> rules = notificationRouter.resolveRules(notification);
+        final List<NotificationRule> rules = notificationRouter.resolveRules(createPublisherContext(notification), notification);
         assertThat(rules).isEmpty();
     }
 
@@ -717,7 +718,7 @@ class NotificationRouterTest {
                         .build()))
                 .build();
         // Ok, let's test this
-        final List<NotificationRule> rules = notificationRouter.resolveRules(notification);
+        final List<NotificationRule> rules = notificationRouter.resolveRules(createPublisherContext(notification), notification);
         assertThat(rules).isEmpty();
     }
 
@@ -750,8 +751,8 @@ class NotificationRouterTest {
                         .build()))
                 .build();
         // Ok, let's test this
-        notificationRouter.inform(notification);
-        verify(consolePublisherMock).inform(eq(notification), any());
+        notificationRouter.inform(createPublisherContext(notification), notification);
+        verify(consolePublisherMock).inform(any(), eq(notification), any());
     }
 
     private Long createConsolePublisher() {

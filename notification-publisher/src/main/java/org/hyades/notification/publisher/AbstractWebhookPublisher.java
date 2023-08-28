@@ -39,17 +39,17 @@ public abstract class AbstractWebhookPublisher implements Publisher {
     @Named("httpClient")
     CloseableHttpClient httpClient;
 
-    public void publish(final String publisherName, final PebbleTemplate template, final Notification notification, final JsonObject config, final ConfigPropertyRepository configPropertyRepository) throws Exception {
+    public void publish(final PublishContext ctx, final PebbleTemplate template, final Notification notification, final JsonObject config, final ConfigPropertyRepository configPropertyRepository) throws Exception {
         final Logger logger = LoggerFactory.getLogger(this.getClass());
-        logger.debug("Preparing to publish notification");
+        logger.debug("Preparing to publish notification ({})", ctx);
         if (config == null) {
-            logger.warn("No configuration found. Skipping notification.");
+            logger.warn("No configuration found. Skipping notification. ({})", ctx);
             return;
         }
         final String destination = getDestinationUrl(config);
         final String content = prepareTemplate(notification, template, configPropertyRepository, config);
         if (destination == null || content == null) {
-            logger.warn("A destination or template was not found. Skipping notification");
+            logger.warn("A destination or template was not found. Skipping notification ({})", ctx);
             return;
         }
 
@@ -61,7 +61,7 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         try {
             credentials = getBasicAuthCredentials();
         } catch (PublisherException e) {
-            logger.warn("An error occurred during the retrieval of credentials needed for notification publication. Skipping notification", e);
+            logger.warn("An error occurred during the retrieval of credentials needed for notification publication. Skipping notification ({})", ctx, e);
             return;
         }
         if (credentials != null) {
@@ -71,16 +71,16 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         request.setEntity(entity);
         try (final CloseableHttpResponse response = httpClient.execute(request);) {
             if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {
-                logger.error("An error was encountered publishing notification to " + publisherName);
-                logger.error("HTTP Status : " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
-                logger.error("Destination: " + destination);
-                logger.debug(content);
+                logger.error("Destination {} responded to reception of notification with status code {}, likely indicating a processing failure ({})",
+                        destination, response.getStatusLine().getStatusCode(), ctx);
+            } else {
+                logger.info("Destination {} acknowledged reception of notification with status code {} ({})",
+                        destination, response.getStatusLine().getStatusCode(), ctx);
             }
         }
-
     }
 
-    private static final String getBasicAuthenticationHeader(String username, String password) {
+    private static String getBasicAuthenticationHeader(String username, String password) {
         String valueToEncode = username + ":" + password;
         return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
     }

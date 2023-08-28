@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import static org.hyades.notification.publisher.PublisherTestUtil.createPublisherContext;
 import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.hyades.proto.notification.v1.Group.GROUP_FILE_SYSTEM;
 import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
@@ -84,7 +85,7 @@ public class ConsolePublisherTest {
                 .setTitle("Test Notification")
                 .setContent("This is only a test")
                 .build();
-        publisher.inform(notification, getConfig("CONSOLE", ""));
+        publisher.inform(createPublisherContext(notification), notification, getConfig("CONSOLE", ""));
         System.out.println("outContent: " + outContent);
         assertTrue(outContent.toString().contains(expectedResult(notification)));
     }
@@ -110,7 +111,7 @@ public class ConsolePublisherTest {
                                 .setSpecVersion("1.0.0").build())
                         .build()))
                 .build();
-        publisher.inform(notification, getConfig("CONSOLE", ""));
+        publisher.inform(createPublisherContext(notification), notification, getConfig("CONSOLE", ""));
         System.out.println("outContent: " + outContent);
         assertTrue(outContent.toString().contains(expectedResult(notification)));
     }
@@ -130,7 +131,7 @@ public class ConsolePublisherTest {
                 .setTitle("Test Notification")
                 .setContent("This is only a test")
                 .build();
-        publisher.inform(notification, getConfig("CONSOLE", ""));
+        publisher.inform(createPublisherContext(notification), notification, getConfig("CONSOLE", ""));
     }
 
     private String expectedResult(Notification notification) {
