@@ -1,6 +1,8 @@
 package org.hyades.notification;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.google.protobuf.Any;
+import com.google.protobuf.util.Timestamps;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
@@ -13,11 +15,16 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.awaitility.Awaitility;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.hyades.common.KafkaTopic;
+import org.hyades.notification.publisher.PublisherTestUtil;
 import org.hyades.proto.KafkaProtobufSerde;
+import org.hyades.proto.notification.v1.Component;
 import org.hyades.proto.notification.v1.Group;
 import org.hyades.proto.notification.v1.Level;
+import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
 import org.hyades.proto.notification.v1.Notification;
+import org.hyades.proto.notification.v1.Project;
 import org.hyades.proto.notification.v1.Scope;
+import org.hyades.proto.notification.v1.Vulnerability;
 import org.hyades.util.WireMockTestResource;
 import org.hyades.util.WireMockTestResource.InjectWireMock;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,10 +32,13 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -60,10 +70,15 @@ class NotificationRouterIT {
                 ConfigProvider.getConfig().getValue("quarkus.datasource.jdbc.url", String.class),
                 ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                 ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
-            connection.createStatement().execute("""
-                    INSERT INTO "NOTIFICATIONPUBLISHER" ("ID", "DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID") VALUES
-                    (1, true, 'foo', 'org.hyades.notification.publisher.WebhookPublisher', 'template', 'text/plain', '1781db56-51a8-462a-858c-6030a2341dfc');
+            final PreparedStatement ps = connection.prepareStatement("""
+                    INSERT INTO "NOTIFICATIONPUBLISHER"
+                        ("ID", "DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID")
+                    VALUES
+                        (1, TRUE, 'foo', 'org.hyades.notification.publisher.WebhookPublisher', ?, 'application/json', '1781db56-51a8-462a-858c-6030a2341dfc');
                     """);
+            ps.setString(1, PublisherTestUtil.getTemplateContent("WEBHOOK"));
+            ps.execute();
+
             connection.createStatement().execute("""
                     INSERT INTO "NOTIFICATIONRULE" ("ID", "ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID", "PUBLISHER_CONFIG") VALUES
                     (1, true, 'foo', 1, 'NEW_VULNERABILITY', false, 'INFORMATIONAL', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62', '{"destination": "http://localhost:%d/foo"}');
@@ -92,6 +107,22 @@ class NotificationRouterIT {
                 .setGroup(Group.GROUP_NEW_VULNERABILITY)
                 .setTitle("Test Notification")
                 .setContent("This is only a test")
+                .setTimestamp(Timestamps.fromSeconds(666))
+                .setSubject(Any.pack(NewVulnerabilitySubject.newBuilder()
+                        .setComponent(Component.newBuilder()
+                                .setUuid("componentUuid")
+                                .setGroup("componentGroup")
+                                .setName("componentName")
+                                .setVersion("componentVersion"))
+                        .setProject(Project.newBuilder()
+                                .setUuid("projectUuid")
+                                .setName("projectName")
+                                .setVersion("projectVersion"))
+                        .setVulnerability(Vulnerability.newBuilder()
+                                .setUuid("vulnUuid")
+                                .setVulnId("vulnId")
+                                .setSource("vulnSource"))
+                        .build()))
                 .build();
 
         kafkaCompanion
@@ -101,6 +132,39 @@ class NotificationRouterIT {
         Awaitility.await()
                 .atMost(15, TimeUnit.SECONDS)
                 .untilAsserted(() -> wireMockServer.verify(2, postRequestedFor(urlPathEqualTo("/foo"))));
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/foo"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification" : {
+                            "level" : "LEVEL_INFORMATIONAL",
+                            "scope" : "SCOPE_PORTFOLIO",
+                            "group" : "GROUP_NEW_VULNERABILITY",
+                            "timestamp" : "1970-01-01T00:11:06Z",
+                            "title" : "Test Notification",
+                            "content" : "This is only a test",
+                            "subject" : {
+                              "component" : {
+                                "uuid" : "componentUuid",
+                                "group" : "componentGroup",
+                                "name" : "componentName",
+                                "version" : "componentVersion"
+                              },
+                              "project" : {
+                                "uuid" : "projectUuid",
+                                "name" : "projectName",
+                                "version" : "projectVersion"
+                              },
+                              "vulnerability" : {
+                                "uuid" : "vulnUuid",
+                                "vulnId" : "vulnId",
+                                "source" : "vulnSource"
+                              }
+                            }
+                          }
+                        }
+                        """)));
     }
 
 }

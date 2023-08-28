@@ -19,7 +19,7 @@ public class PublisherTestUtil {
                 .build();
     }
 
-    static String getTemplateContent(String notificationPublisher) {
+    public static String getTemplateContent(String notificationPublisher) {
         switch(notificationPublisher) {
             case "CONSOLE": return "--------------------------------------------------------------------------------\n" +
                     "Notification\n" +
@@ -35,7 +35,7 @@ public class PublisherTestUtil {
                     "    \"level\": \"{{ notification.level | escape(strategy=\"json\") }}\",\n" +
                     "    \"scope\": \"{{ notification.scope | escape(strategy=\"json\") }}\",\n" +
                     "    \"group\": \"{{ notification.group | escape(strategy=\"json\") }}\",\n" +
-                    "    \"timestamp\": \"{{ notification.timestamp }}\",\n" +
+                    "    \"timestamp\": \"{{ timestamp }}\",\n" +
                     "    \"title\": \"{{ notification.title | escape(strategy=\"json\") }}\",\n" +
                     "    \"content\": \"{{ notification.content | escape(strategy=\"json\") }}\",\n" +
                     "    \"subject\": {{ subjectJson | raw }}\n" +
