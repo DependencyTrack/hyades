@@ -19,6 +19,7 @@
 package org.hyades.notification.publisher;
 
 import com.google.protobuf.Any;
+import com.google.protobuf.util.Timestamps;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -41,7 +42,7 @@ import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.hyades.proto.notification.v1.Group.GROUP_FILE_SYSTEM;
 import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.hyades.proto.notification.v1.Scope.SCOPE_SYSTEM;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 @QuarkusTest
 public class ConsolePublisherTest {
@@ -137,7 +138,7 @@ public class ConsolePublisherTest {
     private String expectedResult(Notification notification) {
         return "--------------------------------------------------------------------------------" + System.lineSeparator() +
                 "Notification" + System.lineSeparator() +
-                "  -- timestamp: " + notification.getTimestamp() + System.lineSeparator() +
+                "  -- timestamp: " + Timestamps.toString(notification.getTimestamp()) + System.lineSeparator() +
                 "  -- level:     " + notification.getLevel() + System.lineSeparator() +
                 "  -- scope:     " + notification.getScope() + System.lineSeparator() +
                 "  -- group:     " + notification.getGroup() + System.lineSeparator() +
