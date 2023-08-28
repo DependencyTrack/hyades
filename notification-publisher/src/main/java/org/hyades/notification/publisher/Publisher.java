@@ -20,6 +20,7 @@ package org.hyades.notification.publisher;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.Timestamps;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 import jakarta.json.JsonObject;
@@ -85,7 +86,7 @@ public interface Publisher {
         final Map<String, Object> context = new HashMap<>();
         final long epochSecond = notification.getTimestamp().getSeconds();
         context.put("timestampEpochSecond", epochSecond);
-        context.put("timestamp", notification.getTimestamp().toString());
+        context.put("timestamp", Timestamps.toString(notification.getTimestamp()));
         context.put("notification", notification);
         if (baseUrlProperty != null && baseUrlProperty.getPropertyValue() != null) {
             context.put("baseUrl", baseUrlProperty.getPropertyValue().replaceAll("/$", ""));
