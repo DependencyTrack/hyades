@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
+import static org.hyades.notification.publisher.PublisherTestUtil.createPublisherContext;
 import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -87,6 +88,6 @@ public class WebhookPublisherTest {
                 .setTitle("Test Notification")
                 .setContent("This is only a test")
                 .build();
-        publisher.inform(notification, config);
+        publisher.inform(createPublisherContext(notification), notification, config);
     }
 }

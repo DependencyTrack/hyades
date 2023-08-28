@@ -3,6 +3,10 @@ package org.hyades.notification.publisher;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.hyades.proto.notification.v1.Notification;
+
+import java.io.IOException;
 
 public class PublisherTestUtil {
 
@@ -45,4 +49,9 @@ public class PublisherTestUtil {
     static JsonObjectBuilder getExtraConfig() {
         return Json.createObjectBuilder();
     }
+
+    public static PublishContext createPublisherContext(final Notification notification) throws IOException {
+        return PublishContext.fromRecord(new ConsumerRecord<>("topic", 1, 2L, "key", notification));
+    }
+
 }

@@ -22,10 +22,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import jakarta.json.JsonObject;
 import org.hyades.persistence.model.ConfigProperty;
 import org.hyades.persistence.model.ConfigPropertyConstants;
 import org.hyades.persistence.repository.ConfigPropertyRepository;
-import jakarta.json.JsonObject;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
 import org.hyades.proto.notification.v1.NewVulnerableDependencySubject;
@@ -54,7 +54,7 @@ public interface Publisher {
     String CONFIG_DESTINATION = "destination";
 
 
-    void inform(Notification notification, JsonObject config) throws Exception;
+    void inform(final PublishContext ctx, Notification notification, JsonObject config) throws Exception;
 
     PebbleEngine getTemplateEngine();
 

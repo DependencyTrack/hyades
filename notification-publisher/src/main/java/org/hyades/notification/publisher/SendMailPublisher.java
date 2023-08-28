@@ -63,43 +63,44 @@ public class SendMailPublisher implements Publisher {
         this.configPropertyRepository = configPropertyRepository;
     }
 
-    public void inform(final Notification notification, final JsonObject config) throws Exception {
+    public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
         if (config == null) {
             LOGGER.warn("No configuration found. Skipping notification.");
             return;
         }
         final String[] destinations = parseDestination(config);
-        sendNotification(notification, config, destinations);
+        sendNotification(ctx, notification, config, destinations);
     }
 
-    public void inform(final Notification notification, final JsonObject config, List<Team> teams) throws Exception {
+    public void inform(final PublishContext ctx, final Notification notification, final JsonObject config, List<Team> teams) throws Exception {
         if (config == null) {
             LOGGER.warn("No configuration found. Skipping notification.");
             return;
         }
         final String[] destinations = parseDestination(config, teams);
-        sendNotification(notification, config, destinations);
+        sendNotification(ctx, notification, config, destinations);
     }
 
-    private void sendNotification(Notification notification, JsonObject config, String[] destinations) throws InvalidProtocolBufferException {
+    private void sendNotification(final PublishContext ctx, Notification notification, JsonObject config, String[] destinations) throws InvalidProtocolBufferException {
         PebbleTemplate template = getTemplate(config);
         final String content = prepareTemplate(notification, template, configPropertyRepository, config);
         if (destinations == null || content == null) {
-            LOGGER.warn("A destination or template was not found. Skipping notification");
+            LOGGER.warn("A destination or template was not found. Skipping notification ({})", ctx);
             return;
         }
         try {
             ConfigProperty smtpEnabledConfig = configPropertyRepository.findByGroupAndName(ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getGroupName(), ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getPropertyName());
             boolean smtpEnabled = BooleanUtils.toBoolean(smtpEnabledConfig.getPropertyValue());
             if (!smtpEnabled) {
-                LOGGER.warn("SMTP is not enabled");
+                LOGGER.warn("SMTP is not enabled ({})", ctx);
                 return; // smtp is not enabled
             }
             for (String destination : destinations) {
                 mailer.send(Mail.withText(destination, "[Dependency-Track] " + notification.getTitle(), content));
+                LOGGER.info("Notification successfully sent to destination {} ({})", destination, ctx);
             }
         } catch (Exception e) {
-            LOGGER.error("An error occurred sending output email notification", e);
+            LOGGER.error("An error occurred sending output email notification ({})", ctx, e);
         }
     }
 
