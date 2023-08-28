@@ -92,7 +92,7 @@ public class NotificationRouter {
             try {
                 publishCtx = PublishContext.fromRecord(consumerRecord);
             } catch (IOException e) {
-                LOGGER.error("");
+                LOGGER.error("Failed to build context from {}", consumerRecord);
                 return;
             }
 
