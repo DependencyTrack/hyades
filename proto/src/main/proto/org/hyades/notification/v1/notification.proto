@@ -86,8 +86,14 @@ message NewVulnerabilitySubject {
   Component component = 1;
   Project project = 2;
   Vulnerability vulnerability = 3;
-  BackReference affected_projects = 4;
+  BackReference affected_projects_reference = 4;
   optional string vulnerability_analysis_level = 5;
+  // List of projects affected by the vulnerability.
+  // DEPRECATED: This list only holds one item, and it is identical to the one in the project field.
+  // The field is kept for backward compatibility of JSON notifications, but consumers should not expect multiple projects here.
+  // Transmitting all affected projects in one notification is not feasible for large portfolios,
+  // see https://github.com/DependencyTrack/hyades/issues/467 for details.
+  repeated Project affected_projects = 6 [deprecated = true];
 }
 
 message NewVulnerableDependencySubject {
