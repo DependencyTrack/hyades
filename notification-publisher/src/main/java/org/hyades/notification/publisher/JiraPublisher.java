@@ -35,7 +35,7 @@ public class JiraPublisher extends AbstractWebhookPublisher implements Publisher
     }
 
     @Override
-    public BasicAuthCredentials getBasicAuthCredentials() throws Exception {
+    protected BasicAuthCredentials getBasicAuthCredentials() throws Exception {
             final String jiraUsername = configPropertyRepository.findByGroupAndName(JIRA_USERNAME.getGroupName(), JIRA_USERNAME.getPropertyName()).getPropertyValue();
             final String encryptedPassword = configPropertyRepository.findByGroupAndName(JIRA_PASSWORD.getGroupName(), JIRA_PASSWORD.getPropertyName()).getPropertyValue();
             final String jiraPassword = (encryptedPassword == null) ? null : secretDecryptor.decryptAsString(encryptedPassword);
@@ -43,8 +43,8 @@ public class JiraPublisher extends AbstractWebhookPublisher implements Publisher
     }
 
     @Override
-    public void inform(final Notification notification, final JsonObject config) throws Exception {
-        publish(DefaultNotificationPublishers.JIRA.getPublisherName(), getTemplate(config), notification, config, configPropertyRepository);
+    public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
+        publish(ctx, getTemplate(config), notification, config, configPropertyRepository);
     }
 
     @Override

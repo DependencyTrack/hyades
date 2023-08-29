@@ -3,6 +3,10 @@ package org.hyades.notification.publisher;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.hyades.proto.notification.v1.Notification;
+
+import java.io.IOException;
 
 public class PublisherTestUtil {
 
@@ -15,7 +19,7 @@ public class PublisherTestUtil {
                 .build();
     }
 
-    static String getTemplateContent(String notificationPublisher) {
+    public static String getTemplateContent(String notificationPublisher) {
         switch(notificationPublisher) {
             case "CONSOLE": return "--------------------------------------------------------------------------------\n" +
                     "Notification\n" +
@@ -31,7 +35,7 @@ public class PublisherTestUtil {
                     "    \"level\": \"{{ notification.level | escape(strategy=\"json\") }}\",\n" +
                     "    \"scope\": \"{{ notification.scope | escape(strategy=\"json\") }}\",\n" +
                     "    \"group\": \"{{ notification.group | escape(strategy=\"json\") }}\",\n" +
-                    "    \"timestamp\": \"{{ notification.timestamp }}\",\n" +
+                    "    \"timestamp\": \"{{ timestamp }}\",\n" +
                     "    \"title\": \"{{ notification.title | escape(strategy=\"json\") }}\",\n" +
                     "    \"content\": \"{{ notification.content | escape(strategy=\"json\") }}\",\n" +
                     "    \"subject\": {{ subjectJson | raw }}\n" +
@@ -45,4 +49,9 @@ public class PublisherTestUtil {
     static JsonObjectBuilder getExtraConfig() {
         return Json.createObjectBuilder();
     }
+
+    public static PublishContext createPublisherContext(final Notification notification) throws IOException {
+        return PublishContext.fromRecord(new ConsumerRecord<>("topic", 1, 2L, "key", notification));
+    }
+
 }

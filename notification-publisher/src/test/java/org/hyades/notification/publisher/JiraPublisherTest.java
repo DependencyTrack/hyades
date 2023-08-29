@@ -20,6 +20,7 @@ import org.mockserver.integration.ClientAndServer;
 import java.util.Base64;
 import java.util.Map;
 
+import static org.hyades.notification.publisher.PublisherTestUtil.createPublisherContext;
 import static org.hyades.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
 import static org.hyades.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 import static org.hyades.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
@@ -106,7 +107,7 @@ public class JiraPublisherTest {
                 .build();
 
         final JsonObject config = getConfig("http://localhost:1080");
-        publisher.inform(notification, config);
+        publisher.inform(createPublisherContext(notification), notification, config);
         mockServer.verify(request);
     }
 

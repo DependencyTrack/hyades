@@ -20,12 +20,13 @@ package org.hyades.notification.publisher;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.Timestamps;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import jakarta.json.JsonObject;
 import org.hyades.persistence.model.ConfigProperty;
 import org.hyades.persistence.model.ConfigPropertyConstants;
 import org.hyades.persistence.repository.ConfigPropertyRepository;
-import jakarta.json.JsonObject;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
 import org.hyades.proto.notification.v1.NewVulnerableDependencySubject;
@@ -54,7 +55,7 @@ public interface Publisher {
     String CONFIG_DESTINATION = "destination";
 
 
-    void inform(Notification notification, JsonObject config) throws Exception;
+    void inform(final PublishContext ctx, Notification notification, JsonObject config) throws Exception;
 
     PebbleEngine getTemplateEngine();
 
@@ -85,7 +86,7 @@ public interface Publisher {
         final Map<String, Object> context = new HashMap<>();
         final long epochSecond = notification.getTimestamp().getSeconds();
         context.put("timestampEpochSecond", epochSecond);
-        context.put("timestamp", notification.getTimestamp().toString());
+        context.put("timestamp", Timestamps.toString(notification.getTimestamp()));
         context.put("notification", notification);
         if (baseUrlProperty != null && baseUrlProperty.getPropertyValue() != null) {
             context.put("baseUrl", baseUrlProperty.getPropertyValue().replaceAll("/$", ""));
