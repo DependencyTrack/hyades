@@ -72,7 +72,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                             .setComponent(component)
                             .setSha1HashMatch(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH)
                             .setSha256HashMatch(HashMatchStatus.HASH_MATCH_STATUS_COMPONENT_MISSING_HASH)
-                            .setRepositoryUrl(repository.getIdentifier());
+                            .setRepositoryIdentifier(repository.getIdentifier());
                     result = resultBuilder.build();
 
                 }
@@ -160,7 +160,7 @@ public class IntegrityAnalyzerProcessor extends ContextualFixedKeyProcessor<Pack
                 .setComponent(analyzerComponent)
                 .setSha1HashMatch(integrityModel.getHashMatchStatusSha1())
                 .setSha256HashMatch(integrityModel.getHashMatchStatusSha256())
-                .setRepositoryUrl(repository.getUrl())
+                .setRepositoryIdentifier(repository.getIdentifier())
                 .setUpdated(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()));
         return resultBuilder.build();
     }
