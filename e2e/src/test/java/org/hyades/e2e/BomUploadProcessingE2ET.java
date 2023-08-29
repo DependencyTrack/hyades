@@ -200,7 +200,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_NEW_VULNERABILITY",
-                            "timestamp": "${json-unit.any-string}",
+                            "timestamp": "${json-unit.regex}(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$)",
                             "title": "New Vulnerability Identified on Project: [pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war]",
                             "content": "INT-123",
                             "subject": {
@@ -227,11 +227,19 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                 "source": "INTERNAL",
                                 "severity": "UNASSIGNED"
                               },
-                              "affectedProjects": {
+                              "affectedProjectsReference": {
                                 "apiUri": "/api/v1/vulnerability/source/INTERNAL/vuln/INT-123/projects",
                                 "frontendUri": "/vulnerabilities/INTERNAL/INT-123/affectedProjects"
                               },
-                              "vulnerabilityAnalysisLevel": "BOM_UPLOAD_ANALYSIS"
+                              "vulnerabilityAnalysisLevel": "BOM_UPLOAD_ANALYSIS",
+                              "affectedProjects": [
+                                {
+                                  "uuid": "${json-unit.any-string}",
+                                  "name": "foo",
+                                  "version": "bar",
+                                  "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war"
+                                }
+                              ]
                             }
                           }
                         }
