@@ -137,9 +137,11 @@ class NotificationRouterTest {
                                 .setUuid(projectUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .setAffectedProjects(BackReference.newBuilder()
+                        .setAffectedProjectsReference(BackReference.newBuilder()
                                 .setApiUri("foo")
                                 .setFrontendUri("bar"))
+                        .addAffectedProjects(Project.newBuilder()
+                                .setUuid(projectUuid.toString()))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -173,9 +175,11 @@ class NotificationRouterTest {
                                 .setUuid(UUID.randomUUID().toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .setAffectedProjects(BackReference.newBuilder()
+                        .setAffectedProjectsReference(BackReference.newBuilder()
                                 .setApiUri("foo")
                                 .setFrontendUri("bar"))
+                        .addAffectedProjects(Project.newBuilder()
+                                .setUuid(projectUuid.toString()))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -207,9 +211,11 @@ class NotificationRouterTest {
                                 .setUuid(projectUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .setAffectedProjects(BackReference.newBuilder()
+                        .setAffectedProjectsReference(BackReference.newBuilder()
                                 .setApiUri("foo")
                                 .setFrontendUri("bar"))
+                        .addAffectedProjects(Project.newBuilder()
+                                .setUuid(projectUuid.toString()))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -622,9 +628,11 @@ class NotificationRouterTest {
                                 .setUuid(grandChildUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .setAffectedProjects(BackReference.newBuilder()
+                        .setAffectedProjectsReference(BackReference.newBuilder()
                                 .setApiUri("foo")
                                 .setFrontendUri("bar"))
+                        .addAffectedProjects(Project.newBuilder()
+                                .setUuid(grandChildUuid.toString()))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -668,9 +676,11 @@ class NotificationRouterTest {
                                 .setUuid(grandChildUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .setAffectedProjects(BackReference.newBuilder()
+                        .setAffectedProjectsReference(BackReference.newBuilder()
                                 .setApiUri("foo")
                                 .setFrontendUri("bar"))
+                        .addAffectedProjects(Project.newBuilder()
+                                .setUuid(grandChildUuid.toString()))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -712,9 +722,11 @@ class NotificationRouterTest {
                                 .setUuid(grandChildUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .setAffectedProjects(BackReference.newBuilder()
+                        .setAffectedProjectsReference(BackReference.newBuilder()
                                 .setApiUri("foo")
                                 .setFrontendUri("bar"))
+                        .addAffectedProjects(Project.newBuilder()
+                                .setUuid(grandChildUuid.toString()))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -745,9 +757,11 @@ class NotificationRouterTest {
                                 .setUuid(projectUuid.toString()))
                         .setVulnerability(Vulnerability.newBuilder()
                                 .setUuid(UUID.randomUUID().toString()))
-                        .setAffectedProjects(BackReference.newBuilder()
+                        .setAffectedProjectsReference(BackReference.newBuilder()
                                 .setApiUri("foo")
                                 .setFrontendUri("bar"))
+                        .addAffectedProjects(Project.newBuilder()
+                                .setUuid(projectUuid.toString()))
                         .build()))
                 .build();
         // Ok, let's test this
@@ -764,7 +778,7 @@ class NotificationRouterTest {
     }
 
     private Long createRule(final String name, final NotificationScope scope, final NotificationLevel level,
-                                  final NotificationGroup group, final Long publisherId) {
+                            final NotificationGroup group, final Long publisherId) {
         return (Long) entityManager.createNativeQuery("""            
                         INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
                             (true, :name, :publisherId, :notifyOn, false, :level, :scope, '6b1fee41-4178-4a23-9d1b-e9df79de8e62')
