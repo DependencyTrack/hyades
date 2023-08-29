@@ -136,7 +136,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                         .withStatus(201)));
 
         // Create a new internal vulnerability for jackson-databind.
-        apiServerClient.createVulnerability(new CreateVulnerabilityRequest("INT-123", List.of(
+        apiServerClient.createVulnerability(new CreateVulnerabilityRequest("INT-123", "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H", List.of(917, 502), List.of(
                 new AffectedComponent("PURL", "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.2", "EXACT")
         )));
 
@@ -225,7 +225,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                 "uuid": "${json-unit.any-string}",
                                 "vulnId": "INT-123",
                                 "source": "INTERNAL",
-                                "severity": "UNASSIGNED"
+                                "cvssv3" : 10,
+                                "severity": "CRITICAL"
                               },
                               "affectedProjectsReference": {
                                 "apiUri": "/api/v1/vulnerability/source/INTERNAL/vuln/INT-123/projects",
@@ -282,7 +283,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                    "uuid": "${json-unit.any-string}",
                                    "vulnId" : "INT-123",
                                    "source" : "INTERNAL",
-                                   "severity" : "UNASSIGNED"
+                                   "cvssv3" : 10,
+                                   "severity" : "CRITICAL"
                                  } ]
                                } ],
                                "status" : "PROJECT_VULN_ANALYSIS_STATUS_COMPLETED"
