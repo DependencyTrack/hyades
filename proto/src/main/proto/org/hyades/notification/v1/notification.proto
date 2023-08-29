@@ -177,19 +177,19 @@ message Vulnerability {
   string source = 3;
   repeated Alias aliases = 4;
   optional string title = 5;
-  optional string sub_title = 6;
+  optional string sub_title = 6 [json_name = "subtitle"];
   optional string description = 7;
   optional string recommendation = 8;
-  optional double cvss_v2 = 9;
-  optional double cvss_v3 = 10;
-  optional double owasp_rr_likelihood = 11;
-  optional double owasp_rr_technical_impact = 12;
-  optional double owasp_rr_business_impact = 13;
+  optional double cvss_v2 = 9 [json_name = "cvssv2"];
+  optional double cvss_v3 = 10 [json_name = "cvssv3"];
+  optional double owasp_rr_likelihood = 11 [json_name = "owaspRRLikelihood"];
+  optional double owasp_rr_technical_impact = 12 [json_name = "owaspRRTechnicalImpact"];
+  optional double owasp_rr_business_impact = 13 [json_name = "owaspRRBusinessImpact"];
   optional string severity = 14;
   repeated Cwe cwes = 15;
 
   message Alias {
-    string id = 1;
+    string id = 1 [json_name = "vulnId"];
     string source = 2;
   }
 
