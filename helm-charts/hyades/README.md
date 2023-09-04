@@ -46,6 +46,11 @@
 | apiServer.resources.requests.memory | string | `"4Gi"` |  |
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
+| apiServer.serviceMonitor.enabled | bool | `false` |  |
+| apiServer.serviceMonitor.namespace | string | `"monitoring"` |  |
+| apiServer.serviceMonitor.scrapeInternal | string | `"15s"` |  |
+| apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
+| apiServer.terminationGracePeriodSeconds | int | `60` | Grace period for pod termination in seconds. Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown. Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details. |
 | common.database.jdbcUrl | string | `""` |  |
 | common.database.password | string | `""` |  |
 | common.database.username | string | `""` |  |
@@ -55,8 +60,8 @@
 | common.kafka.bootstrapServers | string | `""` |  |
 | common.kafka.topicPrefix | string | `""` |  |
 | common.nameOverride | string | `""` |  |
-| common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment |
-| common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret |
+| common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment. |
+| common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
