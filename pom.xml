@@ -46,7 +46,7 @@
     <lib.checkstyle.version>10.12.3</lib.checkstyle.version>
     <lib.cpe-parser.version>2.0.2</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
-    <lib.confluent-parallel-consumer.version>0.5.2.6</lib.confluent-parallel-consumer.version>
+    <lib.confluent-parallel-consumer.version>0.5.2.7</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.2</lib.cvss-calculator.version>
     <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
