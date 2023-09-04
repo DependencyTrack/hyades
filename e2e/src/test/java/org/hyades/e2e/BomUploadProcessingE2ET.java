@@ -286,7 +286,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                    "sha256" : "efb86b148712a838b94b3cfc95769785a116b3461f709b4cc510055a58b804b2",
                                    "sha512" : "0e9398591d86f80f16fc2d6ff0dda3e7821033e2c59472981eaab61443be3d77198655682905b85260fb2186a2cf0f33988aff689a49bb54e56c07e02f607e8a"
                                  },
-                                 "vulnerability" : [ {
+                                 "vulnerabilities" : [ {
                                    "uuid": "${json-unit.any-string}",
                                    "vulnId" : "INT-123",
                                    "source" : "INTERNAL",
