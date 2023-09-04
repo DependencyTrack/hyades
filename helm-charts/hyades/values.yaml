@@ -97,6 +97,8 @@ frontend:
 
 mirrorService:
   enabled: true
+  # -- Number of replicas. Should be <= 1.
+  replicaCount: 1
   annotations: {}
   image:
     repository: dependencytrack/hyades-mirror-service

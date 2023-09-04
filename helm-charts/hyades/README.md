@@ -104,6 +104,7 @@
 | mirrorService.probes.readiness.periodSeconds | int | `15` |  |
 | mirrorService.probes.readiness.successThreshold | int | `1` |  |
 | mirrorService.probes.readiness.timeoutSeconds | int | `5` |  |
+| mirrorService.replicaCount | int | `1` | Number of replicas. Should be <= 1. |
 | mirrorService.resources.limits.cpu | string | `"2"` |  |
 | mirrorService.resources.limits.memory | string | `"2Gi"` |  |
 | mirrorService.resources.requests.cpu | string | `"500m"` |  |
