@@ -256,7 +256,6 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
     }
 
     private void verifyProjectVulnAnalysisCompleteNotification() {
-        // FIXME: `cvssv3` field of vulnerabilities is not populated (https://github.com/DependencyTrack/hyades/issues/776)
         wireMock.verify(postRequestedFor(urlPathEqualTo("/notification"))
                 .withRequestBody(equalToJson("""
                         {
@@ -290,7 +289,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                    "uuid": "${json-unit.any-string}",
                                    "vulnId" : "INT-123",
                                    "source" : "INTERNAL",
-                                   "severity" : "CRITICAL"
+                                   "severity" : "CRITICAL",
+                                   "cvssv3": 10.0
                                  } ]
                                } ],
                                "status" : "PROJECT_VULN_ANALYSIS_STATUS_COMPLETED"
