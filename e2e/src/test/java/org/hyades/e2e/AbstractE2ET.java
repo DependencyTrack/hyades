@@ -104,7 +104,7 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
-        return new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
+        final var container = new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
                 .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx2g")
                 .withEnv("SYSTEM_REQUIREMENT_CHECK_ENABLED", "false")
@@ -119,6 +119,11 @@ public class AbstractE2ET {
                 .withNetworkAliases("apiserver")
                 .withNetwork(internalNetwork)
                 .withExposedPorts(8080);
+        customizeApiServerContainer(container);
+        return container;
+    }
+
+    protected void customizeApiServerContainer(final GenericContainer<?> container) {
     }
 
     @SuppressWarnings("resource")
