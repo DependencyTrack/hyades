@@ -115,7 +115,7 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
                             "level" : "LEVEL_INFORMATIONAL",
                             "scope" : "SCOPE_PORTFOLIO",
                             "group" : "GROUP_BOM_PROCESSED",
-                            "timestamp" : "${json-unit.regex}(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$)",
+                            "timestamp" : "${json-unit.regex}(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\.[0-9]{3}Z$)",
                             "title" : "Bill of Materials Processed",
                             "content" : "A CycloneDX BOM was processed",
                             "subject" : {
@@ -144,7 +144,7 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
                              "level" : "LEVEL_INFORMATIONAL",
                              "scope" : "SCOPE_PORTFOLIO",
                              "group" : "GROUP_PROJECT_VULN_ANALYSIS_COMPLETE",
-                             "timestamp" : "${json-unit.any-string}",
+                             "timestamp" : "${json-unit.regex}(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\.[0-9]{3}Z$)",
                              "title" : "Project vulnerability analysis complete",
                              "content" : "${json-unit.any-string}",
                              "subject" : {
