@@ -1,9 +1,9 @@
 package org.hyades.notification.publisher;
 
 import com.google.common.base.MoreObjects;
-import com.google.protobuf.util.Timestamps;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.hyades.persistence.model.NotificationRule;
+import org.hyades.proto.ProtobufUtil;
 import org.hyades.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.hyades.proto.notification.v1.BomProcessingFailedSubject;
 import org.hyades.proto.notification.v1.NewVulnerabilitySubject;
@@ -104,7 +104,7 @@ public class PublishContext {
 
         return new PublishContext(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(),
                 notification.getGroup().name(), notification.getLevel().name(), notification.getScope().name(),
-                Timestamps.toString(notification.getTimestamp()), notificationSubjects);
+                ProtobufUtil.formatTimestamp(notification.getTimestamp()), notificationSubjects);
     }
 
     /**

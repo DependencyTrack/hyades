@@ -19,7 +19,6 @@
 package org.hyades.notification.publisher;
 
 import com.google.protobuf.Any;
-import com.google.protobuf.util.Timestamps;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -37,12 +36,12 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyades.notification.publisher.PublisherTestUtil.createPublisherContext;
 import static org.hyades.notification.publisher.PublisherTestUtil.getConfig;
 import static org.hyades.proto.notification.v1.Group.GROUP_FILE_SYSTEM;
 import static org.hyades.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.hyades.proto.notification.v1.Scope.SCOPE_SYSTEM;
-import static org.junit.Assert.assertTrue;
 
 @QuarkusTest
 public class ConsolePublisherTest {
@@ -88,7 +87,7 @@ public class ConsolePublisherTest {
                 .build();
         publisher.inform(createPublisherContext(notification), notification, getConfig("CONSOLE", ""));
         System.out.println("outContent: " + outContent);
-        assertTrue(outContent.toString().contains(expectedResult(notification)));
+        assertThat(outContent.toString()).contains(expectedResult(notification));
     }
 
     @Test
@@ -114,7 +113,7 @@ public class ConsolePublisherTest {
                 .build();
         publisher.inform(createPublisherContext(notification), notification, getConfig("CONSOLE", ""));
         System.out.println("outContent: " + outContent);
-        assertTrue(outContent.toString().contains(expectedResult(notification)));
+        assertThat(outContent.toString()).contains(expectedResult(notification));
     }
 
     @Test
@@ -138,7 +137,7 @@ public class ConsolePublisherTest {
     private String expectedResult(Notification notification) {
         return "--------------------------------------------------------------------------------" + System.lineSeparator() +
                 "Notification" + System.lineSeparator() +
-                "  -- timestamp: " + Timestamps.toString(notification.getTimestamp()) + System.lineSeparator() +
+                "  -- timestamp: 1970-01-01T00:00:00.000Z" + System.lineSeparator() +
                 "  -- level:     " + notification.getLevel() + System.lineSeparator() +
                 "  -- scope:     " + notification.getScope() + System.lineSeparator() +
                 "  -- group:     " + notification.getGroup() + System.lineSeparator() +

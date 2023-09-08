@@ -63,7 +63,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_BOM_CONSUMED");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects()).hasEntrySatisfying("project", projectObj -> {
                 assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
                 final var project = (PublishContext.Project) projectObj;
@@ -95,7 +95,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_BOM_PROCESSED");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects()).hasEntrySatisfying("project", projectObj -> {
                 assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
                 final var project = (PublishContext.Project) projectObj;
@@ -127,7 +127,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_BOM_PROCESSING_FAILED");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects()).hasEntrySatisfying("project", projectObj -> {
                 assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
                 final var project = (PublishContext.Project) projectObj;
@@ -164,7 +164,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_NEW_VULNERABILITY");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects())
                     .hasEntrySatisfying("project", projectObj -> {
                         assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
@@ -210,7 +210,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_NEW_VULNERABLE_DEPENDENCY");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects())
                     .hasEntrySatisfying("project", projectObj -> {
                         assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
@@ -250,7 +250,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_PROJECT_CREATED");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects()).hasEntrySatisfying("project", projectObj -> {
                 assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
                 final var project = (PublishContext.Project) projectObj;
@@ -282,7 +282,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_PROJECT_VULN_ANALYSIS_COMPLETE");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects()).hasEntrySatisfying("project", projectObj -> {
                 assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
                 final var project = (PublishContext.Project) projectObj;
@@ -319,7 +319,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_POLICY_VIOLATION");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects())
                     .hasEntrySatisfying("project", projectObj -> {
                         assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
@@ -365,7 +365,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_PROJECT_AUDIT_CHANGE");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects())
                     .hasEntrySatisfying("project", projectObj -> {
                         assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
@@ -411,7 +411,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_PROJECT_AUDIT_CHANGE");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects())
                     .hasEntrySatisfying("project", projectObj -> {
                         assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
@@ -452,7 +452,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_VEX_CONSUMED");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects()).hasEntrySatisfying("project", projectObj -> {
                 assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
                 final var project = (PublishContext.Project) projectObj;
@@ -484,7 +484,7 @@ class PublishContextTest {
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_VEX_PROCESSED");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
-            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06Z");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects()).hasEntrySatisfying("project", projectObj -> {
                 assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
                 final var project = (PublishContext.Project) projectObj;
