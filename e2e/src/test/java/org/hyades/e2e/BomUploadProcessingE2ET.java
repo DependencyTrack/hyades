@@ -206,7 +206,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_NEW_VULNERABILITY",
-                            "timestamp": "${json-unit.regex}(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$)",
+                            "timestamp": "${json-unit.regex}(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\.[0-9]{3}Z$)",
                             "title": "New Vulnerability Identified on Project: [pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war]",
                             "content": "INT-123",
                             "subject": {
@@ -263,7 +263,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                              "level" : "LEVEL_INFORMATIONAL",
                              "scope" : "SCOPE_PORTFOLIO",
                              "group" : "GROUP_PROJECT_VULN_ANALYSIS_COMPLETE",
-                             "timestamp" : "${json-unit.any-string}",
+                             "timestamp" : "${json-unit.regex}(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\.[0-9]{3}Z$)",
                              "title" : "Project vulnerability analysis complete",
                              "content" : "${json-unit.any-string}",
                              "subject" : {

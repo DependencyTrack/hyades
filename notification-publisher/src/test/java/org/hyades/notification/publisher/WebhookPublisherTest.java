@@ -102,7 +102,7 @@ class WebhookPublisherTest {
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_NEW_VULNERABILITY",
-                            "timestamp": "1970-01-01T00:11:06Z",
+                            "timestamp": "1970-01-01T00:11:06.000Z",
                             "title": "Test Notification",
                             "content": "This is only a test",
                             "subject": {
@@ -208,7 +208,7 @@ class WebhookPublisherTest {
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_BOM_PROCESSED",
-                            "timestamp": "1970-01-01T00:11:06Z",
+                            "timestamp": "1970-01-01T00:11:06.000Z",
                             "title": "Test Notification",
                             "content": "This is only a test",
                             "subject": {
