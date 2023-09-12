@@ -229,6 +229,7 @@ class RepositoryMetaAnalyzerIT {
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
     @QuarkusTestResource(WireMockTestResource.class)
+
     @TestProfile(WithIntegrityCheckEnabledComponentHashMatch.TestProfile.class)
     static class WithIntegrityCheckEnabledComponentHashMatch {
 
@@ -414,8 +415,7 @@ class RepositoryMetaAnalyzerIT {
         WireMockServer wireMockServer;
 
         @AfterEach
-        void afterEach()
-        {
+        void afterEach() {
             kafkaCompanion.close();
             wireMockServer.shutdown();
         }
@@ -512,6 +512,7 @@ class RepositoryMetaAnalyzerIT {
             kafkaCompanion.close();
             wireMockServer.shutdown();
         }
+
         @Test
         void test() {
             final var command = AnalysisCommand.newBuilder()
@@ -555,9 +556,14 @@ class RepositoryMetaAnalyzerIT {
                     ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
                     ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
                 final PreparedStatement ps = connection.prepareStatement("""
-                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
-                        VALUES ('true', 'test', false, NULL, 2, 'CPAN', 'http://localhost:%d', false, false);
-                        """.formatted(wireMockServer.port()));
+                        <<<<<<< HEAD
+                                                INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED", "INTEGRITY_CHECK_ENABLED")
+                                                VALUES ('true', 'test', false, NULL, 2, 'CPAN', 'http://localhost:%d', false, false);
+                        =======
+                                                INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
+                                                VALUES ('true', 'test', false, NULL, 2, 'CPAN', 'http://localhost:%d', false);
+                        >>>>>>> 7e7d0f0c7922b1a526123a937642cfdc2d45f7d9
+                                                """.formatted(wireMockServer.port()));
                 ps.execute();
             }
         }
@@ -604,6 +610,7 @@ class RepositoryMetaAnalyzerIT {
     @QuarkusTestResource(WireMockTestResource.class)
     @TestProfile(InternalAnalyzerNonInternalComponent.TestProfile.class)
     static class InternalAnalyzerNonInternalComponent {
+
 
         public static class TestProfile implements QuarkusTestProfile {
         }
