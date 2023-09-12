@@ -1,14 +1,13 @@
 {{- if .Values.apiServer.enabled }}
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "hyades.apiServerFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "hyades.apiServerFullname" . }}
-  replicas: 1
+  replicas: {{ .Values.apiServer.replicaCount }}
   selector:
     matchLabels: {{- include "hyades.apiServerSelectorLabels" . | nindent 6 }}
   template:
@@ -24,6 +23,7 @@ spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.apiServer.terminationGracePeriodSeconds }}
       containers:
       - name: {{ include "hyades.apiServerName" . }}
         image: {{ include "hyades.apiServerImage" . }}
@@ -38,6 +38,10 @@ spec:
         env:
         - name: ALPINE_METRICS_ENABLED
           value: "true"
+        {{- if (include "hyades.secretKeySecretName" .) }}
+        - name: ALPINE_SECRET_KEY_PATH
+          value: "/var/run/secrets/secret.key"
+        {{- end }}
         - name: ALPINE_DATABASE_MODE
           value: "external"
         - name: ALPINE_DATABASE_DRIVER
@@ -74,6 +78,12 @@ spec:
           mountPath: /data
         - name: tmp
           mountPath: /tmp
+        {{- if (include "hyades.secretKeySecretName" .) }}
+        - name: secret-key
+          subPath: secret.key
+          mountPath: /var/run/secrets/secret.key
+          readOnly: true
+        {{- end }}
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -95,14 +105,13 @@ spec:
           successThreshold: {{ .Values.apiServer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
       volumes:
-      {{- if .Values.apiServer.persistentVolume.enabled }}
-      - name: data
-        persistentVolumeClaim:
-          claimName: {{ include "hyades.apiServerFullname" . }}
-      {{- else }}
       - name: data
         emptyDir: { }
-      {{- end }}
       - name: tmp
         emptyDir: { }
+      {{- with (include "hyades.secretKeySecretName" .) }}
+      - name: secret-key
+        secret:
+          secretName: {{ . }}
+      {{- end }}
 {{- end }}

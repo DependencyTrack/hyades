@@ -6,17 +6,31 @@ common:
     password: "dtrack"
   kafka:
     bootstrapServers: "host.minikube.internal:9093"
+  secretKey:
+    createSecret: true
 
 apiServer:
   enabled: true
+  replicaCount: 1
   resources:
     requests:
       cpu: "2"
-      memory: 2Gi
+      memory: 1Gi
     limits:
       cpu: "4"
-      memory: 3Gi
+      memory: 2Gi
+  service:
+    type: NodePort
+    nodePort: 30080
   extraEnv:
     EXTRA_JAVA_OPTIONS: "-Xmx2g"
     SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
     KAFKA_NUM_STREAM_THREADS: "12"
+
+frontend:
+  enabled: true
+  replicaCount: 1
+  service:
+    type: NodePort
+    nodePort: 30081
+  apiBaseUrl: "http://localhost:30080"

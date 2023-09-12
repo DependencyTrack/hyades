@@ -12,9 +12,15 @@ common:
   kafka:
     bootstrapServers: ""
     topicPrefix: ""
+  secretKey:
+    # -- Whether the chart should generate a secret key upon deployment.
+    createSecret: false
+    # -- Use the secret key defined in an existing secret.
+    existingSecretName: ""
 
 apiServer:
   enabled: false
+  replicaCount: 1
   annotations: {}
   image:
     repository: dependencytrack/hyades-apiserver
@@ -29,10 +35,6 @@ apiServer:
     limits:
       cpu: "4"
       memory: 8Gi
-  persistentVolume:
-    enabled: false
-    className: ""
-    size: 5Gi
   extraEnv: {}
   extraEnvFrom: []
   probes:
@@ -50,6 +52,16 @@ apiServer:
       timeoutSeconds: 5
   service:
     type: ClusterIP
+    nodePort: ~
+  serviceMonitor:
+    enabled: false
+    namespace: monitoring
+    scrapeInternal: 15s
+    scrapeTimeout: 30s
+  # -- Grace period for pod termination in seconds.
+  # Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown.
+  # Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details.
+  terminationGracePeriodSeconds: 60
   ingress:
     enabled: false
     annotations: {}
@@ -89,6 +101,7 @@ frontend:
       timeoutSeconds: 5
   service:
     type: ClusterIP
+    nodePort: ~
   ingress:
     enabled: false
     annotations: {}

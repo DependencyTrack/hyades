@@ -29,9 +29,6 @@
 | apiServer.ingress.annotations | object | `{}` |  |
 | apiServer.ingress.enabled | bool | `false` |  |
 | apiServer.ingress.hostname | string | `"example.com"` |  |
-| apiServer.persistentVolume.className | string | `""` |  |
-| apiServer.persistentVolume.enabled | bool | `false` |  |
-| apiServer.persistentVolume.size | string | `"5Gi"` |  |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
 | apiServer.probes.liveness.initialDelaySeconds | int | `10` |  |
 | apiServer.probes.liveness.periodSeconds | int | `15` |  |
@@ -42,11 +39,18 @@
 | apiServer.probes.readiness.periodSeconds | int | `15` |  |
 | apiServer.probes.readiness.successThreshold | int | `1` |  |
 | apiServer.probes.readiness.timeoutSeconds | int | `5` |  |
+| apiServer.replicaCount | int | `1` |  |
 | apiServer.resources.limits.cpu | string | `"4"` |  |
 | apiServer.resources.limits.memory | string | `"8Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
 | apiServer.resources.requests.memory | string | `"4Gi"` |  |
+| apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
+| apiServer.serviceMonitor.enabled | bool | `false` |  |
+| apiServer.serviceMonitor.namespace | string | `"monitoring"` |  |
+| apiServer.serviceMonitor.scrapeInternal | string | `"15s"` |  |
+| apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
+| apiServer.terminationGracePeriodSeconds | int | `60` | Grace period for pod termination in seconds. Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown. Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details. |
 | common.database.jdbcUrl | string | `""` |  |
 | common.database.password | string | `""` |  |
 | common.database.username | string | `""` |  |
@@ -56,6 +60,8 @@
 | common.kafka.bootstrapServers | string | `""` |  |
 | common.kafka.topicPrefix | string | `""` |  |
 | common.nameOverride | string | `""` |  |
+| common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment. |
+| common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
@@ -84,6 +90,7 @@
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
 | frontend.resources.requests.memory | string | `"64Mi"` |  |
+| frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |
 | mirrorService.annotations | object | `{}` |  |
 | mirrorService.args | list | `[]` |  |
