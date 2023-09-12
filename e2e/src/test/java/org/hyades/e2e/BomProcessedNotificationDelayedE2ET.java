@@ -119,6 +119,7 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
                             "title" : "Bill of Materials Processed",
                             "content" : "A CycloneDX BOM was processed",
                             "subject" : {
+                              "token": "${json-unit.any-string}",
                               "project" : {
                                 "uuid" : "${json-unit.any-string}",
                                 "name" : "foo",
@@ -148,6 +149,7 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
                              "title" : "Project vulnerability analysis complete",
                              "content" : "${json-unit.any-string}",
                              "subject" : {
+                               "token": "${json-unit.any-string}",
                                "project" : {
                                  "uuid": "${json-unit.any-string}",
                                  "name" : "foo",

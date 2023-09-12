@@ -267,6 +267,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                              "title" : "Project vulnerability analysis complete",
                              "content" : "${json-unit.any-string}",
                              "subject" : {
+                               "token": "${json-unit.any-string}",
                                "project" : {
                                  "uuid": "${json-unit.any-string}",
                                  "name" : "foo",
