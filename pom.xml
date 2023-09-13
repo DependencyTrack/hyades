@@ -53,7 +53,7 @@
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
     <lib.greenmail.version>2.0.0</lib.greenmail.version>
     <lib.java-uuid-generator.version>4.3.0</lib.java-uuid-generator.version>
-    <lib.json-unit.version>3.0.0</lib.json-unit.version>
+    <lib.json-unit.version>3.1.0</lib.json-unit.version>
     <lib.kafka.version>3.5.1</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-7</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
