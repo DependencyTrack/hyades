@@ -115,6 +115,7 @@ public final class NvdToCyclonedxParser {
                 .flatMap(Collection::stream)
                 // We can't compute negation.
                 .filter(node -> node.getNegate() == null || !node.getNegate())
+                .filter(node -> node.getCpeMatch() != null)
                 .map(node -> extractCpeMatchesFromNode(cveId, node))
                 .flatMap(Collection::stream)
                 // We currently have no interest in non-vulnerable versions.
