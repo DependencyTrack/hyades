@@ -68,12 +68,14 @@ message BackReference {
 message BomConsumedOrProcessedSubject {
   Project project = 1;
   Bom bom = 2;
+  string token = 3;
 }
 
 message BomProcessingFailedSubject {
   Project project = 1;
   Bom bom = 2;
   string cause = 3;
+  string token = 4;
 }
 
 message Bom {
@@ -224,6 +226,7 @@ message ProjectVulnAnalysisCompleteSubject {
   Project project = 1;
   repeated ComponentVulnAnalysisCompleteSubject findings = 2;
   ProjectVulnAnalysisStatus status = 3;
+  string token = 4;
 }
 
 enum ProjectVulnAnalysisStatus {

@@ -12,5 +12,8 @@ spec:
   - name: web
     port: 8080
     targetPort: web
+    {{- with .Values.frontend.service.nodePort }}
+    nodePort: {{ . }}
+    {{- end }}
   selector: {{- include "hyades.frontendSelectorLabels" . | nindent 4 }}
 {{- end }}

@@ -12,5 +12,8 @@ spec:
   - name: web
     port: 8080
     targetPort: web
+    {{- with .Values.apiServer.service.nodePort }}
+    nodePort: {{ . }}
+    {{- end }}
   selector: {{- include "hyades.apiServerSelectorLabels" . | nindent 4 }}
 {{- end }}

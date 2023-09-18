@@ -280,3 +280,13 @@ Vulnerability analyzer image
 {{- define "hyades.vulnAnalyzerImage" -}}
 {{- printf "%s/%s:%s" .Values.common.image.registry .Values.vulnAnalyzer.image.repository (.Values.vulnAnalyzer.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
+
+{{/*
+*/}}
+{{- define "hyades.secretKeySecretName" -}}
+{{- if .Values.common.secretKey.existingSecretName -}}
+{{- .Values.common.secretKey.existingSecretName -}}
+{{- else if .Values.common.secretKey.createSecret -}}
+{{- printf "%s-secret-key" (include "hyades.fullname" .) -}}
+{{- end -}}
+{{- end -}}

@@ -30,9 +30,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # tag=v2.2.0
+      uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # tag=v3.0.0
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55 # tag=v2.10.0
+      uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # tag=v3.0.0
       with:
         install: true
     - name: Build Native Image
@@ -97,20 +97,20 @@ jobs:
         name: native-image-arm64
         path: ${{ inputs.module }}/target/arm64
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # tag=v2.2.0
+      uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # tag=v3.0.0
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55 # tag=v2.10.0
+      uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # tag=v3.0.0
       with:
         install: true
     - name: Docker login
-      uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # tag=v2.2.0
+      uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # tag=v3.0.0
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
       if: ${{ startsWith(github.repository, 'DependencyTrack/') }}
     - name: Build Container Image
-      uses: docker/build-push-action@0a97817b6ade9f46837855d676c4cca3a2471fc9 # tag=v4.2.1
+      uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # tag=v5.0.0
       with:
         context: ./${{ inputs.module }}
         file: ./${{ inputs.module }}/src/main/docker/Dockerfile.native-multiarch
