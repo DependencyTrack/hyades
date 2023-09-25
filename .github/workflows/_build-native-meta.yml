@@ -22,7 +22,7 @@ jobs:
       fail-fast: true
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # tag=v4.0.0
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # tag=v4.1.0
     - name: Set up JDK
       uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0 # tag=v3.13.0
       with:
@@ -85,7 +85,7 @@ jobs:
     - build-native-image
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # tag=v4.0.0
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # tag=v4.1.0
     - name: Download amd64 Binary
       uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # tag=v3.0.2
       with:
