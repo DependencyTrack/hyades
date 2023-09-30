@@ -5,22 +5,28 @@ enabling more flexibility, and more control over predefined conditions.
 
 ## Evaluation Context
 
-Conditions are scoped to individual components. Each condition is evaluated for every single component in a project.
+Conditions are scoped to individual components.  
+Each condition is evaluated for every single component in a project.
+
 The context in which expressions are evaluated in contains the following variables:
 
-| Variable    | Type                                                    | Description                                  |
-|:------------|:--------------------------------------------------------|:---------------------------------------------|
-| `component` | <code>[org.hyades.policy.v1.Component]</code>           | The component being evaluated                |
-| `project`   | <code>[org.hyades.policy.v1.Project]</code>             | The project the component is part of         |
-| `vulns`     | <code>list([org.hyades.policy.v1.Vulnerability])</code> | Vulnerabilities the component is affected by |
+| Variable    | Type                               | Description                                  |
+|:------------|:-----------------------------------|:---------------------------------------------|
+| `component` | <code>[Component]</code>           | The component being evaluated                |
+| `project`   | <code>[Project]</code>             | The project the component is part of         |
+| `vulns`     | <code>list([Vulnerability])</code> | Vulnerabilities the component is affected by |
 
 ## Examples
 
 ### Component blacklist
 
+The following expression matches on the [Component]'s [Package URL], using a regular expression in [RE2] syntax.
+Additionally, it checks whether the [Component]'s version falls into a given [vers] range, consisting of multiple
+constraints.
+
 ```js linenums="1"
-component.purl.matches("^pkg:maven/com.acme/acme-lib\\b.*") 
-   && component.matches_range("vers:maven/>0|<1|!=0.2.4")
+component.purl.matches("^pkg:maven/com.acme/acme-lib\\b.*")
+  && component.matches_range("vers:maven/>0|<1|!=0.2.4")
 ```
 
 The expression will match:
@@ -33,9 +39,25 @@ but not:
 * `pkg:maven/com.acme/acme-library@0.1.0`
 * `pkg:maven/com.acme/acme-lib@0.2.4`
 
+### License blacklist
+
+The following expression matches [Component]s that are **not** internal to the organization,
+and have either:
+
+* No resolved [License] at all
+* A resolved [License] that is not part of the `Permissive` license group
+
+```js linenums="1"
+!component.is_internal && (
+  !has(component.resolved_license)
+    || component.resolved_license.groups.exisits(licenseGroup, 
+         licenseGroup.name == "Permissive")
+)
+```
+
 ### Vulnerability blacklist
 
-Matches components in projects tagged as `3rd-party`, with at least one vulnerability
+The following expression matches [Component]s in [Project]s tagged as `3rd-party`, with at least one [Vulnerability]
 being any of the given blacklisted IDs.
 
 ```js linenums="1"
@@ -49,88 +71,89 @@ being any of the given blacklisted IDs.
 
 ### Vulnerabilities with high severity in public facing projects
 
-Matches components in public facing projects, with at least one `HIGH` or `CRITICAL`
-vulnerability, where the [CVSSv3] attack vector is `Network`.
+The following expression matches [Component]s in [Project]s tagged as `public-facing`, with at least one `HIGH`
+or `CRITICAL`
+[Vulnerability], where the [CVSSv3] attack vector is `Network`.
 
 ```js linenums="1"
 "public-facing" in project.tags
-  && vulns.exists(vuln, 
-       vuln.severity in ["HIGH", "CRITICAL"] 
-       && vuln.cvssv3_vector.matches(".*/AV:N/.*")
-     )
+  && vulns.exists(vuln,
+    vuln.severity in ["HIGH", "CRITICAL"]
+      && vuln.cvssv3_vector.matches(".*/AV:N/.*")
+  )
 ```
 
 ## Reference
 
 ### Types
 
-#### `org.hyades.policy.v1.Component`
+#### `Component`
 
-| Field                | Type                                        | Description |
-|:---------------------|:--------------------------------------------|:------------|
-| `uuid`               | `string`                                    |             |
-| `group`              | `string`                                    |             |
-| `name`               | `string`                                    |             |
-| `version`            | `string`                                    |             |
-| `classifier`         | `string`                                    |             |
-| `cpe`                | `string`                                    |             |
-| `purl`               | `string`                                    |             |
-| `swid_tag_id`        | `string`                                    |             |
-| `is_internal`        | `bool`                                      |             |
-| `md5`                | `string`                                    |             |
-| `sha1`               | `string`                                    |             |
-| `sha256`             | `string`                                    |             |
-| `sha384`             | `string`                                    |             |
-| `sha512`             | `string`                                    |             |
-| `sha3_256`           | `string`                                    |             |
-| `sha3_384`           | `string`                                    |             |
-| `sha3_512`           | `string`                                    |             |
-| `blake2b_256`        | `string`                                    |             |
-| `blake2b_384`        | `string`                                    |             |
-| `blake2b_512`        | `string`                                    |             |
-| `blake3`             | `string`                                    |             |
-| `license_name`       | `string`                                    |             |
-| `license_expression` | `string`                                    |             |
-| `resolved_license`   | <code>[org.hyades.policy.v1.License]</code> |             |
+| Field                | Type                   | Description     |
+|:---------------------|:-----------------------|:----------------|
+| `uuid`               | `string`               | Internal [UUID] |
+| `group`              | `string`               |                 |
+| `name`               | `string`               |                 |
+| `version`            | `string`               |                 |
+| `classifier`         | `string`               |                 |
+| `cpe`                | `string`               | [CPE]           |
+| `purl`               | `string`               | [Package URL]   |
+| `swid_tag_id`        | `string`               |                 |
+| `is_internal`        | `bool`                 |                 |
+| `md5`                | `string`               |                 |
+| `sha1`               | `string`               |                 |
+| `sha256`             | `string`               |                 |
+| `sha384`             | `string`               |                 |
+| `sha512`             | `string`               |                 |
+| `sha3_256`           | `string`               |                 |
+| `sha3_384`           | `string`               |                 |
+| `sha3_512`           | `string`               |                 |
+| `blake2b_256`        | `string`               |                 |
+| `blake2b_384`        | `string`               |                 |
+| `blake2b_512`        | `string`               |                 |
+| `blake3`             | `string`               |                 |
+| `license_name`       | `string`               |                 |
+| `license_expression` | `string`               |                 |
+| `resolved_license`   | <code>[License]</code> |                 |
 
-#### `org.hyades.policy.v1.License`
+#### `License`
 
-| Field              | Type                                                    | Description |
-|:-------------------|:--------------------------------------------------------|:------------|
-| `uuid`             | `string`                                                |             |
-| `id`               | `string`                                                |             |
-| `name`             | `string`                                                |             |
-| `groups`           | <code>list([org.hyades.policy.v1.License.Group])</code> |             |
-| `is_osi_approved`  | `bool`                                                  |             |
-| `is_fsf_libre`     | `bool`                                                  |             |
-| `is_deprecated_id` | `bool`                                                  |             |
-| `is_custom`        | `bool`                                                  |             |
+| Field              | Type                               | Description     |
+|:-------------------|:-----------------------------------|:----------------|
+| `uuid`             | `string`                           | Internal [UUID] |
+| `id`               | `string`                           |                 |
+| `name`             | `string`                           |                 |
+| `groups`           | <code>list([License.Group])</code> |                 |
+| `is_osi_approved`  | `bool`                             |                 |
+| `is_fsf_libre`     | `bool`                             |                 |
+| `is_deprecated_id` | `bool`                             |                 |
+| `is_custom`        | `bool`                             |                 |
 
-#### `org.hyades.policy.v1.License.Group`
+#### `License.Group`
 
-| Field  | Type     | Description |
-|:-------|:---------|:------------|
-| `uuid` | `string` |             |
-| `name` | `string` |             |
+| Field  | Type     | Description     |
+|:-------|:---------|:----------------|
+| `uuid` | `string` | Internal [UUID] |
+| `name` | `string` |                 |
 
-#### `org.hyades.policy.v1.Project`
+#### `Project`
 
-| Field             | Type                                                       | Description |
-|:------------------|:-----------------------------------------------------------|:------------|
-| `uuid`            | `string`                                                   |             |
-| `group`           | `string`                                                   |             |
-| `name`            | `string`                                                   |             |
-| `version`         | `string`                                                   |             |
-| `classifier`      | `string`                                                   |             |
-| `is_active`       | `bool`                                                     |             |
-| `tags`            | `list(string)`                                             |             |
-| `properties`      | <code>list([org.hyades.policy.v1.Project.Property])</code> |             |
-| `cpe`             | `string`                                                   |             |
-| `purl`            | `string`                                                   |             |
-| `swid_tag_id`     | `string`                                                   |             |
-| `last_bom_import` | `google.protobuf.Timestamp`                                |             |
+| Field             | Type                                  | Description     |
+|:------------------|:--------------------------------------|:----------------|
+| `uuid`            | `string`                              | Internal [UUID] |
+| `group`           | `string`                              |                 |
+| `name`            | `string`                              |                 |
+| `version`         | `string`                              |                 |
+| `classifier`      | `string`                              |                 |
+| `is_active`       | `bool`                                |                 |
+| `tags`            | `list(string)`                        |                 |
+| `properties`      | <code>list([Project.Property])</code> |                 |
+| `cpe`             | `string`                              | [CPE]           |
+| `purl`            | `string`                              | [Package URL]   |
+| `swid_tag_id`     | `string`                              |                 |
+| `last_bom_import` | `google.protobuf.Timestamp`           |                 |
 
-#### `org.hyades.policy.v1.Project.Property`
+#### `Project.Property`
 
 | Field   | Type     | Description |
 |:--------|:---------|:------------|
@@ -139,71 +162,68 @@ vulnerability, where the [CVSSv3] attack vector is `Network`.
 | `value` | `string` |             |
 | `type`  | `string` |             |
 
-#### `org.hyades.policy.v1.Vulnerability`
+#### `Vulnerability`
 
-| Field                             | Type                        | Description                                |
-|:----------------------------------|:----------------------------|:-------------------------------------------|
-| `uuid`                            | `string`                    |                                            |
-| `id`                              | `string`                    | ID of the vulnerability (e.g. `CVE-123`)   |
-| `source`                          | `string`                    | Authoritative source (e.g. `NVD`)          |
-| `aliases`                         | `string`                    |                                            |
-| `cwes`                            | `list(int)`                 | [CWE] IDs                                  |
-| `created`                         | `google.protobuf.Timestamp` | When the vulnerability was created         |
-| `published`                       | `google.protobuf.Timestamp` | When the vulnerability was published       |
-| `updated`                         | `google.protobuf.Timestamp` | Then the vulnerability was updated         |
-| `severity`                        | `string`                    |                                            |
-| `cvssv2_base_score`               | `double`                    | [CVSSv2] base score                        |
-| `cvssv2_impact_subscore`          | `double`                    | [CVSSv2] impact sub score                  |
-| `cvssv2_exploitability_subscore`  | `double`                    | [CVSSv2] exploitability sub score          |
-| `cvssv2_vector`                   | `string`                    | [CVSSv2] vector                            |
-| `cvssv3_base_score`               | `double`                    | [CVSSv3] base score                        |
-| `cvssv3_impact_subscore`          | `double`                    | [CVSSv3] impact sub score                  |
-| `cvssv3_exploitability_subscore`  | `double`                    | [CVSSv3] exploitability sub score          |
-| `cvssv3_vector`                   | `string`                    | [CVSSv3] vector                            |
-| `owasp_rr_likelihood_score`       | `double`                    | [OWASP Risk Rating] likelihood score       |
-| `owasp_rr_technical_impact_score` | `double`                    | [OWASP Risk Rating] technical impact score |
-| `owasp_rr_business_impact_score`  | `double`                    | [OWASP Risk Rating] business impact score  |
-| `owasp_rr_vector`                 | `string`                    | [OWASP Risk Rating] vector                 |
-| `epss_score`                      | `double`                    | [EPSS] score                               |
-| `epss_percentile`                 | `double`                    | [EPSS] percentile                          |
+| Field                             | Type                                     | Description                                |
+|:----------------------------------|:-----------------------------------------|:-------------------------------------------|
+| `uuid`                            | `string`                                 | Internal [UUID]                            |
+| `id`                              | `string`                                 | ID of the vulnerability (e.g. `CVE-123`)   |
+| `source`                          | `string`                                 | Authoritative source (e.g. `NVD`)          |
+| `aliases`                         | <code>list([Vulnerability.Alias])</code> |                                            |
+| `cwes`                            | `list(int)`                              | [CWE] IDs                                  |
+| `created`                         | `google.protobuf.Timestamp`              | When the vulnerability was created         |
+| `published`                       | `google.protobuf.Timestamp`              | When the vulnerability was published       |
+| `updated`                         | `google.protobuf.Timestamp`              | Then the vulnerability was updated         |
+| `severity`                        | `string`                                 |                                            |
+| `cvssv2_base_score`               | `double`                                 | [CVSSv2] base score                        |
+| `cvssv2_impact_subscore`          | `double`                                 | [CVSSv2] impact sub score                  |
+| `cvssv2_exploitability_subscore`  | `double`                                 | [CVSSv2] exploitability sub score          |
+| `cvssv2_vector`                   | `string`                                 | [CVSSv2] vector                            |
+| `cvssv3_base_score`               | `double`                                 | [CVSSv3] base score                        |
+| `cvssv3_impact_subscore`          | `double`                                 | [CVSSv3] impact sub score                  |
+| `cvssv3_exploitability_subscore`  | `double`                                 | [CVSSv3] exploitability sub score          |
+| `cvssv3_vector`                   | `string`                                 | [CVSSv3] vector                            |
+| `owasp_rr_likelihood_score`       | `double`                                 | [OWASP Risk Rating] likelihood score       |
+| `owasp_rr_technical_impact_score` | `double`                                 | [OWASP Risk Rating] technical impact score |
+| `owasp_rr_business_impact_score`  | `double`                                 | [OWASP Risk Rating] business impact score  |
+| `owasp_rr_vector`                 | `string`                                 | [OWASP Risk Rating] vector                 |
+| `epss_score`                      | `double`                                 | [EPSS] score                               |
+| `epss_percentile`                 | `double`                                 | [EPSS] percentile                          |
 
-#### `org.hyades.policy.v1.Vulnerability.Alias`
+#### `Vulnerability.Alias`
 
-| Field    | Type     | Description |
-|:---------|:---------|:------------|
-| `id`     | `string` |             |
-| `source` | `string` |             |
+| Field    | Type     | Description                               |
+|:---------|:---------|:------------------------------------------|
+| `id`     | `string` | ID of the vulnerability (e.g. `GHSA-123`) |
+| `source` | `string` | Authoritative source (e.g. `GITHUB`)      |
 
 ### Function Definitions
 
-https://github.com/google/cel-spec/blob/master/doc/langdef.md#list-of-standard-definitions
+In addition to the standard definitions of the CEL specification[^1], Dependency-Track offers additional functions
+to unlock even more use cases:
 
-| Symbol             | Type                                                                                             | Description                                                   |
-|:-------------------|:-------------------------------------------------------------------------------------------------|:--------------------------------------------------------------|
-| `depends_on`       | <[Project]>.depends_on([Component]) -> `bool`                                                    | Check if `Project` depends on `Component`                     |
-| `is_dependency_of` | (`Component`, `Component`) -> `bool`                                                             | Check if a `Component` is a dependency of another `Component` |
-| `matches_range`    | (`Project`, `string`) -> `bool`<br/>(`Component`, `string`) -> `bool`                            |                                                               |
-| `charAt`           | (`string`, `int`) -> `string`                                                                    |                                                               |
-| `indexOf`          | (`string`, `string`) -> `int`<br/>(`string`, `string`, `int`) -> `int`                           |                                                               |
-| `join`             | (`list(string)`) -> `string`<br/>(`list(string)`, `string`) -> `string`                          |                                                               |
-| `lastIndexOf`      | (`string`, `string`) -> `int`<br/>(`string`, `string`, `int`) -> `string`                        |                                                               |
-| `toLowerAscii`     | (`string`) -> `string`                                                                           |                                                               |
-| `replace`          | (`string`, `string`, `string`) -> `string`<br/>(`string`, `string`, `string`, `int`) -> `string` |                                                               |
-| `split`            | `<string>.split(<string>) -> <string>`                                                           |                                                               |
-
+| Symbol             | Type                                                                                        | Description                                                   |
+|:-------------------|:--------------------------------------------------------------------------------------------|:--------------------------------------------------------------|
+| `depends_on`       | <code>([Project], [Component])</code> -> `bool`                                             | Check if `Project` depends on `Component`                     |
+| `is_dependency_of` | <code>([Component], [Component])</code> -> `bool`                                           | Check if a `Component` is a dependency of another `Component` |
+| `matches_range`    | <code>([Project], string)</code> -> `bool`<br/><code>([Component], string)</code> -> `bool` | Check if a `Project` or `Component` matches a [vers] range    |
 
 [CVSSv2]: https://www.first.org/cvss/v2/guide
 [CVSSv3]: https://www.first.org/cvss/v3.0/specification-document
+[CPE]: https://csrc.nist.gov/projects/security-content-automation-protocol/specifications/cpe
 [CWE]: https://cwe.mitre.org/
 [Common Expression Language]: https://github.com/google/cel-spec
-[Component]: #orghyadespolicyv1component
+[Component]: #component
 [EPSS]: https://www.first.org/epss/
+[License.Group]: #licensegroup
+[License]: #license
 [OWASP Risk Rating]: https://owasp.org/www-community/OWASP_Risk_Rating_Methodology
-[Project]: #orghyadespolicyv1project
-[org.hyades.policy.v1.Component]: #orghyadespolicyv1component
-[org.hyades.policy.v1.License.Group]: #orghyadespolicyv1licensegroup
-[org.hyades.policy.v1.License]: #orghyadespolicyv1license
-[org.hyades.policy.v1.Project.Property]: #orghyadespolicyv1projectproperty
-[org.hyades.policy.v1.Project]: #orghyadespolicyv1project
-[org.hyades.policy.v1.Vulnerability]: #orghyadespolicyv1vulnerability
+[Package URL]: https://github.com/package-url/purl-spec/blob/master/PURL-SPECIFICATION.rst
+[Project.Property]: #projectproperty
+[Project]: #project
+[RE2]: https://github.com/google/re2/wiki/Syntax
+[UUID]: https://en.wikipedia.org/wiki/Universally_unique_identifier
+[Vulnerability.Alias]: #vulnerabilityalias
+[Vulnerability]: #vulnerability
+[^1]: https://github.com/google/cel-spec/blob/master/doc/langdef.md#list-of-standard-definitions
 [vers]: https://github.com/package-url/purl-spec/blob/version-range-spec/VERSION-RANGE-SPEC.rst
