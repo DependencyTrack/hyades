@@ -1,5 +1,3 @@
-# Q&A
-
 ## Why?
 
 > tl;dr: Dependency-Track's architecture prevents it from scaling past a certain workload.
