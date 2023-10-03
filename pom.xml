@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.hyades</groupId>
   <artifactId>hyades</artifactId>
-  <version>0.1.5</version>
+  <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -30,7 +30,7 @@
     <connection>${scm.connection}</connection>
     <developerConnection>${scm.developer.connection}</developerConnection>
     <url>${scm.url}</url>
-    <tag>v0.1.5</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
