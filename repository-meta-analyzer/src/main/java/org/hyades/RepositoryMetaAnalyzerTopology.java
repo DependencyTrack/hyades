@@ -17,7 +17,6 @@ import org.hyades.processor.MetaAnalyzerProcessorSupplier;
 import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
-import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
 
@@ -57,19 +56,17 @@ public class RepositoryMetaAnalyzerTopology {
                         .withName("command-by-purl-coordinates"));
 
         commandStream
-                .mapValues((purl, command) -> command.getComponent(),
-                        Named.as("map_to_component"))
                 .split(Named.as("applicable_analyzer"))
-                .branch((purl, component) -> analyzerFactory.hasApplicableAnalyzer(purl), Branched
-                        .<PackageURL, Component>withConsumer(stream -> stream
+                .branch((purl, command) -> analyzerFactory.hasApplicableAnalyzer(purl), Branched
+                        .<PackageURL, AnalysisCommand>withConsumer(stream -> stream
                                 .processValues(analyzerProcessorSupplier, Named.as("analyze_component"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(purlSerde, scanResultSerde)
                                         .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "analysis_result"))))
                         .withName("-found"))
                 .defaultBranch(Branched
-                        .<PackageURL, Component>withConsumer(stream -> stream
-                                .mapValues((purl, component) -> AnalysisResult.newBuilder().setComponent(component).build(),
+                        .<PackageURL, AnalysisCommand>withConsumer(stream -> stream
+                                .mapValues((purl, command) -> AnalysisResult.newBuilder().setComponent(command.getComponent()).build(),
                                         Named.as("map_unmatched_component_to_empty_result"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(purlSerde, scanResultSerde)

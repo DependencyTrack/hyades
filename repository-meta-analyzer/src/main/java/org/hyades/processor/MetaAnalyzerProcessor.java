@@ -13,8 +13,10 @@ import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Repository;
 import org.hyades.persistence.model.RepositoryType;
 import org.hyades.persistence.repository.RepoEntityRepository;
+import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
+import org.hyades.proto.repometaanalysis.v1.IntegrityMeta;
 import org.hyades.repositories.IMetaAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Component, AnalysisResult> {
+class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, AnalysisCommand, AnalysisResult> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetaAnalyzerProcessor.class);
 
@@ -44,9 +46,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
     }
 
     @Override
-    public void process(final FixedKeyRecord<PackageURL, Component> record) {
+    public void process(final FixedKeyRecord<PackageURL, AnalysisCommand> record) {
         final PackageURL purlWithoutVersion = record.key();
-        final Component component = record.value();
+        final Component component = record.value().getComponent();
 
         // NOTE: Do not use purlWithoutVersion for the analysis!
         // It only contains the type, namespace and name, but is missing the
@@ -93,7 +95,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 LOGGER.debug("Cache miss (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
             }
 
-            final Optional<AnalysisResult> optionalResult = analyze(analyzer, repository, component);
+            final Optional<AnalysisResult> optionalResult = analyze(analyzer, repository, record.value());
             if (optionalResult.isPresent()) {
                 context().forward(record
                         .withValue(optionalResult.get())
@@ -109,7 +111,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
                 .withTimestamp(context().currentSystemTimeMs()));
     }
 
-    private Optional<AnalysisResult> analyze(final IMetaAnalyzer analyzer, final Repository repository, final Component component) {
+    private Optional<AnalysisResult> analyze(final IMetaAnalyzer analyzer, final Repository repository, final AnalysisCommand analysisCommand) {
         analyzer.setRepositoryBaseUrl(repository.getUrl());
         boolean isAuthenticationRequired = Optional.ofNullable(repository.isAuthenticationRequired()).orElse(false);
         if (isAuthenticationRequired) {
@@ -120,14 +122,20 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
             }
         }
 
+        // Analyzers still work with "legacy" data models,
+        // allowing us to avoid major refactorings of the original code.
+        final var component = new org.hyades.persistence.model.Component();
+        component.setPurl(analysisCommand.getComponent().getPurl());
         LOGGER.debug("Performing meta analysis on purl: {}", component.getPurl());
-        final MetaModel metaModel;
+        MetaModel metaModel = null;
+        org.hyades.model.IntegrityMeta integrityMeta = null;
         try {
-            // Analyzers still work with "legacy" data models,
-            // allowing us to avoid major refactorings of the original code.
-            final var analyzerComponent = new org.hyades.persistence.model.Component();
-            analyzerComponent.setPurl(component.getPurl());
-            metaModel = analyzer.analyze(analyzerComponent);
+            if (analysisCommand.getFetchLatestVersion()) {
+                metaModel = analyzer.analyze(component);
+            }
+            if (analysisCommand.getFetchIntegrityData()) {
+                integrityMeta = analyzer.getIntegrityMeta(component);
+            }
         } catch (Exception e) {
             LOGGER.error("Failed to analyze {} using {} with repository {}",
                     component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
@@ -135,21 +143,33 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Comp
         }
 
         final AnalysisResult.Builder resultBuilder = AnalysisResult.newBuilder()
-                .setComponent(component)
+                .setComponent(analysisCommand.getComponent())
                 .setRepository(repository.getIdentifier());
-        if (metaModel.getLatestVersion() != null) {
+        if (metaModel != null && metaModel.getLatestVersion() != null) {
             resultBuilder.setLatestVersion(metaModel.getLatestVersion());
             if (metaModel.getPublishedTimestamp() != null) {
                 resultBuilder.setPublished(Timestamp.newBuilder()
                         .setSeconds(metaModel.getPublishedTimestamp().getTime() / 1000));
             }
-            final AnalysisResult result = resultBuilder.build();
             LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
                     component.getPurl(), repository.getIdentifier(), repository.getType());
-            return Optional.of(result);
         }
-
-        return Optional.empty();
+        if (integrityMeta != null) {
+            IntegrityMeta.Builder metaBuilder = IntegrityMeta.newBuilder()
+                    .setMd5(integrityMeta.getMd5())
+                    .setSha1(integrityMeta.getSha1())
+                    .setSha256(integrityMeta.getSha256())
+                    .setSha512(integrityMeta.getSha512())
+                    .setRepositoryUrl(integrityMeta.getRepositoryUrl());
+            if (integrityMeta.getCurrentVersionLastModified() != null) {
+                metaBuilder.setCurrentVersionLastModified(Timestamp.newBuilder()
+                        .setSeconds(integrityMeta.getCurrentVersionLastModified().getTime() / 1000));
+            }
+            resultBuilder.setIntegrityMeta(metaBuilder);
+            LOGGER.debug("Found integrity metadata for: {} using repository: {} ({})",
+                    component.getPurl(), repository.getIdentifier(), repository.getType());
+        }
+        return Optional.of(resultBuilder.build());
     }
 
     private PackageURL mustParsePurl(final String purl) {

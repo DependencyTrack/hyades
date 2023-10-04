@@ -11,6 +11,8 @@ option java_package = "org.hyades.proto.repometaanalysis.v1";
 message AnalysisCommand {
   // The component that shall be analyzed.
   Component component = 1;
+  bool fetch_integrity_data = 2;
+  bool fetch_latest_version = 3;
 }
 
 message AnalysisResult {
@@ -25,6 +27,9 @@ message AnalysisResult {
 
   // When the latest version was published.
   optional google.protobuf.Timestamp published = 4;
+
+  // Integrity metadata of the component.
+  optional IntegrityMeta integrity_meta = 5;
 }
 
 message Component {
@@ -34,4 +39,15 @@ message Component {
   // Whether the component is internal to the organization.
   // Internal components will only be looked up in internal repositories.
   optional bool internal = 2;
+}
+
+message IntegrityMeta {
+  optional string md5 = 1;
+  optional string sha1 = 2;
+  optional string sha256 = 3;
+  optional string sha512 = 4;
+  // When the component current version last modified.
+  optional google.protobuf.Timestamp current_version_last_modified = 5;
+  // Complete URL to fetch integrity metadata of the component.
+  optional string repository_url = 6;
 }

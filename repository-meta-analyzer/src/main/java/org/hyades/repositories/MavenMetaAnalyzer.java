@@ -25,6 +25,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.XmlUtil;
+import org.hyades.model.IntegrityMeta;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -117,5 +118,23 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public IntegrityMeta getIntegrityMeta(Component component) {
+        if (component != null) {
+            var packageUrl = component.getPurl();
+            if (packageUrl != null) {
+                String type = "jar";
+                if (packageUrl.getQualifiers() != null) {
+                    type = packageUrl.getQualifiers().getOrDefault("type", "jar");
+                }
+                final String mavenGavUrl = packageUrl.getNamespace().replaceAll("\\.", "/") + "/" + packageUrl.getName();
+                final String url = baseUrl + "/" + mavenGavUrl + "/" + packageUrl.getVersion() + "/" + packageUrl.getName() + "-" + packageUrl.getVersion() + "." + type;
+                var integrityMeta = new IntegrityMeta();
+                return fetchIntegrityMeta(url, LOGGER, component);
+            }
+        }
+        return null;
     }
 }

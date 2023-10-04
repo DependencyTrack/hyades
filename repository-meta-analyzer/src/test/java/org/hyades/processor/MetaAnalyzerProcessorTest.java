@@ -22,6 +22,7 @@ import org.hyades.common.SecretDecryptor;
 import org.hyades.persistence.model.RepositoryType;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.KafkaProtobufSerde;
+import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
@@ -51,7 +52,7 @@ class MetaAnalyzerProcessorTest {
     private static final String TEST_PURL_JACKSON_BIND = "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4";
 
     private TopologyTestDriver testDriver;
-    private TestInputTopic<PackageURL, Component> inputTopic;
+    private TestInputTopic<PackageURL, AnalysisCommand> inputTopic;
     private TestOutputTopic<PackageURL, AnalysisResult> outputTopic;
     @Inject
     RepoEntityRepository repoEntityRepository;
@@ -73,7 +74,7 @@ class MetaAnalyzerProcessorTest {
     void beforeEach() {
         final var processorSupplier = new MetaAnalyzerProcessorSupplier(repoEntityRepository, analyzerFactory, secretDecryptor, cache);
 
-        final var valueSerde = new KafkaProtobufSerde<>(Component.parser());
+        final var valueSerde = new KafkaProtobufSerde<>(AnalysisCommand.parser());
         final var purlSerde = new KafkaPurlSerde();
         final var valueSerdeResult = new KafkaProtobufSerde<>(AnalysisResult.parser());
 
@@ -96,8 +97,8 @@ class MetaAnalyzerProcessorTest {
 
     @Test
     void testWithNoSupportedRepositoryTypes() throws Exception {
-        final TestRecord<PackageURL, Component> inputRecord = new TestRecord<>(new PackageURL(TEST_PURL_JACKSON_BIND), Component.newBuilder()
-                .setPurl(TEST_PURL_JACKSON_BIND).build());
+        final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL(TEST_PURL_JACKSON_BIND), AnalysisCommand.newBuilder().setComponent(Component.newBuilder()
+                .setPurl(TEST_PURL_JACKSON_BIND)).build());
         inputTopic.pipeInput(inputRecord);
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
         assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
@@ -108,8 +109,8 @@ class MetaAnalyzerProcessorTest {
 
     @Test
     void testMalformedPurl() throws Exception {
-        final TestRecord<PackageURL, Component> inputRecord = new TestRecord<>(new PackageURL(TEST_PURL_JACKSON_BIND), Component.newBuilder()
-                .setPurl("invalid purl").build());
+        final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL(TEST_PURL_JACKSON_BIND), AnalysisCommand.newBuilder().setComponent(Component.newBuilder()
+                .setPurl("invalid purl")).build());
         Assertions.assertThrows(StreamsException.class, () -> {
             inputTopic.pipeInput(inputRecord);
         }, "no exception thrown");
@@ -118,8 +119,8 @@ class MetaAnalyzerProcessorTest {
 
     @Test
     void testNoAnalyzerApplicable() throws Exception {
-        final TestRecord<PackageURL, Component> inputRecord = new TestRecord<>(new PackageURL("pkg:test/com.fasterxml.jackson.core/jackson-databind@2.13.4"), Component.newBuilder()
-                .setPurl("pkg:test/com.fasterxml.jackson.core/jackson-databind@2.13.4").build());
+        final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:test/com.fasterxml.jackson.core/jackson-databind@2.13.4"), AnalysisCommand.newBuilder().setComponent(Component.newBuilder()
+                .setPurl("pkg:test/com.fasterxml.jackson.core/jackson-databind@2.13.4")).build());
         inputTopic.pipeInput(inputRecord);
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
         assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
@@ -137,8 +138,8 @@ class MetaAnalyzerProcessorTest {
                                     ('MAVEN',true, 'central', true, 'test.com', false,1);
                 """).executeUpdate();
 
-        final TestRecord<PackageURL, Component> inputRecord = new TestRecord<>(new PackageURL("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4"), Component.newBuilder()
-                .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4").setInternal(false).build());
+        final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4"), AnalysisCommand.newBuilder().setComponent(Component.newBuilder()
+                .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4").setInternal(false)).build());
         inputTopic.pipeInput(inputRecord);
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
         assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
@@ -156,8 +157,8 @@ class MetaAnalyzerProcessorTest {
                                     ('MAVEN',true, 'central', false, 'test.com', false,1);
                 """).executeUpdate();
 
-        final TestRecord<PackageURL, Component> inputRecord = new TestRecord<>(new PackageURL("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4"), Component.newBuilder()
-                .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4").setInternal(true).build());
+        final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4"), AnalysisCommand.newBuilder().setComponent(Component.newBuilder()
+                .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4").setInternal(true)).build());
         inputTopic.pipeInput(inputRecord);
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);
         assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
