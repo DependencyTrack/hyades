@@ -183,6 +183,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.value.getComponent().getPurl());
         Assertions.assertFalse(record.value.hasLatestVersion());
+        Assertions.assertFalse(record.value.hasIntegrityMeta());
     }
 
     @AfterEach
