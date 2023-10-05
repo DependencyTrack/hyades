@@ -155,12 +155,22 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
                     component.getPurl(), repository.getIdentifier(), repository.getType());
         }
         if (integrityMeta != null) {
-            IntegrityMeta.Builder metaBuilder = IntegrityMeta.newBuilder()
-                    .setMd5(integrityMeta.getMd5())
-                    .setSha1(integrityMeta.getSha1())
-                    .setSha256(integrityMeta.getSha256())
-                    .setSha512(integrityMeta.getSha512())
-                    .setRepositoryUrl(integrityMeta.getRepositoryUrl());
+            IntegrityMeta.Builder metaBuilder = IntegrityMeta.newBuilder();
+            if (integrityMeta.getMd5() != null) {
+                metaBuilder.setMd5(integrityMeta.getMd5());
+            }
+            if (integrityMeta.getSha1() != null) {
+                metaBuilder.setSha1(integrityMeta.getSha1());
+            }
+            if (integrityMeta.getSha256() != null) {
+                metaBuilder.setSha256(integrityMeta.getSha256());
+            }
+            if (integrityMeta.getSha512() != null) {
+                metaBuilder.setSha512(integrityMeta.getSha512());
+            }
+            if (integrityMeta.getRepositoryUrl() != null) {
+                metaBuilder.setRepositoryUrl(integrityMeta.getRepositoryUrl());
+            }
             if (integrityMeta.getCurrentVersionLastModified() != null) {
                 metaBuilder.setCurrentVersionLastModified(Timestamp.newBuilder()
                         .setSeconds(integrityMeta.getCurrentVersionLastModified().getTime() / 1000));

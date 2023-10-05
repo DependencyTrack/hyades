@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -144,5 +145,12 @@ class HexMetaAnalyzerTest {
         Assertions.assertNull(
                 metaModel.getPublishedTimestamp()
         );
+    }
+
+    @Test
+    void testIntegrityAnalyzerNotSupported() {
+        Component component = new Component();
+        component.setPurl("pkg:pypi/typo3/package-empty-result@v1.2.0");
+        assertThrows(UnsupportedOperationException.class, () -> analyzer.getIntegrityMeta(component));
     }
 }

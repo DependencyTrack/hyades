@@ -87,7 +87,7 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
 
     @Override
     public IntegrityMeta getIntegrityMeta(Component component) {
-        throw new UnsupportedOperationException("This analyzer does not support Integrity Metadata.");
+        throw new UnsupportedOperationException("Skipping integrity meta fetch as this analyzer does not support Integrity Metadata.");
     }
 
     protected void handleUnexpectedHttpResponse(final Logger logger, String url, final int statusCode, final String statusText, final Component component) {
