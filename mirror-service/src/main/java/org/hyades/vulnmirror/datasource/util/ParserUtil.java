@@ -1,13 +1,11 @@
 package org.hyades.vulnmirror.datasource.util;
 
 import com.github.packageurl.PackageURL;
-import io.github.jeremylong.openvulnerability.client.nvd.CvssV31;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Component;
 import org.cyclonedx.proto.v1_4.Severity;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.CvssV2;
-import us.springett.cvss.CvssV3;
 
 import java.util.Optional;
 
@@ -38,7 +36,7 @@ public class ParserUtil {
         }
 
         final double baseScore = cvss.calculateScore().getBaseScore();
-        if (cvss instanceof CvssV3 || cvss instanceof CvssV31) {
+        if (cvss instanceof us.springett.cvss.CvssV3 || cvss instanceof io.github.jeremylong.openvulnerability.client.nvd.CvssV3) {
             if (baseScore >= 9) {
                 return SEVERITY_CRITICAL;
             } else if (baseScore >= 7) {
@@ -86,25 +84,16 @@ public class ParserUtil {
     }
 
     public static String mapGitHubEcosystemToPurlType(final String ecosystem) {
-        switch (ecosystem.toUpperCase()) {
-            case "MAVEN":
-                return PackageURL.StandardTypes.MAVEN;
-            case "RUST":
-                return PackageURL.StandardTypes.CARGO;
-            case "PIP":
-                return PackageURL.StandardTypes.PYPI;
-            case "RUBYGEMS":
-                return PackageURL.StandardTypes.GEM;
-            case "GO":
-                return PackageURL.StandardTypes.GOLANG;
-            case "NPM":
-                return PackageURL.StandardTypes.NPM;
-            case "COMPOSER":
-                return PackageURL.StandardTypes.COMPOSER;
-            case "NUGET":
-                return PackageURL.StandardTypes.NUGET;
-            default:
-                return null;
-        }
+        return switch (ecosystem.toUpperCase()) {
+            case "MAVEN" -> PackageURL.StandardTypes.MAVEN;
+            case "RUST" -> PackageURL.StandardTypes.CARGO;
+            case "PIP" -> PackageURL.StandardTypes.PYPI;
+            case "RUBYGEMS" -> PackageURL.StandardTypes.GEM;
+            case "GO" -> PackageURL.StandardTypes.GOLANG;
+            case "NPM" -> PackageURL.StandardTypes.NPM;
+            case "COMPOSER" -> PackageURL.StandardTypes.COMPOSER;
+            case "NUGET" -> PackageURL.StandardTypes.NUGET;
+            default -> null;
+        };
     }
 }
