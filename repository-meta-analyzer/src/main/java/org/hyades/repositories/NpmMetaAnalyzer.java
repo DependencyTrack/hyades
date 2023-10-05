@@ -115,8 +115,7 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
                 npmArtifactoryUrl += packageUrl.getName();
                 final String url = this.baseUrl + "/" + npmArtifactoryUrl + "/-/"
                         + npmArtifactoryUrl + "-" + packageUrl.getVersion() + "." + type;
-                var integrityMeta = new IntegrityMeta();
-                return fetchIntegrityMeta(url, LOGGER, component);
+                return fetchIntegrityMeta(url, component);
             }
         }
         return null;

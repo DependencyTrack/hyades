@@ -19,22 +19,46 @@
 package org.hyades.repositories;
 
 import com.github.packageurl.PackageURL;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.http.Body;
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.http.impl.client.HttpClients;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 class MavenMetaAnalyzerTest {
 
     private IMetaAnalyzer analyzer;
 
+    @RegisterExtension
+    static WireMockExtension wireMock = WireMockExtension.newInstance()
+            .options(wireMockConfig().dynamicPort())
+            .build();
+
     @BeforeEach
     void beforeEach() {
         analyzer = new MavenMetaAnalyzer();
         analyzer.setHttpClient(HttpClients.createDefault());
+    }
+
+    @AfterEach
+    void afterEach() {
+        wireMock.resetAll();
     }
 
     @Test
@@ -88,6 +112,53 @@ class MavenMetaAnalyzerTest {
         MetaModel metaModel = analyzer.analyze(component);
         Assertions.assertEquals(metaModel.getComponent(), component);
 
+    }
+
+    @Test
+    void testGetIntegrityMetaComponentNull() {
+        var integrityModel = analyzer.getIntegrityMeta(null);
+        Assertions.assertNull(integrityModel);
+    }
+
+    @Test
+    void testGetIntegrityMeta404() {
+        Component component = new Component();
+        component.setPurl("pkg:maven/typo3/package-empty-result@v1.2.0");
+        var integrityMeta = analyzer.getIntegrityMeta(component);
+        assertNotNull(integrityMeta);
+        assertEquals("https://repo1.maven.org/maven2/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar", integrityMeta.getRepositoryUrl());
+        assertNull(integrityMeta.getSha1());
+        assertNull(integrityMeta.getMd5());
+        assertNull(integrityMeta.getSha256());
+        assertNull(integrityMeta.getSha512());
+        assertNull(integrityMeta.getCurrentVersionLastModified());
+    }
+
+    @Test
+    void testGetIntegrityModel200() {
+        Component component = new Component();
+        component.setPurl("pkg:maven/typo3/package-empty-result@v1.2.0");
+        wireMock.stubFor(WireMock.head(WireMock.anyUrl()).withHeader("accept", containing("application/json"))
+                .willReturn(WireMock.aResponse()
+                        .withStatus(200)
+                        .withResponseBody(Body.ofBinaryOrText("""
+                                                                    
+                                """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
+                        )
+                        .withHeader("X-CheckSum-MD5", "md5hash")
+                        .withHeader("X-Checksum-SHA1", "sha1hash")
+                        .withHeader("X-Checksum-SHA512", "sha512hash")
+                        .withHeader("X-Checksum-SHA256", "sha256hash")
+                        .withHeader("Last-Modified", "Mon, 07 Jul 2022 14:00:00 GMT")));
+        analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
+        var integrityMeta = analyzer.getIntegrityMeta(component);
+        assertNotNull(integrityMeta);
+        assertThat(integrityMeta.getRepositoryUrl()).contains("/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar");
+        assertEquals("md5hash", integrityMeta.getMd5());
+        assertEquals("sha1hash", integrityMeta.getSha1());
+        assertEquals("sha256hash", integrityMeta.getSha256());
+        assertEquals("sha512hash", integrityMeta.getSha512());
+        assertEquals("Thu Jul 07 15:00:00 IST 2022", integrityMeta.getCurrentVersionLastModified().toString());
     }
 }
 

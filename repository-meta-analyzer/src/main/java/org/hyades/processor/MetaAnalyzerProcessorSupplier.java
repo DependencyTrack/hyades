@@ -10,7 +10,6 @@ import org.hyades.common.SecretDecryptor;
 import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
-import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 
 @ApplicationScoped

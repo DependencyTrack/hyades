@@ -131,8 +131,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
                 }
                 final String mavenGavUrl = packageUrl.getNamespace().replaceAll("\\.", "/") + "/" + packageUrl.getName();
                 final String url = baseUrl + "/" + mavenGavUrl + "/" + packageUrl.getVersion() + "/" + packageUrl.getName() + "-" + packageUrl.getVersion() + "." + type;
-                var integrityMeta = new IntegrityMeta();
-                return fetchIntegrityMeta(url, LOGGER, component);
+                return fetchIntegrityMeta(url, component);
             }
         }
         return null;

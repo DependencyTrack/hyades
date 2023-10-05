@@ -140,7 +140,7 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
                 pypiArtifactoryUrl += packageUrl.getName() + "/" + packageUrl.getVersion();
                 String url = this.baseUrl + "/" + pypiArtifactoryUrl + "/"
                         + packageUrl.getName() + "-" + packageUrl.getVersion() + "." + type;
-                return fetchIntegrityMeta(url, LOGGER, component);
+                return fetchIntegrityMeta(url, component);
             }
         }
         return null;

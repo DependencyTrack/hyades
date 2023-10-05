@@ -26,7 +26,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.HttpUtil;
 import org.hyades.model.IntegrityMeta;
 import org.hyades.persistence.model.Component;
@@ -34,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Base abstract class that all IMetaAnalyzer implementations should likely extend.
@@ -44,6 +45,8 @@ import java.io.IOException;
 
 public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final String GMT_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
     protected CloseableHttpClient httpClient;
 
@@ -135,7 +138,7 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
         return httpClient.execute(request);
     }
 
-    protected IntegrityMeta extractIntegrityModelFromResponse(CloseableHttpResponse response, IntegrityMeta integrityMeta) {
+    protected IntegrityMeta extractIntegrityModelFromResponse(CloseableHttpResponse response, IntegrityMeta integrityMeta, Component component) {
         var headers = response.getAllHeaders();
         for (var header : headers) {
             if (header.getName().equalsIgnoreCase("X-Checksum-MD5")) {
@@ -147,19 +150,23 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
             } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA512")) {
                 integrityMeta.setSha512(header.getValue());
             } else if (header.getName().equalsIgnoreCase("Last-Modified") && header.getValue() != null) {
-                integrityMeta.setCurrentVersionLastModified(DateUtil.parseDate(header.getValue()));
+                try {
+                    integrityMeta.setCurrentVersionLastModified(new SimpleDateFormat(GMT_FORMAT).parse(header.getValue()));
+                } catch (ParseException pe) {
+                    logger.warn("Parsing LastModified date failed while extracting integrity meta for purl: {}", component.getPurl());
+                }
             }
         }
         return integrityMeta;
     }
 
-    public IntegrityMeta fetchIntegrityMeta(String url, Logger logger, Component component) {
+    public IntegrityMeta fetchIntegrityMeta(String url, Component component) {
         var integrityMeta = new IntegrityMeta();
         integrityMeta.setRepositoryUrl(url);
         try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
             final StatusLine status = response.getStatusLine();
             if (status.getStatusCode() == HttpStatus.SC_OK) {
-                return extractIntegrityModelFromResponse(response, integrityMeta);
+                return extractIntegrityModelFromResponse(response, integrityMeta, component);
             } else {
                 handleUnexpectedHttpResponse(logger, url, status.getStatusCode(), status.getReasonPhrase(), component);
             }
