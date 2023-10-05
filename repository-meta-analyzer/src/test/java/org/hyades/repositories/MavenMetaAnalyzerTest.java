@@ -149,7 +149,7 @@ class MavenMetaAnalyzerTest {
                         .withHeader("X-Checksum-SHA1", "sha1hash")
                         .withHeader("X-Checksum-SHA512", "sha512hash")
                         .withHeader("X-Checksum-SHA256", "sha256hash")
-                        .withHeader("Last-Modified", "Mon, 07 Jul 2022 14:00:00 GMT")));
+                        .withHeader("Last-Modified", "Thu, 07 Jul 2022 14:00:00 GMT")));
         analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
