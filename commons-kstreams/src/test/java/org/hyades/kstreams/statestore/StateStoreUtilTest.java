@@ -5,7 +5,7 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import org.apache.kafka.streams.state.internals.InMemoryKeyValueBytesStoreSupplier;
-import org.apache.kafka.streams.state.internals.RocksDbKeyValueBytesStoreSupplier;
+import org.apache.kafka.streams.state.internals.RocksDBKeyValueBytesStoreSupplier;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
@@ -53,7 +53,7 @@ class StateStoreUtilTest {
         @Test
         void test() {
             assertThat(StateStoreUtil.configurableKeyValueStore("storeName"))
-                    .isInstanceOf(RocksDbKeyValueBytesStoreSupplier.class);
+                    .isInstanceOf(RocksDBKeyValueBytesStoreSupplier.class);
         }
 
     }
