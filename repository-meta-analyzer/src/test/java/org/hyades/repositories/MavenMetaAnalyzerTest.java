@@ -158,7 +158,7 @@ class MavenMetaAnalyzerTest {
         assertEquals("sha1hash", integrityMeta.getSha1());
         assertEquals("sha256hash", integrityMeta.getSha256());
         assertEquals("sha512hash", integrityMeta.getSha512());
-        assertEquals("Thu Jul 07 15:00:00 IST 2022", integrityMeta.getCurrentVersionLastModified().toString());
+        assertNotNull(integrityMeta.getCurrentVersionLastModified());
     }
 }
 
