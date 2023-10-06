@@ -2,6 +2,8 @@ package org.hyades.processor;
 
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
+import com.github.tomakehurst.wiremock.http.Body;
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
 import io.quarkus.test.TestTransaction;
@@ -10,6 +12,7 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
@@ -27,14 +30,20 @@ import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockserver.client.MockServerClient;
+import org.mockserver.integration.ClientAndServer;
 
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
 @TestProfile(MetaAnalyzerProcessorTest.TestProfile.class)
@@ -48,6 +57,8 @@ class MetaAnalyzerProcessorTest {
             );
         }
     }
+
+    private static ClientAndServer mockServer;
 
     private static final String TEST_PURL_JACKSON_BIND = "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4";
 
@@ -69,6 +80,11 @@ class MetaAnalyzerProcessorTest {
 
     @Inject
     SecretDecryptor secretDecryptor;
+
+    @BeforeAll
+    static void beforeClass() {
+        mockServer = ClientAndServer.startClientAndServer(1080);
+    }
 
     @BeforeEach
     void beforeEach() {
@@ -93,6 +109,11 @@ class MetaAnalyzerProcessorTest {
     void afterEach() {
         testDriver.close();
         cache.invalidateAll().await().indefinitely();
+    }
+
+    @AfterAll
+    static void afterClass() {
+        mockServer.stop();
     }
 
     @Test
@@ -168,4 +189,69 @@ class MetaAnalyzerProcessorTest {
 
     }
 
+    @Test
+    @TestTransaction
+    void testRepoMetaWithIntegrityMetaWithAuth() throws Exception {
+        entityManager.createNativeQuery("""
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER", "USERNAME", "PASSWORD") VALUES
+                                    ('NPM', true, 'central', true, :url, true, 1, 'username', :encryptedPassword);
+                """)
+                .setParameter("encryptedPassword", secretDecryptor.encryptAsString("password"))
+                .setParameter("url", String.format("http://localhost:%d", mockServer.getPort()))
+                .executeUpdate();
+
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withBody(Body.ofBinaryOrText("""
+                                    {
+                                        "latest": "v6.6.6"
+                                    }
+                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
+                ));
+
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                                .withPath("/@apollo/federation/-/@apollo/federation-0.19.1.tgz")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader("X-Checksum-MD5", "md5hash")
+                );
+
+        final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),
+                AnalysisCommand.newBuilder()
+                        .setComponent(Component.newBuilder()
+                                .setPurl("pkg:npm/@apollo/federation@0.19.1")
+                                .setInternal(true))
+                        .setFetchIntegrityData(true)
+                        .setFetchLatestVersion(true).build());
+
+        inputTopic.pipeInput(inputRecord);
+        assertThat(outputTopic.getQueueSize()).isEqualTo(1);
+        assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
+                record -> {
+                    assertThat(record.key().getType()).isEqualTo(RepositoryType.NPM.toString().toLowerCase());
+                    assertThat(record.value()).isNotNull();
+                    final AnalysisResult result = record.value();
+                    assertThat(result.hasComponent()).isTrue();
+                    assertThat(result.getRepository()).isEqualTo("central");
+                    assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
+                    assertThat(result.hasPublished()).isFalse();
+                    assertThat(result.hasIntegrityMeta()).isTrue();
+                    final var integrityMeta = result.getIntegrityMeta();
+                    assertThat(integrityMeta.getMd5()).isEqualTo("md5hash");
+                    assertThat(integrityMeta.getRepositoryUrl()).contains("/@apollo/federation/-/@apollo/federation-0.19.1.tgz");
+                });
+
+    }
 }

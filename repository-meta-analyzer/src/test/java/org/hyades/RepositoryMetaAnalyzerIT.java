@@ -491,41 +491,6 @@ class RepositoryMetaAnalyzerIT {
                     ));
         }
 
-//        @Test
-//        void testLatestVersionOnly() {
-//            final var command = AnalysisCommand.newBuilder()
-//                    .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
-//                            .setPurl("pkg:npm/github.com/acme/acme-lib@9.1.1"))
-//                    .setFetchLatestVersion(true)
-//                    .setFetchIntegrityData(false)
-//                    .build();
-//
-//            kafkaCompanion
-//                    .produce(Serdes.String(), new KafkaProtobufSerde<>(AnalysisCommand.parser()))
-//                    .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), "foo", command));
-//
-//            final List<ConsumerRecord<String, AnalysisResult>> results = kafkaCompanion
-//                    .consume(Serdes.String(), new KafkaProtobufSerde<>(AnalysisResult.parser()))
-//                    .fromTopics(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), 1, Duration.ofSeconds(5))
-//                    .awaitCompletion()
-//                    .getRecords();
-//
-//            assertThat(results).satisfiesExactly(
-//                    record -> {
-//                        assertThat(record.key()).isEqualTo("pkg:npm/github.com/acme/acme-lib");
-//                        assertThat(record.value()).isNotNull();
-//                        final AnalysisResult result = record.value();
-//                        assertThat(result.hasComponent()).isTrue();
-//                        assertThat(result.hasRepository()).isTrue();
-//                        assertThat(result.getRepository()).isEqualTo("test");
-//                        assertThat(result.hasLatestVersion()).isTrue();
-//                        assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
-//                        assertThat(result.hasPublished()).isFalse();
-//                        assertThat(result.hasIntegrityMeta()).isFalse();
-//                    }
-//            );
-//        }
-
         @Test
         void testIntegrityMetaOnly() {
             final var command = AnalysisCommand.newBuilder()
