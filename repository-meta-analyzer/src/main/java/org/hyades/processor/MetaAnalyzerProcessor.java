@@ -156,25 +156,14 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
         }
         if (integrityMeta != null) {
             IntegrityMeta.Builder metaBuilder = IntegrityMeta.newBuilder();
-            if (integrityMeta.getMd5() != null) {
-                metaBuilder.setMd5(integrityMeta.getMd5());
-            }
-            if (integrityMeta.getSha1() != null) {
-                metaBuilder.setSha1(integrityMeta.getSha1());
-            }
-            if (integrityMeta.getSha256() != null) {
-                metaBuilder.setSha256(integrityMeta.getSha256());
-            }
-            if (integrityMeta.getSha512() != null) {
-                metaBuilder.setSha512(integrityMeta.getSha512());
-            }
-            if (integrityMeta.getMetaSourceUrl() != null) {
-                metaBuilder.setMetaSourceUrl(integrityMeta.getMetaSourceUrl());
-            }
-            if (integrityMeta.getCurrentVersionLastModified() != null) {
-                metaBuilder.setCurrentVersionLastModified(Timestamp.newBuilder()
-                        .setSeconds(integrityMeta.getCurrentVersionLastModified().getTime() / 1000));
-            }
+            Optional.ofNullable(integrityMeta.getMd5()).ifPresent(hash -> metaBuilder.setMd5(hash));
+            Optional.ofNullable(integrityMeta.getSha1()).ifPresent(hash -> metaBuilder.setSha1(hash));
+            Optional.ofNullable(integrityMeta.getSha256()).ifPresent(hash -> metaBuilder.setSha256(hash));
+            Optional.ofNullable(integrityMeta.getSha512()).ifPresent(hash -> metaBuilder.setSha512(hash));
+            Optional.ofNullable(integrityMeta.getMetaSourceUrl()).ifPresent(url -> metaBuilder.setMetaSourceUrl(url));
+            Optional.ofNullable(integrityMeta.getCurrentVersionLastModified()).ifPresent(date ->
+                    metaBuilder.setCurrentVersionLastModified(Timestamp.newBuilder()
+                            .setSeconds(date.getTime() / 1000)));
             resultBuilder.setIntegrityMeta(metaBuilder);
             LOGGER.debug("Found integrity metadata for: {} using repository: {} ({})",
                     component.getPurl(), repository.getIdentifier(), repository.getType());

@@ -126,7 +126,7 @@ class MavenMetaAnalyzerTest {
         component.setPurl("pkg:maven/typo3/package-empty-result@v1.2.0");
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
-        assertEquals("https://repo1.maven.org/maven2/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar", integrityMeta.getRepositoryUrl());
+        assertEquals("https://repo1.maven.org/maven2/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar", integrityMeta.getMetaSourceUrl());
         assertNull(integrityMeta.getSha1());
         assertNull(integrityMeta.getMd5());
         assertNull(integrityMeta.getSha256());
@@ -153,7 +153,7 @@ class MavenMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
-        assertThat(integrityMeta.getRepositoryUrl()).contains("/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar");
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar");
         assertEquals("md5hash", integrityMeta.getMd5());
         assertEquals("sha1hash", integrityMeta.getSha1());
         assertEquals("sha256hash", integrityMeta.getSha256());
