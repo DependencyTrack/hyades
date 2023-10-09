@@ -110,7 +110,7 @@ class NugetMetaAnalyzerTest {
         Assertions.assertEquals(RepositoryType.NUGET, analyzer.supportedRepositoryType());
         Assertions.assertNotNull(metaModel.getComponent());
         Assertions.assertNotNull(metaModel.getLatestVersion());
-        Assertions.assertNotNull(metaModel.getPublishedTimestamp());
+        Assertions.assertNull(metaModel.getPublishedTimestamp());
     }
 
     @Test
