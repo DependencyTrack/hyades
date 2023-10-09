@@ -137,7 +137,7 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
         return httpClient.execute(request);
     }
 
-    protected IntegrityMeta extractIntegrityModelFromResponse(CloseableHttpResponse response, IntegrityMeta integrityMeta, Component component) {
+    protected IntegrityMeta extractIntegrityModelFromResponse(CloseableHttpResponse response, IntegrityMeta integrityMeta) {
         var headers = response.getAllHeaders();
         for (var header : headers) {
             if (header.getName().equalsIgnoreCase("X-Checksum-MD5")) {
@@ -157,11 +157,11 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
 
     public IntegrityMeta fetchIntegrityMeta(String url, Component component) {
         var integrityMeta = new IntegrityMeta();
-        integrityMeta.setRepositoryUrl(url);
+        integrityMeta.setMetaSourceUrl(url);
         try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
             final StatusLine status = response.getStatusLine();
             if (status.getStatusCode() == HttpStatus.SC_OK) {
-                return extractIntegrityModelFromResponse(response, integrityMeta, component);
+                return extractIntegrityModelFromResponse(response, integrityMeta);
             } else {
                 handleUnexpectedHttpResponse(logger, url, status.getStatusCode(), status.getReasonPhrase(), component);
             }

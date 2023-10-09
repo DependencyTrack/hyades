@@ -178,7 +178,7 @@ class PypiMetaAnalyzerTest {
 
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
-        assertThat(integrityMeta.getRepositoryUrl()).contains("/typo3/package-ok-result/v1.2.0/package-ok-result-v1.2.0.tar.gz");
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/typo3/package-ok-result/v1.2.0/package-ok-result-v1.2.0.tar.gz");
         assertEquals("md5hash", integrityMeta.getMd5());
         assertEquals("sha1hash", integrityMeta.getSha1());
         assertEquals("sha256hash", integrityMeta.getSha256());
@@ -202,7 +202,7 @@ class PypiMetaAnalyzerTest {
                 );
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
-        assertThat(integrityMeta.getRepositoryUrl()).contains("/typo1/package-no-result/v1.2.0/package-no-result-v1.2.0.tar.gz");
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/typo1/package-no-result/v1.2.0/package-no-result-v1.2.0.tar.gz");
         assertNull(integrityMeta.getSha1());
         assertNull(integrityMeta.getMd5());
         assertNull(integrityMeta.getSha256());
@@ -228,6 +228,6 @@ class PypiMetaAnalyzerTest {
 
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
-        assertThat(integrityMeta.getRepositoryUrl()).contains("/package-result/v1.2.0/package-result-v1.2.0.tar.gz");
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/package-result/v1.2.0/package-result-v1.2.0.tar.gz");
     }
 }

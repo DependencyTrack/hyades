@@ -179,7 +179,7 @@ class NpmMetaAnalyzerTest {
 
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
-        assertThat(integrityMeta.getRepositoryUrl()).contains("/typo3/package-empty-result/-/typo3/package-empty-result-v1.2.0.tgz");
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/typo3/package-empty-result/-/typo3/package-empty-result-v1.2.0.tgz");
         assertEquals("md5hash", integrityMeta.getMd5());
         assertEquals("sha1hash", integrityMeta.getSha1());
         assertEquals("sha256hash", integrityMeta.getSha256());
@@ -205,7 +205,7 @@ class NpmMetaAnalyzerTest {
 
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
-        assertThat(integrityMeta.getRepositoryUrl()).contains("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz");
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz");
     }
 
     @Test
@@ -225,7 +225,7 @@ class NpmMetaAnalyzerTest {
                 );
         var integrityMeta = analyzer.getIntegrityMeta(component);
         assertNotNull(integrityMeta);
-        assertThat(integrityMeta.getRepositoryUrl()).contains("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz");
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz");
         assertNull(integrityMeta.getSha1());
         assertNull(integrityMeta.getMd5());
         assertNull(integrityMeta.getSha256());

@@ -15,7 +15,7 @@ public class IntegrityMeta implements Serializable {
 
     private Date currentVersionLastModified;
 
-    private String repositoryUrl;
+    private String metaSourceUrl;
 
     public String getMd5() {
         return md5;
@@ -57,11 +57,11 @@ public class IntegrityMeta implements Serializable {
         return sha512;
     }
 
-    public String getRepositoryUrl() {
-        return repositoryUrl;
+    public String getMetaSourceUrl() {
+        return metaSourceUrl;
     }
 
-    public void setRepositoryUrl(String repositoryUrl) {
-        this.repositoryUrl = repositoryUrl;
+    public void setMetaSourceUrl(String metaSourceUrl) {
+        this.metaSourceUrl = metaSourceUrl;
     }
 }

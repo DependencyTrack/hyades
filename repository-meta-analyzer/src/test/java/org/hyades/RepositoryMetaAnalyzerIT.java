@@ -524,7 +524,7 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(integrityMeta.getMd5()).isEqualTo("md5hash");
                         assertThat(integrityMeta.getSha1()).isEqualTo("sha1hash");
                         assertThat(integrityMeta.getCurrentVersionLastModified().getSeconds()).isEqualTo(1657116000);
-                        assertThat(integrityMeta.getRepositoryUrl()).contains("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz");
+                        assertThat(integrityMeta.getMetaSourceUrl()).contains("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz");
                     }
             );
         }

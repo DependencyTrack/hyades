@@ -168,8 +168,8 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
             if (integrityMeta.getSha512() != null) {
                 metaBuilder.setSha512(integrityMeta.getSha512());
             }
-            if (integrityMeta.getRepositoryUrl() != null) {
-                metaBuilder.setRepositoryUrl(integrityMeta.getRepositoryUrl());
+            if (integrityMeta.getMetaSourceUrl() != null) {
+                metaBuilder.setMetaSourceUrl(integrityMeta.getMetaSourceUrl());
             }
             if (integrityMeta.getCurrentVersionLastModified() != null) {
                 metaBuilder.setCurrentVersionLastModified(Timestamp.newBuilder()

@@ -250,7 +250,7 @@ class MetaAnalyzerProcessorTest {
                     assertThat(result.hasIntegrityMeta()).isTrue();
                     final var integrityMeta = result.getIntegrityMeta();
                     assertThat(integrityMeta.getMd5()).isEqualTo("md5hash");
-                    assertThat(integrityMeta.getRepositoryUrl()).contains("/@apollo/federation/-/@apollo/federation-0.19.1.tgz");
+                    assertThat(integrityMeta.getMetaSourceUrl()).contains("/@apollo/federation/-/@apollo/federation-0.19.1.tgz");
                 });
 
     }
