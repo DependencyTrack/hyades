@@ -6,11 +6,9 @@ import io.github.jeremylong.openvulnerability.client.nvd.Config;
 import io.github.jeremylong.openvulnerability.client.nvd.CpeMatch;
 import io.github.jeremylong.openvulnerability.client.nvd.CveItem;
 import io.github.jeremylong.openvulnerability.client.nvd.CvssV2;
-import io.github.jeremylong.openvulnerability.client.nvd.CvssV20;
-import io.github.jeremylong.openvulnerability.client.nvd.CvssV30;
-import io.github.jeremylong.openvulnerability.client.nvd.CvssV30Data;
-import io.github.jeremylong.openvulnerability.client.nvd.CvssV31;
-import io.github.jeremylong.openvulnerability.client.nvd.CvssV31Data;
+import io.github.jeremylong.openvulnerability.client.nvd.CvssV2Data;
+import io.github.jeremylong.openvulnerability.client.nvd.CvssV3;
+import io.github.jeremylong.openvulnerability.client.nvd.CvssV3Data;
 import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
 import io.github.jeremylong.openvulnerability.client.nvd.LangString;
 import io.github.jeremylong.openvulnerability.client.nvd.Metrics;
@@ -326,7 +324,7 @@ public final class NvdToCyclonedxParser {
         List<CvssV2> baseMetricV2 = metrics.getCvssMetricV2();
         if (CollectionUtils.isNotEmpty(baseMetricV2)) {
             baseMetricV2.forEach(baseMetric -> {
-                CvssV20 cvss = baseMetric.getCvssData();
+                CvssV2Data cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss)
                         .map(cvss20 -> VulnerabilityRating.newBuilder()
                                 .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvss20.getBaseScore())))
@@ -340,10 +338,10 @@ public final class NvdToCyclonedxParser {
         }
 
         // CVSS V30
-        List<CvssV30> baseMetricV3 = metrics.getCvssMetricV30();
+        List<CvssV3> baseMetricV3 = metrics.getCvssMetricV30();
         if (CollectionUtils.isNotEmpty(baseMetricV3)) {
             baseMetricV3.forEach(baseMetric -> {
-                CvssV30Data cvss = baseMetric.getCvssData();
+                CvssV3Data cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss)
                         .map(cvssx -> VulnerabilityRating.newBuilder()
                                 .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvssx.getBaseScore())))
@@ -357,10 +355,10 @@ public final class NvdToCyclonedxParser {
         }
 
         // CVSS V31
-        List<CvssV31> baseMetricV31 = metrics.getCvssMetricV31();
+        List<CvssV3> baseMetricV31 = metrics.getCvssMetricV31();
         if (CollectionUtils.isNotEmpty(baseMetricV31)) {
             baseMetricV31.forEach(baseMetric -> {
-                CvssV31Data cvss = baseMetric.getCvssData();
+                CvssV3Data cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss)
                         .map(cvss31 -> VulnerabilityRating.newBuilder()
                                 .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvss.getBaseScore())))
