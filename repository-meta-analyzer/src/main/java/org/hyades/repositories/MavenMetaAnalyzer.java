@@ -53,6 +53,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://repo1.maven.org/maven2";
     private static final String REPO_METADATA_URL = "/%s/maven-metadata.xml";
+    private final String MAVEN_REPO_DATE_FORMAT = "yyyyMMddHHmmss";
 
     MavenMetaAnalyzer() {
         this.baseUrl = DEFAULT_BASE_URL;
@@ -100,7 +101,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
 
                             meta.setLatestVersion(release != null ? release : latest);
                             if (lastUpdated != null) {
-                                meta.setPublishedTimestamp(DateUtil.parseDate(lastUpdated));
+                                meta.setPublishedTimestamp(DateUtil.parseDate(lastUpdated, MAVEN_REPO_DATE_FORMAT));
                             }
                         }
                     }

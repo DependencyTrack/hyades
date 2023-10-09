@@ -26,6 +26,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.HttpUtil;
 import org.hyades.model.IntegrityMeta;
 import org.hyades.persistence.model.Component;
@@ -33,8 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 /**
  * Base abstract class that all IMetaAnalyzer implementations should likely extend.
@@ -150,11 +149,7 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
             } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA512")) {
                 integrityMeta.setSha512(header.getValue());
             } else if (header.getName().equalsIgnoreCase("Last-Modified") && header.getValue() != null) {
-                try {
-                    integrityMeta.setCurrentVersionLastModified(new SimpleDateFormat(GMT_FORMAT).parse(header.getValue()));
-                } catch (ParseException pe) {
-                    logger.warn("Parsing LastModified date failed while extracting integrity meta for purl: {}", component.getPurl());
-                }
+                integrityMeta.setCurrentVersionLastModified(DateUtil.parseDate(header.getValue(), GMT_FORMAT));
             }
         }
         return integrityMeta;

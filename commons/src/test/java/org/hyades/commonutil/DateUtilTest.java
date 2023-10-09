@@ -31,7 +31,7 @@ public class DateUtilTest {
 
     @Test
     public void testParseDate() {
-        Date date = DateUtil.parseDate("20191231153012");
+        Date date = DateUtil.parseDate("20191231153012", "yyyyMMddHHmmss");
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         Assertions.assertEquals(Month.DECEMBER, localDateTime.getMonth());
         Assertions.assertEquals(31, localDateTime.getDayOfMonth());
@@ -39,6 +39,18 @@ public class DateUtilTest {
         Assertions.assertEquals(15, localDateTime.getHour());
         Assertions.assertEquals(30, localDateTime.getMinute());
         Assertions.assertEquals(12, localDateTime.getSecond());
+    }
+
+    @Test
+    public void testParseGMTDate() {
+        Date date = DateUtil.parseDate("Thu, 07 Jul 2022 14:00:00 GMT", "EEE, dd MMM yyyy HH:mm:ss Z");
+        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        Assertions.assertEquals(Month.JULY, localDateTime.getMonth());
+        Assertions.assertEquals(7, localDateTime.getDayOfMonth());
+        Assertions.assertEquals(2022, localDateTime.getYear());
+        Assertions.assertEquals(15, localDateTime.getHour());
+        Assertions.assertEquals(0, localDateTime.getMinute());
+        Assertions.assertEquals(0, localDateTime.getSecond());
     }
 
     @Test
