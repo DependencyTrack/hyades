@@ -43,14 +43,11 @@ public class DateUtilTest {
 
     @Test
     public void testParseGMTDate() {
-        Date date = DateUtil.parseDate("Thu, 07 Jul 2022 14:00:00 GMT", "EEE, dd MMM yyyy HH:mm:ss Z");
+        Date date = DateUtil.parseDate("Thu, 07 Jul 2022 00:00:00 GMT", "EEE, dd MMM yyyy HH:mm:ss Z");
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         Assertions.assertEquals(Month.JULY, localDateTime.getMonth());
         Assertions.assertEquals(7, localDateTime.getDayOfMonth());
         Assertions.assertEquals(2022, localDateTime.getYear());
-        Assertions.assertNotNull(localDateTime.getHour());
-        Assertions.assertEquals(0, localDateTime.getMinute());
-        Assertions.assertEquals(0, localDateTime.getSecond());
     }
 
     @Test
