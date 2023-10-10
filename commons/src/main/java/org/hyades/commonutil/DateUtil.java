@@ -30,7 +30,7 @@ public final class DateUtil {
     }
 
     /**
-     * Convenience method that parses a date in give format and
+     * Convenience method that parses a date in given format and
      * returns a Date object. If the parsing fails, null is returned.
      * @param date the date string to parse
      * @param dateFormat the date format
