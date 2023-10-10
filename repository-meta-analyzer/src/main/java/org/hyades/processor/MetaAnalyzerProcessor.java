@@ -1,6 +1,5 @@
 package org.hyades.processor;
 
-import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import com.google.protobuf.Timestamp;
 import io.quarkus.cache.Cache;
@@ -16,6 +15,7 @@ import org.hyades.persistence.repository.RepoEntityRepository;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
+import org.hyades.proto.repometaanalysis.v1.FetchMeta;
 import org.hyades.proto.repometaanalysis.v1.IntegrityMeta;
 import org.hyades.repositories.IMetaAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import static org.hyades.util.PurlUtil.parsePurlCoordinates;
+import static org.hyades.util.PurlUtil.parsePurlCoordinatesWithoutVersion;
 
 class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, AnalysisCommand, AnalysisResult> {
 
@@ -50,9 +50,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
 
     @Override
     public void process(final FixedKeyRecord<PackageURL, AnalysisCommand> record) {
-        final PackageURL purlKey = record.key();
         final Component component = record.value().getComponent();
-
         // NOTE: Do not use purlWithoutVersion for the analysis!
         // It only contains the type, namespace and name, but is missing the
         // version and other qualifiers. Some analyzers require the version.
@@ -88,8 +86,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
             // NOTE: The cache key currently does not take the PURL version into consideration if only latest version is to be fetched.
             // Because the latest version analysis result is not version-specific.
             // But if integrity meta is required, the cache key must also include the PURL version and qualifiers.
-            if (record.value().getFetchLatestVersion()) {
-                var cacheKeyWithoutVersion = new MetaAnalyzerCacheKey(analyzer.getName(), filterPurlCoordinates(purlKey, false).canonicalize(), repository.getUrl());
+            if (record.value().getFetchMeta().equals(FetchMeta.FETCH_META_LATEST_VERSION)
+                || record.value().getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)) {
+                var cacheKeyWithoutVersion = new MetaAnalyzerCacheKey(analyzer.getName(), parsePurlCoordinatesWithoutVersion(component.getPurl()).canonicalize(), repository.getUrl());
                 var cachedResult = getCachedResult(cacheKeyWithoutVersion);
                 if (cachedResult.isPresent()) {
                     LOGGER.debug("Cache hit for latest version (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
@@ -107,9 +106,17 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
                         cacheResult(cacheKeyWithoutVersion, resultBuilder.build());
                     }
                 }
+                if (record.value().getFetchMeta().equals(FetchMeta.FETCH_META_LATEST_VERSION)) {
+                    // forward result for only latest version
+                    context().forward(record
+                            .withValue(resultBuilder.build())
+                            .withTimestamp(context().currentSystemTimeMs()));
+                    return;
+                }
             }
-            if (record.value().getFetchIntegrityData()) {
-                var cacheKeyWithVersion = new MetaAnalyzerCacheKey(analyzer.getName(), filterPurlCoordinates(purlKey, true).canonicalize(), repository.getUrl());
+            if (record.value().getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA)
+                    || record.value().getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)) {
+                var cacheKeyWithVersion = new MetaAnalyzerCacheKey(analyzer.getName(), parsePurlCoordinates(component.getPurl()).canonicalize(), repository.getUrl());
                 var cachedResult = getCachedResult(cacheKeyWithVersion);
                 if (cachedResult.isPresent()) {
                     LOGGER.debug("Cache hit for integrity meta (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), purl, repository.getIdentifier());
@@ -131,8 +138,15 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
                         cacheResult(cacheKeyWithVersion, resultBuilder.build());
                     }
                 }
+                if (record.value().getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA)) {
+                    // forward result for only integrity meta
+                    context().forward(record
+                            .withValue(resultBuilder.build())
+                            .withTimestamp(context().currentSystemTimeMs()));
+                    return;
+                }
             }
-
+            // forward result for both latest version and integrity meta
             context().forward(record
                     .withValue(resultBuilder.build())
                     .withTimestamp(context().currentSystemTimeMs()));
@@ -178,20 +192,6 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
         cache.get(cacheKey, key -> result).await().indefinitely();
     }
 
-    private PackageURL filterPurlCoordinates(final PackageURL purl, final boolean forIntegrityMeta) {
-        try {
-            return new PackageURL(purl.getType(), purl.getNamespace(), purl.getName(),
-                    forIntegrityMeta ? purl.getVersion() : null,
-                    forIntegrityMeta ? (TreeMap<String, String>) purl.getQualifiers() : null,
-                    null);
-        } catch (MalformedPackageURLException e) {
-            throw new IllegalStateException("""
-                    The provided PURL is invalid, even though it should have been
-                    validated in a previous processing step
-                    """, e);
-        }
-    }
-
     private org.hyades.model.IntegrityMeta fetchIntegrityMeta(IMetaAnalyzer analyzer, final Repository repository, final AnalysisCommand analysisCommand) {
         configureAnalyzer(analyzer, repository);
         final var component = new org.hyades.persistence.model.Component();
@@ -219,11 +219,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
         LOGGER.debug("Performing meta analysis on purl: {}", component.getPurl());
         MetaModel metaModel = null;
         try {
-            if (analysisCommand.getFetchLatestVersion()) {
-                metaModel = analyzer.analyze(component);
-                LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
-                        component.getPurl(), repository.getIdentifier(), repository.getType());
-            }
+            metaModel = analyzer.analyze(component);
+            LOGGER.debug("Found component metadata for: {} using repository: {} ({})",
+                    component.getPurl(), repository.getIdentifier(), repository.getType());
         } catch (Exception e) {
             LOGGER.error("Failed to analyze {} using {} with repository {}",
                     component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);

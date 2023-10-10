@@ -28,6 +28,7 @@ import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
 import org.hyades.proto.repometaanalysis.v1.Component;
+import org.hyades.proto.repometaanalysis.v1.FetchMeta;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
 import org.junit.jupiter.api.AfterAll;
@@ -233,8 +234,7 @@ class MetaAnalyzerProcessorTest {
                         .setComponent(Component.newBuilder()
                                 .setPurl("pkg:npm/@apollo/federation@0.19.1")
                                 .setInternal(true))
-                        .setFetchIntegrityData(true)
-                        .setFetchLatestVersion(true).build());
+                        .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION).build());
 
         inputTopic.pipeInput(inputRecord);
         assertThat(outputTopic.getQueueSize()).isEqualTo(1);

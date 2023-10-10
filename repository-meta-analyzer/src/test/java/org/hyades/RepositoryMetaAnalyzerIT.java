@@ -20,6 +20,7 @@ import org.hyades.common.KafkaTopic;
 import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
+import org.hyades.proto.repometaanalysis.v1.FetchMeta;
 import org.hyades.util.WireMockTestResource;
 import org.hyades.util.WireMockTestResource.InjectWireMock;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,7 +103,7 @@ class RepositoryMetaAnalyzerIT {
             final var command = AnalysisCommand.newBuilder()
                     .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                             .setPurl("pkg:golang/github.com/acme/acme-lib@9.1.1"))
-                    .setFetchLatestVersion(true)
+                    .setFetchMeta(FetchMeta.FETCH_META_LATEST_VERSION)
                     .build();
 
             kafkaCompanion
@@ -117,7 +118,7 @@ class RepositoryMetaAnalyzerIT {
 
             assertThat(results).satisfiesExactly(
                     record -> {
-                        assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib@9.1.1");
+                        assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib");
                         assertThat(record.value()).isNotNull();
                         final AnalysisResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
@@ -166,7 +167,7 @@ class RepositoryMetaAnalyzerIT {
             final var command = AnalysisCommand.newBuilder()
                     .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                             .setPurl("pkg:golang/github.com/acme/acme-lib@9.1.1"))
-                    .setFetchIntegrityData(true)
+                    .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA)
                     .build();
 
             kafkaCompanion
@@ -181,7 +182,7 @@ class RepositoryMetaAnalyzerIT {
 
             assertThat(results).satisfiesExactly(
                     record -> {
-                        assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib@9.1.1");
+                        assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib");
                         assertThat(record.value()).isNotNull();
                         final AnalysisResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
@@ -289,7 +290,7 @@ class RepositoryMetaAnalyzerIT {
                     .getRecords();
             assertThat(results).satisfiesExactly(
                     record -> {
-                        assertThat(record.key()).isEqualTo("pkg:github/github.com/acme/acme-lib@9.1.1");
+                        assertThat(record.key()).isEqualTo("pkg:github/github.com/acme/acme-lib");
                         assertThat(record.value()).isNotNull();
                         final AnalysisResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
@@ -350,7 +351,7 @@ class RepositoryMetaAnalyzerIT {
                     .getRecords();
             assertThat(results).satisfiesExactly(
                     record -> {
-                        assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib@9.1.1");
+                        assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib");
                         assertThat(record.value()).isNotNull();
                         final AnalysisResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
@@ -410,12 +411,11 @@ class RepositoryMetaAnalyzerIT {
         }
 
         @Test
-        void testBoth() {
+        void test() {
             final var command = AnalysisCommand.newBuilder()
                     .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                             .setPurl("pkg:npm/amazon-s3-uri@0.0.1"))
-                    .setFetchLatestVersion(true)
-                    .setFetchIntegrityData(true)
+                    .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)
                     .build();
 
             kafkaCompanion
@@ -430,7 +430,7 @@ class RepositoryMetaAnalyzerIT {
 
             assertThat(results).satisfiesExactly(
                     record -> {
-                        assertThat(record.key()).isEqualTo("pkg:npm/amazon-s3-uri@0.0.1");
+                        assertThat(record.key()).isEqualTo("pkg:npm/amazon-s3-uri");
                         assertThat(record.value()).isNotNull();
                         final AnalysisResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
@@ -485,8 +485,7 @@ class RepositoryMetaAnalyzerIT {
             final var command = AnalysisCommand.newBuilder()
                     .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                             .setPurl("pkg:npm/amazon-s3-uri@0.0.1"))
-                    .setFetchLatestVersion(false)
-                    .setFetchIntegrityData(true)
+                    .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA)
                     .build();
 
             kafkaCompanion
@@ -501,7 +500,7 @@ class RepositoryMetaAnalyzerIT {
 
             assertThat(results).satisfiesExactly(
                     record -> {
-                        assertThat(record.key()).isEqualTo("pkg:npm/amazon-s3-uri@0.0.1");
+                        assertThat(record.key()).isEqualTo("pkg:npm/amazon-s3-uri");
                         assertThat(record.value()).isNotNull();
                         final AnalysisResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();

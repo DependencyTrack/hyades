@@ -23,6 +23,7 @@ import org.hyades.proto.KafkaProtobufDeserializer;
 import org.hyades.proto.KafkaProtobufSerializer;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
+import org.hyades.proto.repometaanalysis.v1.FetchMeta;
 import org.hyades.proto.repometaanalysis.v1.IntegrityMeta;
 import org.hyades.repositories.IMetaAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
@@ -84,8 +85,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                         .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2")
                         .build())
-                .setFetchLatestVersion(true)
-                .setFetchIntegrityData(true)
+                .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)
                 .build();
 
         // mock repository data
@@ -125,7 +125,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                         .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
-                .setFetchLatestVersion(true)
+                .setFetchMeta(FetchMeta.FETCH_META_LATEST_VERSION)
                 .build();
 
         // mock repository data
@@ -152,7 +152,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
 
         inputTopic.pipeInput("foo", command);
         final KeyValue<String, AnalysisResult> record = outputTopic.readKeyValue();
-        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.key);
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
         Assertions.assertEquals("test", record.value.getLatestVersion());
     }
 
@@ -161,7 +161,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                         .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
-                .setFetchIntegrityData(true)
+                .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA)
                 .build();
 
         // mock repository data
@@ -190,7 +190,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
 
         inputTopic.pipeInput("foo", command);
         final KeyValue<String, AnalysisResult> record = outputTopic.readKeyValue();
-        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.key);
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
         Assertions.assertEquals("sha1", record.value.getIntegrityMeta().getSha1());
     }
 
@@ -200,8 +200,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                         .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
-                .setFetchLatestVersion(true)
-                .setFetchIntegrityData(true)
+                .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)
                 .build();
 
         inputTopic.pipeInput("foo", command);
@@ -214,8 +213,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
     void testNoPurlComponent() {
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder())
-                .setFetchLatestVersion(true)
-                .setFetchIntegrityData(true)
+                .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)
                 .build();
 
         inputTopic.pipeInput("foo", command);
@@ -234,7 +232,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
 
         Assertions.assertEquals(1, outputTopic.getQueueSize());
         final KeyValue<String, AnalysisResult> record = outputTopic.readKeyValue();
-        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.key);
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.value.getComponent().getPurl());
         Assertions.assertFalse(record.value.hasLatestVersion());
         Assertions.assertFalse(record.value.hasIntegrityMeta());

@@ -22,7 +22,7 @@ import org.hyades.serde.KafkaPurlSerde;
 
 import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameProduce;
-import static org.hyades.util.PurlUtil.parsePurlCoordinates;
+import static org.hyades.util.PurlUtil.parsePurlCoordinatesWithoutVersion;
 
 public class RepositoryMetaAnalyzerTopology {
 
@@ -42,7 +42,13 @@ public class RepositoryMetaAnalyzerTopology {
                         .withName(processorNameConsume(KafkaTopic.REPO_META_ANALYSIS_COMMAND)))
                 .filter((key, scanCommand) -> scanCommand.hasComponent() && isValidPurl(scanCommand.getComponent().getPurl()),
                         Named.as("filter_components_with_valid_purl"))
-                .selectKey((key, command) -> parsePurlCoordinates(command.getComponent().getPurl()),
+                // Re-key to PURL coordinates WITHOUT VERSION. As we are fetching data for packages,
+                // but not specific package versions, including the version here would make our caching
+                // largely ineffective. We want events for the same package to be sent to the same partition.
+                //
+                // Because we can't enforce this format on the keys of the input topic without causing
+                // serialization exceptions, we're left with this mandatory key change.
+                .selectKey((key, command) -> parsePurlCoordinatesWithoutVersion(command.getComponent().getPurl()),
                         Named.as("re-key_to_purl_coordinates"))
                 // Force a repartition to ensure that the ordering guarantees we want, based on the
                 // previous re-keying operation, are effective.

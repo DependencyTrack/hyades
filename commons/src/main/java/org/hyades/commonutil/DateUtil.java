@@ -35,7 +35,6 @@ public final class DateUtil {
      * @param date the date string to parse
      * @param dateFormat the date format
      * @return a Date object
-     * @since 3.1.0
      */
     public static Date parseDate(final String date, final String dateFormat) {
         final SimpleDateFormat format = new SimpleDateFormat(dateFormat);
