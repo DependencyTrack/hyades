@@ -21,7 +21,6 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.HttpHeaders;
 import org.apache.http.impl.client.HttpClients;
-import org.hyades.commonutil.DateUtil;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -35,7 +34,6 @@ import org.mockserver.integration.ClientAndServer;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
