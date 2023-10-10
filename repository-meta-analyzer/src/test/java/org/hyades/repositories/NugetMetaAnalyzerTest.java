@@ -21,6 +21,7 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.HttpHeaders;
 import org.apache.http.impl.client.HttpClients;
+import org.hyades.commonutil.DateUtil;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -34,6 +35,9 @@ import org.mockserver.integration.ClientAndServer;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -103,14 +107,66 @@ class NugetMetaAnalyzerTest {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnit@3.8.0"));
         Assertions.assertEquals("NugetMetaAnalyzer", analyzer.getName());
-        analyzer.setRepositoryBaseUrl("https://api.nuget.org");
+
+        String mockIndexResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3-index.json");
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/v3/index.json")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                .withBody(mockIndexResponse)
+                );
+        String encodedBasicHeader = "Basic OnBhc3N3b3Jk";
+
+        String mockVersionResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3-flat2" +
+                "-nunit-index.json");
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/v3/flat2/nunit/index.json")
+                                .withHeader("Authorization", encodedBasicHeader)
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                .withBody(mockVersionResponse)
+                );
+
+        String mockRegistrationResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3" +
+                "-registrations2-nunit-400.json");
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/v3/registrations2/nunit/4.0.0.json")
+                                .withHeader("Authorization", encodedBasicHeader)
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                                .withBody(mockRegistrationResponse)
+                );
+
+        analyzer.setRepositoryUsernameAndPassword(null, "password");
+        analyzer.setRepositoryBaseUrl("http://localhost:1080");
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertTrue(analyzer.isApplicable(component));
         Assertions.assertEquals(RepositoryType.NUGET, analyzer.supportedRepositoryType());
         Assertions.assertNotNull(metaModel.getComponent());
         Assertions.assertNotNull(metaModel.getLatestVersion());
-        Assertions.assertNull(metaModel.getPublishedTimestamp());
+        Assertions.assertEquals("4.0.0", metaModel.getLatestVersion());
+        Assertions.assertNotNull(metaModel.getPublishedTimestamp());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Assertions.assertEquals(dateFormat.parse("2022-04-13T13:30:25Z"), metaModel.getPublishedTimestamp());
     }
 
     @Test
