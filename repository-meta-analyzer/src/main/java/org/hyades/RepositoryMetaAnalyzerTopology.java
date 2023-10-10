@@ -22,6 +22,7 @@ import org.hyades.serde.KafkaPurlSerde;
 
 import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameProduce;
+import static org.hyades.util.PurlUtil.parsePurlCoordinates;
 
 public class RepositoryMetaAnalyzerTopology {
 
@@ -41,13 +42,7 @@ public class RepositoryMetaAnalyzerTopology {
                         .withName(processorNameConsume(KafkaTopic.REPO_META_ANALYSIS_COMMAND)))
                 .filter((key, scanCommand) -> scanCommand.hasComponent() && isValidPurl(scanCommand.getComponent().getPurl()),
                         Named.as("filter_components_with_valid_purl"))
-                // Re-key to PURL coordinates WITHOUT VERSION. As we are fetching data for packages,
-                // but not specific package versions, including the version here would make our caching
-                // largely ineffective. We want events for the same package to be sent to the same partition.
-                //
-                // Because we can't enforce this format on the keys of the input topic without causing
-                // serialization exceptions, we're left with this mandatory key change.
-                .selectKey((key, command) -> mustParsePurlCoordinatesWithoutVersion(command.getComponent().getPurl()),
+                .selectKey((key, command) -> parsePurlCoordinates(command.getComponent().getPurl()),
                         Named.as("re-key_to_purl_coordinates"))
                 // Force a repartition to ensure that the ordering guarantees we want, based on the
                 // previous re-keying operation, are effective.
@@ -84,18 +79,4 @@ public class RepositoryMetaAnalyzerTopology {
             return false;
         }
     }
-
-    private PackageURL mustParsePurlCoordinatesWithoutVersion(final String purl) {
-        try {
-            final var parsedPurl = new PackageURL(purl);
-            return new PackageURL(parsedPurl.getType(), parsedPurl.getNamespace(),
-                    parsedPurl.getName(), null, null, null);
-        } catch (MalformedPackageURLException e) {
-            throw new IllegalStateException("""
-                    The provided PURL is invalid, even though it should have been
-                    validated in a previous processing step
-                    """, e);
-        }
-    }
-
 }
