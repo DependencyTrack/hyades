@@ -83,11 +83,9 @@ public interface IMetaAnalyzer {
     String getName();
 
     /**
-     * The component meta data to analyze for integrity.
+     * The component integrity meta.
      * @param component the component to analyze
      * @return an IntegrityMeta object
-     * @throws MetaAnalyzerException in case of any issue during metadata generation
-     * @since 3.1.0
      */
     IntegrityMeta getIntegrityMeta(Component component);
 }
