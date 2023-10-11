@@ -17,12 +17,12 @@ import org.hyades.processor.MetaAnalyzerProcessorSupplier;
 import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
-import org.hyades.proto.repometaanalysis.v1.Component;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.hyades.serde.KafkaPurlSerde;
 
 import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameConsume;
 import static org.hyades.kstreams.util.KafkaStreamsUtil.processorNameProduce;
+import static org.hyades.util.PurlUtil.parsePurlCoordinatesWithoutVersion;
 
 public class RepositoryMetaAnalyzerTopology {
 
@@ -48,7 +48,7 @@ public class RepositoryMetaAnalyzerTopology {
                 //
                 // Because we can't enforce this format on the keys of the input topic without causing
                 // serialization exceptions, we're left with this mandatory key change.
-                .selectKey((key, command) -> mustParsePurlCoordinatesWithoutVersion(command.getComponent().getPurl()),
+                .selectKey((key, command) -> parsePurlCoordinatesWithoutVersion(command.getComponent().getPurl()),
                         Named.as("re-key_to_purl_coordinates"))
                 // Force a repartition to ensure that the ordering guarantees we want, based on the
                 // previous re-keying operation, are effective.
@@ -57,19 +57,17 @@ public class RepositoryMetaAnalyzerTopology {
                         .withName("command-by-purl-coordinates"));
 
         commandStream
-                .mapValues((purl, command) -> command.getComponent(),
-                        Named.as("map_to_component"))
                 .split(Named.as("applicable_analyzer"))
-                .branch((purl, component) -> analyzerFactory.hasApplicableAnalyzer(purl), Branched
-                        .<PackageURL, Component>withConsumer(stream -> stream
+                .branch((purl, command) -> analyzerFactory.hasApplicableAnalyzer(purl), Branched
+                        .<PackageURL, AnalysisCommand>withConsumer(stream -> stream
                                 .processValues(analyzerProcessorSupplier, Named.as("analyze_component"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(purlSerde, scanResultSerde)
                                         .withName(processorNameProduce(KafkaTopic.REPO_META_ANALYSIS_RESULT, "analysis_result"))))
                         .withName("-found"))
                 .defaultBranch(Branched
-                        .<PackageURL, Component>withConsumer(stream -> stream
-                                .mapValues((purl, component) -> AnalysisResult.newBuilder().setComponent(component).build(),
+                        .<PackageURL, AnalysisCommand>withConsumer(stream -> stream
+                                .mapValues((purl, command) -> AnalysisResult.newBuilder().setComponent(command.getComponent()).build(),
                                         Named.as("map_unmatched_component_to_empty_result"))
                                 .to(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), Produced
                                         .with(purlSerde, scanResultSerde)
@@ -87,18 +85,4 @@ public class RepositoryMetaAnalyzerTopology {
             return false;
         }
     }
-
-    private PackageURL mustParsePurlCoordinatesWithoutVersion(final String purl) {
-        try {
-            final var parsedPurl = new PackageURL(purl);
-            return new PackageURL(parsedPurl.getType(), parsedPurl.getNamespace(),
-                    parsedPurl.getName(), null, null, null);
-        } catch (MalformedPackageURLException e) {
-            throw new IllegalStateException("""
-                    The provided PURL is invalid, even though it should have been
-                    validated in a previous processing step
-                    """, e);
-        }
-    }
-
 }

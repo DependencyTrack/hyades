@@ -25,6 +25,7 @@ import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,10 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -50,6 +55,11 @@ class PypiMetaAnalyzerTest {
     void beforeEach() {
         analyzer = new PypiMetaAnalyzer();
         analyzer.setHttpClient(HttpClients.createDefault());
+    }
+
+    @AfterEach
+    void afterEach() {
+        mockServer.reset();
     }
 
     @AfterAll
@@ -143,5 +153,81 @@ class PypiMetaAnalyzerTest {
         Assertions.assertNull(
                 metaModel.getPublishedTimestamp()
         );
+    }
+
+    @Test
+    void testAnalyzerReturnIntegrityResult() {
+        Component component = new Component();
+        component.setPurl("pkg:pypi/typo3/package-ok-result@v1.2.0");
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                                .withPath("/typo3/package-ok-result/v1.2.0/package-ok-result-v1.2.0.tar.gz")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader("X-Checksum-MD5", "md5hash")
+                                .withHeader("X-Checksum-SHA1", "sha1hash")
+                                .withHeader("X-Checksum-SHA256", "sha256hash")
+                                .withHeader("X-Checksum-SHA512", "sha512hash")
+                                .withHeader("Last-Modified", "Thu, 07 Jul 2022 14:00:00 GMT")
+                );
+
+        var integrityMeta = analyzer.getIntegrityMeta(component);
+        assertNotNull(integrityMeta);
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/typo3/package-ok-result/v1.2.0/package-ok-result-v1.2.0.tar.gz");
+        assertEquals("md5hash", integrityMeta.getMd5());
+        assertEquals("sha1hash", integrityMeta.getSha1());
+        assertEquals("sha256hash", integrityMeta.getSha256());
+        assertEquals("sha512hash", integrityMeta.getSha512());
+        assertNotNull(integrityMeta.getCurrentVersionLastModified());
+    }
+
+    @Test
+    void testIntegrityAnalyzerException() {
+        Component component = new Component();
+        component.setPurl("pkg:pypi/typo1/package-no-result@v1.2.0");
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(400)
+                );
+        var integrityMeta = analyzer.getIntegrityMeta(component);
+        assertNotNull(integrityMeta);
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/typo1/package-no-result/v1.2.0/package-no-result-v1.2.0.tar.gz");
+        assertNull(integrityMeta.getSha1());
+        assertNull(integrityMeta.getMd5());
+        assertNull(integrityMeta.getSha256());
+        assertNull(integrityMeta.getSha512());
+        assertNull(integrityMeta.getCurrentVersionLastModified());
+    }
+
+    @Test
+    void testIntegrityResultForPurlWithoutNamespace() {
+        Component component = new Component();
+        component.setPurl("pkg:pypi/package-result@v1.2.0");
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                                .withPath("/package-result/v1.2.0/package-result-v1.2.0.tar.gz")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                );
+
+        var integrityMeta = analyzer.getIntegrityMeta(component);
+        assertNotNull(integrityMeta);
+        assertThat(integrityMeta.getMetaSourceUrl()).contains("/package-result/v1.2.0/package-result-v1.2.0.tar.gz");
     }
 }

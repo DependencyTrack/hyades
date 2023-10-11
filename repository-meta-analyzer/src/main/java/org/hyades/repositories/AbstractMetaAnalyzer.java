@@ -19,11 +19,16 @@
 package org.hyades.repositories;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.HttpUtil;
+import org.hyades.model.IntegrityMeta;
 import org.hyades.persistence.model.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +44,8 @@ import java.io.IOException;
 
 public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final String GMT_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
     protected CloseableHttpClient httpClient;
 
@@ -75,6 +82,11 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
     public void setRepositoryUsernameAndPassword(String username, String password) {
         this.username = StringUtils.trimToNull(username);
         this.password = StringUtils.trimToNull(password);
+    }
+
+    @Override
+    public IntegrityMeta getIntegrityMeta(Component component) {
+        throw new UnsupportedOperationException("Skipping integrity meta fetch as this analyzer does not support Integrity Metadata.");
     }
 
     protected void handleUnexpectedHttpResponse(final Logger logger, String url, final int statusCode, final String statusText, final Component component) {
@@ -116,4 +128,47 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
         return httpClient.execute(request);
     }
 
+    protected CloseableHttpResponse processHttpHeadRequest(String url) throws IOException {
+        final HttpUriRequest request = new HttpHead(url);
+        request.addHeader("accept", "application/json");
+        if (username != null || password != null) {
+            request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(username, password));
+        }
+        return httpClient.execute(request);
+    }
+
+    protected IntegrityMeta extractIntegrityModelFromResponse(CloseableHttpResponse response, IntegrityMeta integrityMeta) {
+        var headers = response.getAllHeaders();
+        for (var header : headers) {
+            if (header.getName().equalsIgnoreCase("X-Checksum-MD5")) {
+                integrityMeta.setMd5(header.getValue());
+            } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA1")) {
+                integrityMeta.setSha1(header.getValue());
+            } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA256")) {
+                integrityMeta.setSha256(header.getValue());
+            } else if (header.getName().equalsIgnoreCase("X-Checksum-SHA512")) {
+                integrityMeta.setSha512(header.getValue());
+            } else if (header.getName().equalsIgnoreCase("Last-Modified") && header.getValue() != null) {
+                integrityMeta.setCurrentVersionLastModified(DateUtil.parseDate(header.getValue(), GMT_FORMAT));
+            }
+        }
+        return integrityMeta;
+    }
+
+    public IntegrityMeta fetchIntegrityMeta(String url, Component component) {
+        var integrityMeta = new IntegrityMeta();
+        integrityMeta.setMetaSourceUrl(url);
+        try (final CloseableHttpResponse response = processHttpHeadRequest(url)) {
+            final StatusLine status = response.getStatusLine();
+            if (status.getStatusCode() == HttpStatus.SC_OK) {
+                return extractIntegrityModelFromResponse(response, integrityMeta);
+            } else {
+                handleUnexpectedHttpResponse(logger, url, status.getStatusCode(), status.getReasonPhrase(), component);
+            }
+        } catch (Exception ex) {
+            logger.warn("Head request for integrity meta failed. Not caching response for component with purl:{}", component.getPurl());
+            handleRequestException(logger, ex);
+        }
+        return integrityMeta;
+    }
 }

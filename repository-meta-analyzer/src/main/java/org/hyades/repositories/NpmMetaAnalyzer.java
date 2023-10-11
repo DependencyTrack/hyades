@@ -21,6 +21,7 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.hyades.model.IntegrityMeta;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -96,6 +97,28 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
             }
         }
         return meta;
+    }
+
+    @Override
+    public IntegrityMeta getIntegrityMeta(Component component) {
+        if (component != null) {
+            var packageUrl = component.getPurl();
+            if (packageUrl != null) {
+                String type = "tgz";
+                if (packageUrl.getQualifiers() != null) {
+                    type = packageUrl.getQualifiers().getOrDefault("type", "tgz");
+                }
+                String npmArtifactoryUrl = "";
+                if (packageUrl.getNamespace() != null) {
+                    npmArtifactoryUrl += packageUrl.getNamespace().replaceAll("\\.", "/") + "/";
+                }
+                npmArtifactoryUrl += packageUrl.getName();
+                final String url = this.baseUrl + "/" + npmArtifactoryUrl + "/-/"
+                        + npmArtifactoryUrl + "-" + packageUrl.getVersion() + "." + type;
+                return fetchIntegrityMeta(url, component);
+            }
+        }
+        return null;
     }
 
     @Override

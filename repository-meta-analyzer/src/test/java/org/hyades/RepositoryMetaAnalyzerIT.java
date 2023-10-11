@@ -20,6 +20,7 @@ import org.hyades.common.KafkaTopic;
 import org.hyades.proto.KafkaProtobufSerde;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
+import org.hyades.proto.repometaanalysis.v1.FetchMeta;
 import org.hyades.util.WireMockTestResource;
 import org.hyades.util.WireMockTestResource.InjectWireMock;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,18 +38,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Suite
 @SelectClasses(value = {
-        RepositoryMetaAnalyzerIT.WithValidPurl.class,
+        RepositoryMetaAnalyzerIT.WithValidPurlLatestVersionEnabled.class,
+        RepositoryMetaAnalyzerIT.WithValidPurlWithIntegrityRepoUnsupported.class,
         RepositoryMetaAnalyzerIT.WithInvalidPurl.class,
         RepositoryMetaAnalyzerIT.NoCapableAnalyzer.class,
-        RepositoryMetaAnalyzerIT.InternalAnalyzerNonInternalComponent.class
+        RepositoryMetaAnalyzerIT.InternalAnalyzerNonInternalComponent.class,
+        RepositoryMetaAnalyzerIT.WithValidPurlWithBothLatestVersionAndIntegrityEnabled.class,
+        RepositoryMetaAnalyzerIT.WithValidPurlIntegrityMetaEnabled.class
 })
 class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
     @QuarkusTestResource(WireMockTestResource.class)
-    @TestProfile(WithValidPurl.TestProfile.class)
-    static class WithValidPurl {
+    @TestProfile(WithValidPurlLatestVersionEnabled.TestProfile.class)
+    static class WithValidPurlLatestVersionEnabled{
 
         public static class TestProfile implements QuarkusTestProfile {}
 
@@ -99,6 +103,7 @@ class RepositoryMetaAnalyzerIT {
             final var command = AnalysisCommand.newBuilder()
                     .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                             .setPurl("pkg:golang/github.com/acme/acme-lib@9.1.1"))
+                    .setFetchMeta(FetchMeta.FETCH_META_LATEST_VERSION)
                     .build();
 
             kafkaCompanion
@@ -123,6 +128,68 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
                         assertThat(result.hasPublished()).isTrue();
                         assertThat(result.getPublished().getSeconds()).isEqualTo(1664402372);
+                        assertThat(result.hasIntegrityMeta()).isFalse();
+                    }
+            );
+        }
+    }
+
+    @QuarkusIntegrationTest
+    @QuarkusTestResource(KafkaCompanionResource.class)
+    @QuarkusTestResource(WireMockTestResource.class)
+    @TestProfile(WithValidPurlWithIntegrityRepoUnsupported.TestProfile.class)
+    static class WithValidPurlWithIntegrityRepoUnsupported{
+
+        public static class TestProfile implements QuarkusTestProfile {}
+
+        @InjectKafkaCompanion
+        KafkaCompanion kafkaCompanion;
+
+        @InjectWireMock
+        WireMockServer wireMockServer;
+
+        @BeforeEach
+        void beforeEach() throws Exception {
+            try (final Connection connection = DriverManager.getConnection(
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.jdbc.url", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
+                final PreparedStatement ps = connection.prepareStatement("""
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
+                        VALUES ('true', 'test', false, NULL, 1, 'GO_MODULES', 'http://localhost:%d', false);
+                        """.formatted(wireMockServer.port()));
+                ps.execute();
+            }
+        }
+
+        @Test
+        void test() {
+            final var command = AnalysisCommand.newBuilder()
+                    .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                            .setPurl("pkg:golang/github.com/acme/acme-lib@9.1.1"))
+                    .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA)
+                    .build();
+
+            kafkaCompanion
+                    .produce(Serdes.String(), new KafkaProtobufSerde<>(AnalysisCommand.parser()))
+                    .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), "foo", command));
+
+            final List<ConsumerRecord<String, AnalysisResult>> results = kafkaCompanion
+                    .consume(Serdes.String(), new KafkaProtobufSerde<>(AnalysisResult.parser()))
+                    .fromTopics(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), 1, Duration.ofSeconds(5))
+                    .awaitCompletion()
+                    .getRecords();
+
+            assertThat(results).satisfiesExactly(
+                    record -> {
+                        assertThat(record.key()).isEqualTo("pkg:golang/github.com/acme/acme-lib");
+                        assertThat(record.value()).isNotNull();
+                        final AnalysisResult result = record.value();
+                        assertThat(result.hasComponent()).isTrue();
+                        assertThat(result.hasRepository()).isTrue();
+                        assertThat(result.hasLatestVersion()).isFalse();
+                        assertThat(result.hasPublished()).isFalse();
+                        assertThat(result.hasIntegrityMeta()).isFalse();
                     }
             );
         }
@@ -231,6 +298,7 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(result.hasRepository()).isFalse();
                         assertThat(result.hasLatestVersion()).isFalse();
                         assertThat(result.hasPublished()).isFalse();
+                        assertThat(result.hasIntegrityMeta()).isFalse();
                     }
             );
         }
@@ -291,6 +359,160 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(result.hasRepository()).isFalse();
                         assertThat(result.hasLatestVersion()).isFalse();
                         assertThat(result.hasPublished()).isFalse();
+                        assertThat(result.hasIntegrityMeta()).isFalse();
+                    }
+            );
+        }
+    }
+
+    @QuarkusIntegrationTest
+    @QuarkusTestResource(KafkaCompanionResource.class)
+    @QuarkusTestResource(WireMockTestResource.class)
+    @TestProfile(WithValidPurlWithBothLatestVersionAndIntegrityEnabled.TestProfile.class)
+    static class WithValidPurlWithBothLatestVersionAndIntegrityEnabled {
+
+        public static class TestProfile implements QuarkusTestProfile {}
+
+        @InjectKafkaCompanion
+        KafkaCompanion kafkaCompanion;
+
+        @InjectWireMock
+        WireMockServer wireMockServer;
+
+        @BeforeEach
+        void beforeEach() throws Exception {
+            try (final Connection connection = DriverManager.getConnection(
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.jdbc.url", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
+                final PreparedStatement ps = connection.prepareStatement("""
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
+                        VALUES ('true', 'test', false, NULL, 1, 'NPM', 'http://localhost:%d', false);
+                        """.formatted(wireMockServer.port()));
+                ps.execute();
+            }
+
+            wireMockServer.stubFor(WireMock.get(WireMock.anyUrl())
+                    .willReturn(WireMock.aResponse()
+                            .withStatus(200)
+                            .withResponseBody(Body.ofBinaryOrText("""
+                                    {
+                                        "latest": "v6.6.6"
+                                    }
+                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
+                            )));
+            wireMockServer.stubFor(WireMock.head(WireMock.anyUrl())
+                    .willReturn(WireMock.aResponse()
+                            .withStatus(200)
+                            .withHeader("X-Checksum-MD5", "md5hash")
+                            .withHeader("X-Checksum-SHA1", "sha1hash")
+                            .withHeader("Last-Modified", "Wed, 06 Jul 2022 14:00:00 GMT")
+                    ));
+        }
+
+        @Test
+        void test() {
+            final var command = AnalysisCommand.newBuilder()
+                    .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                            .setPurl("pkg:npm/amazon-s3-uri@0.0.1"))
+                    .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)
+                    .build();
+
+            kafkaCompanion
+                    .produce(Serdes.String(), new KafkaProtobufSerde<>(AnalysisCommand.parser()))
+                    .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), "foo", command));
+
+            final List<ConsumerRecord<String, AnalysisResult>> results = kafkaCompanion
+                    .consume(Serdes.String(), new KafkaProtobufSerde<>(AnalysisResult.parser()))
+                    .fromTopics(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), 1, Duration.ofSeconds(5))
+                    .awaitCompletion()
+                    .getRecords();
+
+            assertThat(results).satisfiesExactly(
+                    record -> {
+                        assertThat(record.key()).isEqualTo("pkg:npm/amazon-s3-uri");
+                        assertThat(record.value()).isNotNull();
+                        final AnalysisResult result = record.value();
+                        assertThat(result.hasComponent()).isTrue();
+                        assertThat(result.getRepository()).isEqualTo("test");
+                        assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
+                        assertThat(result.hasPublished()).isFalse();
+                        assertThat(result.hasIntegrityMeta()).isTrue();
+                        final var integrityMeta = result.getIntegrityMeta();
+                        assertThat(integrityMeta).isNotNull();
+                    }
+            );
+        }
+    }
+
+    @QuarkusIntegrationTest
+    @QuarkusTestResource(KafkaCompanionResource.class)
+    @QuarkusTestResource(WireMockTestResource.class)
+    @TestProfile(WithValidPurlIntegrityMetaEnabled.TestProfile.class)
+    static class WithValidPurlIntegrityMetaEnabled {
+
+        public static class TestProfile implements QuarkusTestProfile {}
+
+        @InjectKafkaCompanion
+        KafkaCompanion kafkaCompanion;
+
+        @InjectWireMock
+        WireMockServer wireMockServer;
+
+        @BeforeEach
+        void beforeEach() throws Exception {
+            try (final Connection connection = DriverManager.getConnection(
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.jdbc.url", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.username", String.class),
+                    ConfigProvider.getConfig().getValue("quarkus.datasource.password", String.class))) {
+                final PreparedStatement ps = connection.prepareStatement("""
+                        INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
+                        VALUES ('true', 'test', false, NULL, 1, 'NPM', 'http://localhost:%d', false);
+                        """.formatted(wireMockServer.port()));
+                ps.execute();
+            }
+            wireMockServer.stubFor(WireMock.head(WireMock.anyUrl())
+                    .willReturn(WireMock.aResponse()
+                            .withStatus(200)
+                            .withHeader("X-Checksum-MD5", "md5hash")
+                            .withHeader("X-Checksum-SHA1", "sha1hash")
+                            .withHeader("Last-Modified", "Wed, 06 Jul 2022 14:00:00 GMT")
+                    ));
+        }
+
+        @Test
+        void testIntegrityMetaOnly() {
+            final var command = AnalysisCommand.newBuilder()
+                    .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                            .setPurl("pkg:npm/amazon-s3-uri@0.0.1"))
+                    .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA)
+                    .build();
+
+            kafkaCompanion
+                    .produce(Serdes.String(), new KafkaProtobufSerde<>(AnalysisCommand.parser()))
+                    .fromRecords(new ProducerRecord<>(KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName(), "foo", command));
+
+            final List<ConsumerRecord<String, AnalysisResult>> results = kafkaCompanion
+                    .consume(Serdes.String(), new KafkaProtobufSerde<>(AnalysisResult.parser()))
+                    .fromTopics(KafkaTopic.REPO_META_ANALYSIS_RESULT.getName(), 1, Duration.ofSeconds(5))
+                    .awaitCompletion()
+                    .getRecords();
+
+            assertThat(results).satisfiesExactly(
+                    record -> {
+                        assertThat(record.key()).isEqualTo("pkg:npm/amazon-s3-uri");
+                        assertThat(record.value()).isNotNull();
+                        final AnalysisResult result = record.value();
+                        assertThat(result.hasComponent()).isTrue();
+                        assertThat(result.getRepository()).isEqualTo("test");
+                        assertThat(result.hasLatestVersion()).isFalse();
+                        assertThat(result.hasPublished()).isFalse();
+                        assertThat(result.hasIntegrityMeta()).isTrue();
+                        final var integrityMeta = result.getIntegrityMeta();
+                        assertThat(integrityMeta.getMd5()).isEqualTo("md5hash");
+                        assertThat(integrityMeta.getSha1()).isEqualTo("sha1hash");
+                        assertThat(integrityMeta.getCurrentVersionLastModified().getSeconds()).isEqualTo(1657116000);
+                        assertThat(integrityMeta.getMetaSourceUrl()).contains("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz");
                     }
             );
         }

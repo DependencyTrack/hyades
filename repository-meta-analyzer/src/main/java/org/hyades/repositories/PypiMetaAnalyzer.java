@@ -21,6 +21,7 @@ package org.hyades.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.hyades.model.IntegrityMeta;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -121,6 +122,28 @@ public class PypiMetaAnalyzer extends AbstractMetaAnalyzer {
             LOGGER.warn("An error occurred while parsing upload time", e);
         }
         return meta;
+    }
+
+    @Override
+    public IntegrityMeta getIntegrityMeta(Component component) {
+        if (component != null) {
+            var packageUrl = component.getPurl();
+            if (packageUrl != null) {
+                String type = "tar.gz";
+                if (packageUrl.getQualifiers() != null) {
+                    type = packageUrl.getQualifiers().getOrDefault("type", "tar.gz");
+                }
+                String pypiArtifactoryUrl = "";
+                if (packageUrl.getNamespace() != null) {
+                    pypiArtifactoryUrl += packageUrl.getNamespace().replaceAll("\\.", "/") + "/";
+                }
+                pypiArtifactoryUrl += packageUrl.getName() + "/" + packageUrl.getVersion();
+                String url = this.baseUrl + "/" + pypiArtifactoryUrl + "/"
+                        + packageUrl.getName() + "-" + packageUrl.getVersion() + "." + type;
+                return fetchIntegrityMeta(url, component);
+            }
+        }
+        return null;
     }
 
     @Override

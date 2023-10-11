@@ -25,6 +25,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hyades.commonutil.DateUtil;
 import org.hyades.commonutil.XmlUtil;
+import org.hyades.model.IntegrityMeta;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
 import org.hyades.persistence.model.RepositoryType;
@@ -52,6 +53,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenMetaAnalyzer.class);
     private static final String DEFAULT_BASE_URL = "https://repo1.maven.org/maven2";
     private static final String REPO_METADATA_URL = "/%s/maven-metadata.xml";
+    private final String MAVEN_REPO_DATE_FORMAT = "yyyyMMddHHmmss";
 
     MavenMetaAnalyzer() {
         this.baseUrl = DEFAULT_BASE_URL;
@@ -99,7 +101,7 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
 
                             meta.setLatestVersion(release != null ? release : latest);
                             if (lastUpdated != null) {
-                                meta.setPublishedTimestamp(DateUtil.parseDate(lastUpdated));
+                                meta.setPublishedTimestamp(DateUtil.parseDate(lastUpdated, MAVEN_REPO_DATE_FORMAT));
                             }
                         }
                     }
@@ -117,5 +119,22 @@ public class MavenMetaAnalyzer extends AbstractMetaAnalyzer {
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public IntegrityMeta getIntegrityMeta(Component component) {
+        if (component != null) {
+            var packageUrl = component.getPurl();
+            if (packageUrl != null) {
+                String type = "jar";
+                if (packageUrl.getQualifiers() != null) {
+                    type = packageUrl.getQualifiers().getOrDefault("type", "jar");
+                }
+                final String mavenGavUrl = packageUrl.getNamespace().replaceAll("\\.", "/") + "/" + packageUrl.getName();
+                final String url = baseUrl + "/" + mavenGavUrl + "/" + packageUrl.getVersion() + "/" + packageUrl.getName() + "-" + packageUrl.getVersion() + "." + type;
+                return fetchIntegrityMeta(url, component);
+            }
+        }
+        return null;
     }
 }

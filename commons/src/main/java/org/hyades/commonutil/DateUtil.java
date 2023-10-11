@@ -30,16 +30,16 @@ public final class DateUtil {
     }
 
     /**
-     * Convenience method that parses a date in yyyyMMddHHmmss format and
+     * Convenience method that parses a date in given format and
      * returns a Date object. If the parsing fails, null is returned.
-     * @param yyyyMMddHHmmss the date string to parse
+     * @param date the date string to parse
+     * @param dateFormat the date format
      * @return a Date object
-     * @since 3.1.0
      */
-    public static Date parseDate(final String yyyyMMddHHmmss) {
-        final SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+    public static Date parseDate(final String date, final String dateFormat) {
+        final SimpleDateFormat format = new SimpleDateFormat(dateFormat);
         try {
-            return format.parse(yyyyMMddHHmmss);
+            return format.parse(date);
         } catch (ParseException e) {
             return null;
         }

@@ -19,6 +19,7 @@
 package org.hyades.repositories;
 
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.hyades.model.IntegrityMeta;
 import org.hyades.model.MetaAnalyzerException;
 import org.hyades.model.MetaModel;
 import org.hyades.persistence.model.Component;
@@ -81,4 +82,10 @@ public interface IMetaAnalyzer {
 
     String getName();
 
+    /**
+     * The component integrity meta.
+     * @param component the component to analyze
+     * @return an IntegrityMeta object
+     */
+    IntegrityMeta getIntegrityMeta(Component component);
 }

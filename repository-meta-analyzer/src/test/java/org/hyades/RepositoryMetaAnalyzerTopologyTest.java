@@ -23,6 +23,8 @@ import org.hyades.proto.KafkaProtobufDeserializer;
 import org.hyades.proto.KafkaProtobufSerializer;
 import org.hyades.proto.repometaanalysis.v1.AnalysisCommand;
 import org.hyades.proto.repometaanalysis.v1.AnalysisResult;
+import org.hyades.proto.repometaanalysis.v1.FetchMeta;
+import org.hyades.proto.repometaanalysis.v1.IntegrityMeta;
 import org.hyades.repositories.IMetaAnalyzer;
 import org.hyades.repositories.RepositoryAnalyzerFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -83,6 +85,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                         .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2")
                         .build())
+                .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)
                 .build();
 
         // mock repository data
@@ -95,24 +98,34 @@ public class RepositoryMetaAnalyzerTopologyTest {
                 .thenReturn(List.of(repository));
 
         // mock maven analyzer analyze method
-        final MetaModel outputMetaModel = new MetaModel();
+        final var outputMetaModel = new MetaModel();
         outputMetaModel.setLatestVersion("test");
         when(analyzerMock.analyze(any())).thenReturn(outputMetaModel);
         when(analyzerMock.getName()).thenReturn("testAnalyzer");
 
+        // mock maven analyzer fetch integrity meta method
+        final var integrityMeta = new org.hyades.model.IntegrityMeta();
+        integrityMeta.setSha256("sha256");
+        when(analyzerMock.getIntegrityMeta(any())).thenReturn(integrityMeta);
+
         inputTopic.pipeInput("foo", command);
 
-        final var cacheKey = new MetaAnalyzerCacheKey("testAnalyzer",
+        final var cacheKeyWithoutVersion = new MetaAnalyzerCacheKey("testAnalyzer",
                 "pkg:maven/com.fasterxml.jackson.core/jackson-databind",
                 "https://repo1.maven.org/maven2/");
-        Assertions.assertNotNull(cache.as(CaffeineCache.class).getIfPresent(cacheKey).get());
+        Assertions.assertNotNull(cache.as(CaffeineCache.class).getIfPresent(cacheKeyWithoutVersion).get());
+        final var cacheKeyWithVersion = new MetaAnalyzerCacheKey("testAnalyzer",
+                "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                "https://repo1.maven.org/maven2/");
+        Assertions.assertNotNull(cache.as(CaffeineCache.class).getIfPresent(cacheKeyWithVersion).get());
     }
 
     @Test
-    void testAnalyzerCacheHit() {
+    void testAnalyzerCacheHitRepoMeta() {
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                         .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
+                .setFetchMeta(FetchMeta.FETCH_META_LATEST_VERSION)
                 .build();
 
         // mock repository data
@@ -124,7 +137,6 @@ public class RepositoryMetaAnalyzerTopologyTest {
         when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
                 .thenReturn(List.of(repository));
 
-        // mock maven analyzer analyze method
         final var result = AnalysisResult.newBuilder()
                 .setComponent(command.getComponent())
                 .setRepository("testRepository")
@@ -144,12 +156,51 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Assertions.assertEquals("test", record.value.getLatestVersion());
     }
 
+    @Test
+    void testAnalyzerCacheHitIntegrityMeta() {
+        final var command = AnalysisCommand.newBuilder()
+                .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
+                .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA)
+                .build();
+
+        // mock repository data
+        Repository repository = new Repository();
+        repository.setIdentifier("testRepository");
+        repository.setInternal(false);
+        repository.setAuthenticationRequired(false);
+        repository.setUrl("https://repo1.maven.org/maven2/");
+        when(repoEntityRepositoryMock.findEnabledRepositoriesByType(any()))
+                .thenReturn(List.of(repository));
+
+        final var result = AnalysisResult.newBuilder()
+                .setComponent(command.getComponent())
+                .setRepository("testRepository")
+                .setLatestVersion("test")
+                .setIntegrityMeta(IntegrityMeta.newBuilder()
+                        .setSha1("sha1").build())
+                .build();
+        when(analyzerMock.getName()).thenReturn("testAnalyzer");
+
+        // populate the cache to hit the match
+        final var cacheKey = new MetaAnalyzerCacheKey("testAnalyzer",
+                "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                "https://repo1.maven.org/maven2/");
+        cache.as(CaffeineCache.class).put(cacheKey, completedFuture(result));
+
+        inputTopic.pipeInput("foo", command);
+        final KeyValue<String, AnalysisResult> record = outputTopic.readKeyValue();
+        Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
+        Assertions.assertEquals("sha1", record.value.getIntegrityMeta().getSha1());
+    }
+
 
     @Test
     void testPerformMetaAnalysis() {
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
                         .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
+                .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)
                 .build();
 
         inputTopic.pipeInput("foo", command);
@@ -162,6 +213,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
     void testNoPurlComponent() {
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder())
+                .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)
                 .build();
 
         inputTopic.pipeInput("foo", command);
@@ -183,6 +235,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2", record.value.getComponent().getPurl());
         Assertions.assertFalse(record.value.hasLatestVersion());
+        Assertions.assertFalse(record.value.hasIntegrityMeta());
     }
 
     @AfterEach
