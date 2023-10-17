@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.mockito.ArgumentMatchers.any;
@@ -158,8 +159,10 @@ public class RepositoryMetaAnalyzerTopologyTest {
 
     @Test
     void testAnalyzerCacheHitIntegrityMeta() {
+        UUID uuid = UUID.randomUUID();
         final var command = AnalysisCommand.newBuilder()
                 .setComponent(org.hyades.proto.repometaanalysis.v1.Component.newBuilder()
+                        .setUuid(uuid.toString())
                         .setPurl("pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2"))
                 .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA)
                 .build();
@@ -192,6 +195,7 @@ public class RepositoryMetaAnalyzerTopologyTest {
         final KeyValue<String, AnalysisResult> record = outputTopic.readKeyValue();
         Assertions.assertEquals("pkg:maven/com.fasterxml.jackson.core/jackson-databind", record.key);
         Assertions.assertEquals("sha1", record.value.getIntegrityMeta().getSha1());
+        Assertions.assertEquals(uuid.toString(), record.value.getComponent().getUuid());
     }
 
 
