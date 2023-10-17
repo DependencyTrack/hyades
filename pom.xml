@@ -71,7 +71,7 @@
 
     <!-- Plugin Versions -->
     <plugin.cyclonedx.version>2.7.9</plugin.cyclonedx.version>
-    <plugin.jacoco.version>0.8.10</plugin.jacoco.version>
+    <plugin.jacoco.version>0.8.11</plugin.jacoco.version>
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
     <!-- Tool Versions -->
