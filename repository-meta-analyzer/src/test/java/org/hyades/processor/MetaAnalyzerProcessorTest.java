@@ -41,6 +41,7 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.model.HttpRequest.request;
@@ -229,10 +230,12 @@ class MetaAnalyzerProcessorTest {
                                 .withHeader("X-Checksum-MD5", "md5hash")
                 );
 
+        UUID uuid = UUID.randomUUID();
         final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),
                 AnalysisCommand.newBuilder()
                         .setComponent(Component.newBuilder()
                                 .setPurl("pkg:npm/@apollo/federation@0.19.1")
+                                .setUuid(uuid.toString())
                                 .setInternal(true))
                         .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION).build());
 
@@ -244,6 +247,7 @@ class MetaAnalyzerProcessorTest {
                     assertThat(record.value()).isNotNull();
                     final AnalysisResult result = record.value();
                     assertThat(result.hasComponent()).isTrue();
+                    assertThat(result.getComponent().getUuid()).isEqualTo(uuid.toString());
                     assertThat(result.getRepository()).isEqualTo("central");
                     assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
                     assertThat(result.hasPublished()).isFalse();
