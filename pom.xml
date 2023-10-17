@@ -49,7 +49,6 @@
     <lib.confluent-parallel-consumer.version>0.5.2.7</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.2</lib.cvss-calculator.version>
-    <lib.cyclonedx-java.version>7.3.2</lib.cyclonedx-java.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
     <lib.greenmail.version>2.0.0</lib.greenmail.version>
     <lib.java-uuid-generator.version>4.3.0</lib.java-uuid-generator.version>
@@ -141,12 +140,6 @@
         <groupId>io.confluent.parallelconsumer</groupId>
         <artifactId>parallel-consumer-core</artifactId>
         <version>${lib.confluent-parallel-consumer.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.cyclonedx</groupId>
-        <artifactId>cyclonedx-core-java</artifactId>
-        <version>${lib.cyclonedx-java.version}</version>
       </dependency>
 
       <dependency>
