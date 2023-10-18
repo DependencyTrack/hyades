@@ -40,6 +40,9 @@
         link: https://twitter.com/DependencyTrack
 
   markdown_extensions:
+    - admonition
+    - footnotes
+    - pymdownx.details
     - pymdownx.highlight:
         anchor_linenums: true
     - pymdownx.superfences
@@ -50,11 +53,15 @@
 
   nav:
     - Home: README.md
-    - Workflow: design/01-workflow-state-tracking.md
-    - Code of Conduct: CODE_OF_CONDUCT.md
-    - Configuration: CONFIGURATION.md
-    - Contributing: CONTRIBUTING.md
-    - Demo: DEMO.md
-    - Security: SECURITY.md
-    - Topics: TOPICS.md
-    - WTF: WTF.md
+    - Usage:
+      - Policy Compliance:
+        - Overview: usage/policy-compliance/overview.md
+        - Expressions: usage/policy-compliance/expressions.md
+    - Architecture:
+      - Overview: architecture/overview.md
+      - Design:
+        - Workflow State Tracking: architecture/design/workflow-state-tracking.md
+    - Reference:
+      - Configuration: reference/configuration.md
+      - Topics: reference/topics.md
+    - About: about.md
