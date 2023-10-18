@@ -8,7 +8,7 @@ expressions can be provided.
 
 ![CEL condition](../../images/usage/policy-compliance/expression-condition.png)
 
-In addition to the expression itself, it's necessary to specify a violation type, which may be any of `License`,
+In addition to the expression itself, it's necessary to specify a *violation type*, which may be any of `License`,
 `Operational`, or `Security`. The violation type aids in communicating what kind of risk is introduced by the
 condition being matched.
 
@@ -18,6 +18,10 @@ The CEL syntax is similar to other [C-style languages] like Java and JavaScript.
 However, CEL is not [Turing-complete]. As such, it does *not* support constructs like `if` statements or loops (i.e. `for`, `while`).
 
 As a compensation for missing loops, CEL offers [macros] like `all`, `exists`, `exists_one`, `map`, and `filter`.
+Refer to the [macros] documentation for more details, or have a look at the [examples](#examples) to see how they may
+be utilized in practice.
+
+CEL syntax is described thoroughly in the official [language definition].
 
 ## Evaluation Context
 
@@ -36,7 +40,12 @@ The context in which expressions are evaluated in contains the following variabl
 
 1. **Keep expressions simple and concise**. The more complex an expression becomes, the harder it gets to determine why
 it did or did not match. Use policy operators (`Any`, `All`) to chain multiple expressions if practical.
-2. TODO
+2. **Call functions last**. [Custom functions](#function-definitions) involve additional computation that is more
+expensive than simple field accesses. Performing any checks on fields first, and calling functions last, oftentimes
+allows evaluation to short-circuit.
+3. **Remove conditions that are no longer needed**. Dependency-Track analyzes the configured expressions to determine
+what data it has to load from the database in order to evaluate them. The more fields are being accessed,
+the more data has to be loaded. Removal of outdated conditions thus has a direct positive performance impact.
 
 ## Examples
 
@@ -60,6 +69,45 @@ but not:
 
 * `pkg:maven/com.acme/acme-library@0.1.0`
 * `pkg:maven/com.acme/acme-lib@0.2.4`
+
+`matches_range` currently supports the following versioning schemes:
+
+| Versioning Scheme | Ecosystem                        |
+|:------------------|:---------------------------------|
+| `deb`             | Debian / Ubuntu                  |
+| `generic`         | Generic / Any                    |
+| `golang`          | Go                               |
+| `maven`           | Java / Maven                     |
+| `npm`             | JavaScript / NodeJS              |
+| `rpm`             | CentOS / Fedora / Red Hat / SUSE |
+
+!!! note
+    If the ecosystem of the component(s) to match against is known upfront, it's good practice to use the according
+    versioning scheme in `matches_range`. This helps with accuracy, as versioning schemes have different nuances
+    across ecosystems, which makes comparisons error-prone.
+
+### Dependency graph traversal
+
+The following expression matches [Component]s that are a (possibly transitive) dependency of a [Component]
+with name `foo`, *but only if* a [Component] with name `bar` is also present in the [Project].
+
+```js linenums="1"
+component.is_dependency_of(org.dependencytrack.policy.v1.Component{name: "foo"})
+  && project.depends_on(org.dependencytrack.policy.v1.Component{name: "bar"})
+```
+
+`is_dependency_of` and `depends_on` lookups currently support the following [Component] fields:
+
+* `uuid`
+* `group`
+* `name`
+* `version`
+* `purl`
+
+!!! note
+    When constructing objects like [Component] on-the-fly, it is necessary to provide their fully qualified name,
+    including the package (i.e. `org.dependencytrack.policy.v1`). This is required in order to perform type checking,
+    as well as ensuring backward compatibility.
 
 ### License blacklist
 
@@ -111,69 +159,69 @@ or `CRITICAL`
 
 #### `Component`
 
-| Field                | Type                   | Description     |
-|:---------------------|:-----------------------|:----------------|
-| `uuid`               | `string`               | Internal [UUID] |
-| `group`              | `string`               |                 |
-| `name`               | `string`               |                 |
-| `version`            | `string`               |                 |
-| `classifier`         | `string`               |                 |
-| `cpe`                | `string`               | [CPE]           |
-| `purl`               | `string`               | [Package URL]   |
-| `swid_tag_id`        | `string`               |                 |
-| `is_internal`        | `bool`                 |                 |
-| `md5`                | `string`               |                 |
-| `sha1`               | `string`               |                 |
-| `sha256`             | `string`               |                 |
-| `sha384`             | `string`               |                 |
-| `sha512`             | `string`               |                 |
-| `sha3_256`           | `string`               |                 |
-| `sha3_384`           | `string`               |                 |
-| `sha3_512`           | `string`               |                 |
-| `blake2b_256`        | `string`               |                 |
-| `blake2b_384`        | `string`               |                 |
-| `blake2b_512`        | `string`               |                 |
-| `blake3`             | `string`               |                 |
-| `license_name`       | `string`               |                 |
-| `license_expression` | `string`               |                 |
-| `resolved_license`   | <code>[License]</code> |                 |
+| Field                | Type                   | Description                  |
+|:---------------------|:-----------------------|:-----------------------------|
+| `uuid`               | `string`               | Internal [UUID]              |
+| `group`              | `string`               | Group / namespace            |
+| `name`               | `string`               | Name                         |
+| `version`            | `string`               | Version                      |
+| `classifier`         | `string`               | Classifier / type            |
+| `cpe`                | `string`               | [CPE]                        |
+| `purl`               | `string`               | [Package URL]                |
+| `swid_tag_id`        | `string`               | [SWID] Tag ID                |
+| `is_internal`        | `bool`                 | Is internal?                 |
+| `md5`                | `string`               | MD5 hash                     |
+| `sha1`               | `string`               | SHA1 hash                    |
+| `sha256`             | `string`               | SHA256 hash                  |
+| `sha384`             | `string`               | SHA384 hash                  |
+| `sha512`             | `string`               | SHA512 hash                  |
+| `sha3_256`           | `string`               | SHA3-256 hash                |
+| `sha3_384`           | `string`               | SHA3-384 hash                |
+| `sha3_512`           | `string`               | SHA3-512 hash                |
+| `blake2b_256`        | `string`               | BLAKE2b-256 hash             |
+| `blake2b_384`        | `string`               | BLAKE2b-384 hash             |
+| `blake2b_512`        | `string`               | BLAKE2b-512 hash             |
+| `blake3`             | `string`               | BLAKE3 hash                  |
+| `license_name`       | `string`               | License name (if unresolved) |
+| `license_expression` | `string`               | [SPDX license expression]    |
+| `resolved_license`   | <code>[License]</code> | Resolved license             |
 
 #### `License`
 
-| Field              | Type                               | Description     |
-|:-------------------|:-----------------------------------|:----------------|
-| `uuid`             | `string`                           | Internal [UUID] |
-| `id`               | `string`                           |                 |
-| `name`             | `string`                           |                 |
-| `groups`           | <code>list([License.Group])</code> |                 |
-| `is_osi_approved`  | `bool`                             |                 |
-| `is_fsf_libre`     | `bool`                             |                 |
-| `is_deprecated_id` | `bool`                             |                 |
-| `is_custom`        | `bool`                             |                 |
+| Field              | Type                               | Description                                      |
+|:-------------------|:-----------------------------------|:-------------------------------------------------|
+| `uuid`             | `string`                           | Internal [UUID]                                  |
+| `id`               | `string`                           | SPDX license ID                                  |
+| `name`             | `string`                           | License name                                     |
+| `groups`           | <code>list([License.Group])</code> | Groups this license is included in               |
+| `is_osi_approved`  | `bool`                             | Is [OSI-approved]?                               |
+| `is_fsf_libre`     | `bool`                             | Is included in [FSF license list]?               |
+| `is_deprecated_id` | `bool`                             | Uses a deprecated SPDX license ID?               |
+| `is_custom`        | `bool`                             | Is custom / not included in [SPDX license list]? |
 
 #### `License.Group`
 
 | Field  | Type     | Description     |
 |:-------|:---------|:----------------|
 | `uuid` | `string` | Internal [UUID] |
-| `name` | `string` |                 |
+| `name` | `string` | Group name      |
 
 #### `Project`
 
-| Field             | Type                                  | Description     |
-|:------------------|:--------------------------------------|:----------------|
-| `uuid`            | `string`                              | Internal [UUID] |
-| `group`           | `string`                              |                 |
-| `name`            | `string`                              |                 |
-| `version`         | `string`                              |                 |
-| `classifier`      | `string`                              |                 |
-| `is_active`       | `bool`                                |                 |
-| `tags`            | `list(string)`                        |                 |
-| `properties`      | <code>list([Project.Property])</code> |                 |
-| `cpe`             | `string`                              | [CPE]           |
-| `purl`            | `string`                              | [Package URL]   |
-| `swid_tag_id`     | `string`                              |                 |
-| `last_bom_import` | `google.protobuf.Timestamp`           |                 |
+| Field             | Type                                  | Description       |
+|:------------------|:--------------------------------------|:------------------|
+| `uuid`            | `string`                              | Internal [UUID]   |
+| `group`           | `string`                              | Group / namespace |
+| `name`            | `string`                              | Name              |
+| `version`         | `string`                              | Version           |
+| `classifier`      | `string`                              | Classifier / type |
+| `is_active`       | `bool`                                | Is active?        |
+| `tags`            | `list(string)`                        | Tags              |
+| `properties`      | <code>list([Project.Property])</code> | Properties        |
+| `cpe`             | `string`                              | [CPE]             |
+| `purl`            | `string`                              | [Package URL]     |
+| `swid_tag_id`     | `string`                              | [SWID] Tag ID     |
+| `last_bom_import` | `google.protobuf.Timestamp`           |                   |
 
 #### `Project.Property`
 
@@ -191,7 +239,7 @@ or `CRITICAL`
 | `uuid`                            | `string`                                 | Internal [UUID]                            |
 | `id`                              | `string`                                 | ID of the vulnerability (e.g. `CVE-123`)   |
 | `source`                          | `string`                                 | Authoritative source (e.g. `NVD`)          |
-| `aliases`                         | <code>list([Vulnerability.Alias])</code> |                                            |
+| `aliases`                         | <code>list([Vulnerability.Alias])</code> | Known aliases                              |
 | `cwes`                            | `list(int)`                              | [CWE] IDs                                  |
 | `created`                         | `google.protobuf.Timestamp`              | When the vulnerability was created         |
 | `published`                       | `google.protobuf.Timestamp`              | When the vulnerability was published       |
@@ -221,7 +269,7 @@ or `CRITICAL`
 
 ### Function Definitions
 
-In addition to the standard definitions of the CEL specification[^1], Dependency-Track offers additional functions
+In addition to the [standard definitions] of the CEL specification, Dependency-Track offers additional functions
 to unlock even more use cases:
 
 | Symbol             | Type                                                                                        | Description                                                   |
@@ -238,17 +286,24 @@ to unlock even more use cases:
 [Common Expression Language]: https://github.com/google/cel-spec
 [Component]: #component
 [EPSS]: https://www.first.org/epss/
+[FSF license list]: https://www.gnu.org/licenses/license-list.en.html
 [License.Group]: #licensegroup
 [License]: #license
+[OSI-approved]: https://opensource.org/licenses
 [OWASP Risk Rating]: https://owasp.org/www-community/OWASP_Risk_Rating_Methodology
 [Package URL]: https://github.com/package-url/purl-spec/blob/master/PURL-SPECIFICATION.rst
 [Project.Property]: #projectproperty
 [Project]: #project
 [RE2]: https://github.com/google/re2/wiki/Syntax
+[SPDX license expression]: https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/
+[SPDX license list]: https://spdx.org/licenses/
 [Turing-complete]: https://en.wikipedia.org/wiki/Turing_completeness
+[SWID]: https://csrc.nist.gov/projects/Software-Identification-SWID
 [UUID]: https://en.wikipedia.org/wiki/Universally_unique_identifier
 [Vulnerability.Alias]: #vulnerabilityalias
 [Vulnerability]: #vulnerability
-[^1]: https://github.com/google/cel-spec/blob/master/doc/langdef.md#list-of-standard-definitions
+[introduction]: https://github.com/google/cel-spec/blob/v0.13.0/doc/intro.md
+[language definition]: https://github.com/google/cel-spec/blob/v0.13.0/doc/langdef.md#language-definition
 [macros]: https://github.com/google/cel-spec/blob/v0.13.0/doc/langdef.md#macros
+[standard definitions]: https://github.com/google/cel-spec/blob/v0.13.0/doc/langdef.md#list-of-standard-definitions
 [vers]: https://github.com/package-url/purl-spec/blob/version-range-spec/VERSION-RANGE-SPEC.rst

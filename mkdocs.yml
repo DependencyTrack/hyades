@@ -40,7 +40,9 @@
         link: https://twitter.com/DependencyTrack
 
   markdown_extensions:
+    - admonition
     - footnotes
+    - pymdownx.details
     - pymdownx.highlight:
         anchor_linenums: true
     - pymdownx.superfences
