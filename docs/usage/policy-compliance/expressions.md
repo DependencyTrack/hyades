@@ -1,7 +1,23 @@
 ## Introduction
 
 Dependency-Track allows policy conditions to be defined using the [Common Expression Language] (CEL),
-enabling more flexibility, and more control over predefined conditions.
+enabling more flexibility, and more control compared to predefined conditions.
+
+To use CEL, simply select the subject `Expression` when adding a new condition. A code editor will appear in which
+expressions can be provided.
+
+![CEL condition](../../images/usage/policy-compliance/expression-condition.png)
+
+In addition to the expression itself, it's necessary to specify a violation type, which may be any of `License`,
+`Operational`, or `Security`. The violation type aids in communicating what kind of risk is introduced by the
+condition being matched.
+
+## Syntax
+
+The CEL syntax is similar to other [C-style languages] like Java and JavaScript.
+However, CEL is not [Turing-complete]. As such, it does *not* support constructs like `if` statements or loops (i.e. `for`, `while`).
+
+As a compensation for missing loops, CEL offers [macros] like `all`, `exists`, `exists_one`, `map`, and `filter`.
 
 ## Evaluation Context
 
@@ -15,6 +31,12 @@ The context in which expressions are evaluated in contains the following variabl
 | `component` | <code>[Component]</code>           | The component being evaluated                |
 | `project`   | <code>[Project]</code>             | The project the component is part of         |
 | `vulns`     | <code>list([Vulnerability])</code> | Vulnerabilities the component is affected by |
+
+## Best Practices
+
+1. **Keep expressions simple and concise**. The more complex an expression becomes, the harder it gets to determine why
+it did or did not match. Use policy operators (`Any`, `All`) to chain multiple expressions if practical.
+2. TODO
 
 ## Examples
 
@@ -208,6 +230,7 @@ to unlock even more use cases:
 | `is_dependency_of` | <code>([Component], [Component])</code> -> `bool`                                           | Check if a `Component` is a dependency of another `Component` |
 | `matches_range`    | <code>([Project], string)</code> -> `bool`<br/><code>([Component], string)</code> -> `bool` | Check if a `Project` or `Component` matches a [vers] range    |
 
+[C-style languages]: https://en.wikipedia.org/wiki/List_of_C-family_programming_languages
 [CVSSv2]: https://www.first.org/cvss/v2/guide
 [CVSSv3]: https://www.first.org/cvss/v3.0/specification-document
 [CPE]: https://csrc.nist.gov/projects/security-content-automation-protocol/specifications/cpe
@@ -222,8 +245,10 @@ to unlock even more use cases:
 [Project.Property]: #projectproperty
 [Project]: #project
 [RE2]: https://github.com/google/re2/wiki/Syntax
+[Turing-complete]: https://en.wikipedia.org/wiki/Turing_completeness
 [UUID]: https://en.wikipedia.org/wiki/Universally_unique_identifier
 [Vulnerability.Alias]: #vulnerabilityalias
 [Vulnerability]: #vulnerability
 [^1]: https://github.com/google/cel-spec/blob/master/doc/langdef.md#list-of-standard-definitions
+[macros]: https://github.com/google/cel-spec/blob/v0.13.0/doc/langdef.md#macros
 [vers]: https://github.com/package-url/purl-spec/blob/version-range-spec/VERSION-RANGE-SPEC.rst
