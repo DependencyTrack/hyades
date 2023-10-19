@@ -15,7 +15,7 @@ from defusedxml.ElementTree import parse as parse_etree
 
 template = """package {{ package }};
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,20 +38,20 @@ final class CweDefinitions {
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
-    arg_parser.add_argument("-p", "--package", default="org.hyades.resolver", help="Package name")
+    arg_parser.add_argument("-p", "--package", default="org.hyades.common.cwe", help="Package name")
     arg_parser.add_argument("-o", "--output", type=Path, required=True, help="Output file path")
     args = arg_parser.parse_args()
 
     with TemporaryFile(suffix=".zip") as tmp:
-        with requests.get("https://cwe.mitre.org/data/xml/cwec_latest.xml.zip") as res:
+        with requests.get("https://cwe.mitre.org/data/xml/cwec_v4.12.xml.zip") as res:
             tmp.write(res.content)
         tmp.seek(0)
         with zipfile.ZipFile(tmp) as zip:
-            with zip.open("cwec_v4.9.xml") as dict_file:
+            with zip.open("cwec_v4.12.xml") as dict_file:
                 tree: ElementTree = parse_etree(dict_file)
 
     tree_root = tree.getroot()
-    namespaces = {"cwe": "http://cwe.mitre.org/cwe-6"}
+    namespaces = {"cwe": "http://cwe.mitre.org/cwe-7"}
     definitions: dict[int, str] = OrderedDict()
 
 
