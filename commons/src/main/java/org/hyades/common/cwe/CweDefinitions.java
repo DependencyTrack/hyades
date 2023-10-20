@@ -1,11 +1,10 @@
 package org.hyades.common.cwe;
 
 import jakarta.annotation.Generated;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Generated(value = "generate-cwe-definitions.py", date = "2023-01-19T23:20:12.459921+00:00")
+@Generated(value = "generate-cwe-definitions.py", date = "2023-10-19T14:14:49.874019+00:00")
 final class CweDefinitions {
     
     static final Map<Integer, String> DEFINITIONS = new HashMap<>();
@@ -163,6 +162,28 @@ final class CweDefinitions {
         DEFINITIONS.put(1383, "ICS Operations (\u0026 Maintenance): Compliance/Conformance with Regulatory Requirements");
         DEFINITIONS.put(1388, "Physical Access Issues and Concerns");
         DEFINITIONS.put(139, "DEPRECATED: General Special Element Problems");
+        DEFINITIONS.put(1396, "Comprehensive Categorization: Access Control");
+        DEFINITIONS.put(1397, "Comprehensive Categorization: Comparison");
+        DEFINITIONS.put(1398, "Comprehensive Categorization: Component Interaction");
+        DEFINITIONS.put(1399, "Comprehensive Categorization: Memory Safety");
+        DEFINITIONS.put(1401, "Comprehensive Categorization: Concurrency");
+        DEFINITIONS.put(1402, "Comprehensive Categorization: Encryption");
+        DEFINITIONS.put(1403, "Comprehensive Categorization: Exposed Resource");
+        DEFINITIONS.put(1404, "Comprehensive Categorization: File Handling");
+        DEFINITIONS.put(1405, "Comprehensive Categorization: Improper Check or Handling of Exceptional Conditions");
+        DEFINITIONS.put(1406, "Comprehensive Categorization: Improper Input Validation");
+        DEFINITIONS.put(1407, "Comprehensive Categorization: Improper Neutralization");
+        DEFINITIONS.put(1408, "Comprehensive Categorization: Incorrect Calculation");
+        DEFINITIONS.put(1409, "Comprehensive Categorization: Injection");
+        DEFINITIONS.put(1410, "Comprehensive Categorization: Insufficient Control Flow Management");
+        DEFINITIONS.put(1411, "Comprehensive Categorization: Insufficient Verification of Data Authenticity");
+        DEFINITIONS.put(1412, "Comprehensive Categorization: Poor Coding Practices");
+        DEFINITIONS.put(1413, "Comprehensive Categorization: Protection Mechanism Failure");
+        DEFINITIONS.put(1414, "Comprehensive Categorization: Randomness");
+        DEFINITIONS.put(1415, "Comprehensive Categorization: Resource Control");
+        DEFINITIONS.put(1416, "Comprehensive Categorization: Resource Lifecycle Management");
+        DEFINITIONS.put(1417, "Comprehensive Categorization: Sensitive Information Exposure");
+        DEFINITIONS.put(1418, "Comprehensive Categorization: Violation of Secure Design Principles");
         DEFINITIONS.put(16, "Configuration");
         DEFINITIONS.put(169, "DEPRECATED: Technology-Specific Special Elements");
         DEFINITIONS.put(17, "DEPRECATED: Code");
@@ -635,7 +656,7 @@ final class CweDefinitions {
         DEFINITIONS.put(1321, "Improperly Controlled Modification of Object Prototype Attributes (\u0027Prototype Pollution\u0027)");
         DEFINITIONS.put(1322, "Use of Blocking Code in Single-threaded, Non-blocking Context");
         DEFINITIONS.put(1323, "Improper Management of Sensitive Trace Data");
-        DEFINITIONS.put(1324, "Sensitive Information Accessible by Physical Probing of JTAG Interface");
+        DEFINITIONS.put(1324, "DEPRECATED: Sensitive Information Accessible by Physical Probing of JTAG Interface");
         DEFINITIONS.put(1325, "Improperly Controlled Sequential Memory Allocation");
         DEFINITIONS.put(1326, "Missing Immutable Root of Trust in Hardware");
         DEFINITIONS.put(1327, "Binding to an Unrestricted IP Address");
@@ -655,7 +676,7 @@ final class CweDefinitions {
         DEFINITIONS.put(1342, "Information Exposure through Microarchitectural State after Transient Execution");
         DEFINITIONS.put(135, "Incorrect Calculation of Multi-Byte String Length");
         DEFINITIONS.put(1351, "Improper Handling of Hardware Behavior in Exceptionally Cold Environments");
-        DEFINITIONS.put(1357, "Reliance on Uncontrolled Component");
+        DEFINITIONS.put(1357, "Reliance on Insufficiently Trustworthy Component");
         DEFINITIONS.put(138, "Improper Neutralization of Special Elements");
         DEFINITIONS.put(1384, "Improper Handling of Physical or Environmental Conditions");
         DEFINITIONS.put(1385, "Missing Origin Validation in WebSockets");
@@ -666,6 +687,7 @@ final class CweDefinitions {
         DEFINITIONS.put(1392, "Use of Default Credentials");
         DEFINITIONS.put(1393, "Use of Default Password");
         DEFINITIONS.put(1394, "Use of Default Cryptographic Key");
+        DEFINITIONS.put(1395, "Dependency on Vulnerable Third-Party Component");
         DEFINITIONS.put(14, "Compiler Removal of Code to Clear Buffers");
         DEFINITIONS.put(140, "Improper Neutralization of Delimiters");
         DEFINITIONS.put(141, "Improper Neutralization of Parameter/Argument Delimiters");
@@ -1044,7 +1066,7 @@ final class CweDefinitions {
         DEFINITIONS.put(523, "Unprotected Transport of Credentials");
         DEFINITIONS.put(524, "Use of Cache Containing Sensitive Information");
         DEFINITIONS.put(525, "Use of Web Browser Cache Containing Sensitive Information");
-        DEFINITIONS.put(526, "Exposure of Sensitive Information Through Environmental Variables");
+        DEFINITIONS.put(526, "Cleartext Storage of Sensitive Information in an Environment Variable");
         DEFINITIONS.put(527, "Exposure of Version-Control Repository to an Unauthorized Control Sphere");
         DEFINITIONS.put(528, "Exposure of Core Dump File to an Unauthorized Control Sphere");
         DEFINITIONS.put(529, "Exposure of Access Control List Files to an Unauthorized Control Sphere");
@@ -1375,6 +1397,8 @@ final class CweDefinitions {
         DEFINITIONS.put(1350, "Weaknesses in the 2020 CWE Top 25 Most Dangerous Software Weaknesses");
         DEFINITIONS.put(1358, "Weaknesses in SEI ETF Categories of Security Vulnerabilities in ICS");
         DEFINITIONS.put(1387, "Weaknesses in the 2022 CWE Top 25 Most Dangerous Software Weaknesses");
+        DEFINITIONS.put(1400, "Comprehensive Categorization for Software Assurance Trends");
+        DEFINITIONS.put(1425, "Weaknesses in the 2023 CWE Top 25 Most Dangerous Software Weaknesses");
         DEFINITIONS.put(2000, "Comprehensive CWE Dictionary");
         DEFINITIONS.put(604, "Deprecated Entries");
         DEFINITIONS.put(629, "Weaknesses in OWASP Top Ten (2007)");
