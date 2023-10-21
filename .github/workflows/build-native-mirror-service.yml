@@ -8,8 +8,13 @@ on:
     - ".github/workflows/_build-native-meta.yml"
     - ".github/workflows/build-native-mirror-service.yml"
     - "commons/**"
+    - "commons-kstreams/**"
     - "mirror-service/**"
     - "pom.xml"
+    - "proto/**"
+  release:
+    types:
+    - released
   workflow_dispatch: { }
 
 permissions: { }
