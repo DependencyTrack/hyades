@@ -7,6 +7,9 @@ on:
       - mkdocs.yml
     branches:
       - main
+  release:
+    types:
+    - released
 
 permissions: { }
 
