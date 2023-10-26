@@ -73,7 +73,7 @@ frontend:
   annotations: {}
   image:
     repository: dependencytrack/frontend
-    tag: 4.8.1
+    tag: 4.9.0
     pullPolicy: Always
   command: []
   args: []
