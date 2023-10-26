@@ -16,7 +16,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
     - name: Set up JDK 17
@@ -38,7 +38,7 @@ jobs:
     name: Test Native Image
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
-    timeout-minutes: 15
+    timeout-minutes: 20
     strategy:
       matrix:
         module:
