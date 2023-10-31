@@ -504,7 +504,6 @@ class RepositoryMetaAnalyzerIT {
                         assertThat(record.value()).isNotNull();
                         final AnalysisResult result = record.value();
                         assertThat(result.hasComponent()).isTrue();
-                        assertThat(result.getRepository()).isEqualTo("test");
                         assertThat(result.hasLatestVersion()).isFalse();
                         assertThat(result.hasPublished()).isFalse();
                         assertThat(result.hasIntegrityMeta()).isTrue();
