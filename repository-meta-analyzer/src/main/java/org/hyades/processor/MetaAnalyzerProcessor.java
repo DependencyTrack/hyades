@@ -200,6 +200,10 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
         org.hyades.model.IntegrityMeta integrityMeta;
         try {
             integrityMeta = analyzer.getIntegrityMeta(component);
+        } catch (UnsupportedOperationException unsupportedPackageException) {
+            LOGGER.debug("Failed to analyze {} using {} with repository {} because package type is not supported",
+                    component.getPurl(), analyzer.getName(), repository.getIdentifier(), unsupportedPackageException);
+            return null;
         } catch (Exception e) {
             LOGGER.error("Failed to analyze {} using {} with repository {}",
                     component.getPurl(), analyzer.getName(), repository.getIdentifier(), e);
