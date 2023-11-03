@@ -9,7 +9,7 @@
 ## What is this? 🤔
 
 Hyades, named after [the star cluster closest to earth](https://en.wikipedia.org/wiki/Hyades_(star_cluster)), 
-is a proof-of-concept for decoupling responsibilities from [Dependency-Track]'s monolithic API server into separate, 
+is an incubating project for decoupling responsibilities from [Dependency-Track]'s monolithic API server into separate, 
 scalable™ services. We're using [Kafka] (or Kafka-compatible brokers like [Redpanda]) for communicating between API 
 server and Hyades services.
 
