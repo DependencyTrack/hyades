@@ -25,7 +25,7 @@ jobs:
         python-version: "3.9"
         check-latest: true
     - name: Set up Chart Testing
-      uses: helm/chart-testing-action@b43128a8b25298e1e7b043b78ea6613844e079b1 # tag=v2.6.0
+      uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # tag=v2.6.1
     - name: Lint Chart
       run: |-
         ct lint --charts ./helm-charts/hyades
