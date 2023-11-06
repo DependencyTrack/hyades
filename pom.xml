@@ -61,8 +61,9 @@
     <lib.org-json.version>20231013</lib.org-json.version>
     <lib.pebble.version>3.2.1</lib.pebble.version>
     <lib.resilience4j.version>2.1.0</lib.resilience4j.version>
-    <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
     <lib.open.vulnerability.clients.version>5.0.0</lib.open.vulnerability.clients.version>
+    <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
+    <lib.protobuf-java.version>3.24.4</lib.protobuf-java.version>
     <lib.snappy-java.version>1.1.10.5</lib.snappy-java.version>
     <lib.wiremock.version>2.35.1</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
@@ -75,7 +76,7 @@
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
     <!-- Tool Versions -->
-    <tool.protoc.version>com.google.protobuf:protoc:3.21.12</tool.protoc.version>
+    <tool.protoc.version>com.google.protobuf:protoc:${lib.protobuf-java.version}</tool.protoc.version>
 
     <!-- Default SCM Properties -->
     <scm.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.connection>
@@ -165,6 +166,17 @@
         <groupId>io.github.jeremylong</groupId>
         <artifactId>open-vulnerability-clients</artifactId>
         <version>${lib.open.vulnerability.clients.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${lib.protobuf-java.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java-util</artifactId>
+        <version>${lib.protobuf-java.version}</version>
       </dependency>
 
       <dependency>
