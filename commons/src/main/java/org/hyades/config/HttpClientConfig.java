@@ -17,13 +17,22 @@ public interface HttpClientConfig {
 
     Optional<String> noProxy();
 
-    @WithDefault("30")
+    /**
+     * @return Maximum number of seconds to wait for remote connections to be established.
+     */
+    @WithDefault("3")
     int proxyTimeoutConnection();
 
-    @WithDefault("60")
+    /**
+     * @return Maximum number of seconds to wait for a connection from the connection pool.
+     */
+    @WithDefault("3")
     int proxyTimeoutPool();
 
-    @WithDefault("30")
+    /**
+     * @return Maximum number of seconds to wait for data to be returned after a connection was established.
+     */
+    @WithDefault("3")
     int proxyTimeoutSocket();
 
     @WithDefault("200")
