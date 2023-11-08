@@ -66,13 +66,14 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
         }
 
         final IMetaAnalyzer analyzer = optionalAnalyzer.get();
+        var applicableRepositories = getApplicableRepositories(analyzer.supportedRepositoryType());
 
         AnalysisResult.Builder resultBuilder = AnalysisResult.newBuilder()
                 .setComponent(component);
 
         if (analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_LATEST_VERSION)
                 || analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)) {
-            resultBuilder = performRepoMeta(analyzer, analysisCommand, purl, resultBuilder);
+            resultBuilder = performRepoMeta(applicableRepositories, analyzer, analysisCommand, purl, resultBuilder);
             if (analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_LATEST_VERSION)) {
                 // forward result for only latest version
                 context().forward(record
@@ -84,7 +85,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
 
         if (analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA)
                 || analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)) {
-            resultBuilder = performIntegrityMeta(analyzer, analysisCommand, purl, resultBuilder);
+            resultBuilder = performIntegrityMeta(applicableRepositories, analyzer, analysisCommand, purl, resultBuilder);
             if (analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA)) {
                 // forward result for only integrity meta
                 context().forward(record
@@ -182,10 +183,10 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
         }
     }
 
-    private AnalysisResult.Builder performRepoMeta(final IMetaAnalyzer analyzer, final AnalysisCommand analysisCommand,
+    private AnalysisResult.Builder performRepoMeta(List<Repository> applicableRepositories, final IMetaAnalyzer analyzer, final AnalysisCommand analysisCommand,
                                                    final PackageURL componentPurl, AnalysisResult.Builder resultBuilder) {
         final var component = analysisCommand.getComponent();
-        for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
+        for (Repository repository : applicableRepositories) {
             if ((repository.isInternal() && !component.getInternal())
                     || (!repository.isInternal() && component.getInternal())) {
                 // Internal components should only be analyzed using internal repositories.
@@ -207,7 +208,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
             } else {
                 LOGGER.debug("Cache miss for latest version (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), componentPurl, repository.getIdentifier());
                 final var repoMeta = fetchRepoMeta(analyzer, repository, analysisCommand);
-                if (repoMeta != null && repoMeta.getLatestVersion() != null) {
+                if (repoMeta != null && repoMeta.getLatestVersion() != null && !repoMeta.getLatestVersion().isEmpty()) {
                     Optional.ofNullable(repoMeta.getLatestVersion()).ifPresent(
                             version -> resultBuilder.setLatestVersion(version));
                     Optional.ofNullable(repoMeta.getPublishedTimestamp()).ifPresent(
@@ -221,10 +222,10 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
         return resultBuilder;
     }
 
-    private AnalysisResult.Builder performIntegrityMeta(final IMetaAnalyzer analyzer, final AnalysisCommand analysisCommand,
+    private AnalysisResult.Builder performIntegrityMeta(List<Repository> applicableRepositories, final IMetaAnalyzer analyzer, final AnalysisCommand analysisCommand,
                                                         final PackageURL componentPurl, AnalysisResult.Builder resultBuilder) {
         final var component = analysisCommand.getComponent();
-        for (Repository repository : getApplicableRepositories(analyzer.supportedRepositoryType())) {
+        for (Repository repository : applicableRepositories) {
             if ((repository.isInternal() && !component.getInternal())
                     || (!repository.isInternal() && component.getInternal())) {
                 LOGGER.debug("Skipping component with purl {} ", component.getPurl());
