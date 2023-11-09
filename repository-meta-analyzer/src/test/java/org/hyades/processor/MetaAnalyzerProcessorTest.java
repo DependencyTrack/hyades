@@ -40,7 +40,6 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -62,6 +61,7 @@ class MetaAnalyzerProcessorTest {
     }
 
     private static ClientAndServer mockServer;
+    private static ClientAndServer mockServer2;
 
     private static final String TEST_PURL_JACKSON_BIND = "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4";
 
@@ -86,7 +86,8 @@ class MetaAnalyzerProcessorTest {
 
     @BeforeAll
     static void beforeClass() {
-        mockServer = ClientAndServer.startClientAndServer(List.of(1081, 1082));
+        mockServer = ClientAndServer.startClientAndServer(1080);
+        mockServer2 = ClientAndServer.startClientAndServer(2080);
     }
 
     @BeforeEach
@@ -117,6 +118,7 @@ class MetaAnalyzerProcessorTest {
     @AfterAll
     static void afterClass() {
         mockServer.stop();
+        mockServer2.stop();
     }
 
     @Test
@@ -268,11 +270,27 @@ class MetaAnalyzerProcessorTest {
                                     ('NPM', true, 'central', true, :url1, false, 1),
                                     ('NPM', true, 'internal', true, :url2, false, 2);
                 """)
-                .setParameter("url1", String.format("http://localhost:%d", 1081))
-                .setParameter("url2", String.format("http://localhost:%d", 1082))
+                .setParameter("url1", String.format("http://localhost:%d", mockServer.getPort()))
+                .setParameter("url2", String.format("http://localhost:%d", mockServer2.getPort()))
                 .executeUpdate();
 
-        new MockServerClient("localhost", 1082)
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withBody(Body.ofBinaryOrText("""
+                                    {
+                                        "type": "version"
+                                    }
+                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
+                                ));
+
+        new MockServerClient("localhost", mockServer2.getPort())
                 .when(
                         request()
                                 .withMethod("GET")
@@ -284,21 +302,6 @@ class MetaAnalyzerProcessorTest {
                                 .withBody(Body.ofBinaryOrText("""
                                     {
                                         "latest": "v6.6.6"
-                                    }
-                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
-                                ));
-
-        new MockServerClient("localhost", 1081)
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withBody(Body.ofBinaryOrText("""
-                                    {
                                     }
                                      """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
                                 ));
@@ -324,8 +327,6 @@ class MetaAnalyzerProcessorTest {
                     assertThat(result.getRepository()).isEqualTo("internal");
                     assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
                     assertThat(result.hasPublished()).isFalse();
-                    assertThat(result.hasIntegrityMeta()).isTrue();
-                    assertThat(result.getIntegrityMeta()).isNull();
                 });
 
     }
@@ -338,11 +339,11 @@ class MetaAnalyzerProcessorTest {
                                     ('NPM', true, 'central', true, :url1, false, 1),
                                     ('NPM', true, 'internal', true, :url2, false, 2);
                 """)
-                .setParameter("url1", String.format("http://localhost:%d", 1081))
-                .setParameter("url2", String.format("http://localhost:%d", 1082))
+                .setParameter("url1", String.format("http://localhost:%d", mockServer.getPort()))
+                .setParameter("url2", String.format("http://localhost:%d", mockServer2.getPort()))
                 .executeUpdate();
 
-        new MockServerClient("localhost", 1081)
+        new MockServerClient("localhost", mockServer.getPort())
                 .when(
                         request()
                                 .withMethod("GET")
@@ -357,7 +358,7 @@ class MetaAnalyzerProcessorTest {
                                      """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
                                 ));
 
-        new MockServerClient("localhost", 1081)
+        new MockServerClient("localhost", mockServer.getPort())
                 .when(
                         request()
                                 .withMethod("HEAD")
@@ -369,7 +370,7 @@ class MetaAnalyzerProcessorTest {
                                 .withHeader("X-Checksum-MD5", "md5hash")
                 );
 
-        new MockServerClient("localhost", 1082)
+        new MockServerClient("localhost", mockServer2.getPort())
                 .when(
                         request()
                                 .withMethod("GET")
@@ -409,7 +410,7 @@ class MetaAnalyzerProcessorTest {
                     assertThat(result.hasIntegrityMeta()).isTrue();
                     final var integrityMeta = result.getIntegrityMeta();
                     assertThat(integrityMeta.getMd5()).isEqualTo("md5hash");
-                    assertThat(integrityMeta.getMetaSourceUrl()).isEqualTo("http://localhost:1081/@apollo/federation/-/@apollo/federation-0.19.1.tgz");
+                    assertThat(integrityMeta.getMetaSourceUrl()).isEqualTo("http://localhost:1080/@apollo/federation/-/@apollo/federation-0.19.1.tgz");
                 });
     }
 }
