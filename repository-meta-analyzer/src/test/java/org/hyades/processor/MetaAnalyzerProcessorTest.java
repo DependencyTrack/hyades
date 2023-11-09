@@ -112,6 +112,7 @@ class MetaAnalyzerProcessorTest {
     @AfterEach
     void afterEach() {
         testDriver.close();
+        mockServer.reset();
         cache.invalidateAll().await().indefinitely();
     }
 
