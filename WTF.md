@@ -82,10 +82,6 @@ deployments, and / or how to better scale the platform:
 * https://github.com/DependencyTrack/dependency-track/issues/1210
 * https://github.com/DependencyTrack/dependency-track/issues/1856
 
-> **Note**
-> The work we've done so far *does not* make the API server highly available. However, it *does* address
-> a substantial chunk of work that is required to make that happen.
-
 ## Why Kafka?
 
 Kafka was chosen because it employs [various concepts](https://kafka.apache.org/documentation/#intro_concepts_and_terms) 

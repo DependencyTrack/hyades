@@ -43,24 +43,6 @@ Finally, to remove everything again, including persistent volumes:
 docker compose --profile demo down --volumes
 ```
 
-### Common Issues
-
-#### Postgres container fails to start
-
-If the `dt-postgres` container fails to start with messages like:
-
-```
-ls: can't open '/docker-entrypoint-initdb.d/': Permission denied
-```
-
-It's likely that the local directory mounted into `/docker-entrypoint-initdb.d` is not accessible by the postgres process.
-To fix, make the local directory readable by everyone, and restart the `dt-postgres` container:
-
-```shell
-chmod -R o+r ./commons/src/main/resources/migrations/postgres
-docker restart dt-postgres
-```
-
 ## Testing 🤞
 
 1. In a web browser, navigate to http://localhost:8081 and login (username: `admin`, password: `admin`)
