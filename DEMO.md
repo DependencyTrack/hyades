@@ -6,7 +6,7 @@ All you need is [Docker], [Docker Compose] and a somewhat capable machine.
 A UNIX-based system is strongly recommended. In case you're bound to Windows, please use WSL.
 
 > **Note**
-> A >4 core CPU and >=16GB RAM are recommended for a smooth experience.
+> A >4 core CPU and >=8GB RAM are recommended for a smooth experience.
 
 1. In a terminal, clone *this* repository and navigate to it:
 ```shell
@@ -43,24 +43,6 @@ Finally, to remove everything again, including persistent volumes:
 docker compose --profile demo down --volumes
 ```
 
-### Common Issues
-
-#### Postgres container fails to start
-
-If the `dt-postgres` container fails to start with messages like:
-
-```
-ls: can't open '/docker-entrypoint-initdb.d/': Permission denied
-```
-
-It's likely that the local directory mounted into `/docker-entrypoint-initdb.d` is not accessible by the postgres process.
-To fix, make the local directory readable by everyone, and restart the `dt-postgres` container:
-
-```shell
-chmod -R o+r ./commons/src/main/resources/migrations/postgres
-docker restart dt-postgres
-```
-
 ## Testing 🤞
 
 1. In a web browser, navigate to http://localhost:8081 and login (username: `admin`, password: `admin`)
@@ -85,49 +67,6 @@ docker restart dt-postgres
 Overall, this should behave just like what you're used to from Dependency-Track.  
 However in this case, the publishing of notifications and vulnerability analysis was performed by external,
 individually scalable services.
-
-## Scaling up 📈
-
-> **Warning**  
-> This section is still a work in progress and does not necessarily show
-> the current state of the setup.
-
-One of the goals of this project is to achieve scalability, remember? Well, we're delighted to report
-that there are multiple ways to scale! If you're interested, you can find out more about the parallelism model
-at play [here](https://docs.confluent.io/platform/current/streams/architecture.html#parallelism-model).
-
-Per default, when opening the [Consumer Groups view](http://localhost:28080/groups) in Redpanda Console,
-you'll see a total of two groups:
-
-![Consumer Groups in Redpanda Console as per default configuration](.github/images/demo_redpanda-console_consumer-groups_default.png)
-
-The *Members* column shows the number of stream threads in each group.  
-Clicking on the [*dtrack-vuln-analyzer* group](http://localhost:28080/groups/dtrack-vuln-analyzer) will reveal a more detailed view:
-
-![Detailed view of the dtrack-vuln-analyzer consumer group](.github/images/demo_redpanda-console_consumer-groups_default-detailed.png)
-
-Each stream thread got assigned 20 partitions. 20 partitions are a lot to take care of, so being limited to just three
-stream threads will not yield the best performance.
-
-### Scaling a single instance 🚀
-
-Arguably the easiest option is to simply increase the number of stream threads used by a service instance.
-By modifying the `KAFKA_STREAMS_NUM_STREAM_THREADS` environment variable in `docker-compose.yml`, the number of worker
-threads can be tweaked.
-
-Let's change it to `3` and see what happens!  
-To do this, remove the comment (`#`) from the `# KAFKA_STREAMS_NUM_STREAM_THREADS: "3"` line in `docker-compose.yml`,
-and recreate the container with `docker compose up -d vulnerability-analyzer`.
-
-### Scaling to multiple instances 🚀🚀🚀
-
-Putting more load on a single service instance is not always desirable, so oftentimes simply increasing the replica
-count is the preferable route. In reality this may be done via Kubernetes manifests, but we can do it in Docker Compose, too.
-Let's scale up to three instances:
-
-```shell
-docker compose --profile demo up -d --scale vulnerability-analyzer=3
-```
 
 [Docker]: https://docs.docker.com/engine/
 [Docker Compose]: https://docs.docker.com/compose/install/

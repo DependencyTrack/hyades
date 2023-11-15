@@ -82,10 +82,6 @@ deployments, and / or how to better scale the platform:
 * https://github.com/DependencyTrack/dependency-track/issues/1210
 * https://github.com/DependencyTrack/dependency-track/issues/1856
 
-> **Note**
-> The work we've done so far *does not* make the API server highly available. However, it *does* address
-> a substantial chunk of work that is required to make that happen.
-
 ## Why Kafka?
 
 Kafka was chosen because it employs [various concepts](https://kafka.apache.org/documentation/#intro_concepts_and_terms) 
@@ -189,6 +185,9 @@ The wide range of mature IaaS offerings is a very important benefit of Kafka ove
 We went with Java for now because it was the path of the least resistance for us. There is no intention to exclusively 
 use Java though. We are considering to use [Go](https://github.com/DependencyTrack/hyades/issues/253), and generally 
 are open to any technology that makes sense.
+
+For the time being, new services make use of [Quarkus](https://quarkus.io/), which comes with the nice side effect
+that applications can be compiled to native binaries, using [GraalVM](https://www.graalvm.org/).
 
 ## Why not microservices?
 
