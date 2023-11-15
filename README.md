@@ -13,35 +13,40 @@ is an incubating project for decoupling responsibilities from [Dependency-Track]
 scalable™ services. We're using [Apache Kafka] (or Kafka-compatible brokers like [Redpanda]) for communicating between
 API server and Hyades services.
 
+If you're interested in the technical background of this project, please refer to 👉 [`WTF.md`](WTF.md) 👈.
+
 The main objectives of Hyades are:
 
-* Allow Dependency-Track to scale to portfolios spanning hundreds of thousands of projects
-* ...
+* Enable Dependency-Track to handle portfolios spanning hundreds of thousands of projects
+* Improve resilience of Dependency-Track, providing more confidence when relying on it in critical workflows
+* Improve deployment and configuration management experience for containerized / cloud native tech stacks
 
 Other than separating responsibilities, the API server has been modified to allow for high availability (active-active)
 deployments. Various "hot paths", like [processing of uploaded BOMs](https://github.com/DependencyTrack/hyades-apiserver/pull/218),
-in the existing code have been optimized.
+have been optimized in the existing code. Further optimization is an ongoing effort.
 
 Hyades already is a *superset* of Dependency-Track, as changes up to Dependency-Track v4.9.1 were ported,
-and features made possible by the new architecture have been implemented on top. 
+and features made possible by the new architecture have been implemented on top. Where possible, improvements
+made in Hyades are, or will be, backported to Dependency-Track v4.x.
 
-If you're interested in the technical background of this project, please refer to 👉 [`WTF.md`](WTF.md) 👈.
+## Features
 
-As of now, Hyades is capable of:
+Generally, Hyades can do [everything Dependency-Track can do](https://github.com/DependencyTrack/dependency-track#features).
 
-* Performing vulnerability analysis using scanners that leverage:
-  * Dependency-Track's internal vulnerability database
-  * [National Vulnerability Database] (NVD)
-  * [GitHub Security Advisories] (GHSA)
-  * [Open Source Vulnerabilities] (OSV)
-  * [Sonatype OSS Index]
-  * [Snyk] (requires paid subscription)
-* Gathering component metadata from remote repositories
-* Sending [notifications] via all channels supported by the original API server (E-Mail, Webhook, etc.)
+On top of that, it is capable of:
 
-Here's a rough overview of the architecture:
+* Evaluating policies defined in the [Common Expression Language](https://dependencytrack.github.io/hyades/latest/usage/policy-compliance/expressions/) (CEL)
+* Verifying the integrity of components, based on hashes consumed from BOMs and remote repositories
+
+## Architecture
+
+Rough overview of the architecture:
 
 ![Architecture Overview](docs/architecture-overview.png)
+
+Except the mirror service (which is not actively involved in event processing), all services can be scaled up and down,
+to and from multiple instances. Despite being written in Java, all services except the API server can optionally be
+deployed as self-contained native binaries, offering a lower resource footprint.
 
 To read more about the individual services, refer to their respective `REAMDE.md`:
 
@@ -209,10 +214,5 @@ mvn -pl e2e clean verify -Pe2e-all
 
 [Apache Kafka]: https://kafka.apache.org/
 [Dependency-Track]: https://github.com/DependencyTrack/dependency-track
-[GitHub Security Advisories]: https://github.com/advisories
-[National Vulnerability Database]: https://nvd.nist.gov/
-[notifications]: https://docs.dependencytrack.org/integrations/notifications/
-[Open Source Vulnerabilities]: https://osv.dev/
-[Sonatype OSS Index]: https://ossindex.sonatype.org/
 [Redpanda]: https://redpanda.com/
-[Snyk]: https://snyk.io/
+[notifications]: https://docs.dependencytrack.org/integrations/notifications/

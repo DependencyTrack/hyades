@@ -186,6 +186,9 @@ We went with Java for now because it was the path of the least resistance for us
 use Java though. We are considering to use [Go](https://github.com/DependencyTrack/hyades/issues/253), and generally 
 are open to any technology that makes sense.
 
+For the time being, new services make use of [Quarkus](https://quarkus.io/), which comes with the nice side effect
+that applications can be compiled to native binaries, using [GraalVM](https://www.graalvm.org/).
+
 ## Why not microservices?
 
 The proposed architecture is based on the rough idea of domain services for now. This keeps the number of independent
