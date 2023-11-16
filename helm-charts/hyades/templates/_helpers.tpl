@@ -122,7 +122,7 @@ Frontend fully qualified name
 Frontend image
 */}}
 {{- define "hyades.frontendImage" -}}
-{{- printf "%s/%s:%s" "docker.io" .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" .Values.common.image.registry .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 

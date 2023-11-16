@@ -131,7 +131,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: dependencytrack/frontend:4.9.1
+    image: ghcr.io/dependencytrack/hyades-frontend:4.9.1
     container_name: dt-frontend
     environment:
       API_BASE_URL: "http://localhost:8080"
