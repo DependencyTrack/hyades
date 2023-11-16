@@ -70,7 +70,7 @@
 | frontend.extraEnv | object | `{}` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
-| frontend.image.repository | string | `"dependencytrack/frontend"` |  |
+| frontend.image.repository | string | `"dependencytrack/hyades-frontend"` |  |
 | frontend.image.tag | string | `"4.9.1"` |  |
 | frontend.ingress.annotations | object | `{}` |  |
 | frontend.ingress.enabled | bool | `false` |  |

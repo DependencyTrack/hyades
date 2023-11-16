@@ -72,7 +72,7 @@ frontend:
   replicaCount: 1
   annotations: {}
   image:
-    repository: dependencytrack/frontend
+    repository: dependencytrack/hyades-frontend
     tag: 4.9.1
     pullPolicy: Always
   command: []
