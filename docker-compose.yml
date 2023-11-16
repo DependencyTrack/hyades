@@ -110,6 +110,8 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_NUM_STREAM_THREADS: "15" # Default number of input partitions is 15
       KAFKA_STREAMS_METRICS_RECORDING_LEVEL: "DEBUG"
+      CEL_POLICY_ENGINE_ENABLED: "true"
+      INTEGRITY_CHECK_ENABLED: "true"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
