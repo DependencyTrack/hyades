@@ -49,6 +49,20 @@ the more data has to be loaded. Removal of outdated conditions thus has a direct
 
 ## Examples
 
+### Component age
+
+Besides out-of-date versions, component age is another indicator of potential risk. Components may be on the latest
+available version, but still be 20 years old. 
+
+Component age can be evaluated using the `compare_age` [function](#function-definitions). The first function argument 
+is a numeric comparator (`<`, `<=`, `=`, `!=`, `>`, `>=`), and the second is a [duration in ISO8601 notation](https://en.wikipedia.org/wiki/ISO_8601#Durations).
+
+The following expression matches [Component]s that are two years old, or even older:
+
+```js linenums="1"
+component.compare_age(">=", "P2Y")
+```
+
 ### Component blacklist
 
 The following expression matches on the [Component]'s [Package URL], using a regular expression in [RE2] syntax.
@@ -102,7 +116,14 @@ component.is_dependency_of(org.dependencytrack.policy.v1.Component{name: "foo"})
 * `group`
 * `name`
 * `version`
+* `classifier`
+* `cpe`
 * `purl`
+* `swid_tag_id`
+* `internal`
+
+Initially, only exact matches on those fields are supported. In the future, more sophisticated matching options
+will be added.
 
 !!! note
     When constructing objects like [Component] on-the-fly, it is necessary to provide their fully qualified name,
@@ -159,32 +180,34 @@ or `CRITICAL`
 
 #### `Component`
 
-| Field                | Type                   | Description                  |
-|:---------------------|:-----------------------|:-----------------------------|
-| `uuid`               | `string`               | Internal [UUID]              |
-| `group`              | `string`               | Group / namespace            |
-| `name`               | `string`               | Name                         |
-| `version`            | `string`               | Version                      |
-| `classifier`         | `string`               | Classifier / type            |
-| `cpe`                | `string`               | [CPE]                        |
-| `purl`               | `string`               | [Package URL]                |
-| `swid_tag_id`        | `string`               | [SWID] Tag ID                |
-| `is_internal`        | `bool`                 | Is internal?                 |
-| `md5`                | `string`               | MD5 hash                     |
-| `sha1`               | `string`               | SHA1 hash                    |
-| `sha256`             | `string`               | SHA256 hash                  |
-| `sha384`             | `string`               | SHA384 hash                  |
-| `sha512`             | `string`               | SHA512 hash                  |
-| `sha3_256`           | `string`               | SHA3-256 hash                |
-| `sha3_384`           | `string`               | SHA3-384 hash                |
-| `sha3_512`           | `string`               | SHA3-512 hash                |
-| `blake2b_256`        | `string`               | BLAKE2b-256 hash             |
-| `blake2b_384`        | `string`               | BLAKE2b-384 hash             |
-| `blake2b_512`        | `string`               | BLAKE2b-512 hash             |
-| `blake3`             | `string`               | BLAKE3 hash                  |
-| `license_name`       | `string`               | License name (if unresolved) |
-| `license_expression` | `string`               | [SPDX license expression]    |
-| `resolved_license`   | <code>[License]</code> | Resolved license             |
+| Field                | Type                        | Description                      |
+|:---------------------|:----------------------------|:---------------------------------|
+| `uuid`               | `string`                    | Internal [UUID]                  |
+| `group`              | `string`                    | Group / namespace                |
+| `name`               | `string`                    | Name                             |
+| `version`            | `string`                    | Version                          |
+| `classifier`         | `string`                    | Classifier / type                |
+| `cpe`                | `string`                    | [CPE]                            |
+| `purl`               | `string`                    | [Package URL]                    |
+| `swid_tag_id`        | `string`                    | [SWID] Tag ID                    |
+| `is_internal`        | `bool`                      | Is internal?                     |
+| `md5`                | `string`                    | MD5 hash                         |
+| `sha1`               | `string`                    | SHA1 hash                        |
+| `sha256`             | `string`                    | SHA256 hash                      |
+| `sha384`             | `string`                    | SHA384 hash                      |
+| `sha512`             | `string`                    | SHA512 hash                      |
+| `sha3_256`           | `string`                    | SHA3-256 hash                    |
+| `sha3_384`           | `string`                    | SHA3-384 hash                    |
+| `sha3_512`           | `string`                    | SHA3-512 hash                    |
+| `blake2b_256`        | `string`                    | BLAKE2b-256 hash                 |
+| `blake2b_384`        | `string`                    | BLAKE2b-384 hash                 |
+| `blake2b_512`        | `string`                    | BLAKE2b-512 hash                 |
+| `blake3`             | `string`                    | BLAKE3 hash                      |
+| `license_name`       | `string`                    | License name (if unresolved)     |
+| `license_expression` | `string`                    | [SPDX license expression]        |
+| `resolved_license`   | <code>[License]</code>      | Resolved license                 |
+| `published_at`       | `google.protobuf.Timestamp` | When the component was published |
+| `latest_version`     | `string`                    | Latest known version             |
 
 #### `License`
 
@@ -272,11 +295,13 @@ or `CRITICAL`
 In addition to the [standard definitions] of the CEL specification, Dependency-Track offers additional functions
 to unlock even more use cases:
 
-| Symbol             | Type                                                                                        | Description                                                   |
-|:-------------------|:--------------------------------------------------------------------------------------------|:--------------------------------------------------------------|
-| `depends_on`       | <code>([Project], [Component])</code> -> `bool`                                             | Check if `Project` depends on `Component`                     |
-| `is_dependency_of` | <code>([Component], [Component])</code> -> `bool`                                           | Check if a `Component` is a dependency of another `Component` |
-| `matches_range`    | <code>([Project], string)</code> -> `bool`<br/><code>([Component], string)</code> -> `bool` | Check if a `Project` or `Component` matches a [vers] range    |
+| Symbol                     | Type                                                                                        | Description                                                   |
+|:---------------------------|:--------------------------------------------------------------------------------------------|:--------------------------------------------------------------|
+| `depends_on`               | <code>([Project], [Component])</code> -> `bool`                                             | Check if `Project` depends on `Component`                     |
+| `compare_age`              | <code>([Component], string, string)</code> -> `bool`                                        | Check if a `Component`'s age matches a given duration         |
+| `is_dependency_of`         | <code>([Component], [Component])</code> -> `bool`                                           | Check if a `Component` is a dependency of another `Component` |
+| `matches_range`            | <code>([Project], string)</code> -> `bool`<br/><code>([Component], string)</code> -> `bool` | Check if a `Project` or `Component` matches a [vers] range    |
+| `matches_version_distance` | <code>([Component], string, string)</code> -> `bool`                                        | Check if a `Component`'s version matches a given distance     |
 
 [C-style languages]: https://en.wikipedia.org/wiki/List_of_C-family_programming_languages
 [CVSSv2]: https://www.first.org/cvss/v2/guide
