@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.hyades</groupId>
+  <groupId>org.dependencytrack</groupId>
   <artifactId>hyades</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -106,22 +106,22 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hyades</groupId>
+        <groupId>org.dependencytrack</groupId>
         <artifactId>commons</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.hyades</groupId>
+        <groupId>org.dependencytrack</groupId>
         <artifactId>commons-kstreams</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.hyades</groupId>
+        <groupId>org.dependencytrack</groupId>
         <artifactId>commons-persistence</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.hyades</groupId>
+        <groupId>org.dependencytrack</groupId>
         <artifactId>proto</artifactId>
         <version>${project.version}</version>
       </dependency>
