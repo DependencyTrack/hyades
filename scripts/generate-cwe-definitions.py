@@ -38,7 +38,7 @@ final class CweDefinitions {
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser()
-    arg_parser.add_argument("-p", "--package", default="org.hyades.common.cwe", help="Package name")
+    arg_parser.add_argument("-p", "--package", default="org.dependencytrack.common.cwe", help="Package name")
     arg_parser.add_argument("-o", "--output", type=Path, required=True, help="Output file path")
     args = arg_parser.parse_args()
 
