@@ -59,7 +59,7 @@
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20231013</lib.org-json.version>
-    <lib.pebble.version>3.2.1</lib.pebble.version>
+    <lib.pebble.version>3.2.2</lib.pebble.version>
     <lib.resilience4j.version>2.1.0</lib.resilience4j.version>
     <lib.open.vulnerability.clients.version>5.0.2</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.4.2</lib.packageurl-java.version>
