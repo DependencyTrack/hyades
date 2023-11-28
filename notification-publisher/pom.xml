@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.hyades</groupId>
+    <groupId>org.dependencytrack</groupId>
     <artifactId>hyades</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>notification-publisher</artifactId>
 
@@ -14,11 +14,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.hyades</groupId>
+      <groupId>org.dependencytrack</groupId>
       <artifactId>commons-persistence</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.hyades</groupId>
+      <groupId>org.dependencytrack</groupId>
       <artifactId>proto</artifactId>
     </dependency>
 

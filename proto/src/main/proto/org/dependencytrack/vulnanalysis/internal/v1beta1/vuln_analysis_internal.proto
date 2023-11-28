@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+// Internal API for Hyades vulnerability analysis.
+package org.dependencytrack.vulnanalysis.internal.v1beta1;
+
+import "google/protobuf/timestamp.proto";
+import "org/dependencytrack/vulnanalysis/v1/vuln_analysis.proto";
+
+option java_multiple_files = true;
+option java_package = "org.dependencytrack.proto.vulnanalysis.internal.v1beta1";
+
+message ExpectedScannerResults {
+  // Scanners for which a scan result is expected.
+  repeated org.dependencytrack.vulnanalysis.v1.Scanner scanners = 1;
+
+  // Whether this event represents a tombstone.
+  optional bool tombstone = 2;
+}
+
+message ScannerResultAggregate {
+  // Scanner results by scanner name.
+  map<string, org.dependencytrack.vulnanalysis.v1.ScannerResult> results = 1;
+
+  // When the aggregate was last updated.
+  optional google.protobuf.Timestamp last_updated = 3;
+
+  reserved 2;
+  reserved "tombstone";
+}
+
+message ScanTask {
+  // Key of the scan.
+  org.dependencytrack.vulnanalysis.v1.ScanKey key = 1;
+
+  // The scanner that shall process this event.
+  org.dependencytrack.vulnanalysis.v1.Scanner scanner = 2;
+
+  // The component that shall be scanned.
+  optional org.dependencytrack.vulnanalysis.v1.Component component = 3;
+
+  // Whether this event represents a tombstone.
+  optional bool tombstone = 4;
+}

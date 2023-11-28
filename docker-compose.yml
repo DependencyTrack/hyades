@@ -2,7 +2,9 @@ version: "3"
 
 services:
   notification-publisher:
-    image: ghcr.io/dependencytrack/hyades-notification-publisher:0.1.5
+    image: ghcr.io/dependencytrack/hyades-notification-publisher:latest
+    # We also provide a native version of this application with lower resource footprint!
+    # image: ghcr.io/dependencytrack/hyades-notification-publisher:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -20,7 +22,9 @@ services:
     restart: unless-stopped
 
   repo-meta-analyzer:
-    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:0.1.5
+    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest
+    # We also provide a native version of this application with lower resource footprint!
+    # image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -42,7 +46,9 @@ services:
     restart: unless-stopped
 
   vuln-analyzer:
-    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:0.1.5
+    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest
+    # We also provide a native version of this application with lower resource footprint!
+    # image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -72,7 +78,9 @@ services:
     restart: unless-stopped
 
   mirror-service:
-    image: ghcr.io/dependencytrack/hyades-mirror-service:0.1.5
+    image: ghcr.io/dependencytrack/hyades-mirror-service:latest
+    # We also provide a native version of this application with lower resource footprint!
+    # image: ghcr.io/dependencytrack/hyades-mirror-service:latest-native
     depends_on:
       - postgres
       - redpanda
@@ -88,7 +96,7 @@ services:
     restart: unless-stopped
 
   apiserver:
-    image: ghcr.io/dependencytrack/hyades-apiserver:5.1.0
+    image: ghcr.io/dependencytrack/hyades-apiserver:latest
     container_name: dt-apiserver
     depends_on:
       - postgres
@@ -110,6 +118,8 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_NUM_STREAM_THREADS: "15" # Default number of input partitions is 15
       KAFKA_STREAMS_METRICS_RECORDING_LEVEL: "DEBUG"
+      CEL_POLICY_ENGINE_ENABLED: "true"
+      INTEGRITY_CHECK_ENABLED: "true"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
@@ -121,7 +131,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: dependencytrack/frontend:4.9.0
+    image: ghcr.io/dependencytrack/hyades-frontend:4.9.1
     container_name: dt-frontend
     environment:
       API_BASE_URL: "http://localhost:8080"
@@ -221,46 +231,46 @@ services:
             enabled: true
             mappings:
               - topicName: dtrack.notification.analyzer
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.bom
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.configuration
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.datasource-mirroring
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.file-system
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.integration
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.new-vulnerability
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.new-vulnerable-dependency
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.policy-violation
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.project-audit-change
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.project-created
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.project-vuln-analysis-complete
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.repository
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.notification.vex
-                valueProtoType: org.hyades.notification.v1.Notification
+                valueProtoType: org.dependencytrack.notification.v1.Notification
               - topicName: dtrack.repo-meta-analysis.component
-                valueProtoType: org.hyades.repometaanalysis.v1.AnalysisCommand
+                valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisCommand
               - topicName: dtrack.repo-meta-analysis.result
-                valueProtoType: org.hyades.repometaanalysis.v1.AnalysisResult
+                valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisResult
               - topicName: dtrack.vuln-analysis.component
-                keyProtoType: org.hyades.vulnanalysis.v1.ScanKey
-                valueProtoType: org.hyades.vulnanalysis.v1.ScanCommand              
+                keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
+                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanCommand              
               - topicName: dtrack.vuln-analysis.scanner.result
-                keyProtoType: org.hyades.vulnanalysis.v1.ScanKey
-                valueProtoType: org.hyades.vulnanalysis.v1.ScannerResult
+                keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
+                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScannerResult
               - topicName: dtrack.vuln-analysis.result
-                keyProtoType: org.hyades.vulnanalysis.v1.ScanKey
-                valueProtoType: org.hyades.vulnanalysis.v1.ScanResult
+                keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
+                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
               - topicName: dtrack.vulnerability
                 valueProtoType: org.cyclonedx.v1_4.Bom
             fileSystem:

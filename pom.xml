@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.hyades</groupId>
+  <groupId>org.dependencytrack</groupId>
   <artifactId>hyades</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -43,15 +43,15 @@
 
     <!-- Dependency Versions -->
     <lib.assertj.version>3.24.2</lib.assertj.version>
-    <lib.checkstyle.version>10.12.4</lib.checkstyle.version>
-    <lib.cloud-sql-postgres-socket-factory.version>1.14.1</lib.cloud-sql-postgres-socket-factory.version>
-    <lib.cpe-parser.version>2.0.3</lib.cpe-parser.version>
+    <lib.checkstyle.version>10.12.5</lib.checkstyle.version>
+    <lib.cloud-sql-postgres-socket-factory.version>1.15.0</lib.cloud-sql-postgres-socket-factory.version>
+    <lib.cpe-parser.version>2.1.0</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
     <lib.confluent-parallel-consumer.version>0.5.2.7</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.2</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
-    <lib.greenmail.version>2.0.0</lib.greenmail.version>
+    <lib.greenmail.version>2.0.1</lib.greenmail.version>
     <lib.java-uuid-generator.version>4.3.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>3.2.2</lib.json-unit.version>
     <lib.kafka.version>3.6.0</lib.kafka.version>
@@ -59,23 +59,24 @@
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20231013</lib.org-json.version>
-    <lib.pebble.version>3.2.1</lib.pebble.version>
+    <lib.pebble.version>3.2.2</lib.pebble.version>
     <lib.resilience4j.version>2.1.0</lib.resilience4j.version>
-    <lib.packageurl-java.version>1.4.1</lib.packageurl-java.version>
-    <lib.open.vulnerability.clients.version>5.0.0</lib.open.vulnerability.clients.version>
+    <lib.open.vulnerability.clients.version>5.0.3</lib.open.vulnerability.clients.version>
+    <lib.packageurl-java.version>1.4.2</lib.packageurl-java.version>
+    <lib.protobuf-java.version>3.25.1</lib.protobuf-java.version>
     <lib.snappy-java.version>1.1.10.5</lib.snappy-java.version>
     <lib.wiremock.version>2.35.1</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>3.5.0</quarkus.platform.version>
+    <quarkus.platform.version>3.5.3</quarkus.platform.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
 
     <!-- Plugin Versions -->
-    <plugin.cyclonedx.version>2.7.9</plugin.cyclonedx.version>
+    <plugin.cyclonedx.version>2.7.10</plugin.cyclonedx.version>
     <plugin.jacoco.version>0.8.11</plugin.jacoco.version>
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
     <!-- Tool Versions -->
-    <tool.protoc.version>com.google.protobuf:protoc:3.21.12</tool.protoc.version>
+    <tool.protoc.version>com.google.protobuf:protoc:${lib.protobuf-java.version}</tool.protoc.version>
 
     <!-- Default SCM Properties -->
     <scm.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.connection>
@@ -91,7 +92,7 @@
     <sonar.exclusions>e2e/**/*</sonar.exclusions>
 
     <skipITs>true</skipITs>
-    <surefire-plugin.version>3.2.1</surefire-plugin.version>
+    <surefire-plugin.version>3.2.2</surefire-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -105,22 +106,22 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hyades</groupId>
+        <groupId>org.dependencytrack</groupId>
         <artifactId>commons</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.hyades</groupId>
+        <groupId>org.dependencytrack</groupId>
         <artifactId>commons-kstreams</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.hyades</groupId>
+        <groupId>org.dependencytrack</groupId>
         <artifactId>commons-persistence</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.hyades</groupId>
+        <groupId>org.dependencytrack</groupId>
         <artifactId>proto</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -165,6 +166,17 @@
         <groupId>io.github.jeremylong</groupId>
         <artifactId>open-vulnerability-clients</artifactId>
         <version>${lib.open.vulnerability.clients.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${lib.protobuf-java.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java-util</artifactId>
+        <version>${lib.protobuf-java.version}</version>
       </dependency>
 
       <dependency>
@@ -311,7 +323,7 @@
         <plugin>
           <groupId>io.smallrye</groupId>
           <artifactId>jandex-maven-plugin</artifactId>
-          <version>3.1.5</version>
+          <version>3.1.6</version>
           <executions>
             <execution>
               <id>make-index</id>

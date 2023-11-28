@@ -24,7 +24,7 @@ apiServer:
   annotations: {}
   image:
     repository: dependencytrack/hyades-apiserver
-    tag: snapshot
+    tag: latest
     pullPolicy: Always
   command: []
   args: []
@@ -72,8 +72,8 @@ frontend:
   replicaCount: 1
   annotations: {}
   image:
-    repository: dependencytrack/frontend
-    tag: 4.9.0
+    repository: dependencytrack/hyades-frontend
+    tag: 4.9.1
     pullPolicy: Always
   command: []
   args: []
