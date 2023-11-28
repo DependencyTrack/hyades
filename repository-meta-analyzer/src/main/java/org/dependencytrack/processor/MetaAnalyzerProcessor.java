@@ -6,18 +6,17 @@ import io.quarkus.cache.Cache;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import org.apache.kafka.streams.processor.api.ContextualFixedKeyProcessor;
 import org.apache.kafka.streams.processor.api.FixedKeyRecord;
+import org.dependencytrack.common.SecretDecryptor;
 import org.dependencytrack.model.IntegrityMeta;
 import org.dependencytrack.model.MetaAnalyzerCacheKey;
 import org.dependencytrack.model.MetaModel;
 import org.dependencytrack.persistence.model.Component;
-import org.dependencytrack.common.SecretDecryptor;
 import org.dependencytrack.persistence.model.Repository;
 import org.dependencytrack.persistence.model.RepositoryType;
 import org.dependencytrack.persistence.repository.RepoEntityRepository;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisCommand;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisResult;
 import org.dependencytrack.proto.repometaanalysis.v1.FetchMeta;
-
 import org.dependencytrack.repositories.IMetaAnalyzer;
 import org.dependencytrack.repositories.RepositoryAnalyzerFactory;
 import org.slf4j.Logger;
@@ -247,7 +246,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
                 LOGGER.debug("Cache miss for integrity meta (analyzer: {}, purl: {}, repository: {})", analyzer.getName(), componentPurl, repository.getIdentifier());
                 var integrityMeta = fetchIntegrityMeta(analyzer, repository, analysisCommand);
                 if (integrityMeta != null) {
-                    var metaBuilder = IntegrityMeta.newBuilder();
+                    var metaBuilder = org.dependencytrack.proto.repometaanalysis.v1.IntegrityMeta.newBuilder();
                     Optional.ofNullable(integrityMeta.getMd5()).ifPresent(hash -> metaBuilder.setMd5(hash));
                     Optional.ofNullable(integrityMeta.getSha1()).ifPresent(hash -> metaBuilder.setSha1(hash));
                     Optional.ofNullable(integrityMeta.getSha256()).ifPresent(hash -> metaBuilder.setSha256(hash));
