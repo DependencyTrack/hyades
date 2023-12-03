@@ -30,7 +30,7 @@ class NotificationRuleRepositoryTest {
                 """).executeUpdate();
 
         final List<NotificationRule> rules = repository
-                .findByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.WARNING);
+                .findEnabledByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.WARNING);
         Assertions.assertEquals(1, rules.size());
     }
 
@@ -43,7 +43,7 @@ class NotificationRuleRepositoryTest {
                 """).executeUpdate();
 
         final List<NotificationRule> rules = repository
-                .findByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.ERROR);
+                .findEnabledByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.ERROR);
         Assertions.assertEquals(1, rules.size());
     }
 
@@ -56,7 +56,7 @@ class NotificationRuleRepositoryTest {
                 """).executeUpdate();
 
         final List<NotificationRule> rules = repository
-                .findByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL);
+                .findEnabledByScopeAndForLevel(NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL);
         Assertions.assertEquals(0, rules.size());
     }
 

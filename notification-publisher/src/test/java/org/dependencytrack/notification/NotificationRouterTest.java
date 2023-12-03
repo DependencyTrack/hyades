@@ -4,8 +4,6 @@ import com.google.protobuf.Any;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.dependencytrack.notification.publisher.ConsolePublisher;
 import org.dependencytrack.notification.publisher.PublisherTestUtil;
@@ -33,6 +31,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.UUID;
 
@@ -264,7 +264,7 @@ class NotificationRouterTest {
 
         final var notification = Notification.newBuilder()
                 .setScope(SCOPE_PORTFOLIO)
-                .setGroup(GROUP_BOM_PROCESSED)
+                .setGroup(GROUP_NEW_VULNERABILITY)
                 .setLevel(LEVEL_INFORMATIONAL)
                 .build();
 

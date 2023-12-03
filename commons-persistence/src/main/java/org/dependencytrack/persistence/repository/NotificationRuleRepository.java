@@ -13,22 +13,22 @@ import java.util.List;
 @ApplicationScoped
 public class NotificationRuleRepository implements PanacheRepository<NotificationRule> {
 
-    public List<NotificationRule> findByScopeAndForLevel(final NotificationScope scope, final NotificationLevel level) {
+    public List<NotificationRule> findEnabledByScopeAndForLevel(final NotificationScope scope, final NotificationLevel level) {
         return switch (level) {
-            case INFORMATIONAL -> find("scope = :scope and notificationLevel = :level",
+            case INFORMATIONAL -> find("enabled and scope = :scope and notificationLevel = :level",
                     Parameters.with("scope", scope)
                             .and("level", level))
                     .withHint(QueryHints.HINT_READONLY, true)
                     .list();
             case WARNING ->
-                    find("scope = :scope and (notificationLevel = :levelWarn or notificationLevel = :levelInfo)",
+                    find("enabled and scope = :scope and (notificationLevel = :levelWarn or notificationLevel = :levelInfo)",
                             Parameters.with("scope", scope)
                                     .and("levelWarn", level)
                                     .and("levelInfo", NotificationLevel.INFORMATIONAL))
                             .withHint(QueryHints.HINT_READONLY, true)
                             .list();
             case ERROR -> find("""
-                            scope = :scope and (
+                           enabled and scope = :scope and (
                                 notificationLevel = :levelErr or
                                 notificationLevel = :levelWarn or
                                 notificationLevel = :levelInfo
