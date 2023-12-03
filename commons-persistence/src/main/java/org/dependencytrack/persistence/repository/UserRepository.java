@@ -3,9 +3,9 @@ package org.dependencytrack.persistence.repository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import org.hibernate.jpa.QueryHints;
-
 import java.util.List;
+
+import static org.hibernate.jpa.HibernateHints.HINT_READ_ONLY;
 
 @ApplicationScoped
 public class UserRepository {
@@ -33,7 +33,7 @@ public class UserRepository {
                         WHERE "OUT"."TEAM_ID" = :teamId AND "OU"."EMAIL" IS NOT NULL
                         """)
                 .setParameter("teamId", teamId)
-                .setHint(QueryHints.HINT_READONLY, true)
+                .setHint(HINT_READ_ONLY, true)
                 .getResultList();
     }
 

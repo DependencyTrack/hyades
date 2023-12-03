@@ -1,13 +1,14 @@
 package org.dependencytrack.persistence.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import org.dependencytrack.persistence.model.Team;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import org.hibernate.jpa.QueryHints;
-import org.dependencytrack.persistence.model.Team;
-
 import java.util.List;
+
+import static org.hibernate.jpa.HibernateHints.HINT_READ_ONLY;
 
 @ApplicationScoped
 public class TeamRepository implements PanacheRepository<Team> {
@@ -28,7 +29,7 @@ public class TeamRepository implements PanacheRepository<Team> {
                         WHERE "NT"."NOTIFICATIONRULE_ID" = :ruleId  
                         """, Team.class)
                 .setParameter("ruleId", notificationRuleId)
-                .setHint(QueryHints.HINT_READONLY, true)
+                .setHint(HINT_READ_ONLY, true)
                 .getResultList();
     }
 
