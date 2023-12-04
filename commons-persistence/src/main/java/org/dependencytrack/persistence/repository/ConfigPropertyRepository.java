@@ -2,9 +2,11 @@ package org.dependencytrack.persistence.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
-import jakarta.enterprise.context.ApplicationScoped;
-import org.hibernate.jpa.QueryHints;
 import org.dependencytrack.persistence.model.ConfigProperty;
+
+import jakarta.enterprise.context.ApplicationScoped;
+
+import static org.hibernate.jpa.HibernateHints.HINT_READ_ONLY;
 
 @ApplicationScoped
 public class ConfigPropertyRepository implements PanacheRepository<ConfigProperty> {
@@ -13,7 +15,7 @@ public class ConfigPropertyRepository implements PanacheRepository<ConfigPropert
         return find("groupName = :group and propertyName = :property",
                 Parameters.with("group", group)
                         .and("property", propertyName))
-                .withHint(QueryHints.HINT_READONLY, true)
+                .withHint(HINT_READ_ONLY, true)
                 .firstResult();
     }
 

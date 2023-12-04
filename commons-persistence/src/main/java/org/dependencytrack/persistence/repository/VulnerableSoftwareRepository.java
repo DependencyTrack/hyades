@@ -2,9 +2,9 @@ package org.dependencytrack.persistence.repository;
 
 import com.github.packageurl.PackageURL;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import jakarta.enterprise.context.ApplicationScoped;
 import org.dependencytrack.persistence.model.VulnerableSoftware;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

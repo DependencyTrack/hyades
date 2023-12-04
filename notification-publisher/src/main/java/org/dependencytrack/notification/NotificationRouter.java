@@ -191,7 +191,7 @@ public class NotificationRouter {
             return rules;
         }
 
-        final List<NotificationRule> result = ruleRepository.findByScopeAndForLevel(scope, convert(notification.getLevel()));
+        final List<NotificationRule> result = ruleRepository.findEnabledByScopeAndForLevel(scope, convert(notification.getLevel()));
         if (notification.getScope() == SCOPE_PORTFOLIO
                 && notification.getSubject().is(NewVulnerabilitySubject.class)) {
             final var subject = notification.getSubject().unpack(NewVulnerabilitySubject.class);
