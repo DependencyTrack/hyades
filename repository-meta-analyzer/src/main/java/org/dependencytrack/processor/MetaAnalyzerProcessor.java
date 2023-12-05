@@ -95,7 +95,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
                 return;
             }
         }
-        // forward result with component even when no satisfactory results were yielded.
+        // forward result for both latest version and integrity data OR even when no satisfactory results were yielded.
         context().forward(record
                 .withValue(resultBuilder.build())
                 .withTimestamp(context().currentSystemTimeMs()));
