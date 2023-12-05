@@ -61,6 +61,7 @@ class MetaAnalyzerProcessorTest {
     }
 
     private static ClientAndServer mockServer;
+    private static ClientAndServer mockServer2;
 
     private static final String TEST_PURL_JACKSON_BIND = "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4";
 
@@ -86,6 +87,7 @@ class MetaAnalyzerProcessorTest {
     @BeforeAll
     static void beforeClass() {
         mockServer = ClientAndServer.startClientAndServer(1080);
+        mockServer2 = ClientAndServer.startClientAndServer(2080);
     }
 
     @BeforeEach
@@ -110,12 +112,14 @@ class MetaAnalyzerProcessorTest {
     @AfterEach
     void afterEach() {
         testDriver.close();
+        mockServer.reset();
         cache.invalidateAll().await().indefinitely();
     }
 
     @AfterAll
     static void afterClass() {
         mockServer.stop();
+        mockServer2.stop();
     }
 
     @Test
@@ -257,5 +261,157 @@ class MetaAnalyzerProcessorTest {
                     assertThat(integrityMeta.getMetaSourceUrl()).contains("/@apollo/federation/-/@apollo/federation-0.19.1.tgz");
                 });
 
+    }
+
+    @Test
+    @TestTransaction
+    void testDifferentSourcesForRepoMeta() throws Exception {
+        entityManager.createNativeQuery("""
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
+                                    ('NPM', true, 'central', true, :url1, false, 1),
+                                    ('NPM', true, 'internal', true, :url2, false, 2);
+                """)
+                .setParameter("url1", String.format("http://localhost:%d", mockServer.getPort()))
+                .setParameter("url2", String.format("http://localhost:%d", mockServer2.getPort()))
+                .executeUpdate();
+
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withBody(Body.ofBinaryOrText("""
+                                    {
+                                        "type": "version"
+                                    }
+                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
+                                ));
+
+        new MockServerClient("localhost", mockServer2.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withBody(Body.ofBinaryOrText("""
+                                    {
+                                        "latest": "v6.6.6"
+                                    }
+                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
+                                ));
+
+        UUID uuid = UUID.randomUUID();
+        final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),
+                AnalysisCommand.newBuilder()
+                        .setComponent(Component.newBuilder()
+                                .setPurl("pkg:npm/@apollo/federation@0.19.1")
+                                .setUuid(uuid.toString())
+                                .setInternal(true))
+                        .setFetchMeta(FetchMeta.FETCH_META_LATEST_VERSION).build());
+
+        inputTopic.pipeInput(inputRecord);
+        assertThat(outputTopic.getQueueSize()).isEqualTo(1);
+        assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
+                record -> {
+                    assertThat(record.key().getType()).isEqualTo(RepositoryType.NPM.toString().toLowerCase());
+                    assertThat(record.value()).isNotNull();
+                    final AnalysisResult result = record.value();
+                    assertThat(result.hasComponent()).isTrue();
+                    assertThat(result.getComponent().getUuid()).isEqualTo(uuid.toString());
+                    assertThat(result.getRepository()).isEqualTo("internal");
+                    assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
+                    assertThat(result.hasPublished()).isFalse();
+                });
+
+    }
+
+    @Test
+    @TestTransaction
+    void testDifferentSourcesForRepoAndIntegrityMeta() throws Exception {
+        entityManager.createNativeQuery("""
+                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
+                                    ('NPM', true, 'central', true, :url1, false, 1),
+                                    ('NPM', true, 'internal', true, :url2, false, 2);
+                """)
+                .setParameter("url1", String.format("http://localhost:%d", mockServer.getPort()))
+                .setParameter("url2", String.format("http://localhost:%d", mockServer2.getPort()))
+                .executeUpdate();
+
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withBody(Body.ofBinaryOrText("""
+                                    {
+                                    }
+                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
+                                ));
+
+        new MockServerClient("localhost", mockServer.getPort())
+                .when(
+                        request()
+                                .withMethod("HEAD")
+                                .withPath("/@apollo/federation/-/@apollo/federation-0.19.1.tgz")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader("X-Checksum-MD5", "md5hash")
+                );
+
+        new MockServerClient("localhost", mockServer2.getPort())
+                .when(
+                        request()
+                                .withMethod("GET")
+                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withBody(Body.ofBinaryOrText("""
+                                    {
+                                        "latest": "v6.6.6"
+                                    }
+                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
+                                ));
+
+        UUID uuid = UUID.randomUUID();
+        final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),
+                AnalysisCommand.newBuilder()
+                        .setComponent(Component.newBuilder()
+                                .setPurl("pkg:npm/@apollo/federation@0.19.1")
+                                .setUuid(uuid.toString())
+                                .setInternal(true))
+                        .setFetchMeta(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION).build());
+
+        inputTopic.pipeInput(inputRecord);
+        assertThat(outputTopic.getQueueSize()).isEqualTo(1);
+        assertThat(outputTopic.readRecordsToList()).satisfiesExactly(
+                record -> {
+                    assertThat(record.key().getType()).isEqualTo(RepositoryType.NPM.toString().toLowerCase());
+                    assertThat(record.value()).isNotNull();
+                    final AnalysisResult result = record.value();
+                    assertThat(result.hasComponent()).isTrue();
+                    assertThat(result.getComponent().getUuid()).isEqualTo(uuid.toString());
+                    assertThat(result.getRepository()).isEqualTo("internal");
+                    assertThat(result.getLatestVersion()).isEqualTo("v6.6.6");
+                    assertThat(result.hasPublished()).isFalse();
+                    assertThat(result.hasIntegrityMeta()).isTrue();
+                    final var integrityMeta = result.getIntegrityMeta();
+                    assertThat(integrityMeta.getMd5()).isEqualTo("md5hash");
+                    assertThat(integrityMeta.getMetaSourceUrl()).isEqualTo("http://localhost:1080/@apollo/federation/-/@apollo/federation-0.19.1.tgz");
+                });
     }
 }
