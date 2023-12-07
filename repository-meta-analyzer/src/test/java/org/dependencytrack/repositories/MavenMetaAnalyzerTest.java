@@ -37,9 +37,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 class MavenMetaAnalyzerTest {
 
@@ -125,13 +122,13 @@ class MavenMetaAnalyzerTest {
         Component component = new Component();
         component.setPurl("pkg:maven/typo3/package-empty-result@v1.2.0");
         var integrityMeta = analyzer.getIntegrityMeta(component);
-        assertNotNull(integrityMeta);
-        assertEquals("https://repo1.maven.org/maven2/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar", integrityMeta.getMetaSourceUrl());
-        assertNull(integrityMeta.getSha1());
-        assertNull(integrityMeta.getMd5());
-        assertNull(integrityMeta.getSha256());
-        assertNull(integrityMeta.getSha512());
-        assertNull(integrityMeta.getCurrentVersionLastModified());
+        Assertions.assertNotNull(integrityMeta);
+        Assertions.assertEquals("https://repo1.maven.org/maven2/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar", integrityMeta.getMetaSourceUrl());
+        Assertions.assertNull(integrityMeta.getSha1());
+        Assertions.assertNull(integrityMeta.getMd5());
+        Assertions.assertNull(integrityMeta.getSha256());
+        Assertions.assertNull(integrityMeta.getSha512());
+        Assertions.assertNull(integrityMeta.getCurrentVersionLastModified());
     }
 
     @Test
@@ -152,13 +149,13 @@ class MavenMetaAnalyzerTest {
                         .withHeader("Last-Modified", "Thu, 07 Jul 2022 14:00:00 GMT")));
         analyzer.setRepositoryBaseUrl(wireMock.baseUrl());
         var integrityMeta = analyzer.getIntegrityMeta(component);
-        assertNotNull(integrityMeta);
+        Assertions.assertNotNull(integrityMeta);
         assertThat(integrityMeta.getMetaSourceUrl()).contains("/typo3/package-empty-result/v1.2.0/package-empty-result-v1.2.0.jar");
-        assertEquals("md5hash", integrityMeta.getMd5());
-        assertEquals("sha1hash", integrityMeta.getSha1());
-        assertEquals("sha256hash", integrityMeta.getSha256());
-        assertEquals("sha512hash", integrityMeta.getSha512());
-        assertNotNull(integrityMeta.getCurrentVersionLastModified());
+        Assertions.assertEquals("md5hash", integrityMeta.getMd5());
+        Assertions.assertEquals("sha1hash", integrityMeta.getSha1());
+        Assertions.assertEquals("sha256hash", integrityMeta.getSha256());
+        Assertions.assertEquals("sha512hash", integrityMeta.getSha512());
+        Assertions.assertNotNull(integrityMeta.getCurrentVersionLastModified());
     }
 }
 
