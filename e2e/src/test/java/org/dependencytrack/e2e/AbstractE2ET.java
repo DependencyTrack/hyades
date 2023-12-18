@@ -33,8 +33,8 @@ public class AbstractE2ET {
     protected static String REPO_META_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot";
     protected static String VULN_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot";
 
-    protected Logger logger;
-    private Network internalNetwork;
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Network internalNetwork = Network.newNetwork();
     protected PostgreSQLContainer<?> postgresContainer;
     protected GenericContainer<?> redpandaContainer;
     protected GenericContainer<?> apiServerContainer;
@@ -45,10 +45,6 @@ public class AbstractE2ET {
 
     @BeforeEach
     void beforeEach() throws Exception {
-        logger = LoggerFactory.getLogger(getClass());
-
-        internalNetwork = Network.newNetwork();
-
         postgresContainer = createPostgresContainer();
         redpandaContainer = createRedpandaContainer();
         deepStart(postgresContainer, redpandaContainer).join();
@@ -202,6 +198,7 @@ public class AbstractE2ET {
         logger.info("Assigning permissions to e2e team");
         for (final String permission : Set.of(
                 "BOM_UPLOAD",
+                "POLICY_MANAGEMENT",
                 "PORTFOLIO_MANAGEMENT",
                 "PROJECT_CREATION_UPLOAD",
                 "SYSTEM_CONFIGURATION",

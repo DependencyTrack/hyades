@@ -57,6 +57,7 @@
     <lib.kafka.version>3.6.1</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-9</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
+    <lib.minio.version>8.5.7</lib.minio.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20231013</lib.org-json.version>
     <lib.pebble.version>3.2.2</lib.pebble.version>
@@ -65,6 +66,7 @@
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>3.25.1</lib.protobuf-java.version>
     <lib.snappy-java.version>1.1.10.5</lib.snappy-java.version>
+    <lib.testcontainers-minio.version>1.19.3</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.1</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>3.5.3</quarkus.platform.version>
@@ -232,6 +234,12 @@
       </dependency>
 
       <dependency>
+        <groupId>io.minio</groupId>
+        <artifactId>minio</artifactId>
+        <version>${lib.minio.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.github.package-url</groupId>
         <artifactId>packageurl-java</artifactId>
         <version>${lib.packageurl-java.version}</version>
@@ -251,6 +259,12 @@
         <groupId>org.xerial.snappy</groupId>
         <artifactId>snappy-java</artifactId>
         <version>${lib.snappy-java.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>minio</artifactId>
+        <version>${lib.testcontainers-minio.version}</version>
       </dependency>
 
       <dependency>

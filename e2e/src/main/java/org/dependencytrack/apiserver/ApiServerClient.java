@@ -10,6 +10,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+import org.dependencytrack.apiserver.model.Analysis;
 import org.dependencytrack.apiserver.model.BomProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
 import org.dependencytrack.apiserver.model.BomUploadResponse;
@@ -22,6 +23,7 @@ import org.dependencytrack.apiserver.model.NotificationRule;
 import org.dependencytrack.apiserver.model.Project;
 import org.dependencytrack.apiserver.model.Team;
 import org.dependencytrack.apiserver.model.UpdateNotificationRuleRequest;
+import org.dependencytrack.apiserver.model.VulnerabilityPolicy;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.dependencytrack.apiserver.model.NotificationPublisher;
 
@@ -83,7 +85,7 @@ public interface ApiServerClient {
     @Path("/finding/project/{uuid}")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
-    List<Finding> getFindings(@PathParam("uuid") final UUID projectUuid);
+    List<Finding> getFindings(@PathParam("uuid") final UUID projectUuid, @QueryParam("suppressed") final boolean includeSuppressed);
 
     @GET
     @Path("/project/lookup")
@@ -114,5 +116,18 @@ public interface ApiServerClient {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     ConfigProperty updateConfigProperty(final ConfigProperty configProperty);
+
+    @GET
+    @Path("/policy/vulnerability")
+    @Produces(MediaType.WILDCARD)
+    @Consumes(MediaType.APPLICATION_JSON)
+    List<VulnerabilityPolicy> getAllVulnerabilityPolicies();
+
+    @GET
+    @Path("/analysis")
+    @Produces(MediaType.WILDCARD)
+    @Consumes(MediaType.APPLICATION_JSON)
+    Analysis getAnalysis(@QueryParam("project") final UUID projectUuid, @QueryParam("component") final UUID componentUuid,
+                         @QueryParam("vulnerability") final UUID vulnUuid);
 
 }
