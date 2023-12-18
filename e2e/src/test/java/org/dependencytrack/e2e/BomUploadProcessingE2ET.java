@@ -161,7 +161,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
         final Project project = apiServerClient.lookupProject("foo", "bar");
 
         // Ensure the internal vulnerability has been flagged.
-        final List<Finding> findings = apiServerClient.getFindings(project.uuid());
+        final List<Finding> findings = apiServerClient.getFindings(project.uuid(), false);
         assertThat(findings).satisfiesExactly(
                 finding -> {
                     assertThat(finding.component().name()).isEqualTo("jackson-databind");

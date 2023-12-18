@@ -58,7 +58,7 @@ class BomUploadOssIndexAnalysisE2ET extends AbstractE2ET {
         final Project project = apiServerClient.lookupProject("foo", "bar");
 
         // Ensure that vulnerabilities have been reported correctly.
-        final List<Finding> findings = apiServerClient.getFindings(project.uuid());
+        final List<Finding> findings = apiServerClient.getFindings(project.uuid(), false);
         assertThat(findings)
                 .hasSizeGreaterThan(1)
                 .allSatisfy(
