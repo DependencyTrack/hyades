@@ -106,8 +106,8 @@ The following expression matches [Component]s that are a (possibly transitive) d
 with name `foo`, *but only if* a [Component] with name `bar` is also present in the [Project].
 
 ```js linenums="1"
-component.is_dependency_of(org.dependencytrack.policy.v1.Component{name: "foo"})
-  && project.depends_on(org.dependencytrack.policy.v1.Component{name: "bar"})
+component.is_dependency_of(v1.Component{name: "foo"})
+  && project.depends_on(v1.Component{name: "bar"})
 ```
 
 `is_dependency_of` and `depends_on` lookups currently support the following [Component] fields:
@@ -126,9 +126,8 @@ Initially, only exact matches on those fields are supported. In the future, more
 will be added.
 
 !!! note
-    When constructing objects like [Component] on-the-fly, it is necessary to provide their fully qualified name,
-    including the package (i.e. `org.dependencytrack.policy.v1`). This is required in order to perform type checking,
-    as well as ensuring backward compatibility.
+    When constructing objects like [Component] on-the-fly, it is necessary to use their version namespace,
+    i.e. `v1`. This is required in order to perform type checking, as well as ensuring backward compatibility.
 
 ### License blacklist
 
