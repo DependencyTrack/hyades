@@ -71,6 +71,18 @@ The chart does *not* include:
 Helm charts to deploy Kafka brokers to Kubernetes are provided by both [Strimzi](https://strimzi.io/)
 and [Redpanda](https://github.com/redpanda-data/helm-charts).
 
+### External file server
+Currently we support providing policy bundles on an external file server that apiserver polls on regular intervals to check if a bundle is posted or an existing bundle has been modified.
+If a change is detected, the apiserver knowledge base is updated with the latest etag of the remote bundle and then the same is pulled and parsed to store as a global vulnerability policy.
+To test/ simulate this behavior, there is an nginx server bundled in the docker-compose file. <br/>
+To start it off you need to run:<br/>
+```shell
+docker compose --profile vulnerability-cel-policy up
+```
+**Currently, this nginx server needs the zip to be present in this relative location: ../../bundles, ie, two levels up the hyades directory**. You can place the policy bunde here which will get copied over to nginx's internal dictory once it is up with docker compose.
+Then the same will get polled and picked by apiserver for parsing.<br/>
+To change this location to something else, you can modify the volumes section of the nginx service in the docker-compose file.
+
 ### Minikube
 
 Deploying to a local [Minikube](https://minikube.sigs.k8s.io/docs/) cluster is a great way to get started.

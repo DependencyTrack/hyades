@@ -215,7 +215,7 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
                 final var repoMeta = fetchRepoMeta(analyzer, repository, analysisCommand);
                 if (repoMeta != null && repoMeta.getLatestVersion() != null && !repoMeta.getLatestVersion().isEmpty()) {
                     Optional.ofNullable(repoMeta.getLatestVersion()).ifPresent(
-                            version -> resultBuilder.setLatestVersion(version));
+                            resultBuilder::setLatestVersion);
                     Optional.ofNullable(repoMeta.getPublishedTimestamp()).ifPresent(
                             version -> resultBuilder.setPublished(Timestamp.newBuilder()
                                     .setSeconds(repoMeta.getPublishedTimestamp().getTime() / 1000)));
@@ -247,11 +247,11 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
                 var integrityMeta = fetchIntegrityMeta(analyzer, repository, analysisCommand);
                 if (integrityMeta != null) {
                     var metaBuilder = org.dependencytrack.proto.repometaanalysis.v1.IntegrityMeta.newBuilder();
-                    Optional.ofNullable(integrityMeta.getMd5()).ifPresent(hash -> metaBuilder.setMd5(hash));
-                    Optional.ofNullable(integrityMeta.getSha1()).ifPresent(hash -> metaBuilder.setSha1(hash));
-                    Optional.ofNullable(integrityMeta.getSha256()).ifPresent(hash -> metaBuilder.setSha256(hash));
-                    Optional.ofNullable(integrityMeta.getSha512()).ifPresent(hash -> metaBuilder.setSha512(hash));
-                    Optional.ofNullable(integrityMeta.getMetaSourceUrl()).ifPresent(url -> metaBuilder.setMetaSourceUrl(url));
+                    Optional.ofNullable(integrityMeta.getMd5()).ifPresent(metaBuilder::setMd5);
+                    Optional.ofNullable(integrityMeta.getSha1()).ifPresent(metaBuilder::setSha1);
+                    Optional.ofNullable(integrityMeta.getSha256()).ifPresent(metaBuilder::setSha256);
+                    Optional.ofNullable(integrityMeta.getSha512()).ifPresent(metaBuilder::setSha512);
+                    Optional.ofNullable(integrityMeta.getMetaSourceUrl()).ifPresent(metaBuilder::setMetaSourceUrl);
                     Optional.ofNullable(integrityMeta.getCurrentVersionLastModified()).ifPresent(date ->
                             metaBuilder.setCurrentVersionLastModified(Timestamp.newBuilder()
                                     .setSeconds(date.getTime() / 1000)));

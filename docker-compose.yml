@@ -264,7 +264,7 @@ services:
                 valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisResult
               - topicName: dtrack.vuln-analysis.component
                 keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
-                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanCommand              
+                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanCommand
               - topicName: dtrack.vuln-analysis.scanner.result
                 keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
                 valueProtoType: org.dependencytrack.vulnanalysis.v1.ScannerResult
@@ -314,6 +314,16 @@ services:
       - load-test
       - monitoring
     restart: unless-stopped
+
+  nginx:
+    image: nginx:1.25.2-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - "../../bundles:/usr/share/nginx/html/bundles:ro"
+    restart: unless-stopped
+    profiles:
+      - vulnerability-cel-policy
 
 volumes:
   apiserver-data: { }
