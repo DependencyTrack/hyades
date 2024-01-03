@@ -24,6 +24,7 @@ import org.dependencytrack.apiserver.model.Project;
 import org.dependencytrack.apiserver.model.Team;
 import org.dependencytrack.apiserver.model.UpdateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.VulnerabilityPolicy;
+import org.dependencytrack.apiserver.model.WorkflowState;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.dependencytrack.apiserver.model.NotificationPublisher;
 
@@ -129,5 +130,15 @@ public interface ApiServerClient {
     @Consumes(MediaType.APPLICATION_JSON)
     Analysis getAnalysis(@QueryParam("project") final UUID projectUuid, @QueryParam("component") final UUID componentUuid,
                          @QueryParam("vulnerability") final UUID vulnUuid);
+
+    @POST
+    @Path("/finding/project/{uuid}/analyze")
+    @Produces(MediaType.WILDCARD)
+    @Consumes(MediaType.APPLICATION_JSON)
+    BomUploadResponse analyzeProject(@PathParam("uuid") final UUID projectUuid);
+
+    @GET
+    @Path("/workflow/token/{token}/status")
+    List<WorkflowState> getWorkflowStatus(@PathParam("token") final String token);
 
 }
