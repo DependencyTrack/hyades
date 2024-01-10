@@ -44,7 +44,6 @@ import org.dependencytrack.persistence.model.Project;
 import org.dependencytrack.persistence.model.Team;
 import org.dependencytrack.persistence.repository.NotificationRuleRepository;
 import org.dependencytrack.persistence.repository.TeamRepository;
-import org.hibernate.QueryTimeoutException;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
@@ -54,6 +53,7 @@ import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecision
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
+import org.hibernate.QueryTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +63,9 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.dependencytrack.notification.util.ModelConverter.convert;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
-import static org.dependencytrack.repometaanalyzer.util.ModelConverter.convert;
 
 @ApplicationScoped
 public class NotificationRouter {

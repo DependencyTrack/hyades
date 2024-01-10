@@ -14,8 +14,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.dependencytrack.notification.serialization.NotificationKafkaProtobufDeserializer;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.dependencytrack.proto.notification.v1.Notification;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import java.time.Duration;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package org.dependencytrack.repometaanalyzer.util;
+package org.dependencytrack.notification.util;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;

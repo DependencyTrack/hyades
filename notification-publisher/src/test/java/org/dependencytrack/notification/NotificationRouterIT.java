@@ -15,9 +15,8 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.awaitility.Awaitility;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.notification.publisher.PublisherTestUtil;
+import org.dependencytrack.notification.util.WireMockTestResource;
 import org.dependencytrack.proto.KafkaProtobufSerde;
-import org.dependencytrack.repometaanalyzer.util.WireMockTestResource;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.dependencytrack.proto.notification.v1.Component;
 import org.dependencytrack.proto.notification.v1.Group;
 import org.dependencytrack.proto.notification.v1.Level;
@@ -26,6 +25,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.Scope;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

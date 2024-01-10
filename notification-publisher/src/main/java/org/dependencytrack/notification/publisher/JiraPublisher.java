@@ -4,8 +4,8 @@ import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.JsonObject;
-import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.common.SecretDecryptor;
+import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
 
 import java.util.Map;
