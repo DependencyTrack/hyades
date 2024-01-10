@@ -27,7 +27,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.json.JsonObject;
-import org.dependencytrack.util.WireMockTestResource;
+import org.dependencytrack.repometaanalyzer.util.WireMockTestResource;
 import org.dependencytrack.proto.notification.v1.BackReference;
 import org.dependencytrack.proto.notification.v1.Bom;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;

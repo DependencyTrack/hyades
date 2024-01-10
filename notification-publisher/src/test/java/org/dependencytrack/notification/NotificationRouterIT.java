@@ -16,7 +16,7 @@ import org.awaitility.Awaitility;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.notification.publisher.PublisherTestUtil;
 import org.dependencytrack.proto.KafkaProtobufSerde;
-import org.dependencytrack.util.WireMockTestResource;
+import org.dependencytrack.repometaanalyzer.util.WireMockTestResource;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.dependencytrack.proto.notification.v1.Component;
 import org.dependencytrack.proto.notification.v1.Group;

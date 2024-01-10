@@ -211,7 +211,7 @@ Rows in the table should be cleaned up on a recurring basis.
 This could be as simple as scheduling a job that executes this SQL query:
 
 ```sql
-DELETE FROM org.dependencytrack.model.WorkflowStep WHERE this.updatedAt < :threshold
+DELETE FROM org.dependencytrack.repometaanalyzer.model.WorkflowStep WHERE this.updatedAt < :threshold
 ```
 
 A retention time of 1-3 days since the last update should be reasonable.

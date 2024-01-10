@@ -65,7 +65,7 @@ import java.util.List;
 
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
-import static org.dependencytrack.util.ModelConverter.convert;
+import static org.dependencytrack.repometaanalyzer.util.ModelConverter.convert;
 
 @ApplicationScoped
 public class NotificationRouter {
