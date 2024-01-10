@@ -1,4 +1,4 @@
-package org.dependencytrack.repometaanalyzer.util;
+package org.dependencytrack.notification.util;
 
 import org.dependencytrack.persistence.model.NotificationGroup;
 import org.dependencytrack.persistence.model.NotificationLevel;
