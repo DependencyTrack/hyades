@@ -69,7 +69,7 @@
     <lib.testcontainers-minio.version>1.19.3</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.1</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>3.6.4</quarkus.platform.version>
+    <quarkus.platform.version>3.6.5</quarkus.platform.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
 
     <!-- Plugin Versions -->
