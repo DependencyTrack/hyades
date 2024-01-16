@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.dependencytrack.apiserver.model.Analysis;
 import org.dependencytrack.apiserver.model.BomProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
-import org.dependencytrack.apiserver.model.BomUploadResponse;
+import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 import org.dependencytrack.apiserver.model.ConfigProperty;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.CreateTeamRequest;
@@ -68,7 +68,7 @@ public interface ApiServerClient {
     @Path("/bom")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    BomUploadResponse uploadBom(final BomUploadRequest request);
+    WorkflowTokenResponse uploadBom(final BomUploadRequest request);
 
     @GET
     @Path("/bom/token/{token}")
@@ -124,6 +124,12 @@ public interface ApiServerClient {
     @Consumes(MediaType.APPLICATION_JSON)
     List<VulnerabilityPolicy> getAllVulnerabilityPolicies();
 
+    @POST
+    @Path("/policy/vulnerability/bundle/sync")
+    @Produces(MediaType.WILDCARD)
+    @Consumes(MediaType.APPLICATION_JSON)
+    WorkflowTokenResponse triggerVulnerabilityPolicyBundleSync();
+
     @GET
     @Path("/analysis")
     @Produces(MediaType.WILDCARD)
@@ -135,7 +141,7 @@ public interface ApiServerClient {
     @Path("/finding/project/{uuid}/analyze")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
-    BomUploadResponse analyzeProject(@PathParam("uuid") final UUID projectUuid);
+    WorkflowTokenResponse analyzeProject(@PathParam("uuid") final UUID projectUuid);
 
     @GET
     @Path("/workflow/token/{token}/status")

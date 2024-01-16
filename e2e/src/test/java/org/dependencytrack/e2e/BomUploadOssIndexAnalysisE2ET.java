@@ -2,7 +2,7 @@ package org.dependencytrack.e2e;
 
 import org.dependencytrack.apiserver.model.BomProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
-import org.dependencytrack.apiserver.model.BomUploadResponse;
+import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 import org.dependencytrack.apiserver.model.Finding;
 import org.dependencytrack.apiserver.model.Project;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class BomUploadOssIndexAnalysisE2ET extends AbstractE2ET {
         final String bomBase64 = Base64.getEncoder().encodeToString(bomBytes);
 
         // Upload the BOM
-        final BomUploadResponse response = apiServerClient.uploadBom(new BomUploadRequest("foo", "bar", true, bomBase64));
+        final WorkflowTokenResponse response = apiServerClient.uploadBom(new BomUploadRequest("foo", "bar", true, bomBase64));
         assertThat(response.token()).isNotEmpty();
 
         // Wait up to 15sec for the BOM processing to complete.

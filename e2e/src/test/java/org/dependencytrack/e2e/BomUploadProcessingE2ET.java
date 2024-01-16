@@ -6,7 +6,7 @@ import com.icegreen.greenmail.util.ServerSetup;
 import jakarta.mail.internet.MimeMessage;
 import org.dependencytrack.apiserver.model.BomProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
-import org.dependencytrack.apiserver.model.BomUploadResponse;
+import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 import org.dependencytrack.apiserver.model.ConfigProperty;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest.Publisher;
@@ -145,7 +145,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
         final String bomBase64 = Base64.getEncoder().encodeToString(bomBytes);
 
         // Upload the BOM
-        final BomUploadResponse response = apiServerClient.uploadBom(new BomUploadRequest("foo", "bar", true, bomBase64));
+        final WorkflowTokenResponse response = apiServerClient.uploadBom(new BomUploadRequest("foo", "bar", true, bomBase64));
         assertThat(response.token()).isNotEmpty();
 
         // Wait up to 15sec for the BOM processing to complete.
