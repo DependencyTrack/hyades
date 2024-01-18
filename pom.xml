@@ -73,7 +73,7 @@
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
 
     <!-- Plugin Versions -->
-    <plugin.cyclonedx.version>2.7.10</plugin.cyclonedx.version>
+    <plugin.cyclonedx.version>2.7.11</plugin.cyclonedx.version>
     <plugin.jacoco.version>0.8.11</plugin.jacoco.version>
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
