@@ -18,11 +18,15 @@ import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionCh
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class PublishContext {
 
     private static final String SUBJECT_COMPONENT = "component";
     private static final String SUBJECT_PROJECT = "project";
+    private static final String SUBJECT_PROJECTS = "projects";
+    private static final String SUBJECT_VULNERABILITY = "vulnerability";
+    private static final String SUBJECT_VULNERABILITIES = "vulnerabilities";
 
     private final String kafkaTopic;
     private final int kafkaTopicPartition;
@@ -35,6 +39,7 @@ public class PublishContext {
     private String ruleName;
     private String ruleScope;
     private String ruleLevel;
+    private boolean logSuccess;
 
     /**
      * Create a new {@link PublishContext} instance.
@@ -74,11 +79,21 @@ public class PublishContext {
         } else if (notification.getSubject().is(NewVulnerabilitySubject.class)) {
             final NewVulnerabilitySubject subject = notification.getSubject().unpack(NewVulnerabilitySubject.class);
             notificationSubjects.put(SUBJECT_COMPONENT, Component.convert(subject.getComponent()));
-            notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
+            if (subject.getAffectedProjectsList() != null) {
+                notificationSubjects.put(SUBJECT_PROJECTS, subject.getAffectedProjectsList().stream().map(Project::convert).toList());
+            } else {
+                notificationSubjects.put(SUBJECT_PROJECTS, null);
+            }
+            notificationSubjects.put(SUBJECT_VULNERABILITY, Vulnerability.convert(subject.getVulnerability()));
         } else if (notification.getSubject().is(NewVulnerableDependencySubject.class)) {
             final NewVulnerableDependencySubject subject = notification.getSubject().unpack(NewVulnerableDependencySubject.class);
             notificationSubjects.put(SUBJECT_COMPONENT, Component.convert(subject.getComponent()));
             notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
+            if (subject.getVulnerabilitiesList() != null) {
+                notificationSubjects.put(SUBJECT_VULNERABILITIES, subject.getVulnerabilitiesList().stream().map(Vulnerability::convert).toList());
+            } else {
+                notificationSubjects.put(SUBJECT_VULNERABILITIES, null);
+            }
         } else if (notification.getSubject().is(org.dependencytrack.proto.notification.v1.Project.class)) {
             final org.dependencytrack.proto.notification.v1.Project subject = notification.getSubject().unpack(org.dependencytrack.proto.notification.v1.Project.class);
             notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject));
@@ -97,13 +112,14 @@ public class PublishContext {
             final VulnerabilityAnalysisDecisionChangeSubject subject = notification.getSubject().unpack(VulnerabilityAnalysisDecisionChangeSubject.class);
             notificationSubjects.put(SUBJECT_COMPONENT, Component.convert(subject.getComponent()));
             notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
+            notificationSubjects.put(SUBJECT_VULNERABILITY, Vulnerability.convert(subject.getVulnerability()));
         } else if (notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
             final VexConsumedOrProcessedSubject subject = notification.getSubject().unpack(VexConsumedOrProcessedSubject.class);
             notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
         }
 
         return new PublishContext(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(),
-                notification.getGroup().name(), notification.getLevel().name(), notification.getScope().name(),
+                notification.getGroup().name(), Optional.ofNullable(notification.getLevel()).map(Enum::name).orElse(null), notification.getScope().name(),
                 ProtobufUtil.formatTimestamp(notification.getTimestamp()), notificationSubjects);
     }
 
@@ -117,7 +133,12 @@ public class PublishContext {
         this.ruleName = rule.getName();
         this.ruleLevel = rule.getNotificationLevel().name();
         this.ruleScope = rule.getScope().name();
+        this.logSuccess = rule.isLogSuccessfulPublish();
         return this;
+    }
+
+    public boolean shouldLogSuccess() {
+        return this.logSuccess;
     }
 
     /**
@@ -144,6 +165,9 @@ public class PublishContext {
     public record Component(String uuid, String group, String name, String version) {
 
         private static Component convert(final org.dependencytrack.proto.notification.v1.Component notificationComponent) {
+            if (notificationComponent == null) {
+                return null;
+            }
             return new Component(
                     notificationComponent.getUuid(),
                     notificationComponent.getGroup(),
@@ -157,11 +181,25 @@ public class PublishContext {
     public record Project(String uuid, String name, String version) {
 
         private static Project convert(final org.dependencytrack.proto.notification.v1.Project notificationProject) {
+            if (notificationProject == null) {
+                return null;
+            }
             return new Project(
                     notificationProject.getUuid(),
                     notificationProject.getName(),
                     notificationProject.getVersion()
             );
+        }
+
+    }
+
+    public record Vulnerability(String id, String source) {
+
+        private static Vulnerability convert(final org.dependencytrack.proto.notification.v1.Vulnerability notificationVuln) {
+            if (notificationVuln == null) {
+                return null;
+            }
+            return new Vulnerability(notificationVuln.getVulnId(), notificationVuln.getSource());
         }
 
     }

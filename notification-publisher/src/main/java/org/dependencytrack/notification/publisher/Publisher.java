@@ -18,7 +18,6 @@
  */
 package org.dependencytrack.notification.publisher;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
@@ -36,7 +35,6 @@ import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -55,7 +53,7 @@ public interface Publisher {
     String CONFIG_DESTINATION = "destination";
 
 
-    void inform(final PublishContext ctx, Notification notification, JsonObject config) throws Exception;
+    void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception;
 
     PebbleEngine getTemplateEngine();
 
@@ -76,7 +74,7 @@ public interface Publisher {
         }
     }
 
-    default String prepareTemplate(final Notification notification, final PebbleTemplate template, final ConfigPropertyRepository configPropertyRepository, JsonObject config) throws InvalidProtocolBufferException {
+    default String prepareTemplate(final Notification notification, final PebbleTemplate template, final ConfigPropertyRepository configPropertyRepository, JsonObject config) throws IOException {
 
         final ConfigProperty baseUrlProperty = configPropertyRepository.findByGroupAndName(
                 ConfigPropertyConstants.GENERAL_BASE_URL.getGroupName(),
@@ -135,9 +133,6 @@ public interface Publisher {
         try (Writer writer = new StringWriter()) {
             template.evaluate(writer, context);
             return writer.toString();
-        } catch (IOException e) {
-            LoggerFactory.getLogger(this.getClass()).error("An error was encountered evaluating template", e);
-            return null;
         }
     }
 

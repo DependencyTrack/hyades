@@ -29,6 +29,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
 @ApplicationScoped
@@ -46,9 +47,11 @@ public class ConsolePublisher implements Publisher {
     }
 
     public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
-        final String content = prepareTemplate(notification, getTemplate(config), configPropertyRepository, config);
-        if (content == null) {
-            LOGGER.warn("A template was not found. Skipping notification");
+        final String content;
+        try {
+            content = prepareTemplate(notification, getTemplate(config), configPropertyRepository, config);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.error("Failed to prepare notification content (%s)".formatted(ctx), e);
             return;
         }
         final PrintStream ps;
