@@ -25,8 +25,8 @@ class NotificationRuleRepositoryTest {
     @TestTransaction
     public void testRuleLevelEqual() {
         entityManager.createNativeQuery("""
-                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
-                                    (true, 'foo', 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
+                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "LOG_SUCCESSFUL_PUBLISH", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
+                                    (true, 'foo', 'NEW_VULNERABILITY', false, true, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
                 """).executeUpdate();
 
         final List<NotificationRule> rules = repository
@@ -38,8 +38,8 @@ class NotificationRuleRepositoryTest {
     @TestTransaction
     public void testRuleLevelBelow() {
         entityManager.createNativeQuery("""
-                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
-                                    (true, 'foo', 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
+                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "LOG_SUCCESSFUL_PUBLISH", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
+                                    (true, 'foo', 'NEW_VULNERABILITY', false, true, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
                 """).executeUpdate();
 
         final List<NotificationRule> rules = repository
@@ -51,8 +51,8 @@ class NotificationRuleRepositoryTest {
     @TestTransaction
     public void testRuleLevelAbove() {
         entityManager.createNativeQuery("""
-                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
-                                    (true, 'foo', 'NEW_VULNERABILITY', false, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
+                INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "NOTIFY_ON", "NOTIFY_CHILDREN", "LOG_SUCCESSFUL_PUBLISH", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
+                                    (true, 'foo', 'NEW_VULNERABILITY', false, true, 'WARNING', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62');
                 """).executeUpdate();
 
         final List<NotificationRule> rules = repository
