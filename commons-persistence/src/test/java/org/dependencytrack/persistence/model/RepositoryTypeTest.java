@@ -32,6 +32,7 @@ public class RepositoryTypeTest {
         Assertions.assertEquals("PYPI", RepositoryType.PYPI.name());
         Assertions.assertEquals("NUGET", RepositoryType.NUGET.name());
         Assertions.assertEquals("HEX", RepositoryType.HEX.name());
+        Assertions.assertEquals("GITHUB", RepositoryType.GITHUB.name());
         Assertions.assertEquals("UNSUPPORTED", RepositoryType.UNSUPPORTED.name());
     }
 
@@ -69,6 +70,12 @@ public class RepositoryTypeTest {
     public void testResolveHex() throws Exception {
         PackageURL purl = new PackageURL("pkg:hex/phoenix@1.14.10");
         Assertions.assertEquals(RepositoryType.HEX, RepositoryType.resolve(purl));
+    }
+
+    @Test
+    public void testResolveGithub() throws Exception {
+        PackageURL purl = new PackageURL("pkg:github/phoenix@1.14.10");
+        Assertions.assertEquals(RepositoryType.GITHUB, RepositoryType.resolve(purl));
     }
 
     @Test
