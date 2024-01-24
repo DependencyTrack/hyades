@@ -24,7 +24,6 @@ public class PublishContext {
 
     private static final String SUBJECT_COMPONENT = "component";
     private static final String SUBJECT_PROJECT = "project";
-    private static final String SUBJECT_PROJECTS = "projects";
     private static final String SUBJECT_VULNERABILITY = "vulnerability";
     private static final String SUBJECT_VULNERABILITIES = "vulnerabilities";
 
@@ -79,11 +78,7 @@ public class PublishContext {
         } else if (notification.getSubject().is(NewVulnerabilitySubject.class)) {
             final NewVulnerabilitySubject subject = notification.getSubject().unpack(NewVulnerabilitySubject.class);
             notificationSubjects.put(SUBJECT_COMPONENT, Component.convert(subject.getComponent()));
-            if (subject.getAffectedProjectsList() != null) {
-                notificationSubjects.put(SUBJECT_PROJECTS, subject.getAffectedProjectsList().stream().map(Project::convert).toList());
-            } else {
-                notificationSubjects.put(SUBJECT_PROJECTS, null);
-            }
+            notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
             notificationSubjects.put(SUBJECT_VULNERABILITY, Vulnerability.convert(subject.getVulnerability()));
         } else if (notification.getSubject().is(NewVulnerableDependencySubject.class)) {
             final NewVulnerableDependencySubject subject = notification.getSubject().unpack(NewVulnerableDependencySubject.class);
