@@ -260,7 +260,7 @@ public class NotificationRouter {
             if (rule.getNotifyOn().contains(convert(notification.getGroup()))) {
                 if (rule.getProjects() != null && !rule.getProjects().isEmpty()) {
                     for (final Project project : rule.getProjects()) {
-                        if (project.getUuid().equals(limitToProject.getUuid())) {
+                        if (project.getUuid().toString().equals(limitToProject.getUuid())) {
                             LOGGER.debug("Project %s is part of the \"limit to\" list of the rule; Rule is applicable (%s)"
                                     .formatted(limitToProject.getUuid(), ruleCtx));
                             applicableRules.add(rule);
