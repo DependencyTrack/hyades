@@ -71,8 +71,8 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build Native Image
       run: |-
-        mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ matrix.module }} clean install -Pnative -DskipTests
+        mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ matrix.module }} clean install -Dnative -DskipTests
     - name: Test Native Image
       run: |-
         mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ matrix.module }} \
-        test-compile failsafe:integration-test failsafe:verify -Pnative
+        test-compile failsafe:integration-test failsafe:verify -Dnative

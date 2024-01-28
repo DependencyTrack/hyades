@@ -489,19 +489,6 @@
 
   <profiles>
     <profile>
-      <id>native</id>
-      <activation>
-        <property>
-          <name>native</name>
-        </property>
-      </activation>
-      <properties>
-        <skipITs>false</skipITs>
-        <quarkus.package.type>native</quarkus.package.type>
-      </properties>
-    </profile>
-
-    <profile>
       <!--
         When running in GitHub Actions, the SCM connection must be via HTTPS
         so that the GITHUB_TOKEN injected by Actions can be used to authenticate.

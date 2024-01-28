@@ -99,6 +99,36 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>native</id>
+      <activation>
+        <property>
+          <name>native</name>
+        </property>
+      </activation>
+      <properties>
+        <skipITs>false</skipITs>
+        <quarkus.package.type>native</quarkus.package.type>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>non-native</id>
+      <activation>
+        <property>
+          <name>!native</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.google.cloud.sql</groupId>
+          <artifactId>postgres-socket-factory</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
       <plugin>

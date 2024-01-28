@@ -11,6 +11,7 @@
           <option name="jreName" value="#USE_PROJECT_JDK" />
           <option name="mavenProperties">
             <map>
+              <entry key="native" value="true" />
               <entry key="skipTests" value="true" />
             </map>
           </option>
@@ -32,11 +33,10 @@
               <option value="package" />
             </list>
           </option>
+          <option name="multimoduleDir" />
           <option name="pomFileName" />
           <option name="profilesMap">
-            <map>
-              <entry key="native" value="true" />
-            </map>
+            <map />
           </option>
           <option name="projectsCmdOptionValues">
             <list />

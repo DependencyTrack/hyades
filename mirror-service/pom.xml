@@ -136,6 +136,11 @@
     <profiles>
         <profile>
             <id>native</id>
+            <activation>
+                <property>
+                    <name>native</name>
+                </property>
+            </activation>
             <dependencies>
                 <!--
                     Required for Apache httpclient5.
@@ -151,6 +156,10 @@
                     <version>${lib.conscrypt.version}</version>
                 </dependency>
             </dependencies>
+            <properties>
+                <skipITs>false</skipITs>
+                <quarkus.package.type>native</quarkus.package.type>
+            </properties>
         </profile>
     </profiles>
 
