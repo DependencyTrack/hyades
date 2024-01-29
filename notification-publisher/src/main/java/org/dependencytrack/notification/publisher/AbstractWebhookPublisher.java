@@ -96,8 +96,6 @@ public abstract class AbstractWebhookPublisher implements Publisher {
                 logger.info("Destination {} acknowledged reception of notification with status code {} ({})",
                         destination, response.getStatusLine().getStatusCode(), ctx);
             }
-        } catch (IOException ex) {
-            handleRequestException(ctx, logger, ex);
         }
     }
 
