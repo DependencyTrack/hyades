@@ -101,6 +101,18 @@ public class NotificationRule extends PanacheEntityBase {
     @Column(name = "NOTIFY_CHILDREN")
     private boolean notifyChildren;
 
+
+    /**
+     * In addition to warnings and errors, also emit a log message upon successful publishing.
+     * <p>
+     * Intended to aid in debugging of missing notifications, or environments where notification
+     * delivery is critical and subject to auditing.
+     *
+     * @since 4.10.0
+     */
+    @Column(name = "LOG_SUCCESSFUL_PUBLISH")
+    private boolean logSuccessfulPublish;
+
     public long getId() {
         return id;
     }
@@ -123,6 +135,14 @@ public class NotificationRule extends PanacheEntityBase {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isLogSuccessfulPublish() {
+        return logSuccessfulPublish;
+    }
+
+    public void setLogSuccessfulPublish(final boolean logSuccessfulPublish) {
+        this.logSuccessfulPublish = logSuccessfulPublish;
     }
 
     public NotificationScope getScope() {

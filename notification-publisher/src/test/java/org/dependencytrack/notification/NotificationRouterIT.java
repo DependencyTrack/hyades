@@ -79,8 +79,8 @@ class NotificationRouterIT {
             ps.execute();
 
             connection.createStatement().execute("""
-                    INSERT INTO "NOTIFICATIONRULE" ("ID", "ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "NOTIFICATION_LEVEL", "SCOPE", "UUID", "PUBLISHER_CONFIG") VALUES
-                    (1, true, 'foo', 1, 'NEW_VULNERABILITY', false, 'INFORMATIONAL', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62', '{"destination": "http://localhost:%d/foo"}');
+                    INSERT INTO "NOTIFICATIONRULE" ("ID", "ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "LOG_SUCCESSFUL_PUBLISH", "NOTIFICATION_LEVEL", "SCOPE", "UUID", "PUBLISHER_CONFIG") VALUES
+                    (1, true, 'foo', 1, 'NEW_VULNERABILITY', false, false, 'INFORMATIONAL', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62', '{"destination": "http://localhost:%d/foo"}');
                     """.formatted(wireMockServer.port()));
         }
     }

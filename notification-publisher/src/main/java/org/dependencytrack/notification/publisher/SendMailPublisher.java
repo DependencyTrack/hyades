@@ -18,7 +18,6 @@
  */
 package org.dependencytrack.notification.publisher;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 import io.quarkus.mailer.Mail;
@@ -38,6 +37,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +65,7 @@ public class SendMailPublisher implements Publisher {
 
     public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
         if (config == null) {
-            LOGGER.warn("No configuration found. Skipping notification.");
+            LOGGER.warn("No configuration found; Skipping notification (%s)".formatted(ctx));
             return;
         }
         final String[] destinations = parseDestination(config);
@@ -74,25 +74,37 @@ public class SendMailPublisher implements Publisher {
 
     public void inform(final PublishContext ctx, final Notification notification, final JsonObject config, List<Team> teams) throws Exception {
         if (config == null) {
-            LOGGER.warn("No configuration found. Skipping notification.");
+            LOGGER.warn("No configuration found; Skipping notification (%s)".formatted(ctx));
             return;
         }
         final String[] destinations = parseDestination(config, teams);
         sendNotification(ctx, notification, config, destinations);
     }
 
-    private void sendNotification(final PublishContext ctx, Notification notification, JsonObject config, String[] destinations) throws InvalidProtocolBufferException {
-        PebbleTemplate template = getTemplate(config);
-        final String content = prepareTemplate(notification, template, configPropertyRepository, config);
-        if (destinations == null || content == null) {
-            LOGGER.warn("A destination or template was not found. Skipping notification ({})", ctx);
+    private void sendNotification(final PublishContext ctx, Notification notification, JsonObject config, String[] destinations) throws IOException {
+        if (config == null) {
+            LOGGER.warn("No publisher configuration found; Skipping notification (%s)".formatted(ctx));
             return;
         }
+        if (destinations == null) {
+            LOGGER.warn("No destination(s) provided; Skipping notification (%s)".formatted(ctx));
+            return;
+        }
+
+        final String content;
+        try {
+            final PebbleTemplate template = getTemplate(config);
+            content = prepareTemplate(notification, template, configPropertyRepository, config);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.error("Failed to prepare notification content (%s)".formatted(ctx), e);
+            return;
+        }
+
         try {
             ConfigProperty smtpEnabledConfig = configPropertyRepository.findByGroupAndName(ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getGroupName(), ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getPropertyName());
             boolean smtpEnabled = BooleanUtils.toBoolean(smtpEnabledConfig.getPropertyValue());
             if (!smtpEnabled) {
-                LOGGER.warn("SMTP is not enabled ({})", ctx);
+                LOGGER.warn("SMTP is not enabled; Skipping notification (%s)".formatted(ctx));
                 return; // smtp is not enabled
             }
             for (String destination : destinations) {
