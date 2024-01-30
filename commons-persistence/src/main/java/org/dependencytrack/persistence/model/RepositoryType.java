@@ -38,6 +38,7 @@ public enum RepositoryType {
     CARGO,
     GO_MODULES,
     CPAN,
+    GITHUB,
     UNSUPPORTED;
 
     /**
@@ -67,6 +68,8 @@ public enum RepositoryType {
             return GO_MODULES;
         } else if ("cpan".equals(type)) { // Not defined in StandardTypes
             return CPAN;
+        } else if (PackageURL.StandardTypes.GITHUB.equals(type)) {
+            return GITHUB;
         }
         return UNSUPPORTED;
     }
