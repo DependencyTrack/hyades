@@ -92,15 +92,8 @@ public abstract class AbstractWebhookPublisher implements Publisher {
             } else if (ctx.shouldLogSuccess()) {
                 logger.info("Destination acknowledged reception of notification with status code %d (%s)"
                         .formatted(statusCode, ctx));
-            } else {
-                logger.info("Destination {} acknowledged reception of notification with status code {} ({})",
-                        destination, response.getStatusLine().getStatusCode(), ctx);
             }
         }
-    }
-
-    protected void handleRequestException(final PublishContext ctx, final Logger logger, final Exception e) {
-        logger.error("Failed to send notification request (%s)".formatted(ctx), e);
     }
 
     private static String getBasicAuthenticationHeader(String username, String password) {
