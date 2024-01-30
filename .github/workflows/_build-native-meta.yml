@@ -11,15 +11,13 @@ permissions: { }
 jobs:
   build-native-image:
     name: Build Native Image
-    runs-on: ${{ matrix.arch.runs-on }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         arch:
         - name: amd64
-          runs-on: ubuntu-latest
           build-timeout: 15
         - name: arm64
-          runs-on: macos-14
           build-timeout: 75
       fail-fast: true
     steps:
@@ -31,6 +29,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # tag=v3.0.0
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # tag=v3.0.0
       with:
@@ -61,6 +61,7 @@ jobs:
         mvn clean package -Dnative -pl commons,commons-kstreams,commons-persistence,proto,${{ inputs.module }} -DskipTests \
           -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 \
           -Dquarkus.native.container-build=true \
+          -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch.name }}' \
           -Dquarkus.native.resources.includes="$RESOURCES_INCLUDES" \
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
     - name: Test Native Image
