@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 /**
  * An IMetaAnalyzer implementation that supports GitHub via the api
@@ -45,9 +44,11 @@ public class GithubMetaAnalyzer extends AbstractMetaAnalyzer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GithubMetaAnalyzer.class);
 
-    private static final int VERSION_TYPE_RELEASE = 1;
-    private static final int VERSION_TYPE_COMMIT = 2;
-    private static final String VERSION_TYPE_PATTERN = "[a-f,0-9]{6,40}";
+    private enum VersionType {
+        RELEASE,
+        COMMIT;
+    }
+    private static final VersionType DEFAULT_VERSION_TYPE = VersionType.RELEASE;
     private static final String REPOSITORY_DEFAULT_URL = "https://github.com";
     private String REPOSITORY_URL = "";
     private String REPOSITORY_USER = "";
@@ -88,13 +89,34 @@ public class GithubMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     /**
+     * Checks whether the pURL version is a release or commit
+     * @param component Component Object
+     * @param repository The GH Repository Object defined by the pURL
+     * @return VersionType
+     * @throws IOException when GitHub API Calls fail
+     */
+    private VersionType get_version_type(final Component component, GHRepository repository) throws IOException {
+        if (component.getPurl().getVersion() == null){
+            LOGGER.debug(String.format("Version is not set, assuming %s", DEFAULT_VERSION_TYPE.name()));
+            return DEFAULT_VERSION_TYPE;
+        }
+        if (repository.getReleaseByTagName(component.getPurl().getVersion()) != null){
+            LOGGER.debug("Version is release");
+            return VersionType.RELEASE;
+        } else {
+            LOGGER.debug("Version is commit");
+            return VersionType.COMMIT;
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     public MetaModel analyze(final Component component) {
         final MetaModel meta = new MetaModel(component);
         if (component.getPurl() != null) {
-            try{
-                GitHub github;
+            try {
+                final GitHub github;
                 if (!REPOSITORY_USER.isEmpty() && !REPOSITORY_PASSWORD.isEmpty()) {
                     github = GitHub.connect(REPOSITORY_USER, REPOSITORY_PASSWORD);
                 } else if (REPOSITORY_USER.isEmpty() && !REPOSITORY_PASSWORD.isEmpty()){
@@ -103,31 +125,28 @@ public class GithubMetaAnalyzer extends AbstractMetaAnalyzer {
                     github = GitHub.connectAnonymously();
                 }
 
-                Pattern version_pattern = Pattern.compile(VERSION_TYPE_PATTERN);
-                int version_type = 0;
-                if (version_pattern.matcher(component.getPurl().getVersion()).find()){
-                    LOGGER.debug("Version is commit");
-                    version_type = VERSION_TYPE_COMMIT;
-                } else {
-                    LOGGER.debug("Version is release");
-                    version_type = VERSION_TYPE_RELEASE;
-                }
-
                 GHRepository repository = github.getRepository(String.format("%s/%s", component.getPurl().getNamespace(), component.getPurl().getName()));
                 LOGGER.debug(String.format("Repos is at %s", repository.getUrl()));
-                if (version_type == VERSION_TYPE_RELEASE){
+
+                final VersionType version_type = get_version_type(component, repository);
+
+                if (version_type == VersionType.RELEASE) {
                     GHRelease latest_release = repository.getLatestRelease();
+                    if (latest_release != null) {
+                        meta.setLatestVersion(latest_release.getTagName());
+                        LOGGER.debug(String.format("Latest version: %s", meta.getLatestVersion()));
+                    }
                     GHRelease current_release = repository.getReleaseByTagName(component.getPurl().getVersion());
-                    meta.setLatestVersion(latest_release.getTagName());
-                    LOGGER.debug(String.format("Latest version: %s", meta.getLatestVersion()));
-                    meta.setPublishedTimestamp(current_release.getPublished_at());
-                    LOGGER.debug(String.format("Current version published at: %s", meta.getPublishedTimestamp()));
-                } else if (version_type == VERSION_TYPE_COMMIT){
+                    if (current_release != null) {
+                        meta.setPublishedTimestamp(current_release.getPublished_at());
+                        LOGGER.debug(String.format("Current version published at: %s", meta.getPublishedTimestamp()));
+                    }
+                } else if (version_type == VersionType.COMMIT){
                     GHBranch default_branch = repository.getBranch(repository.getDefaultBranch());
                     GHCommit latest_release = repository.getCommit(default_branch.getSHA1());
-                    GHCommit current_release = repository.getCommit(component.getPurl().getVersion());
                     meta.setLatestVersion(latest_release.getSHA1());
                     LOGGER.debug(String.format("Latest version: %s", meta.getLatestVersion()));
+                    GHCommit current_release = repository.getCommit(component.getPurl().getVersion());
                     meta.setPublishedTimestamp(current_release.getCommitDate());
                     LOGGER.debug(String.format("Current version published at: %s", meta.getPublishedTimestamp()));
                 }
