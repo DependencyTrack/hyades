@@ -27,13 +27,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.dependencytrack.commonutil.HttpUtil;
 import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Base64;
 
 public abstract class AbstractWebhookPublisher implements Publisher {
 
@@ -53,9 +53,9 @@ public abstract class AbstractWebhookPublisher implements Publisher {
             return;
         }
 
-        final BasicAuthCredentials credentials;
+        final AuthCredentials credentials;
         try {
-            credentials = getBasicAuthCredentials();
+            credentials = getAuthCredentials();
         } catch (RuntimeException e) {
             logger.warn("""
                     An error occurred during the retrieval of credentials needed for notification \
@@ -74,10 +74,14 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         final String mimeType = getTemplateMimeType(config);
         request.addHeader("content-type", mimeType);
         request.addHeader("accept", mimeType);
-
         if (credentials != null) {
-            request.addHeader("Authorization", getBasicAuthenticationHeader(credentials.user(), credentials.password()));
+            if(credentials.user() != null) {
+                request.addHeader("Authorization", HttpUtil.basicAuthHeaderValue(credentials.user(), credentials.password()));
+            } else {
+                request.addHeader("Authorization", "Bearer " + credentials.password);
+            }
         }
+
         StringEntity entity = new StringEntity(content);
         request.setEntity(entity);
         try (final CloseableHttpResponse response = httpClient.execute(request);) {
@@ -96,16 +100,11 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         }
     }
 
-    private static String getBasicAuthenticationHeader(String username, String password) {
-        String valueToEncode = username + ":" + password;
-        return "Basic " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
-    }
-
-    protected BasicAuthCredentials getBasicAuthCredentials() throws Exception {
+    protected AuthCredentials getAuthCredentials() throws Exception {
         return null;
     }
 
-    protected record BasicAuthCredentials(String user, String password) {
+    protected record AuthCredentials(String user, String password) {
     }
 
     protected String getDestinationUrl(final JsonObject config) {

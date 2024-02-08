@@ -1,33 +1,262 @@
 package org.dependencytrack.notification.publisher;
 
+import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.persistence.EntityManager;
+import jakarta.json.JsonObjectBuilder;
+import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.dependencytrack.persistence.model.Team;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-public class SendMailPublisherTest {
+@TestProfile(SendMailPublisherTest.TestProfile.class)
+public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublisher> {
+
+    public static class TestProfile implements QuarkusTestProfile {
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.of(
+                    "quarkus.mailer.mock", "true",
+                    "quarkus.mailer.from", "dtrack@example.com"
+            );
+        }
+    }
 
     @Inject
-    EntityManager entityManager;
+    MockMailbox mailbox;
 
-    @Inject
-    SendMailPublisher publisher;
+    @AfterEach
+    void afterEach() {
+        mailbox.clear();
+    }
+
+    @Override
+    void setupConfigProperties() throws Exception {
+        super.setupConfigProperties();
+
+        createOrUpdateConfigProperty(ConfigPropertyConstants.EMAIL_SMTP_ENABLED, "true");
+    }
+
+    @Override
+    JsonObjectBuilder extraConfig() {
+        return super.extraConfig()
+                .add(Publisher.CONFIG_DESTINATION, "recipient@example.com");
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomConsumedNotification() throws Exception {
+        super.testInformWithBomConsumedNotification();
+
+        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+            assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Bill of Materials Consumed");
+            assertThat(message.getText()).isEqualToIgnoringNewLines("""
+                    Bill of Materials Consumed
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Project:           projectName
+                    Version:           projectVersion
+                    Description:       projectDescription
+                    Project URL:       https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    A CycloneDX BOM was consumed and will be processed
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    1970-01-01T18:31:06.000Z
+                    """);
+        });
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotification() throws Exception {
+        super.testInformWithBomProcessingFailedNotification();
+
+        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+            assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Bill of Materials Processing Failed");
+            assertThat(message.getText()).isEqualToIgnoringNewLines("""
+                    Bill of Materials Processing Failed
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Project:           projectName
+                    Version:           projectVersion
+                    Description:       projectDescription
+                    Project URL:       https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Cause:
+                    cause
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    An error occurred while processing a BOM
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    1970-01-01T18:31:06.000Z
+                    """);
+        });
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
+        super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
+
+        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+            assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Bill of Materials Processing Failed");
+            assertThat(message.getText()).isEqualToIgnoringNewLines("""
+                    Bill of Materials Processing Failed
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Project:           projectName
+                    Version:           projectVersion
+                    Description:       projectDescription
+                    Project URL:       https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Cause:
+                    cause
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    An error occurred while processing a BOM
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    1970-01-01T18:31:06.000Z
+                    """);
+        });
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithDataSourceMirroringNotification() throws Exception {
+        super.testInformWithDataSourceMirroringNotification();
+
+        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+            assertThat(message.getSubject()).isEqualTo("[Dependency-Track] GitHub Advisory Mirroring");
+            assertThat(message.getText()).isEqualToIgnoringNewLines("""
+                    GitHub Advisory Mirroring
+                                               
+                    --------------------------------------------------------------------------------
+                                        
+                    Level:     LEVEL_ERROR
+                    Scope:     SCOPE_SYSTEM
+                    Group:     GROUP_DATASOURCE_MIRRORING
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    An error occurred mirroring the contents of GitHub Advisories. Check log for details.
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    1970-01-01T18:31:06.000Z
+                    """);
+        });
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithNewVulnerabilityNotification() throws Exception {
+        super.testInformWithNewVulnerabilityNotification();
+
+        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+            assertThat(message.getSubject()).isEqualTo("[Dependency-Track] New Vulnerability Identified");
+            assertThat(message.getText()).isEqualToIgnoringNewLines("""
+                    New Vulnerability Identified
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Vulnerability ID:  INT-001
+                    Vulnerability URL: https://example.com/vulnerability/?source=INTERNAL&vulnId=INT-001
+                    Severity:          MEDIUM
+                    Source:            INTERNAL
+                    Component:         componentName : componentVersion
+                    Component URL:     https://example.com/component/?uuid=94f87321-a5d1-4c2f-b2fe-95165debebc6
+                    Project:           projectName
+                    Version:           projectVersion
+                    Description:       projectDescription
+                    Project URL:       https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Other affected projects: https://example.com/vulnerabilities/INTERNAL/INT-001/affectedProjects
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+
+                                        
+                    --------------------------------------------------------------------------------
+
+                    1970-01-01T18:31:06.000Z
+                    """);
+        });
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithProjectAuditChangeNotification() throws Exception {
+        super.testInformWithProjectAuditChangeNotification();
+
+        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+            assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Analysis Decision: Finding Suppressed");
+            assertThat(message.getText()).isEqualToIgnoringNewLines("""
+                    Analysis Decision: Finding Suppressed
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Analysis Type:  Project Analysis
+                                        
+                    Analysis State:    FALSE_POSITIVE
+                    Suppressed:        true
+                    Vulnerability ID:  INT-001
+                    Vulnerability URL: https://example.com/vulnerability/?source=INTERNAL&vulnId=INT-001
+                    Severity:          MEDIUM
+                    Source:            INTERNAL
+                                        
+                    Component:         componentName : componentVersion
+                    Component URL:     https://example.com/component/?uuid=94f87321-a5d1-4c2f-b2fe-95165debebc6
+                    Project:           pkg:maven/org.acme/projectName@projectVersion
+                    Description:       projectDescription
+                    Project URL:       https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                                        
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    1970-01-01T18:31:06.000Z
+                    """);
+        });
+    }
 
     @Test
-    public void testSingleDestination() {
+    void testSingleDestination() {
         JsonObject config = configWithDestination("john@doe.com");
         Assertions.assertArrayEquals(new String[]{"john@doe.com"}, SendMailPublisher.parseDestination(config));
     }
@@ -60,7 +289,7 @@ public class SendMailPublisherTest {
         final var oidcUserId = createOidcUser("oidcUserTest", "oidcUser@Test.com");
         final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
 
-        assertThat(publisher.parseDestination(config, List.of(team)))
+        assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
                         "managedUser@Test.com",
                         "ldapUser@Test.com",
@@ -83,7 +312,7 @@ public class SendMailPublisherTest {
         final var oidcUserIdB = createOidcUser("anotherOidcUserTest", "anotherOidcUser@Test.com");
         final var teamB = createTeam("teamA", List.of(managedUserIdB), List.of(ldapUserIdB), List.of(oidcUserIdB));
 
-        assertThat(publisher.parseDestination(config, List.of(teamA, teamB)))
+        assertThat(publisherInstance.parseDestination(config, List.of(teamA, teamB)))
                 .containsExactlyInAnyOrder(
                         "managedUser@Test.com",
                         "ldapUser@Test.com",
@@ -112,7 +341,7 @@ public class SendMailPublisherTest {
                 List.of(ldapUserIdB, ldapUserIdA),
                 List.of(oidcUserIdB, oidcUserIdA));
 
-        assertThat(publisher.parseDestination(config, List.of(teamA, teamB)))
+        assertThat(publisherInstance.parseDestination(config, List.of(teamA, teamB)))
                 .containsExactlyInAnyOrder(
                         "managedUser@Test.com",
                         "ldapUser@Test.com",
@@ -133,7 +362,7 @@ public class SendMailPublisherTest {
         final var oidcUserId = createOidcUser("oidcUserTest", "oidcUser@Test.com");
         final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
 
-        assertThat(publisher.parseDestination(config, List.of(team, team)))
+        assertThat(publisherInstance.parseDestination(config, List.of(team, team)))
                 .containsExactlyInAnyOrder("managedUser@Test.com", "ldapUser@Test.com", "oidcUser@Test.com");
     }
 
@@ -146,7 +375,7 @@ public class SendMailPublisherTest {
         team.setId(666);
         team.setName("foo");
 
-        assertThat(publisher.parseDestination(config, List.of(team))).isNull();
+        assertThat(publisherInstance.parseDestination(config, List.of(team))).isNull();
     }
 
     @Test
@@ -154,7 +383,7 @@ public class SendMailPublisherTest {
     public void testEmptyTeamsAsDestination() {
         final JsonObject config = configWithDestination("");
 
-        assertThat(publisher.parseDestination(config, Collections.emptyList())).isNull();
+        assertThat(publisherInstance.parseDestination(config, Collections.emptyList())).isNull();
     }
 
     @Test
@@ -167,7 +396,7 @@ public class SendMailPublisherTest {
         final var oidcUserId = createOidcUser("oidcUserTest", null);
         final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
 
-        assertThat(publisher.parseDestination(config, List.of(team))).isNull();
+        assertThat(publisherInstance.parseDestination(config, List.of(team))).isNull();
     }
 
     @Test
@@ -180,7 +409,7 @@ public class SendMailPublisherTest {
         final var oidcUserId = createOidcUser("oidcUserTest", "john@doe.com");
         final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
 
-        assertThat(publisher.parseDestination(config, List.of(team)))
+        assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
                         "john@doe.com",
                         "steve@jobs.org",
@@ -199,7 +428,7 @@ public class SendMailPublisherTest {
         final var oidcUserId = createOidcUser("oidcUserTest", "john@doe.com");
         final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
 
-        assertThat(publisher.parseDestination(config, List.of(team)))
+        assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
                         "managedUser@Test.com",
                         "ldapUser@Test.com",
@@ -216,7 +445,7 @@ public class SendMailPublisherTest {
         final var oidcUserId = createOidcUser("oidcUserTest", "oidcUser@Test.com");
         final var team = createTeam("foo", Collections.emptyList(), List.of(ldapUserId), List.of(oidcUserId));
 
-        assertThat(publisher.parseDestination(config, List.of(team)))
+        assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
                         "john@doe.com",
                         "steve@jobs.org",
@@ -234,7 +463,7 @@ public class SendMailPublisherTest {
         final var oidcUserId = createOidcUser("oidcUserTest", "oidcUser@Test.com");
         final var team = createTeam("foo", List.of(managedUserId), Collections.emptyList(), List.of(oidcUserId));
 
-        assertThat(publisher.parseDestination(config, List.of(team)))
+        assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
                         "john@doe.com",
                         "steve@jobs.org",
@@ -252,7 +481,7 @@ public class SendMailPublisherTest {
         final var ldapUserId = createLdapUser("ldapUserTest", "ldapUser@Test.com");
         final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), Collections.emptyList());
 
-        assertThat(publisher.parseDestination(config, List.of(team)))
+        assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
                         "john@doe.com",
                         "steve@jobs.org",
@@ -264,7 +493,7 @@ public class SendMailPublisherTest {
     private Long createManagedUser(final String username, final String email) {
         return (Long) entityManager.createNativeQuery("""
                         INSERT INTO "MANAGEDUSER" ("USERNAME", "EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED") VALUES
-                            (:username, :email, 'password', false, NOW(), true, false)
+                            (:username, :email, 'password', FALSE, NOW(), TRUE, FALSE)
                         RETURNING "ID";
                         """)
                 .setParameter("username", username)

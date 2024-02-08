@@ -22,6 +22,7 @@ import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.json.JsonObject;
 import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
@@ -30,14 +31,15 @@ import org.dependencytrack.proto.notification.v1.Notification;
 @Startup // Force bean creation even though no direct injection points exist
 public class MattermostPublisher extends AbstractWebhookPublisher implements Publisher {
 
+    private final PebbleEngine pebbleEngine;
     private final ConfigPropertyRepository configPropertyRepository;
 
     @Inject
-    public MattermostPublisher(final ConfigPropertyRepository configPropertyRepository) {
+    public MattermostPublisher(@Named("pebbleEngineJson") final PebbleEngine pebbleEngine,
+                               final ConfigPropertyRepository configPropertyRepository) {
+        this.pebbleEngine = pebbleEngine;
         this.configPropertyRepository = configPropertyRepository;
     }
-
-    private static final PebbleEngine ENGINE = new PebbleEngine.Builder().defaultEscapingStrategy("json").build();
 
     public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
         publish(ctx, getTemplate(config), notification, config, configPropertyRepository);
@@ -45,6 +47,6 @@ public class MattermostPublisher extends AbstractWebhookPublisher implements Pub
 
     @Override
     public PebbleEngine getTemplateEngine() {
-        return ENGINE;
+        return pebbleEngine;
     }
 }

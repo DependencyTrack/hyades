@@ -1,123 +1,220 @@
 package org.dependencytrack.notification.publisher;
 
-
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.QuarkusTestProfile;
-import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.persistence.EntityManager;
-import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.json.JsonObjectBuilder;
 import org.dependencytrack.common.SecretDecryptor;
-import org.dependencytrack.proto.notification.v1.Notification;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.junit.jupiter.api.Test;
-import org.mockserver.integration.ClientAndServer;
 
-import java.util.Base64;
-import java.util.Map;
+import java.util.concurrent.Callable;
 
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.createPublisherContext;
-import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
-import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
-import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 @QuarkusTest
-@TestProfile(JiraPublisherTest.TestProfile.class)
-public class JiraPublisherTest {
-
-    public static class TestProfile implements QuarkusTestProfile {
-        @Override
-        public Map<String, String> getConfigOverrides() {
-            return Map.of(
-                    "quarkus.kafka.snappy.enabled", "false",
-                    "client.http.config.proxy-timeout-connection", "20",
-                    "client.http.config.proxy-timeout-pool", "40",
-                    "client.http.config.proxy-timeout-socket", "20"
-            );
-        }
-    }
-
-    @Inject
-    JiraPublisher publisher;
-
-    @Inject
-    EntityManager entityManager;
-
-    private static ClientAndServer mockServer;
+public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublisher> {
 
     @Inject
     SecretDecryptor secretDecryptor;
 
-    @BeforeAll
-    public static void beforeClass() {
-        mockServer = startClientAndServer(1080);
+    private Callable<Void> configPropertyCustomizer;
+
+    @Override
+    void setupConfigProperties() throws Exception {
+        super.setupConfigProperties();
+
+        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_URL, wireMockServer.baseUrl());
+        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, "jiraUser");
+        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraPassword"));
+
+        if (configPropertyCustomizer != null) {
+            configPropertyCustomizer.call();
+        }
     }
 
-    @AfterAll
-    public static void afterClass() {
-        mockServer.stop();
+    @Override
+    JsonObjectBuilder extraConfig() {
+        return super.extraConfig()
+                .add(Publisher.CONFIG_DESTINATION, "PROJECT")
+                .add("jiraTicketType", "Task");
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomConsumedNotification() throws Exception {
+        super.testInformWithBomConsumedNotification();
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields" : {
+                            "project" : {
+                              "key" : "PROJECT"
+                            },
+                            "issuetype" : {
+                              "name" : "Task"
+                            },
+                            "summary" : "[Dependency-Track] [GROUP_BOM_CONSUMED] Bill of Materials Consumed",
+                            "description" : "A CycloneDX BOM was consumed and will be processed\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_INFORMATIONAL\\n\\n"
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotification() throws Exception {
+        super.testInformWithBomProcessingFailedNotification();
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields" : {
+                            "project" : {
+                              "key" : "PROJECT"
+                            },
+                            "issuetype" : {
+                              "name" : "Task"
+                            },
+                            "summary" : "[Dependency-Track] [GROUP_BOM_PROCESSING_FAILED] Bill of Materials Processing Failed",
+                            "description" : "An error occurred while processing a BOM\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_ERROR\\n\\n"
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
+        super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields" : {
+                            "project" : {
+                              "key" : "PROJECT"
+                            },
+                            "issuetype" : {
+                              "name" : "Task"
+                            },
+                            "summary" : "[Dependency-Track] [GROUP_BOM_PROCESSING_FAILED] Bill of Materials Processing Failed",
+                            "description" : "An error occurred while processing a BOM\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_ERROR\\n\\n"
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithDataSourceMirroringNotification() throws Exception {
+        super.testInformWithDataSourceMirroringNotification();
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields" : {
+                            "project" : {
+                              "key" : "PROJECT"
+                            },
+                            "issuetype" : {
+                              "name" : "Task"
+                            },
+                            "summary" : "[Dependency-Track] [GROUP_DATASOURCE_MIRRORING] GitHub Advisory Mirroring",
+                            "description" : "An error occurred mirroring the contents of GitHub Advisories. Check log for details.\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_ERROR\\n\\n"
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithNewVulnerabilityNotification() throws Exception {
+        super.testInformWithNewVulnerabilityNotification();
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields" : {
+                            "project" : {
+                              "key" : "PROJECT"
+                            },
+                            "issuetype" : {
+                              "name" : "Task"
+                            },
+                            "summary" : "[Dependency-Track] [GROUP_NEW_VULNERABILITY] [MEDIUM] New medium vulnerability identified: INT-001",
+                            "description" : "A new vulnerability has been identified on your project(s).\\n\\\\\\\\\\n\\\\\\\\\\n*Vulnerability description*\\n{code:none|bgColor=white|borderStyle=none}vulnerabilityDescription{code}\\n\\n*VulnID*\\nINT-001\\n\\n*Severity*\\nMedium\\n\\n*Component*\\n[componentName : componentVersion|https://example.com/components/94f87321-a5d1-4c2f-b2fe-95165debebc6]\\n\\n*Affected project(s)*\\n- [projectName (projectVersion)|https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95]\\n"
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithProjectAuditChangeNotification() throws Exception {
+        super.testInformWithProjectAuditChangeNotification();
+
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields" : {
+                            "project" : {
+                              "key" : "PROJECT"
+                            },
+                            "issuetype" : {
+                              "name" : "Task"
+                            },
+                            "summary" : "[Dependency-Track] [GROUP_PROJECT_AUDIT_CHANGE] Analysis Decision: Finding Suppressed",
+                            "description" : "\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_INFORMATIONAL\\n\\n"
+                          }
+                        }
+                        """)));
     }
 
     @Test
     @TestTransaction
-    public void testPublish() throws Exception {
-        final var jiraUser = "jiraUser";
-        final var jiraPassword = "jiraPassword";
+    void testInformWithBearerToken() throws Exception {
+        configPropertyCustomizer = () -> {
+            createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, null);
+            createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraToken"));
+            return null;
+        };
 
-        final var request = request()
-                .withMethod("POST")
-                .withHeader(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString((jiraUser + ":" + jiraPassword).getBytes()));
-        mockServer.when(request)
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                );
+        super.testInformWithBomConsumedNotification();
 
-        entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('general', 'integrations', 'STRING', 'jira.url', 'http://localhost:1080');
-                """).executeUpdate();
-
-        entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('general', 'integrations', 'STRING', 'jira.username', 'jiraUser');
-                """).executeUpdate();
-
-        entityManager.createNativeQuery("""
-                        INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                            ('general', 'integrations', 'ENCRYPTEDSTRING', 'jira.password', :encryptedPassword);
-                        """)
-                .setParameter("encryptedPassword", secretDecryptor.encryptAsString(jiraPassword))
-                .executeUpdate();
-
-        final var notification = Notification.newBuilder()
-                .setScope(SCOPE_PORTFOLIO)
-                .setGroup(GROUP_NEW_VULNERABILITY)
-                .setLevel(LEVEL_INFORMATIONAL)
-                .setTitle("Test Notification")
-                .setContent("This is only a test")
-                .build();
-
-        final JsonObject config = getConfig("http://localhost:1080");
-        publisher.inform(createPublisherContext(notification), notification, config);
-        mockServer.verify(request);
+        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Bearer jiraToken"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields" : {
+                            "project" : {
+                              "key" : "PROJECT"
+                            },
+                            "issuetype" : {
+                              "name" : "Task"
+                            },
+                            "summary" : "[Dependency-Track] [GROUP_BOM_CONSUMED] Bill of Materials Consumed",
+                            "description" : "A CycloneDX BOM was consumed and will be processed\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_INFORMATIONAL\\n\\n"
+                          }
+                        }
+                        """)));
     }
 
-    JsonObject getConfig(String destination) {
-        return Json.createObjectBuilder()
-                .add(Publisher.CONFIG_TEMPLATE_MIME_TYPE_KEY, "testType")
-                .add(Publisher.CONFIG_TEMPLATE_KEY, "templateContent")
-                .add(Publisher.CONFIG_DESTINATION, destination)
-                .addAll(Json.createObjectBuilder()
-                        .add("jiraTicketType", "Task"))
-                .build();
-    }
 }

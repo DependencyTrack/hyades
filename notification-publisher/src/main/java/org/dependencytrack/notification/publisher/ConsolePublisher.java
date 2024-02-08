@@ -22,6 +22,7 @@ import io.pebbletemplates.pebble.PebbleEngine;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.json.JsonObject;
 import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.notification.v1.Level;
@@ -37,12 +38,14 @@ import java.io.PrintStream;
 public class ConsolePublisher implements Publisher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsolePublisher.class);
-    private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
 
-    final ConfigPropertyRepository configPropertyRepository;
+    private final PebbleEngine pebbleEngine;
+    private final ConfigPropertyRepository configPropertyRepository;
 
     @Inject
-    public ConsolePublisher(final ConfigPropertyRepository configPropertyRepository){
+    public ConsolePublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine,
+                            final ConfigPropertyRepository configPropertyRepository){
+        this.pebbleEngine = pebbleEngine;
         this.configPropertyRepository = configPropertyRepository;
     }
 
@@ -65,6 +68,6 @@ public class ConsolePublisher implements Publisher {
 
     @Override
     public PebbleEngine getTemplateEngine() {
-        return ENGINE;
+        return pebbleEngine;
     }
 }

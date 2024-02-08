@@ -18,123 +18,196 @@
  */
 package org.dependencytrack.notification.publisher;
 
-
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.google.protobuf.Any;
-import com.google.protobuf.util.Timestamps;
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
-import org.dependencytrack.notification.util.WireMockTestResource;
-import org.dependencytrack.proto.notification.v1.BackReference;
-import org.dependencytrack.proto.notification.v1.Bom;
-import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
-import org.dependencytrack.proto.notification.v1.Component;
-import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
-import org.dependencytrack.proto.notification.v1.Notification;
-import org.dependencytrack.proto.notification.v1.Project;
-import org.dependencytrack.proto.notification.v1.Vulnerability;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.createPublisherContext;
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.getConfig;
-import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSED;
-import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
-import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
-import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 
 @QuarkusTest
-@QuarkusTestResource(WireMockTestResource.class)
-class WebhookPublisherTest {
+class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher> {
 
-    @Inject
-    WebhookPublisher publisher;
-
-    @WireMockTestResource.InjectWireMock
-    WireMockServer wireMockServer;
-
-    @AfterEach
-    void afterEach() {
-        wireMockServer.resetAll();
-    }
-
-    @Test
+    @Override
     @TestTransaction
-    void testPublishNewVulnerabilityNotification() throws Exception {
-        wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(202)));
-
-        final var notification = Notification.newBuilder()
-                .setScope(SCOPE_PORTFOLIO)
-                .setLevel(LEVEL_INFORMATIONAL)
-                .setGroup(GROUP_NEW_VULNERABILITY)
-                .setTitle("Test Notification")
-                .setContent("This is only a test")
-                .setTimestamp(Timestamps.fromSeconds(666))
-                .setSubject(Any.pack(NewVulnerabilitySubject.newBuilder()
-                        .setComponent(createComponent())
-                        .setProject(createProject())
-                        .setVulnerability(createVulnerability())
-                        .setAffectedProjectsReference(BackReference.newBuilder()
-                                .setApiUri("apiUriValue")
-                                .setFrontendUri("frontendUriValue"))
-                        .setVulnerabilityAnalysisLevel("BOM_UPLOAD")
-                        .addAffectedProjects(createProject())
-                        .build()))
-                .build();
-
-        publisher.inform(createPublisherContext(notification), notification, getPublisherConfig());
+    void testInformWithBomConsumedNotification() throws Exception {
+        super.testInformWithBomConsumedNotification();
 
         wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification": {
+                            "level": "LEVEL_INFORMATIONAL",
+                            "scope": "SCOPE_PORTFOLIO",
+                            "group": "GROUP_BOM_CONSUMED",
+                            "timestamp": "1970-01-01T18:31:06.000Z",
+                            "title": "Bill of Materials Consumed",
+                            "content": "A CycloneDX BOM was consumed and will be processed",
+                            "subject": {
+                              "project": {
+                                "uuid": "c9c9539a-e381-4b36-ac52-6a7ab83b2c95",
+                                "name": "projectName",
+                                "version": "projectVersion",
+                                "description": "projectDescription",
+                                "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "tags": [
+                                  "tag1",
+                                  "tag2"
+                                ]
+                              },
+                              "bom": {
+                                "content": "bomContent",
+                                "format": "CycloneDX",
+                                "specVersion": "1.5"
+                              }
+                            }
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotification() throws Exception {
+        super.testInformWithBomProcessingFailedNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification" : {
+                            "level": "LEVEL_ERROR",
+                            "scope": "SCOPE_PORTFOLIO",
+                            "group": "GROUP_BOM_PROCESSING_FAILED",
+                            "timestamp": "1970-01-01T18:31:06.000Z",
+                            "title": "Bill of Materials Processing Failed",
+                            "content": "An error occurred while processing a BOM",
+                            "subject": {
+                              "project": {
+                                "uuid": "c9c9539a-e381-4b36-ac52-6a7ab83b2c95",
+                                "name": "projectName",
+                                "version": "projectVersion",
+                                "description": "projectDescription",
+                                "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "tags": [
+                                  "tag1",
+                                  "tag2"
+                                ]
+                              },
+                              "bom": {
+                                "content": "bomContent",
+                                "format": "CycloneDX",
+                                "specVersion": "1.5"
+                              },
+                              "cause": "cause"
+                            }
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
+        super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification" : {
+                            "level": "LEVEL_ERROR",
+                            "scope": "SCOPE_PORTFOLIO",
+                            "group": "GROUP_BOM_PROCESSING_FAILED",
+                            "timestamp": "1970-01-01T18:31:06.000Z",
+                            "title": "Bill of Materials Processing Failed",
+                            "content": "An error occurred while processing a BOM",
+                            "subject": {
+                              "project": {
+                                "uuid": "c9c9539a-e381-4b36-ac52-6a7ab83b2c95",
+                                "name": "projectName",
+                                "version": "projectVersion",
+                                "description": "projectDescription",
+                                "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "tags": [
+                                  "tag1",
+                                  "tag2"
+                                ]
+                              },
+                              "bom": {
+                                "content": "bomContent",
+                                "format": "CycloneDX"
+                              },
+                              "cause": "cause"
+                            }
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithDataSourceMirroringNotification() throws Exception {
+        super.testInformWithDataSourceMirroringNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification": {
+                            "level": "LEVEL_ERROR",
+                            "scope": "SCOPE_SYSTEM",
+                            "group": "GROUP_DATASOURCE_MIRRORING",
+                            "timestamp": "1970-01-01T18:31:06.000Z",
+                            "title": "GitHub Advisory Mirroring",
+                            "content": "An error occurred mirroring the contents of GitHub Advisories. Check log for details.",
+                            "subject": null
+                          }
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithNewVulnerabilityNotification() throws Exception {
+        super.testInformWithNewVulnerabilityNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
                           "notification": {
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_NEW_VULNERABILITY",
-                            "timestamp": "1970-01-01T00:11:06.000Z",
-                            "title": "Test Notification",
-                            "content": "This is only a test",
+                            "timestamp": "1970-01-01T18:31:06.000Z",
+                            "title": "New Vulnerability Identified",
+                            "content": "",
                             "subject": {
                               "component": {
-                                "uuid": "3c87b90d-d08a-492a-855e-d6e9d8b63a18",
-                                "group": "componentGroup",
+                                "uuid": "94f87321-a5d1-4c2f-b2fe-95165debebc6",
                                 "name": "componentName",
-                                "version": "componentVersion",
-                                "purl": "componentPurl",
-                                "md5": "componentMd5",
-                                "sha1": "componentSha1",
-                                "sha256": "componentSha256",
-                                "sha512": "componentSha512"
+                                "version": "componentVersion"
                               },
                               "project": {
-                                "uuid": "0957687b-3482-4891-a836-dad37e9b804a",
+                                "uuid": "c9c9539a-e381-4b36-ac52-6a7ab83b2c95",
                                 "name": "projectName",
                                 "version": "projectVersion",
                                 "description": "projectDescription",
-                                "purl": "projectPurl",
-                                "tags": [
-                                  "tag-a",
-                                  "tag-b"
-                                ]
+                                "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "tags": [ "tag1", "tag2" ]
                               },
+                              "vulnerabilityAnalysisLevel": "BOM_UPLOAD_ANALYSIS",
                               "vulnerability": {
-                                "uuid": "418d9be1-f888-446a-8f03-f3253e5b5361",
+                                "uuid": "bccec5d5-ec21-4958-b3e8-22a7a866a05a",
                                 "vulnId": "INT-001",
                                 "source": "INTERNAL",
                                 "aliases": [
                                   {
-                                    "vulnId": "OSV-001",
-                                    "source": "OSV"
+                                    "source": "OSV",
+                                    "vulnId": "OSV-001"
                                   }
                                 ],
                                 "title": "vulnerabilityTitle",
@@ -146,86 +219,34 @@ class WebhookPublisherTest {
                                 "owaspRRLikelihood": 1.1,
                                 "owaspRRTechnicalImpact": 2.2,
                                 "owaspRRBusinessImpact": 3.3,
+                                "severity": "MEDIUM",
                                 "cwes": [
                                   {
                                     "cweId": 666,
                                     "name": "Operation on Resource in Wrong Phase of Lifetime"
+                                  },
+                                  {
+                                    "cweId": 777,
+                                    "name": "Regular Expression without Anchors"
                                   }
                                 ]
                               },
-                              "affectedProjectsReference": {
-                                "apiUri": "apiUriValue",
-                                "frontendUri": "frontendUriValue"
-                              },
-                              "vulnerabilityAnalysisLevel": "BOM_UPLOAD",
                               "affectedProjects": [
                                 {
-                                  "uuid": "0957687b-3482-4891-a836-dad37e9b804a",
+                                  "uuid": "c9c9539a-e381-4b36-ac52-6a7ab83b2c95",
                                   "name": "projectName",
                                   "version": "projectVersion",
                                   "description": "projectDescription",
-                                  "purl": "projectPurl",
+                                  "purl": "pkg:maven/org.acme/projectName@projectVersion",
                                   "tags": [
-                                    "tag-a",
-                                    "tag-b"
+                                    "tag1",
+                                    "tag2"
                                   ]
                                 }
-                              ]
-                            }
-                          }
-                        }
-                        """)));
-    }
-
-    @Test
-    @TestTransaction
-    void testPublishBomProcessedNotification() throws Exception {
-        wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(202)));
-
-        final var notification = Notification.newBuilder()
-                .setScope(SCOPE_PORTFOLIO)
-                .setLevel(LEVEL_INFORMATIONAL)
-                .setGroup(GROUP_BOM_PROCESSED)
-                .setTitle("Test Notification")
-                .setContent("This is only a test")
-                .setTimestamp(Timestamps.fromSeconds(666))
-                .setSubject(Any.pack(BomConsumedOrProcessedSubject.newBuilder()
-                        .setProject(createProject())
-                        .setBom(Bom.newBuilder()
-                                .setContent("bomContent")
-                                .setFormat("bomFormat")
-                                .setSpecVersion("bomSpecVersion"))
-                        .build()))
-                .build();
-
-        publisher.inform(createPublisherContext(notification), notification, getPublisherConfig());
-
-        wireMockServer.verify(postRequestedFor(anyUrl())
-                .withRequestBody(equalToJson("""
-                        {
-                          "notification": {
-                            "level": "LEVEL_INFORMATIONAL",
-                            "scope": "SCOPE_PORTFOLIO",
-                            "group": "GROUP_BOM_PROCESSED",
-                            "timestamp": "1970-01-01T00:11:06.000Z",
-                            "title": "Test Notification",
-                            "content": "This is only a test",
-                            "subject": {
-                              "project": {
-                                "uuid": "0957687b-3482-4891-a836-dad37e9b804a",
-                                "name": "projectName",
-                                "version": "projectVersion",
-                                "description": "projectDescription",
-                                "purl": "projectPurl",
-                                "tags": [
-                                  "tag-a",
-                                  "tag-b"
-                                ]
-                              },
-                              "bom": {
-                                "content": "bomContent",
-                                "format": "bomFormat",
-                                "specVersion": "bomSpecVersion"
+                              ],
+                              "affectedProjectsReference" : {
+                                "apiUri" : "/api/v1/foo",
+                                "frontendUri" : "/foo"
                               }
                             }
                           }
@@ -233,56 +254,106 @@ class WebhookPublisherTest {
                         """)));
     }
 
-    private JsonObject getPublisherConfig() {
-        return getConfig("WEBHOOK", wireMockServer.baseUrl());
-    }
+    @Override
+    @TestTransaction
+    void testInformWithProjectAuditChangeNotification() throws Exception {
+        super.testInformWithProjectAuditChangeNotification();
 
-    private Component createComponent() {
-        return Component.newBuilder()
-                .setUuid("3c87b90d-d08a-492a-855e-d6e9d8b63a18")
-                .setGroup("componentGroup")
-                .setName("componentName")
-                .setVersion("componentVersion")
-                .setPurl("componentPurl")
-                .setMd5("componentMd5")
-                .setSha1("componentSha1")
-                .setSha256("componentSha256")
-                .setSha512("componentSha512")
-                .build();
-    }
-
-    private Project createProject() {
-        return Project.newBuilder()
-                .setUuid("0957687b-3482-4891-a836-dad37e9b804a")
-                .setName("projectName")
-                .setVersion("projectVersion")
-                .setDescription("projectDescription")
-                .setPurl("projectPurl")
-                .addAllTags(List.of("tag-a", "tag-b"))
-                .build();
-    }
-
-    private Vulnerability createVulnerability() {
-        return Vulnerability.newBuilder()
-                .setUuid("418d9be1-f888-446a-8f03-f3253e5b5361")
-                .setVulnId("INT-001")
-                .setSource("INTERNAL")
-                .addCwes(Vulnerability.Cwe.newBuilder()
-                        .setName("Operation on Resource in Wrong Phase of Lifetime")
-                        .setCweId(666))
-                .addAliases(Vulnerability.Alias.newBuilder()
-                        .setId("OSV-001")
-                        .setSource("OSV"))
-                .setTitle("vulnerabilityTitle")
-                .setSubTitle("vulnerabilitySubTitle")
-                .setDescription("vulnerabilityDescription")
-                .setRecommendation("vulnerabilityRecommendation")
-                .setCvssV2(5.5)
-                .setCvssV3(6.6)
-                .setOwaspRrLikelihood(1.1)
-                .setOwaspRrTechnicalImpact(2.2)
-                .setOwaspRrBusinessImpact(3.3)
-                .build();
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification": {
+                            "level": "LEVEL_INFORMATIONAL",
+                            "scope": "SCOPE_PORTFOLIO",
+                            "group": "GROUP_PROJECT_AUDIT_CHANGE",
+                            "timestamp": "1970-01-01T18:31:06.000Z",
+                            "title": "Analysis Decision: Finding Suppressed",
+                            "content": "",
+                            "subject": {
+                              "component": {
+                                "uuid": "94f87321-a5d1-4c2f-b2fe-95165debebc6",
+                                "name": "componentName",
+                                "version": "componentVersion"
+                              },
+                              "project" : {
+                                "uuid" : "c9c9539a-e381-4b36-ac52-6a7ab83b2c95",
+                                "name" : "projectName",
+                                "version" : "projectVersion",
+                                "description" : "projectDescription",
+                                "purl" : "pkg:maven/org.acme/projectName@projectVersion",
+                                "tags" : [ "tag1", "tag2" ]
+                              },
+                              "vulnerability": {
+                                "uuid": "bccec5d5-ec21-4958-b3e8-22a7a866a05a",
+                                "vulnId": "INT-001",
+                                "source": "INTERNAL",
+                                "aliases": [
+                                  {
+                                    "source": "OSV",
+                                    "vulnId": "OSV-001"
+                                  }
+                                ],
+                                "title": "vulnerabilityTitle",
+                                "subtitle": "vulnerabilitySubTitle",
+                                "description": "vulnerabilityDescription",
+                                "recommendation": "vulnerabilityRecommendation",
+                                "cvssv2": 5.5,
+                                "cvssv3": 6.6,
+                                "owaspRRLikelihood": 1.1,
+                                "owaspRRTechnicalImpact": 2.2,
+                                "owaspRRBusinessImpact": 3.3,
+                                "severity": "MEDIUM",
+                                "cwes": [
+                                  {
+                                    "cweId": 666,
+                                    "name": "Operation on Resource in Wrong Phase of Lifetime"
+                                  },
+                                  {
+                                    "cweId": 777,
+                                    "name": "Regular Expression without Anchors"
+                                  }
+                                ]
+                              },
+                              "analysis": {
+                                "suppressed": true,
+                                "state": "FALSE_POSITIVE",
+                                "component" : {
+                                 "uuid" : "94f87321-a5d1-4c2f-b2fe-95165debebc6",
+                                 "name" : "componentName",
+                                 "version" : "componentVersion"
+                                },
+                                "vulnerability" : {
+                                  "uuid" : "bccec5d5-ec21-4958-b3e8-22a7a866a05a",
+                                  "vulnId" : "INT-001",
+                                  "source" : "INTERNAL",
+                                  "aliases" : [ {
+                                    "vulnId" : "OSV-001",
+                                    "source" : "OSV"
+                                  } ],
+                                  "title" : "vulnerabilityTitle",
+                                  "subtitle" : "vulnerabilitySubTitle",
+                                  "description" : "vulnerabilityDescription",
+                                  "recommendation" : "vulnerabilityRecommendation",
+                                  "cvssv2" : 5.5,
+                                  "cvssv3" : 6.6,
+                                  "owaspRRLikelihood" : 1.1,
+                                  "owaspRRTechnicalImpact" : 2.2,
+                                  "owaspRRBusinessImpact" : 3.3,
+                                  "severity" : "MEDIUM",
+                                  "cwes" : [ {
+                                    "cweId" : 666,
+                                    "name" : "Operation on Resource in Wrong Phase of Lifetime"
+                                  }, {
+                                    "cweId" : 777,
+                                    "name" : "Regular Expression without Anchors"
+                                  } ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                        """)));
     }
 
 }
