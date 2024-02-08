@@ -111,7 +111,7 @@ public class NotificationRule extends PanacheEntityBase {
      * @since 4.10.0
      */
     @Column(name = "LOG_SUCCESSFUL_PUBLISH")
-    private boolean logSuccessfulPublish;
+    private Boolean logSuccessfulPublish;
 
     public long getId() {
         return id;
@@ -138,7 +138,7 @@ public class NotificationRule extends PanacheEntityBase {
     }
 
     public boolean isLogSuccessfulPublish() {
-        return logSuccessfulPublish;
+        return logSuccessfulPublish != null ? logSuccessfulPublish : false;
     }
 
     public void setLogSuccessfulPublish(final boolean logSuccessfulPublish) {
