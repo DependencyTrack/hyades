@@ -51,4 +51,4 @@ secret.key
 apiserver-data/
 
 # Generated test fixtures
-load-tests/fixtures/generated
+testdata/boms/generated/*.cdx.json
