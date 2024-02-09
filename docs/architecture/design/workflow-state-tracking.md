@@ -200,9 +200,7 @@ Each step of the workflow will be represented in a dedicated row. This allows us
 
 </details>
 
-Where applicable, the "detailed" status of a step is tracked in a dedicated table. For example, for vulnerability analysis:
-
-https://github.com/DependencyTrack/hyades/blob/e70c47fff359df1fb8150805d5b0c2acebe85ed3/commons-persistence/src/main/resources/migrations/postgres/V0.0.1__API-Server-4.8.2.sql#L158-L171
+Where applicable, the "detailed" status of a step is tracked in a dedicated table.
 
 #### Retention
 
