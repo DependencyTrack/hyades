@@ -55,8 +55,24 @@ To read more about the individual services, refer to their respective `REAMDE.md
 
 ## Great, can I try it? 🙌
 
-Yes! We prepared demo setup that you can use to play around with Hyades.  
-Check out 👉 [`DEMO.md`](DEMO.md) 👈 for details!
+Yes! And all you need to kick the tires is [Docker Compose](https://docs.docker.com/compose/install/)!
+
+```shell
+docker compose --profile demo up -d --pull always
+```
+
+This will launch all required services, and expose the following endpoints:
+
+| Service            | URL                    |
+|:-------------------|:-----------------------|
+| API Server         | http://localhost:8080  |
+| Frontend           | http://localhost:8081  |
+| Redpanda Console   | http://localhost:28080 |
+| PostgreSQL         | `localhost:5432`       |
+| Redpanda Kafka API | `localhost:9092`       |
+
+Simply navigate to the [frontend](http://localhost:8081) to get started!  
+The initial admin credentials are `admin` / `admin` 🌚
 
 ## Deployment 🚢
 
