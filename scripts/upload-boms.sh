@@ -79,7 +79,7 @@ done
 
 bearer_token="$(login "${api_url:-$DEFAULT_API_URL}" "${username:-$DEFAULT_USERNAME}" "${password:-$DEFAULT_PASSWORD}")"
 if [[ $bearer_token != ey* ]]; then
-  echo "[x] did not receive bearer token; go this instead: ${bearer_token}" 1>&2
+  echo "[x] did not receive bearer token; got this instead: ${bearer_token}" 1>&2
   exit 1
 fi
 
