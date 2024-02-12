@@ -2,35 +2,42 @@ version: "3"
 
 services:
   notification-publisher:
-    image: ghcr.io/dependencytrack/hyades-notification-publisher:latest
-    # We also provide a native version of this application with lower resource footprint!
-    # image: ghcr.io/dependencytrack/hyades-notification-publisher:latest-native
+    image: ghcr.io/dependencytrack/hyades-notification-publisher:snapshot-native
     depends_on:
-      - postgres
-      - redpanda
+      postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
+      secret-init:
+        condition: service_completed_successfully
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+      SECRET_KEY_PATH: "/var/run/secrets/secret.key"
     ports:
       # Dynamic host port binding to allow for scaling of the service.
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8090"
     profiles:
       - demo
+    volumes:
+      - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
 
   repo-meta-analyzer:
-    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest
-    # We also provide a native version of this application with lower resource footprint!
-    # image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:latest-native
+    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot-native
     depends_on:
-      - postgres
-      - redpanda
+      postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
+      secret-init:
+        condition: service_completed_successfully
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "6" # Default number of input partitions is 6
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
@@ -42,19 +49,19 @@ services:
     profiles:
       - demo
     volumes:
-      - "./secret.key:/var/run/secrets/secret.key:ro"
+      - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
 
   vuln-analyzer:
-    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest
-    # We also provide a native version of this application with lower resource footprint!
-    # image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:latest-native
+    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot-native
     depends_on:
-      - postgres
-      - redpanda
+      postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "12" # Default number of input partitions is 12
       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       QUARKUS_DATASOURCE_USERNAME: "dtrack"
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
@@ -74,16 +81,15 @@ services:
       - "8092"
     profiles:
       - demo
-      - load-test
     restart: unless-stopped
 
   mirror-service:
-    image: ghcr.io/dependencytrack/hyades-mirror-service:latest
-    # We also provide a native version of this application with lower resource footprint!
-    # image: ghcr.io/dependencytrack/hyades-mirror-service:latest-native
+    image: ghcr.io/dependencytrack/hyades-mirror-service:snapshot-native
     depends_on:
-      - postgres
-      - redpanda
+      postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
@@ -96,18 +102,21 @@ services:
     restart: unless-stopped
 
   apiserver:
-    image: ghcr.io/dependencytrack/hyades-apiserver:latest
+    image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
     container_name: dt-apiserver
     depends_on:
-      - postgres
-      - redpanda
+      postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
+      secret-init:
+        condition: service_completed_successfully
     environment:
       # Limit maximum heap size to 2GB.
       # Default would be 90% of available memory,
       # which can cause problems on some workstations.
       # For production deployments, the default should be used.
       EXTRA_JAVA_OPTIONS: "-Xmx2g"
-      SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
       ALPINE_DATABASE_MODE: "external"
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       ALPINE_DATABASE_DRIVER: "org.postgresql.Driver"
@@ -116,21 +125,20 @@ services:
       ALPINE_METRICS_ENABLED: "true"
       ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_NUM_STREAM_THREADS: "15" # Default number of input partitions is 15
+      KAFKA_NUM_STREAM_THREADS: "12" # Default number of input partitions is 12
       KAFKA_STREAMS_METRICS_RECORDING_LEVEL: "DEBUG"
       INTEGRITY_CHECK_ENABLED: "true"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
       - "apiserver-data:/data"
-      - "./secret.key:/var/run/secrets/secret.key:ro"
+      - "secret-data:/var/run/secrets:ro"
     profiles:
       - demo
-      - load-test
     restart: unless-stopped
 
   frontend:
-    image: ghcr.io/dependencytrack/hyades-frontend:4.9.1
+    image: ghcr.io/dependencytrack/hyades-frontend:snapshot
     container_name: dt-frontend
     environment:
       API_BASE_URL: "http://localhost:8080"
@@ -147,6 +155,11 @@ services:
       POSTGRES_DB: "dtrack"
       POSTGRES_USER: "dtrack"
       POSTGRES_PASSWORD: "dtrack"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "dtrack" ]
+      interval: 15s
+      timeout: 3s
+      retries: 3
     ports:
       - "5432:5432"
     volumes:
@@ -176,15 +189,16 @@ services:
       - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
       - --advertise-pandaproxy-addr
       - PLAINTEXT://dt-redpanda:28082,OUTSIDE://localhost:8082
+    healthcheck:
+      test: [ "CMD-SHELL", "rpk", "cluster", "health", "--exit-when-healthy" ]
+      interval: 15s
+      timeout: 3s
+      retries: 3
     ports:
       # Kafka API (for use from localhost)
       - "9092:9092"
       # Kafka API (for use from minikube)
       - "9093:9093"
-      # Schema Registry (currently not used)
-      # - "127.0.0.1:28081:8081"
-      # Pandaproxy (REST API, currently not used)
-      # - "127.0.0.1:28082:8082"
     volumes:
       - "redpanda-data:/var/lib/redpanda/data"
     restart: unless-stopped
@@ -193,7 +207,8 @@ services:
     image: docker.redpanda.com/vectorized/redpanda:v23.3.3
     container_name: dt-redpanda-init
     depends_on:
-      - redpanda
+      redpanda:
+        condition: service_healthy
     entrypoint: "/bin/bash"
     command: "/tmp/create-topics.sh"
     user: "0" # Ensure user can read create-topics.sh
@@ -220,7 +235,8 @@ services:
     entrypoint: "/bin/sh"
     command: "-c 'echo \"$$CONSOLE_CONFIG_FILE\" > \"$$CONFIG_FILEPATH\"; /app/console'"
     depends_on:
-      - redpanda
+      redpanda:
+        condition: service_healthy
     environment:
       CONFIG_FILEPATH: "/tmp/config.yml"
       CONSOLE_CONFIG_FILE: |
@@ -282,6 +298,15 @@ services:
       - "./proto/src/main/proto:/etc/protos:ro"
     restart: unless-stopped
 
+  secret-init:
+    image: alpine:latest
+    command: "/bin/sh -c 'if [ ! -f /tmp/secret/secret.key ]; then apk add --no-cache openssl && openssl rand 32 > /tmp/secret/secret.key; fi'"
+    profiles:
+      - demo
+    volumes:
+      - "secret-data:/tmp/secret"
+    restart: on-failure
+
   prometheus:
     image: prom/prometheus:v2.45.0
     container_name: dt-prometheus
@@ -291,7 +316,6 @@ services:
       - "./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
       - "prometheus-data:/prometheus"
     profiles:
-      - load-test
       - monitoring
     restart: unless-stopped
 
@@ -310,22 +334,12 @@ services:
       - "./monitoring/grafana/dashboards:/etc/dashboards:ro"
       - "./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro"
     profiles:
-      - load-test
       - monitoring
     restart: unless-stopped
 
-  nginx:
-    image: nginx:1.25.2-alpine
-    ports:
-      - "80:80"
-    volumes:
-      - "../../bundles:/usr/share/nginx/html/bundles:ro"
-    restart: unless-stopped
-    profiles:
-      - vulnerability-cel-policy
-
 volumes:
   apiserver-data: { }
+  secret-data: { }
   postgres-data: { }
   redpanda-data: { }
   grafana-data: { }

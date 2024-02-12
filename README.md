@@ -55,8 +55,24 @@ To read more about the individual services, refer to their respective `REAMDE.md
 
 ## Great, can I try it? 🙌
 
-Yes! We prepared demo setup that you can use to play around with Hyades.  
-Check out 👉 [`DEMO.md`](DEMO.md) 👈 for details!
+Yes! And all you need to kick the tires is [Docker Compose](https://docs.docker.com/compose/install/)!
+
+```shell
+docker compose --profile demo up -d --pull always
+```
+
+This will launch all required services, and expose the following endpoints:
+
+| Service            | URL                    |
+|:-------------------|:-----------------------|
+| API Server         | http://localhost:8080  |
+| Frontend           | http://localhost:8081  |
+| Redpanda Console   | http://localhost:28080 |
+| PostgreSQL         | `localhost:5432`       |
+| Redpanda Kafka API | `localhost:9092`       |
+
+Simply navigate to the [frontend](http://localhost:8081) to get started!  
+The initial admin credentials are `admin` / `admin` 🌚
 
 ## Deployment 🚢
 
@@ -70,18 +86,6 @@ The chart does *not* include:
 
 Helm charts to deploy Kafka brokers to Kubernetes are provided by both [Strimzi](https://strimzi.io/)
 and [Redpanda](https://github.com/redpanda-data/helm-charts).
-
-### External file server
-Currently we support providing policy bundles on an external file server that apiserver polls on regular intervals to check if a bundle is posted or an existing bundle has been modified.
-If a change is detected, the apiserver knowledge base is updated with the latest etag of the remote bundle and then the same is pulled and parsed to store as a global vulnerability policy.
-To test/ simulate this behavior, there is an nginx server bundled in the docker-compose file. <br/>
-To start it off you need to run:<br/>
-```shell
-docker compose --profile vulnerability-cel-policy up
-```
-**Currently, this nginx server needs the zip to be present in this relative location: ../../bundles, ie, two levels up the hyades directory**. You can place the policy bunde here which will get copied over to nginx's internal dictory once it is up with docker compose.
-Then the same will get polled and picked by apiserver for parsing.<br/>
-To change this location to something else, you can modify the volumes section of the nginx service in the docker-compose file.
 
 ### Minikube
 
