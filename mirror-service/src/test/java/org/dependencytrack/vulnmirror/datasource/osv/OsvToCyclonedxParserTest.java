@@ -631,6 +631,15 @@ class OsvToCyclonedxParserTest {
                         """);
     }
 
+    @Test // https://github.com/DependencyTrack/dependency-track/issues/3185
+    public void testIssue3185() throws Exception {
+        String jsonFile = "src/test/resources/datasource/osv/osv-CVE-2016-10012.json";
+        String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
+        JSONObject jsonObject = new JSONObject(jsonString);
+        var bov = new OsvToCyclonedxParser(mapper).parse(jsonObject, false);
+        assertNotNull(bov);
+    }
+
     private static JSONObject getOsvForTestingFromFile(String jsonFile) throws IOException {
         String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile)));
         return new JSONObject(jsonString);
