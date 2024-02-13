@@ -245,8 +245,8 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                 }
                               ],
                               "affectedProjectsReference" : {
-                                "apiUri" : "/api/v1/foo",
-                                "frontendUri" : "/foo"
+                                "apiUri" : "/api/v1/vulnerability/source/INTERNAL/vuln/INT-001/projects",
+                                "frontendUri" : "/vulnerabilities/INTERNAL/INT-001/affectedProjects"
                               }
                             }
                           }
