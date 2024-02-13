@@ -71,8 +71,8 @@ public class VulnerableSoftwareRepository implements PanacheRepository<Vulnerabl
                 // | :-- | :------------- | :--------- | :------- |
                 // | 1   | ANY            | ANY        | EQUAL    |
                 // | 5   | NA             | ANY        | SUBSET   |
-                // | 13  | i              | ANY        | SUPERSET |
-                // | 15  | m + wild cards | ANY        | SUPERSET |
+                // | 13  | i              | ANY        | SUBSET   |
+                // | 15  | m + wild cards | ANY        | SUBSET   |
                 cpeQueryFilterParts.add("part is not null");
             }
 
