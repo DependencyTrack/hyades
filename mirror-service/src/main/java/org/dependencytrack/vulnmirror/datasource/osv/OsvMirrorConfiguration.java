@@ -2,7 +2,6 @@ package org.dependencytrack.vulnmirror.datasource.osv;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Named;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.dependencytrack.vulnmirror.datasource.util.LoggingRejectedExecutionHandler;
 import org.dependencytrack.vulnmirror.datasource.util.LoggingUncaughtExceptionHandler;
@@ -17,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 class OsvMirrorConfiguration {
 
     @Produces
+    @ForOsvMirror
     @ApplicationScoped
-    @Named("osvExecutorService")
     ExecutorService executorService() {
         final Logger osvMirrorLogger = LoggerFactory.getLogger(OsvMirror.class);
 

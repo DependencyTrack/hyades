@@ -8,7 +8,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Named;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.dependencytrack.vulnmirror.datasource.util.LoggingRejectedExecutionHandler;
 import org.dependencytrack.vulnmirror.datasource.util.LoggingUncaughtExceptionHandler;
@@ -26,8 +25,8 @@ import static io.github.resilience4j.core.IntervalFunction.ofExponentialBackoff;
 class NvdMirrorConfiguration {
 
     @Produces
+    @ForNvdMirror
     @ApplicationScoped
-    @Named("nvdExecutorService")
     ExecutorService executorService() {
         final Logger nvdMirrorLogger = LoggerFactory.getLogger(NvdMirror.class);
 
@@ -41,8 +40,8 @@ class NvdMirrorConfiguration {
     }
 
     @Produces
+    @ForNvdMirror
     @ApplicationScoped
-    @Named("nvdDurationTimer")
     Timer durationTimer(final MeterRegistry meterRegistry) {
         return Timer.builder("mirror.nvd.duration")
                 .description("Duration of NVD mirroring operations")
@@ -50,8 +49,8 @@ class NvdMirrorConfiguration {
     }
 
     @Produces
+    @ForNvdMirror
     @ApplicationScoped
-    @Named("nvdMirrorRetry")
     Retry createRetry(NvdConfig config) {
         final RetryRegistry retryRegistry = RetryRegistry.of(RetryConfig.custom().
                 intervalFunction(ofExponentialBackoff(
@@ -61,6 +60,7 @@ class NvdMirrorConfiguration {
                 .retryOnException(NvdApiException.class::isInstance)
                 .retryOnResult(response -> false)
                 .build());
+
         return retryRegistry.retry("nvdMirrorRetry");
     }
 }

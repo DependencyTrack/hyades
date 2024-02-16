@@ -11,6 +11,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import net.javacrumbs.jsonunit.core.Option;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -20,9 +21,9 @@ import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.proto.KafkaProtobufSerde;
+import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.vulnmirror.TestConstants;
 import org.hamcrest.Matchers;
-import org.dependencytrack.proto.notification.v1.Notification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -59,6 +60,7 @@ class NvdMirrorTest {
     NvdApiClientFactory apiClientFactoryMock;
 
     @Inject
+    @Default
     ObjectMapper objectMapper;
 
     @InjectKafkaCompanion

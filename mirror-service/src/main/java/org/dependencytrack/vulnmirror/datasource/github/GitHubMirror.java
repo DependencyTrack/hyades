@@ -4,7 +4,6 @@ import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisory
 import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
@@ -36,11 +35,11 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
     private final GitHubConfig config;
 
     GitHubMirror(final GitHubApiClientFactory apiClientFactory,
-                 @Named("githubExecutorService") final ExecutorService executorService,
+                 @ForGitHubMirror final ExecutorService executorService,
                  final MirrorStateStore mirrorStateStore,
                  final VulnerabilityDigestStore vulnDigestStore,
                  final Producer<String, byte[]> kafkaProducer,
-                 @Named("githubDurationTimer") final Timer durationTimer, GitHubConfig config) {
+                 @ForGitHubMirror final Timer durationTimer, GitHubConfig config) {
         super(Datasource.GITHUB, mirrorStateStore, vulnDigestStore, kafkaProducer, GitHubMirrorState.class);
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
