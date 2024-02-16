@@ -4,7 +4,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Named;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.dependencytrack.vulnmirror.datasource.util.LoggingRejectedExecutionHandler;
 import org.dependencytrack.vulnmirror.datasource.util.LoggingUncaughtExceptionHandler;
@@ -19,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 class GitHubMirrorConfiguration {
 
     @Produces
+    @ForGitHubMirror
     @ApplicationScoped
-    @Named("githubExecutorService")
     ExecutorService executorService() {
         final Logger githubMirrorLogger = LoggerFactory.getLogger(GitHubMirror.class);
 
@@ -34,8 +33,8 @@ class GitHubMirrorConfiguration {
     }
 
     @Produces
+    @ForGitHubMirror
     @ApplicationScoped
-    @Named("githubDurationTimer")
     Timer durationTimer(final MeterRegistry meterRegistry) {
         return Timer.builder("mirror.github.duration")
                 .description("Duration of GitHub mirroring operations")

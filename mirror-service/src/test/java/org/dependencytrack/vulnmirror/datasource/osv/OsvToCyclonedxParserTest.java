@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.util.JsonFormat;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import net.javacrumbs.jsonunit.core.Option;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.cyclonedx.proto.v1_4.Vulnerability;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class OsvToCyclonedxParserTest {
 
     @Inject
-    @Named("osvObjectMapper")
+    @ForOsvMirror
     ObjectMapper mapper;
 
     @Test

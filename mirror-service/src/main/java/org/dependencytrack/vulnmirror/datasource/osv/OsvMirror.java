@@ -2,7 +2,6 @@ package org.dependencytrack.vulnmirror.datasource.osv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
@@ -40,8 +39,8 @@ public class OsvMirror extends AbstractDatasourceMirror<Void> {
     private final ObjectMapper objectMapper;
     private final OsvConfig osvConfig;
 
-    public OsvMirror(@Named("osvExecutorService") ExecutorService executorService, OsvClient client,
-                     @Named("osvObjectMapper") ObjectMapper objectMapper, final MirrorStateStore mirrorStateStore,
+    public OsvMirror(@ForOsvMirror ExecutorService executorService, OsvClient client,
+                     @ForOsvMirror ObjectMapper objectMapper, final MirrorStateStore mirrorStateStore,
                      final VulnerabilityDigestStore vulnDigestStore,
                      final Producer<String, byte[]> bovProducer, OsvConfig osvConfig) {
         super(Datasource.OSV, mirrorStateStore, vulnDigestStore, bovProducer, Void.class);

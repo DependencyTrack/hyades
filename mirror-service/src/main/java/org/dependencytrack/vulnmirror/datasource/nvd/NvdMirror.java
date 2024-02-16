@@ -5,7 +5,6 @@ import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
 import io.github.resilience4j.retry.Retry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_4.Bom;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
@@ -41,11 +40,12 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
 
 
     NvdMirror(final NvdApiClientFactory apiClientFactory,
-              @Named("nvdExecutorService") final ExecutorService executorService,
+              @ForNvdMirror final ExecutorService executorService,
               final MirrorStateStore mirrorStateStore,
               final VulnerabilityDigestStore vulnDigestStore,
               final Producer<String, byte[]> kafkaProducer,
-              @Named("nvdDurationTimer") final Timer durationTimer, @Named("nvdMirrorRetry") final Retry retry) {
+              @ForNvdMirror final Timer durationTimer,
+              @ForNvdMirror final Retry retry) {
         super(Datasource.NVD, mirrorStateStore, vulnDigestStore, kafkaProducer, NvdMirrorState.class);
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
