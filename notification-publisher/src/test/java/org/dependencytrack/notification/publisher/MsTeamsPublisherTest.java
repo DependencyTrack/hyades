@@ -20,74 +20,271 @@ package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
-import jakarta.persistence.EntityManager;
-import org.apache.http.HttpHeaders;
-import org.dependencytrack.proto.notification.v1.Group;
-import org.dependencytrack.proto.notification.v1.Level;
-import org.dependencytrack.proto.notification.v1.Notification;
-import org.dependencytrack.proto.notification.v1.Scope;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
 
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.createPublisherContext;
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.getConfig;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
-public class MsTeamsPublisherTest {
+class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher> {
 
-    @Inject
-    MsTeamsPublisher publisher;
-
-    @Inject
-    EntityManager entityManager;
-
-    private static ClientAndServer mockServer;
-
-    @BeforeAll
-    public static void beforeClass() {
-        mockServer = startClientAndServer(1060);
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        mockServer.stop();
-    }
-
-    @Test
+    @Override
     @TestTransaction
-    public void testPublish() throws Exception {
-        new MockServerClient("localhost", 1060)
-                .when(
-                        request()
-                                .withMethod("POST")
-                                .withPath("/mychannel")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                );
-        entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('msteams', 'general', 'STRING', 'base.url', 'http://localhost:1060/mychannel');
-                """).executeUpdate();
+    void testInformWithBomConsumedNotification() throws Exception {
+        super.testInformWithBomConsumedNotification();
 
-        JsonObject config = getConfig("MS_TEAMS","http://localhost:1060/mychannel");
-        final var notification = Notification.newBuilder()
-                .setScope(Scope.SCOPE_PORTFOLIO)
-                .setLevel(Level.LEVEL_INFORMATIONAL)
-                .setGroup(Group.GROUP_NEW_VULNERABILITY)
-                .setTitle("Test Notification")
-                .setContent("This is only a test")
-                .build();
-        publisher.inform(createPublisherContext(notification), notification, config);
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "@type": "MessageCard",
+                          "@context": "http://schema.org/extensions",
+                          "summary": "Bill of Materials Consumed",
+                          "title": "Bill of Materials Consumed",
+                          "sections": [
+                            {
+                              "activityTitle": "Dependency-Track",
+                              "activitySubtitle": "1970-01-01T18:31:06.000Z",
+                              "activityImage": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                              "facts": [
+                                {
+                                  "name": "Level",
+                                  "value": "LEVEL_INFORMATIONAL"
+                                },
+                                {
+                                  "name": "Scope",
+                                  "value": "SCOPE_PORTFOLIO"
+                                },
+                                {
+                                  "name": "Group",
+                                  "value": "GROUP_BOM_CONSUMED"
+                                }
+                              ],
+                              "text": "A CycloneDX BOM was consumed and will be processed"
+                            }
+                          ]
+                        }
+                        """)));
     }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotification() throws Exception {
+        super.testInformWithBomProcessingFailedNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "@type": "MessageCard",
+                          "@context": "http://schema.org/extensions",
+                          "summary": "Bill of Materials Processing Failed",
+                          "title": "Bill of Materials Processing Failed",
+                          "sections": [
+                            {
+                              "activityTitle": "Dependency-Track",
+                              "activitySubtitle": "1970-01-01T18:31:06.000Z",
+                              "activityImage": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                              "facts": [
+                                {
+                                  "name": "Level",
+                                  "value": "LEVEL_ERROR"
+                                },
+                                {
+                                  "name": "Scope",
+                                  "value": "SCOPE_PORTFOLIO"
+                                },
+                                {
+                                  "name": "Group",
+                                  "value": "GROUP_BOM_PROCESSING_FAILED"
+                                }
+                              ],
+                              "text": "An error occurred while processing a BOM"
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
+        super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "@type": "MessageCard",
+                          "@context": "http://schema.org/extensions",
+                          "summary": "Bill of Materials Processing Failed",
+                          "title": "Bill of Materials Processing Failed",
+                          "sections": [
+                            {
+                              "activityTitle": "Dependency-Track",
+                              "activitySubtitle": "1970-01-01T18:31:06.000Z",
+                              "activityImage": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                              "facts": [
+                                {
+                                  "name": "Level",
+                                  "value": "LEVEL_ERROR"
+                                },
+                                {
+                                  "name": "Scope",
+                                  "value": "SCOPE_PORTFOLIO"
+                                },
+                                {
+                                  "name": "Group",
+                                  "value": "GROUP_BOM_PROCESSING_FAILED"
+                                }
+                              ],
+                              "text": "An error occurred while processing a BOM"
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithDataSourceMirroringNotification() throws Exception {
+        super.testInformWithDataSourceMirroringNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "@type": "MessageCard",
+                          "@context": "http://schema.org/extensions",
+                          "summary": "GitHub Advisory Mirroring",
+                          "title": "GitHub Advisory Mirroring",
+                          "sections": [
+                            {
+                              "activityTitle": "Dependency-Track",
+                              "activitySubtitle": "1970-01-01T18:31:06.000Z",
+                              "activityImage": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                              "facts": [
+                                {
+                                  "name": "Level",
+                                  "value": "LEVEL_ERROR"
+                                },
+                                {
+                                  "name": "Scope",
+                                  "value": "SCOPE_SYSTEM"
+                                },
+                                {
+                                  "name": "Group",
+                                  "value": "GROUP_DATASOURCE_MIRRORING"
+                                }
+                              ],
+                              "text": "An error occurred mirroring the contents of GitHub Advisories. Check log for details."
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithNewVulnerabilityNotification() throws Exception {
+        super.testInformWithNewVulnerabilityNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "@type": "MessageCard",
+                          "@context": "http://schema.org/extensions",
+                          "summary": "New Vulnerability Identified",
+                          "title": "New Vulnerability Identified",
+                          "sections": [
+                            {
+                              "activityTitle": "Dependency-Track",
+                              "activitySubtitle": "1970-01-01T18:31:06.000Z",
+                              "activityImage": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                              "facts": [
+                                {
+                                  "name": "VulnID",
+                                  "value": "INT-001"
+                                },
+                                {
+                                  "name": "Severity",
+                                  "value": "MEDIUM"
+                                },
+                                {
+                                  "name": "Source",
+                                  "value": "INTERNAL"
+                                },
+                                {
+                                  "name": "Component",
+                                  "value": "componentName : componentVersion"
+                                }
+                              ],
+                              "text": ""
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithProjectAuditChangeNotification() throws Exception {
+        super.testInformWithProjectAuditChangeNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "@type": "MessageCard",
+                          "@context": "http://schema.org/extensions",
+                          "summary": "Analysis Decision: Finding Suppressed",
+                          "title": "Analysis Decision: Finding Suppressed",
+                          "sections": [
+                            {
+                              "activityTitle": "Dependency-Track",
+                              "activitySubtitle": "1970-01-01T18:31:06.000Z",
+                              "activityImage": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                              "facts": [
+                                {
+                                  "name": "Analysis Type",
+                                  "value": "Project Analysis"
+                                },
+                                {
+                                  "name": "Analysis State",
+                                  "value": "FALSE_POSITIVE"
+                                },
+                                {
+                                  "name": "Suppressed",
+                                  "value": "true"
+                                },
+                                {
+                                  "name": "VulnID",
+                                  "value": "INT-001"
+                                },
+                                {
+                                  "name": "Severity",
+                                  "value": "MEDIUM"
+                                },
+                                {
+                                  "name": "Source",
+                                  "value": "INTERNAL"
+                                },
+                                {
+                                  "name": "Component",
+                                  "value": "componentName : componentVersion"
+                                },
+                                {
+                                  "name": "Project",
+                                  "value": "pkg:maven/org.acme/projectName@projectVersion"
+                                }
+                              ],
+                              "text": ""
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
 }

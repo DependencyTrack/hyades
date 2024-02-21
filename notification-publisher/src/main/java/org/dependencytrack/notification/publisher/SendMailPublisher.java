@@ -25,6 +25,7 @@ import io.quarkus.mailer.Mailer;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import org.apache.commons.lang3.BooleanUtils;
@@ -50,17 +51,21 @@ import java.util.stream.Stream;
 public class SendMailPublisher implements Publisher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SendMailPublisher.class);
-    private static final PebbleEngine ENGINE = new PebbleEngine.Builder().newLineTrimming(false).build();
 
+    private final PebbleEngine pebbleEngine;
     private final UserRepository userRepository;
     private final ConfigPropertyRepository configPropertyRepository;
+    private final Mailer mailer;
 
     @Inject
-    Mailer mailer;
-
-    public SendMailPublisher(final UserRepository userRepository, final ConfigPropertyRepository configPropertyRepository) {
+    public SendMailPublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine,
+                             final UserRepository userRepository,
+                             final ConfigPropertyRepository configPropertyRepository,
+                             final Mailer mailer) {
+        this.pebbleEngine = pebbleEngine;
         this.userRepository = userRepository;
         this.configPropertyRepository = configPropertyRepository;
+        this.mailer = mailer;
     }
 
     public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
@@ -118,7 +123,7 @@ public class SendMailPublisher implements Publisher {
 
     @Override
     public PebbleEngine getTemplateEngine() {
-        return ENGINE;
+        return pebbleEngine;
     }
 
     public static String[] parseDestination(final JsonObject config) {

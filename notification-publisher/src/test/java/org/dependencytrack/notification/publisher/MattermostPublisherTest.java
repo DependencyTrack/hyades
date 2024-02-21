@@ -2,75 +2,109 @@ package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
-import jakarta.persistence.EntityManager;
-import org.apache.http.HttpHeaders;
-import org.dependencytrack.proto.notification.v1.Group;
-import org.dependencytrack.proto.notification.v1.Level;
-import org.dependencytrack.proto.notification.v1.Notification;
-import org.dependencytrack.proto.notification.v1.Scope;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
 
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.createPublisherContext;
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.getConfig;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
-public class MattermostPublisherTest {
+public class MattermostPublisherTest extends AbstractWebhookPublisherTest<MattermostPublisher> {
 
-    @Inject
-    EntityManager entityManager;
-
-    @Inject
-    MattermostPublisher publisher;
-
-    private static ClientAndServer mockServer;
-
-    @BeforeAll
-    public static void beforeClass() {
-        mockServer = startClientAndServer(1090);
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        mockServer.stop();
-    }
-
-    @Test
+    @Override
     @TestTransaction
-    public void testPublish() throws Exception {
-        new MockServerClient("localhost", 1090)
-                .when(
-                        request()
-                                .withMethod("POST")
-                                .withPath("/mychannel")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                );
+    void testInformWithBomConsumedNotification() throws Exception {
+        super.testInformWithBomConsumedNotification();
 
-        entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('mattermost', 'general', 'STRING', 'base.url', 'http://localhost:1090/mychannel');
-                """).executeUpdate();
-
-        JsonObject config = getConfig("MATTERMOST","http://localhost:1090/mychannel");
-        final var notification = Notification.newBuilder()
-                .setScope(Scope.SCOPE_PORTFOLIO)
-                .setLevel(Level.LEVEL_INFORMATIONAL)
-                .setGroup(Group.GROUP_NEW_VULNERABILITY)
-                .setTitle("Test Notification")
-                .setContent("This is only a test")
-                .build();
-        publisher.inform(createPublisherContext(notification), notification, config);
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "username": "Dependency Track",
+                          "icon_url": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                          "text": "#### Bill of Materials Consumed\\nA CycloneDX BOM was consumed and will be processed\\n**Project**: pkg:maven/org.acme/projectName@projectVersion\\n[View Project](https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95)"
+                        }
+                        """)));
     }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotification() throws Exception {
+        super.testInformWithBomProcessingFailedNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "username": "Dependency Track",
+                          "icon_url": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                          "text": "#### Bill of Materials Processing Failed\\nAn error occurred while processing a BOM\\n"
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
+        super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "username": "Dependency Track",
+                          "icon_url": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                          "text": "#### Bill of Materials Processing Failed\\nAn error occurred while processing a BOM\\n"
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithDataSourceMirroringNotification() throws Exception {
+        super.testInformWithDataSourceMirroringNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "username" : "Dependency Track",
+                          "icon_url" : "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                          "text" : "#### GitHub Advisory Mirroring\\nAn error occurred mirroring the contents of GitHub Advisories. Check log for details.\\n"
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithNewVulnerabilityNotification() throws Exception {
+        super.testInformWithNewVulnerabilityNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "username": "Dependency Track",
+                          "icon_url": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                          "text": "#### New Vulnerability Identified\\n\\n**Component**: componentName : componentVersion\\n**Vulnerability**: INT-001, MEDIUM\\n[View Component](https://example.com/components/94f87321-a5d1-4c2f-b2fe-95165debebc6) - [View Vulnerability](https://example.com/vulnerabilities/INTERNAL/INT-001)"
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithProjectAuditChangeNotification() throws Exception {
+        super.testInformWithProjectAuditChangeNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "username": "Dependency Track",
+                          "icon_url": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                          "text": "#### Analysis Decision: Finding Suppressed\\n\\n**Project**: pkg:maven/org.acme/projectName@projectVersion\\n**Component**: componentName : componentVersion\\n**Vulnerability**: INT-001, MEDIUM\\n**Analysis**: FALSE_POSITIVE, suppressed: true\\n[View Project](https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95) - [View Component](https://example.com/components/94f87321-a5d1-4c2f-b2fe-95165debebc6) - [View Vulnerability](https://example.com/vulnerabilities/INTERNAL/INT-001)"
+                        }
+                        """)));
+    }
+
 }

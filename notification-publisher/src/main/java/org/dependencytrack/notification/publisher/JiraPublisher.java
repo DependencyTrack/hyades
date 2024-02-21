@@ -1,10 +1,15 @@
 package org.dependencytrack.notification.publisher;
 
 import io.pebbletemplates.pebble.PebbleEngine;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.json.JsonObject;
 import org.dependencytrack.common.SecretDecryptor;
+import org.dependencytrack.persistence.model.ConfigProperty;
+import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.slf4j.Logger;
@@ -20,29 +25,43 @@ import static org.dependencytrack.persistence.model.ConfigPropertyConstants.JIRA
 public class JiraPublisher extends AbstractWebhookPublisher implements Publisher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JiraPublisher.class);
+
+    private final PebbleEngine pebbleEngine;
     private final ConfigPropertyRepository configPropertyRepository;
     private final SecretDecryptor secretDecryptor;
-    private static final PebbleEngine ENGINE = new PebbleEngine.Builder().defaultEscapingStrategy("json").build();
     private String jiraProjectKey;
     private String jiraTicketType;
 
-    public JiraPublisher(ConfigPropertyRepository configPropertyRepository, SecretDecryptor secretDecryptor) {
+    @Inject
+    public JiraPublisher(@Named("pebbleEngineJson") final PebbleEngine pebbleEngine,
+                         final ConfigPropertyRepository configPropertyRepository,
+                         final SecretDecryptor secretDecryptor) {
+        this.pebbleEngine = pebbleEngine;
         this.configPropertyRepository = configPropertyRepository;
         this.secretDecryptor = secretDecryptor;
     }
 
     @Override
     public String getDestinationUrl(final JsonObject config) {
-        final String baseUrl = config.getString(CONFIG_DESTINATION);
+        final ConfigProperty baseUrlProperty = QuarkusTransaction.joiningExisting()
+                .call(() -> configPropertyRepository.findByGroupAndName(
+                        ConfigPropertyConstants.JIRA_URL.getGroupName(),
+                        ConfigPropertyConstants.JIRA_URL.getPropertyName()
+                ));
+        if (baseUrlProperty == null) {
+            return null;
+        }
+
+        final String baseUrl = baseUrlProperty.getPropertyValue();
         return (baseUrl.endsWith("/") ? baseUrl : baseUrl + '/') + "rest/api/2/issue";
     }
 
     @Override
-    protected BasicAuthCredentials getBasicAuthCredentials() throws Exception {
-            final String jiraUsername = configPropertyRepository.findByGroupAndName(JIRA_USERNAME.getGroupName(), JIRA_USERNAME.getPropertyName()).getPropertyValue();
-            final String encryptedPassword = configPropertyRepository.findByGroupAndName(JIRA_PASSWORD.getGroupName(), JIRA_PASSWORD.getPropertyName()).getPropertyValue();
-            final String jiraPassword = (encryptedPassword == null) ? null : secretDecryptor.decryptAsString(encryptedPassword);
-            return new BasicAuthCredentials(jiraUsername, jiraPassword);
+    protected AuthCredentials getAuthCredentials() throws Exception {
+        final String jiraUsername = configPropertyRepository.findByGroupAndName(JIRA_USERNAME.getGroupName(), JIRA_USERNAME.getPropertyName()).getPropertyValue();
+        final String encryptedPassword = configPropertyRepository.findByGroupAndName(JIRA_PASSWORD.getGroupName(), JIRA_PASSWORD.getPropertyName()).getPropertyValue();
+        final String jiraPassword = (encryptedPassword == null) ? null : secretDecryptor.decryptAsString(encryptedPassword);
+        return new AuthCredentials(jiraUsername, jiraPassword);
     }
 
     @Override
@@ -69,7 +88,7 @@ public class JiraPublisher extends AbstractWebhookPublisher implements Publisher
 
     @Override
     public PebbleEngine getTemplateEngine() {
-        return ENGINE;
+        return pebbleEngine;
     }
 
     @Override

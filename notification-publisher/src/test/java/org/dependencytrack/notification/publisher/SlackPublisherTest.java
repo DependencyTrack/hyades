@@ -20,72 +20,440 @@ package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
-import jakarta.persistence.EntityManager;
-import org.apache.http.HttpHeaders;
-import org.dependencytrack.proto.notification.v1.Group;
-import org.dependencytrack.proto.notification.v1.Level;
-import org.dependencytrack.proto.notification.v1.Notification;
-import org.dependencytrack.proto.notification.v1.Scope;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
 
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
-public class SlackPublisherTest {
+public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublisher> {
 
-    @Inject
-    EntityManager entityManager;
-
-    @Inject
-    SlackPublisher publisher;
-
-    private static ClientAndServer mockServer;
-
-    @BeforeAll
-    public static void beforeClass() {
-        mockServer = startClientAndServer(1070);
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        mockServer.stop();
-    }
-
-    @Test
+    @Override
     @TestTransaction
-    public void testPublish() throws Exception {
-        new MockServerClient("localhost", 1070)
-                .when(
-                        request()
-                                .withMethod("POST")
-                                .withPath("/mychannel")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                );
+    void testInformWithBomConsumedNotification() throws Exception {
+        super.testInformWithBomConsumedNotification();
 
-        entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('slack', 'general', 'STRING', 'base.url', 'http://localhost:1070/mychannel');
-                """).executeUpdate();
-        JsonObject config = PublisherTestUtil.getConfig("SLACK","http://localhost:1070/mychannel");
-        final var notification = Notification.newBuilder()
-                .setScope(Scope.SCOPE_PORTFOLIO)
-                .setLevel(Level.LEVEL_INFORMATIONAL)
-                .setGroup(Group.GROUP_NEW_VULNERABILITY)
-                .setTitle("Test Notification")
-                .setContent("This is only a test")
-                .build();
-        publisher.inform(PublisherTestUtil.createPublisherContext(notification), notification, config);
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                              "type": "header",
+                              "text": {
+                                "type": "plain_text",
+                                "text": "GROUP_BOM_CONSUMED"
+                              }
+                            },
+                            {
+                              "type": "context",
+                              "elements": [
+                                {
+                                  "text": "*LEVEL_INFORMATIONAL*  |  *SCOPE_PORTFOLIO*",
+                                  "type": "mrkdwn"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "divider"
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "Bill of Materials Consumed",
+                                "type": "plain_text"
+                              }
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "A CycloneDX BOM was consumed and will be processed",
+                                "type": "plain_text"
+                              }
+                            }
+                          ]
+                        }
+                        """)));
     }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotification() throws Exception {
+        super.testInformWithBomProcessingFailedNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                              "type": "header",
+                              "text": {
+                                "type": "plain_text",
+                                "text": "GROUP_BOM_PROCESSING_FAILED"
+                              }
+                            },
+                            {
+                              "type": "context",
+                              "elements": [
+                                {
+                                  "text": "*LEVEL_ERROR*  |  *SCOPE_PORTFOLIO*",
+                                  "type": "mrkdwn"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "divider"
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "Bill of Materials Processing Failed",
+                                "type": "plain_text"
+                              }
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "An error occurred while processing a BOM",
+                                "type": "plain_text"
+                              }
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
+        super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                              "type": "header",
+                              "text": {
+                                "type": "plain_text",
+                                "text": "GROUP_BOM_PROCESSING_FAILED"
+                              }
+                            },
+                            {
+                              "type": "context",
+                              "elements": [
+                                {
+                                  "text": "*LEVEL_ERROR*  |  *SCOPE_PORTFOLIO*",
+                                  "type": "mrkdwn"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "divider"
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "Bill of Materials Processing Failed",
+                                "type": "plain_text"
+                              }
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "An error occurred while processing a BOM",
+                                "type": "plain_text"
+                              }
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithDataSourceMirroringNotification() throws Exception {
+        super.testInformWithDataSourceMirroringNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                              "type": "header",
+                              "text": {
+                                "type": "plain_text",
+                                "text": "GROUP_DATASOURCE_MIRRORING"
+                              }
+                            },
+                            {
+                              "type": "context",
+                              "elements": [
+                                {
+                                  "text": "*LEVEL_ERROR*  |  *SCOPE_SYSTEM*",
+                                  "type": "mrkdwn"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "divider"
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "GitHub Advisory Mirroring",
+                                "type": "plain_text"
+                              }
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "An error occurred mirroring the contents of GitHub Advisories. Check log for details.",
+                                "type": "plain_text"
+                              }
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithNewVulnerabilityNotification() throws Exception {
+        super.testInformWithNewVulnerabilityNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                              "type": "header",
+                              "text": {
+                                "type": "plain_text",
+                                "text": "New Vulnerability"
+                              }
+                            },
+                            {
+                              "type": "context",
+                              "elements": [
+                                {
+                                  "text": "*LEVEL_INFORMATIONAL*  |  *SCOPE_PORTFOLIO*",
+                                  "type": "mrkdwn"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "divider"
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "New Vulnerability Identified",
+                                "type": "mrkdwn"
+                              },
+                              "fields": [
+                                {
+                                  "type": "mrkdwn",
+                                  "text": "*VulnID*"
+                                },
+                                {
+                                  "type": "plain_text",
+                                  "text": "INT-001"
+                                },
+                                {
+                                  "type": "mrkdwn",
+                                  "text": "*Severity*"
+                                },
+                                {
+                                  "type": "plain_text",
+                                  "text": "MEDIUM"
+                                },
+                                {
+                                  "type": "mrkdwn",
+                                  "text": "*Source*"
+                                },
+                                {
+                                  "type": "plain_text",
+                                  "text": "INTERNAL"
+                                },
+                                {
+                                  "type": "mrkdwn",
+                                  "text": "*Component*"
+                                },
+                                {
+                                  "type": "plain_text",
+                                  "text": "componentName : componentVersion"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "actions",
+                              "elements": [
+                                {
+                                  "type": "button",
+                                  "text": {
+                                    "type": "plain_text",
+                                    "text": "View Vulnerability"
+                                  },
+                                  "action_id": "actionId-1",
+                                  "url": "https://example.com/vulnerabilities/INTERNAL/INT-001"
+                                },
+                                {
+                                  "type": "button",
+                                  "text": {
+                                    "type": "plain_text",
+                                    "text": "View Component"
+                                  },
+                                  "action_id": "actionId-2",
+                                  "url": "https://example.com/components/94f87321-a5d1-4c2f-b2fe-95165debebc6"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithProjectAuditChangeNotification() throws Exception {
+        super.testInformWithProjectAuditChangeNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                        	  "type": "header",
+                        	  "text": {
+                        	    "type": "plain_text",
+                        		"text": "Project Audit Change"
+                        	  }
+                        	},
+                        	{
+                        	  "type": "context",
+                        	  "elements": [
+                        	    {
+                        		  "text": "*LEVEL_INFORMATIONAL*  |  *SCOPE_PORTFOLIO*",
+                        		  "type": "mrkdwn"
+                        		}
+                        	  ]
+                        	},
+                        	{
+                        	  "type": "divider"
+                        	},
+                        	{
+                        	  "type": "section",
+                        	  "text": {
+                        	    "text": "Analysis Decision: Finding Suppressed",
+                        		"type": "plain_text"
+                        	  },
+                        	  "fields": [
+                        	    {
+                        		  "type": "mrkdwn",
+                        		  "text": "*Analysis State*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "emoji": true,
+                        		  "text": "FALSE_POSITIVE"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Suppressed*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "true"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*VulnID*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "INT-001"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Severity*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "MEDIUM"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Source*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "INTERNAL"
+                        		}
+                        	  ]
+                        	},
+                            {
+                        	  "type": "section",
+                        	  "fields": [
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Component*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "componentName : componentVersion"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Project*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "pkg:maven/org.acme/projectName@projectVersion"
+                        		}
+                        	  ]
+                        	},
+                        	{
+                        	  "type": "actions",
+                        	  "elements": [
+                        	    {
+                        		  "type": "button",
+                        		  "text": {
+                        		    "type": "plain_text",
+                        			"text": "View Project"
+                        		  },
+                        		  "action_id": "actionId-1",
+                        		  "url": "https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95"
+                        		},
+                        		{
+                        		  "type": "button",
+                        		  "text": {
+                        		    "type": "plain_text",
+                        			"text": "View Component"
+                        		  },
+                        		  "action_id": "actionId-2",
+                        		  "url": "https://example.com/components/94f87321-a5d1-4c2f-b2fe-95165debebc6"
+                        		},
+                        	    {
+                        		  "type": "button",
+                        		  "text": {
+                        		    "type": "plain_text",
+                        			"text": "View Vulnerability"
+                        		  },
+                        		  "action_id": "actionId-3",
+                        		  "url": "https://example.com/vulnerabilities/INTERNAL/INT-001"
+                        		}
+                        	  ]
+                        	}
+                          ]
+                        }
+                        """)));
+    }
+
 }
