@@ -20,74 +20,97 @@ package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
-import jakarta.persistence.EntityManager;
-import org.apache.http.HttpHeaders;
-import org.dependencytrack.proto.notification.v1.Group;
-import org.dependencytrack.proto.notification.v1.Level;
-import org.dependencytrack.proto.notification.v1.Notification;
-import org.dependencytrack.proto.notification.v1.Scope;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
 
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.createPublisherContext;
-import static org.dependencytrack.notification.publisher.PublisherTestUtil.getConfig;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
-public class CsWebexPublisherTest {
+public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPublisher> {
 
-    @Inject
-    CsWebexPublisher publisher;
-
-    @Inject
-    EntityManager entityManager;
-
-    private static ClientAndServer mockServer;
-
-    @BeforeAll
-    public static void beforeClass() {
-        mockServer = startClientAndServer(1040);
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        mockServer.stop();
-    }
-
-    @Test
+    @Override
     @TestTransaction
-    public void testPublish() throws Exception {
-        new MockServerClient("localhost", 1040)
-                .when(
-                        request()
-                                .withMethod("POST")
-                                .withPath("/mychannel")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                );
-        entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    ('cswebex', 'general', 'STRING', 'base.url', 'http://localhost:1040/mychannel');
-                """).executeUpdate();
+    void testInformWithBomConsumedNotification() throws Exception {
+        super.testInformWithBomConsumedNotification();
 
-        JsonObject config = getConfig("WEBEX","http://localhost:1040/mychannel");
-        var notification = Notification.newBuilder()
-                .setScope(Scope.SCOPE_PORTFOLIO)
-                .setLevel(Level.LEVEL_INFORMATIONAL)
-                .setGroup(Group.GROUP_NEW_VULNERABILITY)
-                .setTitle("Test Notification")
-                .setContent("This is only a test")
-                .build();
-        publisher.inform(createPublisherContext(notification), notification, config);
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "markdown": "**Bill of Materials Consumed**\\n[View Component](https://example.com/component/?uuid=)\\n**Description:** A CycloneDX BOM was consumed and will be processed"
+                        }
+                        """)));
     }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotification() throws Exception {
+        super.testInformWithBomProcessingFailedNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "markdown": "**Bill of Materials Processing Failed**\\n[View Component](https://example.com/component/?uuid=)\\n**Description:** An error occurred while processing a BOM"
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
+        super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "markdown": "**Bill of Materials Processing Failed**\\n[View Component](https://example.com/component/?uuid=)\\n**Description:** An error occurred while processing a BOM"
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithDataSourceMirroringNotification() throws Exception {
+        super.testInformWithDataSourceMirroringNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "markdown": "**GitHub Advisory Mirroring**\\n[View Component](https://example.com/component/?uuid=)\\n**Description:** An error occurred mirroring the contents of GitHub Advisories. Check log for details."
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithNewVulnerabilityNotification() throws Exception {
+        super.testInformWithNewVulnerabilityNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "markdown": "**New Vulnerability Identified**\\n**VulnID:** INT-001\\n**Severity:** MEDIUM\\n**Source:** INTERNAL\\n**Component:** componentName : componentVersion\\n**Actions:**\\n[View Vulnerability](https://example.com/vulnerability/?source=INTERNAL&vulnId=INT-001)\\n[View Component](https://example.com/component/?uuid=94f87321-a5d1-4c2f-b2fe-95165debebc6)\\n**Description:** "
+                        }
+                        """)));
+    }
+
+    @Override
+    @TestTransaction
+    void testInformWithProjectAuditChangeNotification() throws Exception {
+        super.testInformWithProjectAuditChangeNotification();
+
+        wireMockServer.verify(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "markdown": "**Analysis Decision: Finding Suppressed**\\n[View Component](https://example.com/component/?uuid=94f87321-a5d1-4c2f-b2fe-95165debebc6)\\n**Description:** "
+                        }
+                        """)));
+    }
+
 }

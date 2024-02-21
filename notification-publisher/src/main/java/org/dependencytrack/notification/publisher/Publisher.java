@@ -27,6 +27,7 @@ import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.ProtobufUtil;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
+import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerableDependencySubject;
 import org.dependencytrack.proto.notification.v1.Notification;
@@ -111,6 +112,10 @@ public interface Publisher {
                 context.put("subjectJson", JsonFormat.printer().print(subject));
             } else if (notification.getSubject().is(BomConsumedOrProcessedSubject.class)) {
                 final var subject = notification.getSubject().unpack(BomConsumedOrProcessedSubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            } else if (notification.getSubject().is(BomProcessingFailedSubject.class)) {
+                final var subject = notification.getSubject().unpack(BomProcessingFailedSubject.class);
                 context.put("subject", subject);
                 context.put("subjectJson", JsonFormat.printer().print(subject));
             } else if (notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
