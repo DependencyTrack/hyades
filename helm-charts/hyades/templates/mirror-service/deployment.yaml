@@ -39,7 +39,7 @@ spec:
         - name: KAFKA_BOOTSTRAP_SERVERS
           value: {{ .Values.common.kafka.bootstrapServers | quote }}
         {{- with .Values.common.kafka.topicPrefix }}
-        - name: API_TOPIC_PREFIX
+        - name: KAFKA_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
         {{- range $k, $v := .Values.mirrorService.extraEnv }}

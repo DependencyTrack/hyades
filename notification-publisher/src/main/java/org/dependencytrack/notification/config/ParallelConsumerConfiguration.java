@@ -74,7 +74,7 @@ class ParallelConsumerConfiguration {
                 .createEosStreamProcessor(parallelConsumerOptions);
 
         final Optional<String> optionalPrefix = ConfigProvider.getConfig()
-                .getOptionalValue("api.topic.prefix", String.class)
+                .getOptionalValue("kafka.topic.prefix", String.class)
                 .map(Pattern::quote);
         final var topicPattern = Pattern.compile(optionalPrefix.orElse("") + "dtrack\\.notification\\..+");
         parallelConsumer.subscribe(topicPattern);

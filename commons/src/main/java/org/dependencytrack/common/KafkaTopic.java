@@ -35,7 +35,7 @@ public enum KafkaTopic {
 
     public String getName() {
         SmallRyeConfig config = ConfigProvider.getConfig().unwrap(SmallRyeConfig.class);
-        var prefixConfig = config.getConfigValue("api.topic.prefix");
+        var prefixConfig = config.getConfigValue("kafka.topic.prefix");
         if (prefixConfig.getValue() != null)
             return prefixConfig.getValue() + name;
         return name;

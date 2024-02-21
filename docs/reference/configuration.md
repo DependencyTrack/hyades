@@ -13,7 +13,7 @@ environment variable can be used.
 
 | Environment Variable | Description            | Default | Required |
 |:---------------------|:-----------------------|:--------|:--------:|
-| `API_TOPIC_PREFIX`   | Prefix for topic names | -       |    ❌     |
+| `KAFKA_TOPIC_PREFIX`   | Prefix for topic names | -       |    ❌     |
 
 ### Notification Publisher
 
