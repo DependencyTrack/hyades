@@ -10,7 +10,7 @@
 
   <properties>
     <project.parentBaseDir>${project.basedir}/..</project.parentBaseDir>
-    <lib.org-kohsuke-github-api.version>1.318</lib.org-kohsuke-github-api.version>
+    <lib.org-kohsuke-github-api.version>1.319</lib.org-kohsuke-github-api.version>
   </properties>
 
   <dependencies>
