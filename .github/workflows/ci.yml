@@ -19,10 +19,10 @@ jobs:
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-    - name: Set up JDK 17
+    - name: Set up JDK
       uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8 # tag=v4.1.0
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
         cache: maven
     - name: Test
@@ -53,20 +53,19 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8 # tag=v4.1.0
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
         cache: maven
     - name: Set up GraalVM
       uses: graalvm/setup-graalvm@5393c3d80982e8a7fa61005137824ef53731ff9a # tag=v1
       with:
         # NOTE: Do NOT use the Oracle GraalVM distribution, as that is causing issues
-        # with Protobuf serialization. GraalVM Community 17.0.8 and Mandrel 23.0 have
-        # both been tested to work.
+        # with Protobuf serialization.
         #   https://github.com/DependencyTrack/hyades/issues/641
         #   https://github.com/quarkusio/quarkus/issues/35125
         distribution: 'mandrel'
-        version: 'mandrel-23.0.1.2-Final'
-        java-version: '17'
+        version: 'mandrel-23.1.2.0-Final'
+        java-version: '21'
         components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build Native Image
