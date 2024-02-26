@@ -1888,6 +1888,104 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 49
+      },
+      "id": 97,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(rate(pc_user_function_processing_time_seconds_sum{instance=\"$instance\",pcinstance=\"repo.meta.analysis.result\"}[1m]) / rate(pc_user_function_processing_time_seconds_count{instance=\"$instance\",pcinstance=\"repo.meta.analysis.result\"}[1m])) > 0",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Average Repository Metadata Analysis Result Processing Duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
             "fillOpacity": 15,
             "gradientMode": "opacity",
             "hideFrom": {
@@ -3908,8 +4006,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               },
@@ -3921,7 +4018,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 20
+            "y": 28
           },
           "id": 6,
           "options": {
@@ -4013,8 +4110,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   }
                 ]
               }
@@ -4025,7 +4121,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 20
+            "y": 28
           },
           "id": 4,
           "options": {
@@ -4117,8 +4213,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4133,7 +4228,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 20
+            "y": 28
           },
           "id": 30,
           "options": {
@@ -4226,8 +4321,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -4243,7 +4337,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 28
+            "y": 36
           },
           "id": 2,
           "options": {
@@ -4324,6 +4418,6 @@
   "timezone": "",
   "title": "API Server",
   "uid": "wYGnYRRVkd",
-  "version": 6,
+  "version": 7,
   "weekStart": ""
 }
