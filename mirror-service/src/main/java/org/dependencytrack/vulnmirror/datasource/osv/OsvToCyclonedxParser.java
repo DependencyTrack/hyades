@@ -45,11 +45,8 @@ public class OsvToCyclonedxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OsvToCyclonedxParser.class);
     private static final Pattern WILDCARD_VERS_PATTERN = Pattern.compile("^vers:\\w+/\\*$");
-    private static final Pattern ZERO_VERSION_PATTERN = Pattern.compile("^0(\\.0)*$");
     private static final UUID UUID_V5_NAMESPACE = UUID.fromString("ffbefd63-724d-47b6-8d98-3deb06361885");
-
     private static final String TITLE_PROPERTY_NAME = "dependency-track:vuln:title";
-
     private final ObjectMapper objectMapper;
 
     @Inject
@@ -141,7 +138,10 @@ public class OsvToCyclonedxParser {
         if (rangesArr != null) {
             rangesArr.forEach(item -> {
                 var range = (JSONObject) item;
-                versionRanges.addAll(generateRangeSpecifier(osvAffectedObj, range, ecoSystem));
+                var versGenerated = generateRangeSpecifier(range, ecoSystem);
+                if (versGenerated != null) {
+                    versionRanges.addAll(versGenerated);
+                }
             });
         }
 
@@ -215,7 +215,7 @@ public class OsvToCyclonedxParser {
         return component.build();
     }
 
-    private static List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject affectedRange, JSONObject range, String ecoSystem) {
+    private static List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem) {
         JSONArray rangeEvents = range.optJSONArray("events");
         if (rangeEvents == null) {
             return List.of();
@@ -224,13 +224,16 @@ public class OsvToCyclonedxParser {
         List<Map.Entry<String, String>> rangeEventList = rangeEvents.toList().stream()
                 .map(rangeEvent -> (Map.Entry<String, String>) mapper.convertValue(rangeEvent, Map.Entry.class))
                 .collect(Collectors.toList());
-
         final var versionRanges = new ArrayList<VulnerabilityAffectedVersions>();
         String rangeType = range.optString("type");
-        String rangeEcosystem = affectedRange.optJSONObject("package").optString("ecosystem");
-        var vers = versFromOsvRange(rangeType, rangeEcosystem, rangeEventList);
-        versionRanges.add(VulnerabilityAffectedVersions.newBuilder().setRange(String.valueOf(vers)).build());
-        return versionRanges;
+        try {
+            var vers = versFromOsvRange(rangeType, ecoSystem, rangeEventList);
+            versionRanges.add(VulnerabilityAffectedVersions.newBuilder().setRange(String.valueOf(vers)).build());
+            return versionRanges;
+        } catch (Exception exception) {
+            LOGGER.debug("Exception while parsing OSV version range.", exception);
+        }
+        return null;
     }
 
     private static List<VulnerabilityRating> parseCvssRatings(JSONObject object, Severity severity) {
