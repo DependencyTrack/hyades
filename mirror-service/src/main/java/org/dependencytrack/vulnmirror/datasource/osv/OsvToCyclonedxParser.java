@@ -94,7 +94,7 @@ public class OsvToCyclonedxParser {
         return cyclonedxBom.build();
     }
 
-    private static List<VulnerabilityAffects> parseAffectedRanges(final String vulnId, JSONArray osvAffectedArray, Bom.Builder bom) {
+    private List<VulnerabilityAffects> parseAffectedRanges(final String vulnId, JSONArray osvAffectedArray, Bom.Builder bom) {
         PackageURL packageUrl;
         String ecoSystem = null;
         List<VulnerabilityAffects> affects = new ArrayList<>();
@@ -127,7 +127,7 @@ public class OsvToCyclonedxParser {
         return affects;
     }
 
-    private static VulnerabilityAffects getAffectedPackageVersionRange(JSONObject osvAffectedObj, String ecoSystem) {
+    private VulnerabilityAffects getAffectedPackageVersionRange(JSONObject osvAffectedObj, String ecoSystem) {
 
         // Ranges and Versions for each affected package
         JSONArray rangesArr = osvAffectedObj.optJSONArray("ranges");
@@ -215,14 +215,13 @@ public class OsvToCyclonedxParser {
         return component.build();
     }
 
-    private static List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem) {
+    private List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem) {
         JSONArray rangeEvents = range.optJSONArray("events");
         if (rangeEvents == null) {
             return List.of();
         }
-        ObjectMapper mapper = new ObjectMapper();
         List<Map.Entry<String, String>> rangeEventList = rangeEvents.toList().stream()
-                .map(rangeEvent -> (Map.Entry<String, String>) mapper.convertValue(rangeEvent, Map.Entry.class))
+                .map(rangeEvent -> (Map.Entry<String, String>) this.objectMapper.convertValue(rangeEvent, Map.Entry.class))
                 .collect(Collectors.toList());
         final var versionRanges = new ArrayList<VulnerabilityAffectedVersions>();
         String rangeType = range.optString("type");
