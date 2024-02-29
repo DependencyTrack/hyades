@@ -144,6 +144,10 @@ services:
       KAFKA_NUM_STREAM_THREADS: "12" # Default number of input partitions is 12
       KAFKA_STREAMS_METRICS_RECORDING_LEVEL: "DEBUG"
       INTEGRITY_CHECK_ENABLED: "true"
+      TASK_CRON_VULNERABILITY_POLICY_BUNDLE_FETCH: "0 0 * * *"
+      VULNERABILITY_POLICY_ANALYSIS_ENABLED: "true"
+      VULNERABILITY_POLICY_BUNDLE_URL: "http://nginx/bundles/bundle.zip"
+      VULNERABILITY_POLICY_BUNDLE_SOURCE_TYPE: "nginx"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
@@ -180,6 +184,12 @@ services:
       - "5432:5432"
     volumes:
       - "postgres-data:/var/lib/postgresql/data"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.25.3-alpine
+    volumes:
+    - "./policy-bundles:/usr/share/nginx/html/bundles:ro"
     restart: unless-stopped
 
   redpanda:
