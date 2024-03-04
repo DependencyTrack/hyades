@@ -57,7 +57,7 @@
     <lib.kafka.version>3.6.1</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-12</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
-    <lib.minio.version>8.5.8</lib.minio.version>
+    <lib.minio.version>8.5.9</lib.minio.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.org-json.version>20240205</lib.org-json.version>
     <lib.pebble.version>3.2.2</lib.pebble.version>
