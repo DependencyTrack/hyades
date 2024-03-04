@@ -19,48 +19,49 @@
 package org.dependencytrack.repometaanalyzer.repositories;
 
 import com.github.packageurl.PackageURL;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.http.Body;
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.HttpClients;
-import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.dependencytrack.persistence.model.Component;
 import org.dependencytrack.persistence.model.RepositoryType;
-import org.junit.jupiter.api.AfterAll;
+import org.dependencytrack.repometaanalyzer.model.MetaModel;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 class ComposerMetaAnalyzerTest {
+    static WireMockServer wireMockServer;
 
-    private static ClientAndServer mockServer;
-
-    private IMetaAnalyzer analyzer;
-
-    @BeforeAll
-    static void beforeClass() {
-        mockServer = ClientAndServer.startClientAndServer(1080);
+    @AfterEach
+    void afterEach() {
+        wireMockServer.stop();
+        wireMockServer.resetAll();
     }
 
     @BeforeEach
     void beforeEach() {
         analyzer = new ComposerMetaAnalyzer();
         analyzer.setHttpClient(HttpClients.createDefault());
+        wireMockServer = new WireMockServer(1080);
+        wireMockServer.start();
     }
 
-    @AfterAll
-    static void afterClass() {
-        mockServer.stop();
-    }
+    private IMetaAnalyzer analyzer;
+
 
     @Test
     void testAnalyzer() throws Exception {
@@ -80,20 +81,11 @@ class ComposerMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:composer/typo3/class-alias-loader@v1.1.0"));
         final File packagistFile = getResourceFile("typo3", "class-alias-loader");
 
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/p/typo3/class-alias-loader.json")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                .withBody(getTestData(packagistFile))
-                );
-
+        wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/class-alias-loader.json"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .withResponseBody(Body.ofBinaryOrText(getTestData(packagistFile),
+                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertEquals("v1.1.3", metaModel.getLatestVersion());
@@ -107,19 +99,11 @@ class ComposerMetaAnalyzerTest {
     void testAnalyzerDoesNotFindResult() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/typo3/package-does-not-exist@v1.2.0"));
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(404)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                .withBody("Not found")
-                );
-
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
+        wireMockServer.stubFor(get(urlPathEqualTo(""))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .withResponseBody(Body.ofBinaryOrText("Not found".getBytes(),
+                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_NOT_FOUND)));
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertNull(metaModel.getLatestVersion());
@@ -132,18 +116,11 @@ class ComposerMetaAnalyzerTest {
     void testAnalyzerReturnEmptyResult() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/typo3/package-empty-result@v1.2.0"));
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/p/typo3/package-empty-result.json")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                );
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
+        wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .withResponseBody(Body.ofBinaryOrText("".getBytes(),
+                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
 
         MetaModel metaModel = analyzer.analyze(component);
 
@@ -157,20 +134,12 @@ class ComposerMetaAnalyzerTest {
     void testAnalyzerReturnEmptyResultWithBraces() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/typo3/package-empty-result@v1.2.0"));
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/p/typo3/package-empty-result.json")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                .withBody("{}")
-                );
+        wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .withResponseBody(Body.ofBinaryOrText("{}".getBytes(),
+                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
 
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertNull(metaModel.getLatestVersion());
@@ -185,21 +154,13 @@ class ComposerMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:composer/magento/adobe-ims@v1.0.0"));
         final File packagistFile = getResourceFile("magento", "adobe-ims");
 
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/p/magento/adobe-ims.json")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                .withBody(getTestData(packagistFile))
-                );
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
+        wireMockServer.stubFor(get(urlPathEqualTo("/p/magento/adobe-ims.json"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .withResponseBody(Body.ofBinaryOrText(getTestData(packagistFile),
+                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
 
-        analyzer.analyze(component);
+
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertNull(metaModel.getLatestVersion());
