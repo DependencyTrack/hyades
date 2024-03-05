@@ -2,6 +2,7 @@ package org.dependencytrack.repometaanalyzer.processor;
 
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import io.quarkus.cache.Cache;
@@ -12,7 +13,8 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.ws.rs.core.MediaType;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
@@ -31,21 +33,19 @@ import org.dependencytrack.proto.repometaanalysis.v1.Component;
 import org.dependencytrack.proto.repometaanalysis.v1.FetchMeta;
 import org.dependencytrack.repometaanalyzer.repositories.RepositoryAnalyzerFactory;
 import org.dependencytrack.repometaanalyzer.serde.KafkaPurlSerde;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
 
 import java.util.Map;
 import java.util.UUID;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.head;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 
 @QuarkusTest
 @TestProfile(MetaAnalyzerProcessorTest.TestProfile.class)
@@ -60,9 +60,8 @@ class MetaAnalyzerProcessorTest {
         }
     }
 
-    private static ClientAndServer mockServer;
-    private static ClientAndServer mockServer2;
-
+    private static WireMockServer wireMockServer1;
+    private static WireMockServer wireMockServer2;
     private static final String TEST_PURL_JACKSON_BIND = "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.4";
 
     private TopologyTestDriver testDriver;
@@ -84,12 +83,6 @@ class MetaAnalyzerProcessorTest {
     @Inject
     SecretDecryptor secretDecryptor;
 
-    @BeforeAll
-    static void beforeClass() {
-        mockServer = ClientAndServer.startClientAndServer(1080);
-        mockServer2 = ClientAndServer.startClientAndServer(2080);
-    }
-
     @BeforeEach
     void beforeEach() {
         final var processorSupplier = new MetaAnalyzerProcessorSupplier(repoEntityRepository, analyzerFactory, secretDecryptor, cache);
@@ -107,20 +100,23 @@ class MetaAnalyzerProcessorTest {
         testDriver = new TopologyTestDriver(streamsBuilder.build());
         inputTopic = testDriver.createInputTopic("input-topic", purlSerde.serializer(), valueSerde.serializer());
         outputTopic = testDriver.createOutputTopic("output-topic", purlSerde.deserializer(), valueSerdeResult.deserializer());
+
+        wireMockServer1 = new WireMockServer(1080);
+        wireMockServer1.start();
+        wireMockServer2 = new WireMockServer(2080);
+        wireMockServer2.start();
     }
 
     @AfterEach
     void afterEach() {
+        wireMockServer1.stop();
+        wireMockServer1.resetAll();
+        wireMockServer2.stop();
+        wireMockServer2.resetAll();
         testDriver.close();
-        mockServer.reset();
         cache.invalidateAll().await().indefinitely();
     }
 
-    @AfterAll
-    static void afterClass() {
-        mockServer.stop();
-        mockServer2.stop();
-    }
 
     @Test
     void testWithNoSupportedRepositoryTypes() throws Exception {
@@ -199,40 +195,26 @@ class MetaAnalyzerProcessorTest {
     @TestTransaction
     void testRepoMetaWithIntegrityMetaWithAuth() throws Exception {
         entityManager.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER", "USERNAME", "PASSWORD") VALUES
-                                    ('NPM', true, 'central', true, :url, true, 1, 'username', :encryptedPassword);
-                """)
+                        INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER", "USERNAME", "PASSWORD") VALUES
+                                            ('NPM', true, 'central', true, :url, true, 1, 'username', :encryptedPassword);
+                        """)
                 .setParameter("encryptedPassword", secretDecryptor.encryptAsString("password"))
-                .setParameter("url", String.format("http://localhost:%d", mockServer.getPort()))
+                .setParameter("url", String.format("http://localhost:%d", wireMockServer1.port()))
                 .executeUpdate();
+        wireMockServer1.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("""
+                                        {
+                                            "latest": "v6.6.6"
+                                        }
+                                         """.getBytes(),
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withBody(Body.ofBinaryOrText("""
-                                    {
-                                        "latest": "v6.6.6"
-                                    }
-                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
-                ));
-
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("HEAD")
-                                .withPath("/@apollo/federation/-/@apollo/federation-0.19.1.tgz")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader("X-Checksum-MD5", "md5hash")
-                );
+        wireMockServer1.stubFor(head(urlPathEqualTo("/@apollo/federation/-/@apollo/federation-0.19.1.tgz"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("".getBytes(),
+                                new ContentTypeHeader("application/json")))
+                        .withHeader("X-Checksum-MD5", "md5hash").withStatus(HttpStatus.SC_OK)));
 
         UUID uuid = UUID.randomUUID();
         final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),
@@ -267,46 +249,32 @@ class MetaAnalyzerProcessorTest {
     @TestTransaction
     void testDifferentSourcesForRepoMeta() throws Exception {
         entityManager.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
-                                    ('NPM', true, 'central', true, :url1, false, 1),
-                                    ('NPM', true, 'internal', true, :url2, false, 2);
-                """)
-                .setParameter("url1", String.format("http://localhost:%d", mockServer.getPort()))
-                .setParameter("url2", String.format("http://localhost:%d", mockServer2.getPort()))
+                        INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
+                                            ('NPM', true, 'central', true, :url1, false, 1),
+                                            ('NPM', true, 'internal', true, :url2, false, 2);
+                        """)
+                .setParameter("url1", String.format("http://localhost:%d", wireMockServer1.port()))
+                .setParameter("url2", String.format("http://localhost:%d", wireMockServer2.port()))
                 .executeUpdate();
+        wireMockServer1.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("""
+                                        {
+                                            "type": "version"
+                                        }
+                                         """.getBytes(),
+                                new ContentTypeHeader("application/json")))
+                        .withStatus(HttpStatus.SC_OK)));
 
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withBody(Body.ofBinaryOrText("""
-                                    {
-                                        "type": "version"
-                                    }
-                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
-                                ));
-
-        new MockServerClient("localhost", mockServer2.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withBody(Body.ofBinaryOrText("""
-                                    {
-                                        "latest": "v6.6.6"
-                                    }
-                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
-                                ));
-
+        wireMockServer2.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("""
+                                        {
+                                            "latest": "v6.6.6"
+                                        }
+                                         """.getBytes(),
+                                new ContentTypeHeader("application/json")))
+                        .withStatus(HttpStatus.SC_OK)));
         UUID uuid = UUID.randomUUID();
         final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),
                 AnalysisCommand.newBuilder()
@@ -336,57 +304,36 @@ class MetaAnalyzerProcessorTest {
     @TestTransaction
     void testDifferentSourcesForRepoAndIntegrityMeta() throws Exception {
         entityManager.createNativeQuery("""
-                INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
-                                    ('NPM', true, 'central', true, :url1, false, 1),
-                                    ('NPM', true, 'internal', true, :url2, false, 2);
-                """)
-                .setParameter("url1", String.format("http://localhost:%d", mockServer.getPort()))
-                .setParameter("url2", String.format("http://localhost:%d", mockServer2.getPort()))
+                        INSERT INTO "REPOSITORY" ("TYPE", "ENABLED","IDENTIFIER", "INTERNAL", "URL", "AUTHENTICATIONREQUIRED", "RESOLUTION_ORDER") VALUES
+                                            ('NPM', true, 'central', true, :url1, false, 1),
+                                            ('NPM', true, 'internal', true, :url2, false, 2);
+                        """)
+                .setParameter("url1", String.format("http://localhost:%d", wireMockServer1.port()))
+                .setParameter("url2", String.format("http://localhost:%d", wireMockServer2.port()))
                 .executeUpdate();
+        wireMockServer1.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("""
+                                        {
+                                        }
+                                         """.getBytes(),
+                                new ContentTypeHeader("application/json")))
+                        .withStatus(HttpStatus.SC_OK)));
 
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withBody(Body.ofBinaryOrText("""
-                                    {
-                                    }
-                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
-                                ));
-
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("HEAD")
-                                .withPath("/@apollo/federation/-/@apollo/federation-0.19.1.tgz")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader("X-Checksum-MD5", "md5hash")
-                );
-
-        new MockServerClient("localhost", mockServer2.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/-/package/%40apollo%2Ffederation/dist-tags")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withBody(Body.ofBinaryOrText("""
-                                    {
-                                        "latest": "v6.6.6"
-                                    }
-                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON)).asBytes()
-                                ));
-
+        wireMockServer1.stubFor(head(urlPathEqualTo("/@apollo/federation/-/@apollo/federation-0.19.1.tgz"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("".getBytes(),
+                                new ContentTypeHeader("application/json"))).withHeader("X-Checksum-MD5", "md5hash")
+                        .withStatus(HttpStatus.SC_OK)));
+        wireMockServer2.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("""
+                                        {
+                                            "latest": "v6.6.6"
+                                        }
+                                         """.getBytes(),
+                                new ContentTypeHeader("application/json")))
+                        .withStatus(HttpStatus.SC_OK)));
         UUID uuid = UUID.randomUUID();
         final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),
                 AnalysisCommand.newBuilder()

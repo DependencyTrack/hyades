@@ -23,11 +23,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import jakarta.ws.rs.core.MediaType;
 import org.apache.http.impl.client.HttpClients;
-import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.dependencytrack.persistence.model.Component;
 import org.dependencytrack.persistence.model.RepositoryType;
+import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -140,7 +139,7 @@ class MavenMetaAnalyzerTest {
                         .withStatus(200)
                         .withResponseBody(Body.ofBinaryOrText("""
                                                                     
-                                """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
+                                """.getBytes(), new ContentTypeHeader("application/json"))
                         )
                         .withHeader("X-CheckSum-MD5", "md5hash")
                         .withHeader("X-Checksum-SHA1", "sha1hash")

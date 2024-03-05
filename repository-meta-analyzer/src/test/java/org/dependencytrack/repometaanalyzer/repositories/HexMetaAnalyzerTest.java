@@ -19,43 +19,43 @@
 package org.dependencytrack.repometaanalyzer.repositories;
 
 import com.github.packageurl.PackageURL;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.http.Body;
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.HttpClients;
-import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.dependencytrack.persistence.model.Component;
 import org.dependencytrack.persistence.model.RepositoryType;
-import org.junit.jupiter.api.AfterAll;
+import org.dependencytrack.repometaanalyzer.model.MetaModel;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertThrows;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 
 class HexMetaAnalyzerTest {
 
-    private static ClientAndServer mockServer;
+    static WireMockServer wireMockServer;
+
+    @AfterEach
+    void afterEach() {
+        wireMockServer.stop();
+        wireMockServer.resetAll();
+    }
 
     private IMetaAnalyzer analyzer;
-
-    @BeforeAll
-    static void beforeClass() {
-        mockServer = ClientAndServer.startClientAndServer(1080);
-    }
 
     @BeforeEach
     void beforeEach() {
         analyzer = new HexMetaAnalyzer();
         analyzer.setHttpClient(HttpClients.createDefault());
-    }
-
-    @AfterAll
-    static void afterClass() {
-        mockServer.stop();
+        wireMockServer = new WireMockServer(1080);
+        wireMockServer.start();
     }
 
     @Test
@@ -75,19 +75,11 @@ class HexMetaAnalyzerTest {
     void testAnalyzerDoesNotFindResult() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:hex/package-does-not-exist@v1.2.0"));
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(404)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                .withBody("Not found")
-                );
-
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
+        wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("Not found".getBytes(),
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_NOT_FOUND)));
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertNull(metaModel.getLatestVersion());
@@ -100,19 +92,11 @@ class HexMetaAnalyzerTest {
     void testAnalyzerReturnEmptyResult() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:hex/typo3/package-empty-result@v1.2.0"));
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/p/typo3/package-empty-result.json")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                );
-
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
+        wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertNull(metaModel.getLatestVersion());
@@ -125,20 +109,11 @@ class HexMetaAnalyzerTest {
     void testAnalyzerReturnEmptyResultWithBraces() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:hex/typo3/package-empty-result@v1.2.0"));
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", mockServer.getPort()));
-        new MockServerClient("localhost", mockServer.getPort())
-                .when(
-                        request()
-                                .withMethod("GET")
-                                .withPath("/p/typo3/package-empty-result.json")
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                                .withBody("{}")
-                );
-
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
+        wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withResponseBody(Body.ofBinaryOrText("{}".getBytes(),
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
         MetaModel metaModel = analyzer.analyze(component);
 
         Assertions.assertNull(metaModel.getLatestVersion());

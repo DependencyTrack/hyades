@@ -11,17 +11,16 @@ import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
-import jakarta.ws.rs.core.MediaType;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
-import org.dependencytrack.repometaanalyzer.util.WireMockTestResource;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.proto.KafkaProtobufSerde;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisCommand;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisResult;
 import org.dependencytrack.proto.repometaanalysis.v1.FetchMeta;
+import org.dependencytrack.repometaanalyzer.util.WireMockTestResource;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.SelectClasses;
@@ -51,9 +50,10 @@ class RepositoryMetaAnalyzerIT {
     @QuarkusTestResource(KafkaCompanionResource.class)
     @QuarkusTestResource(WireMockTestResource.class)
     @TestProfile(WithValidPurlLatestVersionEnabled.TestProfile.class)
-    static class WithValidPurlLatestVersionEnabled{
+    static class WithValidPurlLatestVersionEnabled {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -93,7 +93,7 @@ class RepositoryMetaAnalyzerIT {
                                             "Hash": "39a1d8f8f69040a53114e1ea481e48f6d792c05e"
                                         }
                                     }
-                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
+                                     """.getBytes(), new ContentTypeHeader("application/json"))
                             )));
         }
 
@@ -137,9 +137,10 @@ class RepositoryMetaAnalyzerIT {
     @QuarkusTestResource(KafkaCompanionResource.class)
     @QuarkusTestResource(WireMockTestResource.class)
     @TestProfile(WithValidPurlWithIntegrityRepoUnsupported.TestProfile.class)
-    static class WithValidPurlWithIntegrityRepoUnsupported{
+    static class WithValidPurlWithIntegrityRepoUnsupported {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -200,7 +201,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(WithInvalidPurl.TestProfile.class)
     static class WithInvalidPurl {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -249,7 +251,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(NoCapableAnalyzer.TestProfile.class)
     static class NoCapableAnalyzer {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -309,7 +312,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(InternalAnalyzerNonInternalComponent.TestProfile.class)
     static class InternalAnalyzerNonInternalComponent {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -370,7 +374,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(WithValidPurlWithBothLatestVersionAndIntegrityEnabled.TestProfile.class)
     static class WithValidPurlWithBothLatestVersionAndIntegrityEnabled {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
@@ -398,7 +403,7 @@ class RepositoryMetaAnalyzerIT {
                                     {
                                         "latest": "v6.6.6"
                                     }
-                                     """.getBytes(), new ContentTypeHeader(MediaType.APPLICATION_JSON))
+                                     """.getBytes(), new ContentTypeHeader("application/json"))
                             )));
             wireMockServer.stubFor(WireMock.head(WireMock.anyUrl())
                     .willReturn(WireMock.aResponse()
@@ -450,7 +455,8 @@ class RepositoryMetaAnalyzerIT {
     @TestProfile(WithValidPurlIntegrityMetaEnabled.TestProfile.class)
     static class WithValidPurlIntegrityMetaEnabled {
 
-        public static class TestProfile implements QuarkusTestProfile {}
+        public static class TestProfile implements QuarkusTestProfile {
+        }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
