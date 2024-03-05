@@ -22,7 +22,6 @@ import com.github.packageurl.PackageURL;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
-import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.HttpClients;
@@ -79,9 +78,9 @@ class NpmMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
 
         wireMockServer.stubFor(get(urlPathEqualTo(""))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("Not found".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_NOT_FOUND)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_NOT_FOUND)));
 
         MetaModel metaModel = analyzer.analyze(component);
 
@@ -97,9 +96,9 @@ class NpmMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:npm/typo3/package-empty-result@v1.2.0"));
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
         wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         MetaModel metaModel = analyzer.analyze(component);
 
@@ -116,9 +115,9 @@ class NpmMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
 
         wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("{}".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
 
         MetaModel metaModel = analyzer.analyze(component);
@@ -135,9 +134,9 @@ class NpmMetaAnalyzerTest {
         component.setPurl("pkg:npm/typo3/package-empty-result@v1.2.0");
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
         wireMockServer.stubFor(head(urlPathEqualTo("/typo3/package-empty-result/-/typo3/package-empty-result-v1.2.0.tgz"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON)))
+                                new ContentTypeHeader("application/json")))
                         .withHeader("X-Checksum-MD5", "md5hash")
                         .withHeader("X-Checksum-SHA1", "sha1hash")
                         .withHeader("X-Checksum-SHA256", "sha256hash")
@@ -162,9 +161,9 @@ class NpmMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
 
         wireMockServer.stubFor(head(urlPathEqualTo("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON)))
+                                new ContentTypeHeader("application/json")))
                         .withStatus(HttpStatus.SC_OK)));
         var integrityMeta = analyzer.getIntegrityMeta(component);
         Assertions.assertNotNull(integrityMeta);
@@ -178,9 +177,9 @@ class NpmMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
 
         wireMockServer.stubFor(head(urlPathEqualTo("/amazon-s3-uri/-/amazon-s3-uri-0.0.1.tgz"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON)))
+                                new ContentTypeHeader("application/json")))
                         .withStatus(HttpStatus.SC_BAD_REQUEST)));
         var integrityMeta = analyzer.getIntegrityMeta(component);
         Assertions.assertNotNull(integrityMeta);

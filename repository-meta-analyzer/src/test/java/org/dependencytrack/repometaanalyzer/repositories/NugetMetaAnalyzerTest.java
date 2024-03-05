@@ -22,7 +22,6 @@ import com.github.packageurl.PackageURL;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
-import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.HttpClients;
@@ -67,16 +66,16 @@ class NugetMetaAnalyzerTest {
     void testPerformVersionCheck() throws Exception {
         String mockIndexResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v4-index1.json");
         wireMockServer.stubFor(get(urlPathEqualTo("/v4/index1.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText(mockIndexResponse.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
 
         String encodedBasicHeader = "Basic OnBhc3N3b3Jk";
         wireMockServer.stubFor(get(urlPathEqualTo("/v4/flat2/nunitprivate/index1.json")).withHeader("Authorization", equalTo(encodedBasicHeader))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_NOT_FOUND)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_NOT_FOUND)));
 
 
         final var component = new Component();
@@ -97,9 +96,9 @@ class NugetMetaAnalyzerTest {
         String mockIndexResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3-index.json");
 
         wireMockServer.stubFor(get(urlPathEqualTo("/v3/index.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText(mockIndexResponse.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
 
         String encodedBasicHeader = "Basic OnBhc3N3b3Jk";
@@ -108,17 +107,17 @@ class NugetMetaAnalyzerTest {
                 "-nunit-index.json");
 
         wireMockServer.stubFor(get(urlPathEqualTo("/v3/flat2/nunit/index.json")).withHeader("Authorization", equalTo(encodedBasicHeader))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText(mockVersionResponse.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         String mockRegistrationResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3" +
                 "-registrations2-nunit-400.json");
 
         wireMockServer.stubFor(get(urlPathEqualTo("/v3/registrations2/nunit/4.0.0.json")).withHeader("Authorization", equalTo(encodedBasicHeader))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText(mockRegistrationResponse.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         analyzer.setRepositoryUsernameAndPassword(null, "password");
         analyzer.setRepositoryBaseUrl("http://localhost:1080");
@@ -138,27 +137,27 @@ class NugetMetaAnalyzerTest {
     void testAnalyzerWithPrivatePackageRepository() throws Exception {
         String mockIndexResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3-index.json");
         wireMockServer.stubFor(get(urlPathEqualTo("/v3/index.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText(mockIndexResponse.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         String encodedBasicHeader = "Basic OnBhc3N3b3Jk";
 
         String mockVersionResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3-flat2" +
                 "-nunitprivate-index.json");
         wireMockServer.stubFor(get(urlPathEqualTo("/v3/flat2/nunitprivate/index.json")).withHeader("Authorization", equalTo(encodedBasicHeader))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText(mockVersionResponse.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
 
         String mockRegistrationResponse = readResourceFileToString("/unit/repositories/https---localhost-1080-v3" +
                 "-registrations2-nunitprivate-502.json");
 
         wireMockServer.stubFor(get(urlPathEqualTo("/v3/registrations2/nunitprivate/5.0.2.json")).withHeader("Authorization", equalTo(encodedBasicHeader))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText(mockRegistrationResponse.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         final var component = new Component();
         component.setPurl(new PackageURL("pkg:nuget/NUnitPrivate@5.0.1"));

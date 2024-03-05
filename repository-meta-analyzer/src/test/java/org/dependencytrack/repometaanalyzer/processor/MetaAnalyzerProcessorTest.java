@@ -13,7 +13,6 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -203,18 +202,18 @@ class MetaAnalyzerProcessorTest {
                 .setParameter("url", String.format("http://localhost:%d", wireMockServer1.port()))
                 .executeUpdate();
         wireMockServer1.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("""
                                         {
                                             "latest": "v6.6.6"
                                         }
                                          """.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         wireMockServer1.stubFor(head(urlPathEqualTo("/@apollo/federation/-/@apollo/federation-0.19.1.tgz"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON)))
+                                new ContentTypeHeader("application/json")))
                         .withHeader("X-Checksum-MD5", "md5hash").withStatus(HttpStatus.SC_OK)));
 
         UUID uuid = UUID.randomUUID();
@@ -258,23 +257,23 @@ class MetaAnalyzerProcessorTest {
                 .setParameter("url2", String.format("http://localhost:%d", wireMockServer2.port()))
                 .executeUpdate();
         wireMockServer1.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("""
                                         {
                                             "type": "version"
                                         }
                                          """.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON)))
+                                new ContentTypeHeader("application/json")))
                         .withStatus(HttpStatus.SC_OK)));
 
         wireMockServer2.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("""
                                         {
                                             "latest": "v6.6.6"
                                         }
                                          """.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON)))
+                                new ContentTypeHeader("application/json")))
                         .withStatus(HttpStatus.SC_OK)));
         UUID uuid = UUID.randomUUID();
         final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),
@@ -313,27 +312,27 @@ class MetaAnalyzerProcessorTest {
                 .setParameter("url2", String.format("http://localhost:%d", wireMockServer2.port()))
                 .executeUpdate();
         wireMockServer1.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("""
                                         {
                                         }
                                          """.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON)))
+                                new ContentTypeHeader("application/json")))
                         .withStatus(HttpStatus.SC_OK)));
 
         wireMockServer1.stubFor(head(urlPathEqualTo("/@apollo/federation/-/@apollo/federation-0.19.1.tgz"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withHeader("X-Checksum-MD5", "md5hash")
+                                new ContentTypeHeader("application/json"))).withHeader("X-Checksum-MD5", "md5hash")
                         .withStatus(HttpStatus.SC_OK)));
         wireMockServer2.stubFor(get(urlPathEqualTo("/-/package/%40apollo%2Ffederation/dist-tags"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("""
                                         {
                                             "latest": "v6.6.6"
                                         }
                                          """.getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON)))
+                                new ContentTypeHeader("application/json")))
                         .withStatus(HttpStatus.SC_OK)));
         UUID uuid = UUID.randomUUID();
         final TestRecord<PackageURL, AnalysisCommand> inputRecord = new TestRecord<>(new PackageURL("pkg:npm/@apollo/federation@0.19.1"),

@@ -22,7 +22,6 @@ import com.github.packageurl.PackageURL;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
-import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.HttpClients;
@@ -89,9 +88,9 @@ class GemMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
 
         wireMockServer.stubFor(get(urlPathEqualTo(""))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("Not found".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_NOT_FOUND)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_NOT_FOUND)));
 
         MetaModel metaModel = analyzer.analyze(component);
 
@@ -107,9 +106,9 @@ class GemMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:gem/typo3/package-empty-result@v1.2.0"));
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
         wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         MetaModel metaModel = analyzer.analyze(component);
 
@@ -126,9 +125,9 @@ class GemMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
 
         wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("{}".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         MetaModel metaModel = analyzer.analyze(component);
 

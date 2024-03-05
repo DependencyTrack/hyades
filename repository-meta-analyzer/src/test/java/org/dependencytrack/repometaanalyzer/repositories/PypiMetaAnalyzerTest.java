@@ -22,7 +22,6 @@ import com.github.packageurl.PackageURL;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
-import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.HttpClients;
@@ -80,9 +79,9 @@ class PypiMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
 
         wireMockServer.stubFor(get(urlPathEqualTo(""))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("Not found".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_NOT_FOUND)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_NOT_FOUND)));
 
 
         MetaModel metaModel = analyzer.analyze(component);
@@ -99,9 +98,9 @@ class PypiMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:pypi/typo3/package-empty-result@v1.2.0"));
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
         wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
 
         MetaModel metaModel = analyzer.analyze(component);
@@ -119,9 +118,9 @@ class PypiMetaAnalyzerTest {
         analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
 
         wireMockServer.stubFor(get(urlPathEqualTo("/p/typo3/package-empty-result.json"))
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withResponseBody(Body.ofBinaryOrText("{}".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         MetaModel metaModel = analyzer.analyze(component);
 
@@ -145,7 +144,7 @@ class PypiMetaAnalyzerTest {
                         .withHeader("X-Checksum-SHA512", "sha512hash")
                         .withHeader("Last-Modified", "Thu, 07 Jul 2022 14:00:00 GMT")
                         .withResponseBody(Body.ofBinaryOrText("{}".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         var integrityMeta = analyzer.getIntegrityMeta(component);
         Assertions.assertNotNull(integrityMeta);
@@ -165,7 +164,7 @@ class PypiMetaAnalyzerTest {
         wireMockServer.stubFor(head(urlPathEqualTo(""))
                 .willReturn(aResponse()
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_BAD_REQUEST)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_BAD_REQUEST)));
         var integrityMeta = analyzer.getIntegrityMeta(component);
         Assertions.assertNotNull(integrityMeta);
         assertThat(integrityMeta.getMetaSourceUrl()).contains("/typo1/package-no-result/v1.2.0/package-no-result-v1.2.0.tar.gz");
@@ -185,7 +184,7 @@ class PypiMetaAnalyzerTest {
         wireMockServer.stubFor(head(urlPathEqualTo("/package-result/v1.2.0/package-result-v1.2.0.tar.gz"))
                 .willReturn(aResponse()
                         .withResponseBody(Body.ofBinaryOrText("".getBytes(),
-                                new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
 
         var integrityMeta = analyzer.getIntegrityMeta(component);
         Assertions.assertNotNull(integrityMeta);

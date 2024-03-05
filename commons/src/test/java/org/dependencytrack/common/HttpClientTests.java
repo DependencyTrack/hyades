@@ -10,7 +10,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -75,9 +74,9 @@ public class HttpClientTests {
         void clientCreatedTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
                 wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
-                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
-                                        new ContentTypeHeader(MediaType.APPLICATION_JSON))).withStatus(HttpStatus.SC_OK)));
+                                        new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
                 HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
                 try (CloseableHttpResponse response = client.execute(request)) {
                     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
@@ -137,9 +136,9 @@ public class HttpClientTests {
         void clientCreatedWithProxyInfoTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
                 wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
-                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_JSON))
+                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf("application/json"))
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
-                                        new ContentTypeHeader(MediaType.APPLICATION_JSON.toString()))).withStatus(HttpStatus.SC_OK)));
+                                        new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
                 HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
                 try (CloseableHttpResponse response = client.execute(request)) {
                     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
@@ -193,9 +192,9 @@ public class HttpClientTests {
         void clientCreatedWithProxyInfoTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
                 wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
-                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_JSON))
+                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf("application/json"))
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
-                                        new ContentTypeHeader(MediaType.APPLICATION_JSON.toString()))).withStatus(HttpStatus.SC_OK)));
+                                        new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
                 HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
                 try (CloseableHttpResponse response = client.execute(request)) {
                     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
@@ -249,9 +248,9 @@ public class HttpClientTests {
         void clientCreatedWithProxyInfoTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
                 wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
-                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_JSON))
+                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf("application/json"))
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
-                                        new ContentTypeHeader(MediaType.APPLICATION_JSON.toString()))).withStatus(HttpStatus.SC_OK)));
+                                        new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
                 HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
                 try (CloseableHttpResponse response = client.execute(request)) {
                     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
@@ -304,9 +303,9 @@ public class HttpClientTests {
         void clientCreatedWithProxyInfoTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
                 wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
-                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_JSON))
+                        .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf("application/json"))
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
-                                        new ContentTypeHeader(MediaType.APPLICATION_JSON.toString()))).withStatus(HttpStatus.SC_OK)));
+                                        new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
                 HttpUriRequest request = new HttpGet("http://localhost:1080/hello");
                 try (CloseableHttpResponse response = client.execute(request)) {
                     Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
