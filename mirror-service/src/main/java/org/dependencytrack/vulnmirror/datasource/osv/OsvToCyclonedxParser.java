@@ -1,5 +1,6 @@
 package org.dependencytrack.vulnmirror.datasource.osv;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.github.packageurl.MalformedPackageURLException;
@@ -96,7 +97,6 @@ public class OsvToCyclonedxParser {
 
     private List<VulnerabilityAffects> parseAffectedRanges(final String vulnId, JSONArray osvAffectedArray, Bom.Builder bom) {
         PackageURL packageUrl;
-        String ecoSystem = null;
         List<VulnerabilityAffects> affects = new ArrayList<>();
 
         for (int i = 0; i < osvAffectedArray.length(); i++) {
@@ -107,8 +107,7 @@ public class OsvToCyclonedxParser {
                 continue;
             }
             try {
-                packageUrl = new PackageURL(purl);
-                ecoSystem = packageUrl.getType();
+                new PackageURL(purl);
             } catch (MalformedPackageURLException ex) {
                 LOGGER.warn("Failed to parse PURL \"{}\" from affected node at index {} for vulnerability {}", purl, i, vulnId, ex);
                 continue;
@@ -119,7 +118,7 @@ public class OsvToCyclonedxParser {
                 bom.addComponents(component);
                 bomReference = component.getBomRef();
             }
-            VulnerabilityAffects versionRangeAffected = getAffectedPackageVersionRange(osvAffectedObj, ecoSystem);
+            VulnerabilityAffects versionRangeAffected = getAffectedPackageVersionRange(osvAffectedObj);
             VulnerabilityAffects rangeWithBomReference = VulnerabilityAffects.newBuilder(versionRangeAffected)
                     .setRef(bomReference).build();
             affects.add(rangeWithBomReference);
@@ -127,18 +126,19 @@ public class OsvToCyclonedxParser {
         return affects;
     }
 
-    private VulnerabilityAffects getAffectedPackageVersionRange(JSONObject osvAffectedObj, String ecoSystem) {
+    private VulnerabilityAffects getAffectedPackageVersionRange(JSONObject osvAffectedObj) {
 
         // Ranges and Versions for each affected package
         JSONArray rangesArr = osvAffectedObj.optJSONArray("ranges");
         JSONArray versions = osvAffectedObj.optJSONArray("versions");
+        JSONObject databaseSpecific = osvAffectedObj.optJSONObject("database_specific");
         var versionRangeAffected = VulnerabilityAffects.newBuilder();
         List<VulnerabilityAffectedVersions> versionRanges = new ArrayList<>();
 
         if (rangesArr != null) {
             rangesArr.forEach(item -> {
                 var range = (JSONObject) item;
-                var versGenerated = generateRangeSpecifier(range, ecoSystem);
+                var versGenerated = generateRangeSpecifier(range, osvAffectedObj.optJSONObject("package").optString("ecosystem"), databaseSpecific);
                 if (versGenerated != null) {
                     versionRanges.addAll(versGenerated);
                 }
@@ -215,17 +215,20 @@ public class OsvToCyclonedxParser {
         return component.build();
     }
 
-    private List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem) {
+    private List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem, JSONObject databaseSpecific) {
         JSONArray rangeEvents = range.optJSONArray("events");
         if (rangeEvents == null) {
             return List.of();
         }
+        TypeReference<Map.Entry<String, String>> typeRef = new TypeReference<Map.Entry<String, String>>() {};
         List<Map.Entry<String, String>> rangeEventList = rangeEvents.toList().stream()
-                .map(rangeEvent -> (Map.Entry<String, String>) this.objectMapper.convertValue(rangeEvent, Map.Entry.class))
+                .map(rangeEvent -> this.objectMapper.convertValue(rangeEvent, typeRef))
                 .collect(Collectors.toList());
         final var versionRanges = new ArrayList<VulnerabilityAffectedVersions>();
         String rangeType = range.optString("type");
         try {
+            // TODO add mapping of databaseSpecific in vers
+            //  https://github.com/nscuro/versatile/issues/51
             var vers = versFromOsvRange(rangeType, ecoSystem, rangeEventList);
             versionRanges.add(VulnerabilityAffectedVersions.newBuilder().setRange(String.valueOf(vers)).build());
             return versionRanges;
