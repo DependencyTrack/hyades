@@ -230,7 +230,7 @@ public final class NvdToCyclonedxParser {
                         .filter(VulnerabilityAffectedVersions::hasRange)
                         .map(VulnerabilityAffectedVersions::getRange)
                         .noneMatch(versForCpeMatch::equals);
-                if (shouldAddRange) {
+                if (shouldAddRange && versForCpeMatch != null) {
                     affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setRange(versForCpeMatch.toString()));
                 }
             }

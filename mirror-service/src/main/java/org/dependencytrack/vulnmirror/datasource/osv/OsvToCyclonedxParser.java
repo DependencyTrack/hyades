@@ -96,12 +96,12 @@ public class OsvToCyclonedxParser {
     }
 
     private List<VulnerabilityAffects> parseAffectedRanges(final String vulnId, JSONArray osvAffectedArray, Bom.Builder bom) {
-        PackageURL packageUrl;
         List<VulnerabilityAffects> affects = new ArrayList<>();
 
         for (int i = 0; i < osvAffectedArray.length(); i++) {
             JSONObject osvAffectedObj = osvAffectedArray.getJSONObject(i);
-            String purl = parsePackageUrl(osvAffectedObj);
+            JSONObject packageObj = osvAffectedObj.optJSONObject("package");
+            String purl = parsePackageUrl(packageObj);
             if (purl == null) {
                 LOGGER.debug("affected node at index {} for vulnerability {} does not provide a PURL; Skipping", i, vulnId);
                 continue;
@@ -114,7 +114,7 @@ public class OsvToCyclonedxParser {
             }
             String bomReference = ParserUtil.getBomRefIfComponentExists(bom.build(), purl);
             if (bomReference == null) {
-                Component component = createNewComponentWithPurl(osvAffectedObj, purl);
+                Component component = createNewComponentWithPurl(packageObj, purl);
                 bom.addComponents(component);
                 bomReference = component.getBomRef();
             }
@@ -138,10 +138,8 @@ public class OsvToCyclonedxParser {
         if (rangesArr != null) {
             rangesArr.forEach(item -> {
                 var range = (JSONObject) item;
-                var versGenerated = generateRangeSpecifier(range, osvAffectedObj.optJSONObject("package").optString("ecosystem"), databaseSpecific);
-                if (versGenerated != null) {
-                    versionRanges.addAll(versGenerated);
-                }
+                versionRanges.addAll(
+                        generateRangeSpecifier(range, osvAffectedObj.optJSONObject("package").optString("ecosystem")));
             });
         }
 
@@ -204,18 +202,15 @@ public class OsvToCyclonedxParser {
         return ParserUtil.mapSeverity(severity);
     }
 
-    private static Component createNewComponentWithPurl(JSONObject osvAffectedObj, String purl) {
-        JSONObject packageObj = osvAffectedObj.optJSONObject("package");
+    private static Component createNewComponentWithPurl(JSONObject packageObj, String purl) {
         UUID uuid = Generators.nameBasedGenerator(UUID_V5_NAMESPACE).generate(purl);
-        Component.Builder component = Component.newBuilder()
-                .setBomRef(uuid.toString());
+        Component.Builder component = Component.newBuilder().setBomRef(uuid.toString());
         Optional.ofNullable(packageObj.optString("name", null)).ifPresent(name -> component.setName(name));
         Optional.ofNullable(purl).ifPresent(packagePurl -> component.setPurl(packagePurl));
-
         return component.build();
     }
 
-    private List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem, JSONObject databaseSpecific) {
+    private List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem) {
         JSONArray rangeEvents = range.optJSONArray("events");
         if (rangeEvents == null) {
             return List.of();
@@ -227,7 +222,7 @@ public class OsvToCyclonedxParser {
         final var versionRanges = new ArrayList<VulnerabilityAffectedVersions>();
         String rangeType = range.optString("type");
         try {
-            // TODO add mapping of databaseSpecific in vers
+            // TODO: add mapping of databaseSpecific in vers
             //  https://github.com/nscuro/versatile/issues/51
             var vers = versFromOsvRange(rangeType, ecoSystem, rangeEventList);
             versionRanges.add(VulnerabilityAffectedVersions.newBuilder().setRange(String.valueOf(vers)).build());
@@ -235,7 +230,7 @@ public class OsvToCyclonedxParser {
         } catch (Exception exception) {
             LOGGER.debug("Exception while parsing OSV version range.", exception);
         }
-        return null;
+        return List.of();
     }
 
     private static List<VulnerabilityRating> parseCvssRatings(JSONObject object, Severity severity) {
@@ -294,8 +289,7 @@ public class OsvToCyclonedxParser {
         return vulnerability;
     }
 
-    private static String parsePackageUrl(JSONObject osvAffectedObj) {
-        JSONObject packageObj = osvAffectedObj.optJSONObject("package");
+    private static String parsePackageUrl(JSONObject packageObj) {
         return packageObj != null ? packageObj.optString("purl", null) : null;
     }
 
