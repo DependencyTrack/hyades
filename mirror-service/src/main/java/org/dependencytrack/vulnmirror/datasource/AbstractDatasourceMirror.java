@@ -1,6 +1,7 @@
 package org.dependencytrack.vulnmirror.datasource;
 
 import com.google.protobuf.Timestamp;
+import io.github.jeremylong.openvulnerability.client.epss.EpssItem;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.Producer;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -107,6 +109,25 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
                     KafkaTopic.NEW_VULNERABILITY.getName(), recordKey, serializedBov)).get();
         } else {
             logger.debug("{} did not change", recordKey);
+        }
+    }
+
+    /**
+     * Publish EPSS items to Kafka with cveId as the key.
+     *
+     * @param epssItems List of EpssItems
+     */
+    protected void publishEpss(final List<EpssItem> epssItems) throws ExecutionException, InterruptedException {
+        if (epssItems.isEmpty()) {
+            throw new IllegalArgumentException("List must contain exactly one EPSS item");
+        }
+        for (EpssItem epssItem : epssItems) {
+            final var serializedEpss = org.dependencytrack.proto.mirror.v1.EpssItem.newBuilder()
+                    .setCve(epssItem.getCve())
+                    .setPercentile(epssItem.getPercentile())
+                    .setEpss(epssItem.getEpss()).build();
+            kafkaProducer.send(new ProducerRecord<>(
+                    KafkaTopic.VULNERABILITY_MIRROR_EPSS.getName(), epssItem.getCve(), serializedEpss.toByteArray())).get();
         }
     }
 

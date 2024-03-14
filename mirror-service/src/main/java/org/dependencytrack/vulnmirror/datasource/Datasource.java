@@ -6,6 +6,7 @@ public enum Datasource {
 
     NVD,
 
-    OSV
+    OSV,
 
+    EPSS
 }

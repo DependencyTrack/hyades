@@ -25,7 +25,8 @@ public enum KafkaTopic {
     NEW_VULNERABILITY("dtrack.vulnerability"),
     VULNERABILITY_MIRROR_COMMAND("dtrack.vulnerability.mirror.command"),
     VULNERABILITY_MIRROR_STATE("dtrack.vulnerability.mirror.state"),
-    VULNERABILITY_DIGEST("dtrack.vulnerability.digest");
+    VULNERABILITY_DIGEST("dtrack.vulnerability.digest"),
+    VULNERABILITY_MIRROR_EPSS("dtrack.vulnerability.mirror.epss");
 
     private final String name;
 
