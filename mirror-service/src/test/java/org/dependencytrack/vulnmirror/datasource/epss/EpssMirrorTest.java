@@ -16,7 +16,6 @@ import org.dependencytrack.proto.KafkaProtobufSerde;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.vulnmirror.TestConstants;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -49,8 +48,6 @@ class EpssMirrorTest {
 
     @Test
     void testDoMirrorSuccess() {
-        MockitoAnnotations.initMocks(this);
-
         final var epssClientMock = mock(EpssDataFeed.class);
         List<EpssItem> mockEpssList = new ArrayList<>();
         mockEpssList.add(new EpssItem("CVE-123", 3.4, 7.8));
@@ -99,8 +96,6 @@ class EpssMirrorTest {
 
     @Test
     void testDoMirrorEmptyList() {
-        MockitoAnnotations.initMocks(this);
-
         final var epssClientMock = mock(EpssDataFeed.class);
         when(epssClientMock.download()).thenReturn(Collections.EMPTY_LIST);
 
