@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+    - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # tag=v4.1.2
     - name: Set up JDK
-      uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8 # tag=v4.1.0
+      uses: actions/setup-java@5896cecc08fd8a1fbdfaf517e29b571164b031f7 # tag=v4.2.0
       with:
         java-version: '21'
         distribution: 'temurin'
@@ -49,15 +49,15 @@ jobs:
       fail-fast: true
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # tag=v4.1.2
     - name: Set up JDK
-      uses: actions/setup-java@9704b39bf258b59bc04b50fa2dd55e9ed76b47a8 # tag=v4.1.0
+      uses: actions/setup-java@5896cecc08fd8a1fbdfaf517e29b571164b031f7 # tag=v4.2.0
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
     - name: Set up GraalVM
-      uses: graalvm/setup-graalvm@5393c3d80982e8a7fa61005137824ef53731ff9a # tag=v1
+      uses: graalvm/setup-graalvm@d3f9e14fc3771c0f5aaccb754e441b946b6703f9 # tag=v1
       with:
         # NOTE: Do NOT use the Oracle GraalVM distribution, as that is causing issues
         # with Protobuf serialization.
