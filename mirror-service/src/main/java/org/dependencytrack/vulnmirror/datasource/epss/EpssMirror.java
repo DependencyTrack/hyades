@@ -42,6 +42,11 @@ class EpssMirror extends AbstractDatasourceMirror<Void> {
     }
 
     @Override
+    public boolean supportsDatasource(final Datasource datasource) {
+        return datasource == Datasource.EPSS;
+    }
+
+    @Override
     public Future<?> doMirror(String ecosystem) {
         return executorService.submit(() -> {
             try {
