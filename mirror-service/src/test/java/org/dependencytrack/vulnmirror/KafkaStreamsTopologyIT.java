@@ -460,7 +460,8 @@ class KafkaStreamsTopologyIT {
             public List<TestResourceEntry> testResources() {
                 return List.of(
                         new TestResourceEntry(KafkaCompanionResource.class),
-                        new TestResourceEntry(WireMockTestResource.class));
+                        new TestResourceEntry(WireMockTestResource.class,
+                                Map.of("serverUrlProperty", "mirror.datasource.epss.download-url")));
             }
         }
 
@@ -478,8 +479,9 @@ class KafkaStreamsTopologyIT {
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/epss/epss-items.csv"))))
+                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/epss/epss-items.tar.gz"), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM))))
                     .willSetStateTo("epss-fetched"));
+
 
             // Trigger a EPSS mirroring operation.
             kafkaCompanion

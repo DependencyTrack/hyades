@@ -28,7 +28,6 @@ import static org.dependencytrack.proto.notification.v1.Group.GROUP_DATASOURCE_M
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -54,7 +53,7 @@ class EpssMirrorTest {
         mockEpssList.add(new EpssItem("CVE-456", 3.5, 7.9));
         when(epssClientMock.download()).thenReturn(mockEpssList);
 
-        when(epssClientFactoryMock.create(any())).thenReturn(epssClientMock);
+        when(epssClientFactoryMock.create()).thenReturn(epssClientMock);
 
         epssMirror.doMirror(null);
         final List<ConsumerRecord<String, org.dependencytrack.proto.mirror.v1.EpssItem>> epssItems = kafkaCompanion
@@ -99,7 +98,7 @@ class EpssMirrorTest {
         final var epssClientMock = mock(EpssDataFeed.class);
         when(epssClientMock.download()).thenReturn(Collections.EMPTY_LIST);
 
-        when(epssClientFactoryMock.create(any())).thenReturn(epssClientMock);
+        when(epssClientFactoryMock.create()).thenReturn(epssClientMock);
 
         epssMirror.doMirror(null);
         final List<ConsumerRecord<String, org.dependencytrack.proto.mirror.v1.EpssItem>> epssItems = kafkaCompanion
@@ -131,7 +130,7 @@ class EpssMirrorTest {
 
     @Test
     void testDoMirrorFailure() {
-        doThrow(new IllegalStateException()).when(epssClientFactoryMock).create(any());
+        doThrow(new IllegalStateException()).when(epssClientFactoryMock).create();
         assertThatNoException().isThrownBy(() -> epssMirror.doMirror(null).get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
