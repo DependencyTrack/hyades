@@ -64,7 +64,7 @@ class EpssMirror extends AbstractDatasourceMirror<Void> {
         });
     }
 
-    void performMirror() throws Exception {
+    void performMirror() throws Throwable {
         final Timer.Sample durationSample = Timer.start();
         try {
             final EpssDataFeed epssClient = epssClientFactory.create();
