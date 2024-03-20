@@ -37,6 +37,8 @@ jobs:
         install: true
     - name: Build Native Image
       timeout-minutes: ${{ matrix.arch.build-timeout }}
+      env:
+        MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
         RESOURCES_INCLUDES=""
         RESOURCES_EXCLUDES=""
@@ -66,6 +68,8 @@ jobs:
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
     - name: Test Native Image
       if: ${{ matrix.arch.name == 'amd64' }}
+      env:
+        MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
         mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ inputs.module }} test-compile failsafe:integration-test -Dnative
     - name: Upload Build Artifact
