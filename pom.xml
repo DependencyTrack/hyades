@@ -35,16 +35,16 @@
 
   <properties>
     <!-- General Project Properties -->
-    <compiler-plugin.version>3.12.1</compiler-plugin.version>
-    <maven.compiler.release>17</maven.compiler.release>
+    <compiler-plugin.version>3.13.0</compiler-plugin.version>
+    <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.parentBaseDir>.</project.parentBaseDir>
 
     <!-- Dependency Versions -->
     <lib.assertj.version>3.25.3</lib.assertj.version>
-    <lib.checkstyle.version>10.14.1</lib.checkstyle.version>
-    <lib.cloud-sql-postgres-socket-factory.version>1.17.0</lib.cloud-sql-postgres-socket-factory.version>
+    <lib.checkstyle.version>10.14.2</lib.checkstyle.version>
+    <lib.cloud-sql-postgres-socket-factory.version>1.17.1</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>2.1.0</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
     <lib.confluent-parallel-consumer.version>0.5.2.8</lib.confluent-parallel-consumer.version>
@@ -69,7 +69,7 @@
     <lib.testcontainers-minio.version>1.19.7</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>3.8.2</quarkus.platform.version>
+    <quarkus.platform.version>3.8.3</quarkus.platform.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
 
     <!-- Plugin Versions -->
@@ -337,7 +337,7 @@
         <plugin>
           <groupId>io.smallrye</groupId>
           <artifactId>jandex-maven-plugin</artifactId>
-          <version>3.1.6</version>
+          <version>3.1.7</version>
           <executions>
             <execution>
               <id>make-index</id>

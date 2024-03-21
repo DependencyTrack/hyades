@@ -166,7 +166,7 @@ Refer to the [`Configuration`](https://dependencytrack.github.io/hyades/latest/r
 
 #### Prerequisites
 
-* JDK 17+
+* JDK 21+
 * Maven
 * Docker
 
