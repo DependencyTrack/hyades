@@ -1,3 +1,21 @@
+/*
+ * This file is part of Dependency-Track.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) OWASP Foundation. All Rights Reserved.
+ */
 package org.dependencytrack.apiserver;
 
 import jakarta.ws.rs.Consumes;
@@ -13,20 +31,20 @@ import jakarta.ws.rs.core.MediaType;
 import org.dependencytrack.apiserver.model.Analysis;
 import org.dependencytrack.apiserver.model.BomProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
-import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 import org.dependencytrack.apiserver.model.ConfigProperty;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.CreateTeamRequest;
 import org.dependencytrack.apiserver.model.CreateVulnerabilityRequest;
 import org.dependencytrack.apiserver.model.Finding;
+import org.dependencytrack.apiserver.model.NotificationPublisher;
 import org.dependencytrack.apiserver.model.NotificationRule;
 import org.dependencytrack.apiserver.model.Project;
 import org.dependencytrack.apiserver.model.Team;
 import org.dependencytrack.apiserver.model.UpdateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.VulnerabilityPolicy;
 import org.dependencytrack.apiserver.model.WorkflowState;
+import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
-import org.dependencytrack.apiserver.model.NotificationPublisher;
 
 import java.util.List;
 import java.util.UUID;
