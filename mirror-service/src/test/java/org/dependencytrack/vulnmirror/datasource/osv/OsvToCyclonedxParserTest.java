@@ -169,7 +169,7 @@ class OsvToCyclonedxParserTest {
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
                                "versions": [
-                                { "range": "vers:maven/>=10" }
+                                { "range": "vers:maven/>=10|<=29.0" }
                                ]
                              }],
                              "properties": [{
@@ -559,7 +559,7 @@ class OsvToCyclonedxParserTest {
                                   "ref": "fecdf35f-ecf3-53bc-8092-957aed047cb5",
                                   "versions": [
                                     {
-                                      "range":"vers:npm/>=0"
+                                      "version":"103.99.99"
                                     }
                                   ]
                                 }

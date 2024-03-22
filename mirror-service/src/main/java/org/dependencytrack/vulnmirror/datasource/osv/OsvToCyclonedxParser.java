@@ -157,7 +157,9 @@ public class OsvToCyclonedxParser {
             rangesArr.forEach(item -> {
                 var range = (JSONObject) item;
                 versionRanges.addAll(
-                        generateRangeSpecifier(range, osvAffectedObj.optJSONObject("package").optString("ecosystem")));
+                        generateRangeSpecifier(range,
+                                osvAffectedObj.optJSONObject("package").optString("ecosystem"),
+                                databaseSpecific));
             });
         }
 
@@ -228,21 +230,20 @@ public class OsvToCyclonedxParser {
         return component.build();
     }
 
-    private List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem) {
+    private List<VulnerabilityAffectedVersions> generateRangeSpecifier(JSONObject range, String ecoSystem, JSONObject databaseSpecific) {
         JSONArray rangeEvents = range.optJSONArray("events");
         if (rangeEvents == null) {
             return List.of();
         }
         TypeReference<Map.Entry<String, String>> typeRef = new TypeReference<Map.Entry<String, String>>() {};
-        List<Map.Entry<String, String>> rangeEventList = rangeEvents.toList().stream()
+            List<Map.Entry<String, String>> rangeEventList = rangeEvents.toList().stream()
                 .map(rangeEvent -> this.objectMapper.convertValue(rangeEvent, typeRef))
                 .collect(Collectors.toList());
         final var versionRanges = new ArrayList<VulnerabilityAffectedVersions>();
         String rangeType = range.optString("type");
         try {
-            // TODO: add mapping of databaseSpecific in vers
-            //  https://github.com/nscuro/versatile/issues/51
-            var vers = versFromOsvRange(rangeType, ecoSystem, rangeEventList);
+            var isLastRangeUpperbound = List.of("fixed", "limit", "last_affected").contains(rangeEventList.getLast().getKey());
+            var vers = versFromOsvRange(rangeType, ecoSystem, rangeEventList, isLastRangeUpperbound ? null : databaseSpecific.toMap());
             versionRanges.add(VulnerabilityAffectedVersions.newBuilder().setRange(String.valueOf(vers)).build());
             return versionRanges;
         } catch (Exception exception) {
