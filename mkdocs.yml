@@ -64,6 +64,8 @@
     - Operations:
       - Database: operations/database.md
     - Reference:
-      - Configuration: reference/configuration.md
+      - Configuration:
+        - Overview: reference/configuration/overview.md
+        - API Server: reference/configuration/api-server.md
       - Topics: reference/topics.md
     - About: about.md
