@@ -267,8 +267,8 @@ public class GenerateConfigDocs implements Callable<Integer> {
         var currentProperty = new ConfigProperty();
         final var properties = new ArrayList<ConfigProperty>();
 
-        for (String line : lines) {
-            line = line.strip();
+        for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
+            String line = lines.get(lineIndex).strip();
             if (line.isEmpty()) {
                 if (!Objects.equals(currentProperty, new ConfigProperty())) {
                     System.err.println(Ansi.AUTO.string("""
@@ -311,7 +311,25 @@ public class GenerateConfigDocs implements Callable<Integer> {
             } else if (line.contains("=")) {
                 final String[] parts = line.split("=", 2);
                 currentProperty.name = parts[0].trim();
-                final String defaultValue = parts[1].trim();
+                String defaultValue = parts[1].trim();
+
+                // Deal with multi-line default values, indicated by a trailing backslash.
+                if (defaultValue.endsWith("\\")) {
+                    defaultValue = defaultValue.replaceAll("\\\\$", "");
+
+                    int nextLineIndex = lineIndex + 1;
+                    while (nextLineIndex < lines.size() && lines.get(nextLineIndex).matches("^\\s+.*")) {
+                        defaultValue += lines.get(nextLineIndex).trim();
+                        if (!defaultValue.endsWith("\\")) {
+                            break;
+                        }
+
+                        defaultValue = defaultValue.replaceAll("\\\\$", "");
+                        nextLineIndex++;
+                    }
+
+                    lineIndex = nextLineIndex;
+                }
 
                 if (currentProperty.name.startsWith("%")) {
                     System.err.println(Ansi.AUTO.string("""
