@@ -186,7 +186,6 @@ class GitHubMirrorTest {
             assertThat(record.value()).isNotNull();
         });
 
-        // FIXME: vers ranges should not include whitespace
         assertThatJson(JsonFormat.printer().print(vulnRecords.get(0).value()))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .withMatcher("vuln-description", Matchers.allOf(
@@ -232,20 +231,20 @@ class GitHubMirrorTest {
                                 {
                                   "ref": "3c41e06b-5923-5392-a1e3-64a630c97591",
                                   "versions": [
-                                    { "range": "vers:nuget/>= 3.0.0|< 3.4.1" },
-                                    { "range": "vers:nuget/>= 4.0.0|< 4.3.1" }
+                                    { "range": "vers:nuget/>=3.0.0|<3.4.1" },
+                                    { "range": "vers:nuget/>=4.0.0|<4.3.1" }
                                   ]
                                 },
                                 {
                                   "ref": "e5dc290a-c649-5f73-b814-c9a47690a48a",
                                   "versions": [
-                                    { "range": "vers:nuget/< 4.3.1" }
+                                    { "range": "vers:nuget/<4.3.1" }
                                   ]
                                 },
                                 {
                                   "ref": "c8e5d671-0b0d-5fda-a404-730615325a7f",
                                   "versions": [
-                                    { "range": "vers:nuget/>= 3.0.0|< 3.4.1" }
+                                    { "range": "vers:nuget/>=3.0.0|<3.4.1" }
                                   ]
                                 }
                               ]

@@ -215,7 +215,7 @@ class OsvMirrorTest {
                                 {
                                   "ref": "2aa501b7-09d2-5bb7-88cc-41d599869255",
                                   "versions": [
-                                    { "range": "vers:golang/<0.0.0-20170426191122-ca1404ee6e83" }
+                                    { "range": "vers:golang/<0.0.0-20170426191122-ca1404ee6e83|>=0" }
                                   ]
                                 }
                               ]
@@ -294,7 +294,7 @@ class OsvMirrorTest {
                                 {
                                   "ref": "2a24a29f-9ff3-52b8-bc81-471f326a5b3e",
                                   "versions": [
-                                    { "range": "vers:maven/<1.9.0" }
+                                    { "range": "vers:maven/>=0|<1.9.0" }
                                   ]
                                 }
                               ]

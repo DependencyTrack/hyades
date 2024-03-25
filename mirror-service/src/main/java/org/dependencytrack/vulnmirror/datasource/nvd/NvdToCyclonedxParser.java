@@ -33,6 +33,8 @@ import io.github.jeremylong.openvulnerability.client.nvd.Metrics;
 import io.github.jeremylong.openvulnerability.client.nvd.Node;
 import io.github.jeremylong.openvulnerability.client.nvd.Reference;
 import io.github.jeremylong.openvulnerability.client.nvd.Weakness;
+import io.github.nscuro.versatile.Comparator;
+import io.github.nscuro.versatile.Vers;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclonedx.proto.v1_4.Bom;
@@ -54,8 +56,6 @@ import us.springett.parsers.cpe.CpeParser;
 import us.springett.parsers.cpe.exceptions.CpeParsingException;
 import us.springett.parsers.cpe.values.Part;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -70,6 +70,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static io.github.nscuro.versatile.VersUtils.versFromNvdRange;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 import static org.cyclonedx.proto.v1_4.Classification.CLASSIFICATION_APPLICATION;
 import static org.cyclonedx.proto.v1_4.Classification.CLASSIFICATION_DEVICE;
@@ -198,50 +199,12 @@ public final class NvdToCyclonedxParser {
                 continue;
             }
 
-            Pair<String, String> lowerBoundConstraint = null;
-            if (trimToNull(cpeMatch.getVersionStartExcluding()) != null) {
-                lowerBoundConstraint = Pair.of(">", cpeMatch.getVersionStartExcluding());
-            } else if (trimToNull(cpeMatch.getVersionStartIncluding()) != null) {
-                lowerBoundConstraint = Pair.of(">=", cpeMatch.getVersionStartIncluding());
-            }
-
-            Pair<String, String> upperBoundConstraint = null;
-            if (trimToNull(cpeMatch.getVersionEndExcluding()) != null) {
-                upperBoundConstraint = Pair.of("<", cpeMatch.getVersionEndExcluding());
-            } else if (trimToNull(cpeMatch.getVersionEndIncluding()) != null) {
-                upperBoundConstraint = Pair.of("<=", cpeMatch.getVersionEndIncluding());
-            }
-
-            final var versConstraints = new ArrayList<Pair<String, String>>();
-            if (lowerBoundConstraint != null && upperBoundConstraint != null) {
-                versConstraints.add(lowerBoundConstraint);
-                versConstraints.add(upperBoundConstraint);
-            } else if (lowerBoundConstraint == null && upperBoundConstraint != null) {
-                versConstraints.add(upperBoundConstraint);
-            } else if (lowerBoundConstraint != null && upperBoundConstraint == null) {
-                versConstraints.add(lowerBoundConstraint);
-            } else {
-                // The CpeMatch does not define a version range, but the CPE itself can
-                // still give us the information we need. The version field can either be:
-                //   * an exact version (e.g. "1.0.0")
-                //   * a wildcard matching all versions ("*")
-                //   * a "not applicable", matching no version at all ("-")
-                if (trimToNull(cpe.getVersion()) != null) {
-                    if (!"*".equals(cpe.getVersion()) && !"-".equals(cpe.getVersion())) {
-                        // If we have neither upper, nor lower bound, and the CPE version
-                        // is not a wildcard, only a specific version is vulnerable.
-                        versConstraints.add(Pair.of("=", cpe.getVersion()));
-                    } else if ("*".equals(cpe.getVersion())) {
-                        // If we have neither upper, nor lower bound, and the CPE version
-                        // is a wildcard, all versions are vulnerable, and we can safely use a vers wildcard.
-                        versConstraints.add(Pair.of("*", null));
-                    }
-                }
-            }
-
-            if (versConstraints.isEmpty()) {
-                LOGGER.debug("No version range could be assembled from {} for {}", cpeMatch, cveId);
-                continue;
+            Vers versForCpeMatch = null;
+            try {
+                versForCpeMatch = versFromNvdRange(cpeMatch.getVersionStartExcluding(), cpeMatch.getVersionStartIncluding(),
+                        cpeMatch.getVersionEndExcluding(), cpeMatch.getVersionEndIncluding(), trimToNull(cpe.getVersion()));
+            } catch (Exception exception) {
+                LOGGER.debug("Exception while parsing NVD version range for Cpe {}", cpe, exception);
             }
 
             final Component component = componentByCpe.computeIfAbsent(
@@ -258,8 +221,9 @@ public final class NvdToCyclonedxParser {
                     component.getBomRef(),
                     bomRef -> VulnerabilityAffects.newBuilder()
                             .setRef(bomRef));
-
-            if (versConstraints.size() == 1 && "=".equals(versConstraints.get(0).getLeft())) {
+            if (versForCpeMatch != null && versForCpeMatch.constraints().size() == 1
+                    && versForCpeMatch.constraints().get(0).comparator().equals(Comparator.EQUAL)) {
+                var versConstraint = versForCpeMatch.constraints().get(0);
                 // When the only constraint is an exact version match, populate the version field
                 // instead of the range field. We do this despite vers supporting such cases, too,
                 // e.g. via "vers:generic/1.2.3", to be more explicit.
@@ -274,29 +238,18 @@ public final class NvdToCyclonedxParser {
                 final boolean shouldAddVersion = affectsBuilder.getVersionsList().stream()
                         .filter(VulnerabilityAffectedVersions::hasVersion)
                         .map(VulnerabilityAffectedVersions::getVersion)
-                        .noneMatch(versConstraints.get(0).getRight()::equals);
+                        .noneMatch(versConstraint.version().toString()::equals);
                 if (shouldAddVersion) {
-                    affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setVersion(versConstraints.get(0).getRight()));
+                    affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setVersion(versConstraint.version().toString()));
                 }
             } else {
-                // Using 'generic' as versioning scheme for NVD due to lack of package data.
-                final String vers = "vers:generic/" + versConstraints.stream()
-                        .map(constraint -> {
-                            if (constraint.getLeft().equals("*")) {
-                                return "*";
-                            }
-
-                            return constraint.getLeft() + URLEncoder.encode(constraint.getRight(), StandardCharsets.UTF_8);
-                        })
-                        .collect(Collectors.joining("|"));
-
                 // Similar to how we do it for exact version matches, avoid duplicate ranges.
                 final boolean shouldAddRange = affectsBuilder.getVersionsList().stream()
                         .filter(VulnerabilityAffectedVersions::hasRange)
                         .map(VulnerabilityAffectedVersions::getRange)
-                        .noneMatch(vers::equals);
-                if (shouldAddRange) {
-                    affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setRange(vers));
+                        .noneMatch(versForCpeMatch::equals);
+                if (shouldAddRange && versForCpeMatch != null) {
+                    affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setRange(versForCpeMatch.toString()));
                 }
             }
         }

@@ -157,6 +157,11 @@
             <groupId>org.brotli</groupId>
             <artifactId>dec</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.github.nscuro</groupId>
+            <artifactId>versatile</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>
