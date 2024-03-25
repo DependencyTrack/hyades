@@ -1,11 +1,29 @@
+/*
+ * This file is part of Dependency-Track.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) OWASP Foundation. All Rights Reserved.
+ */
 package org.dependencytrack.repometaanalyzer;
 
 import com.github.packageurl.PackageURL;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CaffeineCache;
-import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -14,9 +32,6 @@ import org.apache.kafka.streams.TestInputTopic;
 import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
-import org.dependencytrack.repometaanalyzer.model.IntegrityMeta;
-import org.dependencytrack.repometaanalyzer.model.MetaAnalyzerCacheKey;
-import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.persistence.model.Repository;
 import org.dependencytrack.persistence.repository.RepoEntityRepository;
@@ -25,6 +40,9 @@ import org.dependencytrack.proto.KafkaProtobufSerializer;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisCommand;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisResult;
 import org.dependencytrack.proto.repometaanalysis.v1.FetchMeta;
+import org.dependencytrack.repometaanalyzer.model.IntegrityMeta;
+import org.dependencytrack.repometaanalyzer.model.MetaAnalyzerCacheKey;
+import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.dependencytrack.repometaanalyzer.repositories.IMetaAnalyzer;
 import org.dependencytrack.repometaanalyzer.repositories.RepositoryAnalyzerFactory;
 import org.junit.jupiter.api.AfterEach;
