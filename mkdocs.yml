@@ -67,6 +67,7 @@
       - Configuration:
         - Overview: reference/configuration/overview.md
         - API Server: reference/configuration/api-server.md
+        - Mirror Service: reference/configuration/mirror-service.md
         - Vulnerability Analyzer: reference/configuration/vulnerability-analyzer.md
       - Topics: reference/topics.md
     - About: about.md
