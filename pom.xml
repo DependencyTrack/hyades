@@ -92,6 +92,7 @@
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>3.8.3</quarkus.platform.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
+    <lib.versatile.version>0.6.0</lib.versatile.version>
 
     <!-- Plugin Versions -->
     <plugin.cyclonedx.version>2.8.0</plugin.cyclonedx.version>
@@ -332,6 +333,12 @@
         <groupId>com.icegreen</groupId>
         <artifactId>greenmail-junit5</artifactId>
         <version>${lib.greenmail.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.nscuro</groupId>
+        <artifactId>versatile</artifactId>
+        <version>${lib.versatile.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

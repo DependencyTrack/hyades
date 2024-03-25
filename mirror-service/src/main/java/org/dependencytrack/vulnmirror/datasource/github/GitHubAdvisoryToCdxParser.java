@@ -59,6 +59,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static io.github.nscuro.versatile.VersUtils.versFromGhsaRange;
+
 public class GitHubAdvisoryToCdxParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubAdvisoryToCdxParser.class);
@@ -120,7 +122,10 @@ public class GitHubAdvisoryToCdxParser {
                         bomRef -> VulnerabilityAffects.newBuilder()
                                 .setRef(bomRef));
 
-                affectsBuilder.addVersions(parseVersionRangeAffected(gitHubVulnerability));
+                var parsedVersionRange = parseVersionRangeAffected(gitHubVulnerability);
+                if (parsedVersionRange != null) {
+                    affectsBuilder.addVersions(parsedVersionRange);
+                }
             }
         }
 
@@ -205,50 +210,15 @@ public class GitHubAdvisoryToCdxParser {
     }
 
     private static VulnerabilityAffectedVersions parseVersionRangeAffected(final io.github.jeremylong.openvulnerability.client.ghsa.Vulnerability vuln) {
-
-        final PackageURL purl = generatePurlFromGitHubVulnerability(vuln);
-        if (purl == null) return null;
-        String versionStartIncluding = null;
-        String versionStartExcluding = null;
-        String versionEndIncluding = null;
-        String versionEndExcluding = null;
-        if (vuln.getVulnerableVersionRange() != null) {
-            final String[] parts = Arrays.stream(vuln.getVulnerableVersionRange().split(",")).map(String::trim).toArray(String[]::new);
-            for (String part : parts) {
-                if (part.startsWith(">=")) {
-                    versionStartIncluding = part.trim();
-                } else if (part.startsWith(">")) {
-                    versionStartExcluding = part.trim();
-                } else if (part.startsWith("<=")) {
-                    versionEndIncluding = part.trim();
-                } else if (part.startsWith("<")) {
-                    versionEndExcluding = part.trim();
-                } else if (part.startsWith("=")) {
-                    versionStartIncluding = part.replace("=", "").trim();
-                    versionEndIncluding = part.replace("=", "").trim();
-                } else {
-                    LOGGER.warn("Unable to determine version range of " + vuln.getPackage().getEcosystem()
-                            + " : " + vuln.getPackage().getName() + " : " + vuln.getVulnerableVersionRange());
-                }
-            }
+        var vulnerableVersionRange = vuln.getVulnerableVersionRange();
+        try {
+            var vers = versFromGhsaRange(vuln.getPackage().getEcosystem(), vulnerableVersionRange);
+            var versionRange = VulnerabilityAffectedVersions.newBuilder();
+            return versionRange.setRange(String.valueOf(vers)).build();
+        } catch (Exception exception) {
+            LOGGER.debug("Exception while parsing Github version range {}", vulnerableVersionRange, exception);
         }
-
-        String uniVersionRange = "vers:" + purl.getType() + "/";
-        var versionRange = VulnerabilityAffectedVersions.newBuilder();
-        if (versionStartIncluding != null) {
-            uniVersionRange += versionStartIncluding + "|";
-        }
-        if (versionStartExcluding != null) {
-            uniVersionRange += versionStartExcluding + "|";
-        }
-        if (versionEndIncluding != null) {
-            uniVersionRange += versionEndIncluding + "|";
-        }
-        if (versionEndExcluding != null) {
-            uniVersionRange += versionEndExcluding + "|";
-        }
-
-        return versionRange.setRange(StringUtils.chop(uniVersionRange)).build();
+        return null;
     }
 
     private static List<Integer> parseCwes(CWEs weaknesses) {

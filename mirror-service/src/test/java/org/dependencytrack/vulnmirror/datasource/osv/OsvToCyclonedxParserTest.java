@@ -134,33 +134,28 @@ class OsvToCyclonedxParserTest {
                              "published": "2022-01-09T02:46:05Z",
                              "updated": "2022-01-09T11:37:01Z",
                              "affects": [{
-                               "ref": "5db9b99f-8362-5c69-bddb-5c9258f8d93e",
-                               "versions": [{
-                                 "version": "1.0.0.RELEASE"
-                               }, {
-                                 "version": "1.0.1.RELEASE"
-                               }]
+                                "ref": "5db9b99f-8362-5c69-bddb-5c9258f8d93e",
+                                "versions": [
+                                    {"version": "1.0.0.RELEASE"},
+                                    {"version": "1.0.1.RELEASE"}
+                                ]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
-                               "versions": [{
-                                 "range": "vers:maven/<2.0.17"
-                               }]
+                               "versions": [
+                                    { "range": "vers:maven/>=0|<2.0.17" }
+                                ]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
-                               "versions": [{
-                                 "range": "vers:maven/>=1|<2"
-                               }, {
-                                 "range": "vers:maven/>=3|<4"
-                               }, {
-                                 "range": "vers:maven/<1"
-                               }]
+                               "versions": [
+                                    { "range": "vers:maven/>=1|<2|>=3|<4"}, 
+                                    { "range":"vers:maven/>=0|<1" }
+                               ]
                              }, {
-                               "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
-                               "versions": [{
-                                 "range": "vers:maven/>=3"
-                               }, {
-                                 "range": "vers:maven/>=4|<5"
-                               }]
+                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
+                                "versions": [
+                                    {"version":"1.0.0.RELEASE"}, 
+                                    {"version":"2.0.9.RELEASE"}
+                                ]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
                                "versions": [{
@@ -173,9 +168,9 @@ class OsvToCyclonedxParserTest {
                                }]
                              }, {
                                "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
-                               "versions": [{
-                                 "range": "vers:maven/>=10|<=29.0"
-                               }]
+                               "versions": [
+                                { "range": "vers:maven/>=10|<=29.0" }
+                               ]
                              }],
                              "properties": [{
                                "name": "dependency-track:vuln:title",
@@ -236,7 +231,7 @@ class OsvToCyclonedxParserTest {
                               "affects": [{
                                 "ref": "1697132c-6230-5a5c-938d-f918e9c67279",
                                 "versions": [{
-                                  "range": "vers:maven/<2.0.17"
+                                  "range": "vers:maven/>=0|<2.0.17"
                                 }]
                               }],
                               "properties": [{
@@ -376,7 +371,7 @@ class OsvToCyclonedxParserTest {
                                   "ref": "c344ac2f-bbd6-5884-96eb-9aa2e4f73c9f",
                                   "versions": [
                                     {
-                                      "range": "vers:golang/<1.18.18"
+                                      "range": "vers:golang/>=0|<1.18.18"
                                     }
                                   ]
                                 }
@@ -465,7 +460,7 @@ class OsvToCyclonedxParserTest {
                                   "ref": "41c6bd3e-0f2d-5e64-bf6e-60e9648766ce",
                                   "versions": [
                                     {
-                                      "range": "vers:golang/*"
+                                      "range": "vers:golang/>=0"
                                     }
                                   ]
                                 }
@@ -564,7 +559,7 @@ class OsvToCyclonedxParserTest {
                                   "ref": "fecdf35f-ecf3-53bc-8092-957aed047cb5",
                                   "versions": [
                                     {
-                                      "version": "103.99.99"
+                                      "version":"103.99.99"
                                     }
                                   ]
                                 }
