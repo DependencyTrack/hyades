@@ -153,6 +153,7 @@
             <artifactId>resilience4j-micrometer</artifactId>
         </dependency>
 
+        <!-- Required for the native build of mirror-service with this extension -->
         <dependency>
             <groupId>org.brotli</groupId>
             <artifactId>dec</artifactId>
