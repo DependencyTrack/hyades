@@ -145,7 +145,7 @@ public abstract class AbstractDatasourceMirror<T> implements DatasourceMirror {
                     .setPercentile(epssItem.getPercentile())
                     .setEpss(epssItem.getEpss()).build();
             kafkaProducer.send(new ProducerRecord<>(
-                    KafkaTopic.VULNERABILITY_MIRROR_EPSS.getName(), epssItem.getCve(), serializedEpss.toByteArray())).get();
+                    KafkaTopic.NEW_EPSS.getName(), epssItem.getCve(), serializedEpss.toByteArray())).get();
         }
     }
 

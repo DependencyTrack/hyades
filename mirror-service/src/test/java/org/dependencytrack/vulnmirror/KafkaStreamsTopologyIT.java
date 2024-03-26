@@ -505,7 +505,7 @@ class KafkaStreamsTopologyIT {
                     .consume(Serdes.String(), new KafkaProtobufSerde<>(EpssItem.parser()))
                     .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                     .withAutoCommit()
-                    .fromTopics(KafkaTopic.VULNERABILITY_MIRROR_EPSS.getName(), 2, Duration.ofSeconds(15))
+                    .fromTopics(KafkaTopic.NEW_EPSS.getName(), 2, Duration.ofSeconds(15))
                     .awaitCompletion()
                     .getRecords();
 

@@ -78,7 +78,7 @@ class EpssMirrorTest {
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(org.dependencytrack.proto.mirror.v1.EpssItem.parser()))
                 .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                 .withAutoCommit()
-                .fromTopics(KafkaTopic.VULNERABILITY_MIRROR_EPSS.getName(), 2, Duration.ofSeconds(5))
+                .fromTopics(KafkaTopic.NEW_EPSS.getName(), 2, Duration.ofSeconds(5))
                 .awaitCompletion()
                 .getRecords();
         assertThat(epssItems).satisfiesExactlyInAnyOrder(
@@ -123,7 +123,7 @@ class EpssMirrorTest {
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(org.dependencytrack.proto.mirror.v1.EpssItem.parser()))
                 .withGroupId(TestConstants.CONSUMER_GROUP_ID)
                 .withAutoCommit()
-                .fromTopics(KafkaTopic.VULNERABILITY_MIRROR_EPSS.getName(), 0, Duration.ofSeconds(5))
+                .fromTopics(KafkaTopic.NEW_EPSS.getName(), 0, Duration.ofSeconds(5))
                 .awaitCompletion()
                 .getRecords();
 
