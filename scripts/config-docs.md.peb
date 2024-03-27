@@ -1,0 +1,49 @@
+<!--
+  GENERATED. DO NOT EDIT.
+
+  Generated with: {{ generateCommand }}
+  Generated on:   {{ generateTimestamp }}
+-->
+{% for entry in propertiesByCategory %}
+## {{ entry.key }}
+
+{% for property in entry.value -%}
+### {{ property.name }}
+
+{{ property.description }}
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">{{ property.required }}</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>{{ property.type }}</code></td>
+    </tr>
+    {% if property.validValues -%}
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>{{ property.validValues }}</code></td>
+    </tr>
+    {% endif -%}
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>{{ property.defaultValue }}</code></td>
+    </tr>
+    {% if property.example -%}
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>{{ property.example }}</code></td>
+    </tr>
+    {% endif -%}
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>{{ property.env }}</code></td>
+    </tr>
+  </tbody>
+</table>
+
+{% endfor %}
+{% endfor %}
