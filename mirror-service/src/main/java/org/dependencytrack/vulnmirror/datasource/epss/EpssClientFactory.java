@@ -31,7 +31,7 @@ class EpssClientFactory {
     }
 
     EpssDataFeed create() {
-        if (epssConfig.downloadUrl().isPresent()) {
+        if (epssConfig.downloadUrl().isPresent() || !epssConfig.downloadUrl().isEmpty()) {
             return new EpssDataFeed(epssConfig.downloadUrl().get());
         }
         else {
