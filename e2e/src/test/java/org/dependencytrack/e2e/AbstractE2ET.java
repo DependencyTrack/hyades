@@ -120,11 +120,8 @@ public class AbstractE2ET {
     private GenericContainer<?> createApiServerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
-                .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx2g")
-                .withEnv("SYSTEM_REQUIREMENT_CHECK_ENABLED", "false")
-                .withEnv("ALPINE_DATABASE_MODE", "external")
+                .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx512m")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
-                .withEnv("ALPINE_DATABASE_DRIVER", "org.postgresql.Driver")
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
                 .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
@@ -144,6 +141,7 @@ public class AbstractE2ET {
     private GenericContainer<?> createNotificationPublisherContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -163,6 +161,7 @@ public class AbstractE2ET {
     private GenericContainer<?> createRepoMetaAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(REPO_META_ANALYZER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -182,6 +181,7 @@ public class AbstractE2ET {
     private GenericContainer<?> createVulnAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(VULN_ANALYZER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
