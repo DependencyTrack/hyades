@@ -1665,7 +1665,7 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "(rate(vuln_mirror_processing_seconds_sum{instance=\"$instance\"}[1m]) / rate(vuln_mirror_processing_seconds_count{instance=\"$instance\"}[1m])) > 0",
+          "expr": "(rate(pc_user_function_processing_time_seconds_sum{instance=\"$instance\",pcinstance=\"vuln.mirror\"}[1m]) / rate(pc_user_function_processing_time_seconds_count{instance=\"$instance\",pcinstance=\"vuln.mirror\"}[1m])) > 0",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
