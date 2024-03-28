@@ -18,7 +18,7 @@
  */
 package org.dependencytrack.e2e;
 
-import io.quarkus.restclient.runtime.QuarkusRestClientBuilder;
+import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder;
 import org.dependencytrack.apiserver.ApiServerClient;
 import org.dependencytrack.apiserver.ApiServerClientHeaderFactory;
 import org.dependencytrack.apiserver.model.CreateTeamRequest;
@@ -198,7 +198,7 @@ public class AbstractE2ET {
     }
 
     private ApiServerClient initializeApiServerClient() {
-        final ApiServerClient client = new QuarkusRestClientBuilder()
+        final ApiServerClient client = QuarkusRestClientBuilder.newBuilder()
                 .baseUri(URI.create("http://localhost:%d".formatted(apiServerContainer.getFirstMappedPort())))
                 .build(ApiServerClient.class);
 
