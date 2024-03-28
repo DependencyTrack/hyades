@@ -16,15 +16,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.vulnmirror.datasource;
+package org.dependencytrack.vulnmirror.datasource.epss;
 
-public enum Datasource {
+import jakarta.inject.Qualifier;
 
-    GITHUB,
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    NVD,
-
-    OSV,
-
-    EPSS
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE})
+public @interface ForEpssMirror {
 }

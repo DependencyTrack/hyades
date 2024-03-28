@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+// Public API for DependencyTrack mirroring data.
+package org.dependencytrack.mirror.v1;
+
+option java_multiple_files = true;
+option java_package = "org.dependencytrack.proto.mirror.v1";
+
+message EpssItem {
+
+  string cve = 1;
+  double epss = 2;
+  double percentile = 3;
+}

@@ -16,15 +16,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.vulnmirror.datasource;
+package org.dependencytrack.vulnmirror.datasource.epss;
 
-public enum Datasource {
+import io.smallrye.config.ConfigMapping;
 
-    GITHUB,
+import java.util.Optional;
 
-    NVD,
+@ConfigMapping(prefix = "mirror.datasource.epss")
+public interface EpssConfig {
 
-    OSV,
-
-    EPSS
+    Optional<String> downloadUrl();
 }

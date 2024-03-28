@@ -23,6 +23,7 @@
 | `dtrack.vuln-analysis.result`<sup>1A</sup>                                                        | 3          |                                                                                     |
 | `dtrack.vuln-analysis.scanner.result`<sup>1C</sup>                                                | 3          |                                                                                     |
 | `dtrack.vulnerability`                                                                            | 3          | `cleanup.policy=compact`                                                            |
+| `dtrack.epss`                                                                                     | 3          | `cleanup.policy=compact`                                                            |
 | `dtrack.vulnerability.digest`<sup>2</sup>                                                         | 1          | `cleanup.policy=compact`                                                            |
 | `dtrack.vulnerability.mirror.command`<sup>2</sup>                                                 | 1          |                                                                                     |
 | `dtrack.vulnerability.mirror.state`<sup>2</sup>                                                   | 1          | `cleanup.policy=compact`                                                            |
