@@ -133,16 +133,12 @@ services:
       # which can cause problems on some workstations.
       # For production deployments, the default should be used.
       EXTRA_JAVA_OPTIONS: "-Xmx2g"
-      ALPINE_DATABASE_MODE: "external"
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
-      ALPINE_DATABASE_DRIVER: "org.postgresql.Driver"
       ALPINE_DATABASE_USERNAME: "dtrack"
       ALPINE_DATABASE_PASSWORD: "dtrack"
       ALPINE_METRICS_ENABLED: "true"
       ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_NUM_STREAM_THREADS: "12" # Default number of input partitions is 12
-      KAFKA_STREAMS_METRICS_RECORDING_LEVEL: "DEBUG"
       INTEGRITY_CHECK_ENABLED: "true"
     ports:
       - "127.0.0.1:8080:8080"
@@ -237,8 +233,6 @@ services:
       # REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
       # VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
       # VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
-      # VULN_ANALYSIS_RESULT_TOPIC_PARTITIONS: "3"
-      # VULN_ANALYSIS_RESULT_TOPIC_RETENTION_MS: "43200000" # 12h
       # VULN_MIRROR_TOPICS_PARTITIONS: "3"
       # VULN_MIRROR_TOPICS_RETENTION_MS: "43200000" # 12h
     volumes:
@@ -301,6 +295,8 @@ services:
                 valueProtoType: org.dependencytrack.vulnanalysis.v1.ScannerResult
               - topicName: dtrack.vuln-analysis.result
                 keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
+                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
+              - topicName: dtrack.vuln-analysis.result.processed
                 valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
               - topicName: dtrack.vulnerability
                 valueProtoType: org.cyclonedx.v1_4.Bom
