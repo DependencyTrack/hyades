@@ -21,8 +21,11 @@ package org.dependencytrack.persistence.model;
 import org.apache.commons.lang3.SystemUtils;
 import org.dependencytrack.persistence.model.IConfigProperty.PropertyType;
 
+import java.util.UUID;
+
 public enum ConfigPropertyConstants {
 
+    INTERNAL_CLUSTER_ID("internal", "cluster.id", UUID.randomUUID().toString(), PropertyType.STRING, "Unique identifier of the cluster"),
     GENERAL_BASE_URL("general", "base.url", null, PropertyType.URL, "URL used to construct links back to Dependency-Track from external systems"),
     GENERAL_BADGE_ENABLED("general", "badge.enabled", "false", PropertyType.BOOLEAN, "Flag to enable/disable SVG badge support from metrics"),
     EMAIL_SMTP_ENABLED("email", "smtp.enabled", "false", PropertyType.BOOLEAN, "Flag to enable/disable SMTP"),

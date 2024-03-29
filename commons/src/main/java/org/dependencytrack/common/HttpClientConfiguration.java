@@ -20,12 +20,9 @@ package org.dependencytrack.common;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.httpcomponents.PoolingHttpClientConnectionManagerMetricsBinder;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.auth.AuthSchemeProvider;
@@ -55,12 +52,17 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.dependencytrack.config.HttpClientConfig;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import javax.net.ssl.SSLContext;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -70,6 +72,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -88,10 +91,12 @@ public final class HttpClientConfiguration {
      */
 
     private final HttpClientConfig httpClientConfig;
+    private final String userAgent;
 
     @Inject
-    HttpClientConfiguration(HttpClientConfig config) {
-        httpClientConfig = config;
+    HttpClientConfiguration(final HttpClientConfig config, @UserAgent final String userAgent) {
+        this.httpClientConfig = config;
+        this.userAgent = userAgent;
     }
 
     private static final Logger LOGGER = Logger.getLogger(HttpClientConfiguration.class);
@@ -174,6 +179,7 @@ public final class HttpClientConfiguration {
                 .register(AuthSchemes.NTLM, new NTLMSchemeFactory())
                 .build();
         clientBuilder.setDefaultAuthSchemeRegistry(authProviders);
+        clientBuilder.setDefaultHeaders(List.of(new BasicHeader(HttpHeaders.USER_AGENT, userAgent)));
         clientBuilder.disableCookieManagement();
         clientBuilder.setRedirectStrategy(LaxRedirectStrategy.INSTANCE);
         return clientBuilder.build();
