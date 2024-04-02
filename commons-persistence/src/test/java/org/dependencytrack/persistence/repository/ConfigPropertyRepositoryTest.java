@@ -40,8 +40,8 @@ class ConfigPropertyRepositoryTest {
     @TestTransaction
     public void configProperty() {
         entityManager.createNativeQuery("""
-                INSERT INTO "CONFIGPROPERTY" ("ID", "DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE") VALUES
-                                    (1, 'Email address', 'email', 'STRING', 'smtp.from.address', 'abc@gmail.com');
+                INSERT INTO "CONFIGPROPERTY" ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE")
+                VALUES ('Email address', 'email', 'STRING', 'smtp.from.address', 'abc@gmail.com')
                 """).executeUpdate();
 
         final ConfigProperty config= repository
