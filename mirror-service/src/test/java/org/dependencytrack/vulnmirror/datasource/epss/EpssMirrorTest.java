@@ -141,7 +141,7 @@ class EpssMirrorTest {
                     assertThat(record.value().getGroup()).isEqualTo(GROUP_DATASOURCE_MIRRORING);
                     assertThat(record.value().getLevel()).isEqualTo(LEVEL_ERROR);
                     assertThat(record.value().getTitle()).isEqualTo("EPSS Mirroring");
-                    assertThat(record.value().getContent()).isEqualTo("An error occurred mirroring the contents of the Exploit Prediction Scoring System (EPSS), cause being: java.lang.IllegalArgumentException: List must contain exactly one EPSS item. Check log for details.");
+                    assertThat(record.value().getContent()).isEqualTo("An error occurred mirroring the contents of the Exploit Prediction Scoring System (EPSS), cause being: java.lang.IllegalArgumentException: List must contain at least one EPSS item. Check log for details.");
                 }
         );
     }

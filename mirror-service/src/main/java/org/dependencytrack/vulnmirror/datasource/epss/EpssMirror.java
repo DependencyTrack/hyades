@@ -23,6 +23,8 @@ import io.github.jeremylong.openvulnerability.client.epss.EpssItem;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.dependencytrack.vulnmirror.datasource.Datasource;
 import org.dependencytrack.vulnmirror.state.MirrorStateStore;
@@ -32,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -46,6 +49,7 @@ class EpssMirror extends AbstractDatasourceMirror<Void> {
     private final ExecutorService executorService;
     final EpssClientFactory epssClientFactory;
     private final Timer durationTimer;
+    private Producer<String, byte[]> kafkaProducer;
 
     EpssMirror(@ForEpssMirror final ExecutorService executorService,
                final MirrorStateStore mirrorStateStore,
@@ -57,6 +61,7 @@ class EpssMirror extends AbstractDatasourceMirror<Void> {
         this.executorService = executorService;
         this.durationTimer = durationTimer;
         this.epssClientFactory = epssClientFactory;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Override
@@ -91,6 +96,25 @@ class EpssMirror extends AbstractDatasourceMirror<Void> {
         } finally {
             final long durationNanos = durationSample.stop(durationTimer);
             LOGGER.info("Mirroring of EPSS data completed in {}", Duration.ofNanos(durationNanos));
+        }
+    }
+
+    /**
+     * Publish EPSS items to Kafka with cveId as the key.
+     *
+     * @param epssItems List of EpssItems
+     */
+    private void publishEpss(final List<EpssItem> epssItems) throws ExecutionException, InterruptedException {
+        if (epssItems.isEmpty()) {
+            throw new IllegalArgumentException("List must contain at least one EPSS item");
+        }
+        for (EpssItem epssItem : epssItems) {
+            final var serializedEpss = org.dependencytrack.proto.mirror.v1.EpssItem.newBuilder()
+                    .setCve(epssItem.getCve())
+                    .setPercentile(epssItem.getPercentile())
+                    .setEpss(epssItem.getEpss()).build();
+            kafkaProducer.send(new ProducerRecord<>(
+                    KafkaTopic.NEW_EPSS.getName(), epssItem.getCve(), serializedEpss.toByteArray())).get();
         }
     }
 }
