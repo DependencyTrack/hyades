@@ -80,6 +80,7 @@
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.5.9</lib.minio.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
+    <lib.open-feign.version>13.2.1</lib.open-feign.version>
     <lib.org-json.version>20240303</lib.org-json.version>
     <lib.pebble.version>3.2.2</lib.pebble.version>
     <lib.resilience4j.version>2.2.0</lib.resilience4j.version>
@@ -317,6 +318,22 @@
         <groupId>org.mock-server</groupId>
         <artifactId>mockserver-netty</artifactId>
         <version>${lib.mockserver-netty.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-core</artifactId>
+        <version>${lib.open-feign.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-jackson</artifactId>
+        <version>${lib.open-feign.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-jaxrs3</artifactId>
+        <version>${lib.open-feign.version}</version>
       </dependency>
 
       <dependency>

@@ -44,13 +44,11 @@ import org.dependencytrack.apiserver.model.UpdateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.VulnerabilityPolicy;
 import org.dependencytrack.apiserver.model.WorkflowState;
 import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
-import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 
 import java.util.List;
 import java.util.UUID;
 
 @Path("/api/v1")
-@RegisterClientHeaders(ApiServerClientHeaderFactory.class)
 public interface ApiServerClient {
 
     @POST
