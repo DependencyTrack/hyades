@@ -173,7 +173,7 @@ services:
       POSTGRES_PASSWORD: "dtrack"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready", "-d", "dtrack" ]
-      interval: 15s
+      interval: 5s
       timeout: 3s
       retries: 3
     ports:
@@ -207,7 +207,7 @@ services:
       - PLAINTEXT://dt-redpanda:28082,OUTSIDE://localhost:8082
     healthcheck:
       test: [ "CMD-SHELL", "rpk", "cluster", "health", "--exit-when-healthy" ]
-      interval: 15s
+      interval: 5s
       timeout: 3s
       retries: 3
     ports:
