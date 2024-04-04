@@ -316,7 +316,7 @@ services:
 
   secret-init:
     image: alpine:latest
-    command: "/bin/sh -c 'if [ ! -f /tmp/secret/secret.key ]; then apk add --no-cache openssl && openssl rand 32 > /tmp/secret/secret.key; fi'"
+    command: "/bin/sh -c 'if [ ! -f /tmp/secret/secret.key ]; then head -c 32 /dev/urandom > /tmp/secret/secret.key; fi'"
     profiles:
       - demo
     volumes:
