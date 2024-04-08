@@ -54,7 +54,7 @@ body:
     attributes:
       label: Hyades Version
       description: >-
-        What versions of Hyades repositories are you using?
+        Specify the container image tags being used.
     validations:
       required: true
   - type: dropdown
