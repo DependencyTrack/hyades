@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Slack Channel
+    url: https://owasp.slack.com/archives/C06S1BY0JKZ
+    about: Our Slack channel is the best way to get in touch!
+  - name: GitHub Discussions
+    url: https://github.com/DependencyTrack/hyades/discussions
+    about: A good place to ask questions, share ideas and more!
