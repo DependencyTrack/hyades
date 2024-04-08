@@ -49,16 +49,12 @@ body:
       value: |
         ## Environment
         Please provide some details about the environment in which you observed the defect.
-  - type: dropdown
+  - type: textarea
     id: environment-dtrack-version
     attributes:
       label: Hyades Version
       description: >-
-        What version of Hyades are you using?
-      options:
-        - v0.4.0
-        - v0.3.0
-        - v0.2.0
+        What versions of Hyades repositories are you using?
     validations:
       required: true
   - type: dropdown
