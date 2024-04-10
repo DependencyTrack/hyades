@@ -212,19 +212,13 @@ public final class NvdToCyclonedxParser {
 
             final Vers versForCpeMatch;
             try {
-                final Optional<Vers> optionalVers = versFromNvdRange(
+                versForCpeMatch = versFromNvdRange(
                         cpeMatch.getVersionStartExcluding(),
                         cpeMatch.getVersionStartIncluding(),
                         cpeMatch.getVersionEndExcluding(),
                         cpeMatch.getVersionEndIncluding(),
                         trimToNull(cpe.getVersion())
-                );
-                if (optionalVers.isEmpty()) {
-                    // Move to next CPE match.
-                    continue;
-                }
-
-                versForCpeMatch = optionalVers.get();
+                ).orElse(null);
             } catch (VersException exception) {
                 LOGGER.warn("Failed to construct vers from CPE {}", cpe, exception);
                 continue;
@@ -234,7 +228,7 @@ public final class NvdToCyclonedxParser {
                     component.getBomRef(),
                     bomRef -> VulnerabilityAffects.newBuilder()
                             .setRef(bomRef));
-            if (versForCpeMatch.constraints().size() == 1
+            if (versForCpeMatch != null && versForCpeMatch.constraints().size() == 1
                     && versForCpeMatch.constraints().getFirst().comparator().equals(Comparator.EQUAL)) {
                 var versConstraint = versForCpeMatch.constraints().getFirst();
                 // When the only constraint is an exact version match, populate the version field
@@ -255,7 +249,7 @@ public final class NvdToCyclonedxParser {
                 if (shouldAddVersion) {
                     affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setVersion(versConstraint.version().toString()));
                 }
-            } else {
+            } else if (versForCpeMatch != null) {
                 // Similar to how we do it for exact version matches, avoid duplicate ranges.
                 final boolean shouldAddRange = affectsBuilder.getVersionsList().stream()
                         .filter(VulnerabilityAffectedVersions::hasRange)
