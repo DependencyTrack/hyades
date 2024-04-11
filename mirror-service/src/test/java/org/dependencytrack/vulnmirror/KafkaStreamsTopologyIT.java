@@ -28,6 +28,9 @@ import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import jakarta.ws.rs.core.MediaType;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.http.HttpHeaders;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -40,11 +43,16 @@ import org.dependencytrack.proto.mirror.v1.EpssItem;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.repometaanalyzer.util.WireMockTestResource;
 import org.dependencytrack.repometaanalyzer.util.WireMockTestResource.InjectWireMock;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -483,6 +491,24 @@ class KafkaStreamsTopologyIT {
         @InjectWireMock
         WireMockServer wireMock;
 
+        static Path epssTestFile;
+
+        @BeforeAll
+        public static void setUp() throws IOException {
+            epssTestFile = Files.createTempFile("epss-items",".tar.gz");
+            try (OutputStream fOut = Files.newOutputStream(epssTestFile);
+                 BufferedOutputStream buffOut = new BufferedOutputStream(fOut);
+                 GzipCompressorOutputStream gzOut = new GzipCompressorOutputStream(buffOut);
+                 TarArchiveOutputStream tOut = new TarArchiveOutputStream(gzOut)) {
+                    TarArchiveEntry tarEntry = new TarArchiveEntry(Path.of("src/test/resources/datasource/epss/epss-items.csv"), "epss-items.csv");
+                    tOut.putArchiveEntry(tarEntry);
+                    // copy file to TarArchiveOutputStream
+                    Files.copy(Path.of("src/test/resources/datasource/epss/epss-items.csv"), tOut);
+                    tOut.closeArchiveEntry();
+                    tOut.finish();
+            }
+        }
+
         @Test
         void test() throws IOException {
             // Simulate list of eppsItems containing 2 records.
@@ -491,7 +517,7 @@ class KafkaStreamsTopologyIT {
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/epss/epss-items.tar.gz"), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM))))
+                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray(epssTestFile.toString()), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM))))
                     .willSetStateTo("epss-fetched"));
 
 
