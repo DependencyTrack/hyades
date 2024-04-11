@@ -502,7 +502,6 @@ class KafkaStreamsTopologyIT {
                  TarArchiveOutputStream tOut = new TarArchiveOutputStream(gzOut)) {
                     TarArchiveEntry tarEntry = new TarArchiveEntry(Path.of("src/test/resources/datasource/epss/epss-items.csv"), "epss-items.csv");
                     tOut.putArchiveEntry(tarEntry);
-                    // copy file to TarArchiveOutputStream
                     Files.copy(Path.of("src/test/resources/datasource/epss/epss-items.csv"), tOut);
                     tOut.closeArchiveEntry();
                     tOut.finish();
@@ -517,9 +516,8 @@ class KafkaStreamsTopologyIT {
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray(epssTestFile.toString()), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM))))
+                            .withResponseBody(Body.ofBinaryOrText(Files.readAllBytes(epssTestFile.toAbsolutePath()), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM))))
                     .willSetStateTo("epss-fetched"));
-
 
             // Trigger a EPSS mirroring operation.
             kafkaCompanion
