@@ -64,7 +64,7 @@
 
     <!-- Dependency Versions -->
     <lib.assertj.version>3.25.3</lib.assertj.version>
-    <lib.checkstyle.version>10.14.2</lib.checkstyle.version>
+    <lib.checkstyle.version>10.15.0</lib.checkstyle.version>
     <lib.cloud-sql-postgres-socket-factory.version>1.17.1</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>2.1.0</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
@@ -75,29 +75,30 @@
     <lib.greenmail.version>2.0.1</lib.greenmail.version>
     <lib.java-uuid-generator.version>5.0.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>3.2.7</lib.json-unit.version>
-    <lib.kafka.version>3.6.1</lib.kafka.version>
+    <lib.kafka.version>3.7.0</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-alpha-13</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.5.9</lib.minio.version>
     <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
+    <lib.open-feign.version>13.2.1</lib.open-feign.version>
     <lib.org-json.version>20240303</lib.org-json.version>
     <lib.pebble.version>3.2.2</lib.pebble.version>
     <lib.resilience4j.version>2.2.0</lib.resilience4j.version>
-    <lib.open.vulnerability.clients.version>6.0.0</lib.open.vulnerability.clients.version>
+    <lib.open.vulnerability.clients.version>6.0.1</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>3.25.3</lib.protobuf-java.version>
     <lib.snappy-java.version>1.1.10.5</lib.snappy-java.version>
     <lib.testcontainers-minio.version>1.19.7</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>3.8.3</quarkus.platform.version>
+    <quarkus.platform.version>3.9.3</quarkus.platform.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
     <lib.brotli.version>0.1.2</lib.brotli.version>
-    <lib.versatile.version>0.6.0</lib.versatile.version>
+    <lib.versatile.version>0.6.1</lib.versatile.version>
 
     <!-- Plugin Versions -->
     <plugin.cyclonedx.version>2.8.0</plugin.cyclonedx.version>
-    <plugin.jacoco.version>0.8.11</plugin.jacoco.version>
+    <plugin.jacoco.version>0.8.12</plugin.jacoco.version>
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
     <!-- Tool Versions -->
@@ -318,6 +319,22 @@
         <groupId>org.mock-server</groupId>
         <artifactId>mockserver-netty</artifactId>
         <version>${lib.mockserver-netty.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-core</artifactId>
+        <version>${lib.open-feign.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-jackson</artifactId>
+        <version>${lib.open-feign.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-jaxrs3</artifactId>
+        <version>${lib.open-feign.version}</version>
       </dependency>
 
       <dependency>

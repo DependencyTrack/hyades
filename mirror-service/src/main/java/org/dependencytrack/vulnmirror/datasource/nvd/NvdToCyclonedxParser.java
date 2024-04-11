@@ -35,6 +35,7 @@ import io.github.jeremylong.openvulnerability.client.nvd.Reference;
 import io.github.jeremylong.openvulnerability.client.nvd.Weakness;
 import io.github.nscuro.versatile.Comparator;
 import io.github.nscuro.versatile.Vers;
+import io.github.nscuro.versatile.VersException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclonedx.proto.v1_4.Bom;
@@ -199,14 +200,6 @@ public final class NvdToCyclonedxParser {
                 continue;
             }
 
-            Vers versForCpeMatch = null;
-            try {
-                versForCpeMatch = versFromNvdRange(cpeMatch.getVersionStartExcluding(), cpeMatch.getVersionStartIncluding(),
-                        cpeMatch.getVersionEndExcluding(), cpeMatch.getVersionEndIncluding(), trimToNull(cpe.getVersion()));
-            } catch (Exception exception) {
-                LOGGER.debug("Exception while parsing NVD version range for Cpe {}", cpe, exception);
-            }
-
             final Component component = componentByCpe.computeIfAbsent(
                     cpeMatch.getCriteria(),
                     cpeStr -> Component.newBuilder()
@@ -217,13 +210,27 @@ public final class NvdToCyclonedxParser {
                             .setCpe(cpeStr)
                             .build());
 
+            final Vers versForCpeMatch;
+            try {
+                versForCpeMatch = versFromNvdRange(
+                        cpeMatch.getVersionStartExcluding(),
+                        cpeMatch.getVersionStartIncluding(),
+                        cpeMatch.getVersionEndExcluding(),
+                        cpeMatch.getVersionEndIncluding(),
+                        trimToNull(cpe.getVersion())
+                ).orElse(null);
+            } catch (VersException exception) {
+                LOGGER.warn("Failed to construct vers from CPE {}", cpe, exception);
+                continue;
+            }
+
             final VulnerabilityAffects.Builder affectsBuilder = vulnAffectsBuilderByBomRef.computeIfAbsent(
                     component.getBomRef(),
                     bomRef -> VulnerabilityAffects.newBuilder()
                             .setRef(bomRef));
             if (versForCpeMatch != null && versForCpeMatch.constraints().size() == 1
-                    && versForCpeMatch.constraints().get(0).comparator().equals(Comparator.EQUAL)) {
-                var versConstraint = versForCpeMatch.constraints().get(0);
+                    && versForCpeMatch.constraints().getFirst().comparator().equals(Comparator.EQUAL)) {
+                var versConstraint = versForCpeMatch.constraints().getFirst();
                 // When the only constraint is an exact version match, populate the version field
                 // instead of the range field. We do this despite vers supporting such cases, too,
                 // e.g. via "vers:generic/1.2.3", to be more explicit.
@@ -242,13 +249,13 @@ public final class NvdToCyclonedxParser {
                 if (shouldAddVersion) {
                     affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setVersion(versConstraint.version().toString()));
                 }
-            } else {
+            } else if (versForCpeMatch != null) {
                 // Similar to how we do it for exact version matches, avoid duplicate ranges.
                 final boolean shouldAddRange = affectsBuilder.getVersionsList().stream()
                         .filter(VulnerabilityAffectedVersions::hasRange)
                         .map(VulnerabilityAffectedVersions::getRange)
-                        .noneMatch(versForCpeMatch::equals);
-                if (shouldAddRange && versForCpeMatch != null) {
+                        .noneMatch(versForCpeMatch.toString()::equals);
+                if (shouldAddRange) {
                     affectsBuilder.addVersions(VulnerabilityAffectedVersions.newBuilder().setRange(versForCpeMatch.toString()));
                 }
             }

@@ -57,6 +57,12 @@ class NvdToCyclonedxParserTest {
                              "publisher": "linux",
                              "name": "linux_kernel",
                              "cpe": "cpe:2.3:o:linux:linux_kernel:*:*:*:*:*:*:*:*"
+                           }, {
+                             "bomRef": "4ef65adb-bd4c-56bf-9917-2f493c4e127d",
+                             "type": "CLASSIFICATION_OPERATING_SYSTEM",
+                             "publisher": "linux",
+                             "name": "linux_kernel",
+                             "cpe": "cpe:2.3:o:linux:linux_kernel:-:*:*:*:*:*:*:*"
                            }],
                            "externalReferences": [{
                              "url": "http://marc.info/?l\\u003dbugtraq\\u0026m\\u003d94061108411308\\u0026w\\u003d2"
@@ -88,6 +94,8 @@ class NvdToCyclonedxParserTest {
                                }, {
                                  "range": "vers:generic/>2.3.0|<2.3.18"
                                }]
+                             }, {
+                               "ref":"4ef65adb-bd4c-56bf-9917-2f493c4e127d"
                              }]
                            }]
                          }

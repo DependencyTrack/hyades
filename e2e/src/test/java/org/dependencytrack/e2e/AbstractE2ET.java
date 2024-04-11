@@ -18,9 +18,12 @@
  */
 package org.dependencytrack.e2e;
 
-import io.quarkus.restclient.runtime.QuarkusRestClientBuilder;
+import feign.Feign;
+import feign.jaxrs3.JAXRS3Contract;
+import org.dependencytrack.apiserver.ApiServerAuthInterceptor;
 import org.dependencytrack.apiserver.ApiServerClient;
-import org.dependencytrack.apiserver.ApiServerClientHeaderFactory;
+import org.dependencytrack.apiserver.CompositeDecoder;
+import org.dependencytrack.apiserver.CompositeEncoder;
 import org.dependencytrack.apiserver.model.CreateTeamRequest;
 import org.dependencytrack.apiserver.model.Team;
 import org.junit.jupiter.api.AfterEach;
@@ -36,7 +39,6 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
 
-import java.net.URI;
 import java.util.Optional;
 import java.util.Set;
 
@@ -120,11 +122,8 @@ public class AbstractE2ET {
     private GenericContainer<?> createApiServerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
-                .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx2g")
-                .withEnv("SYSTEM_REQUIREMENT_CHECK_ENABLED", "false")
-                .withEnv("ALPINE_DATABASE_MODE", "external")
+                .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx512m")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
-                .withEnv("ALPINE_DATABASE_DRIVER", "org.postgresql.Driver")
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
                 .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
@@ -144,6 +143,7 @@ public class AbstractE2ET {
     private GenericContainer<?> createNotificationPublisherContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -163,6 +163,7 @@ public class AbstractE2ET {
     private GenericContainer<?> createRepoMetaAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(REPO_META_ANALYZER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -182,6 +183,7 @@ public class AbstractE2ET {
     private GenericContainer<?> createVulnAnalyzerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(VULN_ANALYZER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
@@ -198,16 +200,19 @@ public class AbstractE2ET {
     }
 
     private ApiServerClient initializeApiServerClient() {
-        final ApiServerClient client = new QuarkusRestClientBuilder()
-                .baseUri(URI.create("http://localhost:%d".formatted(apiServerContainer.getFirstMappedPort())))
-                .build(ApiServerClient.class);
+        final ApiServerClient client = Feign.builder()
+                .contract(new JAXRS3Contract())
+                .decoder(new CompositeDecoder())
+                .encoder(new CompositeEncoder())
+                .requestInterceptor(new ApiServerAuthInterceptor())
+                .target(ApiServerClient.class, "http://localhost:%d".formatted(apiServerContainer.getFirstMappedPort()));
 
         logger.info("Changing API server admin password");
         client.forcePasswordChange("admin", "admin", "admin123", "admin123");
 
         logger.info("Authenticating as admin");
         final String bearerToken = client.login("admin", "admin123");
-        ApiServerClientHeaderFactory.setBearerToken(bearerToken);
+        ApiServerAuthInterceptor.setBearerToken(bearerToken);
 
         logger.info("Creating e2e team");
         final Team team = client.createTeam(new CreateTeamRequest("e2e"));
@@ -228,14 +233,14 @@ public class AbstractE2ET {
         }
 
         logger.info("Authenticating as e2e team");
-        ApiServerClientHeaderFactory.setApiKey(team.apiKeys().get(0).key());
+        ApiServerAuthInterceptor.setApiKey(team.apiKeys().get(0).key());
 
         return client;
     }
 
     @AfterEach
     void afterEach() {
-        ApiServerClientHeaderFactory.reset();
+        ApiServerAuthInterceptor.reset();
 
         Optional.ofNullable(vulnAnalyzerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(repoMetaAnalyzerContainer).ifPresent(GenericContainer::stop);

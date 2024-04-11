@@ -18,38 +18,34 @@
  */
 package org.dependencytrack.apiserver;
 
-import jakarta.ws.rs.core.MultivaluedHashMap;
-import jakarta.ws.rs.core.MultivaluedMap;
-import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
 
-public class ApiServerClientHeaderFactory implements ClientHeadersFactory {
+public class ApiServerAuthInterceptor implements RequestInterceptor {
 
     private static String bearerToken;
     private static String apiKey;
 
     @Override
-    public MultivaluedMap<String, String> update(final MultivaluedMap<String, String> incomingHeaders,
-                                                 final MultivaluedMap<String, String> clientOutgoingHeaders) {
-        final var headers = new MultivaluedHashMap<String, String>();
+    public void apply(final RequestTemplate requestTemplate) {
         if (apiKey != null) {
-            headers.putSingle("X-Api-Key", apiKey);
+            requestTemplate.header("X-Api-Key", apiKey);
         } else if (bearerToken != null) {
-            headers.putSingle("Authorization", "Bearer " + bearerToken);
+            requestTemplate.header("Authorization", "Bearer " + bearerToken);
         }
-        return headers;
     }
 
     public static void setBearerToken(final String bearerToken) {
-        ApiServerClientHeaderFactory.bearerToken = bearerToken;
+        ApiServerAuthInterceptor.bearerToken = bearerToken;
     }
 
     public static void setApiKey(final String apiKey) {
-        ApiServerClientHeaderFactory.apiKey = apiKey;
+        ApiServerAuthInterceptor.apiKey = apiKey;
     }
 
     public static void reset() {
-        ApiServerClientHeaderFactory.bearerToken = null;
-        ApiServerClientHeaderFactory.apiKey = null;
+        ApiServerAuthInterceptor.bearerToken = null;
+        ApiServerAuthInterceptor.apiKey = null;
     }
 
 }
