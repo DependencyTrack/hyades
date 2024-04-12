@@ -47,7 +47,7 @@ import static org.testcontainers.lifecycle.Startables.deepStart;
 public class AbstractE2ET {
 
     protected static String POSTGRES_IMAGE = "postgres:15-alpine";
-    protected static String REDPANDA_IMAGE = "docker.redpanda.com/vectorized/redpanda:v23.3.6";
+    protected static String REDPANDA_IMAGE = "docker.redpanda.com/vectorized/redpanda:v23.3.11";
     protected static String API_SERVER_IMAGE = "ghcr.io/dependencytrack/hyades-apiserver:snapshot";
     protected static String NOTIFICATION_PUBLISHER_IMAGE = "ghcr.io/dependencytrack/hyades-notification-publisher:snapshot";
     protected static String REPO_META_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot";
