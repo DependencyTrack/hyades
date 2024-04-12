@@ -79,7 +79,6 @@
     <lib.maven-artifact.version>4.0.0-alpha-13</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.5.9</lib.minio.version>
-    <lib.mockserver-netty.version>5.15.0</lib.mockserver-netty.version>
     <lib.open-feign.version>13.2.1</lib.open-feign.version>
     <lib.org-json.version>20240303</lib.org-json.version>
     <lib.pebble.version>3.2.2</lib.pebble.version>
@@ -312,12 +311,6 @@
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock-jre8-standalone</artifactId>
         <version>${lib.wiremock.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mock-server</groupId>
-        <artifactId>mockserver-netty</artifactId>
-        <version>${lib.mockserver-netty.version}</version>
       </dependency>
 
       <dependency>
