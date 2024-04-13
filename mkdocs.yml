@@ -18,6 +18,7 @@
           icon: material/brightness-4
           name: Switch to light mode
     features:
+      - content.tooltips
       - navigation.instant
       - navigation.tracking
       - navigation.tabs
@@ -40,11 +41,16 @@
         link: https://twitter.com/DependencyTrack
 
   markdown_extensions:
+    - abbr
     - admonition
+    - attr_list
     - footnotes
     - pymdownx.details
     - pymdownx.highlight:
         anchor_linenums: true
+    - pymdownx.snippets:
+        auto_append:
+        - docs/includes/abbreviations.md
     - pymdownx.superfences
     - tables
 
@@ -54,9 +60,11 @@
   nav:
     - Home: README.md
     - Usage:
-      - Policy Compliance:
-        - Overview: usage/policy-compliance/overview.md
-        - Expressions: usage/policy-compliance/expressions.md
+      - Policies:
+        - Overview: usage/policies/overview.md
+        - Expressions: usage/policies/expressions.md
+        - Component Policies: usage/policies/component-policies.md
+        - Vulnerability Policies: usage/policies/vulnerability-policies.md
     - Architecture:
       - Overview: architecture/overview.md
       - Design:
