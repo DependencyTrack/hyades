@@ -21,6 +21,10 @@ on:
         type: string
         required: true
         description: "Name of the Maven module to build"
+      ref-name:
+        type: string
+        required: true
+        description: "Short ref name of the branch or tag that triggered the workflow run"
 
 permissions: { }
 
@@ -131,12 +135,20 @@ jobs:
     - name: Determine Container Tags
       id: determine-container-tags
       run: |-
-        VERSION="$(yq -p=xml '.project.version' pom.xml)"
-        TAGS="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/hyades-${{ inputs.module }}:${VERSION}-native"
-        if [[ $VERSION == *-SNAPSHOT ]]; then
-          TAGS="${TAGS},ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/hyades-${{ inputs.module }}:snapshot-native"
+        IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/hyades-${{ inputs.module }}"
+        REF_NAME="${{ inputs.ref-name }}"
+        TAGS=""
+        
+        if [[ $REF_NAME == feature-* ]]; then
+          TAGS="${IMAGE_NAME}:${REF_NAME,,}-native"
         else
-          TAGS="${TAGS},ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/hyades-${{ inputs.module }}:latest-native"
+          VERSION="$(yq -p=xml '.project.version' pom.xml)"
+          TAGS="${IMAGE_NAME}:${VERSION}-native"
+          if [[ $VERSION == *-SNAPSHOT ]]; then
+            TAGS="${TAGS},${IMAGE_NAME}:snapshot-native"
+          else
+            TAGS="${TAGS},${IMAGE_NAME}:latest-native"
+          fi
         fi
         echo "tags=${TAGS}" >> $GITHUB_OUTPUT
     - name: Build Container Image

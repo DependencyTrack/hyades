@@ -18,7 +18,9 @@ name: Buf
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches:
+    - main
+    - "feature-**"
 
 permissions: { }
 
@@ -42,4 +44,4 @@ jobs:
       uses: bufbuild/buf-breaking-action@c57b3d842a5c3f3b454756ef65305a50a587c5ba # tag=v1.1.4
       with:
         input: proto/src/main/proto
-        against: https://github.com/${{ github.repository }}.git#branch=main,subdir=proto/src/main/proto
+        against: "https://github.com/${{ github.repository }}.git#branch=${{ github.base_ref }},subdir=proto/src/main/proto"

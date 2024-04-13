@@ -20,6 +20,7 @@ on:
   push:
     branches:
     - main
+    - "feature-**"
     paths:
     - ".github/workflows/_build-native-meta.yml"
     - ".github/workflows/build-native-notification-publisher.yml"
@@ -44,5 +45,6 @@ jobs:
     uses: ./.github/workflows/_build-native-meta.yml
     with:
       module: notification-publisher
+      ref-name: ${{ github.ref_name }}
     permissions:
       packages: write # Required to push images to ghcr.io
