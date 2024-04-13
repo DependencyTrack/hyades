@@ -61,6 +61,8 @@
       - Overview: architecture/overview.md
       - Design:
         - Workflow State Tracking: architecture/design/workflow-state-tracking.md
+    - Operations:
+      - Database: operations/database.md
     - Reference:
       - Configuration: reference/configuration.md
       - Topics: reference/topics.md
