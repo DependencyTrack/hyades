@@ -31,12 +31,8 @@ class EpssClientFactory {
     }
 
     EpssDataFeed create() {
-        if (epssConfig.downloadUrl().isPresent()) {
-            return new EpssDataFeed(epssConfig.downloadUrl().get());
-        }
-        else {
-            // using default location "https://epss.cyentia.com/epss_scores-current.csv.gz"
-            return new EpssDataFeed();
-        }
+        return epssConfig.downloadUrl()
+                .map(EpssDataFeed::new)
+                .orElseGet(EpssDataFeed::new);
     }
 }
