@@ -2,8 +2,187 @@
   GENERATED. DO NOT EDIT.
 
   Generated with: -t ./scripts/config-docs.md.peb -o ./docs/reference/configuration/api-server.md ../hyades-apiserver/src/main/resources/application.properties
-  Generated on:   2024-04-15T16:46:33.894941605+02:00[Europe/Berlin]
+  Generated on:   2024-04-15T23:01:17.270252+02:00[Europe/Berlin]
 -->
+
+## CORS
+
+### alpine.cors.allow.credentials
+
+Controls the content of the `Access-Control-Allow-Credentials` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_CORS_ALLOW_CREDENTIALS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.cors.allow.headers
+
+Controls the content of the `Access-Control-Allow-Headers` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>Origin, Content-Type, Authorization, X-Requested-With, Content-Length, Accept, Origin, X-Api-Key, X-Total-Count, *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_CORS_ALLOW_HEADERS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.cors.allow.methods
+
+Controls the content of the `Access-Control-Allow-Methods` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>GET POST PUT DELETE OPTIONS</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_CORS_ALLOW_METHODS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.cors.allow.origin
+
+Controls the content of the `Access-Control-Allow-Origin` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>*</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_CORS_ALLOW_ORIGIN</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.cors.enabled
+
+Defines whether [Cross Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)  (CORS) headers shall be included in REST API responses.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_CORS_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.cors.expose.headers
+
+Controls the content of the `Access-Control-Expose-Headers` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>Origin, Content-Type, Authorization, X-Requested-With, Content-Length, Accept, Origin, X-Api-Key, X-Total-Count</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_CORS_EXPOSE_HEADERS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.cors.max.age
+
+Controls the content of the `Access-Control-Max-Age` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>3600</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_CORS_MAX_AGE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
 
 ## Database
 
@@ -1108,7 +1287,7 @@ Defines the duration for how long a workflow step is allowed to remain in PENDIN
 
 
 
-## HTTP Proxy
+## HTTP
 
 ### alpine.http.proxy.address
 
@@ -1214,6 +1393,81 @@ HTTP proxy address. If set, then [`alpine.http.proxy.port`](#alpinehttpproxyport
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_HTTP_PROXY_USERNAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.http.timeout.connection
+
+Defines the connection timeout in seconds for outbound HTTP connections.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>30</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_HTTP_TIMEOUT_CONNECTION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.http.timeout.pool
+
+Defines the request timeout in seconds for outbound HTTP connections.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>60</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_HTTP_TIMEOUT_POOL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.http.timeout.socket
+
+Defines the socket / read timeout in seconds for outbound HTTP connections.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>30</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_HTTP_TIMEOUT_SOCKET</code></td>
     </tr>
   </tbody>
 </table>
@@ -2293,7 +2547,7 @@ If anonymous access is not permitted, specify a username with limited access  to
 
 ### alpine.ldap.enabled
 
-Defines if LDAP will be used for user authentication. If enabled,  <code>alpine.ldap.*</code> properties should be set accordingly.  
+Defines if LDAP will be used for user authentication. If enabled,  `alpine.ldap.*` properties should be set accordingly.  
 
 <table>
   <tbody style="border: 0">
@@ -2343,7 +2597,7 @@ Specifies the LDAP search filter used to retrieve all groups from the directory.
 
 ### alpine.ldap.groups.search.filter
 
-Specifies the LDAP search filter used to search for groups by their name.  The <code>{SEARCH_TERM}</code> variable will be substituted at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&(objectClass=group)(objectCategory=Group)(cn=*{SEARCH_TERM}*))</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&(objectClass=groupOfUniqueNames)(cn=*{SEARCH_TERM}*))</code></li></ul>  
+Specifies the LDAP search filter used to search for groups by their name.  The `{SEARCH_TERM}` variable will be substituted at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&(objectClass=group)(objectCategory=Group)(cn=*{SEARCH_TERM}*))</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&(objectClass=groupOfUniqueNames)(cn=*{SEARCH_TERM}*))</code></li></ul>  
 
 <table>
   <tbody style="border: 0">
@@ -2447,7 +2701,7 @@ This option will ensure that team memberships for LDAP users are dynamic and  sy
 
 ### alpine.ldap.user.groups.filter
 
-Specifies the LDAP search filter to use to query a user and retrieve a list  of groups the user is a member of. The <code>{USER_DN}</code> variable will be substituted  with the actual value of the users DN at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&(objectClass=group)(objectCategory=Group)(member={USER_DN}))</code></li></ul>  Example (Microsoft Active Directory - with nested group support):  <ul><li><code>(member:1.2.840.113556.1.4.1941:={USER_DN})</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&(objectClass=groupOfUniqueNames)(uniqueMember={USER_DN}))</code></li></ul>  
+Specifies the LDAP search filter to use to query a user and retrieve a list  of groups the user is a member of. The `{USER_DN}` variable will be substituted  with the actual value of the users DN at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&(objectClass=group)(objectCategory=Group)(member={USER_DN}))</code></li></ul>  Example (Microsoft Active Directory - with nested group support):  <ul><li><code>(member:1.2.840.113556.1.4.1941:={USER_DN})</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&(objectClass=groupOfUniqueNames)(uniqueMember={USER_DN}))</code></li></ul>  
 
 <table>
   <tbody style="border: 0">
@@ -2630,7 +2884,7 @@ Defines the client ID to be used for OpenID Connect.  The client ID should be th
 
 ### alpine.oidc.enabled
 
-Defines if OpenID Connect will be used for user authentication.  If enabled, <code>alpine.oidc.*</code> properties should be set accordingly.  
+Defines if OpenID Connect will be used for user authentication.  If enabled, `alpine.oidc.*` properties should be set accordingly.  
 
 <table>
   <tbody style="border: 0">
@@ -2655,7 +2909,7 @@ Defines if OpenID Connect will be used for user authentication.  If enabled, <co
 
 ### alpine.oidc.issuer
 
-Defines the issuer URL to be used for OpenID Connect.  This issuer MUST support provider configuration via the <code>/.well-known/openid-configuration</code> endpoint.  See also:  <ul>  <li>https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata</li>  <li>https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig</li>  </ul>  
+Defines the issuer URL to be used for OpenID Connect.  This issuer MUST support provider configuration via the `/.well-known/openid-configuration` endpoint.  See also:  <ul>  <li>https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata</li>  <li>https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig</li>  </ul>  
 
 <table>
   <tbody style="border: 0">
@@ -2755,7 +3009,7 @@ Specifies if mapped OpenID Connect accounts are automatically created upon succe
 
 ### alpine.oidc.username.claim
 
-Defines the name of the claim that contains the username in the provider's userinfo endpoint.  Common claims are <code>name</code>, <code>username</code>, <code>preferred_username</code> or <code>nickname</code>.  See also:  <ul>  <li>https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse</li>  </ul>  
+Defines the name of the claim that contains the username in the provider's userinfo endpoint.  Common claims are `name`, `username`, `preferred_username` or `nickname`.  See also:  <ul>  <li>https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse</li>  </ul>  
 
 <table>
   <tbody style="border: 0">

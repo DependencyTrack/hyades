@@ -301,6 +301,50 @@ public class GenerateConfigDocs implements Callable<Integer> {
                     currentProperty.hidden = true;
                 } else if (line.matches("^@required\\s*$")) {
                     currentProperty.required = true;
+                } else if (line.matches("^[\\w.-]+=.*$")) {
+                    final String[] parts = line.split("=", 2);
+                    currentProperty.name = parts[0].trim();
+                    String defaultValue = parts[1].trim();
+
+                    // Deal with multi-line default values, indicated by a trailing backslash.
+                    if (defaultValue.endsWith("\\")) {
+                        defaultValue = defaultValue.replaceAll("\\\\$", "");
+
+                        int nextLineIndex = lineIndex + 1;
+                        while (nextLineIndex < lines.size() && lines.get(nextLineIndex).matches("^#\\s+.*")) {
+                            defaultValue += lines.get(nextLineIndex).replaceFirst("^#", "").trim();
+                            if (!defaultValue.endsWith("\\")) {
+                                break;
+                            }
+
+                            defaultValue = defaultValue.replaceAll("\\\\$", "");
+                            nextLineIndex++;
+                        }
+
+                        lineIndex = nextLineIndex;
+                    }
+
+                    if (currentProperty.name.startsWith("%")) {
+                        System.err.println(Ansi.AUTO.string("""
+                            @|yellow [!] Skipping profile-specific property %s|@\
+                            """.formatted(currentProperty.name)));
+                        currentProperty = new ConfigProperty();
+                        continue;
+                    }
+
+                    if (currentProperty.defaultValue == null || currentProperty.defaultValue.isBlank()) {
+                        currentProperty.defaultValue = defaultValue;
+                    } else if (!defaultValue.isEmpty()) {
+                        System.err.println(Ansi.AUTO.string("""
+                            @|yellow [!] %s has both a default value (%s) and a @default annotation (%s)|@\
+                            """.formatted(currentProperty.name, defaultValue, currentProperty.defaultValue)));
+                    }
+
+                    if (!currentProperty.hidden || includeHidden) {
+                        properties.add(currentProperty);
+                    }
+
+                    currentProperty = new ConfigProperty();
                 } else {
                     if (currentProperty.description == null) {
                         currentProperty.description = line + "  ";
