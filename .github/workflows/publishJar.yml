@@ -18,7 +18,9 @@ name: Publish Jar
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+    - main
+    - "feature-**"
 
 permissions: { }
 
@@ -49,6 +51,20 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Determine Container Tags
+        id: determine-container-tags
+        run: |-
+          TAG=""
+          ADDITIONAL_TAGS=""
+          if [[ $GITHUB_REF_NAME == feature-* ]]; then
+            TAG="${GITHUB_REF_NAME,,}"
+          else
+            TAG="$(yq -p=xml '.project.version' pom.xml)"
+            ADDITIONAL_TAGS="snapshot"
+          fi
+          
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "additional-tags=${ADDITIONAL_TAGS}" >> $GITHUB_OUTPUT
       - name: Build and push container images
         env:
           MAVEN_ARGS: "-B --no-transfer-progress"
@@ -56,7 +72,8 @@ jobs:
           mvn clean install -DskipTests \
             -Dquarkus.container-image.registry=ghcr.io \
             -Dquarkus.container-image.group=${GITHUB_REPOSITORY_OWNER,,} \
-            -Dquarkus.container-image.additional-tags=snapshot \
+            -Dquarkus.container-image.tag=${{ steps.determine-container-tags.outputs.tag }} \
+            -Dquarkus.container-image.additional-tags=${{ steps.determine-container-tags.outputs.additional-tags }} \
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
