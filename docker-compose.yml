@@ -37,7 +37,7 @@ services:
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8090"
     profiles:
-      - demo
+      - demo1
     volumes:
       - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
@@ -63,7 +63,7 @@ services:
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8091"
     profiles:
-      - demo
+      - demo1
     volumes:
       - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
@@ -91,6 +91,7 @@ services:
       # SCANNER_SNYK_TOPIC_PARTITIONS: "3"
       # SCANNER_SNYK_API_ORG_ID: "your-org-id"
       # SCANNER_SNYK_API_TOKENS: "your-token-1,your-token-2"
+      JAVA_OPTS: "-Xmx512m"
     ports:
       # Dynamic host port binding to allow for scaling of the service.
       # Scaling with Compose doesn't work when assigning static host ports.
@@ -114,7 +115,7 @@ services:
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8093"
     profiles:
-      - demo
+      - demo1
     restart: unless-stopped
 
   apiserver:
@@ -132,7 +133,7 @@ services:
       # Default would be 90% of available memory,
       # which can cause problems on some workstations.
       # For production deployments, the default should be used.
-      EXTRA_JAVA_OPTIONS: "-Xmx2g"
+      EXTRA_JAVA_OPTIONS: "-Xmx1g"
       ALPINE_DATABASE_MODE: "external"
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       ALPINE_DATABASE_DRIVER: "org.postgresql.Driver"
