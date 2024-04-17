@@ -1,8 +1,7 @@
 <!--
   GENERATED. DO NOT EDIT.
 
-  Generated with: -t ./scripts/config-docs.md.peb -o ./docs/reference/configuration/api-server.md ../hyades-apiserver/src/main/resources/application.properties
-  Generated on:   2024-04-16T22:14:53.462421964+02:00[Europe/Brussels]
+  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/api-server.md ./hyades-apiserver/src/main/resources/application.properties
 -->
 
 ## CORS
@@ -3989,5 +3988,6 @@ Cron expressions for tasks have the precision of minutes so polling every minute
     </tr>
   </tbody>
 </table>
+
 
 
