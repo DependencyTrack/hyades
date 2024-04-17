@@ -2,7 +2,6 @@
   GENERATED. DO NOT EDIT.
 
   Generated with: {{ generateCommand }}
-  Generated on:   {{ generateTimestamp }}
 -->
 {% for entry in propertiesByCategory %}
 ## {{ entry.key }}
