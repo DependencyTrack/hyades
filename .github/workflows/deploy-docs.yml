@@ -51,10 +51,20 @@ jobs:
         id: determine_version
         run: |-
           VERSION=`yq -p=xml '.project.version' pom.xml`
+          ALIASES=""
+          
+          if [[ $VERSION != *-SNAPSHOT ]]; then
+            ALIASES="latest"
+          fi
+          
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "aliases=${ALIASES}" >> $GITHUB_OUTPUT
       - name: Configure Git User
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Deploy
-        run: mike deploy --push --update-aliases ${{ steps.determine_version.outputs.version }} latest
+        run: >-
+          mike deploy --push --update-aliases 
+              ${{ steps.determine_version.outputs.version }}
+              ${{ steps.determine_version.outputs.aliases }}
