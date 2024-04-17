@@ -1,7 +1,7 @@
 <!--
   GENERATED. DO NOT EDIT.
 
-  Generated with: -t ./scripts/config-docs.md.peb -o ./docs/reference/configuration/mirror-service.md mirror-service/src/main/resources/application.properties
+  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/mirror-service.md ./mirror-service/src/main/resources/application.properties
 -->
 
 ## Datasource
