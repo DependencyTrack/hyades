@@ -16,15 +16,23 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.vulnmirror.datasource;
+package org.dependencytrack.vulnmirror.datasource.epss;
 
-public enum Datasource {
+import io.github.jeremylong.openvulnerability.client.epss.EpssDataFeed;
+import jakarta.enterprise.context.ApplicationScoped;
 
-    GITHUB,
+@ApplicationScoped
+class EpssClientFactory {
 
-    NVD,
+    private final EpssConfig epssConfig;
 
-    OSV,
+    EpssClientFactory(final EpssConfig epssConfig) {
+        this.epssConfig = epssConfig;
+    }
 
-    EPSS
+    EpssDataFeed create() {
+        return epssConfig.downloadUrl()
+                .map(EpssDataFeed::new)
+                .orElseGet(EpssDataFeed::new);
+    }
 }

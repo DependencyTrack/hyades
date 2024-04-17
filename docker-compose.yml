@@ -304,6 +304,8 @@ services:
                 valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
               - topicName: dtrack.vulnerability
                 valueProtoType: org.cyclonedx.v1_4.Bom
+              - topicName: dtrack.epss
+                valueProtoType: org.dependencytrack.mirror.v1.EpssItem
             fileSystem:
               enabled: true
               paths: ["/etc/protos"]

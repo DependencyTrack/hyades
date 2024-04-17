@@ -92,6 +92,7 @@
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
     <quarkus.platform.version>3.9.3</quarkus.platform.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
+    <lib.brotli.version>0.1.2</lib.brotli.version>
     <lib.versatile.version>0.6.1</lib.versatile.version>
 
     <!-- Plugin Versions -->
@@ -343,6 +344,12 @@
         <groupId>com.icegreen</groupId>
         <artifactId>greenmail-junit5</artifactId>
         <version>${lib.greenmail.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.brotli</groupId>
+        <artifactId>dec</artifactId>
+        <version>${lib.brotli.version}</version>
       </dependency>
 
       <dependency>
