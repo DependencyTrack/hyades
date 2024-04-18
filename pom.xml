@@ -184,6 +184,11 @@
       </dependency>
       <dependency>
         <groupId>org.jdbi</groupId>
+        <artifactId>jdbi3-jackson2</artifactId>
+        <version>${lib.jdbi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jdbi</groupId>
         <artifactId>jdbi3-postgres</artifactId>
         <version>${lib.jdbi.version}</version>
       </dependency>
