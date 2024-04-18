@@ -6,6 +6,11 @@
   },
   {
     "interfaces": [
+      "org.dependencytrack.persistence.dao.NotificationDao"
+    ]
+  },
+  {
+    "interfaces": [
       "org.dependencytrack.persistence.dao.UserDao"
     ]
   },

@@ -23,13 +23,6 @@ import io.confluent.parallelconsumer.PCRetriableException;
 import io.confluent.parallelconsumer.ParallelStreamProcessor;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.runtime.StartupEvent;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.UnsatisfiedResolutionException;
-import jakarta.enterprise.inject.spi.CDI;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -37,13 +30,13 @@ import org.dependencytrack.notification.publisher.PublishContext;
 import org.dependencytrack.notification.publisher.Publisher;
 import org.dependencytrack.notification.publisher.PublisherException;
 import org.dependencytrack.notification.publisher.SendMailPublisher;
+import org.dependencytrack.persistence.dao.NotificationDao;
 import org.dependencytrack.persistence.model.NotificationPublisher;
 import org.dependencytrack.persistence.model.NotificationRule;
 import org.dependencytrack.persistence.model.NotificationScope;
 import org.dependencytrack.persistence.model.Project;
 import org.dependencytrack.persistence.model.Team;
 import org.dependencytrack.persistence.repository.NotificationRuleRepository;
-import org.dependencytrack.persistence.repository.TeamRepository;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
@@ -54,9 +47,17 @@ import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.hibernate.QueryTimeoutException;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.UnsatisfiedResolutionException;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.SocketTimeoutException;
@@ -77,14 +78,14 @@ public class NotificationRouter {
 
     private final ParallelStreamProcessor<String, Notification> parallelConsumer;
     private final NotificationRuleRepository ruleRepository;
-    private final TeamRepository teamRepository;
+    private final Jdbi jdbi;
 
     public NotificationRouter(final ParallelStreamProcessor<String, Notification> parallelConsumer,
                               final NotificationRuleRepository ruleRepository,
-                              final TeamRepository teamRepository) {
+                              final Jdbi jdbi) {
         this.parallelConsumer = parallelConsumer;
         this.ruleRepository = ruleRepository;
-        this.teamRepository = teamRepository;
+        this.jdbi = jdbi;
     }
 
     void onStart(@Observes final StartupEvent event) {
@@ -158,7 +159,7 @@ public class NotificationRouter {
                             .addAll(Json.createObjectBuilder(config))
                             .build();
 
-                    final List<Team> ruleTeams = teamRepository.findByNotificationRule(rule.getId());
+                    final List<Team> ruleTeams = jdbi.withExtension(NotificationDao.class, dao -> dao.getTeamsByRuleId(rule.getId()));
                     if (publisherClass != SendMailPublisher.class || ruleTeams.isEmpty()) {
                         publisher.inform(ctx.withRule(rule), notification, notificationPublisherConfig);
                     } else {

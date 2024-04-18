@@ -23,15 +23,15 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import jakarta.inject.Inject;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonObjectBuilder;
 import org.dependencytrack.persistence.model.Team;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -389,9 +389,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     public void testEmptyTeamAsDestination() {
         final JsonObject config = configWithDestination("");
 
-        final var team = new Team();
-        team.setId(666);
-        team.setName("foo");
+        final var team = new Team(666, "foo");
 
         assertThat(publisherInstance.parseDestination(config, List.of(team))).isNull();
     }
@@ -554,10 +552,10 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
                             final Collection<Long> oidcUserIds) {
         return jdbi.inTransaction(handle -> {
             final Long teamId = handle.createUpdate("""
-                        INSERT INTO "TEAM" ("NAME", "UUID")
-                        VALUES (:name, :uuid)
-                        RETURNING "ID";
-                        """)
+                            INSERT INTO "TEAM" ("NAME", "UUID")
+                            VALUES (:name, :uuid)
+                            RETURNING "ID";
+                            """)
                     .bind("name", name)
                     .bind("uuid", UUID.randomUUID().toString())
                     .executeAndReturnGeneratedKeys("ID")
@@ -567,9 +565,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
             if (managedUserIds != null) {
                 for (final Long managedUserId : managedUserIds) {
                     handle.createUpdate("""
-                                INSERT INTO "MANAGEDUSERS_TEAMS" ("MANAGEDUSER_ID", "TEAM_ID")
-                                VALUES (:userId, :teamId)
-                                """)
+                                    INSERT INTO "MANAGEDUSERS_TEAMS" ("MANAGEDUSER_ID", "TEAM_ID")
+                                    VALUES (:userId, :teamId)
+                                    """)
                             .bind("userId", managedUserId)
                             .bind("teamId", teamId)
                             .execute();
@@ -579,9 +577,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
             if (ldapUserIds != null) {
                 for (final Long ldapUserId : ldapUserIds) {
                     handle.createUpdate("""
-                                INSERT INTO "LDAPUSERS_TEAMS" ("LDAPUSER_ID", "TEAM_ID")
-                                VALUES (:userId, :teamId)
-                                """)
+                                    INSERT INTO "LDAPUSERS_TEAMS" ("LDAPUSER_ID", "TEAM_ID")
+                                    VALUES (:userId, :teamId)
+                                    """)
                             .bind("userId", ldapUserId)
                             .bind("teamId", teamId)
                             .execute();
@@ -591,19 +589,16 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
             if (oidcUserIds != null) {
                 for (final Long oidcUserId : oidcUserIds) {
                     handle.createUpdate("""
-                                INSERT INTO "OIDCUSERS_TEAMS" ("OIDCUSERS_ID", "TEAM_ID")
-                                VALUES (:userId, :teamId)
-                                """)
+                                    INSERT INTO "OIDCUSERS_TEAMS" ("OIDCUSERS_ID", "TEAM_ID")
+                                    VALUES (:userId, :teamId)
+                                    """)
                             .bind("userId", oidcUserId)
                             .bind("teamId", teamId)
                             .execute();
                 }
             }
 
-            final var team = new Team();
-            team.setId(teamId);
-            team.setName(name);
-            return team;
+            return new Team(teamId, name);
         });
     }
 

@@ -23,11 +23,6 @@ import io.pebbletemplates.pebble.template.PebbleTemplate;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.runtime.Startup;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonString;
 import org.dependencytrack.persistence.dao.ConfigPropertyDao;
 import org.dependencytrack.persistence.dao.UserDao;
 import org.dependencytrack.persistence.model.Team;
@@ -36,6 +31,11 @@ import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -137,7 +137,7 @@ public class SendMailPublisher implements Publisher {
 
     String[] parseDestination(final JsonObject config, final List<Team> teams) {
         final Map<Long, Set<String>> emailsByTeamId = jdbi.withExtension(UserDao.class,
-                dao -> dao.getEmailsByTeamIdAnyOf(teams.stream().map(Team::getId).collect(Collectors.toSet())));
+                dao -> dao.getEmailsByTeamIdAnyOf(teams.stream().map(Team::id).collect(Collectors.toSet())));
 
         String[] destination = teams.stream().flatMap(
                         team -> Stream.of(
@@ -146,7 +146,7 @@ public class SendMailPublisher implements Publisher {
                                                 .stream()
                                                 .flatMap(dest -> Arrays.stream(dest.split(",")))
                                                 .filter(Predicate.not(String::isEmpty)),
-                                        emailsByTeamId.getOrDefault(team.getId(), Collections.emptySet()).stream()
+                                        emailsByTeamId.getOrDefault(team.id(), Collections.emptySet()).stream()
                                 )
                                 .reduce(Stream::concat)
                                 .orElseGet(Stream::empty)

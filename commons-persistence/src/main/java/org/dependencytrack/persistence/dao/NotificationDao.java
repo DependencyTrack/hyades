@@ -16,10 +16,26 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.persistence.model;
+package org.dependencytrack.persistence.dao;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
+import org.dependencytrack.persistence.model.Team;
+import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
 
-@RegisterForReflection
-public record Team(long id, String name) {
+import java.util.List;
+
+public interface NotificationDao {
+
+    @SqlQuery("""
+            SELECT "ID"
+                 , "NAME"
+              FROM "TEAM" AS "T"
+             INNER JOIN "NOTIFICATIONRULE_TEAMS" AS "NT"
+                ON "NT"."TEAM_ID" = "T"."ID"
+             WHERE "NT"."NOTIFICATIONRULE_ID" = :ruleId
+            """)
+    @RegisterConstructorMapper(Team.class)
+    List<Team> getTeamsByRuleId(@Bind long ruleId);
+
 }
