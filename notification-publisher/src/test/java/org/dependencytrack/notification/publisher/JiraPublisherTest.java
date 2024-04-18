@@ -23,7 +23,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.json.JsonObjectBuilder;
 import org.dependencytrack.common.SecretDecryptor;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.Callable;
@@ -32,6 +31,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.dependencytrack.persistence.model.ConfigProperties.PROPERTY_JIRA_PASSWORD;
+import static org.dependencytrack.persistence.model.ConfigProperties.PROPERTY_JIRA_URL;
+import static org.dependencytrack.persistence.model.ConfigProperties.PROPERTY_JIRA_USERNAME;
 
 @QuarkusTest
 public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublisher> {
@@ -45,9 +47,9 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     void setupConfigProperties() throws Exception {
         super.setupConfigProperties();
 
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_URL, wireMockServer.baseUrl());
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, "jiraUser");
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraPassword"));
+        createOrUpdateConfigProperty(PROPERTY_JIRA_URL, wireMockServer.baseUrl());
+        createOrUpdateConfigProperty(PROPERTY_JIRA_USERNAME, "jiraUser");
+        createOrUpdateConfigProperty(PROPERTY_JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraPassword"));
 
         if (configPropertyCustomizer != null) {
             configPropertyCustomizer.call();
@@ -209,8 +211,8 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     @TestTransaction
     void testInformWithBearerToken() throws Exception {
         configPropertyCustomizer = () -> {
-            createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, null);
-            createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraToken"));
+            createOrUpdateConfigProperty(PROPERTY_JIRA_USERNAME, null);
+            createOrUpdateConfigProperty(PROPERTY_JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraToken"));
             return null;
         };
 

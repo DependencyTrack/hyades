@@ -21,10 +21,9 @@ package org.dependencytrack.notification.publisher;
 import com.google.protobuf.util.JsonFormat;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.json.JsonObject;
-import org.dependencytrack.persistence.model.ConfigProperty;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
-import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
+import org.dependencytrack.persistence.dao.ConfigPropertyDao;
 import org.dependencytrack.proto.ProtobufUtil;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
@@ -36,6 +35,7 @@ import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
+import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -43,6 +43,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.dependencytrack.persistence.model.ConfigProperties.PROPERTY_BASE_URL;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 
 public interface Publisher {
@@ -75,23 +76,18 @@ public interface Publisher {
         }
     }
 
-    default String prepareTemplate(final Notification notification, final PebbleTemplate template, final ConfigPropertyRepository configPropertyRepository, JsonObject config) throws IOException {
-
-        final ConfigProperty baseUrlProperty = configPropertyRepository.findByGroupAndName(
-                ConfigPropertyConstants.GENERAL_BASE_URL.getGroupName(),
-                ConfigPropertyConstants.GENERAL_BASE_URL.getPropertyName()
-        );
+    default String prepareTemplate(final Notification notification, final PebbleTemplate template, final JsonObject config) throws IOException {
+        final Jdbi jdbi = CDI.current().select(Jdbi.class).get();
+        final String baseUrl = jdbi.withExtension(ConfigPropertyDao.class, dao -> dao.getValue(PROPERTY_BASE_URL))
+                .map(value -> value.replaceAll("/$", ""))
+                .orElse("");
 
         final Map<String, Object> context = new HashMap<>();
         final long epochSecond = notification.getTimestamp().getSeconds();
         context.put("timestampEpochSecond", epochSecond);
         context.put("timestamp", ProtobufUtil.formatTimestamp(notification.getTimestamp()));
         context.put("notification", notification);
-        if (baseUrlProperty != null && baseUrlProperty.getPropertyValue() != null) {
-            context.put("baseUrl", baseUrlProperty.getPropertyValue().replaceAll("/$", ""));
-        } else {
-            context.put("baseUrl", "");
-        }
+        context.put("baseUrl", baseUrl);
 
         if (notification.getScope() == SCOPE_PORTFOLIO) {
             if (notification.getSubject().is(NewVulnerabilitySubject.class)) {

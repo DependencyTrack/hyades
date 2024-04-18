@@ -24,11 +24,10 @@ import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
-import jakarta.persistence.EntityManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.dependencytrack.notification.NotificationConstants;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
+import org.dependencytrack.persistence.model.ConfigProperty;
 import org.dependencytrack.proto.notification.v1.BackReference;
 import org.dependencytrack.proto.notification.v1.Bom;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
@@ -40,12 +39,14 @@ import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysis;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
+import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.dependencytrack.persistence.model.ConfigProperties.PROPERTY_BASE_URL;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_CONSUMED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSING_FAILED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_DATASOURCE_MIRRORING;
@@ -63,7 +64,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
     T publisherInstance;
 
     @Inject
-    EntityManager entityManager;
+    Jdbi jdbi;
 
     @Test
     void testInformWithBomConsumedNotification() throws Exception {
@@ -118,7 +119,8 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test // https://github.com/DependencyTrack/dependency-track/issues/3197
+    @Test
+        // https://github.com/DependencyTrack/dependency-track/issues/3197
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         setupConfigProperties();
 
@@ -226,7 +228,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
     }
 
     void setupConfigProperties() throws Exception {
-        createOrUpdateConfigProperty(ConfigPropertyConstants.GENERAL_BASE_URL, "https://example.com");
+        createOrUpdateConfigProperty(PROPERTY_BASE_URL, "https://example.com");
     }
 
     private JsonObject createConfig() throws Exception {
@@ -265,7 +267,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
             templateFile = "console.peb";
         } else if (publisherInstance instanceof SendMailPublisher) {
             templateFile = "email.peb";
-        }else if (publisherInstance instanceof JiraPublisher) {
+        } else if (publisherInstance instanceof JiraPublisher) {
             templateFile = "jira.peb";
         } else if (publisherInstance instanceof MattermostPublisher) {
             templateFile = "mattermost.peb";
@@ -338,21 +340,16 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .build();
     }
 
-    final void createOrUpdateConfigProperty(final ConfigPropertyConstants configProperty, final String value) {
-        entityManager.createNativeQuery("""
-                        INSERT INTO "CONFIGPROPERTY"
-                          ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE")
-                        VALUES
-                          (NULL, :group, :type, :name, :value)
+    final void createOrUpdateConfigProperty(final ConfigProperty configProperty, final String value) {
+        jdbi.useTransaction(handle -> handle.createUpdate("""
+                        INSERT INTO "CONFIGPROPERTY" ("GROUPNAME", "PROPERTYNAME", "PROPERTYVALUE", "PROPERTYTYPE")
+                        VALUES (:group, :name, :value, :type)
                         ON CONFLICT ("GROUPNAME", "PROPERTYNAME") DO UPDATE
-                        SET
-                          "PROPERTYVALUE" = :value
+                        SET "PROPERTYVALUE" = :value
                         """)
-                .setParameter("group", configProperty.getGroupName())
-                .setParameter("type", configProperty.getPropertyType().name())
-                .setParameter("name", configProperty.getPropertyName())
-                .setParameter("value", value)
-                .executeUpdate();
+                .bindMethods(configProperty)
+                .bind("value", value)
+                .execute());
     }
 
     private static PublishContext createPublishContext(final Notification notification) throws Exception {

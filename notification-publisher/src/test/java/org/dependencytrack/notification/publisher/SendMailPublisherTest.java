@@ -27,7 +27,6 @@ import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.dependencytrack.persistence.model.Team;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -40,6 +39,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.dependencytrack.persistence.model.ConfigProperties.PROPERTY_SMTP_ENABLED;
 
 @QuarkusTest
 @TestProfile(SendMailPublisherTest.TestProfile.class)
@@ -67,7 +67,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     void setupConfigProperties() throws Exception {
         super.setupConfigProperties();
 
-        createOrUpdateConfigProperty(ConfigPropertyConstants.EMAIL_SMTP_ENABLED, "true");
+        createOrUpdateConfigProperty(PROPERTY_SMTP_ENABLED, "true");
     }
 
     @Override
@@ -509,92 +509,102 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     }
 
     private Long createManagedUser(final String username, final String email) {
-        return (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "MANAGEDUSER" ("USERNAME", "EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED") VALUES
-                            (:username, :email, 'password', FALSE, NOW(), TRUE, FALSE)
+        return jdbi.inTransaction(handle -> handle.createUpdate("""
+                        INSERT INTO "MANAGEDUSER" ("USERNAME", "EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED")
+                        VALUES (:username, :email, 'password', FALSE, NOW(), TRUE, FALSE)
                         RETURNING "ID";
                         """)
-                .setParameter("username", username)
-                .setParameter("email", email)
-                .getSingleResult();
+                .bind("username", username)
+                .bind("email", email)
+                .executeAndReturnGeneratedKeys("ID")
+                .mapTo(Long.class)
+                .one());
     }
 
     private Long createLdapUser(final String username, final String email) {
-        return (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "LDAPUSER" ("USERNAME", "EMAIL", "DN") VALUES
-                            (:username, :email, :dn)
+        return jdbi.inTransaction(handle -> handle.createUpdate("""
+                        INSERT INTO "LDAPUSER" ("USERNAME", "EMAIL", "DN")
+                        VALUES (:username, :email, :dn)
                         RETURNING "ID";
                         """)
-                .setParameter("username", username)
-                .setParameter("email", email)
-                .setParameter("dn", UUID.randomUUID().toString())
-                .getSingleResult();
+                .bind("username", username)
+                .bind("email", email)
+                .bind("dn", UUID.randomUUID().toString())
+                .executeAndReturnGeneratedKeys("ID")
+                .mapTo(Long.class)
+                .one());
     }
 
     private Long createOidcUser(final String username, final String email) {
-        return (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "OIDCUSER" ("USERNAME", "EMAIL") VALUES
-                            (:username, :email)
+        return jdbi.inTransaction(handle -> handle.createUpdate("""
+                        INSERT INTO "OIDCUSER" ("USERNAME", "EMAIL")
+                        VALUES (:username, :email)
                         RETURNING "ID";
                         """)
-                .setParameter("username", username)
-                .setParameter("email", email)
-                .getSingleResult();
+                .bind("username", username)
+                .bind("email", email)
+                .executeAndReturnGeneratedKeys("ID")
+                .mapTo(Long.class)
+                .one());
     }
 
     private Team createTeam(final String name,
                             final Collection<Long> managedUserIds,
                             final Collection<Long> ldapUserIds,
                             final Collection<Long> oidcUserIds) {
-        final var teamId = (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "TEAM" ("NAME", "UUID") VALUES 
-                            (:name, :uuid)
+        return jdbi.inTransaction(handle -> {
+            final Long teamId = handle.createUpdate("""
+                        INSERT INTO "TEAM" ("NAME", "UUID")
+                        VALUES (:name, :uuid)
                         RETURNING "ID";
                         """)
-                .setParameter("name", name)
-                .setParameter("uuid", UUID.randomUUID().toString())
-                .getSingleResult();
+                    .bind("name", name)
+                    .bind("uuid", UUID.randomUUID().toString())
+                    .executeAndReturnGeneratedKeys("ID")
+                    .mapTo(Long.class)
+                    .one();
 
-        if (managedUserIds != null) {
-            for (final Long managedUserId : managedUserIds) {
-                entityManager.createNativeQuery("""
-                                INSERT INTO "MANAGEDUSERS_TEAMS" ("MANAGEDUSER_ID", "TEAM_ID") VALUES 
-                                    (:userId, :teamId);
+            if (managedUserIds != null) {
+                for (final Long managedUserId : managedUserIds) {
+                    handle.createUpdate("""
+                                INSERT INTO "MANAGEDUSERS_TEAMS" ("MANAGEDUSER_ID", "TEAM_ID")
+                                VALUES (:userId, :teamId)
                                 """)
-                        .setParameter("userId", managedUserId)
-                        .setParameter("teamId", teamId)
-                        .executeUpdate();
+                            .bind("userId", managedUserId)
+                            .bind("teamId", teamId)
+                            .execute();
+                }
             }
-        }
 
-        if (ldapUserIds != null) {
-            for (final Long ldapUserId : ldapUserIds) {
-                entityManager.createNativeQuery("""
-                                INSERT INTO "LDAPUSERS_TEAMS" ("LDAPUSER_ID", "TEAM_ID") VALUES 
-                                    (:userId, :teamId);
+            if (ldapUserIds != null) {
+                for (final Long ldapUserId : ldapUserIds) {
+                    handle.createUpdate("""
+                                INSERT INTO "LDAPUSERS_TEAMS" ("LDAPUSER_ID", "TEAM_ID")
+                                VALUES (:userId, :teamId)
                                 """)
-                        .setParameter("userId", ldapUserId)
-                        .setParameter("teamId", teamId)
-                        .executeUpdate();
+                            .bind("userId", ldapUserId)
+                            .bind("teamId", teamId)
+                            .execute();
+                }
             }
-        }
 
-        if (oidcUserIds != null) {
-            for (final Long oidcUserId : oidcUserIds) {
-                entityManager.createNativeQuery("""
-                                INSERT INTO "OIDCUSERS_TEAMS" ("OIDCUSERS_ID", "TEAM_ID") VALUES 
-                                    (:userId, :teamId);
+            if (oidcUserIds != null) {
+                for (final Long oidcUserId : oidcUserIds) {
+                    handle.createUpdate("""
+                                INSERT INTO "OIDCUSERS_TEAMS" ("OIDCUSERS_ID", "TEAM_ID")
+                                VALUES (:userId, :teamId)
                                 """)
-                        .setParameter("userId", oidcUserId)
-                        .setParameter("teamId", teamId)
-                        .executeUpdate();
+                            .bind("userId", oidcUserId)
+                            .bind("teamId", teamId)
+                            .execute();
+                }
             }
-        }
 
-        final var team = new Team();
-        team.setId(teamId);
-        team.setName(name);
-        return team;
+            final var team = new Team();
+            team.setId(teamId);
+            team.setName(name);
+            return team;
+        });
     }
 
     private static JsonObject configWithDestination(final String destination) {

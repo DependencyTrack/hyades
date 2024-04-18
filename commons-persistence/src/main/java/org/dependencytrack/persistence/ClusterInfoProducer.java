@@ -19,15 +19,15 @@
 package org.dependencytrack.persistence;
 
 import io.quarkus.runtime.Startup;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Singleton;
 import org.dependencytrack.common.ClusterInfo;
-import org.dependencytrack.persistence.model.ConfigProperty;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
-import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
+import org.dependencytrack.persistence.dao.ConfigPropertyDao;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Singleton;
+import static org.dependencytrack.persistence.model.ConfigProperties.PROPERTY_CLUSTER_ID;
 
 class ClusterInfoProducer {
 
@@ -36,20 +36,13 @@ class ClusterInfoProducer {
     @Startup
     @Produces
     @Singleton
-    ClusterInfo clusterInfo(final ConfigPropertyRepository configPropertyRepository) {
-        final ConfigProperty clusterIdProperty = configPropertyRepository.findByGroupAndName(
-                ConfigPropertyConstants.INTERNAL_CLUSTER_ID.getGroupName(),
-                ConfigPropertyConstants.INTERNAL_CLUSTER_ID.getPropertyName()
-        );
-        if (clusterIdProperty == null
-            || clusterIdProperty.getPropertyValue() == null
-            || clusterIdProperty.getPropertyValue().isBlank()) {
-            throw new IllegalStateException("""
-                    Cluster ID not found in database. The cluster ID is populated upon first launch \
-                    of the API server, please confirm whether it started successfully.""");
-        }
+    ClusterInfo clusterInfo(final Jdbi jdbi) {
+        final String clusterId = jdbi.withExtension(ConfigPropertyDao.class, dao -> dao.getValue(PROPERTY_CLUSTER_ID))
+                .orElseThrow(() -> new IllegalStateException("""
+                        Cluster ID not found in database. The cluster ID is populated upon first launch \
+                        of the API server, please confirm whether it started successfully."""));
 
-        final var clusterInfo = new ClusterInfo(clusterIdProperty.getPropertyValue());
+        final var clusterInfo = new ClusterInfo(clusterId);
         LOGGER.info("Initialized from database: {}", clusterInfo);
         return clusterInfo;
     }

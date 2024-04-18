@@ -16,44 +16,23 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.persistence.model;
+package org.dependencytrack.persistence;
 
-public interface IConfigProperty {
-    long getId();
+import io.agroal.api.AgroalDataSource;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Singleton;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.postgres.PostgresPlugin;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
-    void setId(long var1);
+class JdbiProducer {
 
-    String getGroupName();
-
-    void setGroupName(String var1);
-
-    String getPropertyName();
-
-    void setPropertyName(String var1);
-
-    String getPropertyValue();
-
-    void setPropertyValue(String var1);
-
-    PropertyType getPropertyType();
-
-    void setPropertyType(PropertyType var1);
-
-    String getDescription();
-
-    void setDescription(String var1);
-
-    public static enum PropertyType {
-        BOOLEAN,
-        INTEGER,
-        NUMBER,
-        STRING,
-        ENCRYPTEDSTRING,
-        TIMESTAMP,
-        URL,
-        UUID;
-
-        private PropertyType() {
-        }
+    @Produces
+    @Singleton
+    Jdbi jdbi(final AgroalDataSource dataSource) {
+        return Jdbi.create(dataSource)
+                .installPlugin(new PostgresPlugin())
+                .installPlugin(new SqlObjectPlugin());
     }
+
 }

@@ -69,6 +69,15 @@
         </dependency>
 
         <dependency>
+            <groupId>io.quarkiverse.jdbi</groupId>
+            <artifactId>quarkus-jdbi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-postgres</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
