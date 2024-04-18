@@ -1,0 +1,17 @@
+[
+  {
+    "interfaces": [
+      "org.dependencytrack.persistence.dao.ConfigPropertyDao"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.dependencytrack.persistence.dao.UserDao"
+    ]
+  },
+  {
+    "interfaces": [
+      "org.dependencytrack.persistence.dao.VulnerabilityDao"
+    ]
+  }
+]
