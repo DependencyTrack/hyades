@@ -29,8 +29,8 @@ import jakarta.inject.Named;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import org.dependencytrack.persistence.dao.ConfigPropertyDao;
+import org.dependencytrack.persistence.dao.UserDao;
 import org.dependencytrack.persistence.model.Team;
-import org.dependencytrack.persistence.repository.UserRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
@@ -40,8 +40,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.dependencytrack.persistence.model.ConfigProperties.PROPERTY_SMTP_ENABLED;
@@ -53,17 +56,14 @@ public class SendMailPublisher implements Publisher {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendMailPublisher.class);
 
     private final PebbleEngine pebbleEngine;
-    private final UserRepository userRepository;
     private final Jdbi jdbi;
     private final Mailer mailer;
 
     @Inject
     public SendMailPublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine,
-                             final UserRepository userRepository,
                              final Jdbi jdbi,
                              final Mailer mailer) {
         this.pebbleEngine = pebbleEngine;
-        this.userRepository = userRepository;
         this.jdbi = jdbi;
         this.mailer = mailer;
     }
@@ -136,6 +136,9 @@ public class SendMailPublisher implements Publisher {
     }
 
     String[] parseDestination(final JsonObject config, final List<Team> teams) {
+        final Map<Long, Set<String>> emailsByTeamId = jdbi.withExtension(UserDao.class,
+                dao -> dao.getEmailsByTeamIdAnyOf(teams.stream().map(Team::getId).collect(Collectors.toSet())));
+
         String[] destination = teams.stream().flatMap(
                         team -> Stream.of(
                                         Optional.ofNullable(config.getJsonString("destination"))
@@ -143,7 +146,7 @@ public class SendMailPublisher implements Publisher {
                                                 .stream()
                                                 .flatMap(dest -> Arrays.stream(dest.split(",")))
                                                 .filter(Predicate.not(String::isEmpty)),
-                                        Optional.ofNullable(userRepository.findEmailsByTeam(team.getId())).orElseGet(Collections::emptyList).stream()
+                                        emailsByTeamId.getOrDefault(team.getId(), Collections.emptySet()).stream()
                                 )
                                 .reduce(Stream::concat)
                                 .orElseGet(Stream::empty)
