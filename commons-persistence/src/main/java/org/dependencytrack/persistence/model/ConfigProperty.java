@@ -18,6 +18,9 @@
  */
 package org.dependencytrack.persistence.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public record ConfigProperty(String group, String name, Type type) {
 
     public enum Type {
