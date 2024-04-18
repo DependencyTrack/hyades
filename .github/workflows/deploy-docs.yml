@@ -51,9 +51,11 @@ jobs:
         id: determine_version
         run: |-
           VERSION=`yq -p=xml '.project.version' pom.xml`
-          ALIASES=""
           
-          if [[ $VERSION != *-SNAPSHOT ]]; then
+          ALIASES=""
+          if [[ $VERSION == *-SNAPSHOT ]]; then
+            ALIASES="snapshot"
+          else
             ALIASES="latest"
           fi
           
@@ -66,5 +68,5 @@ jobs:
       - name: Deploy
         run: >-
           mike deploy --push --update-aliases 
-              ${{ steps.determine_version.outputs.version }}
-              ${{ steps.determine_version.outputs.aliases }}
+              "${{ steps.determine_version.outputs.version }}"
+              "${{ steps.determine_version.outputs.aliases }}"
