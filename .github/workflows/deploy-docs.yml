@@ -50,7 +50,7 @@ jobs:
       - name: Determine Project Version
         id: determine_version
         run: |-
-          VERSION=`yq -p=xml '.project.version' pom.xml`
+          VERSION="$(yq -p=xml -o=xml '.project.version' pom.xml)"
           
           ALIASES=""
           if [[ $VERSION == *-SNAPSHOT ]]; then
@@ -66,7 +66,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Deploy
-        run: >-
-          mike deploy --push --update-aliases 
-              "${{ steps.determine_version.outputs.version }}"
-              "${{ steps.determine_version.outputs.aliases }}"
+        env:
+          VERSION: "${{ steps.determine_version.outputs.version }}"
+          ALIASES: "${{ steps.determine_version.outputs.aliases }}"
+        run: mike deploy --push --update-aliases $VERSION ${ALIASES[*]}
