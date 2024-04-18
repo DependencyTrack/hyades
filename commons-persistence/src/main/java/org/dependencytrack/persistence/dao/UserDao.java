@@ -18,20 +18,19 @@
  */
 package org.dependencytrack.persistence.dao;
 
-import org.jdbi.v3.core.result.RowReducer;
+import org.dependencytrack.persistence.mapping.MultiValueMapRowReducer;
 import org.jdbi.v3.core.result.RowView;
+import org.jdbi.v3.sqlobject.SqlObject;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.UseRowReducer;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
-public interface UserDao {
+public interface UserDao extends SqlObject {
 
     @SqlQuery("""
             SELECT "MU"."EMAIL" AS "EMAIL"
@@ -58,28 +57,21 @@ public interface UserDao {
              WHERE "OUT"."TEAM_ID" = ANY(:teamIds)
                AND "OU"."EMAIL" IS NOT NULL
             """)
-    @UseRowReducer(EmailsByTeamIdResultRowReducer.class)
+    @UseRowReducer(EmailsByTeamIdRowReducer.class)
     Map<Long, Set<String>> getEmailsByTeamIdAnyOf(@Bind Collection<Long> teamIds);
 
-    class EmailsByTeamIdResultRowReducer implements RowReducer<Map<Long, Set<String>>, Map.Entry<Long, Set<String>>> {
+    class EmailsByTeamIdRowReducer extends MultiValueMapRowReducer<Long, String> {
 
         @Override
-        public Map<Long, Set<String>> container() {
-            return new HashMap<>();
+        protected Long extractKey(final RowView rowView) {
+            return rowView.getColumn("TEAM_ID", Long.class);
         }
 
         @Override
-        public void accumulate(final Map<Long, Set<String>> container, final RowView rowView) {
-            container.compute(rowView.getColumn("TEAM_ID", Long.class), (teamId, emails) -> {
-                final Set<String> mutableEmails = emails == null ? new HashSet<>() : emails;
-                mutableEmails.add(rowView.getColumn("EMAIL", String.class));
-                return mutableEmails;
-            });
-        }
-
-        @Override
-        public Stream<Map.Entry<Long, Set<String>>> stream(final Map<Long, Set<String>> container) {
-            return container.entrySet().stream();
+        protected Set<String> mapValues(final RowView rowView, final Long key, final Set<String> values) {
+            final Set<String> mutableValues = values == null ? new HashSet<>() : values;
+            mutableValues.add(rowView.getColumn("EMAIL", String.class));
+            return mutableValues;
         }
 
     }

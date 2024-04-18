@@ -19,12 +19,13 @@
 package org.dependencytrack.persistence.dao;
 
 import org.dependencytrack.persistence.model.ConfigProperty;
+import org.jdbi.v3.sqlobject.SqlObject;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 
 import java.util.Optional;
 
-public interface ConfigPropertyDao {
+public interface ConfigPropertyDao extends SqlObject {
 
     @SqlQuery("""
             SELECT NULLIF(TRIM("PROPERTYVALUE"), '')
