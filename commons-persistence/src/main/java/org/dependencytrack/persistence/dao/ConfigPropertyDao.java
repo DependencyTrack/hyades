@@ -18,14 +18,15 @@
  */
 package org.dependencytrack.persistence.dao;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.dependencytrack.persistence.model.ConfigProperty;
-import org.jdbi.v3.sqlobject.SqlObject;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 
 import java.util.Optional;
 
-public interface ConfigPropertyDao extends SqlObject {
+@RegisterForReflection
+public interface ConfigPropertyDao {
 
     @SqlQuery("""
             SELECT NULLIF(TRIM("PROPERTYVALUE"), '')

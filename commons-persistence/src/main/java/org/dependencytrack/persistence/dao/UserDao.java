@@ -18,9 +18,9 @@
  */
 package org.dependencytrack.persistence.dao;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.dependencytrack.persistence.mapping.MultiValueMapRowReducer;
 import org.jdbi.v3.core.result.RowView;
-import org.jdbi.v3.sqlobject.SqlObject;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.UseRowReducer;
@@ -30,7 +30,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public interface UserDao extends SqlObject {
+@RegisterForReflection
+public interface UserDao {
 
     @SqlQuery("""
             SELECT "MU"."EMAIL" AS "EMAIL"

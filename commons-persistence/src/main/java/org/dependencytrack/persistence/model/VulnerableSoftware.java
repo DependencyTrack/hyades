@@ -20,10 +20,12 @@ package org.dependencytrack.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.jdbi.v3.json.Json;
 
 import java.util.List;
 
+@RegisterForReflection
 public record VulnerableSoftware(
         String cpe23,
         String part,
@@ -44,6 +46,7 @@ public record VulnerableSoftware(
         @Json List<VulnIdAndSource> vulnerabilities
 ) {
 
+    @RegisterForReflection
     @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonPropertyOrder({"vulnId", "source"})
     public record VulnIdAndSource(String vulnId, String source) {

@@ -19,6 +19,7 @@
 package org.dependencytrack.persistence;
 
 import io.agroal.api.AgroalDataSource;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
 import org.jdbi.v3.core.Jdbi;
@@ -26,6 +27,10 @@ import org.jdbi.v3.jackson2.Jackson2Plugin;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
+@RegisterForReflection(targets = {
+        org.jdbi.v3.json.JsonConfig.class,
+        org.jdbi.v3.jackson2.Jackson2Config.class
+})
 class JdbiProducer {
 
     @Produces
