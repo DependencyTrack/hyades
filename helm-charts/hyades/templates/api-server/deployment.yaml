@@ -46,8 +46,10 @@ spec:
           value: "external"
         - name: ALPINE_DATABASE_DRIVER
           value: "org.postgresql.Driver" # TODO: Compute correct driver based on JDBC URL
+        {{- with .Values.common.database.jdbcUrl }}
         - name: ALPINE_DATABASE_URL
-          value: {{ .Values.common.database.jdbcUrl | quote }}
+          value: {{ . | quote }}
+        {{- end}}
         {{- with .Values.common.database.username }}
         - name: ALPINE_DATABASE_USERNAME
           value: {{ . | quote }}

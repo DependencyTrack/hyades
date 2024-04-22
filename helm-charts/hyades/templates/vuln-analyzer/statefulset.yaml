@@ -35,8 +35,10 @@ spec:
         {{- end }}
         resources: {{- toYaml .Values.vulnAnalyzer.resources | nindent 10 }}
         env:
+        {{- with .Values.common.database.jdbcUrl }}
         - name: QUARKUS_DATASOURCE_JDBC_URL
-          value: {{ .Values.common.database.jdbcUrl | quote }}
+          value: {{ . | quote }}
+        {{- end}}
         {{- with .Values.common.database.username }}
         - name: QUARKUS_DATASOURCE_USERNAME
           value: {{ . | quote }}
