@@ -16,27 +16,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.common;
+package org.dependencytrack.config;
 
-import io.quarkus.arc.DefaultBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.quarkus.runtime.configuration.ConfigBuilder;
+import io.smallrye.config.SmallRyeConfigBuilder;
 
-import jakarta.enterprise.inject.Produces;
-import jakarta.inject.Singleton;
-import java.util.UUID;
+public class DatabaseConfigSourceFactoryBuilder implements ConfigBuilder {
 
-class ClusterInfoProducer {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClusterInfoProducer.class);
-
-    @Produces
-    @DefaultBean
-    @Singleton
-    ClusterInfo clusterInfo() {
-        final var clusterInfo = new ClusterInfo(UUID.randomUUID().toString());
-        LOGGER.warn("Not initialized from database, cluster info will be out of sync with other services: {}", clusterInfo);
-        return clusterInfo;
+    @Override
+    public SmallRyeConfigBuilder configBuilder(final SmallRyeConfigBuilder builder) {
+        return builder.withSources(new DatabaseConfigSourceFactory());
     }
 
 }

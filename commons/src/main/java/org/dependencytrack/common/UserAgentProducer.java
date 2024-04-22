@@ -19,22 +19,22 @@
 package org.dependencytrack.common;
 
 import io.smallrye.config.SmallRyeConfig;
-import org.eclipse.microprofile.config.ConfigProvider;
-
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Singleton;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 class UserAgentProducer {
 
     @Produces
     @Singleton
     @UserAgent
-    String userAgent(final ClusterInfo clusterInfo) {
+    String userAgent() {
         SmallRyeConfig config = ConfigProvider.getConfig().unwrap(SmallRyeConfig.class);
-        String name = config.getConfigValue("quarkus.application.name").getValue(); // TODO: Change to Dependency-Track
-        String version = config.getConfigValue("quarkus.application.version").getValue(); // TODO: Change to cluster version
+        final String name = config.getConfigValue("quarkus.application.name").getValue(); // TODO: Change to Dependency-Track
+        final String version = config.getConfigValue("quarkus.application.version").getValue(); // TODO: Change to cluster version
+        final String clusterId = config.getConfigValue("dtrack.internal.cluster.id").getValue();
         return "%s v%s (%s; %s; %s) ManagedHttpClient/%s".formatted(name, version, System.getProperty("os.arch"),
-                System.getProperty("os.name"), System.getProperty("os.version"), clusterInfo.clusterId());
+                System.getProperty("os.name"), System.getProperty("os.version"), clusterId);
     }
 
 }

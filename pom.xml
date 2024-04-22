@@ -29,6 +29,7 @@
 
   <modules>
     <module>commons</module>
+    <module>commons-config</module>
     <module>commons-kstreams</module>
     <module>commons-persistence</module>
     <module>mirror-service</module>
@@ -133,6 +134,11 @@
       <dependency>
         <groupId>org.dependencytrack</groupId>
         <artifactId>commons</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dependencytrack</groupId>
+        <artifactId>commons-config</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
