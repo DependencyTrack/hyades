@@ -978,6 +978,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration/mirror-service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mirror Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1235,13 +1256,14 @@ Wielding heavy machinery such as <a href="https://github.com/zalando/postgres-op
 <p>Schema migrations are performed automatically by the API server upon startup. It leverages <a href="https://www.liquibase.com/">Liquibase</a> for doing so.
 There is usually no manual action required when upgrading from an older Dependency-Track version, unless explicitly
 stated otherwise in the release notes.</p>
-<p>This behavior can be turned off by setting the <code>RUN_MIGRATIONS</code> environment variable of the API server container to <code>false</code>.</p>
+<p>This behavior can be turned off by setting the <a href="../../reference/configuration/api-server/#runmigrations"><code>RUN_MIGRATIONS</code></a>
+environment variable of the API server container to <code>false</code>.</p>
 <p>It is possible to use different credentials for migrations than for the application itself.
 This can be achieved with the following environment variables:</p>
 <ul>
-<li><code>DATABASE_MIGRATION_URL</code></li>
-<li><code>DATABASE_MIGRATION_USERNAME</code></li>
-<li><code>DATABASE_MIGRATION_PASSWORD</code></li>
+<li><a href="../../reference/configuration/api-server/#databasemigrationurl"><code>DATABASE_MIGRATION_URL</code></a></li>
+<li><a href="../../reference/configuration/api-server/#databasemigrationusername"><code>DATABASE_MIGRATION_USERNAME</code></a></li>
+<li><a href="../../reference/configuration/api-server/#databasemigrationpassword"><code>DATABASE_MIGRATION_PASSWORD</code></a></li>
 </ul>
 <p>The above with default to the main database credentials if not provided explicitly.</p>
 
