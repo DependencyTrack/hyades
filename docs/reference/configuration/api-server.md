@@ -2153,6 +2153,497 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
   </tbody>
 </table>
 
+### alpine.kafka.processor.vuln.scan.result.consumer.auto.offset.reset
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_CONSUMER_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.consumer.group.id
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_CONSUMER_GROUP_ID</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.max.concurrency
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>-1</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.consumer.auto.offset.reset
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.consumer.fetch.min.bytes
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>524288</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_FETCH_MIN_BYTES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.consumer.group.id
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_GROUP_ID</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.consumer.max.poll.records
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>10000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_MAX_POLL_RECORDS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.max.batch.size
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.max.concurrency
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.processing.order
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>unordered</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_PROCESSING_ORDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.retry.initial.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>3000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.retry.max.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>180000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.retry.multiplier
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processed.retry.randomization.factor
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.3</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.processing.order
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>key</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSING_ORDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.retry.initial.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.retry.max.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>180000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.retry.multiplier
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### alpine.kafka.processor.vuln.scan.result.retry.randomization.factor
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.3</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
 ### application.id
 
 
@@ -2311,31 +2802,6 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
   </tbody>
 </table>
 
-### kafka.num.stream.threads
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_NUM_STREAM_THREADS</code></td>
-    </tr>
-  </tbody>
-</table>
-
 ### kafka.security.protocol
 
 
@@ -2361,156 +2827,6 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>KAFKA_SECURITY_PROTOCOL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-### kafka.streams.deserialization.exception.threshold.count
-
-Defines the number of deserialization errors deemed to be acceptable in a given time frame.  Until the threshold is reached, records failing deserialization will be logged and skipped.  When the threshold is exceeded, further consumption is stopped.  The interval must be specified in ISO8601 duration notation (https://en.wikipedia.org/wiki/ISO_8601#Durations).  The default threshold is 5 errors per 30min.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_DESERIALIZATION_EXCEPTION_THRESHOLD_COUNT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-### kafka.streams.deserialization.exception.threshold.interval
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT30M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_DESERIALIZATION_EXCEPTION_THRESHOLD_INTERVAL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-### kafka.streams.production.exception.threshold.count
-
-Defines the number of production errors deemed to be acceptable in a given time frame.  Until the threshold is reached, records failing to be produced will be logged and skipped.  When the threshold is exceeded, further production is stopped.  Only certain types of errors will be treated this way; Unexpected errors will cause a  stop of production immediately.  The interval must be specified in ISO8601 duration notation (https://en.wikipedia.org/wiki/ISO_8601#Durations).  The default threshold is 5 errors per 30min.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_PRODUCTION_EXCEPTION_THRESHOLD_COUNT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-### kafka.streams.production.exception.threshold.interval
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT30M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_PRODUCTION_EXCEPTION_THRESHOLD_INTERVAL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-### kafka.streams.transient.processing.exception.threshold.count
-
-Defines the number of times record processing will be retried in case of unhandled, yet transient errors.  Until the threshold is reached, records fetched since the last successful offset commit will be attempted to be re-processed.  When the threshold is exceeded, further processing is stopped.  Only transient errors will be treated this way; Unexpected or non-transient errors will cause a stop of processing immediately.  The interval must be specified in ISO8601 duration notation (https://en.wikipedia.org/wiki/ISO_8601#Durations).  The default threshold is 50 errors per 30min.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>50</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_TRANSIENT_PROCESSING_EXCEPTION_THRESHOLD_COUNT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-### kafka.streams.transient.processing.exception.threshold.interval
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT30M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_TRANSIENT_PROCESSING_EXCEPTION_THRESHOLD_INTERVAL</code></td>
     </tr>
   </tbody>
 </table>
