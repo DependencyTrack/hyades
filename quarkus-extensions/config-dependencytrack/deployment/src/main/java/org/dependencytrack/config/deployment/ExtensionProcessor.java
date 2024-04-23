@@ -29,7 +29,7 @@ public class ExtensionProcessor {
 
     @BuildStep
     FeatureBuildItem feature() {
-        return new FeatureBuildItem("dependencytrack-config");
+        return new FeatureBuildItem("config-dependencytrack");
     }
 
     @BuildStep

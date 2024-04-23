@@ -28,8 +28,8 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>quarkus-extensions</module>
     <module>commons</module>
-    <module>commons-config</module>
     <module>commons-kstreams</module>
     <module>commons-persistence</module>
     <module>mirror-service</module>
@@ -134,11 +134,6 @@
       <dependency>
         <groupId>org.dependencytrack</groupId>
         <artifactId>commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.dependencytrack</groupId>
-        <artifactId>commons-config</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -278,6 +273,12 @@
         <groupId>io.pebbletemplates</groupId>
         <artifactId>pebble</artifactId>
         <version>${lib.pebble.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dependencytrack</groupId>
+        <artifactId>quarkus-config-dependencytrack</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>

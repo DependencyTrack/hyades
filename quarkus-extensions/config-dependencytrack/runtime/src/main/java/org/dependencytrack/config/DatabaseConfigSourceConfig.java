@@ -28,7 +28,7 @@ import io.smallrye.config.WithDefault;
 import java.time.Duration;
 import java.util.Optional;
 
-@ConfigMapping(prefix = "quarkus.config.source.database")
+@ConfigMapping(prefix = "quarkus.config.source.dtrack.database")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
 interface DatabaseConfigSourceConfig {
 
