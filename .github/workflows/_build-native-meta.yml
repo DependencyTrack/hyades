@@ -93,7 +93,7 @@ jobs:
       run: |-
         mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ inputs.module }} test-compile failsafe:integration-test -Dnative
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # tag=v4.3.2
+      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # tag=v4.3.3
       with:
         name: native-image-${{ matrix.arch.name }}
         path: |-
