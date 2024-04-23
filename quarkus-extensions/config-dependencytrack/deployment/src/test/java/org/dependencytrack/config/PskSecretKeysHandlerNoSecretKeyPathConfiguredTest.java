@@ -38,6 +38,10 @@ class PskSecretKeysHandlerNoSecretKeyPathConfiguredTest extends AbstractPskSecre
                     .addAsResource(
                             "PskSecretKeysHandler/application-nosecretkeypath.properties",
                             "application.properties"
+                    )
+                    .addAsResource(
+                            "PskSecretKeysHandler/secret.key",
+                            "secret.key"
                     ));
 
     @Test

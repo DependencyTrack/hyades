@@ -18,14 +18,13 @@
  */
 package org.dependencytrack.config;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -35,7 +34,9 @@ abstract class AbstractPskSecretKeyHandlerTest {
 
     @BeforeEach
     void beforeEach() throws Exception {
-        final byte[] encodedKey = Files.readAllBytes(Paths.get("src/test/resources/PskSecretKeysHandler/secret.key"));
+        // NB: The ClassLoader used to load the resource is the one of the
+        // generated Quarkus application (somewhere in the system's /tmp directory).
+        final byte[] encodedKey = IOUtils.resourceToByteArray("/secret.key", getClass().getClassLoader());
         secretKey = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
     }
 
