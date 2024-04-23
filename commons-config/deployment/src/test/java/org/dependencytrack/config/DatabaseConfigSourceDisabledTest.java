@@ -40,7 +40,10 @@ class DatabaseConfigSourceDisabledTest extends AbstractDatabaseConfigSourceTest 
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addAsResource("application-disabled.properties", "application.properties"));
+                    .addAsResource(
+                            "DatabaseConfigSource/application-disabled.properties",
+                            "application.properties"
+                    ));
 
     @Inject
     DatabaseConfigSourceDisabledTest(final DataSource dataSource) {

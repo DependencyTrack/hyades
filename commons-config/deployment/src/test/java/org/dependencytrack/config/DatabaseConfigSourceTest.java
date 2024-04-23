@@ -42,7 +42,10 @@ class DatabaseConfigSourceTest extends AbstractDatabaseConfigSourceTest {
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addAsResource("application-default.properties", "application.properties"));
+                    .addAsResource(
+                            "DatabaseConfigSource/application-default.properties",
+                            "application.properties"
+                    ));
 
     @Inject
     DatabaseConfigSourceTest(final DataSource dataSource) {

@@ -48,7 +48,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @see <a href="https://quarkus.io/guides/config-reference#configuration-sources">Default sources</a>
  */
-public class DatabaseConfigSource extends AbstractConfigSource {
+class DatabaseConfigSource extends AbstractConfigSource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfigSource.class);
     private static final String PROPERTY_PREFIX = "dtrack";

@@ -19,51 +19,33 @@
 package org.dependencytrack.config;
 
 import io.quarkus.test.QuarkusUnitTest;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
-import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import javax.sql.DataSource;
+import java.util.NoSuchElementException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@QuarkusTestResource(H2DatabaseTestResource.class)
-class DatabaseConfigSourceCacheDisabledTest extends AbstractDatabaseConfigSourceTest {
+class PskSecretKeysHandlerNoSecretKeyPathConfiguredTest extends AbstractPskSecretKeyHandlerTest {
 
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addAsResource(
-                            "DatabaseConfigSource/application-nocache.properties",
+                            "PskSecretKeysHandler/application-nosecretkeypath.properties",
                             "application.properties"
                     ));
 
-    @Inject
-    DatabaseConfigSourceCacheDisabledTest(final DataSource dataSource) {
-        super(dataSource);
-    }
-
-    @AfterEach
-    void afterEach() throws Exception {
-        deleteAllProperties();
-    }
-
     @Test
-    void test() throws Exception {
+    void test() {
         final Config config = ConfigProvider.getConfig();
-
-        createProperty("foo", "bar", "baz");
-        assertThat(config.getOptionalValue("dtrack.foo.bar", String.class)).contains("baz");
-
-        deleteProperty("foo", "bar");
-        assertThat(config.getOptionalValue("dtrack.foo.bar", String.class)).isEmpty();
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> config.getOptionalValue("foo.bar", String.class))
+                .withMessage("Decryption with dtrack-psk was requested, but no secret.key.path is configured");
     }
 
 }

@@ -30,7 +30,7 @@ import java.util.Optional;
 
 @ConfigMapping(prefix = "quarkus.config.source.database")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
-public interface DatabaseConfigSourceConfig {
+interface DatabaseConfigSourceConfig {
 
     /**
      * Whether the database configuration source shall be enabled.

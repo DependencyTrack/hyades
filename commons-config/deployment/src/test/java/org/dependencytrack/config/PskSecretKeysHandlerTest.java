@@ -19,51 +19,44 @@
 package org.dependencytrack.config;
 
 import io.quarkus.test.QuarkusUnitTest;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
-import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import javax.sql.DataSource;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@QuarkusTestResource(H2DatabaseTestResource.class)
-class DatabaseConfigSourceCacheDisabledTest extends AbstractDatabaseConfigSourceTest {
+class PskSecretKeysHandlerTest extends AbstractPskSecretKeyHandlerTest {
 
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addAsResource(
-                            "DatabaseConfigSource/application-nocache.properties",
+                            "PskSecretKeysHandler/application-valid.properties",
                             "application.properties"
                     ));
 
-    @Inject
-    DatabaseConfigSourceCacheDisabledTest(final DataSource dataSource) {
-        super(dataSource);
-    }
+    @Test
+    void test() {
+        final Config config = ConfigProvider.getConfig();
 
-    @AfterEach
-    void afterEach() throws Exception {
-        deleteAllProperties();
+        // Use this to get the encrypted value to populate the application.properties file with:
+        //     final String encryptedValue = encryptAsString("foobarbaz");
+
+        assertThat(config.getOptionalValue("foo.bar", String.class)).contains("foobarbaz");
     }
 
     @Test
-    void test() throws Exception {
+    void testDecryptionFailure() {
         final Config config = ConfigProvider.getConfig();
 
-        createProperty("foo", "bar", "baz");
-        assertThat(config.getOptionalValue("dtrack.foo.bar", String.class)).contains("baz");
-
-        deleteProperty("foo", "bar");
-        assertThat(config.getOptionalValue("dtrack.foo.bar", String.class)).isEmpty();
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> config.getOptionalValue("foo.bar.invalid", String.class))
+                .withCauseInstanceOf(IllegalArgumentException.class)
+                .withMessageContaining("Length of encrypted value must be a multiple of 16, but was 9");
     }
 
 }

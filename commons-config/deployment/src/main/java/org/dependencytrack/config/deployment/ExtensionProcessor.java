@@ -23,17 +23,19 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.RunTimeConfigBuilderBuildItem;
 import org.dependencytrack.config.DatabaseConfigSourceFactoryBuilder;
+import org.dependencytrack.config.PskSecretKeysHandlerFactoryBuilder;
 
 public class ExtensionProcessor {
 
     @BuildStep
     FeatureBuildItem feature() {
-        return new FeatureBuildItem("dependencytrack-commons-config");
+        return new FeatureBuildItem("dependencytrack-config");
     }
 
     @BuildStep
     void configFactory(final BuildProducer<RunTimeConfigBuilderBuildItem> runTimeConfigBuilder) {
         runTimeConfigBuilder.produce(new RunTimeConfigBuilderBuildItem(DatabaseConfigSourceFactoryBuilder.class.getName()));
+        runTimeConfigBuilder.produce(new RunTimeConfigBuilderBuildItem(PskSecretKeysHandlerFactoryBuilder.class.getName()));
     }
 
 }

@@ -39,7 +39,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class DatabaseConfigSourceFactory implements ConfigSourceFactory {
+class DatabaseConfigSourceFactory implements ConfigSourceFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfigSourceFactory.class);
 
