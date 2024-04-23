@@ -57,8 +57,6 @@ jobs:
         install: true
     - name: Build Native Image
       timeout-minutes: ${{ matrix.arch.build-timeout }}
-      env:
-        MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
         RESOURCES_INCLUDES=""
         RESOURCES_EXCLUDES=""
@@ -80,7 +78,7 @@ jobs:
         fi
         echo "Including resources: ${RESOURCES_INCLUDES:-None}"
         echo "Excluding resources: ${RESOURCES_EXCLUDES:-None}"
-        mvn clean package -Dnative -pl ${{ inputs.module }} --also-make -DskipTests \
+        mvn -B --no-transfer-progress clean package -Dnative -pl ${{ inputs.module }} --also-make -DskipTests \
           -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 \
           -Dquarkus.native.container-build=true \
           -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch.name }}' \
@@ -88,10 +86,9 @@ jobs:
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
     - name: Test Native Image
       if: ${{ matrix.arch.name == 'amd64' }}
-      env:
-        MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
-        mvn -pl ${{ inputs.module }} --also-make test-compile failsafe:integration-test -Dnative
+        mvn -B --no-transfer-progress -pl quarkus-extensions,${{ inputs.module }} --also-make \
+          test-compile failsafe:integration-test -Dnative
     - name: Upload Build Artifact
       uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # tag=v4.3.2
       with:

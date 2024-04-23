@@ -66,10 +66,8 @@ jobs:
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "additional-tags=${ADDITIONAL_TAGS}" >> $GITHUB_OUTPUT
       - name: Build and push container images
-        env:
-          MAVEN_ARGS: "-B --no-transfer-progress"
         run: |-
-          mvn clean install -DskipTests \
+          mvn -B --no-transfer-progress clean install -DskipTests \
             -Dquarkus.container-image.registry=ghcr.io \
             -Dquarkus.container-image.group=${GITHUB_REPOSITORY_OWNER,,} \
             -Dquarkus.container-image.tag=${{ steps.determine-container-tags.outputs.tag }} \
@@ -96,7 +94,6 @@ jobs:
         cache: maven
     - name: Test
       env:
-        MAVEN_ARGS: "-B --no-transfer-progress"
         OSSINDEX_USERNAME: ${{ secrets.OSSINDEX_USERNAME }}
         OSSINDEX_TOKEN: ${{ secrets.OSSINDEX_TOKEN }}
-      run: mvn -pl e2e clean verify -Pe2e-all
+      run: mvn -B --no-transfer-progress -pl e2e clean verify -Pe2e-all
