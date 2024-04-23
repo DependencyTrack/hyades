@@ -88,11 +88,13 @@ jobs:
         java-version: '21'
         components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build Modules
+      run: |-
+        mvn -B --no-transfer-progress clean install -DskipTests
     - name: Build Native Image
       run: |-
-        mvn -B --no-transfer-progress -pl quarkus-extensions,${{ matrix.module }} --also-make \
-          clean install -Dnative -DskipTests
+        mvn -B --no-transfer-progress -pl ${{ matrix.module }} package -Dnative -DskipTests
     - name: Test Native Image
       run: |-
-        mvn -B --no-transfer-progress -pl quarkus-extensions,${{ matrix.module }} --also-make \
+        mvn -B --no-transfer-progress -pl ${{ matrix.module }} \
           test-compile failsafe:integration-test failsafe:verify -Dnative
