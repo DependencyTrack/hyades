@@ -20,13 +20,16 @@ package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import jakarta.json.JsonObjectBuilder;
 import org.dependencytrack.common.SecretDecryptor;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
+import org.dependencytrack.notification.util.WireMockTestResource;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.Callable;
+import java.util.List;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
@@ -34,25 +37,31 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 @QuarkusTest
+@TestProfile(JiraPublisherTest.TestProfile.class)
 public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublisher> {
+
+    public static class TestProfile implements QuarkusTestProfile {
+
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.of(
+                    "dtrack.integrations.jira.username", "jiraUser",
+                    "dtrack.integrations.jira.password", "7h5IR+TUX22lXLHCv8wJqxKud8NdPrujF4Lnbx+GHgI="
+            );
+        }
+
+        @Override
+        public List<TestResourceEntry> testResources() {
+            return List.of(new TestResourceEntry(
+                    WireMockTestResource.class,
+                    Map.of("serverUrlProperty", "dtrack.integrations.jira.url")
+            ));
+        }
+
+    }
 
     @Inject
     SecretDecryptor secretDecryptor;
-
-    private Callable<Void> configPropertyCustomizer;
-
-    @Override
-    void setupConfigProperties() throws Exception {
-        super.setupConfigProperties();
-
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_URL, wireMockServer.baseUrl());
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, "jiraUser");
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraPassword"));
-
-        if (configPropertyCustomizer != null) {
-            configPropertyCustomizer.call();
-        }
-    }
 
     @Override
     JsonObjectBuilder extraConfig() {
@@ -208,12 +217,6 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     @Test
     @TestTransaction
     void testInformWithBearerToken() throws Exception {
-        configPropertyCustomizer = () -> {
-            createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, null);
-            createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraToken"));
-            return null;
-        };
-
         super.testInformWithBomConsumedNotification();
 
         wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))

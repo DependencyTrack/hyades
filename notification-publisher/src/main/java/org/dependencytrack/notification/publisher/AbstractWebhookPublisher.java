@@ -28,7 +28,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.dependencytrack.commonutil.HttpUtil;
-import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +40,7 @@ public abstract class AbstractWebhookPublisher implements Publisher {
     @Named("httpClient")
     CloseableHttpClient httpClient;
 
-    public void publish(final PublishContext ctx, final PebbleTemplate template, final Notification notification, final JsonObject config, final ConfigPropertyRepository configPropertyRepository) throws Exception {
+    public void publish(final PublishContext ctx, final PebbleTemplate template, final Notification notification, final JsonObject config) throws Exception {
         final Logger logger = LoggerFactory.getLogger(this.getClass());
         if (config == null) {
             logger.warn("No publisher configuration found; Skipping notification (%s)".formatted(ctx));
@@ -64,7 +63,7 @@ public abstract class AbstractWebhookPublisher implements Publisher {
         }
         final String content;
         try {
-            content = prepareTemplate(notification, template, configPropertyRepository, config);
+            content = prepareTemplate(notification, template, config);
         } catch (IOException | RuntimeException e) {
             logger.error("Failed to prepare notification content (%s)".formatted(ctx), e);
             return;

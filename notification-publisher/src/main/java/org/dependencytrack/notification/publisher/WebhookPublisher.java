@@ -24,7 +24,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.json.JsonObject;
-import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
 
 @ApplicationScoped
@@ -32,17 +31,14 @@ import org.dependencytrack.proto.notification.v1.Notification;
 public class WebhookPublisher extends AbstractWebhookPublisher implements Publisher {
 
     private final PebbleEngine pebbleEngine;
-    private final ConfigPropertyRepository configPropertyRepository;
 
     @Inject
-    public WebhookPublisher(@Named("pebbleEngineJson") final PebbleEngine pebbleEngine,
-                            final ConfigPropertyRepository configPropertyRepository) {
+    public WebhookPublisher(@Named("pebbleEngineJson") final PebbleEngine pebbleEngine) {
         this.pebbleEngine = pebbleEngine;
-        this.configPropertyRepository = configPropertyRepository;
     }
 
     public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
-        publish(ctx, getTemplate(config), notification, config, configPropertyRepository);
+        publish(ctx, getTemplate(config), notification, config);
     }
 
     @Override

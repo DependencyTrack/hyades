@@ -24,7 +24,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.json.JsonObject;
-import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.proto.notification.v1.Level;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.slf4j.Logger;
@@ -40,19 +39,16 @@ public class ConsolePublisher implements Publisher {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsolePublisher.class);
 
     private final PebbleEngine pebbleEngine;
-    private final ConfigPropertyRepository configPropertyRepository;
 
     @Inject
-    public ConsolePublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine,
-                            final ConfigPropertyRepository configPropertyRepository){
+    public ConsolePublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine) {
         this.pebbleEngine = pebbleEngine;
-        this.configPropertyRepository = configPropertyRepository;
     }
 
     public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
         final String content;
         try {
-            content = prepareTemplate(notification, getTemplate(config), configPropertyRepository, config);
+            content = prepareTemplate(notification, getTemplate(config), config);
         } catch (IOException | RuntimeException e) {
             LOGGER.error("Failed to prepare notification content (%s)".formatted(ctx), e);
             return;

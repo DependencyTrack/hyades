@@ -27,7 +27,6 @@ import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.dependencytrack.persistence.model.Team;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -46,13 +45,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublisher> {
 
     public static class TestProfile implements QuarkusTestProfile {
+
         @Override
         public Map<String, String> getConfigOverrides() {
             return Map.of(
+                    "dtrack.email.smtp.enabled", "true",
                     "quarkus.mailer.mock", "true",
                     "quarkus.mailer.from", "dtrack@example.com"
             );
         }
+
     }
 
     @Inject
@@ -61,13 +63,6 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     @AfterEach
     void afterEach() {
         mailbox.clear();
-    }
-
-    @Override
-    void setupConfigProperties() throws Exception {
-        super.setupConfigProperties();
-
-        createOrUpdateConfigProperty(ConfigPropertyConstants.EMAIL_SMTP_ENABLED, "true");
     }
 
     @Override

@@ -67,8 +67,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     @Test
     void testInformWithBomConsumedNotification() throws Exception {
-        setupConfigProperties();
-
         final var subject = BomConsumedOrProcessedSubject.newBuilder()
                 .setProject(createProject())
                 .setBom(Bom.newBuilder()
@@ -93,8 +91,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     @Test
     void testInformWithBomProcessingFailedNotification() throws Exception {
-        setupConfigProperties();
-
         final var subject = BomProcessingFailedSubject.newBuilder()
                 .setProject(createProject())
                 .setBom(Bom.newBuilder()
@@ -120,8 +116,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     @Test // https://github.com/DependencyTrack/dependency-track/issues/3197
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
-        setupConfigProperties();
-
         final var subject = BomProcessingFailedSubject.newBuilder()
                 .setProject(createProject())
                 .setBom(Bom.newBuilder()
@@ -147,8 +141,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     @Test
     void testInformWithDataSourceMirroringNotification() throws Exception {
-        setupConfigProperties();
-
         final var notification = Notification.newBuilder()
                 .setScope(SCOPE_SYSTEM)
                 .setGroup(GROUP_DATASOURCE_MIRRORING)
@@ -164,8 +156,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     @Test
     void testInformWithNewVulnerabilityNotification() throws Exception {
-        setupConfigProperties();
-
         final var project = createProject();
         final var component = createComponent(project);
         final var vuln = createVulnerability();
@@ -197,8 +187,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     @Test
     void testInformWithProjectAuditChangeNotification() throws Exception {
-        setupConfigProperties();
-
         final var project = createProject();
         final var component = createComponent(project);
         final var vuln = createVulnerability();
@@ -223,10 +211,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
         assertThatNoException()
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
-    }
-
-    void setupConfigProperties() throws Exception {
-        createOrUpdateConfigProperty(ConfigPropertyConstants.GENERAL_BASE_URL, "https://example.com");
     }
 
     private JsonObject createConfig() throws Exception {
@@ -265,7 +249,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
             templateFile = "console.peb";
         } else if (publisherInstance instanceof SendMailPublisher) {
             templateFile = "email.peb";
-        }else if (publisherInstance instanceof JiraPublisher) {
+        } else if (publisherInstance instanceof JiraPublisher) {
             templateFile = "jira.peb";
         } else if (publisherInstance instanceof MattermostPublisher) {
             templateFile = "mattermost.peb";

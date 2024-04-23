@@ -28,11 +28,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
-import org.apache.commons.lang3.BooleanUtils;
-import org.dependencytrack.persistence.model.ConfigProperty;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.dependencytrack.persistence.model.Team;
-import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.persistence.repository.UserRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.slf4j.Logger;
@@ -54,17 +50,17 @@ public class SendMailPublisher implements Publisher {
 
     private final PebbleEngine pebbleEngine;
     private final UserRepository userRepository;
-    private final ConfigPropertyRepository configPropertyRepository;
+    private final SendMailPublisherConfig publisherConfig;
     private final Mailer mailer;
 
     @Inject
-    public SendMailPublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine,
-                             final UserRepository userRepository,
-                             final ConfigPropertyRepository configPropertyRepository,
-                             final Mailer mailer) {
+    SendMailPublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine,
+                      final UserRepository userRepository,
+                      final SendMailPublisherConfig publisherConfig,
+                      final Mailer mailer) {
         this.pebbleEngine = pebbleEngine;
         this.userRepository = userRepository;
-        this.configPropertyRepository = configPropertyRepository;
+        this.publisherConfig = publisherConfig;
         this.mailer = mailer;
     }
 
@@ -99,15 +95,14 @@ public class SendMailPublisher implements Publisher {
         final String content;
         try {
             final PebbleTemplate template = getTemplate(config);
-            content = prepareTemplate(notification, template, configPropertyRepository, config);
+            content = prepareTemplate(notification, template, config);
         } catch (IOException | RuntimeException e) {
             LOGGER.error("Failed to prepare notification content (%s)".formatted(ctx), e);
             return;
         }
 
         try {
-            ConfigProperty smtpEnabledConfig = configPropertyRepository.findByGroupAndName(ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getGroupName(), ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getPropertyName());
-            boolean smtpEnabled = BooleanUtils.toBoolean(smtpEnabledConfig.getPropertyValue());
+            boolean smtpEnabled = publisherConfig.isSmtpEnabled().orElse(false);
             if (!smtpEnabled) {
                 LOGGER.warn("SMTP is not enabled; Skipping notification (%s)".formatted(ctx));
                 return; // smtp is not enabled

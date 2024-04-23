@@ -19,7 +19,6 @@
 package org.dependencytrack.notification.publisher;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import io.quarkus.test.common.QuarkusTestResource;
 import jakarta.json.JsonObjectBuilder;
 import org.dependencytrack.notification.util.WireMockTestResource;
 import org.junit.jupiter.api.AfterEach;
@@ -29,7 +28,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 
-@QuarkusTestResource(WireMockTestResource.class)
 abstract class AbstractWebhookPublisherTest<T extends AbstractWebhookPublisher> extends AbstractPublisherTest<T> {
 
     @WireMockTestResource.InjectWireMock
