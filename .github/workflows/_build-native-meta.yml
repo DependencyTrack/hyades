@@ -80,7 +80,7 @@ jobs:
         fi
         echo "Including resources: ${RESOURCES_INCLUDES:-None}"
         echo "Excluding resources: ${RESOURCES_EXCLUDES:-None}"
-        mvn clean package -Dnative -pl commons,commons-config/deployment,commons-config/runtime,commons-kstreams,commons-persistence,proto,${{ inputs.module }} -DskipTests \
+        mvn clean package -Dnative -pl ${{ inputs.module }} --also-make -DskipTests \
           -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 \
           -Dquarkus.native.container-build=true \
           -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch.name }}' \
@@ -91,7 +91,7 @@ jobs:
       env:
         MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
-        mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ inputs.module }} test-compile failsafe:integration-test -Dnative
+        mvn -pl ${{ inputs.module }} --also-make test-compile failsafe:integration-test -Dnative
     - name: Upload Build Artifact
       uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # tag=v4.3.2
       with:

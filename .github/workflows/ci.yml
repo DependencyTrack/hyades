@@ -93,10 +93,10 @@ jobs:
       env:
         MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
-        mvn -pl commons,commons-config/deployment,commons-config/runtime,commons-kstreams,commons-persistence,proto,${{ matrix.module }} clean install -Dnative -DskipTests
+        mvn -pl ${{ matrix.module }} --also-make clean install -Dnative -DskipTests
     - name: Test Native Image
       env:
         MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
-        mvn -pl commons,commons-config/deployment,commons-config/runtime,commons-kstreams,commons-persistence,proto,${{ matrix.module }} \
+        mvn -pl ${{ matrix.module }} --also-make \
         test-compile failsafe:integration-test failsafe:verify -Dnative
