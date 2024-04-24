@@ -40,7 +40,6 @@ import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysis;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -65,7 +64,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
     @Inject
     EntityManager entityManager;
 
-    @Test
     void testInformWithBomConsumedNotification() throws Exception {
         final var subject = BomConsumedOrProcessedSubject.newBuilder()
                 .setProject(createProject())
@@ -89,7 +87,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test
     void testInformWithBomProcessingFailedNotification() throws Exception {
         final var subject = BomProcessingFailedSubject.newBuilder()
                 .setProject(createProject())
@@ -114,7 +111,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test // https://github.com/DependencyTrack/dependency-track/issues/3197
+    // https://github.com/DependencyTrack/dependency-track/issues/3197
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         final var subject = BomProcessingFailedSubject.newBuilder()
                 .setProject(createProject())
@@ -139,7 +136,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test
     void testInformWithDataSourceMirroringNotification() throws Exception {
         final var notification = Notification.newBuilder()
                 .setScope(SCOPE_SYSTEM)
@@ -154,7 +150,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test
     void testInformWithNewVulnerabilityNotification() throws Exception {
         final var project = createProject();
         final var component = createComponent(project);
@@ -185,7 +180,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test
     void testInformWithProjectAuditChangeNotification() throws Exception {
         final var project = createProject();
         final var component = createComponent(project);

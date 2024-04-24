@@ -48,10 +48,11 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
 
         @Override
         public Map<String, String> getConfigOverrides() {
-            return Map.of(
-                    "dtrack.email.smtp.enabled", "true",
-                    "quarkus.mailer.mock", "true",
-                    "quarkus.mailer.from", "dtrack@example.com"
+            return Map.ofEntries(
+                    Map.entry("dtrack.general.base.url", "https://example.com"),
+                    Map.entry("dtrack.email.smtp.enabled", "true"),
+                    Map.entry("quarkus.mailer.mock", "true"),
+                    Map.entry("quarkus.mailer.from", "dtrack@example.com")
             );
         }
 
@@ -71,6 +72,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
                 .add(Publisher.CONFIG_DESTINATION, "recipient@example.com");
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomConsumedNotification() throws Exception {
@@ -99,6 +101,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         });
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotification() throws Exception {
@@ -132,6 +135,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         });
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
@@ -165,6 +169,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         });
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
@@ -192,6 +197,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         });
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithNewVulnerabilityNotification() throws Exception {
@@ -230,6 +236,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         });
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithProjectAuditChangeNotification() throws Exception {

@@ -21,7 +21,12 @@ package org.dependencytrack.notification.publisher;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import org.dependencytrack.notification.util.WireMockTestResource;
+import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -29,9 +34,22 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
+@TestProfile(SlackPublisherTest.TestProfile.class)
 @QuarkusTestResource(WireMockTestResource.class)
 public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublisher> {
 
+    public static class TestProfile implements QuarkusTestProfile {
+
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.ofEntries(
+                    Map.entry("dtrack.general.base.url", "https://example.com")
+            );
+        }
+
+    }
+
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomConsumedNotification() throws Exception {
@@ -80,6 +98,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotification() throws Exception {
@@ -128,6 +147,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
@@ -176,6 +196,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
@@ -224,6 +245,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithNewVulnerabilityNotification() throws Exception {
@@ -322,6 +344,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithProjectAuditChangeNotification() throws Exception {

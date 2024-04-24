@@ -44,6 +44,7 @@ public class JiraPublisherBearerTokenTest extends AbstractWebhookPublisherTest<J
         @Override
         public Map<String, String> getConfigOverrides() {
             return Map.ofEntries(
+                    Map.entry("dtrack.general.base.url", "https://example.com"),
                     Map.entry("dtrack.integrations.jira.password", "Pk7KKYvayX0yN9ZeIJFXs6jDBxDKszT1Gw9bTKxxZTc=")
             );
         }

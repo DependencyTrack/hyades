@@ -24,6 +24,7 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.json.JsonObjectBuilder;
 import org.dependencytrack.notification.util.WireMockTestResource;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
         @Override
         public Map<String, String> getConfigOverrides() {
             return Map.ofEntries(
+                    Map.entry("dtrack.general.base.url", "https://example.com"),
                     Map.entry("dtrack.integrations.jira.username", "jiraUser"),
                     Map.entry("dtrack.integrations.jira.password", "7h5IR+TUX22lXLHCv8wJqxKud8NdPrujF4Lnbx+GHgI=")
             );
@@ -64,6 +66,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                 .add("jiraTicketType", "Task");
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomConsumedNotification() throws Exception {
@@ -88,6 +91,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotification() throws Exception {
@@ -112,6 +116,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
@@ -136,6 +141,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
@@ -160,6 +166,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithNewVulnerabilityNotification() throws Exception {
@@ -184,6 +191,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithProjectAuditChangeNotification() throws Exception {
