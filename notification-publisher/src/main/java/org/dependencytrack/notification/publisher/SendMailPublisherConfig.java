@@ -18,12 +18,21 @@
  */
 package org.dependencytrack.notification.publisher;
 
+import io.smallrye.config.ConfigMapping;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Provider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Optional;
 
+/**
+ * As of Quarkus 3.9 / smallrye-config 3.7, it is not possible to use {@link ConfigMapping}
+ * interfaces with {@link Provider} fields. We need {@link Provider} fields in order to support
+ * configuration changes at runtime. Refer to <em>Injecting Dynamic Values</em> in the
+ * {@link ConfigProperty} JavaDoc for details.
+ *
+ * @see <a href="https://github.com/smallrye/smallrye-config/issues/664">Related smallrye-config issue</a>
+ */
 @ApplicationScoped
 class SendMailPublisherConfig {
 
