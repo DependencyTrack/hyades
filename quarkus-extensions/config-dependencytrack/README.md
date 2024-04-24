@@ -3,9 +3,6 @@
 `quarkus-config-dependencytrack` is a [Quarkus extension] that bridges Quarkus' [configuration framework]
 with Dependency-Track's existing configuration storage, namely the `CONFIGPROPERTY` database table.
 
-It also plugs into [SmallRye secret keys], enabling decryption of encrypted `CONFIGPROPERTY` values
-using Dependency-Track's pre-shared-key (PSK).
-
 ### Config Source
 
 The `database` config source is enabled per default. It can be disabled by setting the following property:
@@ -48,6 +45,5 @@ quarkus.config.source.dtrack.database.cache.expire-after-write=PT10M
 
 [JDBC datasource]: https://quarkus.io/guides/datasource#configure-a-jdbc-datasource
 [Quarkus extension]: https://quarkus.io/guides/writing-extensions
-[SmallRye secrect keys]: https://smallrye.io/smallrye-config/Main/config/secret-keys/
 [configuration framework]: https://quarkus.io/guides/config-reference
 [default sources]: https://quarkus.io/guides/config-reference#configuration-sources
