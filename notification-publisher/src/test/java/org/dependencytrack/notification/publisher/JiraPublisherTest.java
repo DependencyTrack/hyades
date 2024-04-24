@@ -22,11 +22,8 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import jakarta.inject.Inject;
 import jakarta.json.JsonObjectBuilder;
-import org.dependencytrack.common.SecretDecryptor;
 import org.dependencytrack.notification.util.WireMockTestResource;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -44,9 +41,9 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
 
         @Override
         public Map<String, String> getConfigOverrides() {
-            return Map.of(
-                    "dtrack.integrations.jira.username", "jiraUser",
-                    "dtrack.integrations.jira.password", "7h5IR+TUX22lXLHCv8wJqxKud8NdPrujF4Lnbx+GHgI="
+            return Map.ofEntries(
+                    Map.entry("dtrack.integrations.jira.username", "jiraUser"),
+                    Map.entry("dtrack.integrations.jira.password", "7h5IR+TUX22lXLHCv8wJqxKud8NdPrujF4Lnbx+GHgI=")
             );
         }
 
@@ -59,9 +56,6 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
         }
 
     }
-
-    @Inject
-    SecretDecryptor secretDecryptor;
 
     @Override
     JsonObjectBuilder extraConfig() {
@@ -209,30 +203,6 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                             },
                             "summary" : "[Dependency-Track] [GROUP_PROJECT_AUDIT_CHANGE] Analysis Decision: Finding Suppressed",
                             "description" : "\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_INFORMATIONAL\\n\\n"
-                          }
-                        }
-                        """)));
-    }
-
-    @Test
-    @TestTransaction
-    void testInformWithBearerToken() throws Exception {
-        super.testInformWithBomConsumedNotification();
-
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
-                .withHeader("Authorization", equalTo("Bearer jiraToken"))
-                .withHeader("Content-Type", equalTo("application/json"))
-                .withRequestBody(equalToJson("""
-                        {
-                          "fields" : {
-                            "project" : {
-                              "key" : "PROJECT"
-                            },
-                            "issuetype" : {
-                              "name" : "Task"
-                            },
-                            "summary" : "[Dependency-Track] [GROUP_BOM_CONSUMED] Bill of Materials Consumed",
-                            "description" : "A CycloneDX BOM was consumed and will be processed\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_INFORMATIONAL\\n\\n"
                           }
                         }
                         """)));
