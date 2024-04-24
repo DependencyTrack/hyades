@@ -28,7 +28,6 @@ import jakarta.persistence.EntityManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.dependencytrack.notification.NotificationConstants;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.dependencytrack.proto.notification.v1.BackReference;
 import org.dependencytrack.proto.notification.v1.Bom;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
@@ -314,23 +313,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .setState("FALSE_POSITIVE")
                 .setSuppressed(true)
                 .build();
-    }
-
-    final void createOrUpdateConfigProperty(final ConfigPropertyConstants configProperty, final String value) {
-        entityManager.createNativeQuery("""
-                        INSERT INTO "CONFIGPROPERTY"
-                          ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE")
-                        VALUES
-                          (NULL, :group, :type, :name, :value)
-                        ON CONFLICT ("GROUPNAME", "PROPERTYNAME") DO UPDATE
-                        SET
-                          "PROPERTYVALUE" = :value
-                        """)
-                .setParameter("group", configProperty.getGroupName())
-                .setParameter("type", configProperty.getPropertyType().name())
-                .setParameter("name", configProperty.getPropertyName())
-                .setParameter("value", value)
-                .executeUpdate();
     }
 
     private static PublishContext createPublishContext(final Notification notification) throws Exception {
