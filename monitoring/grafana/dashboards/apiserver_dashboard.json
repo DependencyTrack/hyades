@@ -1483,7 +1483,6 @@
         "type": "prometheus",
         "uid": "Prometheus"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1543,7 +1542,7 @@
         "x": 8,
         "y": 41
       },
-      "id": 86,
+      "id": 99,
       "options": {
         "legend": {
           "calcs": [
@@ -1567,7 +1566,7 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "(rate(vuln_scan_result_processing_seconds_sum{instance=\"$instance\"}[1m]) / rate(vuln_scan_result_processing_seconds_count{instance=\"$instance\"}[1m])) > 0",
+          "expr": "(rate(pc_user_function_processing_time_seconds_sum{instance=\"$instance\",pcinstance=\"vuln.scan.result\"}[1m]) / rate(pc_user_function_processing_time_seconds_count{instance=\"$instance\",pcinstance=\"vuln.scan.result\"}[1m])) > 0",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
@@ -1581,7 +1580,6 @@
         "type": "prometheus",
         "uid": "Prometheus"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1641,7 +1639,7 @@
         "x": 16,
         "y": 41
       },
-      "id": 87,
+      "id": 100,
       "options": {
         "legend": {
           "calcs": [
@@ -1665,13 +1663,13 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "(rate(pc_user_function_processing_time_seconds_sum{instance=\"$instance\",pcinstance=\"vuln.mirror\"}[1m]) / rate(pc_user_function_processing_time_seconds_count{instance=\"$instance\",pcinstance=\"vuln.mirror\"}[1m])) > 0",
+          "expr": "(rate(pc_user_function_processing_time_seconds_sum{instance=\"$instance\",pcinstance=\"vuln.scan.result.processed\"}[1m]) / rate(pc_user_function_processing_time_seconds_count{instance=\"$instance\",pcinstance=\"vuln.scan.result.processed\"}[1m])) > 0",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Average Vulnerability Mirror Processing Duration",
+      "title": "Average Processed Vulnerability Scan Result Processing Duration",
       "type": "timeseries"
     },
     {
@@ -1888,8 +1886,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -1935,7 +1933,7 @@
         "x": 16,
         "y": 49
       },
-      "id": 97,
+      "id": 87,
       "options": {
         "legend": {
           "calcs": [
@@ -1959,13 +1957,13 @@
             "uid": "Prometheus"
           },
           "editorMode": "code",
-          "expr": "(rate(pc_user_function_processing_time_seconds_sum{instance=\"$instance\",pcinstance=\"repo.meta.analysis.result\"}[1m]) / rate(pc_user_function_processing_time_seconds_count{instance=\"$instance\",pcinstance=\"repo.meta.analysis.result\"}[1m])) > 0",
+          "expr": "(rate(pc_user_function_processing_time_seconds_sum{instance=\"$instance\",pcinstance=\"vuln.mirror\"}[1m]) / rate(pc_user_function_processing_time_seconds_count{instance=\"$instance\",pcinstance=\"vuln.mirror\"}[1m])) > 0",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Average Repository Metadata Analysis Result Processing Duration",
+      "title": "Average Vulnerability Mirror Processing Duration",
       "type": "timeseries"
     },
     {
@@ -2162,6 +2160,104 @@
         }
       ],
       "title": "Average Component Policy Evaluation Duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 57
+      },
+      "id": 97,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(rate(pc_user_function_processing_time_seconds_sum{instance=\"$instance\",pcinstance=\"repo.meta.analysis.result\"}[1m]) / rate(pc_user_function_processing_time_seconds_count{instance=\"$instance\",pcinstance=\"repo.meta.analysis.result\"}[1m])) > 0",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Average Repository Metadata Analysis Result Processing Duration",
       "type": "timeseries"
     },
     {
@@ -4018,7 +4114,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 28
+            "y": 36
           },
           "id": 6,
           "options": {
@@ -4121,7 +4217,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 28
+            "y": 36
           },
           "id": 4,
           "options": {
@@ -4228,7 +4324,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 28
+            "y": 36
           },
           "id": 30,
           "options": {
@@ -4337,7 +4433,7 @@
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 36
+            "y": 44
           },
           "id": 2,
           "options": {
@@ -4418,6 +4514,6 @@
   "timezone": "",
   "title": "API Server",
   "uid": "wYGnYRRVkd",
-  "version": 7,
+  "version": 1,
   "weekStart": ""
 }
