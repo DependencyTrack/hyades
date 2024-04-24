@@ -32,6 +32,18 @@ You'd do this in Quarkus:
 String clusterId;
 ```
 
+> [!NOTE]
+> Injecting a property via `@ConfigProperty` will *not* reflect changes made to the
+> property at runtime (i.e. users updating configs via UI). If properties are expected
+> to change at runtime, inject a `jakarta.inject.Provider` instead:
+> 
+> ```java
+> @ConfigProperty(name = "dtrack.integrations.jira.username")
+> Provider<Optional<String>> jiraUsername;
+> ```
+> 
+> Calling `jiraUsername.get()` will now always reach to the underlying config source.
+
 Per default, properties are cached for **1min** to reduce excessive database queries.
 Caching can be controlled via the following properties:
 
