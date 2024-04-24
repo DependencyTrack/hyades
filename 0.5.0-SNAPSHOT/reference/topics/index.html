@@ -1059,11 +1059,6 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>dtrack-apiserver-processed-vuln-scan-result-by-scan-token-repartition</code><sup>1A</sup></td>
-<td style="text-align: left;">3</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
 <td style="text-align: left;"><code>dtrack.notification.analyzer</code></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"></td>
@@ -1134,7 +1129,7 @@
 <td style="text-align: left;"><code>cleanup.policy=compact</code><br/><code>segment.bytes=67108864</code><br/><code>max.compaction.lag.ms=0</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>dtrack.repo-meta-analysis.component</code><sup>1B</sup></td>
+<td style="text-align: left;"><code>dtrack.repo-meta-analysis.component</code><sup>1A</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"></td>
 </tr>
@@ -1144,17 +1139,22 @@
 <td style="text-align: left;"></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>dtrack.vuln-analysis.component</code><sup>1C</sup></td>
+<td style="text-align: left;"><code>dtrack.vuln-analysis.component</code><sup>1B</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>dtrack.vuln-analysis.result</code><sup>1A</sup></td>
+<td style="text-align: left;"><code>dtrack.vuln-analysis.result</code></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>dtrack.vuln-analysis.scanner.result</code><sup>1C</sup></td>
+<td style="text-align: left;"><code>dtrack.vuln-analysis.result.processed</code></td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dtrack.vuln-analysis.scanner.result</code><sup>1B</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"></td>
 </tr>
@@ -1184,32 +1184,32 @@
 <td style="text-align: left;"><code>cleanup.policy=compact</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-repository-meta-analyzer-command-by-purl-coordinates-repartition</code><sup>1B</sup></td>
+<td style="text-align: left;"><code>hyades-repository-meta-analyzer-command-by-purl-coordinates-repartition</code><sup>1A</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-completed-scans-table-changelog</code><sup>1C</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-completed-scans-table-changelog</code><sup>1B</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"><code>cleanup.policy=compact</code><br/><code>segment.bytes=67108864</code><br/><code>max.compaction.lag.ms=0</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-expected-scanner-results-last-update-store-changelog</code><sup>1C</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-expected-scanner-results-last-update-store-changelog</code><sup>1B</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"><code>cleanup.policy=compact</code><br/><code>segment.bytes=67108864</code><br/><code>max.compaction.lag.ms=0</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-expected-scanner-results-table-changelog</code><sup>1C</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-expected-scanner-results-table-changelog</code><sup>1B</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"><code>cleanup.policy=compact</code><br/><code>segment.bytes=67108864</code><br/><code>max.compaction.lag.ms=0</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-ossindex-batch-store-changelog</code><sup>1D</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-ossindex-batch-store-changelog</code><sup>1C</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"><code>cleanup.policy=compact</code><br/><code>segment.bytes=67108864</code><br/><code>max.compaction.lag.ms=0</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-ossindex-retry-store-changelog</code><sup>1D</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-ossindex-retry-store-changelog</code><sup>1C</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"><code>cleanup.policy=compact</code><br/><code>segment.bytes=67108864</code><br/><code>max.compaction.lag.ms=0</code></td>
 </tr>
@@ -1219,22 +1219,22 @@
 <td style="text-align: left;"></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-scan-task-ossindex-repartition</code><sup>1D</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-scan-task-ossindex-repartition</code><sup>1C</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-scan-task-snyk-repartition</code><sup>1E</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-scan-task-snyk-repartition</code><sup>1D</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-snyk-batch-store-changelog</code><sup>1E</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-snyk-batch-store-changelog</code><sup>1D</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"><code>cleanup.policy=compact</code><br/><code>segment.bytes=67108864</code><br/><code>max.compaction.lag.ms=0</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-vulnerability-analyzer-snyk-retry-store-changelog</code><sup>1E</sup></td>
+<td style="text-align: left;"><code>hyades-vulnerability-analyzer-snyk-retry-store-changelog</code><sup>1D</sup></td>
 <td style="text-align: left;">3</td>
 <td style="text-align: left;"><code>cleanup.policy=compact</code><br/><code>segment.bytes=67108864</code><br/><code>max.compaction.lag.ms=0</code></td>
 </tr>
