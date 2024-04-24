@@ -24,7 +24,6 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.json.JsonObjectBuilder;
 import org.dependencytrack.notification.util.WireMockTestResource;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -88,36 +87,6 @@ public class JiraPublisherBearerTokenTest extends AbstractWebhookPublisherTest<J
                           }
                         }
                         """)));
-    }
-
-    @Override
-    @Disabled("Already tested in JiraPublisherTest")
-    void testInformWithBomConsumedNotification() {
-    }
-
-    @Override
-    @Disabled("Already tested in JiraPublisherTest")
-    void testInformWithBomProcessingFailedNotification() {
-    }
-
-    @Override
-    @Disabled("Already tested in JiraPublisherTest")
-    void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() {
-    }
-
-    @Override
-    @Disabled("Already tested in JiraPublisherTest")
-    void testInformWithDataSourceMirroringNotification() {
-    }
-
-    @Override
-    @Disabled("Already tested in JiraPublisherTest")
-    void testInformWithNewVulnerabilityNotification() {
-    }
-
-    @Override
-    @Disabled("Already tested in JiraPublisherTest")
-    void testInformWithProjectAuditChangeNotification() {
     }
 
 }
