@@ -53,6 +53,15 @@ spec:
         - name: web
           containerPort: 8093
           protocol: TCP
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        {{- if (include "hyades.secretKeySecretName" .) }}
+        - name: secret-key
+          subPath: secret.key
+          mountPath: /var/run/secrets/secret.key
+          readOnly: true
+        {{- end }}
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -73,4 +82,12 @@ spec:
           periodSeconds: {{ .Values.mirrorService.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.mirrorService.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.mirrorService.probes.readiness.timeoutSeconds }}
+      volumes:
+      - name: tmp
+        emptyDir: {}
+            {{- with (include "hyades.secretKeySecretName" .) }}
+      - name: secret-key
+        secret:
+          secretName: {{ . }}
+            {{- end }}
   {{- end }}

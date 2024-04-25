@@ -20,7 +20,6 @@ package org.dependencytrack.vulnmirror.datasource.nvd;
 
 import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
 import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
-import io.github.resilience4j.retry.Retry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.clients.producer.Producer;
@@ -40,6 +39,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 
@@ -49,30 +49,32 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
     private static final Logger LOGGER = LoggerFactory.getLogger(NvdMirror.class);
     private static final String NOTIFICATION_TITLE = "NVD Mirroring";
 
+    private final NvdConfig config;
     private final NvdApiClientFactory apiClientFactory;
-
     private final ExecutorService executorService;
     private final Timer durationTimer;
 
-    private final Retry retry;
-
-
-    NvdMirror(final NvdApiClientFactory apiClientFactory,
+    NvdMirror(final NvdConfig config,
+              final NvdApiClientFactory apiClientFactory,
               @ForNvdMirror final ExecutorService executorService,
               final MirrorStateStore mirrorStateStore,
               final VulnerabilityDigestStore vulnDigestStore,
               final Producer<String, byte[]> kafkaProducer,
-              @ForNvdMirror final Timer durationTimer,
-              @ForNvdMirror final Retry retry) {
+              @ForNvdMirror final Timer durationTimer) {
         super(Datasource.NVD, mirrorStateStore, vulnDigestStore, kafkaProducer, NvdMirrorState.class);
+        this.config = config;
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
         this.durationTimer = durationTimer;
-        this.retry = retry;
     }
 
     @Override
-    public Future<?> doMirror(String ecosystem) {
+    public Future<?> doMirror() {
+        if (!config.enabled().orElse(false)) {
+            LOGGER.warn("Mirroring of the {} datasource was requested, but it is not enabled", Datasource.NVD);
+            return completedFuture(null);
+        }
+
         return executorService.submit(() -> {
             try {
                 mirrorInternal();
@@ -90,7 +92,6 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
     }
 
     void mirrorInternal() throws Throwable {
-
         long lastModified = getState()
                 .map(NvdMirrorState::lastModifiedEpochSeconds)
                 .orElse(0L);
@@ -100,7 +101,7 @@ class NvdMirror extends AbstractDatasourceMirror<NvdMirrorState> {
 
         try (final NvdCveClient apiClient = apiClientFactory.createApiClient(lastModified)) {
             while (apiClient.hasNext()) {
-                final Collection<DefCveItem> cveItems = this.retry.executeCheckedSupplier(apiClient::next);
+                final Collection<DefCveItem> cveItems = apiClient.next();
                 if (cveItems == null) {
                     LOGGER.warn("No cve item in response from Nvd. Skipping to next item");
                     continue;

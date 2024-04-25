@@ -26,6 +26,8 @@ import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
@@ -36,7 +38,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.cyclonedx.proto.v1_4.Bom;
-import org.cyclonedx.proto.v1_4.Vulnerability;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.proto.KafkaProtobufSerde;
 import org.dependencytrack.proto.notification.v1.Notification;
@@ -51,6 +52,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.apache.commons.io.IOUtils.resourceToByteArray;
@@ -68,8 +70,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
+@TestProfile(NvdMirrorTest.TestProfile.class)
 @QuarkusTestResource(KafkaCompanionResource.class)
 class NvdMirrorTest {
+
+    public static final class TestProfile implements QuarkusTestProfile {
+
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.ofEntries(
+                    Map.entry("dtrack.vuln-source.nvd.enabled", "true")
+            );
+        }
+
+    }
 
     @Inject
     NvdMirror nvdMirror;
@@ -104,7 +118,7 @@ class NvdMirrorTest {
         when(apiClientFactoryMock.createApiClient(anyLong()))
                 .thenReturn(apiClientMock);
 
-        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror(null).get());
+        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
@@ -137,7 +151,7 @@ class NvdMirrorTest {
         when(apiClientFactoryMock.createApiClient(anyLong()))
                 .thenReturn(apiClientMock);
 
-        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror(null).get());
+        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
@@ -248,50 +262,6 @@ class NvdMirrorTest {
     }
 
     @Test
-    void testRetryInCaseOfTwoConsecutiveExceptions() throws IOException {
-        final var apiClientMock = mock(NvdCveClient.class);
-        final var item = objectMapper.readValue(resourceToByteArray("/datasource/nvd/cve.json"), DefCveItem.class);
-
-        when(apiClientMock.hasNext())
-                .thenReturn(true)
-                .thenReturn(false);
-        when(apiClientMock.next())
-                .thenThrow(NvdApiException.class)
-                .thenThrow(NvdApiException.class)
-                .thenReturn(List.of(item));
-        when(apiClientMock.getLastUpdated())
-                .thenReturn(ZonedDateTime.ofInstant(Instant.ofEpochSecond(1679922240L), ZoneOffset.UTC));
-
-        when(apiClientFactoryMock.createApiClient(anyLong()))
-                .thenReturn(apiClientMock);
-
-        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror(null).get());
-        final List<ConsumerRecord<String, Bom>> vulnRecords = kafkaCompanion
-                .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
-                .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                .withAutoCommit()
-                .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 1, Duration.ofSeconds(5))
-                .awaitCompletion()
-                .getRecords();
-
-        assertThat(vulnRecords).satisfiesExactly(
-                record -> {
-                    assertThat(record.key()).isEqualTo("NVD/CVE-2022-40489");
-                    assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
-
-                    final Vulnerability vuln = record.value().getVulnerabilities(0);
-                    assertThat(vuln.getId()).isEqualTo("CVE-2022-40489");
-                    assertThat(vuln.hasSource()).isTrue();
-                    assertThat(vuln.getSource().getName()).isEqualTo("NVD");
-                }
-        );
-
-        // Trigger a mirror operation one more time.
-        // Verify that this time the previously stored "last updated" timestamp is used.
-        assertThatNoException().isThrownBy(() -> nvdMirror.mirrorInternal());
-    }
-
-    @Test
     void testRetryWithDoMirrorInCaseOfThreeConsecutiveExceptions() throws IOException {
         final var apiClientMock = mock(NvdCveClient.class);
         final var item = objectMapper.readValue(resourceToByteArray("/datasource/nvd/cve.json"), DefCveItem.class);
@@ -309,7 +279,7 @@ class NvdMirrorTest {
 
         when(apiClientFactoryMock.createApiClient(anyLong()))
                 .thenReturn(apiClientMock);
-        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror(null).get());
+        assertThatNoException().isThrownBy(() -> nvdMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))

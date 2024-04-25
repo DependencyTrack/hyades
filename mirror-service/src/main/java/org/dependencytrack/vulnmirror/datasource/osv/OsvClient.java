@@ -42,18 +42,18 @@ import java.util.Objects;
  * Client for the OSV REST API.
  */
 @ApplicationScoped
-public class OsvClient {
+class OsvClient {
 
     private final CloseableHttpClient httpClient;
     private final OsvConfig osvConfig;
 
     @Inject
-    public OsvClient(@Named("httpClient") final CloseableHttpClient httpClient, final OsvConfig osvConfig) {
+    OsvClient(@Named("httpClient") final CloseableHttpClient httpClient, final OsvConfig osvConfig) {
         this.httpClient = httpClient;
         this.osvConfig = osvConfig;
     }
 
-    public Path downloadEcosystemZip(String ecosystem) throws IOException {
+    Path downloadEcosystemZip(String ecosystem) throws IOException {
         final String baseUrl = osvConfig.baseUrl().orElseThrow(() -> new IllegalStateException("No base URL configured"));
         ecosystem = Objects.requireNonNull(StringUtils.trimToNull(ecosystem), "Ecosystem cannot be null");
         final var request = new HttpGet(baseUrl + "/" + URLEncoder.encode(ecosystem, StandardCharsets.UTF_8).replace("+", "%20")
@@ -76,4 +76,5 @@ public class OsvClient {
         }
         return null;
     }
+
 }

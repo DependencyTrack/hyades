@@ -94,7 +94,7 @@ class OsvMirrorTest {
         tempZipLocation = Files.createTempFile("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         doReturn(tempZipLocation).when(osvClientMock).downloadEcosystemZip(anyString());
-        assertThatNoException().isThrownBy(() -> osvMirror.doMirror("Maven").get());
+        assertThatNoException().isThrownBy(() -> osvMirror.doMirror().get());
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
                 .withGroupId(TestConstants.CONSUMER_GROUP_ID)
@@ -118,7 +118,7 @@ class OsvMirrorTest {
     @Test
     void testDoMirrorFailureNotification() throws IOException {
         doThrow(new IOException()).when(osvClientMock).downloadEcosystemZip(anyString());
-        assertThatNoException().isThrownBy(() -> osvMirror.doMirror("Maven").get());
+        assertThatNoException().isThrownBy(() -> osvMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
@@ -143,7 +143,7 @@ class OsvMirrorTest {
     @Test
     void testDoMirrorFailureNotificationWhenNoEcoSystemPassed() {
         assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> osvMirror.performMirror(null));
-        assertThatNoException().isThrownBy(() -> osvMirror.doMirror(null).get());
+        assertThatNoException().isThrownBy(() -> osvMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))

@@ -21,6 +21,9 @@ package org.dependencytrack.vulnmirror.datasource.nvd;
 import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
 import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClientBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.dependencytrack.common.SecretDecryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -29,19 +32,27 @@ import java.time.ZonedDateTime;
 @ApplicationScoped
 class NvdApiClientFactory {
 
-    private final NvdConfig config;
+    private static final Logger LOGGER = LoggerFactory.getLogger(NvdApiClientFactory.class);
 
-    NvdApiClientFactory(final NvdConfig config) {
+    private final NvdConfig config;
+    private final SecretDecryptor secretDecryptor;
+
+    NvdApiClientFactory(final NvdConfig config, final SecretDecryptor secretDecryptor) {
         this.config = config;
+        this.secretDecryptor = secretDecryptor;
     }
 
     NvdCveClient createApiClient(final long lastModifiedEpochSeconds) {
         final NvdCveClientBuilder builder = NvdCveClientBuilder.aNvdCveApi();
 
         config.baseUrl().ifPresent(builder::withEndpoint);
-        config.apiKey().ifPresent(apiKey -> {
-            builder.withApiKey(apiKey);
-            builder.withThreadCount(config.numThreads());
+        config.apiKey().ifPresent(encryptedApiKey -> {
+            try {
+                final String decryptedApiKey = secretDecryptor.decryptAsString(encryptedApiKey);
+                builder.withApiKey(decryptedApiKey);
+            } catch (Exception e) {
+                LOGGER.warn("Failed to decrypt API key, proceeding without authentication", e);
+            }
         });
 
         if (lastModifiedEpochSeconds > 0) {

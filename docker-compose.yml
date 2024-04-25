@@ -107,12 +107,18 @@ services:
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      QUARKUS_DATASOURCE_USERNAME: "dtrack"
+      QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+      SECRET_KEY_PATH: "/var/run/secrets/secret.key"
     ports:
       # Dynamic host port binding to allow for scaling of the service.
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8093"
     profiles:
       - demo
+    volumes:
+      - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
 
   apiserver:
