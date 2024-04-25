@@ -18,12 +18,13 @@
  */
 package org.dependencytrack.notification.publisher;
 
-import io.quarkus.mailer.MockMailbox;
+import io.quarkiverse.mailpit.test.InjectMailbox;
+import io.quarkiverse.mailpit.test.Mailbox;
+import io.quarkiverse.mailpit.test.WithMailbox;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
@@ -41,6 +42,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
+@WithMailbox
 @TestProfile(SendMailPublisherTest.TestProfile.class)
 public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublisher> {
 
@@ -51,18 +53,19 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
             return Map.ofEntries(
                     Map.entry("dtrack.general.base.url", "https://example.com"),
                     Map.entry("dtrack.email.smtp.enabled", "true"),
-                    Map.entry("quarkus.mailer.mock", "true"),
-                    Map.entry("quarkus.mailer.from", "dtrack@example.com")
+                    Map.entry("dtrack.email.smtp.server.hostname", "localhost"),
+                    Map.entry("dtrack.email.smtp.server.port", "${mailpit.smtp.port}"),
+                    Map.entry("dtrack.email.smtp.from.address", "dtrack@example.com")
             );
         }
 
     }
 
-    @Inject
-    MockMailbox mailbox;
+    @InjectMailbox
+    Mailbox mailbox;
 
     @AfterEach
-    void afterEach() {
+    void afterEach() throws Exception {
         mailbox.clear();
     }
 
@@ -78,7 +81,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+        assertThat(mailbox.findFirst("recipient@example.com")).satisfies(message -> {
+            assertThat(message.getFrom()).isNotNull();
+            assertThat(message.getFrom().getAddress()).isEqualTo("dtrack@example.com");
             assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Bill of Materials Consumed");
             assertThat(message.getText()).isEqualToIgnoringNewLines("""
                     Bill of Materials Consumed
@@ -107,7 +112,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+        assertThat(mailbox.findFirst("recipient@example.com")).satisfies(message -> {
+            assertThat(message.getFrom()).isNotNull();
+            assertThat(message.getFrom().getAddress()).isEqualTo("dtrack@example.com");
             assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Bill of Materials Processing Failed");
             assertThat(message.getText()).isEqualToIgnoringNewLines("""
                     Bill of Materials Processing Failed
@@ -141,7 +148,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+        assertThat(mailbox.findFirst("recipient@example.com")).satisfies(message -> {
+            assertThat(message.getFrom()).isNotNull();
+            assertThat(message.getFrom().getAddress()).isEqualTo("dtrack@example.com");
             assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Bill of Materials Processing Failed");
             assertThat(message.getText()).isEqualToIgnoringNewLines("""
                     Bill of Materials Processing Failed
@@ -175,7 +184,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+        assertThat(mailbox.findFirst("recipient@example.com")).satisfies(message -> {
+            assertThat(message.getFrom()).isNotNull();
+            assertThat(message.getFrom().getAddress()).isEqualTo("dtrack@example.com");
             assertThat(message.getSubject()).isEqualTo("[Dependency-Track] GitHub Advisory Mirroring");
             assertThat(message.getText()).isEqualToIgnoringNewLines("""
                     GitHub Advisory Mirroring
@@ -203,7 +214,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+        assertThat(mailbox.findFirst("recipient@example.com")).satisfies(message -> {
+            assertThat(message.getFrom()).isNotNull();
+            assertThat(message.getFrom().getAddress()).isEqualTo("dtrack@example.com");
             assertThat(message.getSubject()).isEqualTo("[Dependency-Track] New Vulnerability Identified");
             assertThat(message.getText()).isEqualToIgnoringNewLines("""
                     New Vulnerability Identified
@@ -242,7 +255,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        assertThat(mailbox.getMailMessagesSentTo("recipient@example.com")).satisfiesExactly(message -> {
+        assertThat(mailbox.findFirst("recipient@example.com")).satisfies(message -> {
+            assertThat(message.getFrom()).isNotNull();
+            assertThat(message.getFrom().getAddress()).isEqualTo("dtrack@example.com");
             assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Analysis Decision: Finding Suppressed");
             assertThat(message.getText()).isEqualToIgnoringNewLines("""
                     Analysis Decision: Finding Suppressed

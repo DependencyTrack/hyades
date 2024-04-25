@@ -37,15 +37,64 @@ import java.util.Optional;
 class SendMailPublisherConfig {
 
     private final Provider<Optional<Boolean>> smtpEnabledProvider;
+    private final Provider<Optional<String>> fromAddressProvider;
+    private final Provider<Optional<String>> serverHostnameProvider;
+    private final Provider<Optional<Integer>> serverPortProvider;
+    private final Provider<Optional<String>> usernameProvider;
+    private final Provider<Optional<String>> passwordProvider;
+    private final Provider<Optional<Boolean>> tlsEnabledProvider;
+    private final Provider<Optional<Boolean>> trustCertificateProvider;
 
     SendMailPublisherConfig(
-            @ConfigProperty(name = "dtrack.email.smtp.enabled") final Provider<Optional<Boolean>> smtpEnabledProvider
+            @ConfigProperty(name = "dtrack.email.smtp.enabled") final Provider<Optional<Boolean>> smtpEnabledProvider,
+            @ConfigProperty(name = "dtrack.email.smtp.from.address") final Provider<Optional<String>> fromAddressProvider,
+            @ConfigProperty(name = "dtrack.email.smtp.server.hostname") final Provider<Optional<String>> serverHostnameProvider,
+            @ConfigProperty(name = "dtrack.email.smtp.server.port") final Provider<Optional<Integer>> serverPortProvider,
+            @ConfigProperty(name = "dtrack.email.smtp.username") final Provider<Optional<String>> usernameProvider,
+            @ConfigProperty(name = "dtrack.email.smtp.password") final Provider<Optional<String>> passwordProvider,
+            @ConfigProperty(name = "dtrack.email.smtp.ssltls") final Provider<Optional<Boolean>> tlsEnabledProvider,
+            @ConfigProperty(name = "dtrack.email.smtp.trustcert") final Provider<Optional<Boolean>> trustCertificateProvider
     ) {
         this.smtpEnabledProvider = smtpEnabledProvider;
+        this.fromAddressProvider = fromAddressProvider;
+        this.serverHostnameProvider = serverHostnameProvider;
+        this.serverPortProvider = serverPortProvider;
+        this.usernameProvider = usernameProvider;
+        this.passwordProvider = passwordProvider;
+        this.tlsEnabledProvider = tlsEnabledProvider;
+        this.trustCertificateProvider = trustCertificateProvider;
     }
 
     Optional<Boolean> isSmtpEnabled() {
         return smtpEnabledProvider.get();
+    }
+
+    Optional<String> fromAddress() {
+        return fromAddressProvider.get();
+    }
+
+    Optional<String> serverHostname() {
+        return serverHostnameProvider.get();
+    }
+
+    Optional<Integer> serverPort() {
+        return serverPortProvider.get();
+    }
+
+    Optional<String> username() {
+        return usernameProvider.get();
+    }
+
+    Optional<String> password() {
+        return passwordProvider.get();
+    }
+
+    Optional<Boolean> tlsEnabled() {
+        return tlsEnabledProvider.get();
+    }
+
+    Optional<Boolean> trustCertificate() {
+        return trustCertificateProvider.get();
     }
 
 }
