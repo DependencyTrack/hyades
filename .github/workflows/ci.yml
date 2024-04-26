@@ -46,6 +46,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Test
+      if: github.event_name == 'push' && github.ref_name == 'main'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         MAVEN_ARGS: "-B --no-transfer-progress"
