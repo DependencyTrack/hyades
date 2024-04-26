@@ -10,8 +10,6 @@ on:
 permissions: { }
 
 jobs:
-  runs-on: ubuntu-latest
-  if: github.event.workflow_run.conclusion == 'success'
   steps:
     - name: echo event
       run: cat $GITHUB_EVENT_PATH
@@ -74,12 +72,6 @@ jobs:
     - name: 'Unzip code coverage'
       if: github.event.workflow_run.event == 'pull_request'
       run: unzip artifact.zip
-
-    - name: 'Fix code coverage paths'
-      if: github.event.workflow_run.event == 'pull_request'
-      working-directory: ./
-      run: |
-        sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' clover.xml
 
     - name: SonarCloud Scan on PR
       if: github.event.workflow_run.event == 'pull_request'
