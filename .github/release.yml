@@ -2,13 +2,16 @@ changelog:
   categories:
   - title: Enhancements 🚀
     labels:
-    - enhancement 🚀
+    - enhancement
   - title: Bug Fixes 🐛
     labels:
-    - bug 🐛
+    - defect
   - title: Dependency Updates 🤖
     labels:
     - dependencies
+  - title: Documentation 📃
+    labels:
+    - documentation
   - title: Other Changes
     labels:
     - "*"

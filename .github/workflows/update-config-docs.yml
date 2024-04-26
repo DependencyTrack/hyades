@@ -68,6 +68,6 @@ jobs:
         body: "Updates configuration documentation."
         commit-message: Update config docs
         delete-branch: true
-        labels: "documentation 📃"
+        labels: documentation
         signoff: true
         title: Update config docs
