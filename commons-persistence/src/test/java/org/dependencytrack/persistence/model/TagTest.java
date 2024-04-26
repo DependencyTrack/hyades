@@ -49,7 +49,18 @@ public class TagTest {
         tag.setProjects(projects);
         Assertions.assertEquals(1, tag.getProjects().size());
         Assertions.assertEquals(project, tag.getProjects().get(0));
-    } 
+    }
+
+    @Test
+    public void testVulnerabilities() {
+        List<Vulnerability> vulnerabilities = new ArrayList<>();
+        Vulnerability vulnerability = new Vulnerability();
+        vulnerabilities.add(vulnerability);
+        Tag tag = new Tag();
+        tag.setVulnerabilities(vulnerabilities);
+        Assertions.assertEquals(1, tag.getVulnerabilities().size());
+        Assertions.assertEquals(vulnerability, tag.getVulnerabilities().get(0));
+    }
 
     @Test
     public void testEquals() {
