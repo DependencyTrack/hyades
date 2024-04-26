@@ -52,7 +52,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |-
         mvn -pl '!e2e' clean verify \
-          failsafe:integration-test -DskipITs=false
+          failsafe:integration-test -DskipITs=false \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 #    - name: Publish test coverage
 #      if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'DependencyTrack' }}
