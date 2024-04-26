@@ -54,6 +54,28 @@ jobs:
         mvn -pl '!e2e' clean verify \
           failsafe:integration-test -DskipITs=false \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+#    - name: Publish test coverage
+#      if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'DependencyTrack' }}
+#      uses: codacy/codacy-coverage-reporter-action@v1.3.0
+#      with:
+#        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+#        language: Java
+#        coverage-reports: target/jacoco-ut/jacoco.xml
+    - name: Save PR details
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |-
+        echo ${{ github.sha }} > pr-commit.txt
+        echo ${{ github.event.number }} > pr-number.txt
+    - name: Upload PR test coverage report
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # tag=v4.3.1
+      with:
+        name: pr-test-coverage-report
+        path: |-
+          pr-commit.txt
+          pr-number.txt
+          target/jacoco-ut/jacoco.xml
+
 
   test-native-image:
     name: Test Native Image
