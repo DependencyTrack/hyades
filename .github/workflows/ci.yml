@@ -53,7 +53,7 @@ jobs:
       run: |-
         mvn -pl '!e2e' clean verify \
           failsafe:integration-test -DskipITs=false \
-          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=dependency-track_hyades
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=dependency-track_hyades -Dsonar.organization=dependency-track
 #    - name: Upload code coverage
 #      uses: actions/upload-artifact@v4
 #      with:
