@@ -39,6 +39,7 @@ public class RepositoryAnalyzerFactory {
             PackageURL.StandardTypes.NPM, NpmMetaAnalyzer::new,
             PackageURL.StandardTypes.NUGET, NugetMetaAnalyzer::new,
             PackageURL.StandardTypes.PYPI, PypiMetaAnalyzer::new,
+            PackageURL.StandardTypes.CARGO, CargoMetaAnalyzer::new,
             "cpan", CpanMetaAnalyzer::new
     );
 
