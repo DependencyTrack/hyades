@@ -91,7 +91,6 @@ jobs:
       - name: Download PR number artifact
         uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: Build
           run_id: ${{ github.event.workflow_run.id }}
           name: pr-number
       - name: Read pr-number.txt
