@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) OWASP Foundation. All Rights Reserved.
-version: "3"
-
 services:
   notification-publisher:
     image: ghcr.io/dependencytrack/hyades-notification-publisher:snapshot-native
