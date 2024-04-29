@@ -507,6 +507,9 @@
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <includeResources>false</includeResources>
           <includeTestResources>false</includeTestResources>
+          <propertyExpansion>
+            parentBaseDir=${project.parentBaseDir}
+          </propertyExpansion>
         </configuration>
         <executions>
           <execution>
