@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) OWASP Foundation. All Rights Reserved.
-version: "3"
-
 services:
   notification-publisher:
     image: ghcr.io/dependencytrack/hyades-notification-publisher:snapshot-native
@@ -179,7 +177,7 @@ services:
     restart: unless-stopped
 
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v23.3.11
+    image: docker.redpanda.com/vectorized/redpanda:v23.3.13
     container_name: dt-redpanda
     command:
       - redpanda
@@ -216,7 +214,7 @@ services:
     restart: unless-stopped
 
   redpanda-init:
-    image: docker.redpanda.com/vectorized/redpanda:v23.3.11
+    image: docker.redpanda.com/vectorized/redpanda:v23.3.13
     container_name: dt-redpanda-init
     depends_on:
       redpanda:
@@ -240,7 +238,7 @@ services:
     restart: on-failure
 
   redpanda-console:
-    image: docker.redpanda.com/vectorized/console:v2.4.6
+    image: docker.redpanda.com/vectorized/console:v2.5.1
     container_name: dt-redpanda-console
     entrypoint: "/bin/sh"
     command: "-c 'echo \"$$CONSOLE_CONFIG_FILE\" > \"$$CONFIG_FILEPATH\"; /app/console'"
