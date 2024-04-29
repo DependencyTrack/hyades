@@ -38,7 +38,7 @@ class RepositoryAnalyzerFactoryTest {
     @ParameterizedTest
     @CsvSource(value = {
             "pkg:foo/bar, false",
-            "pkg:cargo/foo, false",
+            "pkg:cargo/foo, true",
             "pkg:cocoapods/foo, false",
             "pkg:composer/foo, true",
             "pkg:deb/foo, false",
@@ -63,6 +63,7 @@ class RepositoryAnalyzerFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
+            "pkg:cargo/foo",
             "pkg:composer/foo/bar",
             "pkg:gem/foo/bar",
             "pkg:golang/foo/bar",
