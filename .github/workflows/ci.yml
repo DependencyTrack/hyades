@@ -71,7 +71,13 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
       run: |-
         echo ${{ github.sha }} > pr-commit.txt
-        echo ${{ github.event.number }} > pr-number.txt
+        echo ${{ github.event.number }} > PR_NUMBER.txt
+    - name: Archive PR number
+      if: github.event_name == 'pull_request' && ${{ matrix.os }} == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: PR_NUMBER
+        path: PR_NUMBER.txt
 #    - name: Upload PR test coverage report
 #      if: ${{ github.event_name == 'pull_request' }}
 #      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # tag=v4.3.1
@@ -92,12 +98,12 @@ jobs:
         uses: dawidd6/action-download-artifact@v3
         with:
           run_id: ${{ github.event.workflow_run.id }}
-          name: pr-number
-      - name: Read pr-number.txt
-        id: pr_number
+          name: PR_NUMBER
+      - name: Read PR_NUMBER.txt
+        id: PR_NUMBER
         uses: juliangruber/read-file-action@v1
         with:
-          path: ./pr-number.txt
+          path: ./PR_NUMBER.txt
       - name: Request GitHub API for PR data
         uses: octokit/request-action@v2.x
         id: get_pr_data
