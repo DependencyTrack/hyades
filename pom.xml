@@ -410,12 +410,6 @@
         </plugin>
 
         <plugin>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-container-image-docker</artifactId>
-          <version>${quarkus.platform.version}</version>
-        </plugin>
-
-        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefire-plugin.version}</version>
           <configuration>
