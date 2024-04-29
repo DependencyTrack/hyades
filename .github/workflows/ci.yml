@@ -90,6 +90,8 @@ jobs:
 
   sonar:
     runs-on: ubuntu-latest
+    needs:
+      - test
 #    if: github.event.workflow_run && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request'
     steps:
       - name: echo event
