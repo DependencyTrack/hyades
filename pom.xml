@@ -90,7 +90,7 @@
     <lib.testcontainers-minio.version>1.19.7</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>3.9.4</quarkus.platform.version>
+    <quarkus.platform.version>3.9.5</quarkus.platform.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
     <lib.brotli.version>0.1.2</lib.brotli.version>
     <lib.versatile.version>0.6.1</lib.versatile.version>
