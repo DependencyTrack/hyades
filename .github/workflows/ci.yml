@@ -48,10 +48,9 @@ jobs:
     - name: Test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        MAVEN_ARGS: "-B --no-transfer-progress"
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |-
-        mvn -pl '!e2e' clean verify \
+        mvn -B --no-transfer-progress -pl '!e2e' clean verify \
           failsafe:integration-test -DskipITs=false \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
@@ -89,14 +88,13 @@ jobs:
         java-version: '21'
         components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build Modules
+      run: |-
+        mvn -B --no-transfer-progress clean install -DskipTests
     - name: Build Native Image
-      env:
-        MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
-        mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ matrix.module }} clean install -Dnative -DskipTests
+        mvn -B --no-transfer-progress -pl ${{ matrix.module }} package -Dnative -DskipTests
     - name: Test Native Image
-      env:
-        MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
-        mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ matrix.module }} \
-        test-compile failsafe:integration-test failsafe:verify -Dnative
+        mvn -B --no-transfer-progress -pl ${{ matrix.module }} \
+          test-compile failsafe:integration-test failsafe:verify -Dnative

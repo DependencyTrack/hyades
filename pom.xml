@@ -28,6 +28,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>quarkus-extensions</module>
     <module>commons</module>
     <module>commons-kstreams</module>
     <module>commons-persistence</module>
@@ -115,6 +116,11 @@
     <sonar.moduleKey>${artifactId}</sonar.moduleKey>
     <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.exclusions>e2e/**/*</sonar.exclusions>
+    <!--
+      Quarkus extensions are tested in their deployment module,
+      but those tests won't report any coverage for the runtime module.
+    -->
+    <sonar.coverage.exclusions>quarkus-extensions/*/runtime/**/*</sonar.coverage.exclusions>
 
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
@@ -272,6 +278,12 @@
         <groupId>io.pebbletemplates</groupId>
         <artifactId>pebble</artifactId>
         <version>${lib.pebble.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dependencytrack</groupId>
+        <artifactId>quarkus-config-dependencytrack</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
