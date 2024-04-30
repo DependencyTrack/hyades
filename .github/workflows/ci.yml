@@ -97,11 +97,31 @@ jobs:
       - name: echo event
         run: cat $GITHUB_EVENT_PATH
       - name: Download PR test coverage report
-        uses: actions/download-artifact@8caf195ad4b1dee92908e23f56eeb0696f1dd42d
+        uses: actions/github-script@v6
         with:
-          name: pr-test-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id }}
+          script: |
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "pr-test-coverage-report"
+            })[0];
+            let download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            let fs = require('fs');
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr-test-coverage-report.zip`, Buffer.from(download.data));
+#        uses: actions/download-artifact@8caf195ad4b1dee92908e23f56eeb0696f1dd42d
+#        with:
+#          name: pr-test-coverage-report
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#          run-id: ${{ github.event.workflow_run.id }}
       - name: 'Unzip code coverage'
         run: unzip pr-test-coverage-report.zip -d coverage
       - name: SonarCloud Scan
