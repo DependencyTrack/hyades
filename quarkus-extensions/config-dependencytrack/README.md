@@ -44,14 +44,14 @@ String clusterId;
 > 
 > Calling `jiraUsername.get()` will now always reach to the underlying config source.
 
-Per default, properties are cached for **1min** to reduce excessive database queries.
+Per default, properties are cached for **5min** to reduce excessive database queries.
 Caching can be controlled via the following properties:
 
 ```yml
 # Disable caching (defaults to true)
-quarkus.config.source.dtrack.database.cache.enabled=true
+quarkus.config.source.dtrack.database.cache.enabled=false
 
-# Change caching duration to 10min (defaults to 1min)
+# Change caching duration to 10min (defaults to 5min)
 quarkus.config.source.dtrack.database.cache.expire-after-write=PT10M
 ```
 

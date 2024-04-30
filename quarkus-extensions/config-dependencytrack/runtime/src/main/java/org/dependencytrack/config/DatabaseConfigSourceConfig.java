@@ -112,7 +112,7 @@ interface DatabaseConfigSourceConfig {
         /**
          * The duration for which properties shall be cached.
          */
-        @WithDefault("PT1M")
+        @WithDefault("PT5M")
         @WithConverter(DurationConverter.class)
         Optional<Duration> expireAfterWrite();
 
