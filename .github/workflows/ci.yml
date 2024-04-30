@@ -103,8 +103,7 @@ jobs:
           script: |
             let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: github.event.workflow_run.id,
+               repo: context.repo.repo
             });
             let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
               return artifact.name == "pr-test-coverage-report"
