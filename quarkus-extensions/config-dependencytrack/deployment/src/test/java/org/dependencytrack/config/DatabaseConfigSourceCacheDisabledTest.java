@@ -41,7 +41,7 @@ class DatabaseConfigSourceCacheDisabledTest extends AbstractDatabaseConfigSource
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addAsResource(
-                            "DatabaseConfigSource/application-nocache.properties",
+                            "database-config-source/application-nocache.properties",
                             "application.properties"
                     ));
 
