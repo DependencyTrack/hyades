@@ -62,7 +62,7 @@ jobs:
         echo ${{ github.event.number }} > PR_NUMBER.txt
     - name: Upload PR test coverage report
       if: ${{ github.event_name == 'pull_request' }}
-      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # tag=v4.3.1
+      uses: actions/upload-artifact@v4 # tag=v4.3.1
       with:
         name: pr-test-coverage-report
         path: |-
@@ -104,7 +104,7 @@ jobs:
 #            });
 #            let fs = require('fs');
 #            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr-test-coverage-report.zip`, Buffer.from(download.data));
-        uses: actions/download-artifact@8caf195ad4b1dee92908e23f56eeb0696f1dd42d
+        uses: actions/download-artifact@v4
         with:
           name: pr-test-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
