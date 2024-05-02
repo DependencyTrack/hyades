@@ -65,6 +65,10 @@
     </dependency>
 
     <dependency>
+      <groupId>org.dependencytrack</groupId>
+      <artifactId>quarkus-config-dependencytrack</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-container-image-docker</artifactId>
     </dependency>
@@ -186,7 +190,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>io.quarkus.platform</groupId>
+        <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
       </plugin>
 

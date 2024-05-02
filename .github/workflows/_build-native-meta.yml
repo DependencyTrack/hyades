@@ -55,10 +55,11 @@ jobs:
       uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # tag=v3.3.0
       with:
         install: true
+    - name: Build Modules
+      run: |-
+        mvn -B --no-transfer-progress clean install -DskipTests
     - name: Build Native Image
       timeout-minutes: ${{ matrix.arch.build-timeout }}
-      env:
-        MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
         RESOURCES_INCLUDES=""
         RESOURCES_EXCLUDES=""
@@ -80,7 +81,7 @@ jobs:
         fi
         echo "Including resources: ${RESOURCES_INCLUDES:-None}"
         echo "Excluding resources: ${RESOURCES_EXCLUDES:-None}"
-        mvn clean package -Dnative -pl commons,commons-kstreams,commons-persistence,proto,${{ inputs.module }} -DskipTests \
+        mvn -B --no-transfer-progress -pl ${{ inputs.module }} package -Dnative -DskipTests \
           -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 \
           -Dquarkus.native.container-build=true \
           -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch.name }}' \
@@ -88,10 +89,9 @@ jobs:
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
     - name: Test Native Image
       if: ${{ matrix.arch.name == 'amd64' }}
-      env:
-        MAVEN_ARGS: "-B --no-transfer-progress"
       run: |-
-        mvn -pl commons,commons-kstreams,commons-persistence,proto,${{ inputs.module }} test-compile failsafe:integration-test -Dnative
+        mvn -B --no-transfer-progress -pl ${{ inputs.module }} \
+          test-compile failsafe:integration-test -Dnative
     - name: Upload Build Artifact
       uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # tag=v4.3.3
       with:

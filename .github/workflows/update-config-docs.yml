@@ -61,13 +61,13 @@ jobs:
           ./mirror-service/src/main/resources/application.properties
     # TODO: Add script invocations for the other services here!
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@9153d834b60caba6d51c9b9510b087acf9f33f83 # tag=v6.0.4
+      uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # tag=v6.0.5
       with:
         add-paths: "docs/reference/configuration/*.md"
         branch: update-config-docs
         body: "Updates configuration documentation."
         commit-message: Update config docs
         delete-branch: true
-        labels: "documentation 📃"
+        labels: documentation
         signoff: true
         title: Update config docs

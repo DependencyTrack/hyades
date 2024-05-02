@@ -58,6 +58,15 @@ public class Tag {
     )
     private List<Project> projects;
 
+    @OrderBy("vulnId ASC")
+    @ManyToMany
+    @JoinTable(
+            name = "VULNERABILITIES_TAGS",
+            joinColumns = @JoinColumn(name = "TAG_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "VULNERABILITY_ID", referencedColumnName = "ID")
+    )
+    private List<Vulnerability> vulnerabilities;
+
     public long getId() {
         return id;
     }
@@ -80,6 +89,14 @@ public class Tag {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<Vulnerability> getVulnerabilities() {
+        return vulnerabilities;
+    }
+
+    public void setVulnerabilities(List<Vulnerability> vulnerabilities) {
+        this.vulnerabilities = vulnerabilities;
     }
 
     @Override
