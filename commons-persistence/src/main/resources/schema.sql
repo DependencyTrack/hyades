@@ -925,6 +925,13 @@ ALTER TABLE "VULNERABILITIES_TAGS" ADD CONSTRAINT "VULNERABILITIES_TAGS_VULNERAB
 
 INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-5', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 22, '9:4b5ad1340fd4ff1588a07039cfd8b03c', 'createTable tableName=VULNERABILITIES_TAGS; createIndex indexName=VULNERABILITIES_TAGS_VULNERABILITY_ID_IDX, tableName=VULNERABILITIES_TAGS; createIndex indexName=VULNERABILITIES_TAGS_TAG_ID_IDX, tableName=VULNERABILITIES_TAGS; addForeignKeyConstr...', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
 
+-- Changeset migration/changelog-v5.5.0.xml::v5.5.0-6::sahibamittal
+SET SEARCH_PATH TO public, "$user","public";
+
+ALTER TABLE "VULNERABILITY_POLICY" ADD "OPERATION_MODE" VARCHAR(255);
+
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-6', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 23, '9:05667de88f118ce836fc3c4e2785a1dc', 'addColumn tableName=VULNERABILITY_POLICY', '', 'EXECUTED', NULL, NULL, '4.27.0', '4647967539');
+
 -- Changeset migration/changelog-procedures.xml::function_cvssv2-to-severity::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
 
