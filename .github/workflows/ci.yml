@@ -82,27 +82,27 @@ jobs:
           fetch-depth: 0
       - name: echo event
         run: cat $GITHUB_EVENT_PATH
-      - name: Download PR test coverage report
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: context.payload.workflow_run.id,
-            });
-            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "pr-test-coverage-report"
-            })[0];
-            let download = await github.rest.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
-            });
-            let fs = require('fs');
-            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr-test-coverage-report.zip`, Buffer.from(download.data));
+#      - name: Download PR test coverage report
+#        uses: actions/github-script@v6
+#        with:
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#          script: |
+#            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               run_id: context.payload.workflow_run.id,
+#            });
+#            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+#              return artifact.name == "pr-test-coverage-report"
+#            })[0];
+#            let download = await github.rest.actions.downloadArtifact({
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               artifact_id: matchArtifact.id,
+#               archive_format: 'zip',
+#            });
+#            let fs = require('fs');
+#            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr-test-coverage-report.zip`, Buffer.from(download.data));
       - name: Download PR test coverage report
         uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # tag=v4.1.7
         with:
