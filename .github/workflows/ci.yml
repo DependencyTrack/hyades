@@ -53,8 +53,17 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |-
         mvn -pl '!e2e' clean verify \
-          failsafe:integration-test -DskipITs=false \
-          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=dependency-track_hyades -Dsonar.organization=dependency-track
+          failsafe:integration-test -DskipITs=false
+    # Publishing coverage to Codacy is only possible for builds of push events.
+    # PRs from forks do not get access to repository secrets.
+    # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+    - name: Publish test coverage
+      if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'DependencyTrack' }}
+      uses: codacy/codacy-coverage-reporter-action@v1.3.0
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        language: Java
+        coverage-reports: target/jacoco-ut/jacoco.xml
     - name: Save PR details
       if: ${{ github.event_name == 'pull_request' }}
       run: |-
@@ -62,72 +71,13 @@ jobs:
         echo ${{ github.event.number }} > PR_NUMBER.txt
     - name: Upload PR test coverage report
       if: ${{ github.event_name == 'pull_request' }}
-      uses: actions/upload-artifact@v4 # tag=v4.3.1
+      uses: actions/upload-artifact@v4
       with:
         name: pr-test-coverage-report
         path: |-
           pr-commit.txt
           PR_NUMBER.txt
           target/jacoco-ut/jacoco.xml
-
-  sonar:
-    runs-on: ubuntu-latest
-    needs:
-      - test
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.workflow_run.head_repository.full_name }}
-          ref: ${{ github.event.workflow_run.head_branch }}
-          fetch-depth: 0
-      - name: echo event
-        run: cat $GITHUB_EVENT_PATH
-#      - name: Download PR test coverage report
-#        uses: actions/github-script@v6
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          script: |
-#            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
-#               owner: context.repo.owner,
-#               repo: context.repo.repo,
-#               run_id: context.payload.workflow_run.id,
-#            });
-#            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
-#              return artifact.name == "pr-test-coverage-report"
-#            })[0];
-#            let download = await github.rest.actions.downloadArtifact({
-#               owner: context.repo.owner,
-#               repo: context.repo.repo,
-#               artifact_id: matchArtifact.id,
-#               archive_format: 'zip',
-#            });
-#            let fs = require('fs');
-#            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr-test-coverage-report.zip`, Buffer.from(download.data));
-      - name: Download PR test coverage report
-        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # tag=v4.1.7
-        with:
-          name: pr-test-coverage-report
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-#      - name: 'Unzip code coverage'
-#        run: unzip pr-test-coverage-report.zip -d coverage
-      - name: Report Coverage to Codacy
-        run: |-
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
-            --project-token ${{ secrets.CODACY_PROJECT_TOKEN }} \
-            --commit-uuid ${{ github.event.workflow_run.head_sha }} \
-            --coverage-reports ./target/jacoco-ut/jacoco.xml \
-            --language Java
-#      - name: SonarCloud Scan
-#        uses: sonarsource/sonarcloud-github-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        with:
-#          args: >
-#            -Dsonar.scm.revision=${{ github.event.workflow_run.head_sha }}
-#            -Dsonar.pullrequest.key=${{ github.event.workflow_run.pull_requests[0].number }}
-#            -Dsonar.pullrequest.branch=${{ github.event.workflow_run.pull_requests[0].head.ref }}
-#            -Dsonar.pullrequest.base=${{ github.event.workflow_run.pull_requests[0].base.ref }}
 
   test-native-image:
     name: Test Native Image
