@@ -30,13 +30,6 @@ environment variable can be used.
 | `QUARKUS_DATASOURCE_USERNAME`                  | The database username                               | -                |                  ✅                   |
 | `QUARKUS_DATASOURCE_PASSWORD`                  | The database password                               | -                |                  ✅                   |
 | `QUARKUS_LOG_CONSOLE_JSON`                     | Enable logging in JSON format                       | `false`          |                  ❌                   |
-| `QUARKUS_MAILER_FROM`                          | The sender name for email notifications             | -                | When email notifications are enabled |
-| `QUARKUS_MAILER_HOST`                          | Address of the mail server for email notifications  | -                | When email notifications are enabled |
-| `QUARKUS_MAILER_PORT`                          | Port of the mail server for email notifications     | -                | When email notifications are enabled |
-| `QUARKUS_MAILER_SSL`                           | Use SSL / TLS to communicate with the email server  | `false`          |                  -                   |
-| `QUARKUS_MAILER_START_TLS`                     | Use StartTLS to communicate with the email server   | `DISABLED`       | When email notifications are enabled |
-| `QUARKUS_MAILER_USERNAME`                      | Username to authenticate with the email server      | -                | When email notifications are enabled |
-| `QUARKUS_MAILER_PASSWORD`                      | Password to authenticate with the email server      | -                | When email notifications are enabled |
 
 > **Note**  
 > Refer
