@@ -119,6 +119,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>io.quarkiverse.mailpit</groupId>
+      <artifactId>quarkus-mailpit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.mailpit</groupId>
+      <artifactId>quarkus-mailpit-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>

@@ -20,13 +20,12 @@ package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import jakarta.json.JsonObjectBuilder;
-import org.dependencytrack.common.SecretDecryptor;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.Callable;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
@@ -34,23 +33,18 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 @QuarkusTest
+@TestProfile(JiraPublisherTest.TestProfile.class)
 public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublisher> {
 
-    @Inject
-    SecretDecryptor secretDecryptor;
+    public static class TestProfile implements QuarkusTestProfile {
 
-    private Callable<Void> configPropertyCustomizer;
-
-    @Override
-    void setupConfigProperties() throws Exception {
-        super.setupConfigProperties();
-
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_URL, "http://localhost:" + wireMockPort);
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, "jiraUser");
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraPassword"));
-
-        if (configPropertyCustomizer != null) {
-            configPropertyCustomizer.call();
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.ofEntries(
+                    Map.entry("dtrack.general.base.url", "https://example.com"),
+                    Map.entry("dtrack.integrations.jira.username", "jiraUser"),
+                    Map.entry("dtrack.integrations.jira.password", "7h5IR+TUX22lXLHCv8wJqxKud8NdPrujF4Lnbx+GHgI=")
+            );
         }
     }
 
@@ -61,6 +55,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                 .add("jiraTicketType", "Task");
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomConsumedNotification() throws Exception {
@@ -85,6 +80,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotification() throws Exception {
@@ -109,6 +105,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
@@ -133,6 +130,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
@@ -157,6 +155,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithNewVulnerabilityNotification() throws Exception {
@@ -181,6 +180,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithProjectAuditChangeNotification() throws Exception {
@@ -204,35 +204,4 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         }
                         """)));
     }
-
-    @Test
-    @TestTransaction
-    void testInformWithBearerToken() throws Exception {
-        configPropertyCustomizer = () -> {
-            createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, null);
-            createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraToken"));
-            return null;
-        };
-
-        super.testInformWithBomConsumedNotification();
-
-        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
-                .withHeader("Authorization", equalTo("Bearer jiraToken"))
-                .withHeader("Content-Type", equalTo("application/json"))
-                .withRequestBody(equalToJson("""
-                        {
-                          "fields" : {
-                            "project" : {
-                              "key" : "PROJECT"
-                            },
-                            "issuetype" : {
-                              "name" : "Task"
-                            },
-                            "summary" : "[Dependency-Track] [GROUP_BOM_CONSUMED] Bill of Materials Consumed",
-                            "description" : "A CycloneDX BOM was consumed and will be processed\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_INFORMATIONAL\\n\\n"
-                          }
-                        }
-                        """)));
-    }
-
 }

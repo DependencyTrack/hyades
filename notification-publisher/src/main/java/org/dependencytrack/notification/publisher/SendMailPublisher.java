@@ -20,19 +20,18 @@ package org.dependencytrack.notification.publisher;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
-import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.Mailer;
 import io.quarkus.runtime.Startup;
+import io.vertx.ext.mail.MailConfig;
+import io.vertx.ext.mail.MailMessage;
+import io.vertx.mutiny.core.Vertx;
+import io.vertx.mutiny.ext.mail.MailClient;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
-import org.apache.commons.lang3.BooleanUtils;
-import org.dependencytrack.persistence.model.ConfigProperty;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
+import org.dependencytrack.common.SecretDecryptor;
 import org.dependencytrack.persistence.model.Team;
-import org.dependencytrack.persistence.repository.ConfigPropertyRepository;
 import org.dependencytrack.persistence.repository.UserRepository;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.slf4j.Logger;
@@ -54,18 +53,21 @@ public class SendMailPublisher implements Publisher {
 
     private final PebbleEngine pebbleEngine;
     private final UserRepository userRepository;
-    private final ConfigPropertyRepository configPropertyRepository;
-    private final Mailer mailer;
+    private final SendMailPublisherConfig publisherConfig;
+    private final SecretDecryptor secretDecryptor;
+    private final Vertx vertx;
 
     @Inject
-    public SendMailPublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine,
-                             final UserRepository userRepository,
-                             final ConfigPropertyRepository configPropertyRepository,
-                             final Mailer mailer) {
+    SendMailPublisher(@Named("pebbleEnginePlainText") final PebbleEngine pebbleEngine,
+                      final UserRepository userRepository,
+                      final SendMailPublisherConfig publisherConfig,
+                      final SecretDecryptor secretDecryptor,
+                      final Vertx vertx) {
         this.pebbleEngine = pebbleEngine;
         this.userRepository = userRepository;
-        this.configPropertyRepository = configPropertyRepository;
-        this.mailer = mailer;
+        this.secretDecryptor = secretDecryptor;
+        this.publisherConfig = publisherConfig;
+        this.vertx = vertx;
     }
 
     public void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception {
@@ -99,25 +101,47 @@ public class SendMailPublisher implements Publisher {
         final String content;
         try {
             final PebbleTemplate template = getTemplate(config);
-            content = prepareTemplate(notification, template, configPropertyRepository, config);
+            content = prepareTemplate(notification, template, config);
         } catch (IOException | RuntimeException e) {
             LOGGER.error("Failed to prepare notification content (%s)".formatted(ctx), e);
             return;
         }
 
+        boolean smtpEnabled = publisherConfig.isSmtpEnabled().orElse(false);
+        if (!smtpEnabled) {
+            LOGGER.warn("SMTP is not enabled; Skipping notification (%s)".formatted(ctx));
+            return;
+        }
+
+        final String fromAddress = publisherConfig.fromAddress().orElse(null);
+        if (fromAddress == null) {
+            LOGGER.warn("From address is not configured; Skipping notification (%s)".formatted(ctx));
+            return;
+        }
+
+        final MailClient mailClient;
         try {
-            ConfigProperty smtpEnabledConfig = configPropertyRepository.findByGroupAndName(ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getGroupName(), ConfigPropertyConstants.EMAIL_SMTP_ENABLED.getPropertyName());
-            boolean smtpEnabled = BooleanUtils.toBoolean(smtpEnabledConfig.getPropertyValue());
-            if (!smtpEnabled) {
-                LOGGER.warn("SMTP is not enabled; Skipping notification (%s)".formatted(ctx));
-                return; // smtp is not enabled
-            }
+            mailClient = createMailClient();
+        } catch (RuntimeException e) {
+            LOGGER.error("Failed to create mail client; Skipping notification (%s)".formatted(ctx));
+            return;
+        }
+
+        try {
             for (String destination : destinations) {
-                mailer.send(Mail.withText(destination, "[Dependency-Track] " + notification.getTitle(), content));
+                final var message = new MailMessage();
+                message.setFrom(fromAddress);
+                message.setTo(destination);
+                message.setSubject("[Dependency-Track] " + notification.getTitle());
+                message.setText(content);
+
+                mailClient.sendMailAndAwait(message);
                 LOGGER.info("Notification successfully sent to destination {} ({})", destination, ctx);
             }
         } catch (Exception e) {
             LOGGER.error("An error occurred sending output email notification ({})", ctx, e);
+        } finally {
+            mailClient.closeAndForget();
         }
     }
 
@@ -150,6 +174,34 @@ public class SendMailPublisher implements Publisher {
                 .distinct()
                 .toArray(String[]::new);
         return destination.length == 0 ? null : destination;
+    }
+
+    private MailClient createMailClient() {
+        // TODO: Can we cache clients based on configuration values?
+        //   Ideally we wouldn't create a new client instance if the config did not change.
+        //   Caching needs to accommodate for closing of old instances to prevent resource leakage.
+
+        final var mailConfig = new MailConfig();
+        mailConfig.setHostname(publisherConfig.serverHostname()
+                .orElseThrow(() -> new IllegalArgumentException("No server hostname configured")));
+        mailConfig.setPort(publisherConfig.serverPort()
+                .orElseThrow(() -> new IllegalArgumentException("No server port configured")));
+
+        publisherConfig.username().ifPresent(mailConfig::setUsername);
+        publisherConfig.password()
+                .map(encryptedPassword -> {
+                    try {
+                        return secretDecryptor.decryptAsString(encryptedPassword);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to decrypt password", e);
+                    }
+                })
+                .ifPresent(mailConfig::setPassword);
+
+        publisherConfig.tlsEnabled().ifPresent(mailConfig::setSsl);
+        publisherConfig.trustCertificate().ifPresent(mailConfig::setTrustAll);
+
+        return MailClient.create(vertx, mailConfig);
     }
 
 }

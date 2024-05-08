@@ -19,7 +19,10 @@
 package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import org.dependencytrack.notification.util.WireMockTestResource;
+import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -27,8 +30,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
+@QuarkusTestResource(WireMockTestResource.class)
 class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher> {
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomConsumedNotification() throws Exception {
@@ -68,6 +73,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotification() throws Exception {
@@ -107,6 +113,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
@@ -146,6 +153,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
@@ -185,6 +193,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithNewVulnerabilityNotification() throws Exception {
@@ -228,6 +237,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
                         """)));
     }
 
+    @Test
     @Override
     @TestTransaction
     void testInformWithProjectAuditChangeNotification() throws Exception {
