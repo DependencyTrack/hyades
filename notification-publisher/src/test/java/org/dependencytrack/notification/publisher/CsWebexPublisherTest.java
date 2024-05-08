@@ -34,7 +34,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -48,7 +48,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -62,7 +62,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -76,7 +76,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -90,7 +90,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -104,7 +104,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

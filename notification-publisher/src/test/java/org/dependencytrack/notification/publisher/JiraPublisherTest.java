@@ -45,7 +45,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     void setupConfigProperties() throws Exception {
         super.setupConfigProperties();
 
-        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_URL, wireMockServer.baseUrl());
+        createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_URL, "http://localhost:" + wireMockPort);
         createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_USERNAME, "jiraUser");
         createOrUpdateConfigProperty(ConfigPropertyConstants.JIRA_PASSWORD, secretDecryptor.encryptAsString("jiraPassword"));
 
@@ -66,7 +66,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
                 .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
@@ -90,7 +90,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
                 .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
@@ -114,7 +114,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
                 .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
@@ -138,7 +138,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
                 .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
@@ -162,7 +162,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
                 .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
@@ -186,7 +186,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
                 .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
@@ -216,7 +216,7 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
 
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
                 .withHeader("Authorization", equalTo("Bearer jiraToken"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""

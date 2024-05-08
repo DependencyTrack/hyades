@@ -34,7 +34,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -50,7 +50,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -66,7 +66,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -82,7 +82,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -98,7 +98,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -114,7 +114,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

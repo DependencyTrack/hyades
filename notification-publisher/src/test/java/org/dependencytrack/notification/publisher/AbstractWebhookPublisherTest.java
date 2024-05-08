@@ -18,39 +18,39 @@
  */
 package org.dependencytrack.notification.publisher;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import io.quarkus.test.common.QuarkusTestResource;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import io.quarkiverse.wiremock.devservice.ConnectWireMock;
+import io.quarkiverse.wiremock.devservice.WireMockConfigKey;
+import io.quarkus.test.junit.QuarkusTest;
 import jakarta.json.JsonObjectBuilder;
-import org.dependencytrack.notification.util.WireMockTestResource;
-import org.junit.jupiter.api.AfterEach;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 
-@QuarkusTestResource(WireMockTestResource.class)
+@QuarkusTest
+@ConnectWireMock
 abstract class AbstractWebhookPublisherTest<T extends AbstractWebhookPublisher> extends AbstractPublisherTest<T> {
 
-    @WireMockTestResource.InjectWireMock
-    WireMockServer wireMockServer;
+    WireMock wireMock;
+
+    @ConfigProperty(name = WireMockConfigKey.PORT)
+    Integer wireMockPort;
 
     @BeforeEach
     void beforeEach() {
-        wireMockServer.stubFor(post(anyUrl())
+        wireMock.resetToDefaultMappings();
+        wireMock.register(post(anyUrl())
                 .willReturn(aResponse()
                         .withStatus(200)));
-    }
-
-    @AfterEach
-    void afterEach() {
-        wireMockServer.resetAll();
     }
 
     @Override
     JsonObjectBuilder extraConfig() {
         return super.extraConfig()
-                .add(Publisher.CONFIG_DESTINATION, wireMockServer.baseUrl());
+                .add("custom.config.wiremock.url", "http://localhost:${quarkus.wiremock.devservices.port}");
     }
 
 }

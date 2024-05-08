@@ -34,7 +34,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -73,7 +73,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -113,7 +113,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -152,7 +152,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -174,7 +174,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -259,7 +259,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

@@ -34,7 +34,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -73,7 +73,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -112,7 +112,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -151,7 +151,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -190,7 +190,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -233,7 +233,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

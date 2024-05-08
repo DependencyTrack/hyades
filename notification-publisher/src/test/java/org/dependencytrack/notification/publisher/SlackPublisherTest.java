@@ -34,7 +34,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -82,7 +82,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -130,7 +130,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -178,7 +178,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -226,7 +226,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -324,7 +324,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verify(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

@@ -73,8 +73,7 @@ class NotificationRouterIT {
 
         @Override
         public Map<String, String> getConfigOverrides() {
-            return Map.of("client.http.config.proxy-timeout-socket", "2",
-                    "custom.config.wiremock.url", "http://localhost:${quarkus.wiremock.devservices.port}/foo");
+            return Map.of("client.http.config.proxy-timeout-socket", "2");
         }
 
     }
