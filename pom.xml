@@ -87,7 +87,7 @@
     <lib.open.vulnerability.clients.version>6.0.1</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>3.25.3</lib.protobuf-java.version>
-    <lib.quarkus-mailpit.version>0.0.9</lib.quarkus-mailpit.version>
+    <lib.quarkus-mailpit.version>1.0.0</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.5</lib.snappy-java.version>
     <lib.testcontainers-minio.version>1.19.8</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
