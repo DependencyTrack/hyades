@@ -19,9 +19,7 @@
 package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.dependencytrack.notification.util.WireMockTestResource;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
@@ -30,7 +28,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
-@QuarkusTestResource(WireMockTestResource.class)
 class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher> {
 
     @Test

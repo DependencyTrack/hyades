@@ -19,11 +19,9 @@
 package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import org.dependencytrack.notification.util.WireMockTestResource;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -35,7 +33,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
 @TestProfile(CsWebexPublisherTest.TestProfile.class)
-@QuarkusTestResource(WireMockTestResource.class)
 public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPublisher> {
 
     public static class TestProfile implements QuarkusTestProfile {
@@ -44,9 +41,9 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
         public Map<String, String> getConfigOverrides() {
             return Map.ofEntries(
                     Map.entry("dtrack.general.base.url", "https://example.com")
+//                    Map.entry("custom.config.wiremock.url", "http://localhost:${quarkus.wiremock.devservices.port}")
             );
         }
-
     }
 
     @Test
@@ -70,7 +67,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMock.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -85,7 +82,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMock.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -100,7 +97,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMock.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -115,7 +112,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMock.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -130,7 +127,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMock.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

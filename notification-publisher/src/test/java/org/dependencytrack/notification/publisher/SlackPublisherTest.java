@@ -19,11 +19,9 @@
 package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import org.dependencytrack.notification.util.WireMockTestResource;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -35,7 +33,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
 @TestProfile(SlackPublisherTest.TestProfile.class)
-@QuarkusTestResource(WireMockTestResource.class)
 public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublisher> {
 
     public static class TestProfile implements QuarkusTestProfile {
