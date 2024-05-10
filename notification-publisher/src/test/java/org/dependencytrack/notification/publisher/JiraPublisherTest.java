@@ -40,9 +40,11 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
 
         @Override
         public Map<String, String> getConfigOverrides() {
+
             return Map.ofEntries(
                     Map.entry("dtrack.general.base.url", "https://example.com"),
                     Map.entry("dtrack.integrations.jira.username", "jiraUser"),
+                    Map.entry("dtrack.integrations.jira.url", "http://localhost:${quarkus.wiremock.devservices.port}"),
                     Map.entry("dtrack.integrations.jira.password", "7h5IR+TUX22lXLHCv8wJqxKud8NdPrujF4Lnbx+GHgI=")
             );
         }
