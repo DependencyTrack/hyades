@@ -22,6 +22,7 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
+import jakarta.json.JsonObjectBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -41,9 +42,14 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
         public Map<String, String> getConfigOverrides() {
             return Map.ofEntries(
                     Map.entry("dtrack.general.base.url", "https://example.com")
-//                    Map.entry("custom.config.wiremock.url", "http://localhost:${quarkus.wiremock.devservices.port}")
             );
         }
+    }
+
+    @Override
+    JsonObjectBuilder extraConfig() {
+        return super.extraConfig()
+                .add(Publisher.CONFIG_DESTINATION, "http://localhost:" + wireMockPort);
     }
 
     @Test
@@ -52,7 +58,7 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMock.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

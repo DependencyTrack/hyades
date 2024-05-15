@@ -18,11 +18,7 @@
  */
 package org.dependencytrack.notification.publisher;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
-import io.quarkiverse.wiremock.devservice.ConnectWireMock;
-import io.quarkiverse.wiremock.devservice.WireMockConfigKey;
 import jakarta.json.JsonObjectBuilder;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -30,13 +26,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 
 
-@ConnectWireMock
 abstract class AbstractWebhookPublisherTest<T extends AbstractWebhookPublisher> extends AbstractPublisherTest<T> {
-
-    WireMock wireMock;
-
-    @ConfigProperty(name = WireMockConfigKey.PORT)
-    Integer wireMockPort;
 
     @BeforeEach
     void beforeEach() {
