@@ -80,16 +80,6 @@
       <artifactId>quarkus-logging-json</artifactId>
     </dependency>
 
-    <!--    Quarkus Wiremock extensions-->
-    <dependency>
-      <groupId>io.quarkiverse.wiremock</groupId>
-      <artifactId>quarkus-wiremock</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkiverse.wiremock</groupId>
-      <artifactId>quarkus-wiremock-test</artifactId>
-    </dependency>
-
     <!--
       Parallel Consumer does not yet work with kafka-clients >= 3.7.0
       https://github.com/confluentinc/parallel-consumer/issues/721
@@ -136,6 +126,16 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jacoco</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.wiremock</groupId>
+      <artifactId>quarkus-wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.wiremock</groupId>
+      <artifactId>quarkus-wiremock-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
