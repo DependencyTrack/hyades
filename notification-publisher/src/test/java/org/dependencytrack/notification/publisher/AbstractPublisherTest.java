@@ -18,8 +18,11 @@
  */
 package org.dependencytrack.notification.publisher;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.protobuf.Any;
 import com.google.protobuf.util.Timestamps;
+import io.quarkiverse.wiremock.devservice.ConnectWireMock;
+import io.quarkiverse.wiremock.devservice.WireMockConfigKey;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -39,6 +42,7 @@ import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysis;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.List;
 
@@ -54,7 +58,13 @@ import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONA
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
 
+@ConnectWireMock
 abstract class AbstractPublisherTest<T extends Publisher> {
+
+    WireMock wireMock;
+
+    @ConfigProperty(name = WireMockConfigKey.PORT)
+    Integer wireMockPort;
 
     @Inject
     @SuppressWarnings("CdiInjectionPointsInspection")

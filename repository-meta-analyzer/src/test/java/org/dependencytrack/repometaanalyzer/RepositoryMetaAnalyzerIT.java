@@ -18,10 +18,11 @@
  */
 package org.dependencytrack.repometaanalyzer;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
+import io.quarkiverse.wiremock.devservice.ConnectWireMock;
+import io.quarkiverse.wiremock.devservice.WireMockConfigKey;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
@@ -37,7 +38,6 @@ import org.dependencytrack.proto.KafkaProtobufSerde;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisCommand;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisResult;
 import org.dependencytrack.proto.repometaanalysis.v1.FetchMeta;
-import org.dependencytrack.repometaanalyzer.util.WireMockTestResource;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(WireMockTestResource.class)
+    @ConnectWireMock
     @TestProfile(WithValidPurlLatestVersionEnabled.TestProfile.class)
     static class WithValidPurlLatestVersionEnabled {
 
@@ -76,8 +76,7 @@ class RepositoryMetaAnalyzerIT {
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
 
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
+        WireMock wireMock;
 
         @BeforeEach
         void beforeEach() throws Exception {
@@ -93,11 +92,11 @@ class RepositoryMetaAnalyzerIT {
                 final PreparedStatement ps = connection.prepareStatement("""
                         INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
                         VALUES ('true', 'test', false, NULL, 1, 'GO_MODULES', 'http://localhost:%d', false);
-                        """.formatted(wireMockServer.port()));
+                        """.formatted(ConfigProvider.getConfig().getValue(WireMockConfigKey.PORT, Integer.class)));
                 ps.execute();
             }
 
-            wireMockServer.stubFor(WireMock.get(WireMock.anyUrl())
+            wireMock.register(WireMock.get(WireMock.anyUrl())
                     .willReturn(WireMock.aResponse()
                             .withStatus(200)
                             .withResponseBody(Body.ofBinaryOrText("""
@@ -153,7 +152,7 @@ class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(WireMockTestResource.class)
+    @ConnectWireMock
     @TestProfile(WithValidPurlWithIntegrityRepoUnsupported.TestProfile.class)
     static class WithValidPurlWithIntegrityRepoUnsupported {
 
@@ -162,9 +161,6 @@ class RepositoryMetaAnalyzerIT {
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
-
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
 
         @BeforeEach
         void beforeEach() throws Exception {
@@ -175,7 +171,7 @@ class RepositoryMetaAnalyzerIT {
                 final PreparedStatement ps = connection.prepareStatement("""
                         INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
                         VALUES ('true', 'test', false, NULL, 1, 'GO_MODULES', 'http://localhost:%d', false);
-                        """.formatted(wireMockServer.port()));
+                        """.formatted(ConfigProvider.getConfig().getValue(WireMockConfigKey.PORT, Integer.class)));
                 ps.execute();
             }
         }
@@ -215,7 +211,7 @@ class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(WireMockTestResource.class)
+    @ConnectWireMock
     @TestProfile(WithInvalidPurl.TestProfile.class)
     static class WithInvalidPurl {
 
@@ -224,9 +220,6 @@ class RepositoryMetaAnalyzerIT {
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
-
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
 
         @BeforeEach
         void beforeEach() throws Exception {
@@ -237,7 +230,7 @@ class RepositoryMetaAnalyzerIT {
                 final PreparedStatement ps = connection.prepareStatement("""
                         INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
                         VALUES ('true', 'test', false, NULL, 2, 'NPM', 'http://localhost:%d', false);
-                        """.formatted(wireMockServer.port()));
+                        """.formatted(ConfigProvider.getConfig().getValue(WireMockConfigKey.PORT, Integer.class)));
                 ps.execute();
             }
         }
@@ -265,7 +258,7 @@ class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(WireMockTestResource.class)
+    @ConnectWireMock
     @TestProfile(NoCapableAnalyzer.TestProfile.class)
     static class NoCapableAnalyzer {
 
@@ -274,9 +267,6 @@ class RepositoryMetaAnalyzerIT {
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
-
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
 
         @BeforeEach
         void beforeEach() throws Exception {
@@ -287,7 +277,7 @@ class RepositoryMetaAnalyzerIT {
                 final PreparedStatement ps = connection.prepareStatement("""
                         INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
                         VALUES ('true', 'test', false, NULL, 2, 'CPAN', 'http://localhost:%d', false);
-                        """.formatted(wireMockServer.port()));
+                        """.formatted(ConfigProvider.getConfig().getValue(WireMockConfigKey.PORT, Integer.class)));
                 ps.execute();
             }
         }
@@ -326,7 +316,7 @@ class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(WireMockTestResource.class)
+    @ConnectWireMock
     @TestProfile(InternalAnalyzerNonInternalComponent.TestProfile.class)
     static class InternalAnalyzerNonInternalComponent {
 
@@ -335,9 +325,6 @@ class RepositoryMetaAnalyzerIT {
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
-
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
 
         @BeforeEach
         void beforeEach() throws Exception {
@@ -348,7 +335,7 @@ class RepositoryMetaAnalyzerIT {
                 final PreparedStatement ps = connection.prepareStatement("""
                         INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
                         VALUES ('true', 'test', true, NULL, 2, 'MAVEN', 'http://localhost:%d', false);
-                        """.formatted(wireMockServer.port()));
+                        """.formatted(ConfigProvider.getConfig().getValue(WireMockConfigKey.PORT, Integer.class)));
                 ps.execute();
             }
         }
@@ -388,7 +375,7 @@ class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(WireMockTestResource.class)
+    @ConnectWireMock
     @TestProfile(WithValidPurlWithBothLatestVersionAndIntegrityEnabled.TestProfile.class)
     static class WithValidPurlWithBothLatestVersionAndIntegrityEnabled {
 
@@ -398,8 +385,7 @@ class RepositoryMetaAnalyzerIT {
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
 
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
+        WireMock wireMock;
 
         @BeforeEach
         void beforeEach() throws Exception {
@@ -410,11 +396,11 @@ class RepositoryMetaAnalyzerIT {
                 final PreparedStatement ps = connection.prepareStatement("""
                         INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
                         VALUES ('true', 'test', false, NULL, 1, 'NPM', 'http://localhost:%d', false);
-                        """.formatted(wireMockServer.port()));
+                        """.formatted(ConfigProvider.getConfig().getValue(WireMockConfigKey.PORT, Integer.class)));
                 ps.execute();
             }
 
-            wireMockServer.stubFor(WireMock.get(WireMock.anyUrl())
+            wireMock.register(WireMock.get(WireMock.anyUrl())
                     .willReturn(WireMock.aResponse()
                             .withStatus(200)
                             .withResponseBody(Body.ofBinaryOrText("""
@@ -423,7 +409,7 @@ class RepositoryMetaAnalyzerIT {
                                     }
                                      """.getBytes(), new ContentTypeHeader("application/json"))
                             )));
-            wireMockServer.stubFor(WireMock.head(WireMock.anyUrl())
+            wireMock.register(WireMock.head(WireMock.anyUrl())
                     .willReturn(WireMock.aResponse()
                             .withStatus(200)
                             .withHeader("X-Checksum-MD5", "md5hash")
@@ -469,7 +455,7 @@ class RepositoryMetaAnalyzerIT {
 
     @QuarkusIntegrationTest
     @QuarkusTestResource(KafkaCompanionResource.class)
-    @QuarkusTestResource(WireMockTestResource.class)
+    @ConnectWireMock
     @TestProfile(WithValidPurlIntegrityMetaEnabled.TestProfile.class)
     static class WithValidPurlIntegrityMetaEnabled {
 
@@ -479,8 +465,7 @@ class RepositoryMetaAnalyzerIT {
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
 
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
+        WireMock wireMock;
 
         @BeforeEach
         void beforeEach() throws Exception {
@@ -491,10 +476,10 @@ class RepositoryMetaAnalyzerIT {
                 final PreparedStatement ps = connection.prepareStatement("""
                         INSERT INTO "REPOSITORY" ("ENABLED", "IDENTIFIER", "INTERNAL", "PASSWORD", "RESOLUTION_ORDER", "TYPE", "URL", "AUTHENTICATIONREQUIRED")
                         VALUES ('true', 'test', false, NULL, 1, 'NPM', 'http://localhost:%d', false);
-                        """.formatted(wireMockServer.port()));
+                        """.formatted(ConfigProvider.getConfig().getValue(WireMockConfigKey.PORT, Integer.class)));
                 ps.execute();
             }
-            wireMockServer.stubFor(WireMock.head(WireMock.anyUrl())
+            wireMock.register(WireMock.head(WireMock.anyUrl())
                     .willReturn(WireMock.aResponse()
                             .withStatus(200)
                             .withHeader("X-Checksum-MD5", "md5hash")

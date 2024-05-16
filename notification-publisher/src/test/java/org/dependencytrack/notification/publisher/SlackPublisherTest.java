@@ -19,11 +19,10 @@
 package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import org.dependencytrack.notification.util.WireMockTestResource;
+import jakarta.json.JsonObjectBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -35,7 +34,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
 @TestProfile(SlackPublisherTest.TestProfile.class)
-@QuarkusTestResource(WireMockTestResource.class)
 public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublisher> {
 
     public static class TestProfile implements QuarkusTestProfile {
@@ -46,7 +44,12 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
                     Map.entry("dtrack.general.base.url", "https://example.com")
             );
         }
+    }
 
+    @Override
+    JsonObjectBuilder extraConfig() {
+        return super.extraConfig()
+                .add(Publisher.CONFIG_DESTINATION, "http://localhost:" + wireMockPort);
     }
 
     @Test
@@ -55,7 +58,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -104,7 +107,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -153,7 +156,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -202,7 +205,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -251,7 +254,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -350,7 +353,7 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

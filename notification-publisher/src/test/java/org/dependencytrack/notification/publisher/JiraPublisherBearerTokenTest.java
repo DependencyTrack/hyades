@@ -23,10 +23,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.json.JsonObjectBuilder;
-import org.dependencytrack.notification.util.WireMockTestResource;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -44,18 +42,10 @@ public class JiraPublisherBearerTokenTest extends AbstractWebhookPublisherTest<J
         public Map<String, String> getConfigOverrides() {
             return Map.ofEntries(
                     Map.entry("dtrack.general.base.url", "https://example.com"),
-                    Map.entry("dtrack.integrations.jira.password", "Pk7KKYvayX0yN9ZeIJFXs6jDBxDKszT1Gw9bTKxxZTc=")
+                    Map.entry("dtrack.integrations.jira.password", "Pk7KKYvayX0yN9ZeIJFXs6jDBxDKszT1Gw9bTKxxZTc="),
+                    Map.entry("dtrack.integrations.jira.url", "http://localhost:${quarkus.wiremock.devservices.port}")
             );
         }
-
-        @Override
-        public List<TestResourceEntry> testResources() {
-            return List.of(new TestResourceEntry(
-                    WireMockTestResource.class,
-                    Map.of("serverUrlProperty", "dtrack.integrations.jira.url")
-            ));
-        }
-
     }
 
     @Override
@@ -70,7 +60,7 @@ public class JiraPublisherBearerTokenTest extends AbstractWebhookPublisherTest<J
     void testInformWithBearerToken() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
                 .withHeader("Authorization", equalTo("Bearer jiraToken"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""

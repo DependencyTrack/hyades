@@ -19,9 +19,8 @@
 package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.dependencytrack.notification.util.WireMockTestResource;
+import jakarta.json.JsonObjectBuilder;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
@@ -30,8 +29,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
-@QuarkusTestResource(WireMockTestResource.class)
 class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher> {
+
+    @Override
+    JsonObjectBuilder extraConfig() {
+        return super.extraConfig()
+                .add(Publisher.CONFIG_DESTINATION, "http://localhost:" + wireMockPort);
+    }
 
     @Test
     @Override
@@ -39,7 +43,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -79,7 +83,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -119,7 +123,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -159,7 +163,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -199,7 +203,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -243,7 +247,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

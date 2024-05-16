@@ -19,11 +19,10 @@
 package org.dependencytrack.notification.publisher;
 
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import org.dependencytrack.notification.util.WireMockTestResource;
+import jakarta.json.JsonObjectBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -35,7 +34,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 
 @QuarkusTest
 @TestProfile(MattermostPublisherTest.TestProfile.class)
-@QuarkusTestResource(WireMockTestResource.class)
 public class MattermostPublisherTest extends AbstractWebhookPublisherTest<MattermostPublisher> {
 
     public static class TestProfile implements QuarkusTestProfile {
@@ -49,13 +47,19 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
 
     }
 
+    @Override
+    JsonObjectBuilder extraConfig() {
+        return super.extraConfig()
+                .add(Publisher.CONFIG_DESTINATION, "http://localhost:" + wireMockPort);
+    }
+
     @Test
     @Override
     @TestTransaction
     void testInformWithBomConsumedNotification() throws Exception {
         super.testInformWithBomConsumedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -72,7 +76,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithBomProcessingFailedNotification() throws Exception {
         super.testInformWithBomProcessingFailedNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -89,7 +93,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -106,7 +110,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -123,7 +127,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {
@@ -140,7 +144,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 
-        wireMockServer.verify(postRequestedFor(anyUrl())
+        wireMock.verifyThat(postRequestedFor(anyUrl())
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

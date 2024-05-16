@@ -18,12 +18,11 @@
  */
 package org.dependencytrack.common;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.ResourceArg;
+import io.quarkiverse.wiremock.devservice.ConnectWireMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
@@ -35,7 +34,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.dependencytrack.util.WireMockTestResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -59,11 +57,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 })
 public class HttpClientTests {
     @QuarkusTest
-    @QuarkusTestResource(
-            value = WireMockTestResource.class,
-            initArgs = @ResourceArg(name = "serverUrlProperty", value = "http://localhost")
-    )
     @TestProfile(HttpClientConfigurationTest.TestProfile.class)
+    @ConnectWireMock
     static class HttpClientConfigurationTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
@@ -80,18 +75,18 @@ public class HttpClientTests {
         HttpClientConfiguration configuration;
         @Inject
         MeterRegistry meterRegistry;
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
+
+        WireMock wireMock;
 
         @AfterEach
         void afterEach() {
-            wireMockServer.resetAll();
+            wireMock.resetToDefaultMappings();
         }
 
         @Test
         void clientCreatedTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
-                wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
+                wireMock.register(get(urlPathEqualTo("/hello"))
                         .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
                                         new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
@@ -117,11 +112,8 @@ public class HttpClientTests {
     }
 
     @QuarkusTest
-    @QuarkusTestResource(
-            value = WireMockTestResource.class,
-            initArgs = @ResourceArg(name = "serverUrlProperty", value = "http://localhost")
-    )
     @TestProfile(HttpClientConfigWithProxyTest.TestProfile.class)
+    @ConnectWireMock
     public static class HttpClientConfigWithProxyTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
@@ -142,18 +134,18 @@ public class HttpClientTests {
         HttpClientConfiguration configuration;
         @Inject
         MeterRegistry meterRegistry;
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
+
+        WireMock wireMock;
 
         @AfterEach
         void afterEach() {
-            wireMockServer.resetAll();
+            wireMock.resetToDefaultMappings();
         }
 
         @Test
         void clientCreatedWithProxyInfoTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
-                wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
+                wireMock.register(get(urlPathEqualTo("/hello"))
                         .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf("application/json"))
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
                                         new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
@@ -171,11 +163,8 @@ public class HttpClientTests {
     }
 
     @QuarkusTest
-    @QuarkusTestResource(
-            value = WireMockTestResource.class,
-            initArgs = @ResourceArg(name = "serverUrlProperty", value = "http://localhost")
-    )
     @TestProfile(HttpClientConfigWithNoProxyTest.TestProfile.class)
+    @ConnectWireMock
     public static class HttpClientConfigWithNoProxyTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
@@ -198,18 +187,17 @@ public class HttpClientTests {
         @Inject
         MeterRegistry meterRegistry;
 
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
+        WireMock wireMock;
 
         @AfterEach
         void afterEach() {
-            wireMockServer.resetAll();
+            wireMock.resetToDefaultMappings();
         }
 
         @Test
         void clientCreatedWithProxyInfoTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
-                wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
+                wireMock.register(get(urlPathEqualTo("/hello"))
                         .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf("application/json"))
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
                                         new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
@@ -227,11 +215,8 @@ public class HttpClientTests {
     }
 
     @QuarkusTest
-    @QuarkusTestResource(
-            value = WireMockTestResource.class,
-            initArgs = @ResourceArg(name = "serverUrlProperty", value = "http://localhost")
-    )
     @TestProfile(HttpClientConfigWithNoProxyStarTest.TestProfile.class)
+    @ConnectWireMock
     public static class HttpClientConfigWithNoProxyStarTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
@@ -254,18 +239,17 @@ public class HttpClientTests {
         @Inject
         MeterRegistry meterRegistry;
 
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
+        WireMock wireMock;
 
         @AfterEach
         void afterEach() {
-            wireMockServer.resetAll();
+            wireMock.resetToDefaultMappings();
         }
 
         @Test
         void clientCreatedWithProxyInfoTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
-                wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
+                wireMock.register(get(urlPathEqualTo("/hello"))
                         .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf("application/json"))
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
                                         new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
@@ -283,11 +267,8 @@ public class HttpClientTests {
     }
 
     @QuarkusTest
-    @QuarkusTestResource(
-            value = WireMockTestResource.class,
-            initArgs = @ResourceArg(name = "serverUrlProperty", value = "http://localhost")
-    )
     @TestProfile(HttpClientConfigWithNoProxyDomainTest.TestProfile.class)
+    @ConnectWireMock
     public static class HttpClientConfigWithNoProxyDomainTest {
         public static class TestProfile implements QuarkusTestProfile {
             @Override
@@ -309,18 +290,17 @@ public class HttpClientTests {
         @Inject
         MeterRegistry meterRegistry;
 
-        @WireMockTestResource.InjectWireMock
-        WireMockServer wireMockServer;
+        WireMock wireMock;
 
         @AfterEach
         void afterEach() {
-            wireMockServer.resetAll();
+            wireMock.resetToDefaultMappings();
         }
 
         @Test
         void clientCreatedWithProxyInfoTest() throws IOException {
             try (CloseableHttpClient client = configuration.newManagedHttpClient(meterRegistry)) {
-                wireMockServer.stubFor(get(urlPathEqualTo("/hello"))
+                wireMock.register(get(urlPathEqualTo("/hello"))
                         .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, String.valueOf("application/json"))
                                 .withResponseBody(Body.ofBinaryOrText("hello test".getBytes(),
                                         new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));

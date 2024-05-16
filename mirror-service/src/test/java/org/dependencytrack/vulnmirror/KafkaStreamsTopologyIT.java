@@ -18,9 +18,10 @@
  */
 package org.dependencytrack.vulnmirror;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
+import io.quarkiverse.wiremock.devservice.ConnectWireMock;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
@@ -41,8 +42,6 @@ import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.proto.KafkaProtobufSerde;
 import org.dependencytrack.proto.mirror.v1.EpssItem;
 import org.dependencytrack.proto.notification.v1.Notification;
-import org.dependencytrack.repometaanalyzer.util.WireMockTestResource;
-import org.dependencytrack.repometaanalyzer.util.WireMockTestResource.InjectWireMock;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.SelectClasses;
@@ -75,36 +74,42 @@ import static org.assertj.core.api.Assertions.assertThat;
         KafkaStreamsTopologyIT.NvdMirrorIT.class,
         KafkaStreamsTopologyIT.GitHubMirrorIT.class,
         KafkaStreamsTopologyIT.OsvMirrorIT.class,
+        KafkaStreamsTopologyIT.OsvMirrorCommaSeparatedListOfEcoSystemsIT.class,
         KafkaStreamsTopologyIT.EpssMirrorIT.class
 })
 class KafkaStreamsTopologyIT {
 
     @QuarkusIntegrationTest
     @TestProfile(NvdMirrorIT.TestProfile.class)
+    @ConnectWireMock
     static class NvdMirrorIT {
 
         public static class TestProfile implements QuarkusTestProfile {
+
+            @Override
+            public Map<String, String> getConfigOverrides() {
+
+                return Map.ofEntries(
+                        Map.entry("mirror.datasource.nvd.base-url", "http://localhost:${quarkus.wiremock.devservices.port}")
+                );
+            }
+
             @Override
             public List<TestResourceEntry> testResources() {
                 return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class),
-                        new TestResourceEntry(
-                                WireMockTestResource.class,
-                                Map.of("serverUrlProperty", "mirror.datasource.nvd.base-url")
-                        ));
+                        new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
 
-        @InjectWireMock
-        WireMockServer wireMock;
+        WireMock wireMock;
 
         @Test
         void test() throws Exception {
             // Simulate the first page of CVEs, containing 2 CVEs.
-            wireMock.stubFor(get(urlPathEqualTo("/"))
+            wireMock.register(get(urlPathEqualTo("/"))
                     .withQueryParam("startIndex", equalTo("0"))
                     .willReturn(aResponse()
                             .withStatus(200)
@@ -114,7 +119,7 @@ class KafkaStreamsTopologyIT {
             // Simulate the second page of CVEs, containing only one item.
             // NOTE: The nvd-lib library will request pages of 2000 items each,
             // that's why we're expecting a startIndex=2000 parameter here.
-            wireMock.stubFor(get(urlPathEqualTo("/"))
+            wireMock.register(get(urlPathEqualTo("/"))
                     .withQueryParam("startIndex", equalTo("2000"))
                     .willReturn(aResponse()
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -180,35 +185,34 @@ class KafkaStreamsTopologyIT {
 
     @QuarkusIntegrationTest
     @TestProfile(GitHubMirrorIT.TestProfile.class)
+    @ConnectWireMock
     static class GitHubMirrorIT {
 
         public static class TestProfile implements QuarkusTestProfile {
             @Override
             public Map<String, String> getConfigOverrides() {
-                return Map.of("mirror.datasource.github.api-key", "foobar");
+                return Map.ofEntries(
+                        Map.entry("mirror.datasource.github.api-key", "foobar"),
+                        Map.entry("mirror.datasource.github.base-url", "http://localhost:${quarkus.wiremock.devservices.port}")
+                );
             }
 
             @Override
             public List<TestResourceEntry> testResources() {
                 return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class),
-                        new TestResourceEntry(
-                                WireMockTestResource.class,
-                                Map.of("serverUrlProperty", "mirror.datasource.github.base-url")
-                        ));
+                        new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
 
-        @InjectWireMock
-        WireMockServer wireMock;
+        WireMock wireMock;
 
         @Test
         void test() throws Exception {
             // Simulate the first page of advisories, containing 2 GHSAs.
-            wireMock.stubFor(post(urlPathEqualTo("/"))
+            wireMock.register(post(urlPathEqualTo("/"))
                     .inScenario("advisories-paging")
                     .willReturn(aResponse()
                             .withStatus(200)
@@ -217,7 +221,7 @@ class KafkaStreamsTopologyIT {
                     .willSetStateTo("first-page-fetched"));
 
             // Simulate the second page of advisories, containing only one advisory.
-            wireMock.stubFor(post(urlPathEqualTo("/"))
+            wireMock.register(post(urlPathEqualTo("/"))
                     .inScenario("advisories-paging")
                     .whenScenarioStateIs("first-page-fetched")
                     .willReturn(aResponse()
@@ -270,7 +274,7 @@ class KafkaStreamsTopologyIT {
             );
 
             // Verify that the API key was used.
-            wireMock.verify(postRequestedFor(urlPathEqualTo("/"))
+            wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/"))
                     .withHeader(HttpHeaders.AUTHORIZATION, equalToIgnoreCase("bearer foobar")));
 
             // Wait for the notification that reports the successful mirroring operation.
@@ -288,34 +292,36 @@ class KafkaStreamsTopologyIT {
 
     @QuarkusIntegrationTest
     @TestProfile(OsvMirrorIT.TestProfile.class)
+    @ConnectWireMock
     static class OsvMirrorIT {
 
         public static class TestProfile implements QuarkusTestProfile {
+
+            @Override
+            public Map<String, String> getConfigOverrides() {
+                return Map.of("mirror.datasource.osv.base-url", "http://localhost:${quarkus.wiremock.devservices.port}");
+            }
+
             @Override
             public List<TestResourceEntry> testResources() {
                 return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class),
-                        new TestResourceEntry(
-                                WireMockTestResource.class,
-                                Map.of("serverUrlProperty", "mirror.datasource.osv.base-url")
-                        ));
+                        new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
 
-        @InjectWireMock
-        WireMockServer wireMock;
+        WireMock wireMock;
 
         @Test
         void test() throws Exception {
             // Simulate the first page of CVEs, containing 2 CVEs.
-            wireMock.stubFor(get(urlPathMatching("/.*"))
+            wireMock.register(get(urlPathMatching("/.*"))
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/osv/maven.zip"), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM)))));
+                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/osv/maven.zip"), new ContentTypeHeader(MediaType.APPLICATION_JSON)))));
             // Trigger a OSV mirroring operation.
             kafkaCompanion
                     .produce(Serdes.String(), Serdes.String())
@@ -367,40 +373,42 @@ class KafkaStreamsTopologyIT {
     }
 
     @QuarkusIntegrationTest
-    @TestProfile(OsvMirrorIT.TestProfile.class)
+    @TestProfile(OsvMirrorCommaSeparatedListOfEcoSystemsIT.TestProfile.class)
+    @ConnectWireMock
     static class OsvMirrorCommaSeparatedListOfEcoSystemsIT {
 
         public static class TestProfile implements QuarkusTestProfile {
+
+            @Override
+            public Map<String, String> getConfigOverrides() {
+                return Map.of("mirror.datasource.osv.base-url", "http://localhost:${quarkus.wiremock.devservices.port}");
+            }
+
             @Override
             public List<TestResourceEntry> testResources() {
                 return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class),
-                        new TestResourceEntry(
-                                WireMockTestResource.class,
-                                Map.of("serverUrlProperty", "mirror.datasource.osv.base-url")
-                        ));
+                        new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
 
-        @InjectWireMock
-        WireMockServer wireMock;
+        WireMock wireMock;
 
         @Test
         void test() throws Exception {
             // Simulate the first page of CVEs, containing 2 CVEs.
-            wireMock.stubFor(get(urlPathEqualTo("/Maven/all.zip"))
+            wireMock.register(get(urlPathEqualTo("/Maven/all.zip"))
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/osv/maven.zip"), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM)))));
-            wireMock.stubFor(get(urlPathEqualTo("/Go/all.zip"))
+                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/osv/maven.zip"), new ContentTypeHeader(MediaType.APPLICATION_JSON)))));
+            wireMock.register(get(urlPathEqualTo("/Go/all.zip"))
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/osv/go.zip"), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM)))));
+                            .withResponseBody(Body.ofBinaryOrText(resourceToByteArray("/datasource/osv/go.zip"), new ContentTypeHeader(MediaType.APPLICATION_JSON)))));
             // Trigger a OSV mirroring operation.
             kafkaCompanion
                     .produce(Serdes.String(), Serdes.String())
@@ -472,24 +480,27 @@ class KafkaStreamsTopologyIT {
 
     @QuarkusIntegrationTest
     @TestProfile(EpssMirrorIT.TestProfile.class)
+    @ConnectWireMock
     static class EpssMirrorIT {
 
         public static class TestProfile implements QuarkusTestProfile {
 
             @Override
+            public Map<String, String> getConfigOverrides() {
+                return Map.of("mirror.datasource.epss.download-url", "http://localhost:${quarkus.wiremock.devservices.port}");
+            }
+
+            @Override
             public List<TestResourceEntry> testResources() {
                 return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class),
-                        new TestResourceEntry(WireMockTestResource.class,
-                                Map.of("serverUrlProperty", "mirror.datasource.epss.download-url")));
+                        new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
 
-        @InjectWireMock
-        WireMockServer wireMock;
+        WireMock wireMock;
 
         static Path epssTestFile;
 
@@ -511,12 +522,12 @@ class KafkaStreamsTopologyIT {
         @Test
         void test() throws IOException {
             // Simulate list of eppsItems containing 2 records.
-            wireMock.stubFor(get(anyUrl())
+            wireMock.register(get(anyUrl())
                     .inScenario("epss-download")
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(Body.ofBinaryOrText(Files.readAllBytes(epssTestFile.toAbsolutePath()), new ContentTypeHeader(MediaType.APPLICATION_OCTET_STREAM))))
+                            .withResponseBody(Body.ofBinaryOrText(Files.readAllBytes(epssTestFile.toAbsolutePath()), new ContentTypeHeader(MediaType.APPLICATION_JSON))))
                     .willSetStateTo("epss-fetched"));
 
             // Trigger a EPSS mirroring operation.
