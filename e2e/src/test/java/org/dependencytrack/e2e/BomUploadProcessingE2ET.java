@@ -21,7 +21,6 @@ package org.dependencytrack.e2e;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetup;
-import jakarta.mail.internet.MimeMessage;
 import org.dependencytrack.apiserver.model.BomProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
 import org.dependencytrack.apiserver.model.ConfigProperty;
@@ -42,6 +41,7 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
+import jakarta.mail.internet.MimeMessage;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
@@ -81,16 +81,6 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
     }
 
     @Override
-    protected void customizeNotificationPublisherContainer(final GenericContainer<?> container) {
-        container
-                .withEnv("QUARKUS_MAILER_FROM", "from@localhost")
-                .withEnv("QUARKUS_MAILER_HOST", "host.testcontainers.internal")
-                .withEnv("QUARKUS_MAILER_PORT", Integer.toString(greenMail.getSmtp().getPort()))
-                .withEnv("QUARKUS_MAILER_USERNAME", "from")
-                .withEnv("QUARKUS_MAILER_PASSWORD", "fromPass");
-    }
-
-    @Override
     protected void customizeVulnAnalyzerContainer(final GenericContainer<?> container) {
         // Disable all scanners except the internal one.
         container
@@ -125,10 +115,15 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 }
                 """));
 
-        // Enable email on the API server side.
-        // TODO: We should decide where to put the email configuration,
-        // it currently is split between API server and notification publisher.
-        apiServerClient.updateConfigProperty(new ConfigProperty("email", "smtp.enabled", "true"));
+        // Configure email.
+        apiServerClient.updateConfigProperties(List.of(
+                new ConfigProperty("email", "smtp.enabled", "true"),
+                new ConfigProperty("email", "smtp.from.address", "from@localhost"),
+                new ConfigProperty("email", "smtp.server.hostname", "host.testcontainers.internal"),
+                new ConfigProperty("email", "smtp.server.port", Integer.toString(greenMail.getSmtp().getPort())),
+                new ConfigProperty("email", "smtp.username", "from"),
+                new ConfigProperty("email", "smtp.password", "fromPass")
+        ));
 
         // Create a webhook alert for NEW_VULNERABILITY notifications and point it to WireMock.
         final NotificationRule webhookRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
