@@ -664,7 +664,7 @@ Defines the database user for executing migrations.  If not set, the value of [`
   </tbody>
 </table>
 
-### run.migrations
+### database.run.migrations
 
 Defines whether database migrations should be executed on startup.  
 
@@ -684,7 +684,7 @@ Defines whether database migrations should be executed on startup.
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>RUN_MIGRATIONS</code></td>
+      <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS</code></td>
     </tr>
   </tbody>
 </table>
@@ -2640,31 +2640,6 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-### application.id
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>APPLICATION_ID</code></td>
     </tr>
   </tbody>
 </table>
