@@ -123,7 +123,7 @@ public class SendMailPublisher implements Publisher {
         try {
             mailClient = createMailClient();
         } catch (RuntimeException e) {
-            LOGGER.error("Failed to create mail client; Skipping notification (%s)".formatted(ctx));
+            LOGGER.error("Failed to create mail client; Skipping notification (%s)".formatted(ctx), e);
             return;
         }
 

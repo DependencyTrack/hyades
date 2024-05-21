@@ -38,7 +38,13 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.Set;
 
@@ -62,6 +68,7 @@ public class AbstractE2ET {
     protected GenericContainer<?> repoMetaAnalyzerContainer;
     protected GenericContainer<?> vulnAnalyzerContainer;
     protected ApiServerClient apiServerClient;
+    private Path secretKeyPath;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -70,6 +77,8 @@ public class AbstractE2ET {
         deepStart(postgresContainer, redpandaContainer).join();
 
         initializeRedpanda();
+
+        generateSecretKey();
 
         apiServerContainer = createApiServerContainer();
         apiServerContainer.start();
@@ -118,6 +127,18 @@ public class AbstractE2ET {
                 .start();
     }
 
+    private void generateSecretKey() throws Exception {
+        secretKeyPath = Files.createTempFile(null, null);
+        secretKeyPath.toFile().deleteOnExit();
+
+        final KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+        keyGen.init(256, random);
+        final SecretKey secretKey = keyGen.generateKey();
+
+        Files.write(secretKeyPath, secretKey.getEncoded());
+    }
+
     @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
@@ -127,6 +148,11 @@ public class AbstractE2ET {
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
                 .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("ALPINE_SECRET_KEY_PATH", "/var/run/secrets/secret.key")
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(secretKeyPath, 444),
+                        "/var/run/secrets/secret.key"
+                )
                 .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("apiserver")))
                 .waitingFor(Wait.forLogMessage(".*Dependency-Track is ready.*", 1))
                 .withNetworkAliases("apiserver")
@@ -148,6 +174,11 @@ public class AbstractE2ET {
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
+                .withEnv("SECRET_KEY_PATH", "/var/run/secrets/secret.key")
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(secretKeyPath, 444),
+                        "/var/run/secrets/secret.key"
+                )
                 .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("notification-publisher")))
                 .withNetworkAliases("notification-publisher")
                 .withNetwork(internalNetwork)
@@ -168,6 +199,11 @@ public class AbstractE2ET {
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
+                .withEnv("SECRET_KEY_PATH", "/var/run/secrets/secret.key")
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(secretKeyPath, 444),
+                        "/var/run/secrets/secret.key"
+                )
                 .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("repo-meta-analyzer")))
                 .withNetworkAliases("repo-meta-analyzer")
                 .withNetwork(internalNetwork)
