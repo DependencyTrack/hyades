@@ -53,7 +53,6 @@ public class DateUtilTest {
     @Test
     public void testToISO8601() {
         Date date = Date.from(LocalDateTime.of(2019, Month.JANUARY, 31, 15, 30, 12).toInstant(ZoneOffset.UTC));
-        String iso8601Date = DateUtil.toISO8601(date);
-        Assertions.assertEquals("2019-01-31T15:30:12Z", iso8601Date);
+        Assertions.assertEquals("2019-01-31T15:30:12Z", DateUtil.toISO8601(date));
     }
 }

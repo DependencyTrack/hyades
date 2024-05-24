@@ -46,13 +46,37 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Test
+      if: github.event_name == 'push' && github.ref_name == 'main'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |-
-        mvn -B --no-transfer-progress -pl '!e2e' clean verify \
-          failsafe:integration-test -DskipITs=false \
-          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        mvn -pl '!e2e' clean verify \
+          failsafe:integration-test -DskipITs=false
+    # Publishing coverage to Codacy is only possible for builds of push events.
+    # PRs from forks do not get access to repository secrets.
+    # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+    - name: Publish test coverage
+      if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'DependencyTrack' }}
+      uses: codacy/codacy-coverage-reporter-action@v1.3.0
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        language: Java
+        coverage-reports: target/jacoco-ut/jacoco.xml
+    - name: Save PR details
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |-
+        echo ${{ github.sha }} > pr-commit.txt
+        echo ${{ github.event.number }} > PR_NUMBER.txt
+    - name: Upload PR test coverage report
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: pr-test-coverage-report
+        path: |-
+          pr-commit.txt
+          PR_NUMBER.txt
+          **/target/site/jacoco/jacoco.xml
 
   test-native-image:
     name: Test Native Image
