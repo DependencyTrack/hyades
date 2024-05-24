@@ -50,6 +50,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -270,7 +271,7 @@ public class OsvToCyclonedxParser {
             var rating = VulnerabilityRating.newBuilder();
             double score = cvss.calculateScore().getBaseScore();
             rating.setVector(vector);
-            rating.setScore(Double.parseDouble(NumberFormat.getInstance().format(score)));
+            rating.setScore(Double.parseDouble(NumberFormat.getInstance(Locale.US).format(score)));
             String type = cvssObj.optString("type", null);
 
             if (type != null && type.equalsIgnoreCase("CVSS_V3")) {
