@@ -115,8 +115,8 @@ See [`load-tests`](load-tests).
 
 ### Deployment 🚢
 
-The recommended way to deploy Hyades is via Helm. Our [chart](./helm-charts/hyades) is not officially published
-to any repository yet, so for now you'll have to clone this repository to access it.
+The recommended way to deploy Hyades is via Helm. Our [chart](./helm-charts/hyades) is now officially published
+in the [helm-charts](https://github.com/DependencyTrack/helm-charts) repository.
 
 The chart does *not* include:
 
