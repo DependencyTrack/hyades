@@ -58,11 +58,12 @@ jobs:
     # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
     - name: Publish test coverage
       if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'DependencyTrack' }}
-      uses: codacy/codacy-coverage-reporter-action@v1.3.0
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        language: Java
-        coverage-reports: target/jacoco-ut/jacoco.xml
+      run: |-
+        bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+          --project-token ${{ secrets.CODACY_PROJECT_TOKEN }} \
+          --commit-uuid ${{ github.event.workflow_run.head_sha }} \
+          --coverage-reports **/target/site/jacoco/jacoco.xml \
+          --language Java
     - name: Save PR details
       if: ${{ github.event_name == 'pull_request' }}
       run: |-
