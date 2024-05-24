@@ -76,7 +76,7 @@ jobs:
         path: |-
           pr-commit.txt
           PR_NUMBER.txt
-          **/target/jacoco-ut/jacoco.xml
+          **/target/site/jacoco/jacoco.xml
 
   test-native-image:
     name: Test Native Image
