@@ -481,6 +481,12 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${plugin.jacoco.version}</version>
+          <configuration>
+            <excludes>
+              <exclude>org/cyclonedx/proto/**/*</exclude>
+              <exclude>org/dependencytrack/proto/**/*</exclude>
+            </excludes>
+          </configuration>
           <executions>
             <execution>
               <id>default-prepare-agent</id>
