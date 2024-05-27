@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.24">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.25">
     
     
       
@@ -1547,7 +1547,7 @@
 <!--
   GENERATED. DO NOT EDIT.
 
-  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/mirror-service.md ./mirror-service/src/main/resources/application.properties
+  Generated with: -t ./scripts/config-docs.md.peb -o ./docs/reference/configuration/mirror-service.md mirror-service/src/main/resources/application.properties
 -->
 
 <h2 id="datasource">Datasource</h2>
@@ -1574,6 +1574,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="mirrordatasourcegithubapi-key">mirror.datasource.github.api-key</h3>
 <p>Defines the API key to use for accessing GitHub's GraphQL API.  It is required in order to use the GitHub datasource.  </p>
 <table>
@@ -1597,6 +1598,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="mirrordatasourcegithubbase-url">mirror.datasource.github.base-url</h3>
 <p>Defines the URL of the GitHub GraphQL API endpoint.  </p>
 <table>
@@ -1620,6 +1622,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="mirrordatasourcenvdapi-key">mirror.datasource.nvd.api-key</h3>
 <p>Defines the API key to use for accessing the NVD's REST API.  An API key can be requested via the following form: <a href="https://nvd.nist.gov/developers/request-an-api-key">https://nvd.nist.gov/developers/request-an-api-key</a>  </p>
 <table>
@@ -1643,6 +1646,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="mirrordatasourcenvdbase-url">mirror.datasource.nvd.base-url</h3>
 <p>Defines the URL of the NVD REST API.  </p>
 <table>
@@ -1666,6 +1670,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="mirrordatasourcenvdnum-threads">mirror.datasource.nvd.num-threads</h3>
 <p>Defines the number of threads with which data is being downloaded from the NVD REST API concurrently.  Has no effect unless <a href="#mirrordatasourcenvdapi-key"><code>mirror.datasource.nvd.api-key</code></a> is provided.  </p>
 <table>
@@ -1689,6 +1694,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="mirrordatasourceosvalias-sync-enabled">mirror.datasource.osv.alias-sync-enabled</h3>
 <p>Defines whether vulnerability aliases should be parsed from OSV.  </p>
 <table>
@@ -1712,6 +1718,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="mirrordatasourceosvbase-url">mirror.datasource.osv.base-url</h3>
 <p>Defines the URL of the OSV storage bucket.  </p>
 <table>
@@ -1783,6 +1790,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafka-streamsexceptionthresholdsdeserializationcount">kafka-streams.exception.thresholds.deserialization.count</h3>
 <p>Defines the threshold for records failing to be deserialized within <a href="#kafka-streamsexceptionthresholdsdeserializationinterval"><code>kafka-streams.exception.thresholds.deserialization.interval</code></a>.  Deserialization failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  </p>
 <table>
@@ -1806,6 +1814,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafka-streamsexceptionthresholdsdeserializationinterval">kafka-streams.exception.thresholds.deserialization.interval</h3>
 <p>Defines the interval within which up to <a href="#kafka-streamsexceptionthresholdsdeserializationcount"><code>kafka-streams.exception.thresholds.deserialization.count</code></a> records are  allowed to fail deserialization. Deserialization failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  </p>
 <table>
@@ -1829,6 +1838,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafka-streamsexceptionthresholdsprocessingcount">kafka-streams.exception.thresholds.processing.count</h3>
 <p>Defines the threshold for records failing to be processed within <a href="#kafka-streamsexceptionthresholdsprocessinginterval"><code>kafka-streams.exception.thresholds.processing.interval</code></a>.  Processing failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  </p>
 <table>
@@ -1852,6 +1862,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafka-streamsexceptionthresholdsprocessinginterval">kafka-streams.exception.thresholds.processing.interval</h3>
 <p>Defines the interval within which up to <a href="#kafka-streamsexceptionthresholdsprocessingcount"><code>kafka-streams.exception.thresholds.processing.count</code></a> records are  allowed to fail processing. Processing failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  </p>
 <table>
@@ -1875,6 +1886,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafka-streamsexceptionthresholdsproductioncount">kafka-streams.exception.thresholds.production.count</h3>
 <p>Defines the threshold for records failing to be produced within <a href="#kafka-streamsexceptionthresholdsproductioninterval"><code>kafka-streams.exception.thresholds.production.interval</code></a>.  Production failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  </p>
 <table>
@@ -1898,6 +1910,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafka-streamsexceptionthresholdsproductioninterval">kafka-streams.exception.thresholds.production.interval</h3>
 <p>Defines the interval within which up to <a href="#kafka-streamsexceptionthresholdsproductioncount"><code>kafka-streams.exception.thresholds.production.count</code></a> records are  allowed to fail producing. Production failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  </p>
 <table>
@@ -1921,6 +1934,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafka-streamsnumstreamthreads">kafka-streams.num.stream.threads</h3>
 <p>The number of threads to allocate for stream processing tasks.  Note that Specifying a number higher than the number of input partitions provides no additional benefit,  as excess threads will simply run idle.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads">https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads</a> for details.  </p>
 <table>
@@ -1944,6 +1958,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafkabootstrapservers">kafka.bootstrap.servers</h3>
 <p>Comma-separated list of brokers to use for establishing the initial connection to the Kafka cluster.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#consumerconfigs_bootstrap.servers">https://kafka.apache.org/documentation/#consumerconfigs_bootstrap.servers</a> for details.  </p>
 <table>
@@ -1971,6 +1986,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafkamaxrequestsize">kafka.max.request.size</h3>
 <p>Defines the maximum size of a Kafka producer request in bytes.  <br/><br/>  Some messages like Bill of Vulnerabilities can be bigger than the default 1MiB.  Since the size check is performed before records are compressed, this value may need to be increased  even though the compressed value is much smaller. The Kafka default of 1MiB has been raised to 2MiB.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#producerconfigs_max.request.size">https://kafka.apache.org/documentation/#producerconfigs_max.request.size</a> for details.  </p>
 <table>
@@ -1994,6 +2010,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="kafkatopicprefix">kafka.topic.prefix</h3>
 <p>Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  </p>
 <table>
@@ -2021,6 +2038,7 @@
   </tbody>
 </table>
 
+<hr />
 <h3 id="quarkuskafka-streamsapplication-id">quarkus.kafka-streams.application-id</h3>
 <p>Defines the ID to uniquely identify this application in the Kafka cluster.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_application.id">https://kafka.apache.org/documentation/#streamsconfigs_application.id</a> for details.  </p>
 <table>
