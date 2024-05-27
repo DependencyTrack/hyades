@@ -46,10 +46,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Test
-      if: github.event_name == 'push' && github.ref_name == 'main'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |-
         mvn -pl '!e2e' clean verify \
           failsafe:integration-test -DskipITs=false
