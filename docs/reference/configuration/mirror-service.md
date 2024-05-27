@@ -1,7 +1,7 @@
 <!--
   GENERATED. DO NOT EDIT.
 
-  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/mirror-service.md ./mirror-service/src/main/resources/application.properties
+  Generated with: -t ./scripts/config-docs.md.peb -o ./docs/reference/configuration/mirror-service.md mirror-service/src/main/resources/application.properties
 -->
 
 ## Datasource
@@ -31,6 +31,9 @@ Defines whether vulnerability aliases should be parsed from GitHub Advisories.
   </tbody>
 </table>
 
+
+---
+
 ### mirror.datasource.github.api-key
 
 Defines the API key to use for accessing GitHub's GraphQL API.  It is required in order to use the GitHub datasource.  
@@ -55,6 +58,9 @@ Defines the API key to use for accessing GitHub's GraphQL API.  It is required i
     </tr>
   </tbody>
 </table>
+
+
+---
 
 ### mirror.datasource.github.base-url
 
@@ -81,6 +87,9 @@ Defines the URL of the GitHub GraphQL API endpoint.
   </tbody>
 </table>
 
+
+---
+
 ### mirror.datasource.nvd.api-key
 
 Defines the API key to use for accessing the NVD's REST API.  An API key can be requested via the following form: <https://nvd.nist.gov/developers/request-an-api-key>  
@@ -105,6 +114,9 @@ Defines the API key to use for accessing the NVD's REST API.  An API key can be 
     </tr>
   </tbody>
 </table>
+
+
+---
 
 ### mirror.datasource.nvd.base-url
 
@@ -131,6 +143,9 @@ Defines the URL of the NVD REST API.
   </tbody>
 </table>
 
+
+---
+
 ### mirror.datasource.nvd.num-threads
 
 Defines the number of threads with which data is being downloaded from the NVD REST API concurrently.  Has no effect unless [`mirror.datasource.nvd.api-key`](#mirrordatasourcenvdapi-key) is provided.  
@@ -155,6 +170,9 @@ Defines the number of threads with which data is being downloaded from the NVD R
     </tr>
   </tbody>
 </table>
+
+
+---
 
 ### mirror.datasource.osv.alias-sync-enabled
 
@@ -181,6 +199,9 @@ Defines whether vulnerability aliases should be parsed from OSV.
   </tbody>
 </table>
 
+
+---
+
 ### mirror.datasource.osv.base-url
 
 Defines the URL of the OSV storage bucket.  
@@ -205,6 +226,7 @@ Defines the URL of the OSV storage bucket.
     </tr>
   </tbody>
 </table>
+
 
 
 
@@ -237,6 +259,7 @@ HTTP port to listen on. Application metrics will be available via this port.
 
 
 
+
 ## Kafka
 
 ### kafka-streams.commit.interval.ms
@@ -264,6 +287,9 @@ Defines the interval in milliseconds at which consumer offsets are committed to 
   </tbody>
 </table>
 
+
+---
+
 ### kafka-streams.exception.thresholds.deserialization.count
 
 Defines the threshold for records failing to be deserialized within [`kafka-streams.exception.thresholds.deserialization.interval`](#kafka-streamsexceptionthresholdsdeserializationinterval).  Deserialization failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  
@@ -288,6 +314,9 @@ Defines the threshold for records failing to be deserialized within [`kafka-stre
     </tr>
   </tbody>
 </table>
+
+
+---
 
 ### kafka-streams.exception.thresholds.deserialization.interval
 
@@ -314,6 +343,9 @@ Defines the interval within which up to [`kafka-streams.exception.thresholds.des
   </tbody>
 </table>
 
+
+---
+
 ### kafka-streams.exception.thresholds.processing.count
 
 Defines the threshold for records failing to be processed within [`kafka-streams.exception.thresholds.processing.interval`](#kafka-streamsexceptionthresholdsprocessinginterval).  Processing failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  
@@ -338,6 +370,9 @@ Defines the threshold for records failing to be processed within [`kafka-streams
     </tr>
   </tbody>
 </table>
+
+
+---
 
 ### kafka-streams.exception.thresholds.processing.interval
 
@@ -364,6 +399,9 @@ Defines the interval within which up to [`kafka-streams.exception.thresholds.pro
   </tbody>
 </table>
 
+
+---
+
 ### kafka-streams.exception.thresholds.production.count
 
 Defines the threshold for records failing to be produced within [`kafka-streams.exception.thresholds.production.interval`](#kafka-streamsexceptionthresholdsproductioninterval).  Production failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  
@@ -388,6 +426,9 @@ Defines the threshold for records failing to be produced within [`kafka-streams.
     </tr>
   </tbody>
 </table>
+
+
+---
 
 ### kafka-streams.exception.thresholds.production.interval
 
@@ -414,6 +455,9 @@ Defines the interval within which up to [`kafka-streams.exception.thresholds.pro
   </tbody>
 </table>
 
+
+---
+
 ### kafka-streams.num.stream.threads
 
 The number of threads to allocate for stream processing tasks.  Note that Specifying a number higher than the number of input partitions provides no additional benefit,  as excess threads will simply run idle.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads> for details.  
@@ -438,6 +482,9 @@ The number of threads to allocate for stream processing tasks.  Note that Specif
     </tr>
   </tbody>
 </table>
+
+
+---
 
 ### kafka.bootstrap.servers
 
@@ -468,6 +515,9 @@ Comma-separated list of brokers to use for establishing the initial connection t
   </tbody>
 </table>
 
+
+---
+
 ### kafka.max.request.size
 
 Defines the maximum size of a Kafka producer request in bytes.  <br/><br/>  Some messages like Bill of Vulnerabilities can be bigger than the default 1MiB.  Since the size check is performed before records are compressed, this value may need to be increased  even though the compressed value is much smaller. The Kafka default of 1MiB has been raised to 2MiB.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#producerconfigs_max.request.size> for details.  
@@ -492,6 +542,9 @@ Defines the maximum size of a Kafka producer request in bytes.  <br/><br/>  Some
     </tr>
   </tbody>
 </table>
+
+
+---
 
 ### kafka.topic.prefix
 
@@ -522,6 +575,9 @@ Defines an optional prefix to assume for all Kafka topics the application  consu
   </tbody>
 </table>
 
+
+---
+
 ### quarkus.kafka-streams.application-id
 
 Defines the ID to uniquely identify this application in the Kafka cluster.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#streamsconfigs_application.id> for details.  
@@ -546,6 +602,7 @@ Defines the ID to uniquely identify this application in the Kafka cluster.  <br/
     </tr>
   </tbody>
 </table>
+
 
 
 
@@ -575,6 +632,7 @@ Defines whether logs should be written in JSON format.
     </tr>
   </tbody>
 </table>
+
 
 
 
