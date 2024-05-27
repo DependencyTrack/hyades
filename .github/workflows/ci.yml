@@ -61,7 +61,7 @@ jobs:
       run: |-
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
           --project-token ${{ secrets.CODACY_PROJECT_TOKEN }} \
-          --commit-uuid ${{ github.event.workflow_run.head_sha }} \
+          --commit-uuid ${{ github.sha }} \
           --coverage-reports **/target/site/jacoco/jacoco.xml \
           --language Java
     - name: Save PR details
