@@ -1158,9 +1158,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#runmigrations" class="md-nav__link">
+  <a href="#databaserunmigrations" class="md-nav__link">
     <span class="md-ellipsis">
-      run.migrations
+      database.run.migrations
     </span>
   </a>
   
@@ -1881,15 +1881,6 @@
   <a href="#alpinekafkaprocessorvulnscanresultretryrandomizationfactor" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.kafka.processor.vuln.scan.result.retry.randomization.factor
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#applicationid" class="md-nav__link">
-    <span class="md-ellipsis">
-      application.id
     </span>
   </a>
   
@@ -3002,9 +2993,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#runmigrations" class="md-nav__link">
+  <a href="#databaserunmigrations" class="md-nav__link">
     <span class="md-ellipsis">
-      run.migrations
+      database.run.migrations
     </span>
   </a>
   
@@ -3725,15 +3716,6 @@
   <a href="#alpinekafkaprocessorvulnscanresultretryrandomizationfactor" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.kafka.processor.vuln.scan.result.retry.randomization.factor
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#applicationid" class="md-nav__link">
-    <span class="md-ellipsis">
-      application.id
     </span>
   </a>
   
@@ -4499,7 +4481,7 @@
 <!--
   GENERATED. DO NOT EDIT.
 
-  Generated with: -t ./scripts/config-docs.md.peb -o ./docs/reference/configuration/api-server.md ../hyades-apiserver/src/main/resources/application.properties
+  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/api-server.md ./hyades-apiserver/src/main/resources/application.properties
 -->
 
 <h2 id="cors">CORS</h2>
@@ -5123,7 +5105,7 @@
 </table>
 
 <hr />
-<h3 id="runmigrations">run.migrations</h3>
+<h3 id="databaserunmigrations">database.run.migrations</h3>
 <p>Defines whether database migrations should be executed on startup.  </p>
 <table>
   <tbody style="border: 0">
@@ -5141,7 +5123,7 @@
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>RUN_MIGRATIONS</code></td>
+      <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS</code></td>
     </tr>
   </tbody>
 </table>
@@ -6957,29 +6939,6 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="applicationid">application.id</h3>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>APPLICATION_ID</code></td>
     </tr>
   </tbody>
 </table>
