@@ -175,10 +175,10 @@ class GitHubAdvisoryToCdxParserTest {
                                }
                              }],
                              "ratings": [{
-                               "method": "SCORE_METHOD_CVSSV3",
+                               "method": "SCORE_METHOD_CVSSV31",
                                "score": 5.4,
                                "severity": "SEVERITY_MEDIUM",
-                               "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
+                               "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
                                "source": {
                                  "name": "GITHUB"
                                }
@@ -247,10 +247,10 @@ class GitHubAdvisoryToCdxParserTest {
                                "name": "GITHUB"
                              },
                              "ratings": [{
-                               "method": "SCORE_METHOD_CVSSV3",
+                               "method": "SCORE_METHOD_CVSSV31",
                                "score": 5.4,
                                "severity": "SEVERITY_MEDIUM",
-                               "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
+                               "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
                                "source": {
                                  "name": "GITHUB"
                                }
