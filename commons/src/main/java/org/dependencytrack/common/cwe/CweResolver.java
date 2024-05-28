@@ -49,7 +49,7 @@ public class CweResolver {
      */
     public Cwe lookup(final Integer cweId) {
         if (cweId != null) {
-            final String cweName = CweDefinitions.DEFINITIONS.get(cweId);
+            final String cweName = CweDictionary.DICTIONARY.get(cweId);
             if (cweName != null) {
                 final var cwe = new Cwe();
                 cwe.setCweId(cweId);
@@ -72,7 +72,7 @@ public class CweResolver {
     public Cwe resolve(final String cweString) {
         final Integer cweId = parseCweString(cweString);
         if (cweId != null) {
-            final String cweName = CweDefinitions.DEFINITIONS.get(cweId);
+            final String cweName = CweDictionary.DICTIONARY.get(cweId);
             if (cweName != null) {
                 final var cwe = new Cwe();
                 cwe.setCweId(cweId);
