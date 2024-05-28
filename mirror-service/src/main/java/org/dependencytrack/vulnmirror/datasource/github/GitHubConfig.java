@@ -19,17 +19,54 @@
 package org.dependencytrack.vulnmirror.datasource.github;
 
 import io.smallrye.config.ConfigMapping;
-import io.smallrye.config.WithDefault;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Provider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Optional;
 
-@ConfigMapping(prefix = "mirror.datasource.github")
-public interface GitHubConfig {
+/**
+ * As of Quarkus 3.9 / smallrye-config 3.7, it is not possible to use {@link ConfigMapping}
+ * interfaces with {@link Provider} fields. We need {@link Provider} fields in order to support
+ * configuration changes at runtime. Refer to <em>Injecting Dynamic Values</em> in the
+ * {@link ConfigProperty} JavaDoc for details.
+ *
+ * @see <a href="https://github.com/smallrye/smallrye-config/issues/664">Related smallrye-config issue</a>
+ */
+@ApplicationScoped
+class GitHubConfig {
 
-    Optional<String> baseUrl();
+    private final Provider<Optional<Boolean>> enabledProvider;
+    private final Provider<Optional<String>> baseUrlProvider;
+    private final Provider<Optional<String>> apiKeyProvider;
+    private final Provider<Optional<Boolean>> aliasSyncEnabledProvider;
 
-    Optional<String> apiKey();
+    GitHubConfig(
+            @ConfigProperty(name = "dtrack.vuln-source.github.advisories.enabled") final Provider<Optional<Boolean>> enabledProvider,
+            @ConfigProperty(name = "dtrack.vuln-source.github.advisories.base.url") final Provider<Optional<String>> baseUrlProvider,
+            @ConfigProperty(name = "dtrack.vuln-source.github.advisories.access.token") final Provider<Optional<String>> apiKeyProvider,
+            @ConfigProperty(name = "dtrack.vuln-source.github.advisories.alias.sync.enabled") final Provider<Optional<Boolean>> aliasSyncEnabledProvider
+    ) {
+        this.enabledProvider = enabledProvider;
+        this.baseUrlProvider = baseUrlProvider;
+        this.apiKeyProvider = apiKeyProvider;
+        this.aliasSyncEnabledProvider = aliasSyncEnabledProvider;
+    }
 
-    @WithDefault("false")
-    boolean aliasSyncEnabled();
+    Optional<Boolean> enabled() {
+        return enabledProvider.get();
+    }
+
+    Optional<String> baseUrl() {
+        return baseUrlProvider.get();
+    }
+
+    Optional<String> apiKey() {
+        return apiKeyProvider.get();
+    }
+
+    Optional<Boolean> aliasSyncEnabled() {
+        return aliasSyncEnabledProvider.get();
+    }
+
 }

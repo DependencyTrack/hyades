@@ -21,6 +21,7 @@ package org.dependencytrack.vulnmirror.datasource.github;
 import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClient;
 import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClientBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.dependencytrack.common.SecretDecryptor;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -32,16 +33,26 @@ import static io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityA
 class GitHubApiClientFactory {
 
     private final GitHubConfig config;
+    private final SecretDecryptor secretDecryptor;
 
-    GitHubApiClientFactory(final GitHubConfig config) {
+    GitHubApiClientFactory(final GitHubConfig config, final SecretDecryptor secretDecryptor) {
         this.config = config;
+        this.secretDecryptor = secretDecryptor;
     }
 
     GitHubSecurityAdvisoryClient create(final long lastUpdatedEpochSeconds) {
         final GitHubSecurityAdvisoryClientBuilder builder = aGitHubSecurityAdvisoryClient();
 
         config.baseUrl().ifPresent(builder::withEndpoint);
-        config.apiKey().ifPresent(builder::withApiKey);
+        config.apiKey()
+                .map(encryptedApiKey -> {
+                    try {
+                        return secretDecryptor.decryptAsString(encryptedApiKey);
+                    } catch (Exception e) {
+                        throw new IllegalStateException("Failed to decrypt API key", e);
+                    }
+                })
+                .ifPresent(builder::withApiKey);
 
         if (lastUpdatedEpochSeconds > 0) {
             final ZonedDateTime lastUpdated = ZonedDateTime.ofInstant(Instant.ofEpochSecond(lastUpdatedEpochSeconds), ZoneOffset.UTC);

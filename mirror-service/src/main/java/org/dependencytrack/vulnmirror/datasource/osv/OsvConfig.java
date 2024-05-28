@@ -19,16 +19,55 @@
 package org.dependencytrack.vulnmirror.datasource.osv;
 
 import io.smallrye.config.ConfigMapping;
-import io.smallrye.config.WithDefault;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Provider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-@ConfigMapping(prefix = "mirror.datasource.osv")
-public interface OsvConfig {
+import static java.util.function.Predicate.not;
 
-    @WithDefault("https://osv-vulnerabilities.storage.googleapis.com")
-    Optional<String> baseUrl();
+/**
+ * As of Quarkus 3.9 / smallrye-config 3.7, it is not possible to use {@link ConfigMapping}
+ * interfaces with {@link Provider} fields. We need {@link Provider} fields in order to support
+ * configuration changes at runtime. Refer to <em>Injecting Dynamic Values</em> in the
+ * {@link ConfigProperty} JavaDoc for details.
+ *
+ * @see <a href="https://github.com/smallrye/smallrye-config/issues/664">Related smallrye-config issue</a>
+ */
+@ApplicationScoped
+class OsvConfig {
 
-    @WithDefault("false")
-    boolean aliasSyncEnabled();
+    private final Provider<Optional<String>> enabledEcosystemsProvider;
+    private final Provider<Optional<String>> baseUrlProvider;
+    private final Provider<Optional<Boolean>> aliasSyncEnabledProvider;
+
+    public OsvConfig(
+            @ConfigProperty(name = "dtrack.vuln-source.google.osv.enabled") final Provider<Optional<String>> enabledEcosystemsProvider,
+            @ConfigProperty(name = "dtrack.vuln-source.google.osv.base.url") final Provider<Optional<String>> baseUrlProvider,
+            @ConfigProperty(name = "dtrack.vuln-source.google.osv.alias.sync.enabled") final Provider<Optional<Boolean>> aliasSyncEnabledProvider
+    ) {
+        this.enabledEcosystemsProvider = enabledEcosystemsProvider;
+        this.baseUrlProvider = baseUrlProvider;
+        this.aliasSyncEnabledProvider = aliasSyncEnabledProvider;
+    }
+
+    List<String> enabledEcosystems() {
+        return enabledEcosystemsProvider.get().stream()
+                .flatMap(ecosystems -> Arrays.stream(ecosystems.split(";")))
+                .map(String::trim)
+                .filter(not(String::isEmpty))
+                .toList();
+    }
+
+    Optional<String> baseUrl() {
+        return baseUrlProvider.get();
+    }
+
+    Optional<Boolean> aliasSyncEnabled() {
+        return aliasSyncEnabledProvider.get();
+    }
+
 }

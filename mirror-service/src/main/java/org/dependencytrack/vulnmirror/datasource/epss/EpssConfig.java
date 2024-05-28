@@ -19,11 +19,43 @@
 package org.dependencytrack.vulnmirror.datasource.epss;
 
 import io.smallrye.config.ConfigMapping;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Provider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Optional;
 
-@ConfigMapping(prefix = "mirror.datasource.epss")
-public interface EpssConfig {
+/**
+ * As of Quarkus 3.9 / smallrye-config 3.7, it is not possible to use {@link ConfigMapping}
+ * interfaces with {@link Provider} fields. We need {@link Provider} fields in order to support
+ * configuration changes at runtime. Refer to <em>Injecting Dynamic Values</em> in the
+ * {@link ConfigProperty} JavaDoc for details.
+ *
+ * @see <a href="https://github.com/smallrye/smallrye-config/issues/664">Related smallrye-config issue</a>
+ */
+@ApplicationScoped
+class EpssConfig {
 
-    Optional<String> downloadUrl();
+    private final Provider<Optional<Boolean>> enabledProvider;
+    private final Provider<Optional<String>> feedsUrlProvider;
+
+    EpssConfig(
+            @ConfigProperty(name = "dtrack.vuln-source.epss.enabled") final Provider<Optional<Boolean>> enabledProvider,
+            @ConfigProperty(name = "dtrack.vuln-source.epss.feeds.url") final Provider<Optional<String>> feedsUrlProvider
+    ) {
+        this.enabledProvider = enabledProvider;
+        this.feedsUrlProvider = feedsUrlProvider;
+    }
+
+    Optional<Boolean> enabled() {
+        return enabledProvider.get();
+    }
+
+    Optional<String> feedsUrl() {
+        return feedsUrlProvider.get()
+                // NB: Dependency-Track has historically only made the base URL (e.g. https://epss.cyentia.com)
+                // configurable, but the EPSS client expects a full URL.
+                .map("%s/epss_scores-current.csv.gz"::formatted);
+    }
+
 }

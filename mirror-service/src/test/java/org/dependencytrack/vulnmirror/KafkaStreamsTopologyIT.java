@@ -90,14 +90,14 @@ class KafkaStreamsTopologyIT {
             public Map<String, String> getConfigOverrides() {
 
                 return Map.ofEntries(
-                        Map.entry("mirror.datasource.nvd.base-url", "http://localhost:${quarkus.wiremock.devservices.port}")
+                        Map.entry("dtrack.vuln-source.nvd.enabled", "true"),
+                        Map.entry("dtrack.vuln-source.nvd.api.url", "http://localhost:${quarkus.wiremock.devservices.port}")
                 );
             }
 
             @Override
             public List<TestResourceEntry> testResources() {
-                return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class));
+                return List.of(new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 
@@ -192,15 +192,16 @@ class KafkaStreamsTopologyIT {
             @Override
             public Map<String, String> getConfigOverrides() {
                 return Map.ofEntries(
-                        Map.entry("mirror.datasource.github.api-key", "foobar"),
-                        Map.entry("mirror.datasource.github.base-url", "http://localhost:${quarkus.wiremock.devservices.port}")
+                        Map.entry("dtrack.vuln-source.github.advisories.enabled", "true"),
+                        Map.entry("dtrack.vuln-source.github.advisories.access.token", /* encrypted "foobar" */ "0fsdpawY5lis3lZK7BiJmjR5Nr1MjXlqa3vso9kLSEM="),
+                        Map.entry("dtrack.vuln-source.github.advisories.base.url", "http://localhost:${quarkus.wiremock.devservices.port}"),
+                        Map.entry("secret.key.path", "src/test/resources/secret.key")
                 );
             }
 
             @Override
             public List<TestResourceEntry> testResources() {
-                return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class));
+                return List.of(new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 
@@ -299,13 +300,15 @@ class KafkaStreamsTopologyIT {
 
             @Override
             public Map<String, String> getConfigOverrides() {
-                return Map.of("mirror.datasource.osv.base-url", "http://localhost:${quarkus.wiremock.devservices.port}");
+                return Map.ofEntries(
+                        Map.entry("dtrack.vuln-source.google.osv.enabled", "Maven"),
+                        Map.entry("dtrack.vuln-source.google.osv.base.url", "http://localhost:${quarkus.wiremock.devservices.port}")
+                );
             }
 
             @Override
             public List<TestResourceEntry> testResources() {
-                return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class));
+                return List.of(new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 
@@ -325,7 +328,7 @@ class KafkaStreamsTopologyIT {
             // Trigger a OSV mirroring operation.
             kafkaCompanion
                     .produce(Serdes.String(), Serdes.String())
-                    .fromRecords(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName(), "OSV", "Maven"));
+                    .fromRecords(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName(), "OSV", null));
 
             // Wait for all expected vulnerability records; There should be one for each CVE.
             final List<ConsumerRecord<String, Bom>> results = kafkaCompanion
@@ -381,7 +384,10 @@ class KafkaStreamsTopologyIT {
 
             @Override
             public Map<String, String> getConfigOverrides() {
-                return Map.of("mirror.datasource.osv.base-url", "http://localhost:${quarkus.wiremock.devservices.port}");
+                return Map.ofEntries(
+                        Map.entry("dtrack.vuln-source.google.osv.enabled", "Maven;Go"),
+                        Map.entry("dtrack.vuln-source.google.osv.base.url", "http://localhost:${quarkus.wiremock.devservices.port}")
+                );
             }
 
             @Override
@@ -487,13 +493,15 @@ class KafkaStreamsTopologyIT {
 
             @Override
             public Map<String, String> getConfigOverrides() {
-                return Map.of("mirror.datasource.epss.download-url", "http://localhost:${quarkus.wiremock.devservices.port}");
+                return Map.ofEntries(
+                        Map.entry("dtrack.vuln-source.epss.enabled", "true"),
+                        Map.entry("dtrack.vuln-source.epss.feeds.url", "http://localhost:${quarkus.wiremock.devservices.port}")
+                );
             }
 
             @Override
             public List<TestResourceEntry> testResources() {
-                return List.of(
-                        new TestResourceEntry(KafkaCompanionResource.class));
+                return List.of(new TestResourceEntry(KafkaCompanionResource.class));
             }
         }
 

@@ -33,9 +33,8 @@ public interface DatasourceMirror {
     /**
      * <em>Asynchronously</em> execute a mirroring operating.
      *
-     * @param ecosystem The ecosystem to be mirrored for. Needed in case of OSV mirror only. Maybe null for other mirrors.
      * @return A {@link Future} for tracking completion of the operation
      */
-    Future<?> doMirror(String ecosystem);
+    Future<?> doMirror();
 
 }

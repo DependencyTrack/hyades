@@ -23,6 +23,8 @@ import io.github.jeremylong.openvulnerability.client.epss.EpssItem;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
@@ -39,6 +41,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
@@ -51,8 +54,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
+@TestProfile(EpssMirrorTest.TestProfile.class)
 @QuarkusTestResource(KafkaCompanionResource.class)
 class EpssMirrorTest {
+
+    public static class TestProfile implements QuarkusTestProfile {
+
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.ofEntries(
+                    Map.entry("dtrack.vuln-source.epss.enabled", "true")
+            );
+        }
+
+    }
 
     @Inject
     EpssMirror epssMirror;
@@ -73,7 +88,7 @@ class EpssMirrorTest {
 
         when(epssClientFactoryMock.create()).thenReturn(epssClientMock);
 
-        epssMirror.doMirror(null);
+        epssMirror.doMirror();
         final List<ConsumerRecord<String, org.dependencytrack.proto.mirror.v1.EpssItem>> epssItems = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(org.dependencytrack.proto.mirror.v1.EpssItem.parser()))
                 .withGroupId(TestConstants.CONSUMER_GROUP_ID)
@@ -118,7 +133,7 @@ class EpssMirrorTest {
 
         when(epssClientFactoryMock.create()).thenReturn(epssClientMock);
 
-        epssMirror.doMirror(null);
+        epssMirror.doMirror();
         final List<ConsumerRecord<String, org.dependencytrack.proto.mirror.v1.EpssItem>> epssItems = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(org.dependencytrack.proto.mirror.v1.EpssItem.parser()))
                 .withGroupId(TestConstants.CONSUMER_GROUP_ID)
@@ -149,7 +164,7 @@ class EpssMirrorTest {
     @Test
     void testDoMirrorFailure() {
         doThrow(new IllegalStateException()).when(epssClientFactoryMock).create();
-        assertThatNoException().isThrownBy(() -> epssMirror.doMirror(null).get());
+        assertThatNoException().isThrownBy(() -> epssMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))

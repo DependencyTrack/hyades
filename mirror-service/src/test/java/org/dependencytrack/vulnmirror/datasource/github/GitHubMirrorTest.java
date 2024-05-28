@@ -25,6 +25,8 @@ import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
@@ -48,6 +50,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.apache.commons.io.IOUtils.resourceToByteArray;
@@ -64,8 +67,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
+@TestProfile(GitHubMirrorTest.TestProfile.class)
 @QuarkusTestResource(KafkaCompanionResource.class)
 class GitHubMirrorTest {
+
+    public static final class TestProfile implements QuarkusTestProfile {
+
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.ofEntries(
+                    Map.entry("dtrack.vuln-source.github.advisories.enabled", "true")
+            );
+        }
+
+    }
 
     @Inject
     GitHubMirror githubMirror;
@@ -99,7 +114,7 @@ class GitHubMirrorTest {
         when(apiClientFactoryMock.create(anyLong()))
                 .thenReturn(apiClientMock);
 
-        assertThatNoException().isThrownBy(() -> githubMirror.doMirror(null).get());
+        assertThatNoException().isThrownBy(() -> githubMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
@@ -132,7 +147,7 @@ class GitHubMirrorTest {
         when(apiClientFactoryMock.create(anyLong()))
                 .thenReturn(apiClientMock);
 
-        assertThatNoException().isThrownBy(() -> githubMirror.doMirror(null).get());
+        assertThatNoException().isThrownBy(() -> githubMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))

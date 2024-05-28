@@ -22,6 +22,8 @@ import com.google.protobuf.util.JsonFormat;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
@@ -45,10 +47,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_DATASOURCE_MIRRORING;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
@@ -59,8 +61,20 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @QuarkusTest
+@TestProfile(OsvMirrorTest.TestProfile.class)
 @QuarkusTestResource(KafkaCompanionResource.class)
 class OsvMirrorTest {
+
+    public static class TestProfile implements QuarkusTestProfile {
+
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.ofEntries(
+                    Map.entry("dtrack.vuln-source.google.osv.enabled", "Maven")
+            );
+        }
+
+    }
 
     @Inject
     OsvMirror osvMirror;
@@ -94,7 +108,7 @@ class OsvMirrorTest {
         tempZipLocation = Files.createTempFile("test", ".zip");
         Files.copy(testFile, tempZipLocation, StandardCopyOption.REPLACE_EXISTING);
         doReturn(tempZipLocation).when(osvClientMock).downloadEcosystemZip(anyString());
-        assertThatNoException().isThrownBy(() -> osvMirror.doMirror("Maven").get());
+        assertThatNoException().isThrownBy(() -> osvMirror.doMirror().get());
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
                 .withGroupId(TestConstants.CONSUMER_GROUP_ID)
@@ -118,7 +132,7 @@ class OsvMirrorTest {
     @Test
     void testDoMirrorFailureNotification() throws IOException {
         doThrow(new IOException()).when(osvClientMock).downloadEcosystemZip(anyString());
-        assertThatNoException().isThrownBy(() -> osvMirror.doMirror("Maven").get());
+        assertThatNoException().isThrownBy(() -> osvMirror.doMirror().get());
 
         final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
                 .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
@@ -136,31 +150,6 @@ class OsvMirrorTest {
                     assertThat(record.value().getLevel()).isEqualTo(LEVEL_ERROR);
                     assertThat(record.value().getTitle()).isEqualTo("OSV Mirroring");
                     assertThat(record.value().getContent()).isEqualTo("An error occurred mirroring the contents of ecosystem :Maven for OSV. Check log for details.");
-                }
-        );
-    }
-
-    @Test
-    void testDoMirrorFailureNotificationWhenNoEcoSystemPassed() {
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> osvMirror.performMirror(null));
-        assertThatNoException().isThrownBy(() -> osvMirror.doMirror(null).get());
-
-        final List<ConsumerRecord<String, Notification>> notificationRecords = kafkaCompanion
-                .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
-                .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                .withAutoCommit()
-                .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
-                .awaitCompletion()
-                .getRecords();
-
-        assertThat(notificationRecords).satisfiesExactly(
-                record -> {
-                    assertThat(record.key()).isNull();
-                    assertThat(record.value().getScope()).isEqualTo(SCOPE_SYSTEM);
-                    assertThat(record.value().getGroup()).isEqualTo(GROUP_DATASOURCE_MIRRORING);
-                    assertThat(record.value().getLevel()).isEqualTo(LEVEL_ERROR);
-                    assertThat(record.value().getTitle()).isEqualTo("OSV Mirroring");
-                    assertThat(record.value().getContent()).isEqualTo("Tried to mirror null ecosystem for OSV.");
                 }
         );
     }

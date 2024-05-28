@@ -31,7 +31,7 @@ class EpssClientFactory {
     }
 
     EpssDataFeed create() {
-        return epssConfig.downloadUrl()
+        return epssConfig.feedsUrl()
                 .map(EpssDataFeed::new)
                 .orElseGet(EpssDataFeed::new);
     }
