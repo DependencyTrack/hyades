@@ -71,8 +71,9 @@
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
     <lib.confluent-parallel-consumer.version>0.5.2.8</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
-    <lib.cvss-calculator.version>1.4.2</lib.cvss-calculator.version>
+    <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
+    <lib.github-api.version>1.321</lib.github-api.version>
     <lib.greenmail.version>2.0.1</lib.greenmail.version>
     <lib.java-uuid-generator.version>5.0.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>3.2.7</lib.json-unit.version>
@@ -180,6 +181,12 @@
         <groupId>dev.failsafe</groupId>
         <artifactId>failsafe</artifactId>
         <version>${lib.failsafe.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kohsuke</groupId>
+        <artifactId>github-api</artifactId>
+        <version>${lib.github-api.version}</version>
       </dependency>
 
       <dependency>
