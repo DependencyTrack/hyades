@@ -111,19 +111,6 @@
     <scm.developer.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.developer.connection>
     <scm.url>https://github.com/DependencyTrack/hyades.git</scm.url>
 
-    <!-- SonarCloud -->
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.organization>dependency-track</sonar.organization>
-    <sonar.projectKey>dependency-track_hyades</sonar.projectKey>
-    <sonar.moduleKey>${artifactId}</sonar.moduleKey>
-    <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.exclusions>e2e/**/*</sonar.exclusions>
-    <!--
-      Quarkus extensions are tested in their deployment module,
-      but those tests won't report any coverage for the runtime module.
-    -->
-    <sonar.coverage.exclusions>quarkus-extensions/*/runtime/**/*</sonar.coverage.exclusions>
-
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
   </properties>
