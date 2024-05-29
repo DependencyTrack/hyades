@@ -102,7 +102,7 @@ Defines the interval in milliseconds at which consumer offsets are committed to 
   <tbody style="border: 0">
     <tr>
       <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
+      <td style="border-width: 0">false</td>
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
@@ -386,7 +386,7 @@ Defines an optional prefix to assume for all Kafka topics the application  consu
   <tbody style="border: 0">
     <tr>
       <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
+      <td style="border-width: 0">false</td>
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
