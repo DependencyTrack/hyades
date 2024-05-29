@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://github.com/DependencyTrack/hyades/blob/main/README.md/0.5.0-SNAPSHOT/reference/configuration/mirror-service/">
+        <link rel="canonical" href="https://github.com/DependencyTrack/hyades/blob/main/README.md/0.5.0-SNAPSHOT/reference/configuration/repo-meta-analyzer/">
       
       
-        <link rel="prev" href="../api-server/">
+        <link rel="prev" href="../mirror-service/">
       
       
-        <link rel="next" href="../repo-meta-analyzer/">
+        <link rel="next" href="../../topics/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Mirror Service - Hyades</title>
+        <title>Repository Metadata Analyzer - Hyades</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#datasource" class="md-skip">
+        <a href="#cache" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Mirror Service
+              Repository Metadata Analyzer
             
           </span>
         </div>
@@ -875,6 +875,27 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../mirror-service/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mirror Service
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -889,7 +910,7 @@
           
   
   <span class="md-ellipsis">
-    Mirror Service
+    Repository Metadata Analyzer
   </span>
   
 
@@ -900,7 +921,7 @@
         
   
   <span class="md-ellipsis">
-    Mirror Service
+    Repository Metadata Analyzer
   </span>
   
 
@@ -920,28 +941,103 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#datasource" class="md-nav__link">
+  <a href="#cache" class="md-nav__link">
     <span class="md-ellipsis">
-      Datasource
+      Cache
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Datasource">
+    <nav class="md-nav" aria-label="Cache">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#mirrordatasourceosvalias-sync-enabled" class="md-nav__link">
+  <a href="#quarkuscachecaffeinemetaanalyzerexpire-after-write" class="md-nav__link">
     <span class="md-ellipsis">
-      mirror.datasource.osv.alias-sync-enabled
+      quarkus.cache.caffeine."metaAnalyzer".expire-after-write
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#mirrordatasourceosvbase-url" class="md-nav__link">
+  <a href="#quarkuscachecaffeinemetaanalyzerinitial-capacity" class="md-nav__link">
     <span class="md-ellipsis">
-      mirror.datasource.osv.base-url
+      quarkus.cache.caffeine."metaAnalyzer".initial-capacity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarkuscacheenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      quarkus.cache.enabled
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quarkusdatasourcejdbcurl" class="md-nav__link">
+    <span class="md-ellipsis">
+      quarkus.datasource.jdbc.url
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarkusdatasourcepassword" class="md-nav__link">
+    <span class="md-ellipsis">
+      quarkus.datasource.password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarkusdatasourceusername" class="md-nav__link">
+    <span class="md-ellipsis">
+      quarkus.datasource.username
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#general" class="md-nav__link">
+    <span class="md-ellipsis">
+      General
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="General">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secretkeypath" class="md-nav__link">
+    <span class="md-ellipsis">
+      secret.key.path
     </span>
   </a>
   
@@ -985,6 +1081,15 @@
   
     <nav class="md-nav" aria-label="Kafka">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kafka-streamsautooffsetreset" class="md-nav__link">
+    <span class="md-ellipsis">
+      kafka-streams.auto.offset.reset
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#kafka-streamscommitintervalms" class="md-nav__link">
@@ -1050,6 +1155,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#kafka-streamsmetricsrecordinglevel" class="md-nav__link">
+    <span class="md-ellipsis">
+      kafka-streams.metrics.recording.level
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#kafka-streamsnumstreamthreads" class="md-nav__link">
     <span class="md-ellipsis">
       kafka-streams.num.stream.threads
@@ -1062,15 +1176,6 @@
   <a href="#kafkabootstrapservers" class="md-nav__link">
     <span class="md-ellipsis">
       kafka.bootstrap.servers
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafkamaxrequestsize" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka.max.request.size
     </span>
   </a>
   
@@ -1127,27 +1232,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../repo-meta-analyzer/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Repository Metadata Analyzer
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1234,28 +1318,103 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#datasource" class="md-nav__link">
+  <a href="#cache" class="md-nav__link">
     <span class="md-ellipsis">
-      Datasource
+      Cache
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Datasource">
+    <nav class="md-nav" aria-label="Cache">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#mirrordatasourceosvalias-sync-enabled" class="md-nav__link">
+  <a href="#quarkuscachecaffeinemetaanalyzerexpire-after-write" class="md-nav__link">
     <span class="md-ellipsis">
-      mirror.datasource.osv.alias-sync-enabled
+      quarkus.cache.caffeine."metaAnalyzer".expire-after-write
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#mirrordatasourceosvbase-url" class="md-nav__link">
+  <a href="#quarkuscachecaffeinemetaanalyzerinitial-capacity" class="md-nav__link">
     <span class="md-ellipsis">
-      mirror.datasource.osv.base-url
+      quarkus.cache.caffeine."metaAnalyzer".initial-capacity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarkuscacheenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      quarkus.cache.enabled
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quarkusdatasourcejdbcurl" class="md-nav__link">
+    <span class="md-ellipsis">
+      quarkus.datasource.jdbc.url
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarkusdatasourcepassword" class="md-nav__link">
+    <span class="md-ellipsis">
+      quarkus.datasource.password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarkusdatasourceusername" class="md-nav__link">
+    <span class="md-ellipsis">
+      quarkus.datasource.username
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#general" class="md-nav__link">
+    <span class="md-ellipsis">
+      General
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="General">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secretkeypath" class="md-nav__link">
+    <span class="md-ellipsis">
+      secret.key.path
     </span>
   </a>
   
@@ -1299,6 +1458,15 @@
   
     <nav class="md-nav" aria-label="Kafka">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kafka-streamsautooffsetreset" class="md-nav__link">
+    <span class="md-ellipsis">
+      kafka-streams.auto.offset.reset
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#kafka-streamscommitintervalms" class="md-nav__link">
@@ -1364,6 +1532,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#kafka-streamsmetricsrecordinglevel" class="md-nav__link">
+    <span class="md-ellipsis">
+      kafka-streams.metrics.recording.level
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#kafka-streamsnumstreamthreads" class="md-nav__link">
     <span class="md-ellipsis">
       kafka-streams.num.stream.threads
@@ -1376,15 +1553,6 @@
   <a href="#kafkabootstrapservers" class="md-nav__link">
     <span class="md-ellipsis">
       kafka.bootstrap.servers
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafkamaxrequestsize" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka.max.request.size
     </span>
   </a>
   
@@ -1455,22 +1623,70 @@
   
 
 
-  <h1>Mirror Service</h1>
+  <h1>Repository Metadata Analyzer</h1>
 
 <!--
   GENERATED. DO NOT EDIT.
 
-  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/mirror-service.md ./mirror-service/src/main/resources/application.properties
+  Generated with: -t ./scripts/config-docs.md.peb -o ./docs/reference/configuration/repo-meta-analyzer.md ./repository-meta-analyzer/src/main/resources/application.properties
 -->
 
-<h2 id="datasource">Datasource</h2>
-<h3 id="mirrordatasourceosvalias-sync-enabled">mirror.datasource.osv.alias-sync-enabled</h3>
-<p>Defines whether vulnerability aliases should be parsed from OSV.  </p>
+<h2 id="cache">Cache</h2>
+<h3 id="quarkuscachecaffeinemetaanalyzerexpire-after-write">quarkus.cache.caffeine."metaAnalyzer".expire-after-write</h3>
+<p>Defines the time-to-live of cache entries.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
       <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT2H</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_CACHE_CAFFEINE__METAANALYZER__EXPIRE_AFTER_WRITE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="quarkuscachecaffeinemetaanalyzerinitial-capacity">quarkus.cache.caffeine."metaAnalyzer".initial-capacity</h3>
+<p>Defines the initial capacity of the cache.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_CACHE_CAFFEINE__METAANALYZER__INITIAL_CAPACITY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="quarkuscacheenabled">quarkus.cache.enabled</h3>
+<p>Defines whether caching of analysis results shall be enabled.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
@@ -1478,18 +1694,90 @@
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
+      <td style="border-width: 0"><code>true</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>MIRROR_DATASOURCE_OSV_ALIAS_SYNC_ENABLED</code></td>
+      <td style="border-width: 0"><code>QUARKUS_CACHE_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="database">Database</h2>
+<h3 id="quarkusdatasourcejdbcurl">quarkus.datasource.jdbc.url</h3>
+<p>Specifies the JDBC URL to use when connecting to the database.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_JDBC_URL</code></td>
     </tr>
   </tbody>
 </table>
 
 <hr />
-<h3 id="mirrordatasourceosvbase-url">mirror.datasource.osv.base-url</h3>
-<p>Defines the URL of the OSV storage bucket.  </p>
+<h3 id="quarkusdatasourcepassword">quarkus.datasource.password</h3>
+<p>Specifies the password to use when authenticating to the database.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_PASSWORD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="quarkusdatasourceusername">quarkus.datasource.username</h3>
+<p>Specifies the username to use when authenticating to the database.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_USERNAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="general">General</h2>
+<h3 id="secretkeypath">secret.key.path</h3>
+<p>Defines the path to the secret key to be used for data encryption and decryption.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1502,11 +1790,11 @@
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>https://osv-vulnerabilities.storage.googleapis.com</code></td>
+      <td style="border-width: 0"><code>~/.dependency-track/keys/secret.key</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>MIRROR_DATASOURCE_OSV_BASE_URL</code></td>
+      <td style="border-width: 0"><code>SECRET_KEY_PATH</code></td>
     </tr>
   </tbody>
 </table>
@@ -1526,7 +1814,7 @@
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>8093</code></td>
+      <td style="border-width: 0"><code>8091</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -1536,6 +1824,34 @@
 </table>
 
 <h2 id="kafka">Kafka</h2>
+<h3 id="kafka-streamsautooffsetreset">kafka-streams.auto.offset.reset</h3>
+<p>Refer to <a href="https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset">https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset</a> for details.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_STREAMS_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="kafka-streamscommitintervalms">kafka-streams.commit.interval.ms</h3>
 <p>Defines the interval in milliseconds at which consumer offsets are committed to the Kafka brokers.  The Kafka default of <code>30s</code> has been modified to <code>5s</code>.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_commit.interval.ms">https://kafka.apache.org/documentation/#streamsconfigs_commit.interval.ms</a> for details.  </p>
 <table>
@@ -1704,8 +2020,36 @@
 </table>
 
 <hr />
+<h3 id="kafka-streamsmetricsrecordinglevel">kafka-streams.metrics.recording.level</h3>
+<p>Refer to <a href="https://kafka.apache.org/documentation/#adminclientconfigs_metrics.recording.level">https://kafka.apache.org/documentation/#adminclientconfigs_metrics.recording.level</a> for details.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[INFO, DEBUG, TRACE]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>DEBUG</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_STREAMS_METRICS_RECORDING_LEVEL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="kafka-streamsnumstreamthreads">kafka-streams.num.stream.threads</h3>
-<p>The number of threads to allocate for stream processing tasks.  Note that Specifying a number higher than the number of input partitions provides no additional benefit,  as excess threads will simply run idle.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads">https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads</a> for details.  </p>
+<p>Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads">https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads</a> for details.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1756,30 +2100,6 @@
 </table>
 
 <hr />
-<h3 id="kafkamaxrequestsize">kafka.max.request.size</h3>
-<p>Defines the maximum size of a Kafka producer request in bytes.  <br/><br/>  Some messages like Bill of Vulnerabilities can be bigger than the default 1MiB.  Since the size check is performed before records are compressed, this value may need to be increased  even though the compressed value is much smaller. The Kafka default of 1MiB has been raised to 2MiB.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#producerconfigs_max.request.size">https://kafka.apache.org/documentation/#producerconfigs_max.request.size</a> for details.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2097152</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_MAX_REQUEST_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
 <h3 id="kafkatopicprefix">kafka.topic.prefix</h3>
 <p>Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  </p>
 <table>
@@ -1822,7 +2142,7 @@
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${kafka.topic.prefix}hyades-mirror-service</code></td>
+      <td style="border-width: 0"><code>${kafka.topic.prefix}hyades-repository-meta-analyzer</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
