@@ -63,6 +63,14 @@ jobs:
           --template ./scripts/config-docs.md.peb
           --output ./docs/reference/configuration/mirror-service.md
           ./mirror-service/src/main/resources/application.properties
+    - name: Generate Repository Metadata Analyzer Documentation
+      uses: jbangdev/jbang-action@74844c9631cf1f35650427323e9bb3ffa41dfbd9 # tag=v0.115.0
+      with:
+        script: ./scripts/GenerateConfigDocs.java
+        scriptargs: >-
+          --template ./scripts/config-docs.md.peb
+          --output ./docs/reference/configuration/repo-meta-analyzer.md
+          ./repository-meta-analyzer/src/main/resources/application.properties
     # TODO: Add script invocations for the other services here!
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # tag=v6.0.5
