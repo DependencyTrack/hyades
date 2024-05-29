@@ -66,7 +66,8 @@ jobs:
     - name: Generate Repository Metadata Analyzer Documentation
       uses: jbangdev/jbang-action@74844c9631cf1f35650427323e9bb3ffa41dfbd9 # tag=v0.115.0
       with:
-        script: ./scripts/GenerateConfigDocs.java
+        trust: https://github.com/DependencyTrack/jbang-catalog
+        script: gen-config-docs@DependencyTrack
         scriptargs: >-
           --template ./scripts/config-docs.md.peb
           --output ./docs/reference/configuration/repo-meta-analyzer.md
