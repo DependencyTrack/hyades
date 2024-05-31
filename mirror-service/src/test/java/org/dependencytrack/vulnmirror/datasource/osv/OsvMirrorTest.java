@@ -264,7 +264,7 @@ class OsvMirrorTest {
                               "updated": "2023-03-28T05:45:27Z",
                               "ratings": [
                                 {
-                                  "method": "SCORE_METHOD_CVSSV3",
+                                  "method": "SCORE_METHOD_CVSSV31",
                                   "score": 4.4,
                                   "severity": "SEVERITY_MEDIUM",
                                   "vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N"

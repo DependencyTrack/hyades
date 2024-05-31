@@ -214,7 +214,7 @@ class OsvToCyclonedxParserTest {
                               "ratings": [{
                                 "score": 9.0,
                                 "severity": "SEVERITY_CRITICAL",
-                                "method": "SCORE_METHOD_CVSSV3",
+                                "method": "SCORE_METHOD_CVSSV31",
                                 "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H"
                               }],
                               "cwes": [601],
@@ -635,6 +635,61 @@ class OsvToCyclonedxParserTest {
                                       "range": "vers:golang/>=1.0.0|<2.1.16"
                                     }
                                   ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                        """);
+    }
+
+    @Test
+    void testParseWithInvalidCvssVectors() throws Exception {
+        final Bom bov = new OsvToCyclonedxParser(mapper).parse(new JSONObject("""
+                {
+                   "id": "GHSA-77rv-6vfw-x4gc",
+                   "schema_version": "1.2.0",
+                   "severity": [
+                     {
+                     },
+                     {
+                       "type": "CVSS_V3",
+                       "score": "CVSS:3.1/AV:N/AC:L"
+                     },
+                     {
+                       "type": "CVSS_V3",
+                       "score": "CVSS:3.0/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+                     },
+                     {
+                       "type": "CVSS_V2",
+                       "score": "AV:N/AC:H/Au:N/C:P/I:N/A:N"
+                     }
+                   ]
+                 }
+                """), false);
+
+        assertThatJson(JsonFormat.printer().print(bov))
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("""
+                        {
+                          "vulnerabilities": [
+                            {
+                              "id": "GHSA-77rv-6vfw-x4gc",
+                              "source": {
+                                "name": "GITHUB"
+                              },
+                              "ratings": [
+                                {
+                                  "score": 7.2,
+                                  "severity": "SEVERITY_HIGH",
+                                  "method": "SCORE_METHOD_CVSSV3",
+                                  "vector": "CVSS:3.0/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"
+                                },
+                                {
+                                  "score": 2.6,
+                                  "severity": "SEVERITY_LOW",
+                                  "method": "SCORE_METHOD_CVSSV2",
+                                  "vector": "AV:N/AC:H/Au:N/C:P/I:N/A:N"
                                 }
                               ]
                             }
