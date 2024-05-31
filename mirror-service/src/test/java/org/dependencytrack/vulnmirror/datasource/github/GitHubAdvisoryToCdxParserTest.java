@@ -72,14 +72,9 @@ class GitHubAdvisoryToCdxParserTest {
                                "name": "GITHUB"
                              },
                              "references": [{
-                               "id": "GHSA-fxwm-579q-49qq",
-                               "source": {
-                                 "name": "GHSA"
-                               }
-                             }, {
                                "id": "CVE-2019-8331",
                                "source": {
-                                 "name": "CVE"
+                                 "name": "NVD"
                                }
                              }],
                              "ratings": [{
@@ -164,14 +159,9 @@ class GitHubAdvisoryToCdxParserTest {
                                "name": "GITHUB"
                              },
                              "references": [{
-                               "id": "GHSA-p82g-2xpp-m5r3",
-                               "source": {
-                                 "name": "GHSA"
-                               }
-                             }, {
                                "id": "CVE-2015-5654",
                                "source": {
-                                 "name": "CVE"
+                                 "name": "NVD"
                                }
                              }],
                              "ratings": [{

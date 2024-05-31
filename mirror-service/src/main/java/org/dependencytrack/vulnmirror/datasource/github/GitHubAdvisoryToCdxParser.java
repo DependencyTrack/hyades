@@ -24,6 +24,7 @@ import com.github.packageurl.PackageURL;
 import com.github.packageurl.PackageURLBuilder;
 import com.google.protobuf.util.Timestamps;
 import io.github.jeremylong.openvulnerability.client.ghsa.CWEs;
+import io.github.jeremylong.openvulnerability.client.ghsa.Identifier;
 import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -101,7 +102,7 @@ public class GitHubAdvisoryToCdxParser {
         final var vulnAffectsBuilderByBomRef = new HashMap<String, VulnerabilityAffects.Builder>();
 
         if (advisory.getVulnerabilities() != null &&
-                CollectionUtils.isNotEmpty(advisory.getVulnerabilities().getEdges())) {
+            CollectionUtils.isNotEmpty(advisory.getVulnerabilities().getEdges())) {
 
             for (final io.github.jeremylong.openvulnerability.client.ghsa.Vulnerability gitHubVulnerability : advisory.getVulnerabilities().getEdges()) {
                 PackageURL purl = generatePurlFromGitHubVulnerability(gitHubVulnerability);
@@ -179,19 +180,38 @@ public class GitHubAdvisoryToCdxParser {
         return Optional.empty();
     }
 
-    private static List<VulnerabilityReference> mapVulnerabilityReferences(SecurityAdvisory advisory) {
+    private static List<VulnerabilityReference> mapVulnerabilityReferences(final SecurityAdvisory advisory) {
         if (CollectionUtils.isEmpty(advisory.getIdentifiers())) {
             return null;
         }
-        List<VulnerabilityReference> references = new ArrayList<>();
-        advisory.getIdentifiers().forEach(identifier -> {
-            VulnerabilityReference ref = VulnerabilityReference.newBuilder()
-                    .setId(identifier.getValue())
-                    .setSource(Source.newBuilder().setName(identifier.getType()).build())
-                    .build();
 
-            references.add(ref);
-        });
+        final var references = new ArrayList<VulnerabilityReference>();
+        for (final Identifier identifier : advisory.getIdentifiers()) {
+            if (advisory.getGhsaId().equals(identifier.getValue())) {
+                // The advisory's ID is usually repeated in the identifiers array.
+                // No need to list the vulnerability ID as reference again.
+                continue;
+            }
+
+            if (!advisory.getId().equals(identifier.getValue())) {
+                // TODO: Consider mapping to CNA names instead (https://github.com/DependencyTrack/hyades/issues/1297).
+                final String source = switch (identifier.getType()) {
+                    case "CVE" -> "NVD";
+                    case "GHSA" -> "GITHUB";
+                    default -> null;
+                };
+                if (source == null) {
+                    LOGGER.warn("Unknown type {} for identifier {}; Skipping", identifier.getType(), identifier.getValue());
+                    continue;
+                }
+
+                references.add(VulnerabilityReference.newBuilder()
+                        .setId(identifier.getValue())
+                        .setSource(Source.newBuilder().setName(source))
+                        .build());
+            }
+        }
+
         return references;
     }
 
