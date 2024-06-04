@@ -36,12 +36,15 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.dependencytrack.repometaanalyzer.repositories.NugetMetaAnalyzer.SUPPORTED_DATE_FORMATS;
 
 class NugetMetaAnalyzerTest {
     private IMetaAnalyzer analyzer;
@@ -169,6 +172,17 @@ class NugetMetaAnalyzerTest {
         Assertions.assertNotNull(metaModel.getPublishedTimestamp());
     }
 
+    @Test
+    void testPublishedDateTimeFormat() throws ParseException {
+        Date dateParsed = null;
+        for (DateFormat dateFormat : SUPPORTED_DATE_FORMATS) {
+            try {
+                dateParsed = dateFormat.parse("1900-01-01T00:00:00+00:00");
+            } catch (ParseException e) {}
+        }
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Assertions.assertEquals(dateFormat.parse("1900-01-01T00:00:00+00:00"), dateParsed);
+    }
 
     private String readResourceFileToString(String fileName) throws Exception {
         return Files.readString(Paths.get(getClass().getResource(fileName).toURI()));

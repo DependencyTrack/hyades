@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 
@@ -47,7 +48,7 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubMirror.class);
     private static final String NOTIFICATION_TITLE = "GitHub Advisory Mirroring";
 
-    final GitHubApiClientFactory apiClientFactory;
+    private final GitHubApiClientFactory apiClientFactory;
     private final ExecutorService executorService;
     private final Timer durationTimer;
     private final GitHubConfig config;
@@ -57,7 +58,8 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
                  final MirrorStateStore mirrorStateStore,
                  final VulnerabilityDigestStore vulnDigestStore,
                  final Producer<String, byte[]> kafkaProducer,
-                 @ForGitHubMirror final Timer durationTimer, GitHubConfig config) {
+                 @ForGitHubMirror final Timer durationTimer,
+                 final GitHubConfig config) {
         super(Datasource.GITHUB, mirrorStateStore, vulnDigestStore, kafkaProducer, GitHubMirrorState.class);
         this.apiClientFactory = apiClientFactory;
         this.executorService = executorService;
@@ -71,7 +73,12 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
     }
 
     @Override
-    public Future<?> doMirror(String ecosystem) {
+    public Future<?> doMirror() {
+        if (!config.enabled().orElse(false)) {
+            LOGGER.warn("Mirroring of the {} datasource was requested, but it is not enabled", Datasource.GITHUB);
+            return completedFuture(null);
+        }
+
         return executorService.submit(() -> {
             try {
                 mirrorInternal();
@@ -99,7 +106,7 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
         try (final GitHubSecurityAdvisoryClient apiClient = apiClientFactory.create(lastModified)) {
             while (apiClient.hasNext()) {
                 for (final SecurityAdvisory advisory : apiClient.next()) {
-                    Bom bov =  GitHubAdvisoryToCdxParser.parse(advisory, this.config.aliasSyncEnabled());
+                    Bom bov = GitHubAdvisoryToCdxParser.parse(advisory, this.config.aliasSyncEnabled().orElse(false));
                     publishIfChanged(bov);
                 }
             }

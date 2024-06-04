@@ -18,10 +18,6 @@
  */
 package org.dependencytrack.vulnmirror.datasource.nvd;
 
-import io.github.jeremylong.openvulnerability.client.nvd.NvdApiException;
-import io.github.resilience4j.retry.Retry;
-import io.github.resilience4j.retry.RetryConfig;
-import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -32,13 +28,10 @@ import org.dependencytrack.vulnmirror.datasource.util.LoggingUncaughtExceptionHa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import static io.github.resilience4j.core.IntervalFunction.ofExponentialBackoff;
 
 class NvdMirrorConfiguration {
 
@@ -66,19 +59,4 @@ class NvdMirrorConfiguration {
                 .register(meterRegistry);
     }
 
-    @Produces
-    @ForNvdMirror
-    @ApplicationScoped
-    Retry createRetry(NvdConfig config) {
-        final RetryRegistry retryRegistry = RetryRegistry.of(RetryConfig.custom().
-                intervalFunction(ofExponentialBackoff(
-                        Duration.ofSeconds(config.retryBackoffInitialDurationSeconds()),
-                        config.retryBackoffMultiplier(), Duration.ofSeconds(config.retryMaxDuration())))
-                .maxAttempts(config.retryMaxAttempts())
-                .retryOnException(NvdApiException.class::isInstance)
-                .retryOnResult(response -> false)
-                .build());
-
-        return retryRegistry.retry("nvdMirrorRetry");
-    }
 }

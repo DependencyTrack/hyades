@@ -16,18 +16,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.vulnmirror.datasource.osv;
+package org.dependencytrack.notification.publisher;
 
 import io.smallrye.config.ConfigMapping;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Provider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-
-import static java.util.function.Predicate.not;
 
 /**
  * As of Quarkus 3.9 / smallrye-config 3.7, it is not possible to use {@link ConfigMapping}
@@ -38,36 +34,32 @@ import static java.util.function.Predicate.not;
  * @see <a href="https://github.com/smallrye/smallrye-config/issues/664">Related smallrye-config issue</a>
  */
 @ApplicationScoped
-class OsvConfig {
+class JiraPublisherConfig {
 
-    private final Provider<Optional<String>> enabledEcosystemsProvider;
     private final Provider<Optional<String>> baseUrlProvider;
-    private final Provider<Optional<Boolean>> aliasSyncEnabledProvider;
+    private final Provider<Optional<String>> usernameProvider;
+    private final Provider<Optional<String>> passwordProvider;
 
-    public OsvConfig(
-            @ConfigProperty(name = "dtrack.vuln-source.google.osv.enabled") final Provider<Optional<String>> enabledEcosystemsProvider,
-            @ConfigProperty(name = "dtrack.vuln-source.google.osv.base.url") final Provider<Optional<String>> baseUrlProvider,
-            @ConfigProperty(name = "dtrack.vuln-source.google.osv.alias.sync.enabled") final Provider<Optional<Boolean>> aliasSyncEnabledProvider
+    JiraPublisherConfig(
+            @ConfigProperty(name = "dtrack.integrations.jira.url") final Provider<Optional<String>> baseUrlProvider,
+            @ConfigProperty(name = "dtrack.integrations.jira.username") final Provider<Optional<String>> usernameProvider,
+            @ConfigProperty(name = "dtrack.integrations.jira.password") final Provider<Optional<String>> passwordProvider
     ) {
-        this.enabledEcosystemsProvider = enabledEcosystemsProvider;
         this.baseUrlProvider = baseUrlProvider;
-        this.aliasSyncEnabledProvider = aliasSyncEnabledProvider;
-    }
-
-    List<String> enabledEcosystems() {
-        return enabledEcosystemsProvider.get().stream()
-                .flatMap(ecosystems -> Arrays.stream(ecosystems.split(";")))
-                .map(String::trim)
-                .filter(not(String::isEmpty))
-                .toList();
+        this.usernameProvider = usernameProvider;
+        this.passwordProvider = passwordProvider;
     }
 
     Optional<String> baseUrl() {
         return baseUrlProvider.get();
     }
 
-    Optional<Boolean> aliasSyncEnabled() {
-        return aliasSyncEnabledProvider.get();
+    Optional<String> username() {
+        return usernameProvider.get();
+    }
+
+    Optional<String> password() {
+        return passwordProvider.get();
     }
 
 }

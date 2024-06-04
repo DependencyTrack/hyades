@@ -38,6 +38,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 
@@ -47,20 +48,23 @@ class EpssMirror extends AbstractDatasourceMirror<Void> {
     private static final Logger LOGGER = LoggerFactory.getLogger(EpssMirror.class);
     private static final String NOTIFICATION_TITLE = "EPSS Mirroring";
     private final ExecutorService executorService;
-    final EpssClientFactory epssClientFactory;
+    private final EpssClientFactory epssClientFactory;
+    private final EpssConfig config;
     private final Timer durationTimer;
-    private Producer<String, byte[]> kafkaProducer;
+    private final Producer<String, byte[]> kafkaProducer;
 
     EpssMirror(@ForEpssMirror final ExecutorService executorService,
                final MirrorStateStore mirrorStateStore,
                final VulnerabilityDigestStore vulnDigestStore,
                final Producer<String, byte[]> kafkaProducer,
                @ForEpssMirror final Timer durationTimer,
-               final EpssClientFactory epssClientFactory) {
+               final EpssClientFactory epssClientFactory,
+               final EpssConfig config) {
         super(Datasource.EPSS, mirrorStateStore, vulnDigestStore, kafkaProducer, Void.class);
         this.executorService = executorService;
         this.durationTimer = durationTimer;
         this.epssClientFactory = epssClientFactory;
+        this.config = config;
         this.kafkaProducer = kafkaProducer;
     }
 
@@ -70,7 +74,12 @@ class EpssMirror extends AbstractDatasourceMirror<Void> {
     }
 
     @Override
-    public Future<?> doMirror(String ecosystem) {
+    public Future<?> doMirror() {
+        if (!config.enabled().orElse(false)) {
+            LOGGER.warn("Mirroring of the {} datasource was requested, but it is not enabled", Datasource.EPSS);
+            return completedFuture(null);
+        }
+
         return executorService.submit(() -> {
             try {
                 performMirror();

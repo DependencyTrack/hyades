@@ -38,7 +38,13 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,6 +55,7 @@ public class AbstractE2ET {
     protected static String POSTGRES_IMAGE = "postgres:15-alpine";
     protected static String REDPANDA_IMAGE = "docker.redpanda.com/vectorized/redpanda:v23.3.13";
     protected static String API_SERVER_IMAGE = "ghcr.io/dependencytrack/hyades-apiserver:snapshot";
+    protected static String MIRROR_SERVICE_IMAGE = "ghcr.io/dependencytrack/hyades-mirror-service:snapshot";
     protected static String NOTIFICATION_PUBLISHER_IMAGE = "ghcr.io/dependencytrack/hyades-notification-publisher:snapshot";
     protected static String REPO_META_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot";
     protected static String VULN_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot";
@@ -58,10 +65,12 @@ public class AbstractE2ET {
     protected PostgreSQLContainer<?> postgresContainer;
     protected GenericContainer<?> redpandaContainer;
     protected GenericContainer<?> apiServerContainer;
+    protected GenericContainer<?> mirrorServiceContainer;
     protected GenericContainer<?> notificationPublisherContainer;
     protected GenericContainer<?> repoMetaAnalyzerContainer;
     protected GenericContainer<?> vulnAnalyzerContainer;
     protected ApiServerClient apiServerClient;
+    private Path secretKeyPath;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -71,13 +80,21 @@ public class AbstractE2ET {
 
         initializeRedpanda();
 
+        generateSecretKey();
+
         apiServerContainer = createApiServerContainer();
         apiServerContainer.start();
 
+        mirrorServiceContainer = createMirrorServiceContainer();
         notificationPublisherContainer = createNotificationPublisherContainer();
         repoMetaAnalyzerContainer = createRepoMetaAnalyzerContainer();
         vulnAnalyzerContainer = createVulnAnalyzerContainer();
-        deepStart(notificationPublisherContainer, repoMetaAnalyzerContainer, vulnAnalyzerContainer).join();
+        deepStart(
+                mirrorServiceContainer,
+                notificationPublisherContainer,
+                repoMetaAnalyzerContainer,
+                vulnAnalyzerContainer
+        ).join();
 
         apiServerClient = initializeApiServerClient();
     }
@@ -118,6 +135,18 @@ public class AbstractE2ET {
                 .start();
     }
 
+    private void generateSecretKey() throws Exception {
+        secretKeyPath = Files.createTempFile(null, null);
+        secretKeyPath.toFile().deleteOnExit();
+
+        final KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+        keyGen.init(256, random);
+        final SecretKey secretKey = keyGen.generateKey();
+
+        Files.write(secretKeyPath, secretKey.getEncoded());
+    }
+
     @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
@@ -127,6 +156,11 @@ public class AbstractE2ET {
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
                 .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("ALPINE_SECRET_KEY_PATH", "/var/run/secrets/secret.key")
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(secretKeyPath, 444),
+                        "/var/run/secrets/secret.key"
+                )
                 .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("apiserver")))
                 .waitingFor(Wait.forLogMessage(".*Dependency-Track is ready.*", 1))
                 .withNetworkAliases("apiserver")
@@ -140,6 +174,31 @@ public class AbstractE2ET {
     }
 
     @SuppressWarnings("resource")
+    private GenericContainer<?> createMirrorServiceContainer() {
+        final var container = new GenericContainer<>(DockerImageName.parse(MIRROR_SERVICE_IMAGE))
+                .withImagePullPolicy(PullPolicy.alwaysPull())
+                .withEnv("JAVA_OPTS", "-Xmx256m")
+                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
+                .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
+                .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
+                .withEnv("SECRET_KEY_PATH", "/var/run/secrets/secret.key")
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(secretKeyPath, 444),
+                        "/var/run/secrets/secret.key"
+                )
+                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mirror-service")))
+                .withNetworkAliases("mirror-service")
+                .withNetwork(internalNetwork)
+                .withStartupAttempts(3);
+        customizeMirrorServiceContainer(container);
+        return container;
+    }
+
+    protected void customizeMirrorServiceContainer(final GenericContainer<?> container) {
+    }
+
+    @SuppressWarnings("resource")
     private GenericContainer<?> createNotificationPublisherContainer() {
         final var container = new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
                 .withImagePullPolicy(PullPolicy.alwaysPull())
@@ -148,6 +207,11 @@ public class AbstractE2ET {
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
+                .withEnv("SECRET_KEY_PATH", "/var/run/secrets/secret.key")
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(secretKeyPath, 444),
+                        "/var/run/secrets/secret.key"
+                )
                 .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("notification-publisher")))
                 .withNetworkAliases("notification-publisher")
                 .withNetwork(internalNetwork)
@@ -168,6 +232,11 @@ public class AbstractE2ET {
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
+                .withEnv("SECRET_KEY_PATH", "/var/run/secrets/secret.key")
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(secretKeyPath, 444),
+                        "/var/run/secrets/secret.key"
+                )
                 .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("repo-meta-analyzer")))
                 .withNetworkAliases("repo-meta-analyzer")
                 .withNetwork(internalNetwork)
@@ -233,7 +302,7 @@ public class AbstractE2ET {
         }
 
         logger.info("Authenticating as e2e team");
-        ApiServerAuthInterceptor.setApiKey(team.apiKeys().get(0).key());
+        ApiServerAuthInterceptor.setApiKey(team.apiKeys().getFirst().key());
 
         return client;
     }
@@ -245,6 +314,7 @@ public class AbstractE2ET {
         Optional.ofNullable(vulnAnalyzerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(repoMetaAnalyzerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(notificationPublisherContainer).ifPresent(GenericContainer::stop);
+        Optional.ofNullable(mirrorServiceContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(apiServerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(redpandaContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(postgresContainer).ifPresent(GenericContainer::stop);

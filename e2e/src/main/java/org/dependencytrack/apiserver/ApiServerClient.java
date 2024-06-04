@@ -45,6 +45,7 @@ import org.dependencytrack.apiserver.model.VulnerabilityPolicy;
 import org.dependencytrack.apiserver.model.WorkflowState;
 import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -133,6 +134,12 @@ public interface ApiServerClient {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     ConfigProperty updateConfigProperty(final ConfigProperty configProperty);
+
+    @POST
+    @Path("/configProperty/aggregate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    List<ConfigProperty> updateConfigProperties(final Collection<ConfigProperty> configProperties);
 
     @GET
     @Path("/policy/vulnerability")

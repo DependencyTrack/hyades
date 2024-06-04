@@ -72,14 +72,9 @@ class GitHubAdvisoryToCdxParserTest {
                                "name": "GITHUB"
                              },
                              "references": [{
-                               "id": "GHSA-fxwm-579q-49qq",
-                               "source": {
-                                 "name": "GHSA"
-                               }
-                             }, {
                                "id": "CVE-2019-8331",
                                "source": {
-                                 "name": "CVE"
+                                 "name": "NVD"
                                }
                              }],
                              "ratings": [{
@@ -164,21 +159,16 @@ class GitHubAdvisoryToCdxParserTest {
                                "name": "GITHUB"
                              },
                              "references": [{
-                               "id": "GHSA-p82g-2xpp-m5r3",
-                               "source": {
-                                 "name": "GHSA"
-                               }
-                             }, {
                                "id": "CVE-2015-5654",
                                "source": {
-                                 "name": "CVE"
+                                 "name": "NVD"
                                }
                              }],
                              "ratings": [{
-                               "method": "SCORE_METHOD_CVSSV3",
+                               "method": "SCORE_METHOD_CVSSV31",
                                "score": 5.4,
                                "severity": "SEVERITY_MEDIUM",
-                               "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
+                               "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
                                "source": {
                                  "name": "GITHUB"
                                }
@@ -247,10 +237,10 @@ class GitHubAdvisoryToCdxParserTest {
                                "name": "GITHUB"
                              },
                              "ratings": [{
-                               "method": "SCORE_METHOD_CVSSV3",
+                               "method": "SCORE_METHOD_CVSSV31",
                                "score": 5.4,
                                "severity": "SEVERITY_MEDIUM",
-                               "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
+                               "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
                                "source": {
                                  "name": "GITHUB"
                                }

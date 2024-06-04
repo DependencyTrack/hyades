@@ -14,7 +14,7 @@ To make it easier for users to discover available configuration options,
 we generate human-readable documentation for it, and include it in our [docs](docs/reference/configuration).
 
 Configuration documentation is generated from `application.properties` files.
-We use the [`GenerateConfigDocs`](scripts/GenerateConfigDocs.java) [JBang] script for this:
+We use the [`GenerateConfigDocs`](https://github.com/DependencyTrack/jbang-catalog/blob/main/GenerateConfigDocs.java) [JBang] script for this:
 
 ```
 Usage: GenerateConfigDocs [--include-hidden] [-o=OUTPUT_PATH] -t=TEMPLATE_FILE
@@ -30,7 +30,7 @@ Usage: GenerateConfigDocs [--include-hidden] [-o=OUTPUT_PATH] -t=TEMPLATE_FILE
 To generate documentation for the API server, you would run:
 
 ```shell
-jbang scripts/GenerateConfigDocs.java \
+jbang gen-config-docs@DependencyTrack \
     -t ./scripts/config-docs.md.peb \
     -o ./docs/reference/configuration/api-server.md \
     ../hyades-apiserver/src/main/resources/application.properties

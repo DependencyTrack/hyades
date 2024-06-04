@@ -64,20 +64,21 @@
     <project.parentBaseDir>.</project.parentBaseDir>
 
     <!-- Dependency Versions -->
-    <lib.assertj.version>3.25.3</lib.assertj.version>
-    <lib.checkstyle.version>10.16.0</lib.checkstyle.version>
-    <lib.cloud-sql-postgres-socket-factory.version>1.18.0</lib.cloud-sql-postgres-socket-factory.version>
+    <lib.assertj.version>3.26.0</lib.assertj.version>
+    <lib.checkstyle.version>10.17.0</lib.checkstyle.version>
+    <lib.cloud-sql-postgres-socket-factory.version>1.18.1</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>2.1.0</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
     <lib.confluent-parallel-consumer.version>0.5.2.8</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
-    <lib.cvss-calculator.version>1.4.2</lib.cvss-calculator.version>
+    <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
+    <lib.github-api.version>1.321</lib.github-api.version>
     <lib.greenmail.version>2.0.1</lib.greenmail.version>
-    <lib.java-uuid-generator.version>5.0.0</lib.java-uuid-generator.version>
+    <lib.java-uuid-generator.version>5.1.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>3.2.7</lib.json-unit.version>
     <lib.kafka.version>3.7.0</lib.kafka.version>
-    <lib.maven-artifact.version>4.0.0-alpha-13</lib.maven-artifact.version>
+    <lib.maven-artifact.version>4.0.0-beta-3</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.5.10</lib.minio.version>
     <lib.open-feign.version>13.2.1</lib.open-feign.version>
@@ -87,11 +88,13 @@
     <lib.open.vulnerability.clients.version>6.0.1</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>3.25.3</lib.protobuf-java.version>
+    <lib.quarkus-mailpit.version>1.0.1</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.5</lib.snappy-java.version>
-    <lib.testcontainers-minio.version>1.19.7</lib.testcontainers-minio.version>
+    <lib.testcontainers-minio.version>1.19.8</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>3.10.0</quarkus.platform.version>
+    <quarkus.platform.version>3.10.1</quarkus.platform.version>
+    <quarkus.wiremock.version>1.3.2</quarkus.wiremock.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
     <lib.brotli.version>0.1.2</lib.brotli.version>
     <lib.versatile.version>0.6.1</lib.versatile.version>
@@ -108,19 +111,6 @@
     <scm.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.connection>
     <scm.developer.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.developer.connection>
     <scm.url>https://github.com/DependencyTrack/hyades.git</scm.url>
-
-    <!-- SonarCloud -->
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.organization>dependency-track</sonar.organization>
-    <sonar.projectKey>dependency-track_hyades</sonar.projectKey>
-    <sonar.moduleKey>${artifactId}</sonar.moduleKey>
-    <sonar.coverage.jacoco.xmlReportPaths>**/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.exclusions>e2e/**/*</sonar.exclusions>
-    <!--
-      Quarkus extensions are tested in their deployment module,
-      but those tests won't report any coverage for the runtime module.
-    -->
-    <sonar.coverage.exclusions>quarkus-extensions/*/runtime/**/*</sonar.coverage.exclusions>
 
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
@@ -191,6 +181,12 @@
         <groupId>dev.failsafe</groupId>
         <artifactId>failsafe</artifactId>
         <version>${lib.failsafe.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kohsuke</groupId>
+        <artifactId>github-api</artifactId>
+        <version>${lib.github-api.version}</version>
       </dependency>
 
       <dependency>
@@ -284,6 +280,27 @@
         <groupId>org.dependencytrack</groupId>
         <artifactId>quarkus-config-dependencytrack</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.quarkiverse.wiremock</groupId>
+        <artifactId>quarkus-wiremock</artifactId>
+        <version>${quarkus.wiremock.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.wiremock</groupId>
+        <artifactId>quarkus-wiremock-test</artifactId>
+        <version>${quarkus.wiremock.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.mailpit</groupId>
+        <artifactId>quarkus-mailpit</artifactId>
+        <version>${lib.quarkus-mailpit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.mailpit</groupId>
+        <artifactId>quarkus-mailpit-testing</artifactId>
+        <version>${lib.quarkus-mailpit.version}</version>
       </dependency>
 
       <dependency>
@@ -394,7 +411,7 @@
         <plugin>
           <groupId>io.smallrye</groupId>
           <artifactId>jandex-maven-plugin</artifactId>
-          <version>3.1.7</version>
+          <version>3.1.8</version>
           <executions>
             <execution>
               <id>make-index</id>
@@ -458,6 +475,12 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${plugin.jacoco.version}</version>
+          <configuration>
+            <excludes>
+              <exclude>org/cyclonedx/proto/**/*</exclude>
+              <exclude>org/dependencytrack/proto/**/*</exclude>
+            </excludes>
+          </configuration>
           <executions>
             <execution>
               <id>default-prepare-agent</id>

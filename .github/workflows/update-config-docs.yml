@@ -21,6 +21,8 @@ on:
     branches:
     - main
     paths:
+    - ".github/workflows/update-config-docs.yml"
+    - "scripts/config-docs.md.peb"
     - "*/src/main/resources/application.properties"
   workflow_dispatch: { }
 
@@ -37,16 +39,17 @@ jobs:
     if: "${{ github.repository_owner == 'DependencyTrack' }}"
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # tag=v4.1.4
+      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # tag=v4.1.6
     - name: Checkout API Server Repository
-      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # tag=v4.1.4
+      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # tag=v4.1.6
       with:
         repository: DependencyTrack/hyades-apiserver
         path: hyades-apiserver
     - name: Generate API Server Documentation
       uses: jbangdev/jbang-action@74844c9631cf1f35650427323e9bb3ffa41dfbd9 # tag=v0.115.0
       with:
-        script: ./scripts/GenerateConfigDocs.java
+        trust: https://github.com/DependencyTrack/jbang-catalog
+        script: gen-config-docs@DependencyTrack
         scriptargs: >-
           --template ./scripts/config-docs.md.peb
           --output ./docs/reference/configuration/api-server.md
@@ -54,11 +57,21 @@ jobs:
     - name: Generate Mirror Service Documentation
       uses: jbangdev/jbang-action@74844c9631cf1f35650427323e9bb3ffa41dfbd9 # tag=v0.115.0
       with:
-        script: ./scripts/GenerateConfigDocs.java
+        trust: https://github.com/DependencyTrack/jbang-catalog
+        script: gen-config-docs@DependencyTrack
         scriptargs: >-
           --template ./scripts/config-docs.md.peb
           --output ./docs/reference/configuration/mirror-service.md
           ./mirror-service/src/main/resources/application.properties
+    - name: Generate Repository Metadata Analyzer Documentation
+      uses: jbangdev/jbang-action@74844c9631cf1f35650427323e9bb3ffa41dfbd9 # tag=v0.115.0
+      with:
+        trust: https://github.com/DependencyTrack/jbang-catalog
+        script: gen-config-docs@DependencyTrack
+        scriptargs: >-
+          --template ./scripts/config-docs.md.peb
+          --output ./docs/reference/configuration/repo-meta-analyzer.md
+          ./repository-meta-analyzer/src/main/resources/application.properties
     # TODO: Add script invocations for the other services here!
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # tag=v6.0.5

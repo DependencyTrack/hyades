@@ -105,15 +105,15 @@ Schema migrations are performed automatically by the API server upon startup. It
 There is usually no manual action required when upgrading from an older Dependency-Track version, unless explicitly
 stated otherwise in the release notes.
 
-This behavior can be turned off by setting the [`RUN_MIGRATIONS`](../../reference/configuration/api-server/#runmigrations)
-environment variable of the API server container to `false`.
+This behavior can be turned off by setting [`database.run.migrations`](../../reference/configuration/api-server/#databaserunmigrations) 
+on the API server container to `false`.
 
 It is possible to use different credentials for migrations than for the application itself.
-This can be achieved with the following environment variables:
+This can be achieved with the following options:
 
-* [`DATABASE_MIGRATION_URL`](../../reference/configuration/api-server/#databasemigrationurl)
-* [`DATABASE_MIGRATION_USERNAME`](../../reference/configuration/api-server/#databasemigrationusername)
-* [`DATABASE_MIGRATION_PASSWORD`](../../reference/configuration/api-server/#databasemigrationpassword)
+* [`database.migration.url`](../../reference/configuration/api-server/#databasemigrationurl)
+* [`database.migration.username`](../../reference/configuration/api-server/#databasemigrationusername)
+* [`database.migration.password`](../../reference/configuration/api-server/#databasemigrationpassword)
 
 The above with default to the main database credentials if not provided explicitly.
 

@@ -31,7 +31,6 @@
 
   <properties>
     <project.parentBaseDir>${project.basedir}/..</project.parentBaseDir>
-    <lib.org-kohsuke-github-api.version>1.321</lib.org-kohsuke-github-api.version>
   </properties>
 
   <dependencies>
@@ -132,6 +131,16 @@
     </dependency>
 
     <dependency>
+      <groupId>io.quarkiverse.wiremock</groupId>
+      <artifactId>quarkus-wiremock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.wiremock</groupId>
+      <artifactId>quarkus-wiremock-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock-jre8-standalone</artifactId>
       <scope>test</scope>
@@ -153,7 +162,6 @@
     <dependency>
       <groupId>org.kohsuke</groupId>
       <artifactId>github-api</artifactId>
-      <version>${lib.org-kohsuke-github-api.version}</version>
     </dependency>
   </dependencies>
 

@@ -64,6 +64,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -305,7 +306,7 @@ public final class NvdToCyclonedxParser {
                 CvssV2Data cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss)
                         .map(cvss20 -> VulnerabilityRating.newBuilder()
-                                .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvss20.getBaseScore())))
+                                .setScore(Double.parseDouble(NumberFormat.getInstance(Locale.US).format(cvss20.getBaseScore())))
                                 .setMethod(ScoreMethod.SCORE_METHOD_CVSSV2)
                                 .setVector(cvss20.getVectorString())
                                 .setSeverity(mapSeverity(baseMetric.getBaseSeverity()))
@@ -322,7 +323,7 @@ public final class NvdToCyclonedxParser {
                 CvssV3Data cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss)
                         .map(cvssx -> VulnerabilityRating.newBuilder()
-                                .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvssx.getBaseScore())))
+                                .setScore(Double.parseDouble(NumberFormat.getInstance(Locale.US).format(cvssx.getBaseScore())))
                                 .setMethod(ScoreMethod.SCORE_METHOD_CVSSV3)
                                 .setVector(cvssx.getVectorString())
                                 .setSeverity(mapSeverity(cvssx.getBaseSeverity().value()))
@@ -339,7 +340,7 @@ public final class NvdToCyclonedxParser {
                 CvssV3Data cvss = baseMetric.getCvssData();
                 Optional.ofNullable(cvss)
                         .map(cvss31 -> VulnerabilityRating.newBuilder()
-                                .setScore(Double.parseDouble(NumberFormat.getInstance().format(cvss.getBaseScore())))
+                                .setScore(Double.parseDouble(NumberFormat.getInstance(Locale.US).format(cvss.getBaseScore())))
                                 .setMethod(ScoreMethod.SCORE_METHOD_CVSSV31)
                                 .setVector(cvss.getVectorString())
                                 .setSeverity(mapSeverity(cvss.getBaseSeverity().value()))

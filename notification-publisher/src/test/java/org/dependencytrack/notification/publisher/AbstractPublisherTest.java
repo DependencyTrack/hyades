@@ -18,8 +18,11 @@
  */
 package org.dependencytrack.notification.publisher;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.protobuf.Any;
 import com.google.protobuf.util.Timestamps;
+import io.quarkiverse.wiremock.devservice.ConnectWireMock;
+import io.quarkiverse.wiremock.devservice.WireMockConfigKey;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -28,7 +31,6 @@ import jakarta.persistence.EntityManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.dependencytrack.notification.NotificationConstants;
-import org.dependencytrack.persistence.model.ConfigPropertyConstants;
 import org.dependencytrack.proto.notification.v1.BackReference;
 import org.dependencytrack.proto.notification.v1.Bom;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
@@ -40,7 +42,7 @@ import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysis;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
-import org.junit.jupiter.api.Test;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.List;
 
@@ -56,7 +58,13 @@ import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONA
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
 
+@ConnectWireMock
 abstract class AbstractPublisherTest<T extends Publisher> {
+
+    WireMock wireMock;
+
+    @ConfigProperty(name = WireMockConfigKey.PORT)
+    Integer wireMockPort;
 
     @Inject
     @SuppressWarnings("CdiInjectionPointsInspection")
@@ -65,10 +73,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
     @Inject
     EntityManager entityManager;
 
-    @Test
     void testInformWithBomConsumedNotification() throws Exception {
-        setupConfigProperties();
-
         final var subject = BomConsumedOrProcessedSubject.newBuilder()
                 .setProject(createProject())
                 .setBom(Bom.newBuilder()
@@ -91,10 +96,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test
     void testInformWithBomProcessingFailedNotification() throws Exception {
-        setupConfigProperties();
-
         final var subject = BomProcessingFailedSubject.newBuilder()
                 .setProject(createProject())
                 .setBom(Bom.newBuilder()
@@ -118,10 +120,8 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test // https://github.com/DependencyTrack/dependency-track/issues/3197
+    // https://github.com/DependencyTrack/dependency-track/issues/3197
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
-        setupConfigProperties();
-
         final var subject = BomProcessingFailedSubject.newBuilder()
                 .setProject(createProject())
                 .setBom(Bom.newBuilder()
@@ -145,10 +145,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test
     void testInformWithDataSourceMirroringNotification() throws Exception {
-        setupConfigProperties();
-
         final var notification = Notification.newBuilder()
                 .setScope(SCOPE_SYSTEM)
                 .setGroup(GROUP_DATASOURCE_MIRRORING)
@@ -162,10 +159,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test
     void testInformWithNewVulnerabilityNotification() throws Exception {
-        setupConfigProperties();
-
         final var project = createProject();
         final var component = createComponent(project);
         final var vuln = createVulnerability();
@@ -195,10 +189,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    @Test
     void testInformWithProjectAuditChangeNotification() throws Exception {
-        setupConfigProperties();
-
         final var project = createProject();
         final var component = createComponent(project);
         final var vuln = createVulnerability();
@@ -223,10 +214,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
         assertThatNoException()
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
-    }
-
-    void setupConfigProperties() throws Exception {
-        createOrUpdateConfigProperty(ConfigPropertyConstants.GENERAL_BASE_URL, "https://example.com");
     }
 
     private JsonObject createConfig() throws Exception {
@@ -265,7 +252,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
             templateFile = "console.peb";
         } else if (publisherInstance instanceof SendMailPublisher) {
             templateFile = "email.peb";
-        }else if (publisherInstance instanceof JiraPublisher) {
+        } else if (publisherInstance instanceof JiraPublisher) {
             templateFile = "jira.peb";
         } else if (publisherInstance instanceof MattermostPublisher) {
             templateFile = "mattermost.peb";
@@ -336,23 +323,6 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .setState("FALSE_POSITIVE")
                 .setSuppressed(true)
                 .build();
-    }
-
-    final void createOrUpdateConfigProperty(final ConfigPropertyConstants configProperty, final String value) {
-        entityManager.createNativeQuery("""
-                        INSERT INTO "CONFIGPROPERTY"
-                          ("DESCRIPTION", "GROUPNAME", "PROPERTYTYPE", "PROPERTYNAME", "PROPERTYVALUE")
-                        VALUES
-                          (NULL, :group, :type, :name, :value)
-                        ON CONFLICT ("GROUPNAME", "PROPERTYNAME") DO UPDATE
-                        SET
-                          "PROPERTYVALUE" = :value
-                        """)
-                .setParameter("group", configProperty.getGroupName())
-                .setParameter("type", configProperty.getPropertyType().name())
-                .setParameter("name", configProperty.getPropertyName())
-                .setParameter("value", value)
-                .executeUpdate();
     }
 
     private static PublishContext createPublishContext(final Notification notification) throws Exception {

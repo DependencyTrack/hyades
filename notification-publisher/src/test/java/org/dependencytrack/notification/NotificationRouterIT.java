@@ -18,9 +18,12 @@
  */
 package org.dependencytrack.notification;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.protobuf.Any;
 import com.google.protobuf.util.Timestamps;
+import io.quarkiverse.wiremock.devservice.ConnectWireMock;
+import io.quarkiverse.wiremock.devservice.WireMockConfigKey;
+import io.quarkus.test.common.DevServicesContext;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
@@ -33,7 +36,6 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.awaitility.Awaitility;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.notification.publisher.PublisherTestUtil;
-import org.dependencytrack.notification.util.WireMockTestResource;
 import org.dependencytrack.proto.KafkaProtobufSerde;
 import org.dependencytrack.proto.notification.v1.Component;
 import org.dependencytrack.proto.notification.v1.Group;
@@ -58,12 +60,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 @QuarkusIntegrationTest
 @TestProfile(NotificationRouterIT.TestProfile.class)
 @QuarkusTestResource(KafkaCompanionResource.class)
-@QuarkusTestResource(WireMockTestResource.class)
+@ConnectWireMock
 class NotificationRouterIT {
 
     public static class TestProfile implements QuarkusTestProfile {
@@ -78,8 +81,9 @@ class NotificationRouterIT {
     @InjectKafkaCompanion
     KafkaCompanion kafkaCompanion;
 
-    @WireMockTestResource.InjectWireMock
-    WireMockServer wireMockServer;
+    WireMock wireMock;
+
+    DevServicesContext devServicesContext;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -96,23 +100,24 @@ class NotificationRouterIT {
             ps.setString(1, PublisherTestUtil.getTemplateContent("WEBHOOK"));
             ps.execute();
 
+            int port = Integer.parseInt(devServicesContext.devServicesProperties().get(WireMockConfigKey.PORT));
             connection.createStatement().execute("""
                     INSERT INTO "NOTIFICATIONRULE" ("ID", "ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "LOG_SUCCESSFUL_PUBLISH", "NOTIFICATION_LEVEL", "SCOPE", "UUID", "PUBLISHER_CONFIG") VALUES
                     (1, true, 'foo', 1, 'NEW_VULNERABILITY', false, false, 'INFORMATIONAL', 'PORTFOLIO', '6b1fee41-4178-4a23-9d1b-e9df79de8e62', '{"destination": "http://localhost:%d/foo"}');
-                    """.formatted(wireMockServer.port()));
+                    """.formatted(port));
         }
     }
 
     @Test
     void test() {
-        wireMockServer.stubFor(post(urlPathEqualTo("/foo"))
+        wireMock.register(post(urlEqualTo("/foo"))
                 .inScenario("notification-delivery")
                 .willReturn(aResponse()
                         .withStatus(204)
                         .withFixedDelay(5 * 1000))
                 .willSetStateTo("first-attempt-timeout"));
 
-        wireMockServer.stubFor(post(urlPathEqualTo("/foo"))
+        wireMock.register(post(urlEqualTo("/foo"))
                 .inScenario("notification-delivery")
                 .whenScenarioStateIs("first-attempt-timeout")
                 .willReturn(aResponse()
@@ -148,9 +153,9 @@ class NotificationRouterIT {
 
         Awaitility.await()
                 .atMost(15, TimeUnit.SECONDS)
-                .untilAsserted(() -> wireMockServer.verify(2, postRequestedFor(urlPathEqualTo("/foo"))));
+                .untilAsserted(() -> wireMock.verifyThat(2, postRequestedFor(urlPathEqualTo("/foo"))));
 
-        wireMockServer.verify(postRequestedFor(urlPathEqualTo("/foo"))
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/foo"))
                 .withHeader("Content-Type", equalTo("application/json"))
                 .withRequestBody(equalToJson("""
                         {

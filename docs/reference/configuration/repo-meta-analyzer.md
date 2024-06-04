@@ -1,32 +1,32 @@
 <!--
   GENERATED. DO NOT EDIT.
 
-  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/mirror-service.md ./mirror-service/src/main/resources/application.properties
+  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/repo-meta-analyzer.md ./repository-meta-analyzer/src/main/resources/application.properties
 -->
 
-## Datasource
+## Cache
 
-### mirror.datasource.osv.alias-sync-enabled
+### quarkus.cache.caffeine."metaAnalyzer".expire-after-write
 
-Defines whether vulnerability aliases should be parsed from OSV.  
+Defines the time-to-live of cache entries.  
 
 <table>
   <tbody style="border: 0">
     <tr>
       <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
+      <td style="border-width: 0">true</td>
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
+      <td style="border-width: 0"><code>duration</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
+      <td style="border-width: 0"><code>PT2H</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>MIRROR_DATASOURCE_OSV_ALIAS_SYNC_ENABLED</code></td>
+      <td style="border-width: 0"><code>QUARKUS_CACHE_CAFFEINE__METAANALYZER__EXPIRE_AFTER_WRITE</code></td>
     </tr>
   </tbody>
 </table>
@@ -34,9 +34,153 @@ Defines whether vulnerability aliases should be parsed from OSV.
 
 ---
 
-### mirror.datasource.osv.base-url
+### quarkus.cache.caffeine."metaAnalyzer".initial-capacity
 
-Defines the URL of the OSV storage bucket.  
+Defines the initial capacity of the cache.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_CACHE_CAFFEINE__METAANALYZER__INITIAL_CAPACITY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### quarkus.cache.enabled
+
+Defines whether caching of analysis results shall be enabled.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_CACHE_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+## Database
+
+### quarkus.datasource.jdbc.url
+
+Specifies the JDBC URL to use when connecting to the database.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_JDBC_URL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### quarkus.datasource.password
+
+Specifies the password to use when authenticating to the database.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_PASSWORD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### quarkus.datasource.username
+
+Specifies the username to use when authenticating to the database.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_USERNAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+## General
+
+### secret.key.path
+
+Defines the path to the secret key to be used for data encryption and decryption.  
 
 <table>
   <tbody style="border: 0">
@@ -50,11 +194,11 @@ Defines the URL of the OSV storage bucket.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>https://osv-vulnerabilities.storage.googleapis.com</code></td>
+      <td style="border-width: 0"><code>~/.dependency-track/keys/secret.key</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>MIRROR_DATASOURCE_OSV_BASE_URL</code></td>
+      <td style="border-width: 0"><code>SECRET_KEY_PATH</code></td>
     </tr>
   </tbody>
 </table>
@@ -80,7 +224,7 @@ HTTP port to listen on. Application metrics will be available via this port.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>8093</code></td>
+      <td style="border-width: 0"><code>8091</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -93,6 +237,38 @@ HTTP port to listen on. Application metrics will be available via this port.
 
 
 ## Kafka
+
+### kafka-streams.auto.offset.reset
+
+Refer to <https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset> for details.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_STREAMS_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
 
 ### kafka-streams.commit.interval.ms
 
@@ -290,9 +466,41 @@ Defines the interval within which up to [`kafka-streams.exception.thresholds.pro
 
 ---
 
+### kafka-streams.metrics.recording.level
+
+Refer to <https://kafka.apache.org/documentation/#adminclientconfigs_metrics.recording.level> for details.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[INFO, DEBUG, TRACE]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>DEBUG</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_STREAMS_METRICS_RECORDING_LEVEL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### kafka-streams.num.stream.threads
 
-The number of threads to allocate for stream processing tasks.  Note that Specifying a number higher than the number of input partitions provides no additional benefit,  as excess threads will simply run idle.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads> for details.  
+Refer to <https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads> for details.  
 
 <table>
   <tbody style="border: 0">
@@ -350,34 +558,6 @@ Comma-separated list of brokers to use for establishing the initial connection t
 
 ---
 
-### kafka.max.request.size
-
-Defines the maximum size of a Kafka producer request in bytes.  <br/><br/>  Some messages like Bill of Vulnerabilities can be bigger than the default 1MiB.  Since the size check is performed before records are compressed, this value may need to be increased  even though the compressed value is much smaller. The Kafka default of 1MiB has been raised to 2MiB.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#producerconfigs_max.request.size> for details.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2097152</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_MAX_REQUEST_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### kafka.topic.prefix
 
 Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  
@@ -426,7 +606,7 @@ Defines the ID to uniquely identify this application in the Kafka cluster.  <br/
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${kafka.topic.prefix}hyades-mirror-service</code></td>
+      <td style="border-width: 0"><code>${kafka.topic.prefix}hyades-repository-meta-analyzer</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>

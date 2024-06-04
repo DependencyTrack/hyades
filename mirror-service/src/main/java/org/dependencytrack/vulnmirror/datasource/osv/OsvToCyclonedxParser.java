@@ -44,12 +44,17 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.springett.cvss.Cvss;
+import us.springett.cvss.CvssV2;
+import us.springett.cvss.CvssV3;
+import us.springett.cvss.CvssV3_1;
+import us.springett.cvss.MalformedVectorException;
 import us.springett.cvss.Score;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -59,6 +64,8 @@ import java.util.stream.Collectors;
 
 import static io.github.nscuro.versatile.VersUtils.versFromOsvRange;
 import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_UNKNOWN;
+import static org.dependencytrack.commonutil.VulnerabilityUtil.normalizedCvssV2Score;
+import static org.dependencytrack.commonutil.VulnerabilityUtil.normalizedCvssV3Score;
 
 public class OsvToCyclonedxParser {
 
@@ -213,7 +220,7 @@ public class OsvToCyclonedxParser {
             if (cvssVector != null) {
                 Cvss cvss = Cvss.fromVector(cvssVector);
                 Score score = cvss.calculateScore();
-                severity = String.valueOf(VulnerabilityUtil.normalizedCvssV3Score(score.getBaseScore()));
+                severity = String.valueOf(normalizedCvssV3Score(score.getBaseScore()));
             }
         }
         if (severity == null && ecosystemSpecific != null) {
@@ -265,23 +272,44 @@ public class OsvToCyclonedxParser {
         cvssList.forEach(item -> {
             JSONObject cvssObj = (JSONObject) item;
             String vector = cvssObj.optString("score", null);
-            Cvss cvss = Cvss.fromVector(vector);
+            if (vector == null) {
+                return;
+            }
+
+            final Cvss cvss;
+            try {
+                cvss = Cvss.fromVector(vector);
+            } catch (MalformedVectorException e) {
+                LOGGER.warn("Failed to parse CVSS vector: {}", vector, e);
+                return;
+            }
+
+            double score = cvss.calculateScore().getBaseScore();
 
             var rating = VulnerabilityRating.newBuilder();
-            double score = cvss.calculateScore().getBaseScore();
-            rating.setVector(vector);
-            rating.setScore(Double.parseDouble(NumberFormat.getInstance().format(score)));
-            String type = cvssObj.optString("type", null);
 
-            if (type != null && type.equalsIgnoreCase("CVSS_V3")) {
-                rating.setMethod(ScoreMethod.SCORE_METHOD_CVSSV3);
-                rating.setSeverity(ParserUtil.mapSeverity(
-                        String.valueOf(VulnerabilityUtil.normalizedCvssV3Score(score))));
-            } else {
-                rating.setMethod(ScoreMethod.SCORE_METHOD_CVSSV2);
-                rating.setSeverity(ParserUtil.mapSeverity(
-                        String.valueOf(VulnerabilityUtil.normalizedCvssV2Score(score))));
+            rating.setVector(vector);
+            rating.setScore(Double.parseDouble(NumberFormat.getInstance(Locale.US).format(score)));
+
+            switch (cvss) {
+                case CvssV3_1 ignored -> {
+                    rating.setMethod(ScoreMethod.SCORE_METHOD_CVSSV31);
+                    rating.setSeverity(ParserUtil.mapSeverity(String.valueOf(normalizedCvssV3Score(score))));
+                }
+                case CvssV3 ignored -> {
+                    rating.setMethod(ScoreMethod.SCORE_METHOD_CVSSV3);
+                    rating.setSeverity(ParserUtil.mapSeverity(String.valueOf(normalizedCvssV3Score(score))));
+                }
+                case CvssV2 ignored -> {
+                    rating.setMethod(ScoreMethod.SCORE_METHOD_CVSSV2);
+                    rating.setSeverity(ParserUtil.mapSeverity(String.valueOf(normalizedCvssV2Score(score))));
+                }
+                default -> {
+                    rating.setMethod(ScoreMethod.SCORE_METHOD_OTHER);
+                    rating.setSeverity(SEVERITY_UNKNOWN);
+                }
             }
+
             ratings.add(rating.build());
         });
         return ratings;
