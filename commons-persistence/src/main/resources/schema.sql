@@ -948,6 +948,16 @@ $$;
 
 INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('function_cvssv2-to-severity', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 23, '9:ffacc71dcf91b47c983c2bd8c70d7620', 'createProcedure path=procedures/function_cvssv2-to-severity.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
 
+-- Changeset migration/changelog-v5.5.0.xml::v5.5.0-7::sahibamittal
+SET SEARCH_PATH TO public, "$user","public";
+
+ALTER TABLE "WORKFLOW_STATE" DROP CONSTRAINT IF EXISTS "WORKFLOW_STATE_STEP_check";
+
+ALTER TABLE "WORKFLOW_STATE" ADD CONSTRAINT "WORKFLOW_STATE_STEP_check"
+            CHECK ("STEP"::TEXT = ANY(ARRAY['BOM_CONSUMPTION', 'BOM_PROCESSING', 'METRICS_UPDATE', 'POLICY_BUNDLE_SYNC', 'POLICY_EVALUATION', 'REPO_META_ANALYSIS', 'VULN_ANALYSIS', 'PROJECT_CLONE']));
+
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-7', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 24, '9:4c05b1489b0ad2acdcb1ba454af448d3', 'sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '6992024870');
+
 -- Changeset migration/changelog-procedures.xml::function_cvssv3-to-severity::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
 
