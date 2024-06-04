@@ -965,12 +965,19 @@ ALTER TABLE "WORKFLOW_STATE" ADD CONSTRAINT "WORKFLOW_STATE_STEP_check"
 
 INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-7', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 24, '9:4c05b1489b0ad2acdcb1ba454af448d3', 'sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '6992024870');
 
--- Changeset migration/changelog-v5.5.0.xml::v5.5.0-8::sahibamittal
+-- Changeset migration/changelog-v5.5.0.xml::v5.5.0-8::nscuro
+SET SEARCH_PATH TO public, "$user","public";
+
+DROP TABLE "CWE";
+
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-8', 'nscuro', 'migration/changelog-v5.5.0.xml', NOW(), 25, '9:461b965fb154668f93bc21471adb4522', 'dropTable tableName=CWE', '', 'EXECUTED', NULL, NULL, '4.27.0', '7510478435');
+
+-- Changeset migration/changelog-v5.5.0.xml::v5.5.0-9::sahibamittal
 SET SEARCH_PATH TO public, "$user","public";
 
 ALTER TABLE "VULNERABILITY_POLICY" ADD "OPERATION_MODE" VARCHAR(255);
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-8', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 25, '9:05667de88f118ce836fc3c4e2785a1dc', 'addColumn tableName=VULNERABILITY_POLICY', '', 'EXECUTED', NULL, NULL, '4.27.0', '7502506571');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-9', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 26, '9:05667de88f118ce836fc3c4e2785a1dc', 'addColumn tableName=VULNERABILITY_POLICY', '', 'EXECUTED', NULL, NULL, '4.27.0', '7510478435');
 
 -- Changeset migration/changelog-procedures.xml::function_cvssv3-to-severity::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
