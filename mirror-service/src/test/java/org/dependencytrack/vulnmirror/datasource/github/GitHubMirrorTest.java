@@ -277,4 +277,27 @@ class GitHubMirrorTest {
         verify(apiClientFactoryMock).create(eq(1679922240L));
     }
 
+    @Test
+    void testMirrorWithdrawnAdvisory() throws Exception {
+        final var advisory = objectMapper.readValue(resourceToByteArray("/datasource/github/advisory-withdrawn.json"), SecurityAdvisory.class);
+        final var apiClientMock = mock(GitHubSecurityAdvisoryClient.class);
+        when(apiClientMock.hasNext())
+                .thenReturn(true)
+                .thenReturn(false);
+        when(apiClientMock.next())
+                .thenReturn(List.of(advisory));
+        when(apiClientMock.getLastUpdated())
+                .thenReturn(ZonedDateTime.ofInstant(Instant.ofEpochSecond(1679922240L), ZoneOffset.UTC));
+        when(apiClientFactoryMock.create(anyLong()))
+                .thenReturn(apiClientMock);
+        githubMirror.mirrorInternal();
+        final List<ConsumerRecord<String, Bom>> vulnRecords = kafkaCompanion
+                .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
+                .withGroupId(TestConstants.CONSUMER_GROUP_ID)
+                .withAutoCommit()
+                .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 1, Duration.ofSeconds(5))
+                .awaitCompletion()
+                .getRecords();
+        assertThat(vulnRecords.size()).isEqualTo(0);
+    }
 }

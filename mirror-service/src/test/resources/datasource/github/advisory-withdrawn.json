@@ -1,0 +1,51 @@
+{
+  "databaseId": 1275,
+  "description": "In Bootstrap 4 before 4.3.1 and Bootstrap 3 before 3.4.1, XSS is possible in the tooltip or popover data-template attribute. For more information, see: https://blog.getbootstrap.com/2019/02/13/bootstrap-4-3-1-and-3-4-1/",
+  "ghsaId": "GHSA-fxwm-579q-49qq",
+  "id": "MDE2OlNlY3VyaXR5QWR2aXNvcnlHSFNBLWZ4d20tNTc5cS00OXFx",
+  "identifiers": [],
+  "notificationsPermalink": "https://github.com/advisories/GHSA-fxwm-579q-49qq/dependabot",
+  "origin": "UNSPECIFIED",
+  "permalink": "https://github.com/advisories/GHSA-fxwm-579q-49qq",
+  "publishedAt": "2019-02-22T20:54:40Z",
+  "references": [],
+  "severity": "MODERATE",
+  "summary": "Moderate severity vulnerability that affects Bootstrap.Less, bootstrap, and bootstrap.sass",
+  "updatedAt": "2021-12-03T14:54:43Z",
+  "vulnerabilities": {
+    "edges": [
+      {
+        "node": {
+          "severity": "MODERATE",
+          "updatedAt": "2019-02-22T20:53:04Z",
+          "firstPatchedVersion": {
+            "identifier": "4.3.1"
+          },
+          "vulnerableVersionRange": ">= 4.0.0, < 4.3.1",
+          "package": {
+            "ecosystem": "NUGET",
+            "name": "bootstrap"
+          }
+        }
+      }
+    ],
+    "totalCount": 4,
+    "pageInfo": {
+      "hasNextPage": false,
+      "endCursor": "Y3Vyc29yOnYyOpK5MjAxOS0wMi0yMlQyMTo1MzowNCswMTowMM0H6w=="
+    }
+  },
+  "cvss": {
+    "score": 0.0,
+    "vectorString": null
+  },
+  "cwes": {
+    "edges": [],
+    "totalCount": 0,
+    "pageInfo": {
+      "hasNextPage": false,
+      "endCursor": null
+    }
+  },
+  "withdrawnAt": "2021-05-04T20:26:20Z"
+}
