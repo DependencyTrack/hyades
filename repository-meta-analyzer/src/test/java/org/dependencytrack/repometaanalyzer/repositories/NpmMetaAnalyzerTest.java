@@ -190,4 +190,53 @@ class NpmMetaAnalyzerTest {
         Assertions.assertNull(integrityMeta.getSha512());
         Assertions.assertNull(integrityMeta.getCurrentVersionLastModified());
     }
+
+    @Test
+    public void testWithScopedPackage() {
+        wireMockServer.stubFor(get(urlPathEqualTo("/-/package/%40angular%2Fcli/dist-tags"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody("""
+                                {
+                                  "latest": "17.1.2",
+                                  "next": "17.2.0-next.1",
+                                  "v6-lts": "6.2.9",
+                                  "v8-lts": "8.3.29",
+                                  "v7-lts": "7.3.10",
+                                  "v9-lts": "9.1.15",
+                                  "v10-lts": "10.2.4",
+                                  "v11-lts": "11.2.19",
+                                  "v12-lts": "12.2.18",
+                                  "v13-lts": "13.3.11",
+                                  "v14-lts": "14.2.13",
+                                  "v15-lts": "15.2.10",
+                                  "v16-lts": "16.2.12"
+                                }
+                                """)));
+
+        final var component = new Component();
+        component.setPurl("pkg:npm/%40angular/cli@17.1.1");
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
+        assertThat(analyzer.isApplicable(component)).isTrue();
+        final MetaModel metaModel = analyzer.analyze(component);
+        assertThat(metaModel).isNotNull();
+        assertThat(metaModel.getLatestVersion()).isEqualTo("17.1.2");
+    }
+
+    @Test
+    public void testWithSpecialCharactersInPackageName() {
+        wireMockServer.stubFor(get(urlPathEqualTo("/-/package/jquery%20joyride%20plugin%20/dist-tags"))
+                .willReturn(aResponse()
+                        .withStatus(404)
+                        .withBody("""
+                                "Not Found"
+                                """)));
+        final var component = new Component();
+        component.setPurl("pkg:npm/jquery%20joyride%20plugin%20@2.1");
+        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
+        assertThat(analyzer.isApplicable(component)).isTrue();
+        final MetaModel metaModel = analyzer.analyze(component);
+        assertThat(metaModel).isNotNull();
+        assertThat(metaModel.getLatestVersion()).isNull();
+    }
 }

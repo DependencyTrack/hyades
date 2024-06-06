@@ -28,12 +28,14 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.dependencytrack.commonutil.DateUtil;
 import org.dependencytrack.commonutil.HttpUtil;
-import org.dependencytrack.repometaanalyzer.model.IntegrityMeta;
 import org.dependencytrack.persistence.model.Component;
+import org.dependencytrack.repometaanalyzer.model.IntegrityMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Base abstract class that all IMetaAnalyzer implementations should likely extend.
@@ -82,6 +84,10 @@ public abstract class AbstractMetaAnalyzer implements IMetaAnalyzer {
     public void setRepositoryUsernameAndPassword(String username, String password) {
         this.username = StringUtils.trimToNull(username);
         this.password = StringUtils.trimToNull(password);
+    }
+
+    protected String urlEncode(final String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }
 
     @Override
