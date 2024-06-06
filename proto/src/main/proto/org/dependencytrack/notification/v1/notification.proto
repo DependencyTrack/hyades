@@ -189,6 +189,9 @@ message Vulnerability {
   optional double owasp_rr_business_impact = 13 [json_name = "owaspRRBusinessImpact"];
   optional string severity = 14;
   repeated Cwe cwes = 15;
+  optional string cvss_v2_vector = 16 [json_name = "cvssV2Vector"];
+  optional string cvss_v3_vector = 17 [json_name = "cvssV3Vector"];
+  optional string owasp_rr_vector = 18 [json_name = "owaspRRVector"];
 
   message Alias {
     string id = 1 [json_name = "vulnId"];
@@ -199,22 +202,6 @@ message Vulnerability {
     int32 cwe_id = 1;
     string name = 2;
   }
-}
-
-message VulnerabilityAnalysis {
-  Component component = 1;
-  Project project = 2;
-  Vulnerability vulnerability = 3;
-  optional string state = 4;
-  optional bool suppressed = 5;
-}
-
-message PolicyViolationAnalysis {
-  Component component = 1;
-  Project project = 2;
-  PolicyViolation policy_violation = 3;
-  optional string state = 4;
-  optional bool suppressed = 5;
 }
 
 message ComponentVulnAnalysisCompleteSubject {
@@ -233,4 +220,20 @@ enum ProjectVulnAnalysisStatus {
   PROJECT_VULN_ANALYSIS_STATUS_UNSPECIFIED = 0;
   PROJECT_VULN_ANALYSIS_STATUS_FAILED = 1;
   PROJECT_VULN_ANALYSIS_STATUS_COMPLETED = 2;
+}
+
+message VulnerabilityAnalysis {
+  Component component = 1;
+  Project project = 2;
+  Vulnerability vulnerability = 3;
+  optional string state = 4;
+  optional bool suppressed = 5;
+}
+
+message PolicyViolationAnalysis {
+  Component component = 1;
+  Project project = 2;
+  PolicyViolation policy_violation = 3;
+  optional string state = 4;
+  optional bool suppressed = 5;
 }
