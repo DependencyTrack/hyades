@@ -113,6 +113,9 @@ public class SendMailPublisher implements Publisher {
             return;
         }
 
+        String emailSubjectPrefix;
+        emailSubjectPrefix = publisherConfig.emailPrefix().orElse(" ");
+
         final String fromAddress = publisherConfig.fromAddress().orElse(null);
         if (fromAddress == null) {
             LOGGER.warn("From address is not configured; Skipping notification (%s)".formatted(ctx));
@@ -132,7 +135,7 @@ public class SendMailPublisher implements Publisher {
                 final var message = new MailMessage();
                 message.setFrom(fromAddress);
                 message.setTo(destination);
-                message.setSubject("[Dependency-Track] " + notification.getTitle());
+                message.setSubject(emailSubjectPrefix + " " + notification.getTitle());
                 message.setText(content);
 
                 mailClient.sendMailAndAwait(message);

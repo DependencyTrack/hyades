@@ -55,7 +55,8 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
                     Map.entry("dtrack.email.smtp.enabled", "true"),
                     Map.entry("dtrack.email.smtp.server.hostname", "localhost"),
                     Map.entry("dtrack.email.smtp.server.port", "${mailpit.smtp.port}"),
-                    Map.entry("dtrack.email.smtp.from.address", "dtrack@example.com")
+                    Map.entry("dtrack.email.smtp.from.address", "dtrack@example.com"),
+                    Map.entry("dtrack.email.subject.prefix", "[Dependency-Track]")
             );
         }
 

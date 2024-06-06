@@ -44,6 +44,7 @@ class SendMailPublisherConfig {
     private final Provider<Optional<String>> passwordProvider;
     private final Provider<Optional<Boolean>> tlsEnabledProvider;
     private final Provider<Optional<Boolean>> trustCertificateProvider;
+    private final Provider<Optional<String>> emailPrefixProvider;
 
     SendMailPublisherConfig(
             @ConfigProperty(name = "dtrack.email.smtp.enabled") final Provider<Optional<Boolean>> smtpEnabledProvider,
@@ -53,7 +54,8 @@ class SendMailPublisherConfig {
             @ConfigProperty(name = "dtrack.email.smtp.username") final Provider<Optional<String>> usernameProvider,
             @ConfigProperty(name = "dtrack.email.smtp.password") final Provider<Optional<String>> passwordProvider,
             @ConfigProperty(name = "dtrack.email.smtp.ssltls") final Provider<Optional<Boolean>> tlsEnabledProvider,
-            @ConfigProperty(name = "dtrack.email.smtp.trustcert") final Provider<Optional<Boolean>> trustCertificateProvider
+            @ConfigProperty(name = "dtrack.email.smtp.trustcert") final Provider<Optional<Boolean>> trustCertificateProvider,
+            @ConfigProperty(name = "dtrack.email.subject.prefix") final Provider<Optional<String>> emailPrefixProvider
     ) {
         this.smtpEnabledProvider = smtpEnabledProvider;
         this.fromAddressProvider = fromAddressProvider;
@@ -63,10 +65,15 @@ class SendMailPublisherConfig {
         this.passwordProvider = passwordProvider;
         this.tlsEnabledProvider = tlsEnabledProvider;
         this.trustCertificateProvider = trustCertificateProvider;
+        this.emailPrefixProvider = emailPrefixProvider;
     }
 
     Optional<Boolean> isSmtpEnabled() {
         return smtpEnabledProvider.get();
+    }
+
+    Optional<String> emailPrefix() {
+        return emailPrefixProvider.get();
     }
 
     Optional<String> fromAddress() {
