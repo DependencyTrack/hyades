@@ -114,8 +114,6 @@ public class SendMailPublisher implements Publisher {
         }
 
         String emailSubjectPrefix;
-        // emailSubjectPrefix = qm.getConfigProperty(EMAIL_PREFIX.getGroupName(), EMAIL_PREFIX.getPropertyName()).getPropertyValue();
-        //emailSubjectPrefix = emailSubjectPrefix == null ? " " : emailSubjectPrefix;
         emailSubjectPrefix = publisherConfig.emailPrefix().orElse(" ");
         if (emailSubjectPrefix == null) {
             LOGGER.warn("Email prefix is not configured; Skipping notification (%s)".formatted(ctx));
