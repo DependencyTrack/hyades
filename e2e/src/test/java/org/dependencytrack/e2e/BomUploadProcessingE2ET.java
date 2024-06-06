@@ -245,7 +245,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                 "vulnId": "INT-123",
                                 "source": "INTERNAL",
                                 "cvssv3" : "${json-unit.any-number}",
-                                "severity": "CRITICAL"
+                                "severity": "CRITICAL",
+                                "cvssV3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
                               },
                               "affectedProjectsReference": {
                                 "apiUri": "/api/v1/vulnerability/source/INTERNAL/vuln/INT-123/projects",
@@ -304,7 +305,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                    "vulnId" : "INT-123",
                                    "source" : "INTERNAL",
                                    "severity" : "CRITICAL",
-                                   "cvssv3": 10.0
+                                   "cvssv3": 10.0,
+                                   "cvssV3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
                                  } ]
                                } ],
                                "status" : "PROJECT_VULN_ANALYSIS_STATUS_COMPLETED"
