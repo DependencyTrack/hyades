@@ -21,11 +21,11 @@ package org.dependencytrack.repometaanalyzer.repositories;
 import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.dependencytrack.persistence.model.Component;
+import org.dependencytrack.persistence.model.RepositoryType;
 import org.dependencytrack.repometaanalyzer.model.IntegrityMeta;
 import org.dependencytrack.repometaanalyzer.model.MetaAnalyzerException;
 import org.dependencytrack.repometaanalyzer.model.MetaModel;
-import org.dependencytrack.persistence.model.Component;
-import org.dependencytrack.persistence.model.RepositoryType;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,12 +71,12 @@ public class NpmMetaAnalyzer extends AbstractMetaAnalyzer {
 
             final String packageName;
             if (component.getPurl().getNamespace() != null) {
-                packageName = component.getPurl().getNamespace().replace("@", "%40") + "%2F" + component.getPurl().getName();
+                packageName = "%s/%s".formatted(component.getPurl().getNamespace(), component.getPurl().getName());
             } else {
                 packageName = component.getPurl().getName();
             }
 
-            final String url = String.format(baseUrl + API_URL, packageName);
+            final String url = String.format(baseUrl + API_URL, urlEncode(packageName));
             try (final CloseableHttpResponse response = processHttpRequest(url)) {
                 if (response.getStatusLine().getStatusCode() == org.apache.http.HttpStatus.SC_OK) {
                     String responseString = EntityUtils.toString(response.getEntity());
