@@ -115,10 +115,6 @@ public class SendMailPublisher implements Publisher {
 
         String emailSubjectPrefix;
         emailSubjectPrefix = publisherConfig.emailPrefix().orElse(" ");
-        if (emailSubjectPrefix == null) {
-            LOGGER.warn("Email prefix is not configured; Skipping notification (%s)".formatted(ctx));
-            return;
-        }
 
         final String fromAddress = publisherConfig.fromAddress().orElse(null);
         if (fromAddress == null) {
