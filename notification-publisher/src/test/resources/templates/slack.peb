@@ -60,7 +60,7 @@
 		  "text": "{{ subject.component | summarize | escape(strategy="json") }}"
 		}
 	  ]
-	},
+	}{% if baseUrl is not empty %},
 	{
 	  "type": "actions",
 	  "elements": [
@@ -84,6 +84,7 @@
 		}
 	  ]
 	}
+	{% endif %}
   ]
 }
 {% elseif notification.group == "GROUP_NEW_VULNERABLE_DEPENDENCY" %}
@@ -132,7 +133,7 @@
 		  "text": "{{ subject.component.project | summarize | escape(strategy="json") }}"
 		}
 	  ]
-	},
+	}{% if baseUrl is not empty %},
 	{
 	  "type": "actions",
 	  "elements": [
@@ -156,6 +157,7 @@
 		}
 	  ]
 	}
+	{% endif %}
   ]
 }
 {% elseif notification.group == "GROUP_PROJECT_AUDIT_CHANGE" %}
@@ -250,7 +252,7 @@
 		  "text": "{{ subject.project | summarize | escape(strategy="json") }}"
 		}
 	  ]
-	},
+	}{% if baseUrl is not empty %},
 	{
 	  "type": "actions",
 	  "elements": [
@@ -283,6 +285,7 @@
 		}
 	  ]
 	}
+	{% endif %}
   ]
 }
 {% elseif notification.group == "GROUP_POLICY_VIOLATION" %}
@@ -357,7 +360,7 @@
 		  "text": "{{ subject.project.toString | escape(strategy="json") }}"
 		}
 	  ]
-	},
+	}{% if baseUrl is not empty %},
 	{
 	  "type": "actions",
 	  "elements": [
@@ -381,6 +384,7 @@
 		}
 	  ]
 	}
+	{% endif %}
   ]
 }
 {% else %}
