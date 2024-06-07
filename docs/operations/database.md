@@ -47,7 +47,7 @@ without being impacted by other applications.
 
 For smaller and non-critical deployments, it is totally fine to run everything on a single machine.
 
-#### Configuration
+#### Basic Configuration
 
 You should be aware that the default PostgreSQL configuration is *extremely* conservative.
 It is intended to make PostgreSQL usable on minimal hardware, which is great for testing,
@@ -73,14 +73,104 @@ services:
   postgres:
     image: postgres:16
     command: >-
-      postgres
         -c 'shared_buffers=2GB'
         -c 'effective_cache_size=6GB'
 ```
 
+#### Advanced Configuration
+
+For larger deployments, you may eventually run into situations where database performance degrades
+with just the basic configuration applied. Oftentimes, tweaking advanced settings can resolve
+such problems. But knowing which knobs to turn is a challenge in itself.
+
+If you happen to be in this situation, make sure you have database monitoring set up.
+Changing advanced configuration options blindly can potentially cause more damage than it helps.
+
+Below, you'll find a few options that, based on our observations with large-scale deployments,
+make sense to tweak. Note that some settings are applied system-wide, while others are only
+applied for certain tables.
+
 !!! note
-    Got more tips to configure or tune PostgreSQL, that may be helpful to others?
+    Got more tips to configure or tune PostgreSQL, that may be helpful to others?  
     We'd love to include it in the docs, please do raise a PR!
+
+##### checkpoint_completion_target
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0">
+        <ul>
+          <li><code>0.5</code> (PostgreSQL <= 13)</li>
+          <li><code>0.9</code> (PostgreSQL >= 14)</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Recommendation</th>
+      <td style="border-width: 0"><code>0.9</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Tables</th>
+      <td style="border-width: 0"><code>*</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">References</th>
+      <td style="border-width: 0"><a href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET">Documentation</a></td>
+    </tr>
+  </tbody>
+</table>
+
+Spreads the WAL checkpoint creation across a longer period of time,
+resulting in a more evenly distributed I/O load. A lower value has been observed
+to cause undesirable spikes in I/O usage on the database server.
+
+```sql
+ALTER SYSTEM SET CHECKPOINT_COMPLETION_TARGET = 0.9;
+```
+
+##### autovacuum_vacuum_scale_factor
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Recommendation</th>
+      <td style="border-width: 0"><code>0.02</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Tables</th>
+      <td style="border-width: 0">
+        <ul>
+          <li><code>COMPONENT</code></li>
+          <li><code>DEPENDENCYMETRICS</code></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <th style="text-align: right">References</th>
+      <td style="border-width: 0"><a href="https://www.postgresql.org/docs/current/runtime-config-autovacuum.html#GUC-AUTOVACUUM-VACUUM-SCALE-FACTOR">Documentation</a></td>
+    </tr>
+  </tbody>
+</table>
+
+The default causes [Autovacuum] to start way too late on large tables with lots of churn,
+yielding long execution times. Reduction in scale factor causes autovacuum to happen more often,
+making each execution less time-intensive.
+
+The `COMPONENT` and `DEPENDENCYMETRICS` table are very frequently inserted into, updated, and deleted from.
+This causes lots of dead tuples that PostgreSQL needs to clean up. Because autovacuum also performs
+[`ANALYZE`](https://www.postgresql.org/docs/current/sql-analyze.html), slow vacuuming can cause the
+query planner to choose inefficient execution plans.
+
+```sql
+ALTER TABLE "COMPONENT" SET (AUTOVACUUM_VACUUM_SCALE_FACTOR = 0.02);
+ALTER TABLE "DEPENDENCYMETRICS" SET (AUTOVACUUM_VACUUM_SCALE_FACTOR = 0.02);
+```
 
 #### Upgrades
 
@@ -129,3 +219,4 @@ The above with default to the main database credentials if not provided explicit
 [list of well-known commercial hosting providers]: https://www.postgresql.org/support/professional_hosting/
 [newest available version]: https://www.postgresql.org/support/versioning/
 [official upgrading guide]: https://www.postgresql.org/docs/current/upgrading.html
+[Autovacuum]: https://www.postgresql.org/docs/current/routine-vacuuming.html
