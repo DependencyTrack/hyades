@@ -52,13 +52,18 @@ import static org.testcontainers.lifecycle.Startables.deepStart;
 
 public class AbstractE2ET {
 
-    protected static String POSTGRES_IMAGE = "postgres:15-alpine";
-    protected static String REDPANDA_IMAGE = "docker.redpanda.com/vectorized/redpanda:v24.1.7";
-    protected static String API_SERVER_IMAGE = "ghcr.io/dependencytrack/hyades-apiserver:snapshot";
-    protected static String MIRROR_SERVICE_IMAGE = "ghcr.io/dependencytrack/hyades-mirror-service:snapshot";
-    protected static String NOTIFICATION_PUBLISHER_IMAGE = "ghcr.io/dependencytrack/hyades-notification-publisher:snapshot";
-    protected static String REPO_META_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot";
-    protected static String VULN_ANALYZER_IMAGE = "ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot";
+    protected static DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres:15-alpine");
+    protected static DockerImageName REDPANDA_IMAGE = DockerImageName.parse("docker.redpanda.com/vectorized/redpanda:v24.1.7");
+    protected static DockerImageName API_SERVER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-apiserver")
+            .withTag(Optional.ofNullable(System.getenv("APISERVER_VERSION")).orElse("snapshot"));
+    protected static DockerImageName MIRROR_SERVICE_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-mirror-service")
+            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
+    protected static DockerImageName NOTIFICATION_PUBLISHER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-notification-publisher")
+            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
+    protected static DockerImageName REPO_META_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-repository-meta-analyzer")
+            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
+    protected static DockerImageName VULN_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-vulnerability-analyzer")
+            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     protected final Network internalNetwork = Network.newNetwork();
@@ -101,7 +106,7 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private PostgreSQLContainer<?> createPostgresContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_IMAGE))
+        return new PostgreSQLContainer<>(POSTGRES_IMAGE)
                 .withDatabaseName("dtrack")
                 .withUsername("dtrack")
                 .withPassword("dtrack")
@@ -111,7 +116,7 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createRedpandaContainer() {
-        return new GenericContainer<>(DockerImageName.parse(REDPANDA_IMAGE))
+        return new GenericContainer<>(REDPANDA_IMAGE)
                 .withCommand(
                         "redpanda", "start", "--smp", "1", "--mode", "dev-container",
                         "--reserve-memory", "0M", "--memory", "512M", "--overprovisioned",
@@ -125,7 +130,7 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private void initializeRedpanda() {
-        new GenericContainer<>(DockerImageName.parse(REDPANDA_IMAGE))
+        new GenericContainer<>(REDPANDA_IMAGE)
                 .withCreateContainerCmdModifier(cmd -> cmd.withUser("0").withEntrypoint("/bin/bash"))
                 .withCommand("/tmp/create-topics.sh")
                 .withEnv("REDPANDA_BROKERS", "redpanda:29092")
@@ -149,8 +154,8 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
-        final var container = new GenericContainer<>(DockerImageName.parse(API_SERVER_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+        final var container = new GenericContainer<>(API_SERVER_IMAGE)
+                .withImagePullPolicy("local".equals(API_SERVER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx512m")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
@@ -175,8 +180,8 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createMirrorServiceContainer() {
-        final var container = new GenericContainer<>(DockerImageName.parse(MIRROR_SERVICE_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+        final var container = new GenericContainer<>(MIRROR_SERVICE_IMAGE)
+                .withImagePullPolicy("local".equals(MIRROR_SERVICE_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
@@ -200,8 +205,8 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createNotificationPublisherContainer() {
-        final var container = new GenericContainer<>(DockerImageName.parse(NOTIFICATION_PUBLISHER_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+        final var container = new GenericContainer<>(NOTIFICATION_PUBLISHER_IMAGE)
+                .withImagePullPolicy("local".equals(NOTIFICATION_PUBLISHER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
@@ -225,8 +230,8 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createRepoMetaAnalyzerContainer() {
-        final var container = new GenericContainer<>(DockerImageName.parse(REPO_META_ANALYZER_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+        final var container = new GenericContainer<>(REPO_META_ANALYZER_IMAGE)
+                .withImagePullPolicy("local".equals(REPO_META_ANALYZER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
@@ -250,8 +255,8 @@ public class AbstractE2ET {
 
     @SuppressWarnings("resource")
     private GenericContainer<?> createVulnAnalyzerContainer() {
-        final var container = new GenericContainer<>(DockerImageName.parse(VULN_ANALYZER_IMAGE))
-                .withImagePullPolicy(PullPolicy.alwaysPull())
+        final var container = new GenericContainer<>(VULN_ANALYZER_IMAGE)
+                .withImagePullPolicy("local".equals(VULN_ANALYZER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("JAVA_OPTS", "-Xmx256m")
                 .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
