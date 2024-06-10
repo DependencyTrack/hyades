@@ -301,4 +301,39 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
                         """)));
     }
 
+    @Test
+    @Override
+    @TestTransaction
+    public void testInformWithNewVulnerableDependencyNotification() {
+        super.testInformWithNewVulnerableDependencyNotification();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "@type": "MessageCard",
+                          "@context": "http://schema.org/extensions",
+                          "summary": "Vulnerable Dependency Introduced",
+                          "title": "Vulnerable Dependency Introduced",
+                          "sections": [
+                            {
+                              "activityTitle": "Dependency-Track",
+                              "activitySubtitle": "1970-01-01T18:31:06.000Z",
+                              "activityImage": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                              "facts": [
+                                {
+                                  "name": "Project",
+                                  "value": "pkg:maven/org.acme/projectName@projectVersion"
+                                },
+                                {
+                                  "name": "Component",
+                                  "value": "componentName : componentVersion"
+                                }
+                              ],
+                              "text": ""
+                            }
+                          ]
+                        }
+                        """)));
+    }
 }
