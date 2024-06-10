@@ -304,7 +304,7 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     @Test
     @Override
     @TestTransaction
-    public void testInformWithNewVulnerableDependencyNotification() {
+    public void testInformWithNewVulnerableDependencyNotification() throws Exception {
         super.testInformWithNewVulnerableDependencyNotification();
 
         wireMock.verifyThat(postRequestedFor(anyUrl())

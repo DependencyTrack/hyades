@@ -158,7 +158,7 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
     @Test
     @Override
     @TestTransaction
-    public void testInformWithNewVulnerableDependencyNotification() {
+    public void testInformWithNewVulnerableDependencyNotification() throws Exception {
         super.testInformWithNewVulnerableDependencyNotification();
 
         wireMock.verifyThat(postRequestedFor(anyUrl())
