@@ -386,4 +386,73 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                         """)));
     }
 
+    @Test
+    @Override
+    @TestTransaction
+    public void testInformWithNewVulnerableDependencyNotification() throws Exception {
+        super.testInformWithNewVulnerableDependencyNotification();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification": {
+                            "level": "LEVEL_INFORMATIONAL",
+                            "scope": "SCOPE_PORTFOLIO",
+                            "group": "GROUP_NEW_VULNERABLE_DEPENDENCY",
+                            "timestamp": "1970-01-01T18:31:06.000Z",
+                            "title": "Vulnerable Dependency Introduced",
+                            "content": "",
+                            "subject": {
+                              "component": {
+                                "uuid": "94f87321-a5d1-4c2f-b2fe-95165debebc6",
+                                "name": "componentName",
+                                "version": "componentVersion"
+                              },  
+                              "project": {
+                                "uuid": "c9c9539a-e381-4b36-ac52-6a7ab83b2c95",
+                                "name": "projectName",
+                                "version": "projectVersion",
+                                "description": "projectDescription",
+                                "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "tags" : [ "tag1", "tag2" ]
+                              },
+                              "vulnerabilities": [
+                                {
+                                  "uuid": "bccec5d5-ec21-4958-b3e8-22a7a866a05a",
+                                  "vulnId": "INT-001",
+                                  "source": "INTERNAL",
+                                  "aliases": [
+                                    {
+                                      "vulnId": "OSV-001",
+                                      "source": "OSV"
+                                    }
+                                  ],
+                                  "title": "vulnerabilityTitle",
+                                  "subtitle": "vulnerabilitySubTitle",
+                                  "description": "vulnerabilityDescription",
+                                  "recommendation": "vulnerabilityRecommendation",
+                                  "cvssv2": 5.5,
+                                  "cvssv3": 6.6,
+                                  "owaspRRLikelihood": 1.1,
+                                  "owaspRRTechnicalImpact": 2.2,
+                                  "owaspRRBusinessImpact": 3.3,
+                                  "severity": "MEDIUM",
+                                  "cwes": [
+                                    {
+                                      "cweId": 666,
+                                      "name": "Operation on Resource in Wrong Phase of Lifetime"
+                                    },
+                                    {
+                                      "cweId": 777,
+                                      "name": "Regular Expression without Anchors"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                        """)));
+    }
 }
