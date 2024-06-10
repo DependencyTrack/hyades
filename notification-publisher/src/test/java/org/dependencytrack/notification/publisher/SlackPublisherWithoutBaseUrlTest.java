@@ -36,25 +36,25 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 @TestProfile(SlackPublisherWithoutBaseUrlTest.TestProfile.class)
 public class SlackPublisherWithoutBaseUrlTest extends AbstractWebhookPublisherTest<SlackPublisher> {
 
-        public static class TestProfile implements QuarkusTestProfile {
-
-            @Override
-            public Map<String, String> getConfigOverrides() {
-                return Map.ofEntries(
-                        Map.entry("dtrack.general.base.url", "")
-                );
-            }
-        }
+    public static class TestProfile implements QuarkusTestProfile {
 
         @Override
-        JsonObjectBuilder extraConfig() {
-            return super.extraConfig()
-                    .add(Publisher.CONFIG_DESTINATION, "http://localhost:" + wireMockPort);
+        public Map<String, String> getConfigOverrides() {
+            return Map.ofEntries(
+                    Map.entry("dtrack.general.base.url", "")
+            );
         }
+    }
 
-        @Test
-        @TestTransaction
-        public void testInformWithNewVulnerabilityNotificationWithoutBaseUrl() throws Exception {
+    @Override
+    JsonObjectBuilder extraConfig() {
+        return super.extraConfig()
+                .add(Publisher.CONFIG_DESTINATION, "http://localhost:" + wireMockPort);
+    }
+
+    @Test
+    @TestTransaction
+    public void testInformWithNewVulnerabilityNotificationWithoutBaseUrl() throws Exception {
             super.testInformWithNewVulnerabilityNotification();
 
             wireMock.verifyThat(postRequestedFor(anyUrl())
@@ -126,4 +126,168 @@ public class SlackPublisherWithoutBaseUrlTest extends AbstractWebhookPublisherTe
                         }
                         """)));
         }
+
+    @Test
+    @TestTransaction
+    public void testInformWithNewVulnerableDependencyNotificationWithoutBaseUrl() throws Exception {
+        super.testInformWithNewVulnerableDependencyNotification();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                              "type": "header",
+                              "text": {
+                                "type": "plain_text",
+                                "text": "New Vulnerable Dependency"
+                              }
+                            },
+                            {
+                              "type": "context",
+                              "elements": [
+                                {
+                                  "text": "*LEVEL_INFORMATIONAL*  |  *SCOPE_PORTFOLIO*",
+                                  "type": "mrkdwn"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "divider"
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "Vulnerable Dependency Introduced",
+                                "type": "mrkdwn"
+                              },
+                              "fields": [
+                                {
+                                  "type": "mrkdwn",
+                                  "text": "*Component*"
+                                },
+                                {
+                                  "type": "plain_text",
+                                  "text": "componentName : componentVersion"
+                                },
+                                {
+                                  "type": "mrkdwn",
+                                  "text": "*Project*"
+                                },
+                                {
+                                  "type": "plain_text",
+                                  "text": "pkg:maven/org.acme/projectName@projectVersion"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Test
+    @TestTransaction
+    public void testInformWithProjectAuditChangeNotificationWithoutBaseUrl() throws Exception {
+        super.testInformWithProjectAuditChangeNotification();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                        	  "type": "header",
+                        	  "text": {
+                        	    "type": "plain_text",
+                        		"text": "Project Audit Change"
+                        	  }
+                        	},
+                        	{
+                        	  "type": "context",
+                        	  "elements": [
+                        	    {
+                        		  "text": "*LEVEL_INFORMATIONAL*  |  *SCOPE_PORTFOLIO*",
+                        		  "type": "mrkdwn"
+                        		}
+                        	  ]
+                        	},
+                        	{
+                        	  "type": "divider"
+                        	},
+                        	{
+                        	  "type": "section",
+                        	  "text": {
+                        	    "text": "Analysis Decision: Finding Suppressed",
+                        		"type": "plain_text"
+                        	  },
+                        	  "fields": [
+                        	    {
+                        		  "type": "mrkdwn",
+                        		  "text": "*Analysis State*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "emoji": true,
+                        		  "text": "FALSE_POSITIVE"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Suppressed*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "true"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*VulnID*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "INT-001"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Severity*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "MEDIUM"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Source*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "INTERNAL"
+                        		}
+                        	  ]
+                        	},
+                            {
+                        	  "type": "section",
+                        	  "fields": [
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Component*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "componentName : componentVersion"
+                        		},
+                        		{
+                        		  "type": "mrkdwn",
+                        		  "text": "*Project*"
+                        		},
+                        		{
+                        		  "type": "plain_text",
+                        		  "text": "pkg:maven/org.acme/projectName@projectVersion"
+                        		}
+                        	  ]
+                        	}
+                          ]
+                        }
+                        """)));
+    }
 }

@@ -130,7 +130,7 @@
 		},
 		{
 		  "type": "plain_text",
-		  "text": "{{ subject.component.project | summarize | escape(strategy="json") }}"
+		  "text": "{{ subject.project | summarize | escape(strategy="json") }}"
 		}
 	  ]
 	}{% if baseUrl is not empty %},
