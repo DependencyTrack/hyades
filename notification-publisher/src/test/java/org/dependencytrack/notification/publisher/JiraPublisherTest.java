@@ -206,4 +206,29 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         }
                         """)));
     }
+
+    @Test
+    @Override
+    @TestTransaction
+    public void testInformWithNewVulnerableDependencyNotification() throws Exception {
+        super.testInformWithNewVulnerableDependencyNotification();
+
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields": {
+                            "project": {
+                              "key": "PROJECT"
+                            },
+                            "issuetype": {
+                              "name": "Task"
+                            },
+                            "summary": "[Dependency-Track] [GROUP_NEW_VULNERABLE_DEPENDENCY] Vulnerable dependency introduced on project projectName",
+                            "description": "A component which contains one or more vulnerabilities has been added to your project.\\n\\\\\\\\\\n\\\\\\\\\\n*Project*\\n[pkg:maven/org.acme/projectName@projectVersion|https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95]\\n\\n*Component*\\n[componentName : componentVersion|https://example.com/components/94f87321-a5d1-4c2f-b2fe-95165debebc6]\\n\\n*Vulnerabilities*\\n- INT-001 (Medium)\\n"
+                          }
+                        }
+                        """)));
+    }
 }
