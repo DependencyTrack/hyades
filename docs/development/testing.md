@@ -76,6 +76,11 @@ The tests are located in the [`e2e`](https://github.com/DependencyTrack/hyades/t
 [`AbstractE2ET`](https://github.com/DependencyTrack/hyades/blob/main/e2e/src/test/java/org/dependencytrack/e2e/AbstractE2ET.java)
 class.
 
+Image versions can be overwritten using the following environment variables:
+
+* `APISERVER_VERSION`
+* `HYADES_VERSION`
+
 ### Execution
 
 Tests can be launched individually through your IDE, or all at once using Maven:
@@ -92,7 +97,10 @@ To test against local changes:
 
 ### Execution in CI
 
-In CI, end-to-end tests are executed for every push to the `main` branch.
+In CI, end-to-end tests are executed for every push to the `main` branch, as well as every night at 12AM.
+
+They can additionally be run manually, via the GitHub Actions UI. Both the API server and Hyades version
+can be customized before execution.
 
 [@QuarkusIntegrationTest]: https://quarkus.io/guides/getting-started-testing#quarkus-integration-test
 [GreenMail]: https://greenmail-mail-test.github.io/greenmail/
