@@ -305,6 +305,24 @@
   
     
     
+      <li class="md-tabs__item">
+        <a href="../../../development/overview/" class="md-tabs__link">
+          
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
       
   
   
@@ -1020,7 +1038,7 @@
             
   
   <span class="md-ellipsis">
-    Reference
+    Development
   </span>
   
 
@@ -1029,6 +1047,156 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/building/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/database-migrations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Database Migrations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/documentation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Reference
           </label>
@@ -1051,10 +1219,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
         
           
-          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1065,8 +1233,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_1">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
             <span class="md-nav__icon md-icon"></span>
             Configuration
           </label>
@@ -1527,16 +1695,16 @@ available version, but still be 20 years old. </p>
 <p>Component age can be evaluated using the <code>compare_age</code> <a href="#function-definitions">function</a>. The first function argument 
 is a numeric comparator (<code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>!=</code>, <code>&gt;</code>, <code>&gt;=</code>), and the second is a <a href="https://en.wikipedia.org/wiki/ISO_8601#Durations">duration in ISO8601 notation</a>.</p>
 <p>The following expression matches <a href="#component">Component</a>s that are two years old, or even older:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">compare_age</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;P2Y&quot;</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">compare_age</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;P2Y&quot;</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <h3 id="component-blacklist">Component blacklist</h3>
 <p>The following expression matches on the <a href="#component">Component</a>'s <a href="https://github.com/package-url/purl-spec/blob/master/PURL-SPECIFICATION.rst">Package URL</a>, using a regular expression in <a href="https://github.com/google/re2/wiki/Syntax">RE2</a> syntax.
 Additionally, it checks whether the <a href="#component">Component</a>'s version falls into a given <a href="https://github.com/package-url/purl-spec/blob/version-range-spec/VERSION-RANGE-SPEC.rst">vers</a> range, consisting of multiple
 constraints.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">purl</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">&quot;^pkg:maven/com.acme/acme-lib\\b.*&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nx">matches_range</span><span class="p">(</span><span class="s2">&quot;vers:maven/&gt;0|&lt;1|!=0.2.4&quot;</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">purl</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">&quot;^pkg:maven/com.acme/acme-lib\\b.*&quot;</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nx">matches_range</span><span class="p">(</span><span class="s2">&quot;vers:maven/&gt;0|&lt;1|!=0.2.4&quot;</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>The expression will match:</p>
 <ul>
 <li><code>pkg:maven/com.acme/acme-lib@0.1.0</code></li>
@@ -1591,10 +1759,10 @@ across ecosystems, which makes comparisons error-prone.</p>
 <h3 id="dependency-graph-traversal">Dependency graph traversal</h3>
 <p>The following expression matches <a href="#component">Component</a>s that are a (possibly transitive) dependency of a <a href="#component">Component</a>
 with name <code>foo</code>, <em>but only if</em> a <a href="#component">Component</a> with name <code>bar</code> is also present in the <a href="#project">Project</a>.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">is_dependency_of</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">})</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">depends_on</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bar&quot;</span><span class="p">})</span>
-</code></pre></div></td></tr></table></div>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">is_dependency_of</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">})</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">depends_on</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bar&quot;</span><span class="p">})</span>
+</span></code></pre></div></td></tr></table></div>
 <p><code>is_dependency_of</code> and <code>depends_on</code> lookups currently support the following <a href="#component">Component</a> fields:</p>
 <ul>
 <li><code>uuid</code></li>
@@ -1621,45 +1789,45 @@ and have either:</p>
 <li>No resolved <a href="#license">License</a> at all</li>
 <li>A resolved <a href="#license">License</a> that is not part of the <code>Permissive</code> license group</li>
 </ul>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
 <span class="normal"><a href="#__codelineno-3-2">2</a></span>
 <span class="normal"><a href="#__codelineno-3-3">3</a></span>
 <span class="normal"><a href="#__codelineno-3-4">4</a></span>
-<span class="normal"><a href="#__codelineno-3-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="o">!</span><span class="nx">component</span><span class="p">.</span><span class="nx">is_internal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="o">!</span><span class="nx">has</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">)</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">.</span><span class="nx">groups</span><span class="p">.</span><span class="nx">exisits</span><span class="p">(</span><span class="nx">licenseGroup</span><span class="p">,</span><span class="w"> </span>
-<a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">         </span><span class="nx">licenseGroup</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;Permissive&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="o">!</span><span class="nx">component</span><span class="p">.</span><span class="nx">is_internal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="o">!</span><span class="nx">has</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">.</span><span class="nx">groups</span><span class="p">.</span><span class="nx">exisits</span><span class="p">(</span><span class="nx">licenseGroup</span><span class="p">,</span><span class="w"> </span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">         </span><span class="nx">licenseGroup</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;Permissive&quot;</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <h3 id="vulnerability-blacklist">Vulnerability blacklist</h3>
 <p>The following expression matches <a href="#component">Component</a>s in <a href="#project">Project</a>s tagged as <code>3rd-party</code>, with at least one <a href="#vulnerability">Vulnerability</a>
 being any of the given blacklisted IDs.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
 <span class="normal"><a href="#__codelineno-4-2">2</a></span>
 <span class="normal"><a href="#__codelineno-4-3">3</a></span>
 <span class="normal"><a href="#__codelineno-4-4">4</a></span>
 <span class="normal"><a href="#__codelineno-4-5">5</a></span>
-<span class="normal"><a href="#__codelineno-4-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="s2">&quot;3rd-party&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">tags</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vulns</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">vuln</span><span class="p">,</span><span class="w"> </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">       </span><span class="s2">&quot;CVE-2017-5638&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">// struts RCE</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">       </span><span class="s2">&quot;CVE-2021-44228&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// log4shell</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">       </span><span class="s2">&quot;CVE-2022-22965&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// spring4shell</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">     </span><span class="p">])</span>
-</code></pre></div></td></tr></table></div>
+<span class="normal"><a href="#__codelineno-4-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="s2">&quot;3rd-party&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">tags</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vulns</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">vuln</span><span class="p">,</span><span class="w"> </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">       </span><span class="s2">&quot;CVE-2017-5638&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">// struts RCE</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">       </span><span class="s2">&quot;CVE-2021-44228&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// log4shell</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">       </span><span class="s2">&quot;CVE-2022-22965&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// spring4shell</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">     </span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
 <h3 id="vulnerabilities-with-high-severity-in-public-facing-projects">Vulnerabilities with high severity in public facing projects</h3>
 <p>The following expression matches <a href="#component">Component</a>s in <a href="#project">Project</a>s tagged as <code>public-facing</code>, with at least one <code>HIGH</code>
 or <code>CRITICAL</code>
 <a href="#vulnerability">Vulnerability</a>, where the <a href="https://www.first.org/cvss/v3.0/specification-document">CVSSv3</a> attack vector is <code>Network</code>.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
 <span class="normal"><a href="#__codelineno-5-2">2</a></span>
 <span class="normal"><a href="#__codelineno-5-3">3</a></span>
 <span class="normal"><a href="#__codelineno-5-4">4</a></span>
-<span class="normal"><a href="#__codelineno-5-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="s2">&quot;public-facing&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">tags</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vulns</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">vuln</span><span class="p">,</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">severity</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;HIGH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">]</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">      </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">cvssv3_vector</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">&quot;.*/AV:N/.*&quot;</span><span class="p">)</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+<span class="normal"><a href="#__codelineno-5-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="s2">&quot;public-facing&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">tags</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vulns</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">vuln</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">    </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">severity</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;HIGH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">]</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">      </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">cvssv3_vector</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">&quot;.*/AV:N/.*&quot;</span><span class="p">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="w">  </span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <h2 id="reference">Reference</h2>
 <h3 id="types">Types</h3>
 <h4 id="component"><code>Component</code></h4>
@@ -2270,7 +2438,7 @@ to unlock even more use cases:</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.code.select", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../../assets/javascripts/bundle.ad660dcc.min.js"></script>
