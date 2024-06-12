@@ -549,7 +549,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
                     Vulnerabilities
                                         
                     Vulnerability ID:  INT-001
-                    Vulnerability URL: /vulnerability/?source=INTERNAL&vulnId=INT-001
+                    Vulnerability URL: https://example.com/vulnerability/?source=INTERNAL&vulnId=INT-001
                     Severity:          MEDIUM
                     Source:            INTERNAL
                     Description:

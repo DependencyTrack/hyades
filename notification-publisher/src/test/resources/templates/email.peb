@@ -22,7 +22,7 @@ Component:         {{ subject.component | summarize }}
 Component URL:     {{ baseUrl }}/component/?uuid={{ subject.component.uuid }}
 
 Vulnerabilities
-{% for vulnerability in subject.vulnerabilities %}
+{% for vulnerability in subject.vulnerabilitiesList %}
 Vulnerability ID:  {{ vulnerability.vulnId }}
 Vulnerability URL: {{ baseUrl }}/vulnerability/?source={{ vulnerability.source }}&vulnId={{ vulnerability.vulnId }}
 Severity:          {{ vulnerability.severity }}
