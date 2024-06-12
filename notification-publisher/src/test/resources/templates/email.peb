@@ -17,12 +17,12 @@ Project URL:       {{ baseUrl }}/projects/{{ subject.project.uuid }}
 Other affected projects: {{ baseUrl }}{{ subject.affectedProjectsReference.frontendUri }}
 {% elseif notification.group == "GROUP_NEW_VULNERABLE_DEPENDENCY" %}
 Project:           {{ subject.project | summarize }}
-Project URL:       {{ baseUrl }}/projects/?uuid={{ subject.component.project.uuid }}
+Project URL:       {{ baseUrl }}/projects/?uuid={{ subject.project.uuid }}
 Component:         {{ subject.component | summarize }}
 Component URL:     {{ baseUrl }}/component/?uuid={{ subject.component.uuid }}
 
 Vulnerabilities
-{% for vulnerability in subject.vulnerabilities %}
+{% for vulnerability in subject.vulnerabilitiesList %}
 Vulnerability ID:  {{ vulnerability.vulnId }}
 Vulnerability URL: {{ baseUrl }}/vulnerability/?source={{ vulnerability.source }}&vulnId={{ vulnerability.vulnId }}
 Severity:          {{ vulnerability.severity }}

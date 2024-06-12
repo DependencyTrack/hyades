@@ -350,6 +350,89 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     @Test
     @Override
     @TestTransaction
+    public void testInformWithNewVulnerableDependencyNotification() throws Exception {
+        super.testInformWithNewVulnerableDependencyNotification();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                              "type": "header",
+                              "text": {
+                                "type": "plain_text",
+                                "text": "New Vulnerable Dependency"
+                              }
+                            },
+                            {
+                              "type": "context",
+                              "elements": [
+                                {
+                                  "text": "*LEVEL_INFORMATIONAL*  |  *SCOPE_PORTFOLIO*",
+                                  "type": "mrkdwn"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "divider"
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "Vulnerable Dependency Introduced",
+                                "type": "mrkdwn"
+                              },
+                              "fields": [
+                                {
+                                  "type": "mrkdwn",
+                                  "text": "*Component*"
+                                },
+                                {
+                                  "type": "plain_text",
+                                  "text": "componentName : componentVersion"
+                                },
+                                {
+                                  "type": "mrkdwn",
+                                  "text": "*Project*"
+                                },
+                                {
+                                  "type": "plain_text",
+                                  "text": "pkg:maven/org.acme/projectName@projectVersion"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "actions",
+                              "elements": [
+                                {
+                                  "type": "button",
+                                  "text": {
+                                    "type": "plain_text",
+                                    "text": "View Project"
+                                  },
+                                  "action_id": "actionId-1",
+                                  "url": "https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95"
+                                },
+                                {
+                                  "type": "button",
+                                  "text": {
+                                    "type": "plain_text",
+                                    "text": "View Component"
+                                  },
+                                  "action_id": "actionId-2",
+                                  "url": "https://example.com/components/94f87321-a5d1-4c2f-b2fe-95165debebc6"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Test
+    @Override
+    @TestTransaction
     void testInformWithProjectAuditChangeNotification() throws Exception {
         super.testInformWithProjectAuditChangeNotification();
 

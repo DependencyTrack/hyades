@@ -155,4 +155,20 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
                         """)));
     }
 
+    @Test
+    @Override
+    @TestTransaction
+    public void testInformWithNewVulnerableDependencyNotification() throws Exception {
+        super.testInformWithNewVulnerableDependencyNotification();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "username" : "Dependency Track",
+                          "icon_url" : "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                          "text" : "#### Vulnerable Dependency Introduced\\n\\n**Project**: pkg:maven/org.acme/projectName@projectVersion\\n**Component**: componentName : componentVersion\\n[View Project](https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95) - [View Component](https://example.com/components/94f87321-a5d1-4c2f-b2fe-95165debebc6)"
+                        }
+                        """)));
+    }
 }

@@ -37,6 +37,7 @@ import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
 import org.dependencytrack.proto.notification.v1.Component;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
+import org.dependencytrack.proto.notification.v1.NewVulnerableDependencySubject;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
@@ -52,6 +53,7 @@ import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_CONSUMED
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSING_FAILED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_DATASOURCE_MIRRORING;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
+import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABLE_DEPENDENCY;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_PROJECT_AUDIT_CHANGE;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
@@ -161,7 +163,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     void testInformWithNewVulnerabilityNotification() throws Exception {
         final var project = createProject();
-        final var component = createComponent(project);
+        final var component = createComponent();
         final var vuln = createVulnerability();
 
         final var subject = NewVulnerabilitySubject.newBuilder()
@@ -189,9 +191,33 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
+    void testInformWithNewVulnerableDependencyNotification() throws Exception {
+        final var project = createProject();
+        final var component = createComponent();
+        final var vuln = createVulnerability();
+
+        final var subject = NewVulnerableDependencySubject.newBuilder()
+                .setComponent(component)
+                .setProject(project)
+                .addVulnerabilities(vuln).build();
+
+        final var notification = Notification.newBuilder()
+                .setScope(SCOPE_PORTFOLIO)
+                .setGroup(GROUP_NEW_VULNERABLE_DEPENDENCY)
+                .setTitle(NotificationConstants.Title.NEW_VULNERABLE_DEPENDENCY)
+                .setContent("")
+                .setLevel(LEVEL_INFORMATIONAL)
+                .setTimestamp(Timestamps.fromSeconds(66666))
+                .setSubject(Any.pack(subject))
+                .build();
+
+        assertThatNoException()
+                .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
+    }
+
     void testInformWithProjectAuditChangeNotification() throws Exception {
         final var project = createProject();
-        final var component = createComponent(project);
+        final var component = createComponent();
         final var vuln = createVulnerability();
         final var analysis = createAnalysis(component, vuln);
 
@@ -269,7 +295,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
         return IOUtils.resourceToString("/templates/" + templateFile, UTF_8);
     }
 
-    private static Component createComponent(final Project project) {
+    private static Component createComponent() {
         return Component.newBuilder()
                 .setUuid("94f87321-a5d1-4c2f-b2fe-95165debebc6")
                 .setName("componentName")

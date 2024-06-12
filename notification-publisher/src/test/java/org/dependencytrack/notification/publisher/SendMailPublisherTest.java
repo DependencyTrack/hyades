@@ -526,6 +526,48 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
                 );
     }
 
+    @Test
+    @Override
+    @TestTransaction
+    public void testInformWithNewVulnerableDependencyNotification() throws Exception {
+        super.testInformWithNewVulnerableDependencyNotification();
+
+        assertThat(mailbox.findFirst("recipient@example.com")).satisfies(message -> {
+            assertThat(message.getFrom()).isNotNull();
+            assertThat(message.getFrom().getAddress()).isEqualTo("dtrack@example.com");
+            assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Vulnerable Dependency Introduced");
+            assertThat(message.getText()).isEqualToIgnoringNewLines("""
+                    Vulnerable Dependency Introduced
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Project:           pkg:maven/org.acme/projectName@projectVersion
+                    Project URL:       https://example.com/projects/?uuid=c9c9539a-e381-4b36-ac52-6a7ab83b2c95
+                    Component:         componentName : componentVersion
+                    Component URL:     https://example.com/component/?uuid=94f87321-a5d1-4c2f-b2fe-95165debebc6
+                                        
+                    Vulnerabilities
+                                        
+                    Vulnerability ID:  INT-001
+                    Vulnerability URL: https://example.com/vulnerability/?source=INTERNAL&vulnId=INT-001
+                    Severity:          MEDIUM
+                    Source:            INTERNAL
+                    Description:
+                    vulnerabilityDescription
+                                        
+                                        
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                                        
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    1970-01-01T18:31:06.000Z
+                    """);
+        });
+    }
+
     private Long createManagedUser(final String username, final String email) {
         return (Long) entityManager.createNativeQuery("""
                         INSERT INTO "MANAGEDUSER" ("USERNAME", "EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED") VALUES
@@ -618,5 +660,4 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     private static JsonObject configWithDestination(final String destination) {
         return Json.createObjectBuilder().add("destination", destination).build();
     }
-
 }
