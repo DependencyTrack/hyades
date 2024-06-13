@@ -74,8 +74,15 @@ The initial admin credentials are `admin` / `admin` 🌚
 
 ## Deployment 🚢
 
-The recommended way to deploy Hyades is via Helm. Our [chart](./helm-charts/hyades) is not officially published
-to any repository yet, so for now you'll have to clone this repository to access it.
+The recommended way to deploy Hyades is via Helm.
+The ` chart is maintained in the [`DependencyTrack/helm-charts`](https://github.com/DependencyTrack/helm-charts) repository.
+
+```shell
+$ helm repo add dependency-track https://dependencytrack.github.io/helm-charts
+$ helm search repo dependency-track -o json | jq -r '.[].name'
+dependency-track/dependency-track
+dependency-track/hyades
+```
 
 The chart does *not* include:
 
@@ -89,31 +96,35 @@ and [Redpanda](https://github.com/redpanda-data/helm-charts).
 
 Deploying to a local [Minikube](https://minikube.sigs.k8s.io/docs/) cluster is a great way to get started.
 
-> **Note**  
-> For now, database and Kafka broker are deployed using Docker Compose.
+> [!NOTE]  
+> To allow for frictionless testing, we will use the [`values-minikube.yaml`](https://github.com/DependencyTrack/helm-charts/blob/main/charts/hyades/values-minikube.yaml)
+> configuration template. **This template includes PostgreSQL and Redpanda deployments**.
+> Both are configured for *minimal resource footprint*, which *can* lead to suboptimal performance.
 
-1. Start PostgreSQL and Redpanda via Docker Compose
-```shell
-docker compose up -d
-```
-2. Start a local Minikube cluster, exposing `NodePort`s for API server (`30080`) and frontend (`30081`)
+1. Start a local Minikube cluster, exposing `NodePort`s for API server (`30080`) and frontend (`30081`)
 ```shell
 minikube start --ports 30080:30080,30081:30081
 ```
-3. Deploy Hyades
+2. Download the example `values-minikube.yaml` configuration template:
 ```shell
-helm install hyades ./helm-charts/hyades \
-  -n hyades --create-namespace \
-  -f ./helm-charts/hyades/values.yaml \
-  -f ./helm-charts/hyades/values-minikube.yaml
+curl -O https://raw.githubusercontent.com/DependencyTrack/helm-charts/main/charts/hyades/values-minikube.yaml
 ```
-4. Wait a moment for all deployments to become *ready*
+3. Make adjustments to `values-minikube.yaml` as needed
+    * Refer to [the chart's documentation](https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades) for details on available values
+    * Refer to the [configuration reference](https://dependencytrack.github.io/hyades/latest/reference/configuration/api-server/) for details on available application options
+4. Deploy Hyades
+```shell
+helm install hyades dependency-track/hyades \
+  -n hyades --create-namespace \
+  -f ./values-minikube.yaml
+```
+5. Wait a moment for all deployments to become *ready*
 ```shell
 kubectl -n hyades rollout status deployment \
   --selector 'app.kubernetes.io/instance=hyades' \
   --watch --timeout 3m
 ```
-5. Visit `http://localhost:30081` in your browser to access the frontend
+6. Visit `http://localhost:30081` in your browser to access the frontend
 
 ## Monitoring 📊
 
