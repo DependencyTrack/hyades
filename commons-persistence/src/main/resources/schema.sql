@@ -925,35 +925,12 @@ ALTER TABLE "VULNERABILITIES_TAGS" ADD CONSTRAINT "VULNERABILITIES_TAGS_VULNERAB
 
 INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-5', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 22, '9:4b5ad1340fd4ff1588a07039cfd8b03c', 'createTable tableName=VULNERABILITIES_TAGS; createIndex indexName=VULNERABILITIES_TAGS_VULNERABILITY_ID_IDX, tableName=VULNERABILITIES_TAGS; createIndex indexName=VULNERABILITIES_TAGS_TAG_ID_IDX, tableName=VULNERABILITIES_TAGS; addForeignKeyConstr...', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
 
--- Changeset migration/changelog-procedures.xml::function_cvssv2-to-severity::nscuro@protonmail.com
-SET SEARCH_PATH TO public, "$user","public";
-
--- Calculate the severity of a vulnerability based on its CVSSv2 base score.
-CREATE OR REPLACE FUNCTION "CVSSV2_TO_SEVERITY"(
-  "base_score" NUMERIC
-) RETURNS VARCHAR
-  LANGUAGE "sql"
-  PARALLEL SAFE
-  IMMUTABLE
-AS
-$$
-SELECT
-  CASE
-    WHEN "base_score" >= 7 THEN 'HIGH'
-    WHEN "base_score" >= 4 THEN 'MEDIUM'
-    WHEN "base_score" > 0 THEN 'LOW'
-    ELSE 'UNASSIGNED'
-    END;
-$$;
-
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('function_cvssv2-to-severity', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 23, '9:ffacc71dcf91b47c983c2bd8c70d7620', 'createProcedure path=procedures/function_cvssv2-to-severity.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
-
 -- Changeset migration/changelog-v5.5.0.xml::v5.5.0-6::nscuro
 SET SEARCH_PATH TO public, "$user","public";
 
 ALTER TABLE "VULNERABILITY_POLICY" ALTER COLUMN "DESCRIPTION" TYPE VARCHAR(512) USING ("DESCRIPTION"::VARCHAR(512));
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-6', 'nscuro', 'migration/changelog-v5.5.0.xml', NOW(), 23, '9:7a29b11e1b913aaa5394d56f3d35096a', 'modifyDataType columnName=DESCRIPTION, tableName=VULNERABILITY_POLICY', '', 'EXECUTED', NULL, NULL, '4.27.0', '7502506571');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-6', 'nscuro', 'migration/changelog-v5.5.0.xml', NOW(), 23, '9:7a29b11e1b913aaa5394d56f3d35096a', 'modifyDataType columnName=DESCRIPTION, tableName=VULNERABILITY_POLICY', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Changeset migration/changelog-v5.5.0.xml::v5.5.0-7::sahibamittal
 SET SEARCH_PATH TO public, "$user","public";
@@ -961,23 +938,23 @@ SET SEARCH_PATH TO public, "$user","public";
 ALTER TABLE "WORKFLOW_STATE" DROP CONSTRAINT IF EXISTS "WORKFLOW_STATE_STEP_check";
 
 ALTER TABLE "WORKFLOW_STATE" ADD CONSTRAINT "WORKFLOW_STATE_STEP_check"
-            CHECK ("STEP"::TEXT = ANY(ARRAY['BOM_CONSUMPTION', 'BOM_PROCESSING', 'METRICS_UPDATE', 'POLICY_BUNDLE_SYNC', 'POLICY_EVALUATION', 'REPO_META_ANALYSIS', 'VULN_ANALYSIS', 'PROJECT_CLONE']));
+  CHECK ("STEP"::TEXT = ANY(ARRAY['BOM_CONSUMPTION', 'BOM_PROCESSING', 'METRICS_UPDATE', 'POLICY_BUNDLE_SYNC', 'POLICY_EVALUATION', 'REPO_META_ANALYSIS', 'VULN_ANALYSIS', 'PROJECT_CLONE']));
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-7', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 24, '9:4c05b1489b0ad2acdcb1ba454af448d3', 'sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '6992024870');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-7', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 24, '9:4c05b1489b0ad2acdcb1ba454af448d3', 'sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Changeset migration/changelog-v5.5.0.xml::v5.5.0-8::nscuro
 SET SEARCH_PATH TO public, "$user","public";
 
 DROP TABLE "CWE";
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-8', 'nscuro', 'migration/changelog-v5.5.0.xml', NOW(), 25, '9:461b965fb154668f93bc21471adb4522', 'dropTable tableName=CWE', '', 'EXECUTED', NULL, NULL, '4.27.0', '7510478435');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-8', 'nscuro', 'migration/changelog-v5.5.0.xml', NOW(), 25, '9:461b965fb154668f93bc21471adb4522', 'dropTable tableName=CWE', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Changeset migration/changelog-v5.5.0.xml::v5.5.0-9::sahibamittal
 SET SEARCH_PATH TO public, "$user","public";
 
 ALTER TABLE "VULNERABILITY_POLICY" ADD "OPERATION_MODE" VARCHAR(255);
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-9', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 26, '9:05667de88f118ce836fc3c4e2785a1dc', 'addColumn tableName=VULNERABILITY_POLICY', '', 'EXECUTED', NULL, NULL, '4.27.0', '7510478435');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-9', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 26, '9:05667de88f118ce836fc3c4e2785a1dc', 'addColumn tableName=VULNERABILITY_POLICY', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Changeset migration/changelog-v5.5.0.xml::v5.5.0-10::sahibamittal
 SET SEARCH_PATH TO public, "$user","public";
@@ -987,66 +964,21 @@ CREATE TABLE "COMPONENT_PROPERTY" ("ID" BIGINT GENERATED BY DEFAULT AS IDENTITY 
 ALTER TABLE "COMPONENT_PROPERTY" ADD CONSTRAINT "COMPONENT_PROPERTY_COMPONENT_ID_FK" FOREIGN KEY ("COMPONENT_ID") REFERENCES "COMPONENT" ("ID") ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE "COMPONENT_PROPERTY" ADD CONSTRAINT "COMPONENT_PROPERTY_TYPE_check"
-            CHECK ("PROPERTYTYPE" IS NULL OR "PROPERTYTYPE"::TEXT = ANY(ARRAY['BOOLEAN', 'INTEGER', 'NUMBER', 'STRING', 'ENCRYPTEDSTRING', 'TIMESTAMP', 'URL', 'UUID']));
+  CHECK ("PROPERTYTYPE" IS NULL OR "PROPERTYTYPE"::TEXT = ANY(ARRAY['BOOLEAN', 'INTEGER', 'NUMBER', 'STRING', 'ENCRYPTEDSTRING', 'TIMESTAMP', 'URL', 'UUID']));
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-10', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 27, '9:1a88e7c24a88dcd74656a4065d9d33f1', 'createTable tableName=COMPONENT_PROPERTY; addForeignKeyConstraint baseTableName=COMPONENT_PROPERTY, constraintName=COMPONENT_PROPERTY_COMPONENT_ID_FK, referencedTableName=COMPONENT; sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '8120721953');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-10', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 27, '9:1a88e7c24a88dcd74656a4065d9d33f1', 'createTable tableName=COMPONENT_PROPERTY; addForeignKeyConstraint baseTableName=COMPONENT_PROPERTY, constraintName=COMPONENT_PROPERTY_COMPONENT_ID_FK, referencedTableName=COMPONENT; sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
--- Changeset migration/changelog-procedures.xml::function_cvssv3-to-severity::nscuro@protonmail.com
+-- Changeset migration/changelog-v5.5.0.xml::v5.5.0-11::nscuro
 SET SEARCH_PATH TO public, "$user","public";
 
--- Calculate the severity of a vulnerability based on its CVSSv3 base score.
-CREATE OR REPLACE FUNCTION "CVSSV3_TO_SEVERITY"(
-  "base_score" NUMERIC
-) RETURNS VARCHAR
-  LANGUAGE "sql"
-  PARALLEL SAFE
-  IMMUTABLE
-AS
-$$
-SELECT
-  CASE
-    WHEN "base_score" >= 9 THEN 'CRITICAL'
-    WHEN "base_score" >= 7 THEN 'HIGH'
-    WHEN "base_score" >= 4 THEN 'MEDIUM'
-    WHEN "base_score" > 0 THEN 'LOW'
-    ELSE 'UNASSIGNED'
-    END;
-$$;
+-- WARNING The following SQL may change each run and therefore is possibly incorrect and/or invalid:
+DROP FUNCTION IF EXISTS "CVSSV2_TO_SEVERITY";
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('function_cvssv3-to-severity', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 24, '9:7499dcecb7ce2dfcafba4838ef851413', 'createProcedure path=procedures/function_cvssv3-to-severity.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
+DROP FUNCTION IF EXISTS "CVSSV3_TO_SEVERITY";
 
--- Changeset migration/changelog-procedures.xml::function_calc-severity::nscuro@protonmail.com
-SET SEARCH_PATH TO public, "$user","public";
+DROP FUNCTION IF EXISTS "CALC_SEVERITY";
 
--- Calculate the severity of a vulnerability based on:
---   * a pre-set severity
---   * a CVSSv3 base score
---   * a CVSSv2 base score
--- The behavior of this function is identical to Vulnerability#getSeverity
--- in the API server Java code base.
--- https://github.com/DependencyTrack/dependency-track/blob/1976be1f5cc9d027900f09aed9d1539595aeda3a/src/main/java/org/dependencytrack/model/Vulnerability.java#L338-L340
-CREATE OR REPLACE FUNCTION "CALC_SEVERITY"(
-  "severity" VARCHAR,
-  "severity_override" VARCHAR,
-  "cvssv3_base_score" NUMERIC,
-  "cvssv2_base_score" NUMERIC
-) RETURNS VARCHAR
-  LANGUAGE "sql"
-  PARALLEL SAFE
-  IMMUTABLE
-AS
-$$
-SELECT
-  CASE
-    WHEN "severity_override" IS NOT NULL THEN "severity_override"
-    WHEN "cvssv3_base_score" IS NOT NULL THEN "CVSSV3_TO_SEVERITY"("cvssv3_base_score")
-    WHEN "cvssv2_base_score" IS NOT NULL THEN "CVSSV2_TO_SEVERITY"("cvssv2_base_score")
-    WHEN "severity" IS NOT NULL THEN "severity"
-    ELSE 'UNASSIGNED'
-    END;
-$$;
-
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('function_calc-severity', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 25, '9:ecdf69ae9545f33a8e08020a6f5dbe61', 'createProcedure path=procedures/function_calc-severity.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-11', 'nscuro', 'migration/changelog-v5.5.0.xml', NOW(), 28, '9:0277a75d44be08ad499cd55b6feffe2d', 'customChange; sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Changeset migration/changelog-procedures.xml::function_calc-risk-score::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
@@ -1071,7 +1003,7 @@ $$
 SELECT (("critical" * 10) + ("high" * 5) + ("medium" * 3) + ("low" * 1) + ("unassigned" * 5))::NUMERIC;
 $$;
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('function_calc-risk-score', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 26, '9:8eca48b5ebb1c65e2625ed5d6063bf2e', 'createProcedure path=procedures/function_calc-risk-score.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('function_calc-risk-score', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 29, '9:8eca48b5ebb1c65e2625ed5d6063bf2e', 'createProcedure path=procedures/function_calc-risk-score.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Changeset migration/changelog-procedures.xml::procedure_update-component-metrics::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
@@ -1087,7 +1019,6 @@ DECLARE
   "v_vulnerability"                           RECORD; -- Loop variable for iterating over vulnerabilities the component is affected by
   "v_alias"                                   RECORD; -- Loop variable for iterating over aliases of a vulnerability
   "v_aliases_seen"                            TEXT[]; -- Array of aliases encountered while iterating over vulnerabilities
-  "v_severity"                                VARCHAR; -- Loop variable for the current vulnerability's severity
   "v_policy_violation"                        RECORD; -- Loop variable for iterating over policy violations assigned to the component
   "v_vulnerabilities"                         INT     := 0; -- Total number of vulnerabilities
   "v_critical"                                INT     := 0; -- Number of vulnerabilities with critical severity
@@ -1177,20 +1108,13 @@ BEGIN
 
       "v_vulnerabilities" := "v_vulnerabilities" + 1;
 
-      SELECT "CALC_SEVERITY"(
-        "v_vulnerability"."SEVERITY",
-        "v_vulnerability"."SEVERITY_OVERRIDE",
-        "v_vulnerability"."CVSSV3BASESCORE",
-        "v_vulnerability"."CVSSV2BASESCORE")
-      INTO "v_severity";
-
-      IF "v_severity" = 'CRITICAL' THEN
+      IF COALESCE("v_vulnerability"."SEVERITY_OVERRIDE", "v_vulnerability"."SEVERITY") = 'CRITICAL' THEN
         "v_critical" := "v_critical" + 1;
-      ELSEIF "v_severity" = 'HIGH' THEN
+      ELSEIF COALESCE("v_vulnerability"."SEVERITY_OVERRIDE", "v_vulnerability"."SEVERITY") = 'HIGH' THEN
         "v_high" := "v_high" + 1;
-      ELSEIF "v_severity" = 'MEDIUM' THEN
+      ELSEIF COALESCE("v_vulnerability"."SEVERITY_OVERRIDE", "v_vulnerability"."SEVERITY") = 'MEDIUM' THEN
         "v_medium" := "v_medium" + 1;
-      ELSEIF "v_severity" = 'LOW' THEN
+      ELSEIF COALESCE("v_vulnerability"."SEVERITY_OVERRIDE", "v_vulnerability"."SEVERITY") = 'LOW' THEN
         "v_low" := "v_low" + 1;
       ELSE
         "v_unassigned" := "v_unassigned" + 1;
@@ -1390,7 +1314,7 @@ BEGIN
 END;
 $$;
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-component-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 27, '9:c3d40a2f6e6ef350744a0ce63561c7e7', 'createProcedure path=procedures/procedure_update-component-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-component-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 30, '9:e6df4d01af9019e007df9ae9e770eade', 'createProcedure path=procedures/procedure_update-component-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Changeset migration/changelog-procedures.xml::procedure_update-project-metrics::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
@@ -1615,7 +1539,7 @@ BEGIN
 end;
 $$;
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-project-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 28, '9:a7b35b9d37fa1deeb3044ace83dc9952', 'createProcedure path=procedures/procedure_update-project-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-project-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 31, '9:a7b35b9d37fa1deeb3044ace83dc9952', 'createProcedure path=procedures/procedure_update-project-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Changeset migration/changelog-procedures.xml::procedure_update-portfolio-metrics::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
@@ -1835,7 +1759,7 @@ BEGIN
 END;
 $$;
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-portfolio-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 29, '9:1de7336fd9c6d13ceaccf6a498492eed', 'createProcedure path=procedures/procedure_update-portfolio-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '4397786765');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-portfolio-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 32, '9:1de7336fd9c6d13ceaccf6a498492eed', 'createProcedure path=procedures/procedure_update-portfolio-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.27.0', '8124347780');
 
 -- Release Database Lock
 SET SEARCH_PATH TO public, "$user","public";
