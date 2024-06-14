@@ -32,8 +32,12 @@
     just leave it empty for now. The maintainers are happy to assist you in figuring it out!
 -->
 
-- [ ] I have read and understand the [contributing guidelines](../CONTRIBUTING.md#pull-requests)
+- [ ] I have read and understand the [contributing guidelines]
 - [ ] This PR fixes a defect, and I have provided tests to verify that the fix is effective
 - [ ] This PR implements an enhancement, and I have provided tests to verify that it works as intended
-- [ ] This PR introduces changes to the database model, and I have updated the [migration changelog](https://github.com/DependencyTrack/hyades-apiserver/tree/main/src/main/resources/migration) accordingly
-- [ ] This PR introduces new or alters existing behavior, and I have updated the [documentation](https://github.com/DependencyTrack/hyades/tree/main/docs) accordingly
+- [ ] This PR introduces changes to the database model, and I have updated the [migration changelog] accordingly
+- [ ] This PR introduces new or alters existing behavior, and I have updated the [documentation] accordingly
+
+[contributing guidelines]: ../CONTRIBUTING.md#pull-requests
+[documentation]: https://dependencytrack.github.io/hyades/latest/development/documentation/
+[migration changelog]: https://dependencytrack.github.io/hyades/latest/development/database-migrations/
