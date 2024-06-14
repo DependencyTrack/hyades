@@ -47,7 +47,7 @@ jobs:
         cache: maven
     - name: Test
       run: |-
-        mvn -pl '!e2e' clean verify \
+        mvn -B --no-transfer-progress -pl '!e2e' clean verify \
           failsafe:integration-test -DskipITs=false
     # Publishing coverage to Codacy is only possible for builds of push events.
     # PRs from forks do not get access to repository secrets.
