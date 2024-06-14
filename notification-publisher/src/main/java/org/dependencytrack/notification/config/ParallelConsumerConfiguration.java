@@ -24,12 +24,16 @@ import io.confluent.parallelconsumer.ParallelStreamProcessor;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
 import io.quarkus.runtime.ShutdownEvent;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.common.annotation.Identifier;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.internals.AsyncKafkaConsumer;
+import org.apache.kafka.clients.consumer.internals.ConsumerCoordinator;
+import org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.dependencytrack.notification.serialization.NotificationKafkaProtobufDeserializer;
 import org.dependencytrack.proto.notification.v1.Notification;
@@ -42,6 +46,15 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @ApplicationScoped
+@RegisterForReflection(targets = {
+        // parallel-consumer uses reflection with these classes
+        // to determine whether auto-commit is enabled.
+        // https://github.com/confluentinc/parallel-consumer/pull/762
+        KafkaConsumer.class,
+        AsyncKafkaConsumer.class,
+        LegacyKafkaConsumer.class,
+        ConsumerCoordinator.class
+})
 class ParallelConsumerConfiguration {
 
     private final ParallelStreamProcessor<String, Notification> parallelConsumer;
