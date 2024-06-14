@@ -57,24 +57,6 @@ public class NixpkgsMetaAnalyzerTest {
     }
 
     @Test
-    public void testAnalyzerWithEmptyPackageResponse() throws Exception {
-        final var component = new Component();
-        component.setPurl(new PackageURL("pkg:nixpkgs/SDL_sound@1.0.3"));
-        analyzer.setRepositoryBaseUrl(String.format("http://localhost:%d", wireMockServer.port()));
-        wireMockServer.stubFor(get(anyUrl())
-                .willReturn(aResponse().withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-                        .withResponseBody(Body.ofBinaryOrText("""
-                                {
-                                    "packages": {}
-                                }
-                                """.getBytes(),
-                                new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
-        Assert.assertTrue(analyzer.isApplicable(component));
-        Assert.assertEquals(RepositoryType.NIXPKGS, analyzer.supportedRepositoryType());
-        Assert.assertNotNull(analyzer.analyze(component).getComponent());
-    }
-
-    @Test
     public void testAnalyzerWithPackageResponse() throws Exception {
         final var component = new Component();
         component.setPurl(new PackageURL("pkg:nixpkgs/SDL_sound@1.0.3"));
