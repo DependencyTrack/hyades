@@ -29,6 +29,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import org.dependencytrack.apiserver.model.Analysis;
+import org.dependencytrack.apiserver.model.ApiKey;
 import org.dependencytrack.apiserver.model.BomProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
 import org.dependencytrack.apiserver.model.ConfigProperty;
@@ -73,6 +74,12 @@ public interface ApiServerClient {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     Team createTeam(final CreateTeamRequest request);
+
+    @PUT
+    @Path("/team/{uuid}/key")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.WILDCARD)
+    ApiKey createApiKey(@PathParam("uuid") final UUID teamUuid);
 
     @POST
     @Path("/permission/{permission}/team/{uuid}")

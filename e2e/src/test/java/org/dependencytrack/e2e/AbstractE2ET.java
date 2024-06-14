@@ -24,6 +24,7 @@ import org.dependencytrack.apiserver.ApiServerAuthInterceptor;
 import org.dependencytrack.apiserver.ApiServerClient;
 import org.dependencytrack.apiserver.CompositeDecoder;
 import org.dependencytrack.apiserver.CompositeEncoder;
+import org.dependencytrack.apiserver.model.ApiKey;
 import org.dependencytrack.apiserver.model.CreateTeamRequest;
 import org.dependencytrack.apiserver.model.Team;
 import org.junit.jupiter.api.AfterEach;
@@ -286,6 +287,9 @@ public class AbstractE2ET {
         logger.info("Creating e2e team");
         final Team team = client.createTeam(new CreateTeamRequest("e2e"));
 
+        logger.info("Creating API key for e2e team");
+        final ApiKey apiKey = client.createApiKey(team.uuid());
+
         // TODO: Should assigned permissions be configurable per test case?
         logger.info("Assigning permissions to e2e team");
         for (final String permission : Set.of(
@@ -302,7 +306,7 @@ public class AbstractE2ET {
         }
 
         logger.info("Authenticating as e2e team");
-        ApiServerAuthInterceptor.setApiKey(team.apiKeys().getFirst().key());
+        ApiServerAuthInterceptor.setApiKey(apiKey.key());
 
         return client;
     }
