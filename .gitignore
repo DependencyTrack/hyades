@@ -50,3 +50,7 @@ apiserver-data/
 
 # Generated test fixtures
 testdata/boms/generated/*.cdx.json
+
+# nix
+.direnv
+.pre-commit-config.yaml
