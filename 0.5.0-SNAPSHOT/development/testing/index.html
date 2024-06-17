@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.26">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
     
     
       
@@ -1566,6 +1566,11 @@ and rebuilt for every test case. Containers are started and managed using <a hre
 <code>hyades</code> repository. Container images used are defined in the
 <a href="https://github.com/DependencyTrack/hyades/blob/main/e2e/src/test/java/org/dependencytrack/e2e/AbstractE2ET.java"><code>AbstractE2ET</code></a>
 class.</p>
+<p>Image versions can be overwritten using the following environment variables:</p>
+<ul>
+<li><code>APISERVER_VERSION</code></li>
+<li><code>HYADES_VERSION</code></li>
+</ul>
 <h3 id="execution_1">Execution</h3>
 <p>Tests can be launched individually through your IDE, or all at once using Maven:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mvn<span class="w"> </span>-pl<span class="w"> </span>e2e<span class="w"> </span>clean<span class="w"> </span>verify<span class="w"> </span>-Pe2e-all
@@ -1577,7 +1582,9 @@ class.</p>
 <li>Run e2e tests as detailed above</li>
 </ol>
 <h3 id="execution-in-ci_1">Execution in CI</h3>
-<p>In CI, end-to-end tests are executed for every push to the <code>main</code> branch.</p>
+<p>In CI, end-to-end tests are executed for every push to the <code>main</code> branch, as well as every night at 12AM.</p>
+<p>They can additionally be run manually, via the GitHub Actions UI. Both the API server and Hyades version
+can be customized before execution.</p>
 
 
 
