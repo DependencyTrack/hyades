@@ -75,25 +75,7 @@ jobs:
             -Dquarkus.container-image.build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
-
-  e2e-test:
-    name: End-To-End Test
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs:
-    # As e2e tests depend on the latest container images,
-    # only trigger them after building the images completed.
-    - publish-container-image
-    steps:
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # tag=v4.1.7
-    - name: Set up JDK
-      uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # tag=v4.2.1
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
-    - name: Test
-      env:
-        OSSINDEX_USERNAME: ${{ secrets.OSSINDEX_USERNAME }}
-        OSSINDEX_TOKEN: ${{ secrets.OSSINDEX_TOKEN }}
-      run: mvn -B --no-transfer-progress -pl e2e clean verify -Pe2e-all
+      - name: Run end-to-end tests
+        run: |- 
+          gh workflow run e2e-test.yml \
+            -f hyades-version=${{ startsWith(steps.determine-container-tags.outputs.tag, 'feature-') && steps.determine-container-tags.outputs.tag || 'snapshot' }}
