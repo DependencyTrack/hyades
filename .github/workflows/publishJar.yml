@@ -76,6 +76,8 @@ jobs:
             -Dquarkus.container-image.push=true \
             -Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64
       - name: Run end-to-end tests
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |- 
           gh workflow run e2e-test.yml \
             -f hyades-version=${{ startsWith(steps.determine-container-tags.outputs.tag, 'feature-') && steps.determine-container-tags.outputs.tag || 'snapshot' }}
