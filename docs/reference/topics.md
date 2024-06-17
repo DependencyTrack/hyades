@@ -15,6 +15,7 @@
 | `dtrack.notification.project-created`                                                             | 3          |                                                                                     |
 | `dtrack.notification.repository`                                                                  | 3          |                                                                                     |
 | `dtrack.notification.vex`                                                                         | 3          |                                                                                     |
+| `dtrack.notification.user`                                                                        | 3          |                                                                                     |
 | `dtrack.notification.project-vuln-analysis-complete` <sup>3</sup>                                 | 3          | `cleanup.policy=compact`<br/>`segment.bytes=67108864`<br/>`max.compaction.lag.ms=0` |
 | `dtrack.repo-meta-analysis.component`<sup>1A</sup>                                                | 3          |                                                                                     |
 | `dtrack.repo-meta-analysis.result`                                                                | 3          |                                                                                     |

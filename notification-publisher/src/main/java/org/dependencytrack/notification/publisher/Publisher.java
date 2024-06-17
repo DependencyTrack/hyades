@@ -31,6 +31,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
+import org.dependencytrack.proto.notification.v1.UserPrincipalSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
+import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
 
 public interface Publisher {
 
@@ -50,6 +52,10 @@ public interface Publisher {
     String CONFIG_TEMPLATE_MIME_TYPE_KEY = "mimeType";
 
     String CONFIG_DESTINATION = "destination";
+
+    String CONFIG_TOKEN = "token";
+
+    String CONFIG_TOKEN_HEADER = "tokenHeader";
 
 
     void inform(final PublishContext ctx, final Notification notification, final JsonObject config) throws Exception;
@@ -121,6 +127,13 @@ public interface Publisher {
                 context.put("subjectJson", JsonFormat.printer().print(subject));
             } else if (notification.getSubject().is(ProjectVulnAnalysisCompleteSubject.class)) {
                 final var subject = notification.getSubject().unpack(ProjectVulnAnalysisCompleteSubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            }
+        }
+        else if  (notification.getScope() == SCOPE_SYSTEM) {
+            if (notification.getSubject().is(UserPrincipalSubject.class)) {
+                final var subject = notification.getSubject().unpack(UserPrincipalSubject.class);
                 context.put("subject", subject);
                 context.put("subjectJson", JsonFormat.printer().print(subject));
             }

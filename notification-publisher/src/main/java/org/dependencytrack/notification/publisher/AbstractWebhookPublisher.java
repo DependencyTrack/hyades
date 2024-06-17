@@ -79,6 +79,8 @@ public abstract class AbstractWebhookPublisher implements Publisher {
             } else {
                 request.addHeader("Authorization", "Bearer " + credentials.password);
             }
+        } else if (getToken(config) != null) {
+            request.addHeader(getTokenHeader(config), getToken(config));
         }
 
         StringEntity entity = new StringEntity(content);
@@ -108,6 +110,14 @@ public abstract class AbstractWebhookPublisher implements Publisher {
 
     protected String getDestinationUrl(final JsonObject config) {
         return config.getString(CONFIG_DESTINATION, null);
+    }
+
+    protected String getToken(final JsonObject config) {
+        return config.getString(CONFIG_TOKEN, null);
+    }
+
+    protected String getTokenHeader(final JsonObject config) {
+        return config.getString(CONFIG_TOKEN_HEADER, "X-Api-Key");
     }
 }
 

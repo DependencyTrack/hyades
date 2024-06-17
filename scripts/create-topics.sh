@@ -53,6 +53,7 @@ notification_topics=(
   "${KAFKA_TOPIC_PREFIX:-}dtrack.notification.project-vuln-analysis-complete"
   "${KAFKA_TOPIC_PREFIX:-}dtrack.notification.repository"
   "${KAFKA_TOPIC_PREFIX:-}dtrack.notification.vex"
+  "${KAFKA_TOPIC_PREFIX:-}dtrack.notification.user"
 )
 for topic_name in "${notification_topics[@]}"; do
   create_topic "$topic_name" "${NOTIFICATION_TOPICS_PARTITIONS:-1}" "retention.ms=${NOTIFICATION_TOPICS_RETENTION_MS:-43200000}"

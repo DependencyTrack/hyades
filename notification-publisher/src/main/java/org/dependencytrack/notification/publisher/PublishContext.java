@@ -30,6 +30,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
+import org.dependencytrack.proto.notification.v1.UserPrincipalSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 
@@ -129,6 +130,9 @@ public class PublishContext {
         } else if (notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
             final VexConsumedOrProcessedSubject subject = notification.getSubject().unpack(VexConsumedOrProcessedSubject.class);
             notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
+        } else if (notification.getSubject().is(UserPrincipalSubject.class)) {
+            final UserPrincipalSubject subject = notification.getSubject().unpack(UserPrincipalSubject.class);
+            notificationSubjects.put("User", subject);
         }
 
         return new PublishContext(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(),

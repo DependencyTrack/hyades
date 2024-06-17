@@ -306,6 +306,8 @@ services:
                 valueProtoType: org.cyclonedx.v1_4.Bom
               - topicName: dtrack.epss
                 valueProtoType: org.dependencytrack.mirror.v1.EpssItem
+              - topicName: dtrack.notification.user
+                valueProtoType: org.dependencytrack.notification.v1.Notification
             fileSystem:
               enabled: true
               paths: ["/etc/protos"]

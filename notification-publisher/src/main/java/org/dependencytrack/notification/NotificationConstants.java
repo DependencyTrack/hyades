@@ -52,6 +52,8 @@ public class NotificationConstants {
         public static final String BOM_PROCESSING_FAILED = "Bill of Materials Processing Failed";
         public static final String VEX_CONSUMED = "Vulnerability Exploitability Exchange (VEX) Consumed";
         public static final String VEX_PROCESSED = "Vulnerability Exploitability Exchange (VEX) Processed";
+        public static final String USER_CREATED = "User Created";
+        public static final String USER_DELETED = "User Deleted";
     }
 
 }

@@ -42,5 +42,7 @@ public class NotificationConstantsTest {
         Assertions.assertEquals("Analysis Decision: Finding Suppressed", NotificationConstants.Title.ANALYSIS_DECISION_SUPPRESSED);
         Assertions.assertEquals("Analysis Decision: Finding UnSuppressed", NotificationConstants.Title.ANALYSIS_DECISION_UNSUPPRESSED);
         Assertions.assertEquals("Analysis Decision: Finding Resolved", NotificationConstants.Title.ANALYSIS_DECISION_RESOLVED);
+        Assertions.assertEquals("User Created", NotificationConstants.Title.USER_CREATED);
+        Assertions.assertEquals("User Deleted", NotificationConstants.Title.USER_DELETED);
     }
 }

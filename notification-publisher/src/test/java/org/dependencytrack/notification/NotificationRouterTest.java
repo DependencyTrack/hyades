@@ -42,6 +42,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.Project;
+import org.dependencytrack.proto.notification.v1.UserPrincipalSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
@@ -62,10 +63,12 @@ import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERAB
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABLE_DEPENDENCY;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_POLICY_VIOLATION;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_PROJECT_AUDIT_CHANGE;
+import static org.dependencytrack.proto.notification.v1.Group.GROUP_USER_CREATED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_VEX_CONSUMED;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
+import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -834,6 +837,30 @@ class NotificationRouterTest {
         // Ok, let's test this
         notificationRouter.inform(PublisherTestUtil.createPublisherContext(notification), notification);
         verify(consolePublisherMock).inform(any(), eq(notification), any());
+    }
+
+    @Test
+    @TestTransaction
+    void testResolveRulesUserCreatedNotification() throws Exception {
+
+        final Long publisherId = createConsolePublisher();
+        createRule("Limit To Test Rule",
+                NotificationScope.SYSTEM, NotificationLevel.INFORMATIONAL,
+                NotificationGroup.USER_CREATED, publisherId);
+
+        final var notificationUser = Notification.newBuilder()
+                .setScope(SCOPE_SYSTEM)
+                .setGroup(GROUP_USER_CREATED)
+                .setLevel(LEVEL_INFORMATIONAL)
+                .setSubject(Any.pack(UserPrincipalSubject.newBuilder()
+                        .setUsername("username")
+                        .setEmail("email.com")
+                        .build()))
+                .build();
+
+        Assertions.assertThat(notificationRouter.resolveRules(PublisherTestUtil.createPublisherContext(notificationUser), notificationUser)).satisfiesExactly(
+                rule -> Assertions.assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
+        );
     }
 
     private Long createConsolePublisher() {
