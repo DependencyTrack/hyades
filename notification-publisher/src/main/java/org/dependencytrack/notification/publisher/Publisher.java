@@ -31,7 +31,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
-import org.dependencytrack.proto.notification.v1.UserPrincipalSubject;
+import org.dependencytrack.proto.notification.v1.UserSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -132,8 +132,8 @@ public interface Publisher {
             }
         }
         else if  (notification.getScope() == SCOPE_SYSTEM) {
-            if (notification.getSubject().is(UserPrincipalSubject.class)) {
-                final var subject = notification.getSubject().unpack(UserPrincipalSubject.class);
+            if (notification.getSubject().is(UserSubject.class)) {
+                final var subject = notification.getSubject().unpack(UserSubject.class);
                 context.put("subject", subject);
                 context.put("subjectJson", JsonFormat.printer().print(subject));
             }

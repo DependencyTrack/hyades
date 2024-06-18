@@ -30,7 +30,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
-import org.dependencytrack.proto.notification.v1.UserPrincipalSubject;
+import org.dependencytrack.proto.notification.v1.UserSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 
@@ -45,6 +45,7 @@ public class PublishContext {
     private static final String SUBJECT_PROJECT = "project";
     private static final String SUBJECT_VULNERABILITY = "vulnerability";
     private static final String SUBJECT_VULNERABILITIES = "vulnerabilities";
+    private static final String SUBJECT_USER = "user";
 
     private final String kafkaTopic;
     private final int kafkaTopicPartition;
@@ -130,9 +131,9 @@ public class PublishContext {
         } else if (notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
             final VexConsumedOrProcessedSubject subject = notification.getSubject().unpack(VexConsumedOrProcessedSubject.class);
             notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
-        } else if (notification.getSubject().is(UserPrincipalSubject.class)) {
-            final UserPrincipalSubject subject = notification.getSubject().unpack(UserPrincipalSubject.class);
-            notificationSubjects.put("User", subject);
+        } else if (notification.getSubject().is(UserSubject.class)) {
+            final UserSubject subject = notification.getSubject().unpack(UserSubject.class);
+            notificationSubjects.put(SUBJECT_USER, User.convert(subject));
         }
 
         return new PublishContext(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(),
@@ -217,6 +218,17 @@ public class PublishContext {
                 return null;
             }
             return new Vulnerability(notificationVuln.getVulnId(), notificationVuln.getSource());
+        }
+
+    }
+
+    public record User(String username, String email) {
+
+        private static User convert(final UserSubject userSubject) {
+            if (userSubject == null) {
+                return null;
+            }
+            return new User(userSubject.getUsername(), userSubject.getEmail());
         }
 
     }

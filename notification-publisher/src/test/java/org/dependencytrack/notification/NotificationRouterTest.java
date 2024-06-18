@@ -42,7 +42,7 @@ import org.dependencytrack.proto.notification.v1.Notification;
 import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecisionChangeSubject;
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.Project;
-import org.dependencytrack.proto.notification.v1.UserPrincipalSubject;
+import org.dependencytrack.proto.notification.v1.UserSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
@@ -852,7 +852,7 @@ class NotificationRouterTest {
                 .setScope(SCOPE_SYSTEM)
                 .setGroup(GROUP_USER_CREATED)
                 .setLevel(LEVEL_INFORMATIONAL)
-                .setSubject(Any.pack(UserPrincipalSubject.newBuilder()
+                .setSubject(Any.pack(UserSubject.newBuilder()
                         .setUsername("username")
                         .setEmail("email.com")
                         .build()))

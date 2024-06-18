@@ -42,7 +42,7 @@ import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisStatus;
 import org.dependencytrack.proto.notification.v1.Scope;
-import org.dependencytrack.proto.notification.v1.UserPrincipalSubject;
+import org.dependencytrack.proto.notification.v1.UserSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.Vulnerability;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysis;
@@ -74,7 +74,7 @@ import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionCh
                 PolicyViolationSubject.class,
                 Project.class,
                 ProjectVulnAnalysisCompleteSubject.class,
-                UserPrincipalSubject.class,
+                UserSubject.class,
                 ProjectVulnAnalysisStatus.class,
                 Scope.class,
                 Timestamp.class,

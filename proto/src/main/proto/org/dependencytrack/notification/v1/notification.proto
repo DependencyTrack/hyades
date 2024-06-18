@@ -218,9 +218,9 @@ message ProjectVulnAnalysisCompleteSubject {
   string token = 4;
 }
 
-message UserPrincipalSubject {
+message UserSubject {
   string username = 1;
-  string email = 2;
+  optional string email = 2;
 }
 
 enum ProjectVulnAnalysisStatus {

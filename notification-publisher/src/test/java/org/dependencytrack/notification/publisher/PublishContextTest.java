@@ -34,7 +34,7 @@ import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecision
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
-import org.dependencytrack.proto.notification.v1.UserPrincipalSubject;
+import org.dependencytrack.proto.notification.v1.UserSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.junit.jupiter.api.Nested;
@@ -516,13 +516,13 @@ class PublishContextTest {
         }
 
         @Test
-        void testWithUserPrincipalSubject() throws Exception {
+        void testWithUserSubject() throws Exception {
             final var notification = Notification.newBuilder()
                     .setGroup(GROUP_USER_CREATED)
                     .setLevel(LEVEL_INFORMATIONAL)
                     .setScope(SCOPE_SYSTEM)
                     .setTimestamp(Timestamps.fromSeconds(666))
-                    .setSubject(Any.pack(UserPrincipalSubject.newBuilder()
+                    .setSubject(Any.pack(UserSubject.newBuilder()
                             .setUsername("username")
                             .setEmail("email.com")
                             .build()))
@@ -537,10 +537,11 @@ class PublishContextTest {
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_SYSTEM");
             assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
             assertThat(ctx.notificationSubjects())
-                    .hasEntrySatisfying("User", userObj -> {
-                        final var user = (UserPrincipalSubject) userObj;
-                        assertThat(user.getUsername()).isEqualTo("username");
-                        assertThat(user.getEmail()).isEqualTo("email.com");
+                    .hasEntrySatisfying("user", userObj -> {
+                        assertThat(userObj).isInstanceOf(PublishContext.User.class);
+                        final var user = (PublishContext.User) userObj;
+                        assertThat(user.username()).isEqualTo("username");
+                        assertThat(user.email()).isEqualTo("email.com");
                     });
         }
     }
