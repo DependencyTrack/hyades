@@ -50,6 +50,8 @@ enum Group {
   GROUP_PROJECT_CREATED = 16;
   GROUP_BOM_PROCESSING_FAILED = 17;
   GROUP_PROJECT_VULN_ANALYSIS_COMPLETE = 18;
+  GROUP_USER_CREATED = 19;
+  GROUP_USER_DELETED = 20;
 
   // Indexing service has been removed as of
   // https://github.com/DependencyTrack/hyades/issues/661
@@ -214,6 +216,11 @@ message ProjectVulnAnalysisCompleteSubject {
   repeated ComponentVulnAnalysisCompleteSubject findings = 2;
   ProjectVulnAnalysisStatus status = 3;
   string token = 4;
+}
+
+message UserSubject {
+  string username = 1;
+  optional string email = 2;
 }
 
 enum ProjectVulnAnalysisStatus {

@@ -64,6 +64,8 @@ public final class ModelConverter {
             case GROUP_POLICY_VIOLATION -> NotificationGroup.POLICY_VIOLATION;
             case GROUP_PROJECT_CREATED -> NotificationGroup.PROJECT_CREATED;
             case GROUP_PROJECT_VULN_ANALYSIS_COMPLETE -> NotificationGroup.PROJECT_VULN_ANALYSIS_COMPLETE;
+            case GROUP_USER_CREATED -> NotificationGroup.USER_CREATED;
+            case GROUP_USER_DELETED -> NotificationGroup.USER_DELETED;
             default -> throw new IllegalArgumentException("Unknown group: " + group);
         };
     }

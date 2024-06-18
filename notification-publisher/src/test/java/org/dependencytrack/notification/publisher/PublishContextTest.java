@@ -34,6 +34,7 @@ import org.dependencytrack.proto.notification.v1.PolicyViolationAnalysisDecision
 import org.dependencytrack.proto.notification.v1.PolicyViolationSubject;
 import org.dependencytrack.proto.notification.v1.Project;
 import org.dependencytrack.proto.notification.v1.ProjectVulnAnalysisCompleteSubject;
+import org.dependencytrack.proto.notification.v1.UserSubject;
 import org.dependencytrack.proto.notification.v1.VexConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionChangeSubject;
 import org.junit.jupiter.api.Nested;
@@ -49,10 +50,12 @@ import static org.dependencytrack.proto.notification.v1.Group.GROUP_POLICY_VIOLA
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_PROJECT_AUDIT_CHANGE;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_PROJECT_CREATED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_PROJECT_VULN_ANALYSIS_COMPLETE;
+import static org.dependencytrack.proto.notification.v1.Group.GROUP_USER_CREATED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_VEX_CONSUMED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_VEX_PROCESSED;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_PORTFOLIO;
+import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
 
 class PublishContextTest {
 
@@ -512,6 +515,35 @@ class PublishContextTest {
             });
         }
 
+        @Test
+        void testWithUserSubject() throws Exception {
+            final var notification = Notification.newBuilder()
+                    .setGroup(GROUP_USER_CREATED)
+                    .setLevel(LEVEL_INFORMATIONAL)
+                    .setScope(SCOPE_SYSTEM)
+                    .setTimestamp(Timestamps.fromSeconds(666))
+                    .setSubject(Any.pack(UserSubject.newBuilder()
+                            .setUsername("username")
+                            .setEmail("email.com")
+                            .build()))
+                    .build();
+
+            final PublishContext ctx = PublishContext.fromRecord(new ConsumerRecord<>("topic", 1, 2L, "key", notification));
+            assertThat(ctx.kafkaTopic()).isEqualTo("topic");
+            assertThat(ctx.kafkaTopicPartition()).isEqualTo(1);
+            assertThat(ctx.kafkaPartitionOffset()).isEqualTo(2L);
+            assertThat(ctx.notificationGroup()).isEqualTo("GROUP_USER_CREATED");
+            assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
+            assertThat(ctx.notificationScope()).isEqualTo("SCOPE_SYSTEM");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
+            assertThat(ctx.notificationSubjects())
+                    .hasEntrySatisfying("user", userObj -> {
+                        assertThat(userObj).isInstanceOf(PublishContext.User.class);
+                        final var user = (PublishContext.User) userObj;
+                        assertThat(user.username()).isEqualTo("username");
+                        assertThat(user.email()).isEqualTo("email.com");
+                    });
+        }
     }
 
     @Test

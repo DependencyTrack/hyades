@@ -35,6 +35,7 @@ public enum KafkaTopic {
     NOTIFICATION_PROJECT_AUDIT_CHANGE("dtrack.notification.project-audit-change"),
     NOTIFICATION_REPOSITORY("dtrack.notification.repository"),
     NOTIFICATION_VEX("dtrack.notification.vex"),
+    NOTIFICATION_USER("dtrack.notification.user"),
     REPO_META_ANALYSIS_COMMAND("dtrack.repo-meta-analysis.component"),
     REPO_META_ANALYSIS_RESULT("dtrack.repo-meta-analysis.result"),
     VULN_ANALYSIS_SCANNER_RESULT("dtrack.vuln-analysis.scanner.result"),
