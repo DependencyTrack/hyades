@@ -23,7 +23,7 @@ Other than separating responsibilities, the API server has been modified to allo
 deployments. Various "hot paths", like [processing of uploaded BOMs](https://github.com/DependencyTrack/hyades-apiserver/pull/218),
 have been optimized in the existing code. Further optimization is an ongoing effort.
 
-Hyades already is a *superset* of Dependency-Track, as changes up to Dependency-Track v4.9.1 were ported,
+Hyades already is a *superset* of Dependency-Track, as changes up to Dependency-Track v4.11.3 were ported,
 and features made possible by the new architecture have been implemented on top. Where possible, improvements
 made in Hyades are, or will be, backported to Dependency-Track v4.x.
 
