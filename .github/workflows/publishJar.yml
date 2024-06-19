@@ -29,6 +29,7 @@ jobs:
     name: Publish Jar based Container Images
     runs-on: ubuntu-latest
     permissions:
+      actions: write # Required to trigger e2e workflow
       packages: write # Required to push images to ghcr.io
     timeout-minutes: 15
     steps:
