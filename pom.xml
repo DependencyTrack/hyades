@@ -73,7 +73,7 @@
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
-    <lib.github-api.version>1.321</lib.github-api.version>
+    <lib.github-api.version>1.322</lib.github-api.version>
     <lib.greenmail.version>2.0.1</lib.greenmail.version>
     <lib.java-uuid-generator.version>5.1.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>3.2.7</lib.json-unit.version>
