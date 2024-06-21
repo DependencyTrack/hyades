@@ -81,7 +81,7 @@
     <lib.maven-artifact.version>4.0.0-beta-3</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.5.10</lib.minio.version>
-    <lib.open-feign.version>13.2.1</lib.open-feign.version>
+    <lib.open-feign.version>13.3</lib.open-feign.version>
     <lib.org-json.version>20240303</lib.org-json.version>
     <lib.pebble.version>3.2.2</lib.pebble.version>
     <lib.resilience4j.version>2.2.0</lib.resilience4j.version>
