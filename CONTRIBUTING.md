@@ -62,7 +62,8 @@ Please refer to our security policy in [`SECURITY.md`](./SECURITY.md) for how to
 Beside extending existing documentation or correcting any errors it may contain, another great way to contribute is to
 update the [FAQ](https://docs.dependencytrack.org/FAQ/) with questions and answers that benefit the community.
 
-Refer to the *Documentation* section of [`DEVELOPING.md`](./DEVELOPING.md) for a guide on how to build the documentation locally.
+Refer to the [*Documentation* development documentation](https://dependencytrack.github.io/hyades/latest/development/documentation/)
+for a guide on how to build the documentation locally.
 
 ## Testing Snapshot Versions
 
@@ -86,7 +87,8 @@ Before raising pull requests, please [file a defect](#reporting-defects) or [enh
 * Issues for which community contributions are explicitly requested are labeled with [`help wanted`](https://github.com/DependencyTrack/dependency-track/issues?q=is%3Aopen+label%3A%22help+wanted%22+).
 * Issues suitable for first-time contributors are labeled with [`good first issue`](https://github.com/DependencyTrack/dependency-track/issues?q=is%3Aopen+label%3A%22good+first+issue%22+).
 
-[`DEVELOPING.md`](./DEVELOPING.md) provides a detailed guide on how to get started with working on Dependency-Track.
+The [*Development* documentation](https://dependencytrack.github.io/hyades/latest/development/overview/)
+provides a detailed guide on how to get started with working on Dependency-Track.
 
 ### Pull Requests
 

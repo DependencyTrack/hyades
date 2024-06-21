@@ -5,6 +5,26 @@ The lowest supported version is 11. You are encouraged to use the [newest availa
 Depending on available resources, individual preferences, or organizational policies,
 you will have to choose between a [managed](#managed-solutions), or [self-hosted](#self-hosting) solution.
 
+## Extensions
+
+The following PostgreSQL [extensions](https://www.postgresql.org/docs/current/external-extensions.html)
+are **required** by Dependency-Track. When choosing a hosting solution, verify that the extensions listed
+here are supported.
+
+* [`pg_trgm`](https://www.postgresql.org/docs/current/pgtrgm.html): *Support for similarity of text using trigram matching*
+
+!!! note
+    Dependency-Track will execute the necessary `CREATE EXTENSION IF NOT EXISTS` statements
+    during [schema migration](#schema-migrations). Enabling extensions manually is not necessary.
+
+Generally, we limit usage of extensions to those that:
+
+1. Ship with PostgreSQL [out-of-the-box](https://www.postgresql.org/docs/current/contrib.html)
+2. Are [trusted](https://www.postgresql.org/about/featurematrix/detail/347/) by default
+
+This ensures compatibility with *most* [managed solutions](#managed-solutions),
+and reduces setup effort for [self-hosted](#self-hosting) deployments.
+
 ## Managed Solutions
 
 The official PostgreSQL website hosts a [list of well-known commercial hosting providers].
@@ -195,15 +215,15 @@ Schema migrations are performed automatically by the API server upon startup. It
 There is usually no manual action required when upgrading from an older Dependency-Track version, unless explicitly
 stated otherwise in the release notes.
 
-This behavior can be turned off by setting [`database.run.migrations`](../../reference/configuration/api-server/#databaserunmigrations) 
+This behavior can be turned off by setting [`database.run.migrations`](../reference/configuration/api-server.md#databaserunmigrations) 
 on the API server container to `false`.
 
 It is possible to use different credentials for migrations than for the application itself.
 This can be achieved with the following options:
 
-* [`database.migration.url`](../../reference/configuration/api-server/#databasemigrationurl)
-* [`database.migration.username`](../../reference/configuration/api-server/#databasemigrationusername)
-* [`database.migration.password`](../../reference/configuration/api-server/#databasemigrationpassword)
+* [`database.migration.url`](../reference/configuration/api-server.md#databasemigrationurl)
+* [`database.migration.username`](../reference/configuration/api-server.md#databasemigrationusername)
+* [`database.migration.password`](../reference/configuration/api-server.md#databasemigrationpassword)
 
 The above with default to the main database credentials if not provided explicitly.
 

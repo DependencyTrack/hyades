@@ -307,7 +307,7 @@ to unlock even more use cases:
 [CVSSv3]: https://www.first.org/cvss/v3.0/specification-document
 [CPE]: https://csrc.nist.gov/projects/security-content-automation-protocol/specifications/cpe
 [CWE]: https://cwe.mitre.org/
-[Common Expression Language]: https://github.com/google/cel-spec
+[Common Expression Language]: https://cel.dev/
 [Component]: #component
 [EPSS]: https://www.first.org/epss/
 [FSF license list]: https://www.gnu.org/licenses/license-list.en.html

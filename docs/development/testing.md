@@ -102,6 +102,44 @@ In CI, end-to-end tests are executed for every push to the `main` branch, as wel
 They can additionally be run manually, via the GitHub Actions UI. Both the API server and Hyades version
 can be customized before execution.
 
+## Manual Tests
+
+### Docker Compose
+
+The easiest way to test the entire system is by using Docker Compose.
+
+A [`docker-compose.yml` file is provided](https://github.com/DependencyTrack/hyades/blob/main/docker-compose.yml)
+in the `DependencyTrack/hyades` repository.
+
+Without any profile specified, `docker compose up -d` will launch:
+
+* PostgreSQL
+* Kafka (currently Redpanda)
+* Kafka UI (currently Redpanda Console)
+
+To launch Dependency-Track services, use the `demo` profile:
+
+```shell
+docker compose up -d --profile demo
+```
+
+To test different versions of the services, simply modify the `image` property of the respective Compose `service`.
+
+### API Server
+
+When testing changes that are limited to the API server, such as updates to the REST API,
+it's possible to launch the API server in [dev services](../reference/configuration/api-server.md#devservicesenabled) mode:
+
+```shell
+mvn -Penhance -Pdev-services jetty:run -Dlogback.configurationFile=src/main/docker/logback.xml
+```
+
+The container images used may be configured via:
+
+* [`dev.services.image.frontend`](../reference/configuration/api-server.md#devservicesimagefrontend)
+* [`dev.services.image.kafka`](../reference/configuration/api-server.md#devservicesimagekafka)
+* [`dev.services.image.postgresql`](../reference/configuration/api-server.md#devservicesimagepostgres)
+
 [@QuarkusIntegrationTest]: https://quarkus.io/guides/getting-started-testing#quarkus-integration-test
 [GreenMail]: https://greenmail-mail-test.github.io/greenmail/
 [Testcontainers]: https://testcontainers.com/
