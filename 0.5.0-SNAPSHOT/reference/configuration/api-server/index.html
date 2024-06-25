@@ -1340,6 +1340,57 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#devservicesenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devservicesimagefrontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.image.frontend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devservicesimagekafka" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.image.kafka
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devservicesimagepostgres" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.image.postgres
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#general" class="md-nav__link">
     <span class="md-ellipsis">
       General
@@ -3185,6 +3236,57 @@
   <a href="#databaserunmigrations" class="md-nav__link">
     <span class="md-ellipsis">
       database.run.migrations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#devservicesenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devservicesimagefrontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.image.frontend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devservicesimagekafka" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.image.kafka
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devservicesimagepostgres" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.image.postgres
     </span>
   </a>
   
@@ -5313,6 +5415,102 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="development">Development</h2>
+<h3 id="devservicesenabled">dev.services.enabled</h3>
+<p>Whether dev services shall be enabled.  <br/><br/>  When enabled, Dependency-Track will automatically launch containers for:  <ul>  <li>Frontend</li>  <li>Kafka</li>  <li>PostgreSQL</li>  </ul>  at startup, and configures itself to use them. They are disposed when  Dependency-Track stops. The containers are exposed on randomized ports,  which will be logged during startup.  <br/><br/>  Trying to enable dev services in a production build will prevent  the application from starting.  <br/><br/>  Note that the containers launched by the API server can not currently  be discovered and re-used by other Hyades services. This is a future  enhancement tracked in <a href="https://github.com/DependencyTrack/hyades/issues/1188">https://github.com/DependencyTrack/hyades/issues/1188</a>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="devservicesimagefrontend">dev.services.image.frontend</h3>
+<p>The image to use for the frontend dev services container.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>ghcr.io/dependencytrack/hyades-frontend:snapshot</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_IMAGE_FRONTEND</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="devservicesimagekafka">dev.services.image.kafka</h3>
+<p>The image to use for the Kafka dev services container.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>docker.redpanda.com/vectorized/redpanda:v24.1.7</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_IMAGE_KAFKA</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="devservicesimagepostgres">dev.services.image.postgres</h3>
+<p>The image to use for the PostgreSQL dev services container.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>postgres:16</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_IMAGE_POSTGRES</code></td>
     </tr>
   </tbody>
 </table>
