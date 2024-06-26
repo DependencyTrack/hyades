@@ -66,6 +66,7 @@ public class Project implements Serializable {
 
     @Column(name = "VERSION", columnDefinition = "VARCHAR")
     private String version;
+
     @ManyToOne
     @JoinColumn(name = "PARENT_PROJECT_ID")
     private Project parent;
@@ -120,8 +121,7 @@ public class Project implements Serializable {
     private Double lastInheritedRiskScore;
 
     @Column(name = "ACTIVE")
-    private Boolean active;
-
+    private boolean active;
 
     public long getId() {
         return id;
@@ -271,11 +271,11 @@ public class Project implements Serializable {
         this.lastInheritedRiskScore = lastInheritedRiskScore;
     }
 
-    public Boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
