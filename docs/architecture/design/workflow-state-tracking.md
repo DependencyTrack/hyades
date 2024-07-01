@@ -1,7 +1,7 @@
 # Tracking of Workflow State for BOM Processing and Analysis
 
-> **Note**  
-> This document was extracted from #664.
+!!! note
+    This document was extracted from [#664](https://github.com/DependencyTrack/hyades/issues/664).
 
 For CI/CD use-cases, Dependency-Track offers a mechanism that allows clients to poll whether the BOM they just uploaded is still being processed. "Processing" in this context refers to:
 
@@ -14,8 +14,8 @@ This is an important capability, allowing for implementation of quality gates an
 
 The mechanism works by assigning identifiers (UUIDs) to events in Alpine's in-memory event system. As long as an event associated to a given identifier can be found in its internal queue, the identifier is considered to be "processing":
 
-* https://github.com/DependencyTrack/dependency-track/blob/6153d286d1ac806462bc76cfe17d84a57c224671/src/main/java/org/dependencytrack/resources/v1/BomResource.java#L323-L342
-* https://github.com/stevespringett/Alpine/blob/cd6aa7ed05376935ab32bc43819eba0e3a525b7f/alpine-infra/src/main/java/alpine/event/framework/BaseEventService.java#L158-L161
+* <https://github.com/DependencyTrack/dependency-track/blob/6153d286d1ac806462bc76cfe17d84a57c224671/src/main/java/org/dependencytrack/resources/v1/BomResource.java#L323-L342>
+* <https://github.com/stevespringett/Alpine/blob/cd6aa7ed05376935ab32bc43819eba0e3a525b7f/alpine-infra/src/main/java/alpine/event/framework/BaseEventService.java#L158-L161>
 
 Events can be chained, such that a `BomUploadEvent` will trigger a `VulnerabilityAnalysisEvent`, which will trigger a `PolicyEvaluationEvent`, and so on. The event identifier is inherited by chained events.
 
@@ -25,8 +25,8 @@ Decoupled from #633.
 
 ### Design
 
-> **Note**  
-> The goal for now is *not* to build a multi-purpose workflow engine, but to track state of one specific workflow. In a future iteration, we may invest more time into coming up with a generic workflow engine concept.
+!!! note 
+    The goal for now is *not* to build a multi-purpose workflow engine, but to track state of one specific workflow. In a future iteration, we may invest more time into coming up with a generic workflow engine concept.
 
 #### What to track
 
@@ -49,8 +49,8 @@ flowchart LR
     B -. BOM contains no <br/>components to analyze .-> F
 ```
 
-> **Note**  
-> Completion of repository metadata analysis can currently not be tracked. We'll need something similar to what we introduced in https://github.com/DependencyTrack/hyades-apiserver/pull/40 for vulnerability analysis completion tracking. For the initial implementation, it may be OK to not track it.
+!!! note
+    Completion of repository metadata analysis can currently not be tracked. We'll need something similar to what we introduced in https://github.com/DependencyTrack/hyades-apiserver/pull/40 for vulnerability analysis completion tracking. For the initial implementation, it may be OK to not track it.
 
 #### States
 
@@ -87,7 +87,8 @@ The overall state can be considered to be *complete*, if there's no step in `PEN
 
 When a step failure is detected, a "failure reason" message must be persisted. If multiple steps fail, (rough) failure details for each step must be available.
 
-> There should be a deadline mechanism, which automatically transitions steps from `PENDING` into `TIMED_OUT` state. Steps in `TIMED_OUT` state communicate that it is *unlikely* that a terminal state can be reached (`COMPLETED`, `FAILED`). However, it is still possible (e.g. due to significant consumer lag, events may arrive late).
+!!! note
+    There should be a deadline mechanism, which automatically transitions steps from `PENDING` into `TIMED_OUT` state. Steps in `TIMED_OUT` state communicate that it is *unlikely* that a terminal state can be reached (`COMPLETED`, `FAILED`). However, it is still possible (e.g. due to significant consumer lag, events may arrive late).
 
 #### Workflow
 
@@ -159,46 +160,20 @@ sequenceDiagram
 
 Each step of the workflow will be represented in a dedicated row. This allows us to add or remove steps without altering the database schema (see original version of the schema further down below), or even *add* steps while the workflow is running. It also plays better with concurrent writes, as no two threads / instances will need to modify the same row.
 
-| Name | Type | Nullable | Example |
-| :---- | :---- | :---: | :---- |
-| ID | `SERIAL` | ❌ | 1 |
-| PARENT_STEP_ID | `SERIAL FK` | ✅ | 0 |
-| TOKEN | `VARCHAR(36)` | ❌ | `484d9eaa-7ea4-4476-97d6-f36327b5a626` |
-| STARTED_AT | `TIMESTAMP` | ✅ | `1999-01-08 04:05:06` |
-| UPDATED_AT | `TIMESTAMP` | ✅ | `1999-01-08 04:05:06` |
-| STEP | `VARCHAR(64)` | ❌ | `METRICS_UPDATE` |
-| STATUS | `VARCHAR(64)` | ❌ | `PENDING` |
-| FAILURE_REASON | `TEXT` | ✅ | `Failed to acquire database connection` |
+| Name           | Type          | Nullable | Example                                 |
+|:---------------|:--------------|:--------:|:----------------------------------------|
+| ID             | `SERIAL`      |    ❌     | 1                                       |
+| PARENT_STEP_ID | `SERIAL FK`   |    ✅     | 0                                       |
+| TOKEN          | `VARCHAR(36)` |    ❌     | `484d9eaa-7ea4-4476-97d6-f36327b5a626`  |
+| STARTED_AT     | `TIMESTAMP`   |    ✅     | `1999-01-08 04:05:06`                   |
+| UPDATED_AT     | `TIMESTAMP`   |    ✅     | `1999-01-08 04:05:06`                   |
+| STEP           | `VARCHAR(64)` |    ❌     | `METRICS_UPDATE`                        |
+| STATUS         | `VARCHAR(64)` |    ❌     | `PENDING`                               |
+| FAILURE_REASON | `TEXT`        |    ✅     | `Failed to acquire database connection` |
 
 **Potential Future Improvements**:
 * Do we need/want to capture the order in which steps are supposed to be executed?
 * Do we need/want to capture metadata of the overall workflow (who triggered it, when was it triggered, correlation id, ...)?
-
-<details>
-<summary>Original Version</summary>
-
-| Name | Type | Nullable | Example |
-| :--- | :--- | :---: | :--- |
-| TOKEN | `VARCHAR(36)` | ❌ | `484d9eaa-7ea4-4476-97d6-f36327b5a626` |
-| STARTED_AT | `TIMESTAMP` | ❌ | `1999-01-08 04:05:06` |
-| UPDATED_AT | `TIMESTAMP` | ❌ | `1999-01-08 04:05:06` |
-| BOM_CONSUMPTION | `VARCHAR(64)` | ❌ | `PENDING` |
-| BOM_PROCESSING | `VARCHAR(64)` | ❌ | `PENDING` |
-| VULN_ANALYSIS | `VARCHAR(64)` | ❌ | `PENDING` |
-| REPO_META_ANALYSIS | `VARCHAR(64)` | ❌ | `PENDING` |
-| POLICY_EVALUATION | `VARCHAR(64)` | ❌ | `PENDING` |
-| METRICS_UPDATE | `VARCHAR(64)` | ❌ | `PENDING` |
-| FAILURE_REASON | `TEXT` | ✅ | - |
-
-`FAILURE_REASON` is a field of unlimited length. It either holds no value (`NULL`), or a JSON object listing failure details per step, e.g.:
-
-```json
-{
-  "BOM_PROCESSING": "Failed to acquire database connection"
-}
-```
-
-</details>
 
 Where applicable, the "detailed" status of a step is tracked in a dedicated table.
 

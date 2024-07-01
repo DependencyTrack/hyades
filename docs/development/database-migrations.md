@@ -4,7 +4,7 @@
 
 In contrast to Dependency-Track v4 and earlier, Dependency-Track v5 manages database migrations with [Liquibase].
 The database schema is still *owned* by the API server though. It will execute migrations upon startup,
-unless explicitly disabled via [`database.run.migrations`](../../reference/configuration/api-server/#databaserunmigrations).
+unless explicitly disabled via [`database.run.migrations`](../reference/configuration/api-server.md#databaserunmigrations).
 
 [Liquibase] operates with the concept of [changelogs](https://docs.liquibase.com/concepts/changelogs/home.html).
 For the sake of better visibility, Dependency-Track uses separate changelogs for each release version.

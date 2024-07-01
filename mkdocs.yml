@@ -1,86 +1,100 @@
-  site_name: Hyades
-  site_url: https://github.com/DependencyTrack/hyades/blob/main/README.md
+site_name: Hyades
+site_url: https://github.com/DependencyTrack/hyades/blob/main/README.md
 
-  repo_name: DependencyTrack/hyades
-  repo_url: https://github.com/DependencyTrack/hyades
+repo_name: DependencyTrack/hyades
+repo_url: https://github.com/DependencyTrack/hyades
 
-  theme:
-    name: material
-    palette:
-      - scheme: default
-        media: "(prefers-color-scheme: light)"
-        toggle:
-          icon: material/brightness-7
-          name: Switch to dark mode
-      - scheme: slate
-        media: "(prefers-color-scheme: dark)"
-        toggle:
-          icon: material/brightness-4
-          name: Switch to light mode
-    features:
-      - content.code.copy
-      - content.code.select
-      - navigation.instant
-      - navigation.tracking
-      - navigation.tabs
-      - navigation.tabs.sticky
-      - navigation.top
-      - search.highlight
-      - search.share
+docs_dir: docs
+edit_uri: blob/main/docs/
 
-  extra:
-    version:
-      provider: mike
-    social:
-      - icon: fontawesome/brands/slack
-        link: https://dependencytrack.org/slack
-      - icon: fontawesome/brands/github
-        link: https://github.com/DependencyTrack
-      - icon: fontawesome/brands/docker
-        link: https://hub.docker.com/u/dependencytrack
-      - icon: fontawesome/brands/twitter
-        link: https://twitter.com/DependencyTrack
+theme:
+  name: material
+  palette:
+  - scheme: default
+    media: "(prefers-color-scheme: light)"
+    toggle:
+      icon: material/brightness-7
+      name: Switch to dark mode
+  - scheme: slate
+    media: "(prefers-color-scheme: dark)"
+    toggle:
+      icon: material/brightness-4
+      name: Switch to light mode
+  features:
+  - content.action.edit
+  - content.code.copy
+  - content.code.select
+  - navigation.instant
+  - navigation.tracking
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.top
+  - search.highlight
+  - search.share
 
-  markdown_extensions:
-    - admonition
-    - footnotes
-    - md_in_html
-    - pymdownx.details
-    - pymdownx.highlight:
-        anchor_linenums: true
-        line_spans: __span
-        pygments_lang_class: true
-    - pymdownx.inlinehilite
-    - pymdownx.snippets
-    - pymdownx.superfences
-    - tables
+extra:
+  version:
+    provider: mike
+  social:
+  - icon: fontawesome/brands/slack
+    link: https://dependencytrack.org/slack
+  - icon: fontawesome/brands/github
+    link: https://github.com/DependencyTrack
+  - icon: fontawesome/brands/docker
+    link: https://hub.docker.com/u/dependencytrack
+  - icon: fontawesome/brands/twitter
+    link: https://twitter.com/DependencyTrack
 
-  plugins:
-    - search
+markdown_extensions:
+- attr_list
+- admonition
+- footnotes
+- md_in_html
+- pymdownx.details
+- pymdownx.emoji:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.snippets
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
+- tables
 
-  nav:
-    - Home: README.md
-    - Usage:
-      - Policy Compliance:
-        - Overview: usage/policy-compliance/overview.md
-        - Expressions: usage/policy-compliance/expressions.md
-    - Architecture:
-      - Overview: architecture/overview.md
-      - Design:
-        - Workflow State Tracking: architecture/design/workflow-state-tracking.md
-    - Operations:
-      - Database: operations/database.md
-    - Development:
-      - Overview: development/overview.md
-      - Building: development/building.md
-      - Testing: development/testing.md
-      - Database Migrations: development/database-migrations.md
-      - Documentation: development/documentation.md
-    - Reference:
-      - Configuration:
-        - Overview: reference/configuration/overview.md
-        - API Server: reference/configuration/api-server.md
-        - Mirror Service: reference/configuration/mirror-service.md
-        - Repository Metadata Analyzer: reference/configuration/repo-meta-analyzer.md
-      - Topics: reference/topics.md
-    - About: about.md
+plugins:
+- search
+
+nav:
+- Getting Started:
+  - Overview: index.md
+  - Changes over v4: getting-started/changes-over-v4.md
+  - Migrating from v4: getting-started/migrating-from-v4.md
+- Usage:
+  - Policy Compliance:
+    - Overview: usage/policy-compliance/overview.md
+    - Expressions: usage/policy-compliance/expressions.md
+- Architecture:
+  - Overview: architecture/index.md
+  - Design:
+    - Workflow State Tracking: architecture/design/workflow-state-tracking.md
+- Operations:
+  - Database: operations/database.md
+- Development:
+  - Overview: development/overview.md
+  - Building: development/building.md
+  - Testing: development/testing.md
+  - Database Migrations: development/database-migrations.md
+  - Documentation: development/documentation.md
+- Reference:
+  - Configuration:
+    - Overview: reference/configuration/overview.md
+    - API Server: reference/configuration/api-server.md
+    - Mirror Service: reference/configuration/mirror-service.md
+    - Repository Metadata Analyzer: reference/configuration/repo-meta-analyzer.md
+  - Topics: reference/topics.md
