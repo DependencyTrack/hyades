@@ -81,6 +81,16 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.5.0-SNAPSHOT/reference/schemas/notification/</loc>
+         <lastmod>2024-07-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.5.0-SNAPSHOT/reference/schemas/policy/</loc>
+         <lastmod>2024-07-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.5.0-SNAPSHOT/usage/policy-compliance/expressions/</loc>
          <lastmod>2024-07-01</lastmod>
          <changefreq>daily</changefreq>
