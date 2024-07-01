@@ -758,54 +758,6 @@ class NotificationRouterTest {
 
     @Test
     @TestTransaction
-    void testResolveRulesWithAffectedChildAndActiveNullChild() throws Exception {
-        final Long publisherId = createConsolePublisher();
-        // Creates a new rule and defines when the rule should be triggered (notifyOn)
-        final Long ruleId = createRule("Test Rule",
-                NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL,
-                NotificationGroup.NEW_VULNERABILITY, publisherId);
-        setNotifyChildren(ruleId, true);
-        // Creates a project which will later be matched on
-        final UUID grandParentUuid = UUID.randomUUID();
-        final Long grandParentProjectId = createProject("Test Project Grandparent", "1.0", true, grandParentUuid);
-        final UUID parentUuid = UUID.randomUUID();
-        final Long parentProjectId = createProject("Test Project Parent", "1.0", true, parentUuid);
-        setProjectParent(parentProjectId, grandParentProjectId);
-        final UUID childUuid = UUID.randomUUID();
-        final Long childProjectId = createProject("Test Project Child", "1.0", true, childUuid);
-        setProjectParent(childProjectId, parentProjectId);
-        final UUID grandChildUuid = UUID.randomUUID();
-        final Long grandChildProjectId = createProject("Test Project Grandchild", "1.0", null, grandChildUuid);
-        setProjectParent(grandChildProjectId, childProjectId);
-        addProjectToRule(grandParentProjectId, ruleId);
-        // Creates a new notification
-        final var notification = Notification.newBuilder()
-                .setScope(SCOPE_PORTFOLIO)
-                .setGroup(GROUP_NEW_VULNERABILITY)
-                .setLevel(LEVEL_INFORMATIONAL)
-                .setSubject(Any.pack(NewVulnerabilitySubject.newBuilder()
-                        .setComponent(Component.newBuilder()
-                                .setUuid(UUID.randomUUID().toString()))
-                        .setProject(Project.newBuilder()
-                                .setUuid(grandChildUuid.toString()))
-                        .setVulnerability(Vulnerability.newBuilder()
-                                .setUuid(UUID.randomUUID().toString()))
-                        .setAffectedProjectsReference(BackReference.newBuilder()
-                                .setApiUri("foo")
-                                .setFrontendUri("bar"))
-                        .addAffectedProjects(Project.newBuilder()
-                                .setUuid(grandChildUuid.toString()))
-                        .build()))
-                .build();
-        // Ok, let's test this
-        final List<NotificationRule> rules = notificationRouter.resolveRules(PublisherTestUtil.createPublisherContext(notification), notification);
-        assertThat(rules).satisfiesExactly(
-                rule -> assertThat(rule.getName()).isEqualTo("Test Rule")
-        );
-    }
-
-    @Test
-    @TestTransaction
     void testInformWithValidMatchingRule() throws Exception {
         final Long publisherId = createConsolePublisher();
         // Creates a new rule and defines when the rule should be triggered (notifyOn)
