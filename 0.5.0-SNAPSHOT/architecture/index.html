@@ -8,11 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://github.com/DependencyTrack/hyades/blob/main/README.md/0.5.0-SNAPSHOT/about/">
+        <link rel="canonical" href="https://github.com/DependencyTrack/hyades/blob/main/README.md/0.5.0-SNAPSHOT/architecture/">
       
       
-        <link rel="prev" href="../reference/topics/">
+        <link rel="prev" href="../usage/policy-compliance/expressions/">
       
+      
+        <link rel="next" href="design/workflow-state-tracking/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +22,7 @@
     
     
       
-        <title>About - Hyades</title>
+        <title>Overview - Hyades</title>
       
     
     
@@ -72,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#why" class="md-skip">
+        <a href="#components" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              About
+              Overview
             
           </span>
         </div>
@@ -217,16 +219,17 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
-        
-  
     
+    
+      <li class="md-tabs__item">
+        <a href=".." class="md-tabs__link">
+          
   
-  Home
+  Getting Started
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -260,11 +263,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../architecture/overview/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   Architecture
@@ -338,25 +343,6 @@
   
 
       
-        
-  
-  
-    
-  
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
-        
-  
-    
-  
-  About
-
-      </a>
-    </li>
-  
-
-      
     </ul>
   </div>
 </nav>
@@ -414,16 +400,104 @@
   
   
   
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href=".." class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Home
+    Overview
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/changes-over-v4/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changes over v4
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/migrating-from-v4/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Migrating from v4
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -565,23 +639,28 @@
       
   
   
+    
   
   
+  
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -592,7 +671,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -603,10 +682,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../architecture/overview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -615,6 +712,93 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Server
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#message-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Message Broker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vulnerability-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vulnerability Analyzer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repository-metadata-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Repository Metadata Analyzer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notification-publisher" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notification Publisher
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -665,7 +849,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/design/workflow-state-tracking/" class="md-nav__link">
+      <a href="design/workflow-state-tracking/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1106,179 +1290,6 @@
   
 
     
-      
-      
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    About
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    About
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#why" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why?
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Why?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#limitations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Limitations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#related-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      Related Issues
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#why-kafka" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why Kafka?
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Why Kafka?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#considered-alternatives" class="md-nav__link">
-    <span class="md-ellipsis">
-      Considered alternatives
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Considered alternatives">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#apache-pulsar" class="md-nav__link">
-    <span class="md-ellipsis">
-      Apache Pulsar
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rabbitmq" class="md-nav__link">
-    <span class="md-ellipsis">
-      RabbitMQ
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#liftbridge" class="md-nav__link">
-    <span class="md-ellipsis">
-      Liftbridge
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#options-for-running-kafka" class="md-nav__link">
-    <span class="md-ellipsis">
-      Options for running Kafka
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#why-java" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why Java?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#why-not-microservices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why not microservices?
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1304,28 +1315,64 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#why" class="md-nav__link">
+  <a href="#components" class="md-nav__link">
     <span class="md-ellipsis">
-      Why?
+      Components
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Why?">
+    <nav class="md-nav" aria-label="Components">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#limitations" class="md-nav__link">
+  <a href="#api-server" class="md-nav__link">
     <span class="md-ellipsis">
-      Limitations
+      API Server
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#related-issues" class="md-nav__link">
+  <a href="#message-broker" class="md-nav__link">
     <span class="md-ellipsis">
-      Related Issues
+      Message Broker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vulnerability-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vulnerability Analyzer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repository-metadata-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Repository Metadata Analyzer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notification-publisher" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notification Publisher
     </span>
   </a>
   
@@ -1333,90 +1380,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#why-kafka" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why Kafka?
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Why Kafka?">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#considered-alternatives" class="md-nav__link">
-    <span class="md-ellipsis">
-      Considered alternatives
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Considered alternatives">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#apache-pulsar" class="md-nav__link">
-    <span class="md-ellipsis">
-      Apache Pulsar
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rabbitmq" class="md-nav__link">
-    <span class="md-ellipsis">
-      RabbitMQ
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#liftbridge" class="md-nav__link">
-    <span class="md-ellipsis">
-      Liftbridge
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#options-for-running-kafka" class="md-nav__link">
-    <span class="md-ellipsis">
-      Options for running Kafka
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#why-java" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why Java?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#why-not-microservices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why not microservices?
-    </span>
-  </a>
   
 </li>
       
@@ -1435,222 +1398,30 @@
                   
 
   
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/index.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
   
 
 
-  <h1>About</h1>
+  <h1>Overview</h1>
 
-<h2 id="why">Why?</h2>
-<blockquote>
-<p>tl;dr: Dependency-Track's architecture prevents it from scaling past a certain workload.</p>
-</blockquote>
-<p>Dependency-Track, for the most part, is an event-based system. As a platform for ingesting data (in the form of BOMs),
-listening for and itself emitting signals on it, an event-based architecture makes sense conceptually. The majority of
-operations Dependency-Track performs happen asynchronously, without client interaction.</p>
-<p>On a technical level, Dependency-Track uses an in-memory <a href="https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern">publish-subscribe</a> architecture,
-implemented using Java <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html"><code>ExecutorService</code></a>s.
-An <code>ExecutorService</code> can be thought of as a pool of worker threads, consuming from an internal task queue. Tasks can be
-submitted to an <code>ExecutorService</code>, which will then execute them one-by-one. As multiple threads work on the queue in 
-parallel, the order in which tasks are being processed is not guaranteed. Thread pool sizes can vary from one, 
-up to unbounded numbers of threads.</p>
-<p>In Dependency-Track, when an event is published, subscribers to the event are looked up. 
-Per <a href="https://github.com/stevespringett/Alpine/blob/alpine-parent-2.2.0/alpine-infra/src/main/java/alpine/event/framework/Subscriber.java">API contract</a>, 
-event subscribers must implement an <code>inform</code> method, which takes the published event as argument.
-For any given event, 0-N tasks will be enqueued to the <code>ExecutorService</code>'s task queue - one for each subscriber.</p>
-<p><img alt="" src="../dependencytrack-executorservice.png" /></p>
-<p>There are three <code>ExecutorService</code> instances in Dependency-Track:</p>
-<ul>
-<li><a href="https://github.com/stevespringett/Alpine/blob/alpine-parent-2.2.0/alpine-infra/src/main/java/alpine/event/framework/EventService.java"><code>EventService</code></a></li>
-<li><a href="https://github.com/stevespringett/Alpine/blob/alpine-parent-2.2.0/alpine-infra/src/main/java/alpine/event/framework/SingleThreadedEventService.java"><code>SingleThreadedEventService</code></a></li>
-<li><a href="https://github.com/stevespringett/Alpine/blob/alpine-parent-2.2.0/alpine-infra/src/main/java/alpine/notification/NotificationService.java"><code>NotificationService</code></a></li>
-</ul>
-<p><code>EventService</code> forms the primary worker pool. Its thread pool size defaults to <code>&lt;NUM_CPU&gt; * 4</code>. 
-A machine with a 4-core CPU will thus have a thread pool size of <code>16</code>. The size is configurable.
-Common tasks handled by this worker pool include:</p>
-<ul>
-<li>Processing of uploaded BOMs and VEXs</li>
-<li>Performing vulnerability analysis of components, projects, or the entire portfolio</li>
-<li>Performing repository meta analysis of components, projects, or the entire portfolio</li>
-<li>Calculation of metrics for components, projects, or the entire portfolio</li>
-</ul>
-<p><code>SingleThreadedEventService</code> is a worker pool with only a single thread. The purpose of this worker pool is execute
-tasks that must not be run in parallel. As such, it serves as a means to serialize task execution. 
-Common tasks handled by this worker pool include:</p>
-<ul>
-<li>Mirroring of the <a href="https://nvd.nist.gov/">NVD</a> vulnerability database</li>
-<li>Updating <a href="https://lucene.apache.org/">Lucene</a> indexes on disk</li>
-</ul>
-<p><code>NotificationService</code> is a dedicated worker pool for dispatching <a href="https://docs.dependencytrack.org/integrations/notifications/">notifications</a>.
-Its thread pool size defaults to <code>4</code> and is not configurable.</p>
-<h3 id="limitations">Limitations</h3>
-<p>While this architecture works great for small to medium workloads, it presents various challenges for larger ones:</p>
-<ol>
-<li><strong>Not horizontally scalable</strong>. As pub-sub is happening entirely in-memory, it is not possible to distribute
-the work to multiple application instances. The only way to handle more load using this architecture is to scale
-vertically, e.g.</li>
-<li>Increasing <code>ExecutorService</code> thread pool sizes (<code>alpine.worker.threads</code>, <code>alpine.worker.thread.multiplier</code>)</li>
-<li>Increasing database connection pool sizes</li>
-<li>Increasing resource allocations for CPU, RAM, and potentially disk / network</li>
-<li><strong>No ordering guarantees of events</strong>. As multiple threads work on a shared queue of tasks in parallel, there is no way
-of enforcing a reliable ordering of events. </li>
-<li><strong>Limited fault-tolerance</strong>. If an instance of Dependency-Track goes down, planned or unplanned, all queued tasks are 
-gone. Not only does this impact business-as-usual operation, but also limits the times when upgrades can be applied.</li>
-<li><strong>Shared, multipurpose task queue</strong>. A single task queue is used to process all kinds of events. This means that
-lots of events of a certain type can "clog" the task queue, preventing other types of events from being processed.
-This is further amplified if processing of events "clogging" the queue relies on external services, introducing further
-latency. Ideally, there should be a dedicated queue per event type, so that one busy queue doesn't block others.</li>
-<li><strong>Prone to race conditions</strong>. As a consequence of (2), it is possible that multiple events addressing the same
-thing are processed in parallel, leading to race conditions in cache lookups or database operations. Race conditions
-would be an even bigger problem if the work was shared across multiple application instances, and would require
-distributed locking as a countermeasure, which is <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">inherently hard to get right</a>.</li>
-</ol>
-<p>In order to scale Dependency-Track beyond its current capabilities, a distributed messaging service is required.</p>
-<h3 id="related-issues">Related Issues</h3>
-<p>On multiple occasions in the past, the Dependency-Track community raised questions about high availability (HA)
-deployments, and / or how to better scale the platform:</p>
-<ul>
-<li>https://github.com/DependencyTrack/dependency-track/issues/218</li>
-<li>https://github.com/DependencyTrack/dependency-track/issues/903</li>
-<li>https://github.com/DependencyTrack/dependency-track/issues/1210</li>
-<li>https://github.com/DependencyTrack/dependency-track/issues/1856</li>
-</ul>
-<blockquote>
-<p><strong>Note</strong>
-The work we've done so far <em>does not</em> make the API server highly available. However, it <em>does</em> address
-a substantial chunk of work that is required to make that happen.</p>
-</blockquote>
-<h2 id="why-kafka">Why Kafka?</h2>
-<p>Kafka was chosen because it employs <a href="https://kafka.apache.org/documentation/#intro_concepts_and_terms">various concepts</a> 
-that are advantageous for Dependency-Track:</p>
-<ul>
-<li>It supports publish-subscribe use cases based on topics and partitions</li>
-<li>Events with the same key are guaranteed to be sent to the same partition</li>
-<li>Order of events is guaranteed on the partition level</li>
-<li>Consumers can share the load of consuming from a topic by forming <a href="https://docs.confluent.io/platform/current/clients/consumer.html#consumer-groups">consumer groups</a><ul>
-<li>Minor drawback: maximum concurrency is bound to the number of partitions</li>
-</ul>
-</li>
-<li>It is distributed and fault-tolerant by design, <a href="https://kafka.apache.org/documentation/#replication">replication</a> is built-in</li>
-<li>Events are stored durably on the brokers, with various options to control retention</li>
-<li><a href="https://kafka.apache.org/documentation/#compaction">Log compaction</a> allows for fault-tolerant, stateful processing,
-  by streaming changes of a local key-value database to Kafka</li>
-<li>In certain cases, this can aid in reducing load on the database server</li>
-<li>Mature ecosystem around it, including a vast landscape of client libraries for various languages</li>
-<li><a href="https://kafka.apache.org/33/documentation/streams/core-concepts">Kafka Streams</a> with its support for
-    <a href="https://kafka.apache.org/33/documentation/streams/developer-guide/dsl-api.html#stateful-transformations">stateful transformations</a>
-    in particular turned out to be a unique selling point for the Kafka ecosystem</li>
-<li>Mature cloud offerings for fully managed instances (see <a href="#options-for-running-kafka">Options for running Kafka</a>)</li>
-</ul>
-<p>The concept of partitioned topics turned out to be especially useful: We can rely on the fact that events with the same
-key always end up in the same partition, and are processed by only one consumer (within a consumer group) at a time.
-In case of vulnerability scanning, by choosing the component's PURL as event key, it can be guaranteed that only the
-first event triggers an HTTP request to OSS Index, while later events can be handled immediately from cache.
-There is no race condition anymore between lookup and population of the cache.</p>
-<p>We also found the first-class support for stateful processing incredibly useful in some cases, e.g.:</p>
-<ul>
-<li><strong><a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/BroadcastAggregate.html">Scatter-gather</a></strong>. 
-  As used for scanning one component with multiple analyzers. Waiting for all analyzers to complete is a stateful
-  operation, that otherwise would require database access.</li>
-<li><strong>Batching</strong>. Some external services allow for submitting multiple component identifiers per request.
-  With OSS Index, up to 128 package URLs can be sent in a single request. Submitting only one package URL at a
-  time would drastically increase end-to-end latency. It'd also present a greater risk of getting rate limited.</li>
-</ul>
-<p>That being said, Kafka <em>does</em> add a considerable amount of operational complexity. Historically, Kafka has depended
-on <a href="https://zookeeper.apache.org/">Apache ZooKeeper</a>. Operating both Kafka <em>and</em> ZooKeeper is not something we wanted 
-to force DT users to do. Luckily, the Apache Kafka project has been working on removing the ZooKeeper dependency, 
-and replacing it with Kafka's own raft consensus protocol (<a href="https://developer.confluent.io/learn/kraft/">KRaft</a>).</p>
-<p>There are other, more light-weight, yet Kafka API-compatible broker implementations available, too. 
-<a href="https://redpanda.com/">Redpanda</a> being the most popular. Redpanda is distributed in a single, self-contained
-binary and is optimal for deployments with limited resources. Having options like Redpanda available makes
-building a system on Kafka much more viable.</p>
-<p>For this reason in fact, we primarily develop with, and test against, Redpanda.</p>
-<h3 id="considered-alternatives">Considered alternatives</h3>
-<p>Before choosing for Kafka, we looked at various other messaging systems.</p>
-<h4 id="apache-pulsar">Apache Pulsar</h4>
-<p>Among all options, <a href="https://pulsar.apache.org/">Pulsar</a> was the most promising besides Kafka. Pulsar prides itself in 
-being truly cloud native, supporting tiered storage, and multiple messaging paradigms (pub-sub and queueing). 
-It has native support for <a href="https://pulsar.apache.org/docs/2.11.x/concepts-messaging/#negative-acknowledgment">negative acknowledgment</a> 
-of messages, and message <a href="https://pulsar.apache.org/docs/2.11.x/concepts-messaging/#retry-letter-topic">retries</a>. 
-However, the <a href="https://pulsar.apache.org/docs/2.11.x/concepts-architecture-overview/">Pulsar architecture</a> consists not 
-only of Pulsar brokers, but also requires Apache ZooKeeper <strong>and</strong> <a href="https://bookkeeper.apache.org/">Apache BookKeeper</a> 
-clusters. We had to dismiss Pulsar for its operational complexity.</p>
-<h4 id="rabbitmq">RabbitMQ</h4>
-<p><a href="https://www.rabbitmq.com/">RabbitMQ</a> is a popular message broker. It exceeds in cases where multiple worker processes
-need to work on a shared queue of tasks (similar to how Dependency-Track does it today). It can achieve a high level
-of concurrency, as there's no limit to how many consumers can consume from a queue. This high grade of concurrency
-comes with the cost of lost ordering, and high potential for race conditions. </p>
-<p>RabbitMQ supports Kafka-like partitioned streams via its <a href="https://www.rabbitmq.com/streams.html#super-streams">Streams plugin</a>.
-In the end, we decided against RabbitMQ, because brokers do not support key-based compaction, and its consumer libraries 
-in turn lack adequate support for fault-tolerant stateful operations.</p>
-<h4 id="liftbridge">Liftbridge</h4>
-<p><a href="https://liftbridge.io/">Liftbridge</a> is built on top of NATS and provides Kafka-like features. It is however not
-compatible with the Kafka API, as it uses a custom <a href="https://liftbridge.io/docs/envelope-protocol.html">envelope protocol</a>,
-and is heavily focused on Go. There are no managed service offerings for Liftbridge, leaving self-hosting as only
-option to run it.</p>
-<h3 id="options-for-running-kafka">Options for running Kafka</h3>
-<p>When it comes to running Kafka in production, users will have the choice between various self-hosted and fully managed 
-Infrastructure as a Service (IaaS) solutions. The following table lists a few, but there will be more we don't know of:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Solution</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">URL</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Apache Kafka</td>
-<td style="text-align: left;">Self-Hosted</td>
-<td style="text-align: left;">https://kafka.apache.org/quickstart</td>
-</tr>
-<tr>
-<td style="text-align: left;">Redpanda</td>
-<td style="text-align: left;">Self-Hosted / IaaS</td>
-<td style="text-align: left;">https://redpanda.com/</td>
-</tr>
-<tr>
-<td style="text-align: left;">Strimzi</td>
-<td style="text-align: left;">Self-Hosted</td>
-<td style="text-align: left;">https://strimzi.io/</td>
-</tr>
-<tr>
-<td style="text-align: left;">Aiven</td>
-<td style="text-align: left;">IaaS</td>
-<td style="text-align: left;">https://aiven.io/kafka</td>
-</tr>
-<tr>
-<td style="text-align: left;">AWS MSK</td>
-<td style="text-align: left;">IaaS</td>
-<td style="text-align: left;">https://aws.amazon.com/msk/</td>
-</tr>
-<tr>
-<td style="text-align: left;">Azure Event Hubs</td>
-<td style="text-align: left;">IaaS</td>
-<td style="text-align: left;">https://azure.microsoft.com/en-us/products/event-hubs/</td>
-</tr>
-<tr>
-<td style="text-align: left;">Confluent Cloud</td>
-<td style="text-align: left;">IaaS</td>
-<td style="text-align: left;">https://www.confluent.io/</td>
-</tr>
-<tr>
-<td style="text-align: left;">Red Hat OpenShift Streams</td>
-<td style="text-align: left;">IaaS</td>
-<td style="text-align: left;">https://developers.redhat.com/products/red-hat-openshift-streams-for-apache-kafka/overview</td>
-</tr>
-</tbody>
-</table>
-<p>The wide range of mature IaaS offerings is a very important benefit of Kafka over other messaging systems we evaluated.</p>
-<h2 id="why-java">Why Java?</h2>
-<p>We went with Java for now because it was the path of the least resistance for us. There is no intention to exclusively 
-use Java though. We are considering to use <a href="https://github.com/DependencyTrack/hyades/issues/253">Go</a>, and generally 
-are open to any technology that makes sense.</p>
-<h2 id="why-not-microservices">Why not microservices?</h2>
-<p>The proposed architecture is based on the rough idea of domain services for now. This keeps the number of independent
-services manageable, while still allowing us to distribute the overall system load. If absolutely necessary, it is 
-possible to break this up even further. For example, instead of having one <em>vulnerability-analyzer</em> service, 
-the scanners for each vulnerability source (e.g. OSS Index, Snyk) could be separated out into dedicated microservices.</p>
+<p><img alt="Architecture overview" src="../architecture-overview.png" /></p>
+<h2 id="components">Components</h2>
+<h3 id="api-server">API Server</h3>
+<p>TBD</p>
+<h3 id="message-broker">Message Broker</h3>
+<p>TBD</p>
+<h3 id="database">Database</h3>
+<p>TBD</p>
+<h3 id="vulnerability-analyzer">Vulnerability Analyzer</h3>
+<p>TBD</p>
+<h3 id="repository-metadata-analyzer">Repository Metadata Analyzer</h3>
+<p>TBD</p>
+<h3 id="notification-publisher">Notification Publisher</h3>
+<p>TBD</p>
 
 
 
@@ -1751,7 +1522,7 @@ the scanners for each vulnerability source (e.g. OSS Index, Snyk) could be separ
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.code.select", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.action.edit", "content.code.copy", "content.code.select", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../assets/javascripts/bundle.ad660dcc.min.js"></script>
