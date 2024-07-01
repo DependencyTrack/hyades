@@ -98,4 +98,7 @@ nav:
     - API Server: reference/configuration/api-server.md
     - Mirror Service: reference/configuration/mirror-service.md
     - Repository Metadata Analyzer: reference/configuration/repo-meta-analyzer.md
+  - Schemas:
+    - Notification: reference/schemas/notification.md
+    - Policy: reference/schemas/policy.md
   - Topics: reference/topics.md

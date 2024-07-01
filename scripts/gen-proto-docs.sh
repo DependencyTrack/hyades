@@ -22,7 +22,12 @@ set -euxo pipefail
 SCRIPT_DIR="$(cd -P -- "$(dirname "$0")" && pwd -P)"
 ROOT_DIR="$(cd -P -- "${SCRIPT_DIR}/.." && pwd -P)"
 
-docker run --rm -it -u "$(id -u):$(id -g)" --name hyades-docs \
-  -p "127.0.0.1:8000:8000" \
-  -v "${ROOT_DIR}:/docs" \
-  squidfunk/mkdocs-material
+docker run -i --rm -u "$(id -u):$(id -g)" \
+  -v "${ROOT_DIR}/docs/reference/schemas:/out" \
+  -v "${ROOT_DIR}/proto/src/main/proto/org/dependencytrack/notification/v1:/protos" \
+   pseudomuto/protoc-gen-doc --doc_opt=/out/notification.md.tmpl,notification.md
+
+docker run -i --rm -u "$(id -u):$(id -g)" \
+  -v "${ROOT_DIR}/docs/reference/schemas:/out" \
+  -v "${ROOT_DIR}/proto/src/main/proto/org/dependencytrack/policy/v1:/protos" \
+   pseudomuto/protoc-gen-doc --doc_opt=/out/policy.md.tmpl,policy.md
