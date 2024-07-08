@@ -21,6 +21,7 @@ As of now, Hyades is capable of:
   * Dependency-Track's internal vulnerability database
   * [OSS Index](https://ossindex.sonatype.org/)
   * [Snyk](https://snyk.io/)
+  * [Trivy](https://www.aquasec.com/products/trivy/)
 * Gathering component metadata (e.g. latest available version) from remote repositories
 * Sending [notifications](https://docs.dependencytrack.org/integrations/notifications/) via all channels supported by the original API server (E-Mail, Webhook, etc.)
 
@@ -204,3 +205,4 @@ The console is exposed at `http://127.0.0.1:28080` and does not require authenti
 [OSS Index]: https://ossindex.sonatype.org/
 [Redpanda]: https://redpanda.com/
 [Snyk]: https://snyk.io/
+[Trivy]: https://www.aquasec.com/products/trivy/
