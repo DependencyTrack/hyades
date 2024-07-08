@@ -73,11 +73,11 @@
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
-    <lib.github-api.version>1.322</lib.github-api.version>
+    <lib.github-api.version>1.323</lib.github-api.version>
     <lib.greenmail.version>2.0.1</lib.greenmail.version>
     <lib.java-uuid-generator.version>5.1.0</lib.java-uuid-generator.version>
-    <lib.json-unit.version>3.3.0</lib.json-unit.version>
-    <lib.kafka.version>3.7.0</lib.kafka.version>
+    <lib.json-unit.version>3.4.0</lib.json-unit.version>
+    <lib.kafka.version>3.7.1</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-beta-3</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.5.11</lib.minio.version>
@@ -85,7 +85,7 @@
     <lib.org-json.version>20240303</lib.org-json.version>
     <lib.pebble.version>3.2.2</lib.pebble.version>
     <lib.resilience4j.version>2.2.0</lib.resilience4j.version>
-    <lib.open.vulnerability.clients.version>6.0.1</lib.open.vulnerability.clients.version>
+    <lib.open.vulnerability.clients.version>6.1.1</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>3.25.3</lib.protobuf-java.version>
     <lib.quarkus-mailpit.version>1.1.0</lib.quarkus-mailpit.version>
@@ -93,7 +93,7 @@
     <lib.testcontainers-minio.version>1.19.8</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <lib.xercesimpl.version>2.12.2</lib.xercesimpl.version>
-    <quarkus.platform.version>3.12.0</quarkus.platform.version>
+    <quarkus.platform.version>3.12.1</quarkus.platform.version>
     <quarkus.wiremock.version>1.3.3</quarkus.wiremock.version>
     <lib.log4j-over-slf4j.version>2.0.7</lib.log4j-over-slf4j.version>
     <lib.brotli.version>0.1.2</lib.brotli.version>

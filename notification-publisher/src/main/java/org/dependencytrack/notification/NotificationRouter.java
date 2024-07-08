@@ -295,8 +295,7 @@ public class NotificationRouter {
             return false;
         }
         for (Project child : parent.getChildren()) {
-            final boolean isChildActive = child.isActive() == null || child.isActive();
-            if ((child.getUuid().toString().equals(uuid) && isChildActive) || isChild) {
+            if ((child.getUuid().toString().equals(uuid) && child.isActive()) || isChild) {
                 return true;
             }
             isChild = checkIfChildrenAreAffected(child, uuid);

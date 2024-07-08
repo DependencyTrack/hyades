@@ -4,8 +4,8 @@ Want to hack on Hyades, the upcoming Dependency-Track v5?
 Awesome, here's what you need to know to get started!
 
 !!! abstract "Important"
-    Please be sure to read [`CONTRIBUTING.md`](https://github.com/DependencyTrack/hyades/CONTRIBUTING.md) and
-    [`CODE_OF_CONDUCT.md`](https://github.com/DependencyTrack/hyades/CODE_OF_CONDUCT.md) as well.
+    Please be sure to read [`CONTRIBUTING.md`](https://github.com/DependencyTrack/hyades/blob/main/CONTRIBUTING.md) and
+    [`CODE_OF_CONDUCT.md`](https://github.com/DependencyTrack/hyades/blob/main/CODE_OF_CONDUCT.md) as well.
 
 ## Repositories
 

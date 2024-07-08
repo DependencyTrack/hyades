@@ -46,7 +46,8 @@ jobs:
           python-version: "3.9"
           check-latest: true
       - name: Install Requirements
-        run: pip install mkdocs-material mike
+        run: |-
+          pip install 'mkdocs-material[imaging]' mike
       - name: Determine Project Version
         id: determine_version
         run: |-
