@@ -24,7 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.protobuf.util.JsonFormat;
 import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import net.javacrumbs.jsonunit.core.Option;
-import org.cyclonedx.proto.v1_4.Bom;
+import org.cyclonedx.proto.v1_6.Bom;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

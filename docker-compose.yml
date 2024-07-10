@@ -303,7 +303,7 @@ services:
               - topicName: dtrack.vuln-analysis.result.processed
                 valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
               - topicName: dtrack.vulnerability
-                valueProtoType: org.cyclonedx.v1_4.Bom
+                valueProtoType: org.cyclonedx.v1_6.Bom
               - topicName: dtrack.epss
                 valueProtoType: org.dependencytrack.mirror.v1.EpssItem
               - topicName: dtrack.notification.user

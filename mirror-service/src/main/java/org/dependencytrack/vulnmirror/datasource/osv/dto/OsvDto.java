@@ -21,12 +21,12 @@ package org.dependencytrack.vulnmirror.datasource.osv.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import org.cyclonedx.proto.v1_4.Advisory;
-import org.cyclonedx.proto.v1_4.ExternalReference;
-import org.cyclonedx.proto.v1_4.OrganizationalContact;
-import org.cyclonedx.proto.v1_4.Source;
-import org.cyclonedx.proto.v1_4.VulnerabilityCredits;
-import org.cyclonedx.proto.v1_4.VulnerabilityReference;
+import org.cyclonedx.proto.v1_6.Advisory;
+import org.cyclonedx.proto.v1_6.ExternalReference;
+import org.cyclonedx.proto.v1_6.OrganizationalContact;
+import org.cyclonedx.proto.v1_6.Source;
+import org.cyclonedx.proto.v1_6.VulnerabilityCredits;
+import org.cyclonedx.proto.v1_6.VulnerabilityReference;
 import org.dependencytrack.commonutil.JsonUtil;
 import org.dependencytrack.vulnmirror.datasource.util.ParserUtil;
 

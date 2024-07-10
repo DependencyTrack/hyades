@@ -23,7 +23,7 @@ import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.clients.producer.Producer;
-import org.cyclonedx.proto.v1_4.Bom;
+import org.cyclonedx.proto.v1_6.Bom;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.dependencytrack.vulnmirror.datasource.Datasource;
 import org.dependencytrack.vulnmirror.state.MirrorStateStore;

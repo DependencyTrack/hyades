@@ -18,7 +18,7 @@
  */
 package org.dependencytrack.vulnmirror.datasource.util;
 
-import org.cyclonedx.proto.v1_4.Severity;
+import org.cyclonedx.proto.v1_6.Severity;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import us.springett.cvss.Cvss;

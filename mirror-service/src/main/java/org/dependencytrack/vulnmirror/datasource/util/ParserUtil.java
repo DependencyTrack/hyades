@@ -19,21 +19,21 @@
 package org.dependencytrack.vulnmirror.datasource.util;
 
 import com.github.packageurl.PackageURL;
-import org.cyclonedx.proto.v1_4.Bom;
-import org.cyclonedx.proto.v1_4.Component;
-import org.cyclonedx.proto.v1_4.Severity;
+import org.cyclonedx.proto.v1_6.Bom;
+import org.cyclonedx.proto.v1_6.Component;
+import org.cyclonedx.proto.v1_6.Severity;
 import us.springett.cvss.Cvss;
 import us.springett.cvss.CvssV2;
 
 import java.util.Optional;
 
-import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_CRITICAL;
-import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_HIGH;
-import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_INFO;
-import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_LOW;
-import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_MEDIUM;
-import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_NONE;
-import static org.cyclonedx.proto.v1_4.Severity.SEVERITY_UNKNOWN;
+import static org.cyclonedx.proto.v1_6.Severity.SEVERITY_CRITICAL;
+import static org.cyclonedx.proto.v1_6.Severity.SEVERITY_HIGH;
+import static org.cyclonedx.proto.v1_6.Severity.SEVERITY_INFO;
+import static org.cyclonedx.proto.v1_6.Severity.SEVERITY_LOW;
+import static org.cyclonedx.proto.v1_6.Severity.SEVERITY_MEDIUM;
+import static org.cyclonedx.proto.v1_6.Severity.SEVERITY_NONE;
+import static org.cyclonedx.proto.v1_6.Severity.SEVERITY_UNKNOWN;
 
 public class ParserUtil {
 
