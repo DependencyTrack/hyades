@@ -85,7 +85,7 @@
     <lib.org-json.version>20240303</lib.org-json.version>
     <lib.pebble.version>3.2.2</lib.pebble.version>
     <lib.resilience4j.version>2.2.0</lib.resilience4j.version>
-    <lib.open.vulnerability.clients.version>6.1.1</lib.open.vulnerability.clients.version>
+    <lib.open.vulnerability.clients.version>6.1.6</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>3.25.3</lib.protobuf-java.version>
     <lib.quarkus-mailpit.version>1.1.0</lib.quarkus-mailpit.version>
