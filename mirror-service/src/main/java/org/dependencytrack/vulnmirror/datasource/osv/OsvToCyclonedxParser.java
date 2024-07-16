@@ -217,10 +217,14 @@ public class OsvToCyclonedxParser {
         String severity = null;
         if (databaseSpecific != null) {
             String cvssVector = databaseSpecific.optString("cvss", null);
-            if (cvssVector != null) {
+            try {
                 Cvss cvss = Cvss.fromVector(cvssVector);
-                Score score = cvss.calculateScore();
-                severity = String.valueOf(normalizedCvssV3Score(score.getBaseScore()));
+                if (cvss != null) {
+                    Score score = cvss.calculateScore();
+                    severity = String.valueOf(normalizedCvssV3Score(score.getBaseScore()));
+                }
+            } catch (MalformedVectorException e) {
+                LOGGER.warn("Failed to parse severity: CVSS vector {} is malformed; Skipping", cvssVector, e);
             }
         }
         if (severity == null && ecosystemSpecific != null) {

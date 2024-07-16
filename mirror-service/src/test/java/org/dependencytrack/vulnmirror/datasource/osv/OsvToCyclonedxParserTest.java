@@ -663,6 +663,10 @@ class OsvToCyclonedxParserTest {
                      {
                        "type": "CVSS_V2",
                        "score": "AV:N/AC:H/Au:N/C:P/I:N/A:N"
+                     },
+                     {
+                       "type": "CVSS_V4",
+                       "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:H/SC:N/SI:N/SA:N"
                      }
                    ]
                  }
