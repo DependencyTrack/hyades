@@ -49,6 +49,7 @@ import us.springett.cvss.Cvss;
 import us.springett.cvss.CvssV2;
 import us.springett.cvss.CvssV3;
 import us.springett.cvss.CvssV3_1;
+import us.springett.cvss.MalformedVectorException;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -152,8 +153,15 @@ public class GitHubAdvisoryToCdxParser {
 
     private static Optional<VulnerabilityRating> parseRating(final SecurityAdvisory advisory) {
         if (advisory.getCvss() != null && StringUtils.trimToNull(advisory.getCvss().getVectorString()) != null) {
-            final Cvss cvss = Cvss.fromVector(StringUtils.trimToNull(advisory.getCvss().getVectorString()));
-            if (cvss == null) {
+            final String cvssVector = StringUtils.trimToNull(advisory.getCvss().getVectorString());
+            final Cvss cvss;
+            try {
+                cvss = Cvss.fromVector(cvssVector);
+                if (cvss == null) {
+                    return Optional.empty();
+                }
+            } catch (MalformedVectorException e) {
+                LOGGER.warn("Failed to parse rating: CVSS vector {} is malformed; Skipping", cvssVector, e);
                 return Optional.empty();
             }
 
