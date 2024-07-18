@@ -183,7 +183,7 @@ services:
     restart: unless-stopped
 
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v24.1.7
+    image: docker.redpanda.com/vectorized/redpanda:v24.1.11
     container_name: dt-redpanda
     command:
       - redpanda
@@ -220,7 +220,7 @@ services:
     restart: unless-stopped
 
   redpanda-init:
-    image: docker.redpanda.com/vectorized/redpanda:v24.1.7
+    image: docker.redpanda.com/vectorized/redpanda:v24.1.11
     container_name: dt-redpanda-init
     depends_on:
       redpanda:
