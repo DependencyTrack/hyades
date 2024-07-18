@@ -23,7 +23,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.cyclonedx.proto.v1_4.Bom;
+import org.cyclonedx.proto.v1_6.Bom;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.proto.notification.v1.Group;
 import org.dependencytrack.proto.notification.v1.Level;

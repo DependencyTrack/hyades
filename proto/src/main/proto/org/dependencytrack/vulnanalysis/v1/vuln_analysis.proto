@@ -3,7 +3,7 @@ syntax = "proto3";
 // Public API for Hyades vulnerability analysis.
 package org.dependencytrack.vulnanalysis.v1;
 
-import "org/cyclonedx/v1_4/cyclonedx.proto";
+import "org/cyclonedx/v1_6/cyclonedx.proto";
 
 option java_multiple_files = true;
 option java_package = "org.dependencytrack.proto.vulnanalysis.v1";
@@ -65,7 +65,7 @@ message ScannerResult {
   optional string failure_reason = 4;
 
   // Bov identified in the scan.
-  org.cyclonedx.v1_4.Bom bom = 5;
+  org.cyclonedx.v1_6.Bom bom = 5;
 }
 
 message ScanResult {
