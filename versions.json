@@ -3,8 +3,14 @@
     "version": "0.5.0-SNAPSHOT",
     "title": "0.5.0-SNAPSHOT",
     "aliases": [
-      "latest",
       "snapshot"
+    ]
+  },
+  {
+    "version": "0.5.0",
+    "title": "0.5.0",
+    "aliases": [
+      "latest"
     ]
   },
   {
