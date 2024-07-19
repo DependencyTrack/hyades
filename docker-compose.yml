@@ -183,40 +183,31 @@ services:
     restart: unless-stopped
 
   redpanda:
-    image: docker.redpanda.com/vectorized/redpanda:v24.1.7
+    image: apache/kafka-native:3.8.0-rc2
     container_name: dt-redpanda
-    command:
-      - redpanda
-      - start
-      - --smp
-      - '1'
-      - --reserve-memory
-      - 0M
-      - --memory
-      - 512M
-      - --overprovisioned
-      - --node-id
-      - '0'
-      - --kafka-addr
-      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092,MINIKUBE://0.0.0.0:9093
-      - --advertise-kafka-addr
-      - PLAINTEXT://dt-redpanda:29092,OUTSIDE://localhost:9092,MINIKUBE://host.minikube.internal:9093
-      - --pandaproxy-addr
-      - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
-      - --advertise-pandaproxy-addr
-      - PLAINTEXT://dt-redpanda:28082,OUTSIDE://localhost:8082
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT_HOST://localhost:9092,PLAINTEXT://dt-redpanda:29092'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@dt-redpanda:29093'
+      KAFKA_LISTENERS: 'CONTROLLER://:29093,PLAINTEXT_HOST://:9092,PLAINTEXT://:29092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
     healthcheck:
-      test: [ "CMD-SHELL", "rpk", "cluster", "health", "--exit-when-healthy" ]
+      test: [ "CMD-SHELL", "true" ]
       interval: 5s
       timeout: 3s
       retries: 3
     ports:
       # Kafka API (for use from localhost)
       - "9092:9092"
-      # Kafka API (for use from minikube)
-      - "9093:9093"
-    volumes:
-      - "redpanda-data:/var/lib/redpanda/data"
     restart: unless-stopped
 
   redpanda-init:

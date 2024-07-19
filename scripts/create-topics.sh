@@ -35,8 +35,8 @@ function create_topic() {
 }
 
 # Wait for Redpanda to become available
-rpk cluster health --watch --exit-when-healthy \
-  --api-urls "$(echo "$REDPANDA_BROKERS" | sed -E 's/:[[:digit:]]+/:9644/g')"
+#rpk cluster health --watch --exit-when-healthy \
+#  --api-urls "$(echo "$REDPANDA_BROKERS" | sed -E 's/:[[:digit:]]+/:9644/g')"
 
 notification_topics=(
   "${KAFKA_TOPIC_PREFIX:-}dtrack.notification.analyzer"
