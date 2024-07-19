@@ -60,7 +60,7 @@ public final class StateStoreUtil {
         return Map.of(
                 TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_COMPACT,
                 TopicConfig.SEGMENT_BYTES_CONFIG, String.valueOf(64 * 1024 * 1024), // 64 MiB
-                TopicConfig.MAX_COMPACTION_LAG_MS_CONFIG, "0" // Perform compaction ASAP
+                TopicConfig.MAX_COMPACTION_LAG_MS_CONFIG, "1" // Perform compaction ASAP
         );
     }
 

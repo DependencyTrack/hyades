@@ -84,7 +84,7 @@ class StateStoreUtilTest {
                     .containsExactlyInAnyOrderEntriesOf(Map.of(
                             "cleanup.policy", "compact",
                             "segment.bytes", "67108864",
-                            "max.compaction.lag.ms", "0"
+                            "max.compaction.lag.ms", "1"
                     ));
         }
 
