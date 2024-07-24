@@ -3264,7 +3264,7 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 ---
 
-### kafka.topic.prefix
+### dt.kafka.topic.prefix
 
 
 
@@ -3284,7 +3284,7 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_TOPIC_PREFIX</code></td>
+      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
     </tr>
   </tbody>
 </table>
