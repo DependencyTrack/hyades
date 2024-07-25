@@ -238,6 +238,38 @@ HTTP port to listen on. Application metrics will be available via this port.
 
 ## Kafka
 
+### dt.kafka.topic.prefix
+
+Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>acme-</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### kafka-streams.auto.offset.reset
 
 Refer to <https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset> for details.  
@@ -551,38 +583,6 @@ Comma-separated list of brokers to use for establishing the initial connection t
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>KAFKA_BOOTSTRAP_SERVERS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### dt.kafka.topic.prefix
-
-Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>acme-</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
     </tr>
   </tbody>
 </table>

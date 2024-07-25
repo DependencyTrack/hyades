@@ -3056,6 +3056,34 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 ---
 
+### dt.kafka.topic.prefix
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### kafka.auto.offset.reset
 
 
@@ -3257,34 +3285,6 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>KAFKA_TLS_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### dt.kafka.topic.prefix
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
     </tr>
   </tbody>
 </table>
