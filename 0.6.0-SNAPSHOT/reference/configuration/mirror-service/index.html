@@ -1253,6 +1253,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#dtkafkatopicprefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.kafka.topic.prefix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#kafka-streamscommitintervalms" class="md-nav__link">
     <span class="md-ellipsis">
       kafka-streams.commit.interval.ms
@@ -1337,15 +1346,6 @@
   <a href="#kafkamaxrequestsize" class="md-nav__link">
     <span class="md-ellipsis">
       kafka.max.request.size
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dtkafkatopicprefix" class="md-nav__link">
-    <span class="md-ellipsis">
-      dt.kafka.topic.prefix
     </span>
   </a>
   
@@ -1635,6 +1635,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#dtkafkatopicprefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.kafka.topic.prefix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#kafka-streamscommitintervalms" class="md-nav__link">
     <span class="md-ellipsis">
       kafka-streams.commit.interval.ms
@@ -1719,15 +1728,6 @@
   <a href="#kafkamaxrequestsize" class="md-nav__link">
     <span class="md-ellipsis">
       kafka.max.request.size
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dtkafkatopicprefix" class="md-nav__link">
-    <span class="md-ellipsis">
-      dt.kafka.topic.prefix
     </span>
   </a>
   
@@ -1875,6 +1875,34 @@
 </table>
 
 <h2 id="kafka">Kafka</h2>
+<h3 id="dtkafkatopicprefix">dt.kafka.topic.prefix</h3>
+<p>Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>acme-</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="kafka-streamscommitintervalms">kafka-streams.commit.interval.ms</h3>
 <p>Defines the interval in milliseconds at which consumer offsets are committed to the Kafka brokers.  The Kafka default of <code>30s</code> has been modified to <code>5s</code>.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_commit.interval.ms">https://kafka.apache.org/documentation/#streamsconfigs_commit.interval.ms</a> for details.  </p>
 <table>
@@ -2114,34 +2142,6 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>KAFKA_MAX_REQUEST_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="dtkafkatopicprefix">dt.kafka.topic.prefix</h3>
-<p>Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>acme-</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
     </tr>
   </tbody>
 </table>
