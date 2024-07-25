@@ -94,6 +94,38 @@ HTTP port to listen on. Application metrics will be available via this port.
 
 ## Kafka
 
+### dt.kafka.topic.prefix
+
+Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>acme-</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### kafka-streams.commit.interval.ms
 
 Defines the interval in milliseconds at which consumer offsets are committed to the Kafka brokers.  The Kafka default of `30s` has been modified to `5s`.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#streamsconfigs_commit.interval.ms> for details.  
@@ -371,38 +403,6 @@ Defines the maximum size of a Kafka producer request in bytes.  <br/><br/>  Some
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>KAFKA_MAX_REQUEST_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### dt.kafka.topic.prefix
-
-Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>acme-</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
     </tr>
   </tbody>
 </table>
