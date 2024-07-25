@@ -34,13 +34,13 @@ class KafkaTopicTest {
         @Override
         public Map<String, String> getConfigOverrides() {
             return Map.of(
-                    "kafka.topic.prefix", "customPrefix."
+                    "dt.kafka.topic.prefix", "customPrefix."
             );
         }
 
         @Test
         void testKafkaTopicConfigWithPrefix() {
-            System.setProperty("kafka.topic.prefix", "customPrefix.");
+            System.setProperty("dt.kafka.topic.prefix", "customPrefix.");
             assertEquals("customPrefix.dtrack.vulnerability.mirror.command", KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName());
         }
     }

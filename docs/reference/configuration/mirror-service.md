@@ -378,7 +378,7 @@ Defines the maximum size of a Kafka producer request in bytes.  <br/><br/>  Some
 
 ---
 
-### kafka.topic.prefix
+### dt.kafka.topic.prefix
 
 Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  
 
@@ -402,7 +402,7 @@ Defines an optional prefix to assume for all Kafka topics the application  consu
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_TOPIC_PREFIX</code></td>
+      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
     </tr>
   </tbody>
 </table>
@@ -426,7 +426,7 @@ Defines the ID to uniquely identify this application in the Kafka cluster.  <br/
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${kafka.topic.prefix}hyades-mirror-service</code></td>
+      <td style="border-width: 0"><code>${dt.kafka.topic.prefix}hyades-mirror-service</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
