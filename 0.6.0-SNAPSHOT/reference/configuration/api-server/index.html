@@ -1432,6 +1432,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#databaserunmigrationsonly" class="md-nav__link">
+    <span class="md-ellipsis">
+      database.run.migrations.only
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3402,6 +3411,15 @@
   <a href="#databaserunmigrations" class="md-nav__link">
     <span class="md-ellipsis">
       database.run.migrations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databaserunmigrationsonly" class="md-nav__link">
+    <span class="md-ellipsis">
+      database.run.migrations.only
     </span>
   </a>
   
@@ -5586,6 +5604,30 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="databaserunmigrationsonly">database.run.migrations.only</h3>
+<p>Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless <a href="#databaserunmigrations"><code>database.run.migrations</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS_ONLY</code></td>
     </tr>
   </tbody>
 </table>
