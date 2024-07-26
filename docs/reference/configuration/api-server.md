@@ -766,6 +766,34 @@ Defines whether database migrations should be executed on startup.
 </table>
 
 
+---
+
+### database.run.migrations.only
+
+Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless [`database.run.migrations`](#databaserunmigrations) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS_ONLY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
 
 
 ## Development
