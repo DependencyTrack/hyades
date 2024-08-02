@@ -340,7 +340,7 @@ services:
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana-oss:10.4.2
+    image: grafana/grafana-oss:11.1.3
     container_name: dt-grafana
     depends_on:
       - prometheus
