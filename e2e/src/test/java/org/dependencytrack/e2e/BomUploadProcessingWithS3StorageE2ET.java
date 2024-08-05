@@ -68,7 +68,10 @@ class BomUploadProcessingWithS3StorageE2ET extends AbstractE2ET {
     @Override
     protected void customizeApiServerContainer(final GenericContainer<?> container) {
         container
-                .withEnv("BOM_UPLOAD_STORAGE_DEFAULT_EXTENSION", "s3")
+                // Ensure other storage extensions are disabled.
+                .withEnv("BOM_UPLOAD_STORAGE_EXTENSION_DATABASE_ENABLED", "false")
+                .withEnv("BOM_UPLOAD_STORAGE_EXTENSION_LOCAL_ENABLED", "false")
+                // Enable and configure S3 storage extension.
                 .withEnv("BOM_UPLOAD_STORAGE_EXTENSION_S3_ENABLED", "true")
                 .withEnv("BOM_UPLOAD_STORAGE_EXTENSION_S3_ENDPOINT", "http://minio:9000")
                 .withEnv("BOM_UPLOAD_STORAGE_EXTENSION_S3_BUCKET", BOM_UPLOAD_BUCKET_NAME)
