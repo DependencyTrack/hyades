@@ -870,7 +870,7 @@ The image to use for the Kafka dev services container.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>docker.redpanda.com/vectorized/redpanda:v24.2.1</code></td>
+      <td style="border-width: 0"><code>docker.redpanda.com/vectorized/redpanda:v24.2.2</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
