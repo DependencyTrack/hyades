@@ -17,7 +17,7 @@ Project URL:       {{ baseUrl }}/projects/{{ subject.project.uuid }}
 Other affected projects: {{ baseUrl }}{{ subject.affectedProjectsReference.frontendUri }}
 {% elseif notification.group == "GROUP_NEW_VULNERABLE_DEPENDENCY" %}
 Project:           {{ subject.project | summarize }}
-Project URL:       {{ baseUrl }}/projects/?uuid={{ subject.project.uuid }}
+Project URL:       {{ baseUrl }}/projects/{{ subject.project.uuid }}
 Component:         {{ subject.component | summarize }}
 Component URL:     {{ baseUrl }}/component/?uuid={{ subject.component.uuid }}
 
