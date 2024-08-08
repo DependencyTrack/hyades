@@ -100,6 +100,21 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
     @Test
     @Override
     @TestTransaction
+    void testInformWithBomValidationFailedNotificationSubject() throws Exception {
+        super.testInformWithBomValidationFailedNotificationSubject();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "markdown": "**Bill of Materials Validation Failed**\\n[View Component](https://example.com/component/?uuid=)\\n**Description:** An error occurred while validating a BOM"
+                        }
+                        """)));
+    }
+
+    @Test
+    @Override
+    @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 
