@@ -31,7 +31,6 @@ import org.dependencytrack.persistence.model.RepositoryType;
 import org.dependencytrack.persistence.repository.RepoEntityRepository;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisCommand;
 import org.dependencytrack.proto.repometaanalysis.v1.AnalysisResult;
-import org.dependencytrack.proto.repometaanalysis.v1.FetchMeta;
 import org.dependencytrack.repometaanalyzer.model.IntegrityMeta;
 import org.dependencytrack.repometaanalyzer.model.MetaAnalyzerCacheKey;
 import org.dependencytrack.repometaanalyzer.model.MetaModel;
@@ -90,30 +89,9 @@ class MetaAnalyzerProcessor extends ContextualFixedKeyProcessor<PackageURL, Anal
         AnalysisResult.Builder resultBuilder = AnalysisResult.newBuilder()
                 .setComponent(component);
 
-        if (analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_LATEST_VERSION)
-                || analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)) {
-            resultBuilder = performRepoMeta(applicableRepositories, analyzer, analysisCommand, purl, resultBuilder);
-            if (analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_LATEST_VERSION)) {
-                // forward result for only latest version
-                context().forward(record
-                        .withValue(resultBuilder.build())
-                        .withTimestamp(context().currentSystemTimeMs()));
-                return;
-            }
-        }
+        resultBuilder = performRepoMeta(applicableRepositories, analyzer, analysisCommand, purl, resultBuilder);
+        resultBuilder = performIntegrityMeta(applicableRepositories, analyzer, analysisCommand, purl, resultBuilder);
 
-        if (analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA)
-                || analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA_AND_LATEST_VERSION)) {
-            resultBuilder = performIntegrityMeta(applicableRepositories, analyzer, analysisCommand, purl, resultBuilder);
-            if (analysisCommand.getFetchMeta().equals(FetchMeta.FETCH_META_INTEGRITY_DATA)) {
-                // forward result for only integrity meta
-                context().forward(record
-                        .withValue(resultBuilder.build())
-                        .withTimestamp(context().currentSystemTimeMs()));
-                return;
-            }
-        }
-        // forward result for both latest version and integrity data OR even when no satisfactory results were yielded.
         context().forward(record
                 .withValue(resultBuilder.build())
                 .withTimestamp(context().currentSystemTimeMs()));
