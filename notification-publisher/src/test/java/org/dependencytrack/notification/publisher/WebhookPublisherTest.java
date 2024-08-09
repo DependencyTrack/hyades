@@ -177,6 +177,49 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
     @Test
     @Override
     @TestTransaction
+    public void testInformWithBomValidationFailedNotificationSubject() throws Exception {
+        super.testInformWithBomValidationFailedNotificationSubject();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "notification" : {
+                            "level": "LEVEL_ERROR",
+                            "scope": "SCOPE_PORTFOLIO",
+                            "group": "GROUP_BOM_VALIDATION_FAILED",
+                            "timestamp" : "1970-01-01T18:31:06.000Z",
+                            "title" : "Bill of Materials Validation Failed",
+                            "content" : "An error occurred while validating a BOM",
+                            "subject" : {
+                              "project" : {
+                                "uuid" : "c9c9539a-e381-4b36-ac52-6a7ab83b2c95",
+                                "name" : "projectName",
+                                "version" : "projectVersion",
+                                "description" : "projectDescription",
+                                "purl" : "pkg:maven/org.acme/projectName@projectVersion",
+                                "tags" : [
+                                  "tag1",
+                                  "tag2"
+                                ]
+                              },
+                              "bom" : {
+                                "content" : "bomContent",
+                                "format" : "CycloneDX"
+                              },
+                              "errors" : [ 
+                                "cause 1", 
+                                "cause 2" 
+                              ]
+                            }
+                          }
+                        }
+                        """)));
+    }
+
+    @Test
+    @Override
+    @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 

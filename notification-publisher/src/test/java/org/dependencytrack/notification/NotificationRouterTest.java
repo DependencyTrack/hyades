@@ -34,6 +34,7 @@ import org.dependencytrack.persistence.model.NotificationScope;
 import org.dependencytrack.proto.notification.v1.BackReference;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
+import org.dependencytrack.proto.notification.v1.BomValidationFailedSubject;
 import org.dependencytrack.proto.notification.v1.Component;
 import org.dependencytrack.proto.notification.v1.Level;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
@@ -59,6 +60,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_CONSUMED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSING_FAILED;
+import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_VALIDATION_FAILED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABLE_DEPENDENCY;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_POLICY_VIOLATION;
@@ -608,6 +610,45 @@ class NotificationRouterTest {
 
         final var notificationProjectB = Notification.newBuilder(notificationProjectA)
                 .setSubject(Any.pack(BomProcessingFailedSubject.newBuilder()
+                        .setProject(Project.newBuilder()
+                                .setUuid(projectUuidB.toString()))
+                        .build()))
+                .build();
+
+        Assertions.assertThat(notificationRouter.resolveRules(PublisherTestUtil.createPublisherContext(notificationProjectB), notificationProjectB)).isEmpty();
+    }
+
+    @Test
+    @TestTransaction
+    void testResolveRulesLimitedToProjectForBomValidationFailedNotification() throws Exception {
+        final UUID projectUuidA = UUID.randomUUID();
+        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+
+        final UUID projectUuidB = UUID.randomUUID();
+        createProject("Project B", "2.0", true, projectUuidB);
+
+        final Long publisherId = createConsolePublisher();
+        final Long ruleId = createRule("Limit To Test Rule",
+                NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL,
+                NotificationGroup.BOM_VALIDATION_FAILED, publisherId);
+        addProjectToRule(projectIdA, ruleId);
+
+        final var notificationProjectA = Notification.newBuilder()
+                .setScope(SCOPE_PORTFOLIO)
+                .setGroup(GROUP_BOM_VALIDATION_FAILED)
+                .setLevel(LEVEL_ERROR)
+                .setSubject(Any.pack(BomValidationFailedSubject.newBuilder()
+                        .setProject(Project.newBuilder()
+                                .setUuid(projectUuidA.toString()))
+                        .build()))
+                .build();
+
+        Assertions.assertThat(notificationRouter.resolveRules(PublisherTestUtil.createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
+                rule -> Assertions.assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
+        );
+
+        final var notificationProjectB = Notification.newBuilder(notificationProjectA)
+                .setSubject(Any.pack(BomValidationFailedSubject.newBuilder()
                         .setProject(Project.newBuilder()
                                 .setUuid(projectUuidB.toString()))
                         .build()))

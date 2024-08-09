@@ -202,6 +202,55 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
     @Test
     @Override
     @TestTransaction
+    void testInformWithBomValidationFailedNotificationSubject() throws Exception {
+        super.testInformWithBomValidationFailedNotificationSubject();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "blocks": [
+                            {
+                              "type": "header",
+                              "text": {
+                                "type": "plain_text",
+                                "text": "GROUP_BOM_VALIDATION_FAILED"
+                              }
+                            },
+                            {
+                              "type": "context",
+                              "elements": [
+                                {
+                                  "text": "*LEVEL_ERROR*  |  *SCOPE_PORTFOLIO*",
+                                  "type": "mrkdwn"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "divider"
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "Bill of Materials Validation Failed",
+                                "type": "plain_text"
+                              }
+                            },
+                            {
+                              "type": "section",
+                              "text": {
+                                "text": "An error occurred while validating a BOM",
+                                "type": "plain_text"
+                              }
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Test
+    @Override
+    @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 

@@ -182,6 +182,43 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     @Test
     @Override
     @TestTransaction
+    void testInformWithBomValidationFailedNotificationSubject() throws Exception {
+        super.testInformWithBomValidationFailedNotificationSubject();
+
+        assertThat(mailbox.findFirst("recipient@example.com")).satisfies(message -> {
+            assertThat(message.getFrom()).isNotNull();
+            assertThat(message.getFrom().getAddress()).isEqualTo("dtrack@example.com");
+            assertThat(message.getSubject()).isEqualTo("[Dependency-Track] Bill of Materials Validation Failed");
+            assertThat(message.getText()).isEqualToIgnoringNewLines("""
+                    Bill of Materials Validation Failed
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Project:           projectName
+                    Version:           projectVersion
+                    Description:       projectDescription
+                    Project URL:       https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    Errors:
+                    cause 1
+                    cause 2
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    An error occurred while validating a BOM
+                                        
+                    --------------------------------------------------------------------------------
+                                        
+                    1970-01-01T18:31:06.000Z
+                    """);
+        });
+    }
+
+    @Test
+    @Override
+    @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 

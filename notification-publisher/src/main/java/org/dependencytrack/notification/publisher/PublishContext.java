@@ -24,6 +24,7 @@ import org.dependencytrack.persistence.model.NotificationRule;
 import org.dependencytrack.proto.ProtobufUtil;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
+import org.dependencytrack.proto.notification.v1.BomValidationFailedSubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerableDependencySubject;
 import org.dependencytrack.proto.notification.v1.Notification;
@@ -94,6 +95,9 @@ public class PublishContext {
             notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
         } else if (notification.getSubject().is(BomProcessingFailedSubject.class)) {
             final BomProcessingFailedSubject subject = notification.getSubject().unpack(BomProcessingFailedSubject.class);
+            notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
+        } else if (notification.getSubject().is(BomValidationFailedSubject.class)) {
+            final BomValidationFailedSubject subject = notification.getSubject().unpack(BomValidationFailedSubject.class);
             notificationSubjects.put(SUBJECT_PROJECT, Project.convert(subject.getProject()));
         } else if (notification.getSubject().is(NewVulnerabilitySubject.class)) {
             final NewVulnerabilitySubject subject = notification.getSubject().unpack(NewVulnerabilitySubject.class);

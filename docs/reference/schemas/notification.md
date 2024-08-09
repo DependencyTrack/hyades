@@ -122,6 +122,28 @@
 
 
 
+<a name="org-dependencytrack-notification-v1-BomValidationFailedSubject"></a>
+
+### BomValidationFailedSubject
+
+
+
+
+| Field     | Type                                                      | Description |
+|:----------|:----------------------------------------------------------| :---------- |
+| `project` | [`Project`](#org-dependencytrack-notification-v1-Project) |  | - |
+| `bom`     | [`Bom`](#org-dependencytrack-notification-v1-Bom)         |  | - |
+| `errors`  | `string[]`                                                |  | - |
+| `format`  | `string`                                                  |  | - |
+
+
+
+
+
+
+
+
+
 <a name="org-dependencytrack-notification-v1-ComponentVulnAnalysisCompleteSubject"></a>
 
 ### ComponentVulnAnalysisCompleteSubject

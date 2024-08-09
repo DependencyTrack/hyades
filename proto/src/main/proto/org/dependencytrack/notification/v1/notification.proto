@@ -52,6 +52,7 @@ enum Group {
   GROUP_PROJECT_VULN_ANALYSIS_COMPLETE = 18;
   GROUP_USER_CREATED = 19;
   GROUP_USER_DELETED = 20;
+  GROUP_BOM_VALIDATION_FAILED = 21;
 
   // Indexing service has been removed as of
   // https://github.com/DependencyTrack/hyades/issues/661
@@ -78,6 +79,13 @@ message BomProcessingFailedSubject {
   Bom bom = 2;
   string cause = 3;
   string token = 4;
+}
+
+message BomValidationFailedSubject {
+  Project project = 1;
+  Bom bom = 2;
+  repeated string errors = 3;
+  string format = 4;
 }
 
 message Bom {
