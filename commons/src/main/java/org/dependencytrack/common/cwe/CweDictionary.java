@@ -19,10 +19,11 @@
 package org.dependencytrack.common.cwe;
 
 import jakarta.annotation.Generated;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Generated(value = "From dictionary version 4.13")
+@Generated(value = "From dictionary version 4.14")
 public final class CweDictionary {
 
     public static final Map<Integer, String> DICTIONARY = new LinkedHashMap<>();
@@ -1219,7 +1220,7 @@ public final class CweDictionary {
         DICTIONARY.put(1189, "Improper Isolation of Shared Resources on System-on-a-Chip (SoC)");
         DICTIONARY.put(1190, "DMA Device Enabled Too Early in Boot Phase");
         DICTIONARY.put(1191, "On-Chip Debug and Test Interface With Improper Access Control");
-        DICTIONARY.put(1192, "System-on-Chip (SoC) Using Components without Unique, Immutable Identifiers");
+        DICTIONARY.put(1192, "Improper Identifier for IP Block used in System-On-Chip (SOC)");
         DICTIONARY.put(1193, "Power-On of Untrusted Execution Core Before Enabling Fabric Access Control");
         DICTIONARY.put(1194, "Hardware Design");
         DICTIONARY.put(1195, "Manufacturing and Life Cycle Management Concerns");
@@ -1329,7 +1330,7 @@ public final class CweDictionary {
         DICTIONARY.put(1299, "Missing Protection Mechanism for Alternate Hardware Interface");
         DICTIONARY.put(1300, "Improper Protection of Physical Side Channels");
         DICTIONARY.put(1301, "Insufficient or Incomplete Data Removal within Hardware Component");
-        DICTIONARY.put(1302, "Missing Security Identifier");
+        DICTIONARY.put(1302, "Missing Source Identifier in Entity Transactions on a System-On-Chip (SOC)");
         DICTIONARY.put(1303, "Non-Transparent Sharing of Microarchitectural Resources");
         DICTIONARY.put(1304, "Improperly Preserved Integrity of Hardware Configuration State During a Power Save/Restore Operation");
         DICTIONARY.put(1305, "CISQ Quality Measures (2020)");
@@ -1447,6 +1448,11 @@ public final class CweDictionary {
         DICTIONARY.put(1417, "Comprehensive Categorization: Sensitive Information Exposure");
         DICTIONARY.put(1418, "Comprehensive Categorization: Violation of Secure Design Principles");
         DICTIONARY.put(1419, "Incorrect Initialization of Resource");
+        DICTIONARY.put(1420, "Exposure of Sensitive Information during Transient Execution");
+        DICTIONARY.put(1421, "Exposure of Sensitive Information in Shared Microarchitectural Structures during Transient Execution");
+        DICTIONARY.put(1422, "Exposure of Sensitive Information caused by Incorrect Data Forwarding during Transient Execution");
+        DICTIONARY.put(1423, "Exposure of Sensitive Information caused by Shared Microarchitectural Predictor State that Influences Transient Execution");
+        DICTIONARY.put(1424, "Weaknesses Addressed by ISA/IEC 62443 Requirements");
         DICTIONARY.put(1425, "Weaknesses in the 2023 CWE Top 25 Most Dangerous Software Weaknesses");
         DICTIONARY.put(2000, "Comprehensive CWE Dictionary");
         }
