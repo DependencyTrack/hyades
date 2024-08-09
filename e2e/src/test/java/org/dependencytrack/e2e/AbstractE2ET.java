@@ -317,7 +317,7 @@ public class AbstractE2ET {
     }
 
     @AfterEach
-    void afterEach() {
+    void afterEach() throws Exception {
         ApiServerAuthInterceptor.reset();
 
         Optional.ofNullable(vulnAnalyzerContainer).ifPresent(GenericContainer::stop);
