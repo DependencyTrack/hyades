@@ -85,7 +85,6 @@ message BomValidationFailedSubject {
   Project project = 1;
   Bom bom = 2;
   repeated string errors = 3;
-  string format = 4;
 }
 
 message Bom {
