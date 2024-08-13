@@ -18,6 +18,8 @@
 
 
 
+
+
 <a name="org-dependencytrack-notification-v1-Notification"></a>
 
 ## Notification
@@ -120,8 +122,6 @@
 
 
 
-
-
 <a name="org-dependencytrack-notification-v1-BomValidationFailedSubject"></a>
 
 ### BomValidationFailedSubject
@@ -129,12 +129,11 @@
 
 
 
-| Field     | Type                                                      | Description |
-|:----------|:----------------------------------------------------------| :---------- |
+| Field | Type | Description |
+| :---- | :--- | :---------- |
 | `project` | [`Project`](#org-dependencytrack-notification-v1-Project) |  | - |
-| `bom`     | [`Bom`](#org-dependencytrack-notification-v1-Bom)         |  | - |
-| `errors`  | `string[]`                                                |  | - |
-| `format`  | `string`                                                  |  | - |
+| `bom` | [`Bom`](#org-dependencytrack-notification-v1-Bom) |  | - |
+| `errors` | `string[]` |  | - |
 
 
 
@@ -376,6 +375,8 @@
 | `content` | `string` |  | - |
 | `format` | `string` |  | - |
 | `spec_version` | `string` |  | - |
+
+
 
 
 
@@ -659,6 +660,7 @@
 | `GROUP_PROJECT_VULN_ANALYSIS_COMPLETE` |  |
 | `GROUP_USER_CREATED` |  |
 | `GROUP_USER_DELETED` |  |
+| `GROUP_BOM_VALIDATION_FAILED` |  |
 
 
 
