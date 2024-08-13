@@ -143,6 +143,58 @@ class MsTeamsPublisherTest extends AbstractWebhookPublisherTest<MsTeamsPublisher
     @Test
     @Override
     @TestTransaction
+    void testInformWithBomValidationFailedNotificationSubject() throws Exception {
+        super.testInformWithBomValidationFailedNotificationSubject();
+
+        wireMock.verifyThat(postRequestedFor(anyUrl())
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "@type": "MessageCard",
+                          "@context": "http://schema.org/extensions",
+                          "summary": "Bill of Materials Validation Failed",
+                          "title": "Bill of Materials Validation Failed",
+                          "sections": [
+                            {
+                              "activityTitle": "Dependency-Track",
+                              "activitySubtitle": "1970-01-01T18:31:06.000Z",
+                              "activityImage": "https://raw.githubusercontent.com/DependencyTrack/branding/master/dt-logo-symbol-blue-background.png",
+                              "facts": [
+                                {
+                                  "name": "Level",
+                                  "value": "LEVEL_ERROR"
+                                },
+                                {
+                                  "name": "Scope",
+                                  "value": "SCOPE_PORTFOLIO"
+                                },
+                                {
+                                  "name": "Group",
+                                  "value": "GROUP_BOM_VALIDATION_FAILED"
+                                },
+                                {
+                                  "name" : "Project",
+                                  "value" : "pkg:maven/org.acme/projectName@projectVersion"
+                                },
+                                {
+                                  "name" : "Project URL",
+                                  "value" : "https://example.com/projects/c9c9539a-e381-4b36-ac52-6a7ab83b2c95"
+                                },
+                                {
+                                  "name" : "Errors",
+                                  "value" : "[cause 1, cause 2]"
+                                }
+                              ],
+                              "text": "An error occurred while validating a BOM"
+                            }
+                          ]
+                        }
+                        """)));
+    }
+
+    @Test
+    @Override
+    @TestTransaction
     void testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject() throws Exception {
         super.testInformWithBomProcessingFailedNotificationAndNoSpecVersionInSubject();
 

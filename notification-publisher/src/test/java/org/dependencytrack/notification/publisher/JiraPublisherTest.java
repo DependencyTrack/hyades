@@ -135,6 +135,31 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
     @Test
     @Override
     @TestTransaction
+    void testInformWithBomValidationFailedNotificationSubject() throws Exception {
+        super.testInformWithBomValidationFailedNotificationSubject();
+
+        wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/rest/api/2/issue"))
+                .withHeader("Authorization", equalTo("Basic amlyYVVzZXI6amlyYVBhc3N3b3Jk"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "fields" : {
+                            "project" : {
+                              "key" : "PROJECT"
+                            },
+                            "issuetype" : {
+                              "name" : "Task"
+                            },
+                            "summary" : "[Dependency-Track] [GROUP_BOM_VALIDATION_FAILED] Bill of Materials Validation Failed",
+                            "description" : "An error occurred while validating a BOM\\n\\\\\\\\\\n\\\\\\\\\\n*Level*\\nLEVEL_ERROR\\n\\n"
+                          }
+                        }
+                        """)));
+    }
+
+    @Test
+    @Override
+    @TestTransaction
     void testInformWithDataSourceMirroringNotification() throws Exception {
         super.testInformWithDataSourceMirroringNotification();
 

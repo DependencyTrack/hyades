@@ -35,6 +35,7 @@ import org.dependencytrack.proto.notification.v1.BackReference;
 import org.dependencytrack.proto.notification.v1.Bom;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
+import org.dependencytrack.proto.notification.v1.BomValidationFailedSubject;
 import org.dependencytrack.proto.notification.v1.Component;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerableDependencySubject;
@@ -51,6 +52,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_CONSUMED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSING_FAILED;
+import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_VALIDATION_FAILED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_DATASOURCE_MIRRORING;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABLE_DEPENDENCY;
@@ -138,6 +140,30 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .setGroup(GROUP_BOM_PROCESSING_FAILED)
                 .setTitle(NotificationConstants.Title.BOM_PROCESSING_FAILED)
                 .setContent("An error occurred while processing a BOM")
+                .setLevel(LEVEL_ERROR)
+                .setTimestamp(Timestamps.fromSeconds(66666))
+                .setSubject(Any.pack(subject))
+                .build();
+
+        assertThatNoException()
+                .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
+    }
+
+    void testInformWithBomValidationFailedNotificationSubject() throws Exception {
+        final var subject = BomValidationFailedSubject.newBuilder()
+                .setProject(createProject())
+                .setBom(Bom.newBuilder()
+                        .setContent("bomContent")
+                        .setFormat("CycloneDX"))
+                .addErrors("cause 1")
+                .addErrors("cause 2")
+                .build();
+
+        final var notification = Notification.newBuilder()
+                .setScope(SCOPE_PORTFOLIO)
+                .setGroup(GROUP_BOM_VALIDATION_FAILED)
+                .setTitle(NotificationConstants.Title.BOM_VALIDATION_FAILED)
+                .setContent("An error occurred while validating a BOM")
                 .setLevel(LEVEL_ERROR)
                 .setTimestamp(Timestamps.fromSeconds(66666))
                 .setSubject(Any.pack(subject))

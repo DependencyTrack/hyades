@@ -26,6 +26,7 @@ import org.dependencytrack.persistence.model.NotificationRule;
 import org.dependencytrack.persistence.model.NotificationScope;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
+import org.dependencytrack.proto.notification.v1.BomValidationFailedSubject;
 import org.dependencytrack.proto.notification.v1.Component;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerableDependencySubject;
@@ -44,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_CONSUMED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSING_FAILED;
+import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_VALIDATION_FAILED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABILITY;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_NEW_VULNERABLE_DEPENDENCY;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_POLICY_VIOLATION;
@@ -146,6 +148,38 @@ class PublishContextTest {
             assertThat(ctx.kafkaTopicPartition()).isEqualTo(1);
             assertThat(ctx.kafkaPartitionOffset()).isEqualTo(2L);
             assertThat(ctx.notificationGroup()).isEqualTo("GROUP_BOM_PROCESSING_FAILED");
+            assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
+            assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
+            assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");
+            assertThat(ctx.notificationSubjects()).hasEntrySatisfying("project", projectObj -> {
+                assertThat(projectObj).isInstanceOf(PublishContext.Project.class);
+                final var project = (PublishContext.Project) projectObj;
+                assertThat(project.uuid()).isEqualTo("projectUuid");
+                assertThat(project.name()).isEqualTo("projectName");
+                assertThat(project.version()).isEqualTo("projectVersion");
+            });
+        }
+
+        @Test
+        void testWithBomValidationFailedSubject() throws Exception {
+            final var notification = Notification.newBuilder()
+                    .setGroup(GROUP_BOM_VALIDATION_FAILED)
+                    .setLevel(LEVEL_INFORMATIONAL)
+                    .setScope(SCOPE_PORTFOLIO)
+                    .setTimestamp(Timestamps.fromSeconds(666))
+                    .setSubject(Any.pack(BomValidationFailedSubject.newBuilder()
+                            .setProject(Project.newBuilder()
+                                    .setUuid("projectUuid")
+                                    .setName("projectName")
+                                    .setVersion("projectVersion"))
+                            .build()))
+                    .build();
+
+            final PublishContext ctx = PublishContext.fromRecord(new ConsumerRecord<>("topic", 1, 2L, "key", notification));
+            assertThat(ctx.kafkaTopic()).isEqualTo("topic");
+            assertThat(ctx.kafkaTopicPartition()).isEqualTo(1);
+            assertThat(ctx.kafkaPartitionOffset()).isEqualTo(2L);
+            assertThat(ctx.notificationGroup()).isEqualTo("GROUP_BOM_VALIDATION_FAILED");
             assertThat(ctx.notificationLevel()).isEqualTo("LEVEL_INFORMATIONAL");
             assertThat(ctx.notificationScope()).isEqualTo("SCOPE_PORTFOLIO");
             assertThat(ctx.notificationTimestamp()).isEqualTo("1970-01-01T00:11:06.000Z");

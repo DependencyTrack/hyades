@@ -46,6 +46,7 @@ import org.dependencytrack.persistence.repository.NotificationRuleRepository;
 import org.dependencytrack.persistence.repository.TeamRepository;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
+import org.dependencytrack.proto.notification.v1.BomValidationFailedSubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerableDependencySubject;
 import org.dependencytrack.proto.notification.v1.Notification;
@@ -226,6 +227,9 @@ public class NotificationRouter {
         } else if (notification.getScope() == SCOPE_PORTFOLIO
                 && notification.getSubject().is(BomProcessingFailedSubject.class)) {
             limitToProject(ctx, rules, result, notification, notification.getSubject().unpack(BomProcessingFailedSubject.class).getProject());
+        } else if (notification.getScope() == SCOPE_PORTFOLIO
+                && notification.getSubject().is(BomValidationFailedSubject.class)) {
+            limitToProject(ctx, rules, result, notification, notification.getSubject().unpack(BomValidationFailedSubject.class).getProject());
         } else if (notification.getScope() == SCOPE_PORTFOLIO
                 && notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {
             limitToProject(ctx, rules, result, notification, notification.getSubject().unpack(VexConsumedOrProcessedSubject.class).getProject());

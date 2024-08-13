@@ -25,6 +25,7 @@ import jakarta.json.JsonObject;
 import org.dependencytrack.proto.ProtobufUtil;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
+import org.dependencytrack.proto.notification.v1.BomValidationFailedSubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerabilitySubject;
 import org.dependencytrack.proto.notification.v1.NewVulnerableDependencySubject;
 import org.dependencytrack.proto.notification.v1.Notification;
@@ -115,6 +116,10 @@ public interface Publisher {
                 context.put("subjectJson", JsonFormat.printer().print(subject));
             } else if (notification.getSubject().is(BomProcessingFailedSubject.class)) {
                 final var subject = notification.getSubject().unpack(BomProcessingFailedSubject.class);
+                context.put("subject", subject);
+                context.put("subjectJson", JsonFormat.printer().print(subject));
+            } else if (notification.getSubject().is(BomValidationFailedSubject.class)) {
+                final var subject = notification.getSubject().unpack(BomValidationFailedSubject.class);
                 context.put("subject", subject);
                 context.put("subjectJson", JsonFormat.printer().print(subject));
             } else if (notification.getSubject().is(VexConsumedOrProcessedSubject.class)) {

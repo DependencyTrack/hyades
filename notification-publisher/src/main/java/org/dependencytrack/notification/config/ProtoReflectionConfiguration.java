@@ -25,6 +25,7 @@ import org.dependencytrack.proto.notification.v1.BackReference;
 import org.dependencytrack.proto.notification.v1.Bom;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
+import org.dependencytrack.proto.notification.v1.BomValidationFailedSubject;
 import org.dependencytrack.proto.notification.v1.Component;
 import org.dependencytrack.proto.notification.v1.ComponentVulnAnalysisCompleteSubject;
 import org.dependencytrack.proto.notification.v1.Group;
@@ -59,6 +60,7 @@ import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionCh
                 Bom.class,
                 BomConsumedOrProcessedSubject.class,
                 BomProcessingFailedSubject.class,
+                BomValidationFailedSubject.class,
                 Component.class,
                 ComponentVulnAnalysisCompleteSubject.class,
                 Group.class,
