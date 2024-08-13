@@ -1311,6 +1311,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#bomvalidationfailedsubject" class="md-nav__link">
+    <span class="md-ellipsis">
+      BomValidationFailedSubject
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#componentvulnanalysiscompletesubject" class="md-nav__link">
     <span class="md-ellipsis">
       ComponentVulnAnalysisCompleteSubject
@@ -1692,6 +1701,15 @@
   <a href="#bomprocessingfailedsubject" class="md-nav__link">
     <span class="md-ellipsis">
       BomProcessingFailedSubject
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bomvalidationfailedsubject" class="md-nav__link">
+    <span class="md-ellipsis">
+      BomValidationFailedSubject
     </span>
   </a>
   
@@ -2087,6 +2105,39 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p><a name="org-dependencytrack-notification-v1-BomValidationFailedSubject"></a></p>
+<h3 id="bomvalidationfailedsubject">BomValidationFailedSubject</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>project</code></td>
+<td style="text-align: left;"><a href="#org-dependencytrack-notification-v1-Project"><code>Project</code></a></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>bom</code></td>
+<td style="text-align: left;"><a href="#org-dependencytrack-notification-v1-Bom"><code>Bom</code></a></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>errors</code></td>
+<td style="text-align: left;"><code>string[]</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>format</code></td>
 <td style="text-align: left;"><code>string</code></td>
 <td style="text-align: left;"></td>
 </tr>
