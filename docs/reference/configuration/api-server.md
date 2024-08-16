@@ -232,6 +232,38 @@ Specifies the password to use when authenticating to the database.
 
 ---
 
+### alpine.database.password.file
+
+Specifies the file to load the database password from.  If set, takes precedence over [`alpine.database.password`](#alpinedatabasepassword).  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>/var/run/secrets/database-password</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_DATABASE_PASSWORD_FILE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### alpine.database.pool.enabled
 
 Specifies if the database connection pool is enabled.  
@@ -940,6 +972,34 @@ Defines the prefix to be used for API keys. A maximum prefix length of 251  char
 
 ---
 
+### alpine.auth.jwt.ttl.seconds
+
+Defines the number of seconds for which JWTs issued by Dependency-Track will be valid for.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>604800</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_AUTH_JWT_TTL_SECONDS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### alpine.bcrypt.rounds
 
 Specifies the number of bcrypt rounds to use when hashing a user's password.  The higher the number the more secure the password, at the expense of  hardware resources and additional time to generate the hash.  
@@ -1627,6 +1687,38 @@ HTTP proxy address. If set, then [`alpine.http.proxy.port`](#alpinehttpproxyport
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_HTTP_PROXY_PASSWORD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### alpine.http.proxy.password.file
+
+Specifies the file to load the HTTP proxy password from.  If set, takes precedence over [`alpine.http.proxy.password`](#alpinehttpproxypassword).  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>/var/run/secrets/http-proxy-password</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_HTTP_PROXY_PASSWORD_FILE</code></td>
     </tr>
   </tbody>
 </table>
