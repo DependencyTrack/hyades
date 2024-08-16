@@ -1262,6 +1262,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#alpinedatabasepasswordfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      alpine.database.password.file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alpinedatabasepoolenabled" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.database.pool.enabled
@@ -1517,6 +1526,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#alpineauthjwtttlseconds" class="md-nav__link">
+    <span class="md-ellipsis">
+      alpine.auth.jwt.ttl.seconds
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alpinebcryptrounds" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.bcrypt.rounds
@@ -1742,6 +1760,15 @@
   <a href="#alpinehttpproxypassword" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.http.proxy.password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alpinehttpproxypasswordfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      alpine.http.proxy.password.file
     </span>
   </a>
   
@@ -3246,6 +3273,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#alpinedatabasepasswordfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      alpine.database.password.file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alpinedatabasepoolenabled" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.database.pool.enabled
@@ -3501,6 +3537,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#alpineauthjwtttlseconds" class="md-nav__link">
+    <span class="md-ellipsis">
+      alpine.auth.jwt.ttl.seconds
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alpinebcryptrounds" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.bcrypt.rounds
@@ -3726,6 +3771,15 @@
   <a href="#alpinehttpproxypassword" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.http.proxy.password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alpinehttpproxypasswordfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      alpine.http.proxy.password.file
     </span>
   </a>
   
@@ -5157,6 +5211,34 @@
 </table>
 
 <hr />
+<h3 id="alpinedatabasepasswordfile">alpine.database.password.file</h3>
+<p>Specifies the file to load the database password from.  If set, takes precedence over <a href="#alpinedatabasepassword"><code>alpine.database.password</code></a>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>/var/run/secrets/database-password</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_DATABASE_PASSWORD_FILE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="alpinedatabasepoolenabled">alpine.database.pool.enabled</h3>
 <p>Specifies if the database connection pool is enabled.  </p>
 <table>
@@ -5753,6 +5835,30 @@
 </table>
 
 <hr />
+<h3 id="alpineauthjwtttlseconds">alpine.auth.jwt.ttl.seconds</h3>
+<p>Defines the number of seconds for which JWTs issued by Dependency-Track will be valid for.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>604800</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_AUTH_JWT_TTL_SECONDS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="alpinebcryptrounds">alpine.bcrypt.rounds</h3>
 <p>Specifies the number of bcrypt rounds to use when hashing a user's password.  The higher the number the more secure the password, at the expense of  hardware resources and additional time to generate the hash.  </p>
 <table>
@@ -6338,6 +6444,34 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_HTTP_PROXY_PASSWORD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="alpinehttpproxypasswordfile">alpine.http.proxy.password.file</h3>
+<p>Specifies the file to load the HTTP proxy password from.  If set, takes precedence over <a href="#alpinehttpproxypassword"><code>alpine.http.proxy.password</code></a>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>/var/run/secrets/http-proxy-password</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_HTTP_PROXY_PASSWORD_FILE</code></td>
     </tr>
   </tbody>
 </table>
