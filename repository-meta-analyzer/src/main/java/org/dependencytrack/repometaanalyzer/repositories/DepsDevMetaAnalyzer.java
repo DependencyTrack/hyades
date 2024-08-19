@@ -20,7 +20,6 @@ package org.dependencytrack.repometaanalyzer.repositories;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.foreign.Linker.Option;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
