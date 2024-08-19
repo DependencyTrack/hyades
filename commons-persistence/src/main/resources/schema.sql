@@ -1056,11 +1056,13 @@ ALTER TABLE "VULNERABILITYALIAS" ALTER COLUMN "UUID" TYPE UUID USING ("UUID"::UU
 
 ALTER TABLE "VULNERABILITYSCAN" ALTER COLUMN "TARGET_IDENTIFIER" TYPE UUID USING ("TARGET_IDENTIFIER"::UUID);
 
+ALTER TABLE "VULNERABILITYSCAN" ALTER COLUMN "TOKEN" TYPE UUID USING ("TOKEN"::UUID);
+
 ALTER TABLE "VULNERABLESOFTWARE" ALTER COLUMN "UUID" TYPE UUID USING ("UUID"::UUID);
 
 ALTER TABLE "WORKFLOW_STATE" ALTER COLUMN "TOKEN" TYPE UUID USING ("TOKEN"::UUID);
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-15', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 32, '9:54387f99af01b0fad1638e1bbaf11a88', 'modifyDataType columnName=UUID, tableName=AFFECTEDVERSIONATTRIBUTION; modifyDataType columnName=UUID, tableName=BOM; modifyDataType columnName=UUID, tableName=COMPONENT; modifyDataType columnName=UUID, tableName=COMPONENT_PROPERTY; modifyDataType ...', '', 'EXECUTED', NULL, NULL, '4.29.1', '3722795079');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('v5.5.0-15', 'sahibamittal', 'migration/changelog-v5.5.0.xml', NOW(), 32, '9:62e7437ac9a1f9f2e0ebac4e6f00185e', 'modifyDataType columnName=UUID, tableName=AFFECTEDVERSIONATTRIBUTION; modifyDataType columnName=UUID, tableName=BOM; modifyDataType columnName=UUID, tableName=COMPONENT; modifyDataType columnName=UUID, tableName=COMPONENT_PROPERTY; modifyDataType ...', '', 'EXECUTED', NULL, NULL, '4.29.1', '4068413149');
 
 -- Changeset migration/changelog-procedures.xml::function_calc-risk-score::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
@@ -1105,7 +1107,7 @@ INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED
 SET SEARCH_PATH TO public, "$user","public";
 
 CREATE OR REPLACE PROCEDURE "UPDATE_COMPONENT_METRICS"(
-  "component_uuid" VARCHAR
+  "component_uuid" UUID
 )
   LANGUAGE "plpgsql"
 AS
@@ -1410,20 +1412,18 @@ BEGIN
 END;
 $$;
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-component-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 33, '9:e6df4d01af9019e007df9ae9e770eade', 'createProcedure path=procedures/procedure_update-component-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.28.0', '9395800427');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-component-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 34, '9:6c35c16d2cd584a78510e997b7bddd7a', 'createProcedure path=procedures/procedure_update-component-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.29.1', '3818349166');
 
 -- Changeset migration/changelog-procedures.xml::procedure_update-project-metrics::nscuro@protonmail.com
-SET SEARCH_PATH TO public, "$user","public";
-
 CREATE OR REPLACE PROCEDURE "UPDATE_PROJECT_METRICS"(
-  "project_uuid" VARCHAR(36)
+  "project_uuid" UUID
 )
   LANGUAGE "plpgsql"
 AS
 $$
 DECLARE
   "v_project_id"                              BIGINT;
-  "v_component_uuid"                          TEXT;
+  "v_component_uuid"                          UUID;
   "v_components"                              INT; -- Total number of components in the project
   "v_vulnerable_components"                   INT; -- Number of vulnerable components in the project
   "v_vulnerabilities"                         INT; -- Total number of vulnerabilities
@@ -1635,7 +1635,7 @@ BEGIN
 end;
 $$;
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-project-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 34, '9:a7b35b9d37fa1deeb3044ace83dc9952', 'createProcedure path=procedures/procedure_update-project-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.28.0', '9395800427');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-project-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 35, '9:4ea44c08772654c91d118baf6070c9f1', 'createProcedure path=procedures/procedure_update-project-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.29.1', '3818349166');
 
 -- Changeset migration/changelog-procedures.xml::procedure_update-portfolio-metrics::nscuro@protonmail.com
 SET SEARCH_PATH TO public, "$user","public";
@@ -1855,7 +1855,7 @@ BEGIN
 END;
 $$;
 
-INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-portfolio-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 35, '9:1de7336fd9c6d13ceaccf6a498492eed', 'createProcedure path=procedures/procedure_update-portfolio-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.28.0', '9395800427');
+INSERT INTO databasechangelog (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('procedure_update-portfolio-metrics', 'nscuro@protonmail.com', 'migration/changelog-procedures.xml', NOW(), 36, '9:1de7336fd9c6d13ceaccf6a498492eed', 'createProcedure path=procedures/procedure_update-portfolio-metrics.sql', '', 'EXECUTED', NULL, NULL, '4.29.1', '3818349166');
 
 -- Release Database Lock
 SET SEARCH_PATH TO public, "$user","public";
