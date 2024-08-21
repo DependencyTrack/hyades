@@ -28,9 +28,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.JavaType;
 import org.hibernate.annotations.JdbcType;
-import org.hibernate.type.descriptor.java.UUIDJavaType;
 import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
 
 import java.util.ArrayList;
@@ -138,7 +136,6 @@ public class VulnerableSoftware extends PanacheEntityBase implements ICpe {
     private List<Vulnerability> vulnerabilities;
 
     @Column(name = "UUID")
-    @JavaType(UUIDJavaType.class)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 

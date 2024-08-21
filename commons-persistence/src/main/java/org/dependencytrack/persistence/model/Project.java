@@ -21,8 +21,6 @@ package org.dependencytrack.persistence.model;
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import org.dependencytrack.persistence.converter.ClassifierToStringConverter;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -33,9 +31,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.JavaType;
+import org.dependencytrack.persistence.converter.ClassifierToStringConverter;
 import org.hibernate.annotations.JdbcType;
-import org.hibernate.type.descriptor.java.UUIDJavaType;
 import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
 
 import java.io.Serializable;
@@ -104,7 +101,6 @@ public class Project implements Serializable {
     private String directDependencies;
 
     @Column(name = "UUID")
-    @JavaType(UUIDJavaType.class)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 

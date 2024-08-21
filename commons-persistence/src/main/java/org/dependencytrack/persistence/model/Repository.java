@@ -24,9 +24,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.dependencytrack.persistence.converter.RepositoryTypeConverter;
-import org.hibernate.annotations.JavaType;
 import org.hibernate.annotations.JdbcType;
-import org.hibernate.type.descriptor.java.UUIDJavaType;
 import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
 
 import java.util.Optional;
@@ -70,7 +68,6 @@ public class Repository {
     private String password;
 
     @Column(name = "UUID")
-    @JavaType(UUIDJavaType.class)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 
