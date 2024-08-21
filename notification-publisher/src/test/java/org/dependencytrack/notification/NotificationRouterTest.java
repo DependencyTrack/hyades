@@ -862,7 +862,7 @@ class NotificationRouterTest {
                     (true, 'foo', 'org.dependencytrack.notification.publisher.ConsolePublisher', 'template','text/plain', :uuid)
                 RETURNING "ID";
                 """)
-                .setParameter("uuid", UUID.fromString("'1781db56-51a8-462a-858c-6030a2341dfc'")).getSingleResult();
+                .setParameter("uuid", UUID.randomUUID()).getSingleResult();
     }
 
     private Long createRule(final String name, final NotificationScope scope, final NotificationLevel level,
@@ -877,7 +877,7 @@ class NotificationRouterTest {
                 .setParameter("notifyOn", group.name())
                 .setParameter("level", level.name())
                 .setParameter("scope", scope.name())
-                .setParameter("uuid", UUID.fromString("6b1fee41-4178-4a23-9d1b-e9df79de8e62"))
+                .setParameter("uuid", UUID.randomUUID())
                 .getSingleResult();
     }
 
