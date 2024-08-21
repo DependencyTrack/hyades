@@ -32,6 +32,10 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import org.dependencytrack.persistence.converter.NotificationLevelConverter;
 import org.dependencytrack.persistence.converter.NotificationScopeConverter;
+import org.hibernate.annotations.JavaType;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.descriptor.java.UUIDJavaType;
+import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,6 +100,8 @@ public class NotificationRule extends PanacheEntityBase {
     private String publisherConfig;
 
     @Column(name = "UUID")
+    @JavaType(UUIDJavaType.class)
+    @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 
     @Column(name = "NOTIFY_CHILDREN")

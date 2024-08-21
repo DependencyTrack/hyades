@@ -33,6 +33,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JavaType;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.descriptor.java.UUIDJavaType;
+import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -100,6 +104,8 @@ public class Project implements Serializable {
     private String directDependencies;
 
     @Column(name = "UUID")
+    @JavaType(UUIDJavaType.class)
+    @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 
     /**
