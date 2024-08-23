@@ -29,8 +29,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
 
 import java.util.UUID;
 
@@ -90,7 +88,6 @@ public class Component extends PanacheEntityBase {
     private Project project;
 
     @Column(name = "UUID")
-    @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 
     @Column(name = "MD5", columnDefinition = "VARCHAR")
