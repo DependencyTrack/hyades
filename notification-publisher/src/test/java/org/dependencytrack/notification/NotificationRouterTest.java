@@ -859,17 +859,16 @@ class NotificationRouterTest {
     private Long createConsolePublisher() {
         return (Long) entityManager.createNativeQuery("""
                 INSERT INTO "NOTIFICATIONPUBLISHER" ("DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID") VALUES
-                    (true, 'foo', 'org.dependencytrack.notification.publisher.ConsolePublisher', 'template','text/plain', :uuid)
+                    (true, 'foo', 'org.dependencytrack.notification.publisher.ConsolePublisher', 'template','text/plain', '1781db56-51a8-462a-858c-6030a2341dfc')
                 RETURNING "ID";
-                """)
-                .setParameter("uuid", UUID.randomUUID()).getSingleResult();
+                """).getSingleResult();
     }
 
     private Long createRule(final String name, final NotificationScope scope, final NotificationLevel level,
                             final NotificationGroup group, final Long publisherId) {
         return (Long) entityManager.createNativeQuery("""            
                         INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "LOG_SUCCESSFUL_PUBLISH", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
-                            (true, :name, :publisherId, :notifyOn, false, true, :level, :scope, :uuid)
+                            (true, :name, :publisherId, :notifyOn, false, true, :level, :scope, '6b1fee41-4178-4a23-9d1b-e9df79de8e62')
                         RETURNING "ID";
                         """)
                 .setParameter("name", name)
@@ -877,7 +876,6 @@ class NotificationRouterTest {
                 .setParameter("notifyOn", group.name())
                 .setParameter("level", level.name())
                 .setParameter("scope", scope.name())
-                .setParameter("uuid", UUID.randomUUID())
                 .getSingleResult();
     }
 
@@ -907,7 +905,7 @@ class NotificationRouterTest {
                 .setParameter("name", name)
                 .setParameter("version", version)
                 .setParameter("active", active != null ? active.booleanValue() : null)
-                .setParameter("uuid", uuid)
+                .setParameter("uuid", uuid.toString())
                 .getSingleResult();
     }
 
