@@ -24,6 +24,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
 
 import java.util.UUID;
 
@@ -55,6 +57,7 @@ public class NotificationPublisher extends PanacheEntityBase {
     private boolean defaultPublisher;
 
     @Column(name = "UUID")
+    @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 
     public long getId() {
