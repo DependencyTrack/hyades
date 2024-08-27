@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.32">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.33">
     
     
       
@@ -1583,6 +1583,24 @@
   <a href="#bomuploadprocessingtrxflushthreshold" class="md-nav__link">
     <span class="md-ellipsis">
       bom.upload.processing.trx.flush.threshold
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initandexit" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.and.exit
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inittasksenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.tasks.enabled
     </span>
   </a>
   
@@ -3594,6 +3612,24 @@
   <a href="#bomuploadprocessingtrxflushthreshold" class="md-nav__link">
     <span class="md-ellipsis">
       bom.upload.processing.trx.flush.threshold
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initandexit" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.and.exit
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inittasksenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.tasks.enabled
     </span>
   </a>
   
@@ -5668,7 +5704,7 @@
 
 <hr />
 <h3 id="databaserunmigrations">database.run.migrations</h3>
-<p>Defines whether database migrations should be executed on startup.  </p>
+<p>Defines whether database migrations should be executed on startup.  <br/><br/>  From v5.6.0 onwards, migrations are considered part of the initialization tasks.  Setting <a href="#inittasksenabled"><code>init.tasks.enabled</code></a> to <code>false</code> will disable migrations,  even if <a href="#databaserunmigrations"><code>database.run.migrations</code></a> is enabled.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5692,7 +5728,7 @@
 
 <hr />
 <h3 id="databaserunmigrationsonly">database.run.migrations.only</h3>
-<p>Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless <a href="#databaserunmigrations"><code>database.run.migrations</code></a> is <code>true</code>.  </p>
+<p>Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless <a href="#databaserunmigrations"><code>database.run.migrations</code></a> is <code>true</code>.  <br/><br/>  From v5.6.0 onwards, usage of <a href="#initandexit"><code>init.and.exit</code></a> should be preferred.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -6006,6 +6042,54 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>BOM_UPLOAD_PROCESSING_TRX_FLUSH_THRESHOLD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="initandexit">init.and.exit</h3>
+<p>Whether to only execute initialization tasks and exit.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_AND_EXIT</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="inittasksenabled">init.tasks.enabled</h3>
+<p>Whether to execute initialization tasks on startup.  Initialization tasks include:  <ul>  <li>Execution of database migrations</li>  <li>Populating the database with default objects (permissions, users, licenses, etc.)</li>  </ul>  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASKS_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
@@ -9532,7 +9616,7 @@
     <script id="__config" type="application/json">{"base": "../../..", "features": ["content.action.edit", "content.code.copy", "content.code.select", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.471ce7a9.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.af256bd8.min.js"></script>
       
     
   </body>
