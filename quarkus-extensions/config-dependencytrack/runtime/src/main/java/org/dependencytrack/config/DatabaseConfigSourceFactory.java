@@ -82,6 +82,8 @@ class DatabaseConfigSourceFactory implements ConfigSourceFactory {
                 .maxSize(config.pool().maxSize());
         config.acquisitionTimeout()
                 .ifPresent(connectionPoolConfig::acquisitionTimeout);
+        config.idleRemovalInterval()
+                .ifPresent(connectionPoolConfig::reapTimeout);
 
         final AgroalConnectionFactoryConfigurationSupplier connectionFactoryConfig =
                 connectionPoolConfig.connectionFactoryConfiguration();
