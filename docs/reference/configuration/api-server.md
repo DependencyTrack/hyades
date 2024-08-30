@@ -774,7 +774,7 @@ Defines the database user for executing migrations.  If not set, the value of [`
 
 ### database.run.migrations
 
-Defines whether database migrations should be executed on startup.  
+Defines whether database migrations should be executed on startup.  <br/><br/>  From v5.6.0 onwards, migrations are considered part of the initialization tasks.  Setting [`init.tasks.enabled`](#inittasksenabled) to `false` will disable migrations,  even if [`database.run.migrations`](#databaserunmigrations) is enabled.  
 
 <table>
   <tbody style="border: 0">
@@ -802,7 +802,7 @@ Defines whether database migrations should be executed on startup.
 
 ### database.run.migrations.only
 
-Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless [`database.run.migrations`](#databaserunmigrations) is `true`.  
+Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless [`database.run.migrations`](#databaserunmigrations) is `true`.  <br/><br/>  From v5.6.0 onwards, usage of [`init.and.exit`](#initandexit) should be preferred.  
 
 <table>
   <tbody style="border: 0">
@@ -1169,6 +1169,62 @@ Defines the number of write operations to perform during BOM processing before c
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>BOM_UPLOAD_PROCESSING_TRX_FLUSH_THRESHOLD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### init.and.exit
+
+Whether to only execute initialization tasks and exit.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_AND_EXIT</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### init.tasks.enabled
+
+Whether to execute initialization tasks on startup.  Initialization tasks include:  <ul>  <li>Execution of database migrations</li>  <li>Populating the database with default objects (permissions, users, licenses, etc.)</li>  </ul>  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASKS_ENABLED</code></td>
     </tr>
   </tbody>
 </table>

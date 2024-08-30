@@ -55,6 +55,10 @@ import org.dependencytrack.proto.notification.v1.VulnerabilityAnalysisDecisionCh
 @SuppressWarnings("unused")
 @RegisterForReflection(
         targets = {
+                // Classes of the Protobuf library.
+                // Can possibly remove them once Quarkus recognizes them.
+                com.google.protobuf.DescriptorProtos.class,
+                // Our own Protobuf classes.
                 Any.class,
                 BackReference.class,
                 Bom.class,
