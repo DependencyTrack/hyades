@@ -76,6 +76,7 @@ nav:
   - Overview: index.md
   - Changes over v4: getting-started/changes-over-v4.md
   - Migrating from v4: getting-started/migrating-from-v4.md
+  - Upgrading: getting-started/upgrading.md
 - Usage:
   - Policy Compliance:
     - Overview: usage/policy-compliance/overview.md
