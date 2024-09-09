@@ -31,6 +31,7 @@ theme:
   - navigation.top
   - search.highlight
   - search.share
+  - toc.integrate
 
 extra:
   version:
