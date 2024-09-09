@@ -924,34 +924,6 @@ Defines the path to the secret key to be used for data encryption and decryption
 
 ---
 
-### bom.upload.processing.trx.flush.threshold
-
-Defines the number of write operations to perform during BOM processing before changes are flushed to the database.  Smaller values may lower memory usage of the API server, whereas higher values will improve performance as fewer  network round-trips to the database are necessary.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>10000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>BOM_UPLOAD_PROCESSING_TRX_FLUSH_THRESHOLD</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### init.and.exit
 
 Whether to only execute initialization tasks and exit.  
@@ -1401,62 +1373,6 @@ S3 related details. Access key, secret key, bucket name and bundle names are man
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>VULNERABILITY_POLICY_S3_SECRET_KEY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### workflow.retention.duration
-
-Defines the duration for how long workflow data is being retained, after all steps transitioned into a non-terminal  state (CANCELLED, COMPLETED, FAILED, NOT_APPLICABLE).  The duration must be specified in ISO8601 notation (https://en.wikipedia.org/wiki/ISO_8601#Durations).  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>P3D</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>WORKFLOW_RETENTION_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### workflow.step.timeout.duration
-
-Defines the duration for how long a workflow step is allowed to remain in PENDING state  after being started. If this duration is exceeded, workflow steps will transition into the TIMED_OUT state.  If they remain in TIMED_OUT for the same duration, they will transition to the FAILED state.  The duration must be specified in ISO8601 notation (https://en.wikipedia.org/wiki/ISO_8601#Durations).  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT1H</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>WORKFLOW_STEP_TIMEOUT_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -4078,205 +3994,9 @@ Defines the number of worker threads that the event subsystem will consume.  Eve
 
 ## Task Scheduling
 
-### integrityMetaInitializer.lockAtLeastForInMillis
+### task.component.metadata.maintenance.cron
 
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>90000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INTEGRITYMETAINITIALIZER_LOCKATLEASTFORINMILLIS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### integrityMetaInitializer.lockAtMostForInMillis
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INTEGRITYMETAINITIALIZER_LOCKATMOSTFORINMILLIS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.componentIdentification.lockAtLeastForInMillis
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>90000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_COMPONENTIDENTIFICATION_LOCKATLEASTFORINMILLIS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.componentIdentification.lockAtMostForInMillis
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_COMPONENTIDENTIFICATION_LOCKATMOSTFORINMILLIS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.componentIdentification
-
-Schedule task every 6 hrs at 25th min  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>25 */6 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_COMPONENTIDENTIFICATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.defectdojo.sync
-
-Schedule task every 24 hrs at 02:00 UTC  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 2 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_DEFECTDOJO_SYNC</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.fortify.ssc.sync
-
-Schedule task every 24 hrs at 02:00 UTC  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 2 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_FORTIFY_SSC_SYNC</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.integrityInitializer
-
-Schedule task at 0 min past every 12th hr  
+Cron expression of the component metadata maintenance task.  <br/><br/>  The task deletes orphaned records from the `INTEGRITY_META_COMPONENT` and  `REPOSITORY_META_COMPONENT` tables.  
 
 <table>
   <tbody style="border: 0">
@@ -4294,7 +4014,7 @@ Schedule task at 0 min past every 12th hr
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_INTEGRITYINITIALIZER</code></td>
+      <td style="border-width: 0"><code>TASK_COMPONENT_METADATA_MAINTENANCE_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4302,9 +4022,65 @@ Schedule task at 0 min past every 12th hr
 
 ---
 
-### task.cron.kenna.sync
+### task.component.metadata.maintenance.lock.max.duration
 
-Schedule task every 24 hrs at 02:00 UTC  
+Maximum duration in ISO 8601 format for which the component metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_COMPONENT_METADATA_MAINTENANCE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.component.metadata.maintenance.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the component metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_COMPONENT_METADATA_MAINTENANCE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.defect.dojo.upload.cron
+
+Cron expression of the DefectDojo upload task.  
 
 <table>
   <tbody style="border: 0">
@@ -4322,7 +4098,7 @@ Schedule task every 24 hrs at 02:00 UTC
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_KENNA_SYNC</code></td>
+      <td style="border-width: 0"><code>TASK_DEFECT_DOJO_UPLOAD_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4330,177 +4106,9 @@ Schedule task every 24 hrs at 02:00 UTC
 
 ---
 
-### task.cron.ldapSync
+### task.epss.mirror.cron
 
-Schedule task every 6 hrs at 0th min  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 */6 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_LDAPSYNC</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.metrics.portfolio
-
-Schedule task for 10th minute of every hour  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>10 * * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_METRICS_PORTFOLIO</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.metrics.vulnerability
-
-Schedule task for 40th minute of every hour  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>40 * * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_METRICS_VULNERABILITY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.mirror.github
-
-Schedule task every 24 hrs at 02:00 UTC  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 2 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_MIRROR_GITHUB</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.mirror.nist
-
-Schedule task every 24 hrs at 04:00 UTC  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 4 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_MIRROR_NIST</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.mirror.osv
-
-Schedule task every 24 hrs at 03:00 UTC  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 3 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_MIRROR_OSV</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.cron.repoMetaAnalysis
-
-Schedule task every 24 hrs at 01:00 UTC  
+Cron expression of the EPSS mirroring task.  
 
 <table>
   <tbody style="border: 0">
@@ -4518,7 +4126,7 @@ Schedule task every 24 hrs at 01:00 UTC
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_REPOMETAANALYSIS</code></td>
+      <td style="border-width: 0"><code>TASK_EPSS_MIRROR_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4526,9 +4134,9 @@ Schedule task every 24 hrs at 01:00 UTC
 
 ---
 
-### task.cron.vulnAnalysis
+### task.fortify.ssc.upload.cron
 
-Schedule task every 24hrs at 06:00 UTC  
+Cron expression of the Fortify SSC upload task.  
 
 <table>
   <tbody style="border: 0">
@@ -4542,11 +4150,11 @@ Schedule task every 24hrs at 06:00 UTC
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 6 * * *</code></td>
+      <td style="border-width: 0"><code>0 2 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_VULNANALYSIS</code></td>
+      <td style="border-width: 0"><code>TASK_FORTIFY_SSC_UPLOAD_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4554,9 +4162,9 @@ Schedule task every 24hrs at 06:00 UTC
 
 ---
 
-### task.cron.vulnScanCleanUp
+### task.git.hub.advisory.mirror.cron
 
-Schedule task at 8:05 UTC on Wednesday every week  
+Cron expression of the vulnerability GitHub Advisories mirroring task.  
 
 <table>
   <tbody style="border: 0">
@@ -4570,11 +4178,11 @@ Schedule task at 8:05 UTC on Wednesday every week
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5 8 * * 4</code></td>
+      <td style="border-width: 0"><code>0 2 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_VULNSCANCLEANUP</code></td>
+      <td style="border-width: 0"><code>TASK_GIT_HUB_ADVISORY_MIRROR_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4582,9 +4190,9 @@ Schedule task at 8:05 UTC on Wednesday every week
 
 ---
 
-### task.cron.vulnerability.policy.bundle.fetch
+### task.integrity.meta.initializer.cron
 
-Schedule task every 5 minutes  
+Cron expression of the integrity metadata initializer task.  
 
 <table>
   <tbody style="border: 0">
@@ -4598,11 +4206,11 @@ Schedule task every 5 minutes
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>*/5 * * * *</code></td>
+      <td style="border-width: 0"><code>0 */12 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_VULNERABILITY_POLICY_BUNDLE_FETCH</code></td>
+      <td style="border-width: 0"><code>TASK_INTEGRITY_META_INITIALIZER_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4610,9 +4218,65 @@ Schedule task every 5 minutes
 
 ---
 
-### task.cron.workflow.state.cleanup
+### task.integrity.meta.initializer.lock.max.duration
 
-Schedule task every 15 minutes  
+Maximum duration in ISO 8601 format for which the integrity metadata initializer task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_INTEGRITY_META_INITIALIZER_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.integrity.meta.initializer.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the integrity metadata initializer task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT90S</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_INTEGRITY_META_INITIALIZER_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.internal.component.identification.cron
+
+Cron expression of the internal component identification task.  
 
 <table>
   <tbody style="border: 0">
@@ -4626,11 +4290,11 @@ Schedule task every 15 minutes
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>*/15 * * * *</code></td>
+      <td style="border-width: 0"><code>25 */6 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CRON_WORKFLOW_STATE_CLEANUP</code></td>
+      <td style="border-width: 0"><code>TASK_INTERNAL_COMPONENT_IDENTIFICATION_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4638,9 +4302,9 @@ Schedule task every 15 minutes
 
 ---
 
-### task.ldapSync.lockAtLeastForInMillis
+### task.internal.component.identification.lock.max.duration
 
-
+Maximum duration in ISO 8601 format for which the internal component identification task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
 <table>
   <tbody style="border: 0">
@@ -4650,15 +4314,15 @@ Schedule task every 15 minutes
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>duration</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>90000</code></td>
+      <td style="border-width: 0"><code>PT15M</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_LDAPSYNC_LOCKATLEASTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_INTERNAL_COMPONENT_IDENTIFICATION_LOCK_MAX_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -4666,9 +4330,9 @@ Schedule task every 15 minutes
 
 ---
 
-### task.ldapSync.lockAtMostForInMillis
+### task.internal.component.identification.lock.min.duration
 
-
+Minimum duration in ISO 8601 format for which the internal component identification task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
 <table>
   <tbody style="border: 0">
@@ -4678,15 +4342,15 @@ Schedule task every 15 minutes
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>duration</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
+      <td style="border-width: 0"><code>PT90S</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_LDAPSYNC_LOCKATMOSTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_INTERNAL_COMPONENT_IDENTIFICATION_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -4694,9 +4358,9 @@ Schedule task every 15 minutes
 
 ---
 
-### task.metrics.portfolio.lockAtLeastForInMillis
+### task.kenna.security.upload.cron
 
-Specifies minimum amount of time for which the lock should be kept.  Its main purpose is to prevent execution from multiple nodes in case of really short tasks and clock difference between the nodes.  
+Cron expression of the Kenna Security upload task.  
 
 <table>
   <tbody style="border: 0">
@@ -4706,15 +4370,15 @@ Specifies minimum amount of time for which the lock should be kept.  Its main pu
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>cron</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>90000</code></td>
+      <td style="border-width: 0"><code>0 2 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_METRICS_PORTFOLIO_LOCKATLEASTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_KENNA_SECURITY_UPLOAD_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4722,9 +4386,9 @@ Specifies minimum amount of time for which the lock should be kept.  Its main pu
 
 ---
 
-### task.metrics.portfolio.lockAtMostForInMillis
+### task.ldap.sync.cron
 
-Specifies how long the lock should be kept in case the executing node dies.  This is just a fallback, under normal circumstances the lock is released as soon the tasks finishes.  Set lockAtMostFor to a value which is much longer than normal execution time. Default value is 15min  Lock will be extended dynamically till task execution is finished  
+Cron expression of the LDAP synchronization task.  
 
 <table>
   <tbody style="border: 0">
@@ -4734,15 +4398,15 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>cron</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
+      <td style="border-width: 0"><code>0 */6 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_METRICS_PORTFOLIO_LOCKATMOSTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_LDAP_SYNC_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4750,9 +4414,9 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
 
 ---
 
-### task.metrics.vulnerability.lockAtLeastForInMillis
+### task.ldap.sync.lock.max.duration
 
-
+Maximum duration in ISO 8601 format for which the LDAP synchronization task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
 <table>
   <tbody style="border: 0">
@@ -4762,15 +4426,15 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>duration</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>90000</code></td>
+      <td style="border-width: 0"><code>PT15M</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_METRICS_VULNERABILITY_LOCKATLEASTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_LDAP_SYNC_LOCK_MAX_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -4778,9 +4442,9 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
 
 ---
 
-### task.metrics.vulnerability.lockAtMostForInMillis
+### task.ldap.sync.lock.min.duration
 
-
+Minimum duration in ISO 8601 format for which the LDAP synchronization task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
 <table>
   <tbody style="border: 0">
@@ -4790,15 +4454,15 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>duration</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
+      <td style="border-width: 0"><code>PT90S</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_METRICS_VULNERABILITY_LOCKATMOSTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_LDAP_SYNC_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -4806,9 +4470,9 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
 
 ---
 
-### task.mirror.epss.lockAtLeastForInMillis
+### task.metrics.maintenance.cron
 
-
+Cron expression of the metrics maintenance task.  <br/><br/>  The task deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  <li><code>PORTFOLIOMETRICS</code></li>  </ul>  
 
 <table>
   <tbody style="border: 0">
@@ -4818,15 +4482,15 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>cron</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>90000</code></td>
+      <td style="border-width: 0"><code>0 */3 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_MIRROR_EPSS_LOCKATLEASTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_METRICS_MAINTENANCE_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4834,9 +4498,9 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
 
 ---
 
-### task.mirror.epss.lockAtMostForInMillis
+### task.metrics.maintenance.lock.max.duration
 
-
+Maximum duration in ISO 8601 format for which the metrics maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
 <table>
   <tbody style="border: 0">
@@ -4846,15 +4510,15 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>duration</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
+      <td style="border-width: 0"><code>PT15M</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_MIRROR_EPSS_LOCKATMOSTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_METRICS_MAINTENANCE_LOCK_MAX_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -4862,9 +4526,9 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
 
 ---
 
-### task.portfolio.repoMetaAnalysis.lockAtLeastForInMillis
+### task.metrics.maintenance.lock.min.duration
 
-
+Minimum duration in ISO 8601 format for which the metrics maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
 <table>
   <tbody style="border: 0">
@@ -4874,15 +4538,15 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>duration</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>90000</code></td>
+      <td style="border-width: 0"><code>PT1M</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_PORTFOLIO_REPOMETAANALYSIS_LOCKATLEASTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_METRICS_MAINTENANCE_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -4890,9 +4554,9 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
 
 ---
 
-### task.portfolio.repoMetaAnalysis.lockAtMostForInMillis
+### task.nist.mirror.cron
 
-
+Cron expression of the NIST / NVD mirroring task.  
 
 <table>
   <tbody style="border: 0">
@@ -4902,15 +4566,15 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>cron</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
+      <td style="border-width: 0"><code>0 4 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_PORTFOLIO_REPOMETAANALYSIS_LOCKATMOSTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_NIST_MIRROR_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4918,9 +4582,9 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
 
 ---
 
-### task.portfolio.vulnAnalysis.lockAtLeastForInMillis
+### task.osv.mirror.cron
 
-
+Cron expression of the OSV mirroring task.  
 
 <table>
   <tbody style="border: 0">
@@ -4930,15 +4594,15 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>cron</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>90000</code></td>
+      <td style="border-width: 0"><code>0 3 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_PORTFOLIO_VULNANALYSIS_LOCKATLEASTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_OSV_MIRROR_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -4946,9 +4610,9 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
 
 ---
 
-### task.portfolio.vulnAnalysis.lockAtMostForInMillis
+### task.portfolio.metrics.update.cron
 
-
+Cron expression of the portfolio metrics update task.  
 
 <table>
   <tbody style="border: 0">
@@ -4958,15 +4622,155 @@ Specifies how long the lock should be kept in case the executing node dies.  Thi
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>cron</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
+      <td style="border-width: 0"><code>10 * * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_PORTFOLIO_VULNANALYSIS_LOCKATMOSTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_PORTFOLIO_METRICS_UPDATE_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.portfolio.metrics.update.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the portfolio metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PORTFOLIO_METRICS_UPDATE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.portfolio.metrics.update.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the portfolio metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT90S</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PORTFOLIO_METRICS_UPDATE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.repository.meta.analysis.cron
+
+Cron expression of the portfolio repository metadata analysis task.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0 1 * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_REPOSITORY_META_ANALYSIS_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.repository.meta.analysis.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the portfolio repository metadata analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_REPOSITORY_META_ANALYSIS_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.repository.meta.analysis.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the portfolio repository metadata analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT90S</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_REPOSITORY_META_ANALYSIS_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -5030,9 +4834,9 @@ Cron expressions for tasks have the precision of minutes so polling every minute
 
 ---
 
-### task.workflow.state.cleanup.lockAtLeastForInMillis
+### task.tag.maintenance.cron
 
-
+Cron expression of the tag maintenance task.  <br/><br/>  The task deletes orphaned tags that are not used anymore.  
 
 <table>
   <tbody style="border: 0">
@@ -5042,15 +4846,15 @@ Cron expressions for tasks have the precision of minutes so polling every minute
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>cron</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
+      <td style="border-width: 0"><code>0 */12 * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_WORKFLOW_STATE_CLEANUP_LOCKATLEASTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_TAG_MAINTENANCE_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -5058,9 +4862,9 @@ Cron expressions for tasks have the precision of minutes so polling every minute
 
 ---
 
-### task.workflow.state.cleanup.lockAtMostForInMillis
+### task.tag.maintenance.lock.max.duration
 
-
+Maximum duration in ISO 8601 format for which the tag maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
 <table>
   <tbody style="border: 0">
@@ -5070,15 +4874,547 @@ Cron expressions for tasks have the precision of minutes so polling every minute
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
+      <td style="border-width: 0"><code>duration</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>900000</code></td>
+      <td style="border-width: 0"><code>PT15M</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_WORKFLOW_STATE_CLEANUP_LOCKATMOSTFORINMILLIS</code></td>
+      <td style="border-width: 0"><code>TASK_TAG_MAINTENANCE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.tag.maintenance.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the tag maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_TAG_MAINTENANCE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.analysis.cron
+
+Cron expression of the portfolio vulnerability analysis task.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0 6 * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_ANALYSIS_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.analysis.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the portfolio vulnerability analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_ANALYSIS_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.analysis.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the portfolio vulnerability analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT90S</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_ANALYSIS_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.database.maintenance.cron
+
+Cron expression of the vulnerability database maintenance task.  <br/><br/>  The task deletes orphaned records from the `VULNERABLESOFTWARE` table.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0 0 * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_DATABASE_MAINTENANCE_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.database.maintenance.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_DATABASE_MAINTENANCE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.database.maintenance.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_DATABASE_MAINTENANCE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.metrics.update.cron
+
+Cron expression of the vulnerability metrics update task.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>40 * * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_METRICS_UPDATE_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.metrics.update.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the vulnerability metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_METRICS_UPDATE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.metrics.update.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the vulnerability metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT90S</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_METRICS_UPDATE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.policy.fetch.cron
+
+Cron expression of the vulnerability policy bundle fetch task.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>*/5 * * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_POLICY_FETCH_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.policy.fetch.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the vulnerability policy bundle fetch task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT5M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_POLICY_FETCH_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.policy.fetch.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the vulnerability policy bundle fetch task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT5S</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_POLICY_FETCH_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.scan.maintenance.cron
+
+Cron expression of the vulnerability scan maintenance task.  <br/><br/>  The task deletes records older than the configured retention duration from the `VULNERABILITYSCAN` table.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0 * * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_SCAN_MAINTENANCE_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.scan.maintenance.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_SCAN_MAINTENANCE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.vulnerability.scan.maintenance.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_VULNERABILITY_SCAN_MAINTENANCE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.workflow.maintenance.cron
+
+Cron expression of the workflow maintenance task.  <br/><br/>  The task:  <ul>  <li>Transitions workflow steps from <code>PENDING</code> to <code>TIMED_OUT</code> state</li>  <li>Transitions workflow steps from <code>TIMED_OUT</code> to <code>FAILED</code> state</li>  <li>Transitions children of <code>FAILED</code> steps to <code>CANCELLED</code> state</li>  <li>Deletes finished workflows according to the configured retention duration</li>  </ul>  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>*/15 * * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_WORKFLOW_MAINTENANCE_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.workflow.maintenance.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the workflow maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT5M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_WORKFLOW_MAINTENANCE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.workflow.maintenance.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the workflow maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_WORKFLOW_MAINTENANCE_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
