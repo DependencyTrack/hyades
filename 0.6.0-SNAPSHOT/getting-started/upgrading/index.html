@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/database-migrations/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/getting-started/upgrading/">
       
       
-        <link rel="prev" href="../testing/">
+        <link rel="prev" href="../migrating-from-v4/">
       
       
-        <link rel="next" href="../documentation/">
+        <link rel="next" href="../../usage/policy-compliance/overview/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Database Migrations - Hyades</title>
+        <title>Upgrading - Hyades</title>
       
     
     
@@ -57,11 +57,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="Database Migrations - Hyades" >
+        <meta  property="og:title"  content="Upgrading - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/development/database-migrations.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/getting-started/upgrading.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +69,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/database-migrations/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/getting-started/upgrading/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="Database Migrations - Hyades" >
+        <meta  name="twitter:title"  content="Upgrading - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/development/database-migrations.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/getting-started/upgrading.png" >
       
     
     
@@ -100,7 +100,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#database-migrations" class="md-skip">
+        <a href="#upgrading-to-060" class="md-skip">
           Skip to content
         </a>
       
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Database Migrations
+              Upgrading
             
           </span>
         </div>
@@ -244,10 +244,12 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../.." class="md-tabs__link">
           
   
@@ -325,13 +327,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../overview/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../development/overview/" class="md-tabs__link">
           
   
   Development
@@ -424,23 +424,28 @@
       
   
   
+    
   
   
+  
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
         
           
-          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -451,7 +456,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -486,7 +491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/changes-over-v4/" class="md-nav__link">
+      <a href="../changes-over-v4/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -507,7 +512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/migrating-from-v4/" class="md-nav__link">
+      <a href="../migrating-from-v4/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -525,10 +530,28 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../getting-started/upgrading/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Upgrading
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -537,6 +560,33 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#upgrading-to-060" class="md-nav__link">
+    <span class="md-ellipsis">
+      Upgrading to 0.6.0
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -885,28 +935,23 @@
       
   
   
-    
   
   
-  
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -917,7 +962,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Development
@@ -931,7 +976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
+      <a href="../../development/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -952,7 +997,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../building/" class="md-nav__link">
+      <a href="../../development/building/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -973,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../testing/" class="md-nav__link">
+      <a href="../../development/testing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -991,30 +1036,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Database Migrations
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../development/database-migrations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1023,53 +1048,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-migrations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding Migrations
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#making-schema-changes-available-to-hyades-services" class="md-nav__link">
-    <span class="md-ellipsis">
-      Making Schema Changes Available to Hyades Services
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1082,7 +1060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../documentation/" class="md-nav__link">
+      <a href="../../development/documentation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1404,8 +1382,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1414,27 +1390,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
+  <a href="#upgrading-to-060" class="md-nav__link">
     <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-migrations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding Migrations
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#making-schema-changes-available-to-hyades-services" class="md-nav__link">
-    <span class="md-ellipsis">
-      Making Schema Changes Available to Hyades Services
+      Upgrading to 0.6.0
     </span>
   </a>
   
@@ -1455,7 +1413,7 @@
                   
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/development/database-migrations.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/getting-started/upgrading.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1463,70 +1421,46 @@
   
 
 
-<h1 id="database-migrations">Database Migrations</h1>
-<h2 id="introduction">Introduction</h2>
-<p>In contrast to Dependency-Track v4 and earlier, Dependency-Track v5 manages database migrations with <a href="https://www.liquibase.com/">Liquibase</a>.
-The database schema is still <em>owned</em> by the API server though. It will execute migrations upon startup,
-unless explicitly disabled via <a href="../../reference/configuration/api-server/#databaserunmigrations"><code>database.run.migrations</code></a>.</p>
-<p><a href="https://www.liquibase.com/">Liquibase</a> operates with the concept of <a href="https://docs.liquibase.com/concepts/changelogs/home.html">changelogs</a>.
-For the sake of better visibility, Dependency-Track uses separate changelogs for each release version.
-Individual changelogs are referenced by <a href="https://github.com/DependencyTrack/hyades-apiserver/blob/main/src/main/resources/migration/changelog-main.xml"><code>changelog-main.xml</code></a>.</p>
-<p>Stored procedures and custom SQL functions are treated differently: They are re-created whenever their
-content changes. Their sources are located in the <a href="https://github.com/DependencyTrack/hyades-apiserver/tree/main/src/main/resources/migration/procedures"><code>procedures</code></a> directory.</p>
-<h2 id="adding-migrations">Adding Migrations</h2>
-<ol>
-<li>If it doesn't exist already, create a <code>changelog-vX.Y.Z.xml</code> file<ul>
-<li><code>X</code>, <code>Y</code>, and <code>Z</code> must correspond to the current release version</li>
-</ul>
-</li>
-<li>Ensure the <code>changelog-vX.Y.Z.xml</code> file is referenced via <code>include</code> in <code>changelog-main.xml</code></li>
-<li>Add your <a href="https://docs.liquibase.com/concepts/changelogs/changeset.html">changeset</a> to <code>changelog-vX.Y.Z.xml</code></li>
-</ol>
-<p>When adding a new <code>changeset</code>, consider the following guidelines:</p>
+  <h1>Upgrading</h1>
+
+<h3 id="upgrading-to-060">Upgrading to 0.6.0</h3>
 <ul>
-<li>The changeset ID <strong>must</strong> follow the <code>vX.Y.Z-&lt;NUM&gt;</code> format, where:<ul>
-<li><code>X</code>, <code>Y</code>, and <code>Z</code> match the changelog's version</li>
-<li><code>NUM</code> is an incrementing number, starting at <code>1</code> for the first <code>changeset</code> of the release</li>
-</ul>
+<li>The <code>kafka.topic.prefix</code> configuration was renamed to <code>dt.kafka.topic.prefix</code> to prevent
+collisions with native Kafka properties (<a href="https://github.com/DependencyTrack/hyades/issues/1392">hyades/#1392</a>).</li>
+<li>
+<p>Configuration names for task cron expressions and lock durations have changed (<a href="https://github.com/DependencyTrack/hyades-apiserver/pull/840">apiserver/#840</a>).
+They now follow a consistent <code>task.&lt;task-name&gt;.&lt;config&gt;</code> scheme. Lock durations are now specified
+in <a href="https://en.wikipedia.org/wiki/ISO_8601#Durations">ISO 8601</a> format instead of milliseconds.
+Refer to the <a href="../../reference/configuration/api-server/#task-scheduling">task scheduling configuration reference</a> for details. Example of name change:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Before</th>
+<th style="text-align: left;">After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>task.cron.metrics.portfolio</code></td>
+<td style="text-align: left;"><code>task.portfolio.metrics.update.cron</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>task.metrics.portfolio.lockAtMostForInMillis</code></td>
+<td style="text-align: left;"><code>task.portfolio.metrics.update.lock.max.duration</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>task.metrics.portfolio.lockAtLeastForInMillis</code></td>
+<td style="text-align: left;"><code>task.portfolio.metrics.update.lock.min.duration</code></td>
+</tr>
+</tbody>
+</table>
 </li>
-<li>The <code>author</code> <strong>must</strong> correspond to your GitHub username</li>
-<li>Prefer <a href="https://docs.liquibase.com/change-types/home.html">built-in change types</a><ul>
-<li>Use the <a href="https://docs.liquibase.com/change-types/sql.html"><code>sql</code> change type</a> if no fitting built-in exists</li>
-<li>Use a <a href="https://docs.liquibase.com/change-types/custom-change.html">custom change</a> <em>in edge cases</em>, when additional computation is required</li>
-</ul>
+<li>
+<p>The <code>/api/v1/vulnerability/source/{source}/vuln/{vuln}/projects</code> REST API endpoint now supports pagination
+(<a href="https://github.com/DependencyTrack/hyades-apiserver/pull/888">apiserver/#888</a>). Like all other paginated endpoints, the page size defaults to <code>100</code>.
+Clients currently expecting <em>all</em> items to be returned at once must be updated to deal with pagination.</p>
 </li>
-<li>When using custom changes:<ul>
-<li>Use the <a href="https://github.com/DependencyTrack/hyades-apiserver/tree/main/src/main/java/org/dependencytrack/persistence/migration/change"><code>org.dependencytrack.persistence.migration.change</code></a> package</li>
-<li>Changes <strong>must not</strong> depend on domain logic</li>
 </ul>
-</li>
-<li>You <strong>must not</strong> modify <code>changeset</code>s that were already committed to <code>main</code></li>
-</ul>
-<h2 id="making-schema-changes-available-to-hyades-services">Making Schema Changes Available to Hyades Services</h2>
-<p>Because the schema is owned by the API server, and the API server is also responsible for executing migrations,
-other services that access the database must replicate the current schema, in order to run tests against it.</p>
-<p>Currently, this is achieved by:</p>
-<ol>
-<li>Having <a href="https://www.liquibase.com/">Liquibase</a> generate the schema SQL based on the changelog</li>
-<li>Adding the <code>schema.sql</code> file as resource to the <a href="https://github.com/DependencyTrack/hyades/blob/c1463a80c8ad45e0ef401292cf29dbd37a7de308/commons-persistence/src/main/resources/schema.sql"><code>commons-persistence</code></a> module</li>
-<li>Having all services that require database access depend on <code>commons-persistence</code></li>
-<li>Configuring <a href="https://quarkus.io/guides/databases-dev-services">Quarkus Dev Services</a> to initialize new database containers with <code>schema.sql</code><ul>
-<li>Using <a href="https://quarkus.io/guides/datasource#quarkus-datasource_quarkus-datasource-devservices-init-script-path"><code>quarkus.datasource.devservices.init-script-path</code></a></li>
-</ul>
-</li>
-</ol>
-<p>The schema can be generated using the <a href="https://github.com/DependencyTrack/hyades-apiserver/blob/794e9eaa2991f961223653b293c46ce64bc7e0ce/dev/scripts/dbschema-generate.sh"><code>dbschema-generate.sh</code></a>
-script in the <code>hyades-apiserver</code> repository:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./dev/scripts/dbschema-generate.sh
-</span></code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul>
-<li>You may need to <a href="../building/">build</a> the API server project once before running the script</li>
-<li>Because Liquibase requires database to run against, the script will launch a temporary PostgreSQL container</li>
-</ul>
-</div>
-<p>The output is written to <code>target/liquibase/migrate.sql</code>.</p>
 
 
 
