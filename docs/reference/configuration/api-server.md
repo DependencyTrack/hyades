@@ -294,7 +294,7 @@ Specifies if the database connection pool is enabled.
 
 ### alpine.database.pool.idle.timeout
 
-This property controls the maximum amount of time that a connection is  allowed to sit idle in the pool.  The property can be set globally for both transactional and non-transactional  connection pools, or for each pool type separately. When both global and pool-specific  properties are set, the pool-specific properties take precedence.  
+This property controls the maximum amount of time that a connection is  allowed to sit idle in the pool.  
 
 <table>
   <tbody style="border: 0">
@@ -322,7 +322,7 @@ This property controls the maximum amount of time that a connection is  allowed 
 
 ### alpine.database.pool.max.lifetime
 
-This property controls the maximum lifetime of a connection in the pool.  An in-use connection will never be retired, only when it is closed will  it then be removed.  The property can be set globally for both transactional and non-transactional  connection pools, or for each pool type separately. When both global and pool-specific  properties are set, the pool-specific properties take precedence.  
+This property controls the maximum lifetime of a connection in the pool.  An in-use connection will never be retired, only when it is closed will  it then be removed.  
 
 <table>
   <tbody style="border: 0">
@@ -350,7 +350,7 @@ This property controls the maximum lifetime of a connection in the pool.  An in-
 
 ### alpine.database.pool.max.size
 
-This property controls the maximum size that the pool is allowed to reach,  including both idle and in-use connections.  The property can be set globally for both transactional and non-transactional  connection pools, or for each pool type separately. When both global and pool-specific  properties are set, the pool-specific properties take precedence.  
+This property controls the maximum size that the pool is allowed to reach,  including both idle and in-use connections.  
 
 <table>
   <tbody style="border: 0">
@@ -378,7 +378,7 @@ This property controls the maximum size that the pool is allowed to reach,  incl
 
 ### alpine.database.pool.min.idle
 
-This property controls the minimum number of idle connections in the pool.  This value should be equal to or less than [`alpine.database.pool.max.size`](#alpinedatabasepoolmaxsize).  Warning: If the value is less than [`alpine.database.pool.max.size`](#alpinedatabasepoolmaxsize),  [`alpine.database.pool.idle.timeout`](#alpinedatabasepoolidletimeout) will have no effect.  The property can be set globally for both transactional and non-transactional  connection pools, or for each pool type separately. When both global and pool-specific  properties are set, the pool-specific properties take precedence.  
+This property controls the minimum number of idle connections in the pool.  This value should be equal to or less than [`alpine.database.pool.max.size`](#alpinedatabasepoolmaxsize).  Warning: If the value is less than [`alpine.database.pool.max.size`](#alpinedatabasepoolmaxsize),  [`alpine.database.pool.idle.timeout`](#alpinedatabasepoolidletimeout) will have no effect.  
 
 <table>
   <tbody style="border: 0">
@@ -397,230 +397,6 @@ This property controls the minimum number of idle connections in the pool.  This
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_MIN_IDLE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.database.pool.nontx.idle.timeout
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.pool.idle.timeout}</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_NONTX_IDLE_TIMEOUT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.database.pool.nontx.max.lifetime
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.pool.max.lifetime}</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_NONTX_MAX_LIFETIME</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.database.pool.nontx.max.size
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.pool.max.size}</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_NONTX_MAX_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.database.pool.nontx.min.idle
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.pool.min.idle}</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_NONTX_MIN_IDLE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.database.pool.tx.idle.timeout
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.pool.idle.timeout}</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_TX_IDLE_TIMEOUT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.database.pool.tx.max.lifetime
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.pool.max.lifetime}</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_TX_MAX_LIFETIME</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.database.pool.tx.max.size
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.pool.max.size}</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_TX_MAX_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.database.pool.tx.min.idle
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.pool.min.idle}</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_DATABASE_POOL_TX_MIN_IDLE</code></td>
     </tr>
   </tbody>
 </table>
