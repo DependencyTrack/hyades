@@ -142,10 +142,9 @@ services:
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
       ALPINE_DATABASE_USERNAME: "dtrack"
       ALPINE_DATABASE_PASSWORD: "dtrack"
+      ALPINE_DATABASE_POOL_ENABLED: "false"
       INIT_TASKS_ENABLED: "true"
       INIT_AND_EXIT: "true"
-    profiles:
-    - demo
     restart: on-failure
 
   apiserver:
