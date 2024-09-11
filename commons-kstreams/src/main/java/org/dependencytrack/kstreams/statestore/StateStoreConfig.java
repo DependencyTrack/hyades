@@ -25,6 +25,7 @@ import org.rocksdb.CompactionStyle;
 import org.rocksdb.CompressionType;
 
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 @ConfigMapping(prefix = "state-store")
 public interface StateStoreConfig {
@@ -35,6 +36,25 @@ public interface StateStoreConfig {
     RocksDbConfig rocksDb();
 
     interface RocksDbConfig {
+
+        /**
+         * The Kafka Streams default is 50MiB <em>per state store</em>.
+         * We use the same cache across all stores, so this should be considered.
+         */
+        @WithDefault(/* 128MiB */ "134217728")
+        long blockCacheSizeBytes();
+
+        /**
+         * Ratio of the block cache size that shall be reserved for high priority blocks,
+         * such as indexes and filters, preventing them from being evicted.
+         */
+        OptionalDouble highPriorityPoolRatio();
+
+        @WithDefault(/* 16MiB */ "16777216")
+        long writeBufferSize();
+
+        @WithDefault(/* 4KiB */ "4096")
+        long blockSizeBytes();
 
         Optional<CompactionStyle> compactionStyle();
 
