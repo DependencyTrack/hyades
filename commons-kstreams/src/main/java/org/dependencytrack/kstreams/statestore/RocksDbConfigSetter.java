@@ -86,6 +86,8 @@ public class RocksDbConfigSetter implements RocksDBConfigSetter {
             tableConfig.setPinTopLevelIndexAndFilter(true);
         }
 
+        options.setTableFormatConfig(tableConfig);
+
         config.compactionStyle().ifPresent(options::setCompactionStyle);
         config.compressionType().ifPresent(options::setCompressionType);
     }
