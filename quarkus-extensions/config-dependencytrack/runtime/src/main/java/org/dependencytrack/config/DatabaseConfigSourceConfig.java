@@ -59,9 +59,16 @@ interface DatabaseConfigSourceConfig {
     /**
      * The timeout for acquiring new database connections.
      */
-    @WithDefault("${quarkus.datasource.jdbc.acquisition-timeout}")
+    @WithDefault("${quarkus.datasource.jdbc.acquisition-timeout:PT5S}")
     @WithConverter(DurationConverter.class)
     Optional<Duration> acquisitionTimeout();
+
+    /**
+     * The interval at which we try to remove idle connections.
+     */
+    @WithDefault("${quarkus.datasource.jdbc.idle-removal-interval:PT5M}")
+    @WithConverter(DurationConverter.class)
+    Optional<Duration> idleRemovalInterval();
 
     /**
      * Connection pooling configuration.

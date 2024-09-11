@@ -22,6 +22,8 @@ services:
         condition: service_healthy
       redpanda:
         condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
       secret-init:
         condition: service_completed_successfully
     environment:
@@ -47,6 +49,8 @@ services:
         condition: service_healthy
       redpanda:
         condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
       secret-init:
         condition: service_completed_successfully
     environment:
@@ -73,6 +77,8 @@ services:
         condition: service_healthy
       redpanda:
         condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_STREAMS_NUM_STREAM_THREADS: "12" # Default number of input partitions is 12
@@ -104,6 +110,10 @@ services:
         condition: service_healthy
       redpanda:
         condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
+      secret-init:
+        condition: service_completed_successfully
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
@@ -121,6 +131,22 @@ services:
       - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
 
+  initializer:
+    image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
+    container_name: dt-initializer
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      EXTRA_JAVA_OPTIONS: "-Xmx256m"
+      ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      ALPINE_DATABASE_USERNAME: "dtrack"
+      ALPINE_DATABASE_PASSWORD: "dtrack"
+      ALPINE_DATABASE_POOL_ENABLED: "false"
+      INIT_TASKS_ENABLED: "true"
+      INIT_AND_EXIT: "true"
+    restart: on-failure
+
   apiserver:
     image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
     container_name: dt-apiserver
@@ -129,6 +155,8 @@ services:
         condition: service_healthy
       redpanda:
         condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
       secret-init:
         condition: service_completed_successfully
     environment:
@@ -144,6 +172,7 @@ services:
       ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       INTEGRITY_CHECK_ENABLED: "true"
+      INIT_TASKS_ENABLED: "false"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
