@@ -78,6 +78,10 @@
             <artifactId>quarkus-container-image-docker</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-cyclonedx</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.github.jeremylong</groupId>
             <artifactId>open-vulnerability-clients</artifactId>
         </dependency>
