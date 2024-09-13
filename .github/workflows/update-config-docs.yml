@@ -74,7 +74,7 @@ jobs:
           ./repository-meta-analyzer/src/main/resources/application.properties
     # TODO: Add script invocations for the other services here!
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@8867c4aba1b742c39f8d0ba35429c2dfa4b6cb20 # tag=v7.0.1
+      uses: peter-evans/create-pull-request@d121e62763d8cc35b5fb1710e887d6e69a52d3a4 # tag=v7.0.2
       with:
         add-paths: "docs/reference/configuration/*.md"
         branch: update-config-docs
