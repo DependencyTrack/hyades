@@ -16,9 +16,17 @@ Refer to the [task scheduling configuration reference] for details. Example of n
 * The `/api/v1/vulnerability/source/{source}/vuln/{vuln}/projects` REST API endpoint now supports pagination
 ([apiserver/#888]). Like all other paginated endpoints, the page size defaults to `100`.
 Clients currently expecting *all* items to be returned at once must be updated to deal with pagination.
+* The `alpine.` prefix was removed from Kafka processor properties of the API server ([apiserver/#904]).
+Refer to the [kafka configuration reference] for details. Example of name change:
+
+    | Before                                                     | After                                               |
+    |:-----------------------------------------------------------|:----------------------------------------------------|
+    | `alpine.kafka.processor.vuln.scan.result.processing.order` | `kafka.processor.vuln.scan.result.processing.order` |
 
 [apiserver/#840]: https://github.com/DependencyTrack/hyades-apiserver/pull/840
 [apiserver/#888]: https://github.com/DependencyTrack/hyades-apiserver/pull/888
+[apiserver/#904]: https://github.com/DependencyTrack/hyades-apiserver/pull/904
 [hyades/#1392]: https://github.com/DependencyTrack/hyades/issues/1392
 
+[kafka configuration reference]: ../reference/configuration/api-server.md#kafka
 [task scheduling configuration reference]: ../reference/configuration/api-server.md#task-scheduling
