@@ -1652,1278 +1652,6 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 ## Kafka
 
-### alpine.kafka.processor.epss.mirror.consumer.auto.offset.reset
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.epss.mirror.consumer.group.id
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.epss.mirror.max.batch.size
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>500</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_MAX_BATCH_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.epss.mirror.max.concurrency
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.epss.mirror.processing.order
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.epss.mirror.retry.initial.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.epss.mirror.retry.max.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.epss.mirror.retry.multiplier
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.epss.mirror.retry.randomization.factor
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.repo.meta.analysis.result.consumer.auto.offset.reset
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.repo.meta.analysis.result.consumer.group.id
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.repo.meta.analysis.result.max.concurrency
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.repo.meta.analysis.result.processing.order
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.repo.meta.analysis.result.retry.initial.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>1000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.repo.meta.analysis.result.retry.max.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.repo.meta.analysis.result.retry.multiplier
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.repo.meta.analysis.result.retry.randomization.factor
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.mirror.consumer.auto.offset.reset
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_MIRROR_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.mirror.consumer.group.id
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_MIRROR_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.mirror.max.concurrency
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_MIRROR_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.mirror.processing.order
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>partition</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_MIRROR_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.mirror.retry.initial.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_MIRROR_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.mirror.retry.max.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_MIRROR_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.mirror.retry.multiplier
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_MIRROR_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.mirror.retry.randomization.factor
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_MIRROR_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.consumer.auto.offset.reset
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.consumer.group.id
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.max.concurrency
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.consumer.auto.offset.reset
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.consumer.fetch.min.bytes
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>524288</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_FETCH_MIN_BYTES</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.consumer.group.id
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.consumer.max.poll.records
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>10000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_MAX_POLL_RECORDS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.max.batch.size
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>1000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_MAX_BATCH_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.max.concurrency
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.processing.order
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>unordered</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.retry.initial.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.retry.max.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.retry.multiplier
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processed.retry.randomization.factor
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.processing.order
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.retry.initial.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>1000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.retry.max.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.retry.multiplier
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.kafka.processor.vuln.scan.result.retry.randomization.factor
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### dt.kafka.topic.prefix
 
 
@@ -3093,6 +1821,1278 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>KAFKA_MTLS_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.consumer.auto.offset.reset
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_CONSUMER_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.consumer.group.id
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_CONSUMER_GROUP_ID</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.max.batch.size
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>500</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.max.concurrency
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>-1</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.processing.order
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>key</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_PROCESSING_ORDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.retry.initial.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>3000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.retry.max.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>180000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.retry.multiplier
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.epss.mirror.retry.randomization.factor
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.3</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.repo.meta.analysis.result.consumer.auto.offset.reset
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_CONSUMER_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.repo.meta.analysis.result.consumer.group.id
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_CONSUMER_GROUP_ID</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.repo.meta.analysis.result.max.concurrency
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>-1</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.repo.meta.analysis.result.processing.order
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>key</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_PROCESSING_ORDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.repo.meta.analysis.result.retry.initial.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.repo.meta.analysis.result.retry.max.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>180000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.repo.meta.analysis.result.retry.multiplier
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.repo.meta.analysis.result.retry.randomization.factor
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.3</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.mirror.consumer.auto.offset.reset
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_CONSUMER_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.mirror.consumer.group.id
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_CONSUMER_GROUP_ID</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.mirror.max.concurrency
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>-1</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.mirror.processing.order
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>partition</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_PROCESSING_ORDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.mirror.retry.initial.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>3000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_RETRY_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.mirror.retry.max.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>180000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_RETRY_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.mirror.retry.multiplier
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_RETRY_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.mirror.retry.randomization.factor
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.3</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_RETRY_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.consumer.auto.offset.reset
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_CONSUMER_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.consumer.group.id
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_CONSUMER_GROUP_ID</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.max.concurrency
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>-1</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.consumer.auto.offset.reset
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>earliest</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_AUTO_OFFSET_RESET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.consumer.fetch.min.bytes
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>524288</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_FETCH_MIN_BYTES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.consumer.group.id
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_GROUP_ID</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.consumer.max.poll.records
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>10000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_MAX_POLL_RECORDS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.max.batch.size
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.max.concurrency
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.processing.order
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>unordered</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_PROCESSING_ORDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.retry.initial.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>3000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.retry.max.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>180000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.retry.multiplier
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processed.retry.randomization.factor
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.3</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.processing.order
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>key</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSING_ORDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.retry.initial.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.retry.max.delay.ms
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>180000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.retry.multiplier
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### kafka.processor.vuln.scan.result.retry.randomization.factor
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.3</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
     </tr>
   </tbody>
 </table>
