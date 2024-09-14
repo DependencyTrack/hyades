@@ -1429,6 +1429,24 @@ Refer to the <a href="../../reference/configuration/api-server/#task-scheduling"
 (<a href="https://github.com/DependencyTrack/hyades-apiserver/pull/888">apiserver/#888</a>). Like all other paginated endpoints, the page size defaults to <code>100</code>.
 Clients currently expecting <em>all</em> items to be returned at once must be updated to deal with pagination.</p>
 </li>
+<li>
+<p>The <code>alpine.</code> prefix was removed from Kafka processor properties of the API server (<a href="https://github.com/DependencyTrack/hyades-apiserver/pull/904">apiserver/#904</a>).
+Refer to the <a href="../../reference/configuration/api-server/#kafka">kafka configuration reference</a> for details. Example of name change:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Before</th>
+<th style="text-align: left;">After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>alpine.kafka.processor.vuln.scan.result.processing.order</code></td>
+<td style="text-align: left;"><code>kafka.processor.vuln.scan.result.processing.order</code></td>
+</tr>
+</tbody>
+</table>
+</li>
 </ul>
 
 
