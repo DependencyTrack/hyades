@@ -43,12 +43,6 @@ public class Component extends PanacheEntityBase {
     @Column(name = "ID")
     private long id;
 
-    @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
-    private String author;
-
-    @Column(name = "PUBLISHER", columnDefinition = "VARCHAR")
-    private String publisher;
-
     @Column(name = "\"GROUP\"", columnDefinition = "VARCHAR")
     private String group;
 
@@ -111,22 +105,6 @@ public class Component extends PanacheEntityBase {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
     }
 
     public String getGroup() {
