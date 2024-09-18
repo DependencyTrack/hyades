@@ -114,7 +114,8 @@ jobs:
         mvn -B --no-transfer-progress clean install -DskipTests
     - name: Build Native Image
       run: |-
-        mvn -B --no-transfer-progress -pl ${{ matrix.module }} package -Dnative -DskipTests
+        mvn -B --no-transfer-progress -pl ${{ matrix.module }} package -Dnative -DskipTests \
+          -Dquarkus.native.native-image-xmx=14G
     - name: Test Native Image
       run: |-
         mvn -B --no-transfer-progress -pl ${{ matrix.module }} \

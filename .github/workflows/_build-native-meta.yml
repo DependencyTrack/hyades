@@ -84,6 +84,7 @@ jobs:
         mvn -B --no-transfer-progress -pl ${{ inputs.module }} package -Dnative -DskipTests \
           -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 \
           -Dquarkus.native.container-build=true \
+          -Dquarkus.native.native-image-xmx=14G \
           -Dquarkus.native.container-runtime-options='--platform=linux/${{ matrix.arch.name }}' \
           -Dquarkus.native.resources.includes="$RESOURCES_INCLUDES" \
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
