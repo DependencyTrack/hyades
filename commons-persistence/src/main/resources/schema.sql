@@ -925,7 +925,7 @@ CREATE TABLE public."COMPONENT" (
     "COPYRIGHT" character varying(1024),
     "CPE" character varying(255),
     "DESCRIPTION" character varying(1024),
-    "DIRECT_DEPENDENCIES" text,
+    "DIRECT_DEPENDENCIES" jsonb,
     "EXTENSION" character varying(255),
     "EXTERNAL_REFERENCES" bytea,
     "FILENAME" character varying(255),
@@ -1530,7 +1530,7 @@ CREATE TABLE public."PROJECT" (
     "CLASSIFIER" character varying(255),
     "CPE" character varying(255),
     "DESCRIPTION" character varying(255),
-    "DIRECT_DEPENDENCIES" text,
+    "DIRECT_DEPENDENCIES" jsonb,
     "EXTERNAL_REFERENCES" bytea,
     "GROUP" character varying(255),
     "LAST_BOM_IMPORTED" timestamp with time zone,
@@ -2377,7 +2377,7 @@ CREATE INDEX "COMPONENT_CLASSIFIER_IDX" ON public."COMPONENT" USING btree ("CLAS
 
 CREATE INDEX "COMPONENT_CPE_IDX" ON public."COMPONENT" USING btree ("CPE");
 
-CREATE INDEX "COMPONENT_DIRECT_DEPENDENCIES_GIN_IDX" ON public."COMPONENT" USING gin ("DIRECT_DEPENDENCIES" public.gin_trgm_ops);
+CREATE INDEX "COMPONENT_DIRECT_DEPENDENCIES_JSONB_IDX" ON public."COMPONENT" USING gin ("DIRECT_DEPENDENCIES" jsonb_path_ops);
 
 CREATE INDEX "COMPONENT_GROUP_IDX" ON public."COMPONENT" USING btree ("GROUP");
 

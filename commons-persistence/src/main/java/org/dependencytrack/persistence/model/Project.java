@@ -91,9 +91,6 @@ public class Project implements Serializable {
     @OrderBy("name ASC")
     private List<Tag> tags;
 
-    @Column(name = "DIRECT_DEPENDENCIES", columnDefinition = "varchar")
-    private String directDependencies;
-
     @Column(name = "UUID")
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
@@ -201,14 +198,6 @@ public class Project implements Serializable {
 
     public void setSwidTagId(String swidTagId) {
         this.swidTagId = swidTagId;
-    }
-
-    public String getDirectDependencies() {
-        return directDependencies;
-    }
-
-    public void setDirectDependencies(String directDependencies) {
-        this.directDependencies = directDependencies;
     }
 
     public UUID getUuid() {
