@@ -91,12 +91,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # tag=v4.1.7
-    - name: Set up JDK
-      uses: actions/setup-java@2dfa2011c5b2a0f1489bf9e433881c92c1631f88 # tag=v4.3.0
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
     - name: Set up GraalVM
       uses: graalvm/setup-graalvm@22cc13fe88ef133134b3798e128fb208df55e1f5 # tag=v1
       with:
@@ -107,6 +101,7 @@ jobs:
         distribution: 'mandrel'
         version: 'mandrel-23.1.4.0-Final'
         java-version: '21'
+        cache: 'maven'
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build Modules
       run: |-
