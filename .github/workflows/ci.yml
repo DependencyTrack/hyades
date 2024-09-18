@@ -105,9 +105,8 @@ jobs:
         #   https://github.com/DependencyTrack/hyades/issues/641
         #   https://github.com/quarkusio/quarkus/issues/35125
         distribution: 'mandrel'
-        version: 'mandrel-23.1.2.0-Final'
+        version: 'mandrel-23.1.4.0-Final'
         java-version: '21'
-        components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build Modules
       run: |-
