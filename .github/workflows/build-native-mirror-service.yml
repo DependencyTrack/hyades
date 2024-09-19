@@ -26,6 +26,7 @@ on:
     - ".github/workflows/build-native-mirror-service.yml"
     - "commons/**"
     - "commons-kstreams/**"
+    - "commons-persistence/**"
     - "mirror-service/**"
     - "pom.xml"
     - "proto/**"
