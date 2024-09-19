@@ -165,7 +165,7 @@ services:
       # which can cause problems on some workstations.
       # For production deployments, the default should be used.
       EXTRA_JAVA_OPTIONS: "-Xmx2g"
-      ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack?reWriteBatchedInserts=true"
       ALPINE_DATABASE_USERNAME: "dtrack"
       ALPINE_DATABASE_PASSWORD: "dtrack"
       ALPINE_METRICS_ENABLED: "true"
