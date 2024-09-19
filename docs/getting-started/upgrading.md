@@ -23,15 +23,19 @@ Refer to the [kafka configuration reference] for details. Example of name change
     |:-----------------------------------------------------------|:----------------------------------------------------|
     | `alpine.kafka.processor.vuln.scan.result.processing.order` | `kafka.processor.vuln.scan.result.processing.order` |
 
-* All deprecated endpoints mentioned below were removed:
-    * POST `/api/v1/policy/{policyUuid}/tag/{tagName}`
-    * DELETE `/api/v1/policy/{policyUuid}/tag/{tagName}`
-    * GET `/api/v1/tag/{policyUuid}`
-    * GET `/api/v1/bom/token/{uuid}`
+* The endpoints deprecated in v4.x mentioned below were removed ([apiserver/#910]):
+
+    | Removed endpoint                                   | Replacement                        |
+    |:---------------------------------------------------|:-----------------------------------|
+    | `POST /api/v1/policy/{policyUuid}/tag/{tagName}`   | `POST /api/v1/tag/{name}/policy`   |
+    | `DELETE /api/v1/policy/{policyUuid}/tag/{tagName}` | `DELETE /api/v1/tag/{name}/policy` |
+    | `GET /api/v1/tag/{policyUuid}`                     | `GET /api/v1/tag/policy/{uuid}`    |
+    | `GET /api/v1/bom/token/{uuid}`                     | `GET /api/v1/event/token/{uuid}`   |
 
 [apiserver/#840]: https://github.com/DependencyTrack/hyades-apiserver/pull/840
 [apiserver/#888]: https://github.com/DependencyTrack/hyades-apiserver/pull/888
 [apiserver/#904]: https://github.com/DependencyTrack/hyades-apiserver/pull/904
+[apiserver/#910]: https://github.com/DependencyTrack/hyades-apiserver/pull/910
 [hyades/#1392]: https://github.com/DependencyTrack/hyades/issues/1392
 
 [kafka configuration reference]: ../reference/configuration/api-server.md#kafka

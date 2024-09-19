@@ -21,7 +21,7 @@ package org.dependencytrack.e2e;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetup;
-import org.dependencytrack.apiserver.model.BomProcessingResponse;
+import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
 import org.dependencytrack.apiserver.model.ConfigProperty;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest;
@@ -166,7 +166,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .atMost(Duration.ofSeconds(15))
                 .pollDelay(Duration.ofMillis(250))
                 .untilAsserted(() -> {
-                    final BomProcessingResponse processingResponse = apiServerClient.isBomBeingProcessed(response.token());
+                    final EventProcessingResponse processingResponse = apiServerClient.isEventBeingProcessed(response.token());
                     assertThat(processingResponse.processing()).isFalse();
                 });
 

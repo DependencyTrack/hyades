@@ -30,7 +30,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import org.dependencytrack.apiserver.model.Analysis;
 import org.dependencytrack.apiserver.model.ApiKey;
-import org.dependencytrack.apiserver.model.BomProcessingResponse;
+import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
 import org.dependencytrack.apiserver.model.ConfigProperty;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest;
@@ -95,10 +95,10 @@ public interface ApiServerClient {
     WorkflowTokenResponse uploadBom(final BomUploadRequest request);
 
     @GET
-    @Path("/bom/token/{token}")
+    @Path("/event/token/{token}")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.WILDCARD)
-    BomProcessingResponse isBomBeingProcessed(@PathParam("token") final String token);
+    EventProcessingResponse isEventBeingProcessed(@PathParam("token") final String token);
 
     @PUT
     @Path("/vulnerability")
