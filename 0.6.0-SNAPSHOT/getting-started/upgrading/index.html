@@ -1448,13 +1448,33 @@ Refer to the <a href="../../reference/configuration/api-server/#kafka">kafka con
 </table>
 </li>
 <li>
-<p>All deprecated endpoints mentioned below were removed:</p>
-<ul>
-<li>POST <code>/api/v1/policy/{policyUuid}/tag/{tagName}</code></li>
-<li>DELETE <code>/api/v1/policy/{policyUuid}/tag/{tagName}</code></li>
-<li>GET <code>/api/v1/tag/{policyUuid}</code></li>
-<li>GET <code>/api/v1/bom/token/{uuid}</code></li>
-</ul>
+<p>The endpoints deprecated in v4.x mentioned below were removed (<a href="https://github.com/DependencyTrack/hyades-apiserver/pull/910">apiserver/#910</a>):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Removed endpoint</th>
+<th style="text-align: left;">Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>POST /api/v1/policy/{policyUuid}/tag/{tagName}</code></td>
+<td style="text-align: left;"><code>POST /api/v1/tag/{name}/policy</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>DELETE /api/v1/policy/{policyUuid}/tag/{tagName}</code></td>
+<td style="text-align: left;"><code>DELETE /api/v1/tag/{name}/policy</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>GET /api/v1/tag/{policyUuid}</code></td>
+<td style="text-align: left;"><code>GET /api/v1/tag/policy/{uuid}</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>GET /api/v1/bom/token/{uuid}</code></td>
+<td style="text-align: left;"><code>GET /api/v1/event/token/{uuid}</code></td>
+</tr>
+</tbody>
+</table>
 </li>
 </ul>
 
