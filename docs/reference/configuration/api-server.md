@@ -406,7 +406,7 @@ This property controls the minimum number of idle connections in the pool.  This
 
 ### alpine.database.url
 
-Specifies the JDBC URL to use when connecting to the database.  
+Specifies the JDBC URL to use when connecting to the database.  For best performance, set the `reWriteBatchedInserts` query parameter to `true`.  
 
 <table>
   <tbody style="border: 0">
@@ -424,7 +424,7 @@ Specifies the JDBC URL to use when connecting to the database.
     </tr>
     <tr>
       <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>jdbc:postgresql://localhost:5432/dtrack</code></td>
+      <td style="border-width: 0"><code>jdbc:postgresql://localhost:5432/dtrack?reWriteBatchedInserts=true</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
