@@ -3601,7 +3601,7 @@
 
 <hr />
 <h3 id="alpinedatabaseurl">alpine.database.url</h3>
-<p>Specifies the JDBC URL to use when connecting to the database.  </p>
+<p>Specifies the JDBC URL to use when connecting to the database.  For best performance, set the <code>reWriteBatchedInserts</code> query parameter to <code>true</code>.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3618,7 +3618,7 @@
     </tr>
     <tr>
       <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>jdbc:postgresql://localhost:5432/dtrack</code></td>
+      <td style="border-width: 0"><code>jdbc:postgresql://localhost:5432/dtrack?reWriteBatchedInserts=true</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
