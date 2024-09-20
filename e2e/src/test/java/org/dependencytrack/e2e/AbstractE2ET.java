@@ -111,6 +111,7 @@ public class AbstractE2ET {
                 .withDatabaseName("dtrack")
                 .withUsername("dtrack")
                 .withPassword("dtrack")
+                .withUrlParam("reWriteBatchedInserts", "true")
                 .withNetworkAliases("postgres")
                 .withNetwork(internalNetwork);
     }
