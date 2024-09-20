@@ -45,8 +45,8 @@ jobs:
         cache: maven
     - name: Test
       env:
-        APISERVER_VERSION: ${{ inputs.apiserver-version }}
-        HYADES_VERSION: ${{ inputs.hyades-version }}
+        APISERVER_VERSION: ${{ inputs.apiserver-version || 'snapshot' }}
+        HYADES_VERSION: ${{ inputs.hyades-version || 'snapshot' }}
         OSSINDEX_USERNAME: ${{ secrets.OSSINDEX_USERNAME }}
         OSSINDEX_TOKEN: ${{ secrets.OSSINDEX_TOKEN }}
       run: mvn -B --no-transfer-progress -pl e2e clean verify -Pe2e-all
