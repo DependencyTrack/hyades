@@ -76,6 +76,17 @@ public class NotificationRuleTest {
     }
 
     @Test
+    public void testTags() {
+        List<Tag> tags = new ArrayList<>();
+        Tag tag = new Tag();
+        tags.add(tag);
+        NotificationRule rule = new NotificationRule();
+        rule.setTags(tags);
+        Assertions.assertEquals(1, rule.getTags().size());
+        Assertions.assertEquals(tag, rule.getTags().get(0));
+    }
+
+    @Test
     public void testMessage() {
         NotificationRule rule = new NotificationRule();
         rule.setMessage("Test Message");

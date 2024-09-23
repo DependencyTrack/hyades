@@ -73,6 +73,15 @@ public class NotificationRule extends PanacheEntityBase {
     @OrderBy("name ASC, version ASC")
     private List<Project> projects;
 
+    @OneToMany
+    @JoinTable(
+            name = "NOTIFICATIONRULE_TAGS",
+            joinColumns = @JoinColumn(name = "NOTIFICATIONRULE_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "TAG_ID", referencedColumnName = "ID")
+    )
+    @OrderBy("name ASC")
+    private List<Tag> tags;
+
 //    @Join(column = "NOTIFICATIONRULE_ID")
 //    @Element(column = "TEAM_ID")
 //    @Order(extensions = @Extension(vendorName = "datanucleus", key = "list-ordering", value = "name ASC"))
@@ -178,6 +187,14 @@ public class NotificationRule extends PanacheEntityBase {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
 //    public List<Team> getTeams() {
