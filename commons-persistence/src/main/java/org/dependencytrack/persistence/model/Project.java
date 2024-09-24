@@ -50,12 +50,6 @@ public class Project implements Serializable {
     @Column(name = "ID")
     private long id;
 
-    @Column(name = "AUTHOR", columnDefinition = "VARCHAR")
-    private String author;
-
-    @Column(name = "PUBLISHER", columnDefinition = "VARCHAR")
-    private String publisher;
-
     @Column(name = "\"GROUP\"", columnDefinition = "VARCHAR")
     private String group;
 
@@ -97,9 +91,6 @@ public class Project implements Serializable {
     @OrderBy("name ASC")
     private List<Tag> tags;
 
-    @Column(name = "DIRECT_DEPENDENCIES", columnDefinition = "varchar")
-    private String directDependencies;
-
     @Column(name = "UUID")
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
@@ -131,22 +122,6 @@ public class Project implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
     }
 
     public String getGroup() {
@@ -223,14 +198,6 @@ public class Project implements Serializable {
 
     public void setSwidTagId(String swidTagId) {
         this.swidTagId = swidTagId;
-    }
-
-    public String getDirectDependencies() {
-        return directDependencies;
-    }
-
-    public void setDirectDependencies(String directDependencies) {
-        this.directDependencies = directDependencies;
     }
 
     public UUID getUuid() {

@@ -31,6 +31,12 @@ and vulnerability analysis is performed by services separately from the API serv
 
 ## Breaking Changes
 
+* All deprecated endpoints mentioned below were removed:
+    * POST `/api/v1/policy/{policyUuid}/tag/{tagName}`
+    * DELETE `/api/v1/policy/{policyUuid}/tag/{tagName}`
+    * GET `/api/v1/tag/{policyUuid}`
+    * GET `/api/v1/bom/token/{uuid}`
+
 ### Notifications
 
 * `subject` objects passed to notification templates are now objects generated from [Protobuf] definitions.

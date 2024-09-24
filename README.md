@@ -1,6 +1,7 @@
 # Hyades
 
 [![Build Status](https://github.com/DependencyTrack/hyades/actions/workflows/ci.yml/badge.svg)](https://github.com/DependencyTrack/hyades/actions/workflows/ci.yml)
+[![End-to-End Test](https://github.com/DependencyTrack/hyades/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/DependencyTrack/hyades/actions/workflows/e2e-test.yml)
 [![Codacy Code Quality Badge](https://app.codacy.com/project/badge/Grade/64c349c2b92340ffb83f7dba1d6b03e5)](https://app.codacy.com/gh/DependencyTrack/hyades/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Codacy Coverage Badge](https://app.codacy.com/project/badge/Coverage/64c349c2b92340ffb83f7dba1d6b03e5)](https://app.codacy.com/gh/DependencyTrack/hyades/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 

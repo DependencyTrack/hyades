@@ -46,7 +46,7 @@ jobs:
         repository: DependencyTrack/hyades-apiserver
         path: hyades-apiserver
     - name: Generate API Server Documentation
-      uses: jbangdev/jbang-action@9f8c55e0a2b6b297711162b20c209c5e07076e59 # tag=v0.117.1
+      uses: jbangdev/jbang-action@4d418212d8b3a80dddd94e8ba1b68e6ef3f7afd2 # tag=v0.118.0
       with:
         trust: https://github.com/DependencyTrack/jbang-catalog
         script: gen-config-docs@DependencyTrack
@@ -55,7 +55,7 @@ jobs:
           --output ./docs/reference/configuration/api-server.md
           ./hyades-apiserver/src/main/resources/application.properties
     - name: Generate Mirror Service Documentation
-      uses: jbangdev/jbang-action@9f8c55e0a2b6b297711162b20c209c5e07076e59 # tag=v0.117.1
+      uses: jbangdev/jbang-action@4d418212d8b3a80dddd94e8ba1b68e6ef3f7afd2 # tag=v0.118.0
       with:
         trust: https://github.com/DependencyTrack/jbang-catalog
         script: gen-config-docs@DependencyTrack
@@ -64,7 +64,7 @@ jobs:
           --output ./docs/reference/configuration/mirror-service.md
           ./mirror-service/src/main/resources/application.properties
     - name: Generate Repository Metadata Analyzer Documentation
-      uses: jbangdev/jbang-action@9f8c55e0a2b6b297711162b20c209c5e07076e59 # tag=v0.117.1
+      uses: jbangdev/jbang-action@4d418212d8b3a80dddd94e8ba1b68e6ef3f7afd2 # tag=v0.118.0
       with:
         trust: https://github.com/DependencyTrack/jbang-catalog
         script: gen-config-docs@DependencyTrack
@@ -74,7 +74,7 @@ jobs:
           ./repository-meta-analyzer/src/main/resources/application.properties
     # TODO: Add script invocations for the other services here!
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@8867c4aba1b742c39f8d0ba35429c2dfa4b6cb20 # tag=v7.0.1
+      uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # tag=v7.0.5
       with:
         add-paths: "docs/reference/configuration/*.md"
         branch: update-config-docs
