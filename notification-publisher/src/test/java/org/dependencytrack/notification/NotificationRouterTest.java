@@ -856,6 +856,72 @@ class NotificationRouterTest {
         );
     }
 
+    @Test
+    @TestTransaction
+    void testResolveRulesLimitedToProjectTag() throws Exception {
+        final UUID projectUuidA = UUID.randomUUID();
+        createProject("Project A", "1.0", true, projectUuidA);
+
+        final Long tagId = createTag("test-tag");
+
+        final Long publisherId = createConsolePublisher();
+        final Long ruleId = createRule("Limit To Test Rule",
+                NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL,
+                NotificationGroup.NEW_VULNERABILITY, publisherId);
+        addTagToRule(tagId, ruleId);
+
+        final var notificationProjectA = Notification.newBuilder()
+                .setScope(SCOPE_PORTFOLIO)
+                .setGroup(GROUP_NEW_VULNERABILITY)
+                .setLevel(LEVEL_INFORMATIONAL)
+                .setSubject(Any.pack(NewVulnerabilitySubject.newBuilder()
+                        .setComponent(Component.newBuilder()
+                                .setUuid(UUID.randomUUID().toString()))
+                        .setProject(Project.newBuilder()
+                                .setUuid(projectUuidA.toString())
+                                .addTags("test-tag"))
+                        .setVulnerability(Vulnerability.newBuilder()
+                                .setUuid(UUID.randomUUID().toString()))
+                        .build()))
+                .build();
+
+        Assertions.assertThat(notificationRouter.resolveRules(PublisherTestUtil.createPublisherContext(notificationProjectA), notificationProjectA)).satisfiesExactly(
+                rule -> Assertions.assertThat(rule.getName()).isEqualTo("Limit To Test Rule")
+        );
+    }
+
+    @Test
+    @TestTransaction
+    void testResolveRulesWithValidNonMatchingTagLimitRule() throws Exception {
+        final Long publisherId = createConsolePublisher();
+        final Long ruleId = createRule("Test Rule",
+                NotificationScope.PORTFOLIO, NotificationLevel.INFORMATIONAL,
+                NotificationGroup.NEW_VULNERABILITY, publisherId);
+
+        final UUID projectUuid = UUID.randomUUID();
+        createProject("Test Project", "1.0", true, projectUuid);
+
+        final Long tagId = createTag("test-tag");
+        addTagToRule(tagId, ruleId);
+
+        final var notification = Notification.newBuilder()
+                .setScope(SCOPE_PORTFOLIO)
+                .setGroup(GROUP_NEW_VULNERABILITY)
+                .setLevel(LEVEL_INFORMATIONAL)
+                .setSubject(Any.pack(NewVulnerabilitySubject.newBuilder()
+                        .setComponent(Component.newBuilder()
+                                .setUuid(UUID.randomUUID().toString()))
+                        // project is not tagged
+                        .setProject(Project.newBuilder()
+                                .setUuid(UUID.randomUUID().toString()))
+                        .setVulnerability(Vulnerability.newBuilder()
+                                .setUuid(UUID.randomUUID().toString()))
+                        .build()))
+                .build();
+        final List<NotificationRule> rules = notificationRouter.resolveRules(PublisherTestUtil.createPublisherContext(notification), notification);
+        assertThat(rules).isEmpty();
+    }
+
     private Long createConsolePublisher() {
         return (Long) entityManager.createNativeQuery("""
                 INSERT INTO "NOTIFICATIONPUBLISHER" ("DEFAULT_PUBLISHER", "NAME", "PUBLISHER_CLASS", "TEMPLATE", "TEMPLATE_MIME_TYPE", "UUID") VALUES
@@ -930,4 +996,22 @@ class NotificationRouterTest {
                 .executeUpdate();
     }
 
+    private Long createTag(final String name) {
+        return (Long) entityManager.createNativeQuery("""
+                        INSERT INTO "TAG" ("NAME") VALUES (:name)
+                        RETURNING "ID";
+                        """)
+                .setParameter("name", name)
+                .getSingleResult();
+    }
+
+    private void addTagToRule(final Long tagId, final Long ruleId) {
+        entityManager.createNativeQuery("""
+                        INSERT INTO "NOTIFICATIONRULE_TAGS" ("TAG_ID", "NOTIFICATIONRULE_ID") VALUES
+                            (:tagId, :ruleId);
+                        """)
+                .setParameter("tagId", tagId)
+                .setParameter("ruleId", ruleId)
+                .executeUpdate();
+    }
 }
