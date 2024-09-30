@@ -36,6 +36,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.PullPolicy;
 import org.testcontainers.utility.DockerImageName;
@@ -85,17 +86,16 @@ public class AbstractE2ET {
         deepStart(postgresContainer, redpandaContainer).join();
 
         initializeRedpanda();
-
         generateSecretKey();
+        runInitializer();
 
         apiServerContainer = createApiServerContainer();
-        apiServerContainer.start();
-
         mirrorServiceContainer = createMirrorServiceContainer();
         notificationPublisherContainer = createNotificationPublisherContainer();
         repoMetaAnalyzerContainer = createRepoMetaAnalyzerContainer();
         vulnAnalyzerContainer = createVulnAnalyzerContainer();
         deepStart(
+                apiServerContainer,
                 mirrorServiceContainer,
                 notificationPublisherContainer,
                 repoMetaAnalyzerContainer,
@@ -111,7 +111,6 @@ public class AbstractE2ET {
                 .withDatabaseName("dtrack")
                 .withUsername("dtrack")
                 .withPassword("dtrack")
-                .withUrlParam("reWriteBatchedInserts", "true")
                 .withNetworkAliases("postgres")
                 .withNetwork(internalNetwork);
     }
@@ -155,14 +154,31 @@ public class AbstractE2ET {
     }
 
     @SuppressWarnings("resource")
+    private void runInitializer() {
+        new GenericContainer<>(API_SERVER_IMAGE)
+                .withImagePullPolicy("local".equals(API_SERVER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
+                .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx256m")
+                .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
+                .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
+                .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
+                .withEnv("INIT_TASKS_ENABLED", "true")
+                .withEnv("INIT_AND_EXIT", "true")
+                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("initializer")))
+                .withStartupCheckStrategy(new OneShotStartupCheckStrategy())
+                .withNetwork(internalNetwork)
+                .start();
+    }
+
+    @SuppressWarnings("resource")
     private GenericContainer<?> createApiServerContainer() {
         final var container = new GenericContainer<>(API_SERVER_IMAGE)
                 .withImagePullPolicy("local".equals(API_SERVER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx512m")
-                .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
+                .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack?reWriteBatchedInserts=true")
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
                 .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("INIT_TASKS_ENABLED", "false")
                 .withEnv("ALPINE_SECRET_KEY_PATH", "/var/run/secrets/secret.key")
                 .withCopyFileToContainer(
                         MountableFile.forHostPath(secretKeyPath, 444),
