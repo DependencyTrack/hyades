@@ -1,0 +1,191 @@
+# This file is part of Dependency-Track.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) OWASP Foundation. All Rights Reserved.
+---
+x-db-connection-config: &dbConnectionCfg
+  # For API server and initializer.
+  ALPINE_DATABASE_URL: "jdbc:postgresql://postgres:5432/${DB_NAME}?reWriteBatchedInserts=true"
+  ALPINE_DATABASE_USERNAME: "${DB_USERNAME}"
+  ALPINE_DATABASE_PASSWORD: "${DB_PASSWORD}"
+  # For Quarkus-based services.
+  QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/${DB_NAME}"
+  QUARKUS_DATASOURCE_USERNAME: "${DB_USERNAME}"
+  QUARKUS_DATASOURCE_PASSWORD: "${DB_PASSWORD}"
+  # For PostgreSQL itself.
+  POSTGRES_DB: "${DB_NAME}"
+  POSTGRES_USER: "${DB_USERNAME}"
+  POSTGRES_PASSWORD: "${DB_PASSWORD}"
+x-kafka-connection-config: &kafkaConnectionCfg
+  KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+x-secret-key-config: &secretKeyCfg
+  # For API server.
+  ALPINE_SECRET_KEY_PATH: "/var/run/secrets/.dependency-track/keys/secret.key"
+  # For Quarkus-based services.
+  SECRET_KEY_PATH: "/var/run/secrets/.dependency-track/keys/secret.key"
+
+services:
+  initializer:
+    image: "ghcr.io/dependencytrack/hyades-apiserver:${HYADES_APISERVER_TAG}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      <<: [ *dbConnectionCfg, *kafkaConnectionCfg ]
+      JAVA_OPTIONS: "-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
+      ALPINE_DATABASE_POOL_ENABLED: "false"
+      INIT_TASKS_ENABLED: "true"
+      INIT_TASKS_KAFKA_TOPICS_ENABLED: "true"
+      INIT_AND_EXIT: "true"
+    volumes:
+    - "secret-data:/data"
+    restart: on-failure
+
+  apiserver:
+    image: "ghcr.io/dependencytrack/hyades-apiserver:${HYADES_APISERVER_TAG}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
+    environment:
+      <<: [ *dbConnectionCfg, *kafkaConnectionCfg, *secretKeyCfg ]
+      # Limit maximum heap size to 1GB.
+      # Default would be 80% of available memory,
+      # which can cause problems on some workstations.
+      # For production deployments, the default should be used.
+      EXTRA_JAVA_OPTIONS: "-Xmx1g"
+      ALPINE_METRICS_ENABLED: "true"
+      INTEGRITY_CHECK_ENABLED: "true"
+      INIT_TASKS_ENABLED: "false"
+    ports:
+    - "127.0.0.1:8080:8080"
+    volumes:
+    - "apiserver-data:/data"
+    - "secret-data:/var/run/secrets:ro"
+    profiles:
+    - demo
+    restart: unless-stopped
+
+  frontend:
+    image: "ghcr.io/dependencytrack/hyades-frontend:${HYADES_FRONTEND_TAG}"
+    environment:
+      API_BASE_URL: "http://localhost:8080"
+    ports:
+    - "127.0.0.1:8081:8080"
+    profiles:
+    - demo
+    restart: unless-stopped
+
+  notification-publisher:
+    image: "ghcr.io/dependencytrack/hyades-notification-publisher:${HYADES_TAG}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
+    environment:
+      << : [ *dbConnectionCfg, *kafkaConnectionCfg, *secretKeyCfg ]
+    profiles:
+    - demo
+    volumes:
+    - "secret-data:/var/run/secrets:ro"
+    restart: unless-stopped
+
+  repo-meta-analyzer:
+    image: "ghcr.io/dependencytrack/hyades-repository-meta-analyzer:${HYADES_TAG}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
+    environment:
+      << : [ *dbConnectionCfg, *kafkaConnectionCfg, *secretKeyCfg ]
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "6" # Default number of input partitions is 6
+    profiles:
+    - demo
+    volumes:
+    - "secret-data:/var/run/secrets:ro"
+    restart: unless-stopped
+
+  vuln-analyzer:
+    image: "ghcr.io/dependencytrack/hyades-vulnerability-analyzer:${HYADES_TAG}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
+    environment:
+      << : [ *dbConnectionCfg, *kafkaConnectionCfg ]
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "12" # Default number of input partitions is 12
+      SCANNER_INTERNAL_ENABLED: "true"
+      # SCANNER_INTERNAL_TOPIC_PARTITIONS: "3"
+      SCANNER_OSSINDEX_ENABLED: "true"
+      # SCANNER_OSSINDEX_TOPIC_PARTITIONS: "3"
+      # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
+      # SCANNER_OSSINDEX_API_TOKEN: "your-token"
+      # SCANNER_SNYK_ENABLED: "true"
+      # SCANNER_SNYK_TOPIC_PARTITIONS: "3"
+      # SCANNER_SNYK_API_ORG_ID: "your-org-id"
+      # SCANNER_SNYK_API_TOKENS: "your-token-1,your-token-2"
+    profiles:
+    - demo
+    restart: unless-stopped
+
+  mirror-service:
+    image: "ghcr.io/dependencytrack/hyades-mirror-service:${HYADES_TAG}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
+    environment:
+      << : [ *dbConnectionCfg, *kafkaConnectionCfg, *secretKeyCfg ]
+      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
+    profiles:
+    - demo
+    volumes:
+    - "secret-data:/var/run/secrets:ro"
+    restart: unless-stopped
+
+  postgres:
+    image: "postgres:${POSTGRES_TAG}"
+    environment:
+      << : *dbConnectionCfg
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    ports:
+    - "5432:5432"
+    volumes:
+    - "postgres-data:/var/lib/postgresql/data"
+    restart: unless-stopped
+
+volumes:
+  apiserver-data: { }
+  secret-data: { }
+  postgres-data: { }

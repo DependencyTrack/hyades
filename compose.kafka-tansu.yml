@@ -1,0 +1,61 @@
+# This file is part of Dependency-Track.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) OWASP Foundation. All Rights Reserved.
+---
+services:
+  tansu-init:
+    image: "postgres:${POSTGRES_TAG}"
+    entrypoint: /bin/bash
+    command: >-
+      -c '((psql -d ${KAFKA_TANSU_DB_NAME} -q -c "select 1 from cluster limit 1" >/dev/null 2>/dev/null) && echo "Already initialized")
+      || ((psql -c "CREATE DATABASE ${KAFKA_TANSU_DB_NAME}") && (wget -q -O- https://raw.githubusercontent.com/tansu-io/tansu/refs/heads/main/work-dir/initdb.d/010-schema.sql | psql -d tansu))'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: "postgres"
+      PGUSER: "${DB_USERNAME}"
+      PGPASSWORD: "${DB_PASSWORD}"
+    restart: on-failure
+
+  kafka:
+    image: "ghcr.io/tansu-io/tansu:${KAFKA_TANSU_TAG}"
+    command: >-
+      --kafka-cluster-id RvQwrYegSUCkIPkaiAZQlQ
+      --kafka-node-id 1
+      --kafka-listener-url tcp://0.0.0.0:29092
+      --kafka-advertised-listener-url tcp://kafka:29092
+      --storage-engine pg=postgres://${DB_USERNAME}:${DB_PASSWORD}@postgres/${KAFKA_TANSU_DB_NAME}
+      --work-dir /data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      tansu-init:
+        condition: service_completed_successfully
+    environment:
+      RUST_BACKTRACE: "1"
+      RUST_LOG: "info"
+    healthcheck:
+      test: [ "CMD", "/tansu-server", "-h" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    volumes:
+    - "tansu-data:/data"
+    restart: unless-stopped
+
+volumes:
+  tansu-data: { }

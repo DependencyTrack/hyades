@@ -1,0 +1,59 @@
+---
+kafka:
+  brokers: ["kafka:9092"]
+  protobuf:
+    enabled: true
+    mappings:
+    - topicName: dtrack.notification.analyzer
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.bom
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.configuration
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.datasource-mirroring
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.file-system
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.integration
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.new-vulnerability
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.new-vulnerable-dependency
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.policy-violation
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.project-audit-change
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.project-created
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.project-vuln-analysis-complete
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.repository
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.notification.vex
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    - topicName: dtrack.repo-meta-analysis.component
+      valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisCommand
+    - topicName: dtrack.repo-meta-analysis.result
+      valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisResult
+    - topicName: dtrack.vuln-analysis.component
+      keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
+      valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanCommand
+    - topicName: dtrack.vuln-analysis.scanner.result
+      keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
+      valueProtoType: org.dependencytrack.vulnanalysis.v1.ScannerResult
+    - topicName: dtrack.vuln-analysis.result
+      keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
+      valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
+    - topicName: dtrack.vuln-analysis.result.processed
+      valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
+    - topicName: dtrack.vulnerability
+      valueProtoType: org.cyclonedx.v1_6.Bom
+    - topicName: dtrack.epss
+      valueProtoType: org.dependencytrack.mirror.v1.EpssItem
+    - topicName: dtrack.notification.user
+      valueProtoType: org.dependencytrack.notification.v1.Notification
+    fileSystem:
+      enabled: true
+      paths: ["/etc/protos"]
+      refreshInterval: 5m

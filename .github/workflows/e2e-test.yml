@@ -27,6 +27,14 @@ on:
       hyades-version:
         description: Version of Hyades services to test against
         default: snapshot
+      kafka-provider:
+        description: The Kafka provider to test against
+        type: choice
+        options:
+        - APACHE
+        - APACHE_NATIVE
+        - REDPANDA
+        - TANSU
 
 permissions: { }
 
@@ -45,8 +53,9 @@ jobs:
         cache: maven
     - name: Test
       env:
-        APISERVER_VERSION: ${{ inputs.apiserver-version || 'snapshot' }}
+        HYADES_APISERVER_VERSION: ${{ inputs.apiserver-version || 'snapshot' }}
         HYADES_VERSION: ${{ inputs.hyades-version || 'snapshot' }}
+        KAFKA_PROVIDER: ${{ inputs.kafka-provider || 'APACHE_NATIVE' }}
         OSSINDEX_USERNAME: ${{ secrets.OSSINDEX_USERNAME }}
         OSSINDEX_TOKEN: ${{ secrets.OSSINDEX_TOKEN }}
       run: mvn -B --no-transfer-progress -pl e2e clean verify -Pe2e-all
