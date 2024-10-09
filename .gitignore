@@ -39,7 +39,7 @@ nb-configuration.xml
 *.rej
 
 # Local environment
-.env
+!.env
 
 # Secret key
 secret.key
