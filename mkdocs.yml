@@ -85,6 +85,7 @@ nav:
 - Architecture:
   - Overview: architecture/index.md
   - Design:
+    - Vulnerability Database V2: architecture/design/vulnerability-db-v2.md
     - Workflow State Tracking: architecture/design/workflow-state-tracking.md
 - Operations:
   - Database: operations/database.md

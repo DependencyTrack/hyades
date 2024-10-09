@@ -104,14 +104,12 @@ services:
     restart: unless-stopped
 
   mirror-service:
-    image: ghcr.io/dependencytrack/hyades-mirror-service:snapshot-native
+    image: ghcr.io/dependencytrack/hyades-mirror-service:snapshot
     depends_on:
       postgres:
         condition: service_healthy
       redpanda:
         condition: service_healthy
-      initializer:
-        condition: service_completed_successfully
       secret-init:
         condition: service_completed_successfully
     environment:
