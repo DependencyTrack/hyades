@@ -1424,7 +1424,7 @@ CREATE TABLE public."POLICY" (
     "OPERATOR" character varying(255) NOT NULL,
     "UUID" uuid NOT NULL,
     "VIOLATIONSTATE" character varying(255) NOT NULL,
-    "ONLY_LATEST_PROJECT_VERSION" boolean
+    "ONLY_LATEST_PROJECT_VERSION" boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE public."POLICYCONDITION" (
@@ -1552,7 +1552,7 @@ CREATE TABLE public."PROJECT" (
     "SUPPLIER" text,
     "MANUFACTURER" text,
     "AUTHORS" text,
-    "IS_LATEST" boolean,
+    "IS_LATEST" boolean DEFAULT false NOT NULL,
     CONSTRAINT "PROJECT_CLASSIFIER_check" CHECK ((("CLASSIFIER" IS NULL) OR (("CLASSIFIER")::text = ANY (ARRAY['APPLICATION'::text, 'CONTAINER'::text, 'DEVICE'::text, 'FILE'::text, 'FIRMWARE'::text, 'FRAMEWORK'::text, 'LIBRARY'::text, 'OPERATING_SYSTEM'::text]))))
 );
 
