@@ -67,7 +67,7 @@
     <lib.cloud-sql-postgres-socket-factory.version>1.21.0</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>2.1.0</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.4</lib.commons-collections4.version>
-    <lib.confluent-parallel-consumer.version>0.5.3.1</lib.confluent-parallel-consumer.version>
+    <lib.confluent-parallel-consumer.version>0.5.3.2</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
