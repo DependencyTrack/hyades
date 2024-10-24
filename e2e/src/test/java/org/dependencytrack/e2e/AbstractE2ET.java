@@ -31,7 +31,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -39,6 +38,7 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.PullPolicy;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
@@ -54,23 +54,37 @@ import static org.testcontainers.lifecycle.Startables.deepStart;
 
 public class AbstractE2ET {
 
-    protected static DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres:15-alpine");
-    protected static DockerImageName REDPANDA_IMAGE = DockerImageName.parse("docker.redpanda.com/vectorized/redpanda:v24.2.2");
-    protected static DockerImageName API_SERVER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-apiserver")
-            .withTag(Optional.ofNullable(System.getenv("APISERVER_VERSION")).orElse("snapshot"));
-    protected static DockerImageName MIRROR_SERVICE_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-mirror-service")
-            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
-    protected static DockerImageName NOTIFICATION_PUBLISHER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-notification-publisher")
-            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
-    protected static DockerImageName REPO_META_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-repository-meta-analyzer")
-            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
-    protected static DockerImageName VULN_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-vulnerability-analyzer")
-            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
+    private enum KafkaProvider {
+        APACHE,
+        APACHE_NATIVE,
+        REDPANDA,
+        TANSU
+    }
+
+    private static final String HYADES_APISERVER_TAG = Optional.ofNullable(System.getenv("HYADES_APISERVER_TAG")).orElse("local");
+    private static final String HYADES_TAG = Optional.ofNullable(System.getenv("HYADES_TAG")).orElse("snapshot");
+    private static final String KAFKA_APACHE_TAG = Optional.ofNullable(System.getenv("KAFKA_APACHE_TAG")).orElse("3.8.0");
+    private static final String KAFKA_REDPANDA_TAG = Optional.ofNullable(System.getenv("KAFKA_REDPANDA_TAG")).orElse("v24.2.2");
+    private static final String KAFKA_TANSU_TAG = Optional.ofNullable(System.getenv("TANSU_TAG")).orElse("latest");
+    private static final String POSTGRES_TAG = Optional.ofNullable(System.getenv("POSTGRES_TAG")).orElse("15-alpine");
+
+    private static final DockerImageName KAFKA_APACHE_IMAGE = DockerImageName.parse("apache/kafka").withTag(KAFKA_APACHE_TAG);
+    private static final DockerImageName KAFKA_APACHE_NATIVE_IMAGE = DockerImageName.parse("apache/kafka-native").withTag(KAFKA_APACHE_TAG);
+    private static final DockerImageName KAFKA_REDPANDA_IMAGE = DockerImageName.parse("docker.redpanda.com/vectorized/redpanda").withTag(KAFKA_REDPANDA_TAG);
+    private static final DockerImageName KAFKA_TANSU_IMAGE = DockerImageName.parse("ghcr.io/tansu-io/tansu").withTag(KAFKA_TANSU_TAG);
+    private static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres").withTag(POSTGRES_TAG);
+    private static final DockerImageName API_SERVER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-apiserver").withTag(HYADES_APISERVER_TAG);
+    private static final DockerImageName MIRROR_SERVICE_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-mirror-service").withTag(HYADES_TAG);
+    private static final DockerImageName NOTIFICATION_PUBLISHER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-notification-publisher").withTag(HYADES_TAG);
+    private static final DockerImageName REPO_META_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-repository-meta-analyzer").withTag(HYADES_TAG);
+    private static final DockerImageName VULN_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-vulnerability-analyzer").withTag(HYADES_TAG);
+
+    private static final KafkaProvider KAFKA_PROVIDER = Optional.ofNullable(System.getenv("KAFKA_PROVIDER")).map(KafkaProvider::valueOf).orElse(KafkaProvider.APACHE_NATIVE);
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     protected final Network internalNetwork = Network.newNetwork();
     protected PostgreSQLContainer<?> postgresContainer;
-    protected GenericContainer<?> redpandaContainer;
+    protected GenericContainer<?> kafkaContainer;
     protected GenericContainer<?> apiServerContainer;
     protected GenericContainer<?> mirrorServiceContainer;
     protected GenericContainer<?> notificationPublisherContainer;
@@ -82,10 +96,13 @@ public class AbstractE2ET {
     @BeforeEach
     void beforeEach() throws Exception {
         postgresContainer = createPostgresContainer();
-        redpandaContainer = createRedpandaContainer();
-        deepStart(postgresContainer, redpandaContainer).join();
+        kafkaContainer = switch (KAFKA_PROVIDER) {
+            case APACHE, APACHE_NATIVE -> createApacheKafkaContainer();
+            case REDPANDA -> createRedpandaContainer();
+            case TANSU -> createTansuContainer();
+        };
+        deepStart(postgresContainer, kafkaContainer).join();
 
-        initializeRedpanda();
         generateSecretKey();
         runInitializer();
 
@@ -116,29 +133,59 @@ public class AbstractE2ET {
     }
 
     @SuppressWarnings("resource")
-    private GenericContainer<?> createRedpandaContainer() {
-        return new GenericContainer<>(REDPANDA_IMAGE)
-                .withCommand(
-                        "redpanda", "start", "--smp", "1", "--mode", "dev-container",
-                        "--reserve-memory", "0M", "--memory", "512M", "--overprovisioned",
-                        "--kafka-addr", "PLAINTEXT://0.0.0.0:29092",
-                        "--advertise-kafka-addr", "PLAINTEXT://redpanda:29092"
-                )
-                .waitingFor(Wait.forLogMessage(".*Started Kafka API server.*", 1))
-                .withNetworkAliases("redpanda")
+    protected KafkaContainer createApacheKafkaContainer() {
+        final DockerImageName imageName = switch (KAFKA_PROVIDER) {
+            case APACHE -> KAFKA_APACHE_IMAGE;
+            case APACHE_NATIVE -> KAFKA_APACHE_NATIVE_IMAGE;
+            default -> throw new IllegalArgumentException();
+        };
+        return new KafkaContainer(imageName)
+                .withNetworkAliases("kafka")
                 .withNetwork(internalNetwork);
     }
 
     @SuppressWarnings("resource")
-    private void initializeRedpanda() {
-        new GenericContainer<>(REDPANDA_IMAGE)
-                .withCreateContainerCmdModifier(cmd -> cmd.withUser("0").withEntrypoint("/bin/bash"))
-                .withCommand("/tmp/create-topics.sh")
-                .withEnv("REDPANDA_BROKERS", "redpanda:29092")
-                .withFileSystemBind("../scripts/create-topics.sh", "/tmp/create-topics.sh", BindMode.READ_ONLY)
-                .waitingFor(Wait.forLogMessage(".*All topics created successfully.*", 1))
+    private GenericContainer<?> createRedpandaContainer() {
+        return new GenericContainer<>(KAFKA_REDPANDA_IMAGE)
+                .withCommand(
+                        "redpanda", "start", "--smp", "1", "--mode", "dev-container",
+                        "--reserve-memory", "0M", "--memory", "512M", "--overprovisioned",
+                        "--kafka-addr", "PLAINTEXT://0.0.0.0:9093",
+                        "--advertise-kafka-addr", "PLAINTEXT://kafka:9093"
+                )
+                .waitingFor(Wait.forLogMessage(".*Started Kafka API server.*", 1))
+                .withNetworkAliases("kafka")
+                .withNetwork(internalNetwork);
+    }
+
+    @SuppressWarnings("resource")
+    private GenericContainer<?> createTansuContainer() {
+        final var tansuInitContainer = new GenericContainer<>(POSTGRES_IMAGE)
+                .withCreateContainerCmdModifier(cmd -> cmd.withEntrypoint("/bin/bash"))
+                .withCommand("-c", """
+                        ((psql -d tansu -q -c "select 1 from cluster limit 1" >/dev/null 2>/dev/null) && echo "Already initialized") \
+                        || ((psql -c "CREATE DATABASE tansu") && (wget -q -O- https://raw.githubusercontent.com/tansu-io/tansu/refs/heads/main/work-dir/initdb.d/010-schema.sql | psql -d tansu))\
+                        """)
+                .withEnv("PGHOST", "postgres")
+                .withEnv("PGUSER", "dtrack")
+                .withEnv("PGPASSWORD", "dtrack")
+                .withStartupCheckStrategy(new OneShotStartupCheckStrategy())
                 .withNetwork(internalNetwork)
-                .start();
+                .dependsOn(postgresContainer);
+
+        return new GenericContainer<>(KAFKA_TANSU_IMAGE)
+                .withCommand(
+                        "--kafka-cluster-id", "RvQwrYegSUCkIPkaiAZQlQ",
+                        "--kafka-node-id", "1",
+                        "--kafka-listener-url", "tcp://0.0.0.0:9093",
+                        "--kafka-advertised-listener-url", "tcp://kafka:9093",
+                        "--storage-engine", "pg=postgres://dtrack:dtrack@postgres/tansu",
+                        "--work-dir", "/data")
+                .withExposedPorts(9093)
+                .waitingFor(Wait.forListeningPorts(9093))
+                .withNetworkAliases("kafka")
+                .withNetwork(internalNetwork)
+                .dependsOn(tansuInitContainer);
     }
 
     private void generateSecretKey() throws Exception {
@@ -157,11 +204,14 @@ public class AbstractE2ET {
     private void runInitializer() {
         new GenericContainer<>(API_SERVER_IMAGE)
                 .withImagePullPolicy("local".equals(API_SERVER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
-                .withEnv("EXTRA_JAVA_OPTIONS", "-Xmx256m")
+                .withEnv("JAVA_OPTIONS", "-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1")
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
                 .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
+                .withEnv("ALPINE_DATABASE_POOL_ENABLED", "false")
+                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9093")
                 .withEnv("INIT_TASKS_ENABLED", "true")
+                .withEnv("INIT_TASKS_KAFKA_TOPICS_ENABLED", "true")
                 .withEnv("INIT_AND_EXIT", "true")
                 .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("initializer")))
                 .withStartupCheckStrategy(new OneShotStartupCheckStrategy())
@@ -177,7 +227,7 @@ public class AbstractE2ET {
                 .withEnv("ALPINE_DATABASE_URL", "jdbc:postgresql://postgres:5432/dtrack?reWriteBatchedInserts=true")
                 .withEnv("ALPINE_DATABASE_USERNAME", "dtrack")
                 .withEnv("ALPINE_DATABASE_PASSWORD", "dtrack")
-                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9093")
                 .withEnv("INIT_TASKS_ENABLED", "false")
                 .withEnv("ALPINE_SECRET_KEY_PATH", "/var/run/secrets/secret.key")
                 .withCopyFileToContainer(
@@ -201,7 +251,7 @@ public class AbstractE2ET {
         final var container = new GenericContainer<>(MIRROR_SERVICE_IMAGE)
                 .withImagePullPolicy("local".equals(MIRROR_SERVICE_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("JAVA_OPTS", "-Xmx256m")
-                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9093")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
@@ -226,7 +276,7 @@ public class AbstractE2ET {
         final var container = new GenericContainer<>(NOTIFICATION_PUBLISHER_IMAGE)
                 .withImagePullPolicy("local".equals(NOTIFICATION_PUBLISHER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("JAVA_OPTS", "-Xmx256m")
-                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9093")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
@@ -251,7 +301,7 @@ public class AbstractE2ET {
         final var container = new GenericContainer<>(REPO_META_ANALYZER_IMAGE)
                 .withImagePullPolicy("local".equals(REPO_META_ANALYZER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("JAVA_OPTS", "-Xmx256m")
-                .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "kafka:9093")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
@@ -276,7 +326,7 @@ public class AbstractE2ET {
         final var container = new GenericContainer<>(VULN_ANALYZER_IMAGE)
                 .withImagePullPolicy("local".equals(VULN_ANALYZER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
                 .withEnv("JAVA_OPTS", "-Xmx256m")
-                .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
+                .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "kafka:9093")
                 .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
                 .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
                 .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
@@ -342,7 +392,7 @@ public class AbstractE2ET {
         Optional.ofNullable(notificationPublisherContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(mirrorServiceContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(apiServerContainer).ifPresent(GenericContainer::stop);
-        Optional.ofNullable(redpandaContainer).ifPresent(GenericContainer::stop);
+        Optional.ofNullable(kafkaContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(postgresContainer).ifPresent(GenericContainer::stop);
 
         Optional.ofNullable(internalNetwork).ifPresent(Network::close);
