@@ -98,7 +98,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Set up GraalVM
-      uses: graalvm/setup-graalvm@557ffcf459751b4d92319ee255bf3bec9b73964c # tag=v1
+      uses: graalvm/setup-graalvm@4a200f28cd70d1940b5e33bd00830b7dc71a7e2b # tag=v1
       with:
         # NOTE: Do NOT use the Oracle GraalVM distribution, as that is causing issues
         # with Protobuf serialization.
