@@ -33,7 +33,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
     - name: Setup buf
-      uses: bufbuild/buf-setup-action@5d38b66514ec5b6b7b753e133245555ea664d0ac # tag=v1.46.0
+      uses: bufbuild/buf-setup-action@9672cee01808979ea1249f81d6d321217b9a10f6 # tag=v1.47.2
       with:
         github_token: ${{ github.token }}
     - name: Lint Protobuf
