@@ -74,7 +74,7 @@
     <lib.github-api.version>1.324</lib.github-api.version>
     <lib.greenmail.version>2.1.0</lib.greenmail.version>
     <lib.java-uuid-generator.version>5.1.0</lib.java-uuid-generator.version>
-    <lib.json-unit.version>3.4.1</lib.json-unit.version>
+    <lib.json-unit.version>4.0.0</lib.json-unit.version>
     <lib.kafka.version>3.7.1</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-beta-5</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
