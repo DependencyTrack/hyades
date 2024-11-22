@@ -187,4 +187,40 @@ class NugetMetaAnalyzerTest {
     private String readResourceFileToString(String fileName) throws Exception {
         return Files.readString(Paths.get(getClass().getResource(fileName).toURI()));
     }
+
+    // This test is to check if the analyzer is excluding pre-release versions
+    // The test is transitent depending on the current version of the package
+    // retrieved from the repository at the time of running.
+    // When it was created, the latest release version was 9.0.0-preview.1.24080.9
+    @Test
+    public void testAnalyzerExcludingPreRelease() throws Exception {
+        Component component = new Component();
+        component.setPurl(new PackageURL("pkg:nuget/Microsoft.Extensions.DependencyInjection@8.0.0"));
+
+        analyzer.setRepositoryBaseUrl("https://api.nuget.org");
+        MetaModel metaModel = analyzer.analyze(component);
+
+        Assertions.assertTrue(analyzer.isApplicable(component));
+        Assertions.assertEquals(RepositoryType.NUGET, analyzer.supportedRepositoryType());
+        Assertions.assertNotNull(metaModel.getLatestVersion());
+        Assertions.assertFalse(metaModel.getLatestVersion().contains("-"));
+    }
+
+    // This test is to check if the analyzer is including pre-release versions
+    // The test is transitent depending on the current version of the package
+    // retrieved from the repository at the time of running.
+    // When it was created, the latest release version was 9.0.0-preview.1.24080.9
+    @Test
+    public void testAnalyzerIncludingPreRelease() throws Exception {
+        Component component = new Component();
+        component.setPurl(new PackageURL("pkg:nuget/Microsoft.Extensions.DependencyInjection@8.0.0-beta.21301.5"));
+
+        analyzer.setRepositoryBaseUrl("https://api.nuget.org");
+        MetaModel metaModel = analyzer.analyze(component);
+
+        Assertions.assertTrue(analyzer.isApplicable(component));
+        Assertions.assertEquals(RepositoryType.NUGET, analyzer.supportedRepositoryType());
+        Assertions.assertNotNull(metaModel.getLatestVersion());
+        Assertions.assertFalse(metaModel.getLatestVersion().contains("-"));
+    }
 }

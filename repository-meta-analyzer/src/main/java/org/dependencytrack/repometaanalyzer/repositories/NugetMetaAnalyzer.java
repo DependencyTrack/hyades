@@ -22,10 +22,10 @@ import com.github.packageurl.PackageURL;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.dependencytrack.repometaanalyzer.model.MetaAnalyzerException;
-import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.dependencytrack.persistence.model.Component;
 import org.dependencytrack.persistence.model.RepositoryType;
+import org.dependencytrack.repometaanalyzer.model.MetaAnalyzerException;
+import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -128,20 +128,32 @@ public class NugetMetaAnalyzer extends AbstractMetaAnalyzer {
     }
 
     private String findLatestVersion(JSONArray versions) {
-        if (versions.length() < 1) {
+        JSONArray filteredVersions = filterPreReleaseVersions(versions);
+
+        if (filteredVersions.length() < 1) {
             return null;
         }
 
-        ComparableVersion latestVersion = new ComparableVersion(versions.getString(0));
+        ComparableVersion latestVersion = new ComparableVersion(filteredVersions.getString(0));
 
-        for (int i = 1; i < versions.length(); i++) {
-            ComparableVersion version = new ComparableVersion(versions.getString(i));
+        for (int i = 1; i < filteredVersions.length(); i++) {
+            ComparableVersion version = new ComparableVersion(filteredVersions.getString(i));
             if (version.compareTo(latestVersion) > 0) {
                 latestVersion = version;
             }
         }
 
         return latestVersion.toString();
+    }
+
+    private JSONArray filterPreReleaseVersions(JSONArray versions) {
+        JSONArray filteredVersions = new JSONArray();
+        for (int i = 0; i < versions.length(); i++) {
+            if (!versions.getString(i).contains("-")) {
+                filteredVersions.put(versions.getString(i));
+            }
+        }
+        return filteredVersions;
     }
 
     private boolean performLastPublishedCheck(final MetaModel meta, final Component component) {
