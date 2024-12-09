@@ -18,8 +18,25 @@
  */
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
+import java.util.Optional;
 
-@RegisterForReflection
-public record CSAFMirrorState(long lastModifiedEpochSeconds) {
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Provider;
+
+@ApplicationScoped
+public class CsafConfig {
+
+    private final Provider<Optional<Boolean>> enabledProvider;
+
+    CsafConfig(
+        @ConfigProperty(name = "dtrack.vuln-source.csaf.enabled") final Provider<Optional<Boolean>> enabledProvider
+    ) {
+        this.enabledProvider = enabledProvider;
+    }
+
+    Optional<Boolean> enabled() {
+        return enabledProvider.get();
+    }
 }

@@ -37,22 +37,22 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
-public class CSAFMirror extends AbstractDatasourceMirror<CSAFMirrorState> {
+public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSAFMirror.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CsafMirror.class);
     private static final String NOTIFICATION_TITLE = "CSAF Mirroring";
 
-    private final CSAFConfig config;
+    private final CsafConfig config;
     private final ExecutorService executorService;
 
-    CSAFMirror(
-        final CSAFConfig config,
+    CsafMirror(
+        final CsafConfig config,
         @ForCsafMirror final ExecutorService executorService,
         final MirrorStateStore mirrorStateStore,
         final VulnerabilityDigestStore vulnDigestStore,
         final Producer<String, byte[]> kafkaProducer
     ) {
-        super(Datasource.CSAF, mirrorStateStore, vulnDigestStore, kafkaProducer, CSAFMirrorState.class);
+        super(Datasource.CSAF, mirrorStateStore, vulnDigestStore, kafkaProducer, CsafMirrorState.class);
         this.config = config;
         this.executorService = executorService;
 
@@ -98,24 +98,26 @@ public class CSAFMirror extends AbstractDatasourceMirror<CSAFMirrorState> {
     public static void main(String[] args) {
 
         try {
-            final CsafLoader loader = new CsafLoader();
-            final var provider = RetrievedProvider.fromAsync("wid.cert-bund.de", loader).get();
-            final var documentResults = provider.fetchDocumentsAsync(loader).get();
-            
 
-            // map fetch -> then map get()
+            final var loader = new CsafLoader();
+            // final var provider = RetrievedProvider.fromAsync("wid.cert-bund.de").get();
+            final var provider = RetrievedProvider.fromAsync("redhat.com/").get();
+            final var documentStream = provider.streamDocuments();
 
+            documentStream.forEach((document) -> {
 
-
-            // Check some random property on successful document
-            var isSuccess = documentResults.getFirst().isSuccess();
-            var isFailure = documentResults.getFirst().isFailure();
-
-            final var document = documentResults.getFirst().getOrNull();
-            
-
-
-
+                if(document.isSuccess()) {
+                    var sourceUrl = document.getOrNull().getSourceUrl();
+                    System.out.println(sourceUrl);
+                    var csaf = document.getOrNull().getJson();
+                    csaf.getVulnerabilities().forEach((vuln) -> {
+                        System.out.println(vuln);
+                        
+                    });
+                } else {
+                    // System.out.println(document);
+                }
+            });
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

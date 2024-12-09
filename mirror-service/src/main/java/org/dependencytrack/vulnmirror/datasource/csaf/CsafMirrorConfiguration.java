@@ -33,13 +33,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-class CSAFMirrorConfiguration {
+class CsafMirrorConfiguration {
 
     @Produces
     @ForCsafMirror
     @ApplicationScoped
     ExecutorService executorService() {
-        final Logger csafMirrorLogger = LoggerFactory.getLogger(CSAFMirror.class);
+        final Logger csafMirrorLogger = LoggerFactory.getLogger(CsafMirror.class);
 
         final var threadFactory = new BasicThreadFactory.Builder()
                 .namingPattern("hyades-mirror-csaf-%d")
