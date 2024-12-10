@@ -18,6 +18,7 @@
  */
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
+import io.github.csaf.sbom.retrieval.CsafLoader;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -57,6 +58,14 @@ class CsafMirrorConfiguration {
         return Timer.builder("mirror.csaf.duration")
                 .description("Duration of CSAF mirroring operations")
                 .register(meterRegistry);
+    }
+
+
+    @Produces
+    @ForCsafMirror
+    @ApplicationScoped
+    CsafLoader csafLoader() {
+        return new CsafLoader();
     }
 
 }
