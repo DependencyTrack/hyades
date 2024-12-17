@@ -37,7 +37,7 @@ services:
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8090"
     profiles:
-      - demo
+      - demo1
     volumes:
       - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
@@ -65,7 +65,7 @@ services:
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8091"
     profiles:
-      - demo
+      - demo1
     volumes:
       - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
@@ -87,7 +87,7 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: "dtrack"
       SCANNER_INTERNAL_ENABLED: "true"
       # SCANNER_INTERNAL_TOPIC_PARTITIONS: "3"
-      SCANNER_OSSINDEX_ENABLED: "true"
+      SCANNER_OSSINDEX_ENABLED: "false"
       # SCANNER_OSSINDEX_TOPIC_PARTITIONS: "3"
       # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
       # SCANNER_OSSINDEX_API_TOKEN: "your-token"
@@ -100,7 +100,7 @@ services:
       # Scaling with Compose doesn't work when assigning static host ports.
       - "8092"
     profiles:
-      - demo
+      - demo1
     restart: unless-stopped
 
   mirror-service:
@@ -132,7 +132,7 @@ services:
     restart: unless-stopped
 
   initializer:
-    image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
+    image: ghcr.io/dependencytrack/hyades-apiserver:local
     container_name: dt-initializer
     depends_on:
       postgres:
@@ -143,13 +143,16 @@ services:
       ALPINE_DATABASE_USERNAME: "dtrack"
       ALPINE_DATABASE_PASSWORD: "dtrack"
       ALPINE_DATABASE_POOL_ENABLED: "false"
+      WORKFLOW_ENGINE_ENABLED: "true"
+      # WORKFLOW_ENGINE_DATABASE_URL: "jdbc:postgresql://...:5432/dtrack-wf?reWriteBatchedInserts=true"
+      # WORKFLOW_ENGINE_DATABASE_USERNAME: "dtrack-wf"
+      # WORKFLOW_ENGINE_DATABASE_PASSWORD: "dtrack-wf"
       INIT_TASKS_ENABLED: "true"
       INIT_AND_EXIT: "true"
     restart: on-failure
 
   apiserver:
-    image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
-    container_name: dt-apiserver
+    image: ghcr.io/dependencytrack/hyades-apiserver:local
     depends_on:
       postgres:
         condition: service_healthy
@@ -164,26 +167,40 @@ services:
       # Default would be 90% of available memory,
       # which can cause problems on some workstations.
       # For production deployments, the default should be used.
-      EXTRA_JAVA_OPTIONS: "-Xmx2g"
+      EXTRA_JAVA_OPTIONS: "-Xmx2g -ea:org.dependencytrack... -Djdk.tracePinnedThreads=full -XX:StartFlightRecording:filename=/jfr/recording.jfr,dumponexit=true"
+      ALPINE_BCRYPT_ROUNDS: "4"
       ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack?reWriteBatchedInserts=true"
       ALPINE_DATABASE_USERNAME: "dtrack"
       ALPINE_DATABASE_PASSWORD: "dtrack"
+      ALPINE_DATABASE_POOL_MAX_SIZE: "30"
       ALPINE_METRICS_ENABLED: "true"
       ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       INTEGRITY_CHECK_ENABLED: "true"
       INIT_TASKS_ENABLED: "false"
+      WORKFLOW_ENGINE_ENABLED: "true"
+      # WORKFLOW_ENGINE_DATABASE_URL: "jdbc:postgresql://...:5432/dtrack-wf?reWriteBatchedInserts=true"
+      # WORKFLOW_ENGINE_DATABASE_USERNAME: "dtrack-wf"
+      # WORKFLOW_ENGINE_DATABASE_PASSWORD: "dtrack-wf"
+      WORKFLOW_ENGINE_WORKFLOW_TASK_DISPATCHER_MIN_POLL_INTERVAL_MS: "1000"
+      WORKFLOW_ENGINE_ACTIVITY_TASK_DISPATCHER_MIN_POLL_INTERVAL_MS: "1000"
+      WORKFLOW_ENGINE_BUFFER_TASK_ACTION_FLUSH_INTERVAL_MS: "100"
+      WORKFLOW_ENGINE_BUFFER_TASK_ACTION_MAX_BATCH_SIZE: "250"
+      # WORKFLOW_ENGINE_INJECT_ACTIVITY_FAULTS: "true"
+      FILE_STORAGE_EXTENSION_LOCAL_ENABLED: "true"
+      FILE_STORAGE_DEFAULT_EXTENSION: "local"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
       - "apiserver-data:/data"
       - "secret-data:/var/run/secrets:ro"
+      - "./monitoring/jfr:/jfr"
     profiles:
       - demo
     restart: unless-stopped
 
   frontend:
-    image: ghcr.io/dependencytrack/hyades-frontend:snapshot
+    image: ghcr.io/dependencytrack/hyades-frontend:local
     container_name: dt-frontend
     environment:
       API_BASE_URL: "http://localhost:8080"
@@ -196,6 +213,25 @@ services:
   postgres:
     image: postgres:17-alpine
     container_name: dt-postgres
+    command: >-
+      -c 'max_connections=200'
+      -c 'shared_buffers=4GB'
+      -c 'effective_cache_size=12GB'
+      -c 'maintenance_work_mem=1GB'
+      -c 'wal_buffers=16MB'
+      -c 'random_page_cost=1.1'
+      -c 'effective_io_concurrency=200'
+      -c 'work_mem=10485kB'
+      -c 'min_wal_size=1GB'
+      -c 'max_wal_size=16GB'
+      -c 'wal_compression=zstd'
+      -c 'checkpoint_timeout=30min'
+      -c 'max_worker_processes=8'
+      -c 'max_parallel_workers_per_gather=4'
+      -c 'max_parallel_workers=8'
+      -c 'max_parallel_maintenance_workers=4'
+      -c 'shared_preload_libraries=pg_stat_statements'
+      -c 'pg_stat_statements.track=all'
     environment:
       POSTGRES_DB: "dtrack"
       POSTGRES_USER: "dtrack"
@@ -205,10 +241,23 @@ services:
       interval: 5s
       timeout: 3s
       retries: 3
+    stop_grace_period: 30s
     ports:
       - "5432:5432"
     volumes:
       - "postgres-data:/var/lib/postgresql/data"
+    restart: unless-stopped
+
+  pghero:
+    image: ankane/pghero
+    container_name: dt-pghero
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://dtrack:dtrack@postgres:5432/dtrack"
+    ports:
+    - "127.0.0.1:5439:8080"
     restart: unless-stopped
 
   redpanda:
@@ -345,6 +394,8 @@ services:
       - "127.0.0.1:28080:8080"
     volumes:
       - "./proto/src/main/proto:/etc/protos:ro"
+    profiles:
+      - demo1
     restart: unless-stopped
 
   secret-init:
