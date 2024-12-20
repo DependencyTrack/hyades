@@ -88,21 +88,21 @@
 
 
 
-| Field | Type | Description |
-| :---- | :--- | :---------- |
-| `uuid` | `string` |  | - |
-| `group` | `string` |  | - |
-| `name` | `string` |  | - |
-| `version` | `string` |  | - |
-| `classifier` | `string` |  | - |
-| `is_active` | `bool` |  | - |
-| `tags` | `string[]` |  | - |
-| `properties` | [`Project.Property[]`](#org-dependencytrack-policy-v1-Project-Property) |  | - |
-| `cpe` | `string` |  | - |
-| `purl` | `string` |  | - |
-| `swid_tag_id` | `string` |  | - |
+| Field             | Type | Description |
+|:------------------| :--- | :---------- |
+| `uuid`            | `string` |  | - |
+| `group`           | `string` |  | - |
+| `name`            | `string` |  | - |
+| `version`         | `string` |  | - |
+| `classifier`      | `string` |  | - |
+| `inactive_since`  | `google.protobuf.Timestamp` |  | - |
+| `tags`            | `string[]` |  | - |
+| `properties`      | [`Project.Property[]`](#org-dependencytrack-policy-v1-Project-Property) |  | - |
+| `cpe`             | `string` |  | - |
+| `purl`            | `string` |  | - |
+| `swid_tag_id`     | `string` |  | - |
 | `last_bom_import` | `google.protobuf.Timestamp` |  | - |
-| `metadata` | [`Project.Metadata`](#org-dependencytrack-policy-v1-Project-Metadata) |  | - |
+| `metadata`        | [`Project.Metadata`](#org-dependencytrack-policy-v1-Project-Metadata) |  | - |
 
 
 

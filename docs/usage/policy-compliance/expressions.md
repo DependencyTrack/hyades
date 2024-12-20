@@ -237,7 +237,7 @@ or `CRITICAL`
 | `name`            | `string`                              | Name              |
 | `version`         | `string`                              | Version           |
 | `classifier`      | `string`                              | Classifier / type |
-| `is_active`       | `bool`                                | Is active?        |
+| `inactive_since`  | `google.protobuf.Timestamp`           | Inactive Since    |
 | `tags`            | `list(string)`                        | Tags              |
 | `properties`      | <code>list([Project.Property])</code> | Properties        |
 | `cpe`             | `string`                              | [CPE]             |

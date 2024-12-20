@@ -90,7 +90,7 @@ message Project {
   string name = 3;
   optional string version = 4;
   optional string classifier = 5;
-  bool is_active = 6;
+  optional google.protobuf.Timestamp inactive_since = 6;
   repeated string tags = 7;
   repeated Property properties = 8;
   optional string cpe = 9;
