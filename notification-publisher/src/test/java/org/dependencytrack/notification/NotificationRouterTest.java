@@ -53,6 +53,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -147,7 +148,7 @@ class NotificationRouterTest {
                 NotificationGroup.NEW_VULNERABILITY, publisherId);
         // Creates a project which will later be matched on
         final UUID projectUuid = UUID.randomUUID();
-        final Long projectId = createProject("Test Project", "1.0", true, projectUuid);
+        final Long projectId = createProject("Test Project", "1.0", null, projectUuid);
         addProjectToRule(projectId, ruleId);
         // Creates a new notification
         final var notification = Notification.newBuilder()
@@ -185,7 +186,7 @@ class NotificationRouterTest {
                 NotificationGroup.NEW_VULNERABILITY, publisherId);
         // Creates a project which will later be matched on
         final UUID projectUuid = UUID.randomUUID();
-        final Long projectId = createProject("Test Project", "1.0", true, projectUuid);
+        final Long projectId = createProject("Test Project", "1.0", null, projectUuid);
         addProjectToRule(projectId, ruleId);
         // Creates a new notification
         final var notification = Notification.newBuilder()
@@ -221,7 +222,7 @@ class NotificationRouterTest {
                 NotificationGroup.PROJECT_AUDIT_CHANGE, publisherId);
         // Creates a project which will later be matched on
         final UUID projectUuid = UUID.randomUUID();
-        final Long projectId = createProject("Test Project", "1.0", true, projectUuid);
+        final Long projectId = createProject("Test Project", "1.0", null, projectUuid);
         addProjectToRule(projectId, ruleId);
         // Creates a new notification
         final var notification = Notification.newBuilder()
@@ -298,10 +299,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForNewVulnerabilityNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -345,10 +346,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForNewVulnerableDependencyNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -388,10 +389,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForBomConsumedOrProcessedNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -427,10 +428,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForVexConsumedOrProcessedNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -466,10 +467,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForPolicyViolationNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -505,10 +506,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForVulnerabilityAnalysisDecisionChangeNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -544,10 +545,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForPolicyViolationAnalysisDecisionChangeNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -583,10 +584,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForBomProcessingFailedNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -622,10 +623,10 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectForBomValidationFailedNotification() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        final Long projectIdA = createProject("Project A", "1.0", true, projectUuidA);
+        final Long projectIdA = createProject("Project A", "1.0", null, projectUuidA);
 
         final UUID projectUuidB = UUID.randomUUID();
-        createProject("Project B", "2.0", true, projectUuidB);
+        createProject("Project B", "2.0", null, projectUuidB);
 
         final Long publisherId = createConsolePublisher();
         final Long ruleId = createRule("Limit To Test Rule",
@@ -668,15 +669,15 @@ class NotificationRouterTest {
         setNotifyChildren(ruleId, true);
         // Creates a project which will later be matched on
         final UUID grandParentUuid = UUID.randomUUID();
-        final Long grandParentProjectId = createProject("Test Project Grandparent", "1.0", true, grandParentUuid);
+        final Long grandParentProjectId = createProject("Test Project Grandparent", "1.0", null, grandParentUuid);
         final UUID parentUuid = UUID.randomUUID();
-        final Long parentProjectId = createProject("Test Project Parent", "1.0", true, parentUuid);
+        final Long parentProjectId = createProject("Test Project Parent", "1.0", null, parentUuid);
         setProjectParent(parentProjectId, grandParentProjectId);
         final UUID childUuid = UUID.randomUUID();
-        final Long childProjectId = createProject("Test Project Child", "1.0", true, childUuid);
+        final Long childProjectId = createProject("Test Project Child", "1.0", null, childUuid);
         setProjectParent(childProjectId, parentProjectId);
         final UUID grandChildUuid = UUID.randomUUID();
-        final Long grandChildProjectId = createProject("Test Project Grandchild", "1.0", true, grandChildUuid);
+        final Long grandChildProjectId = createProject("Test Project Grandchild", "1.0", null, grandChildUuid);
         setProjectParent(grandChildProjectId, childProjectId);
         addProjectToRule(grandParentProjectId, ruleId);
         // Creates a new notification
@@ -716,15 +717,15 @@ class NotificationRouterTest {
         setNotifyChildren(ruleId, false);
         // Creates a project which will later be matched on
         final UUID grandParentUuid = UUID.randomUUID();
-        final Long grandParentProjectId = createProject("Test Project Grandparent", "1.0", true, grandParentUuid);
+        final Long grandParentProjectId = createProject("Test Project Grandparent", "1.0", null, grandParentUuid);
         final UUID parentUuid = UUID.randomUUID();
-        final Long parentProjectId = createProject("Test Project Parent", "1.0", true, parentUuid);
+        final Long parentProjectId = createProject("Test Project Parent", "1.0", null, parentUuid);
         setProjectParent(parentProjectId, grandParentProjectId);
         final UUID childUuid = UUID.randomUUID();
-        final Long childProjectId = createProject("Test Project Child", "1.0", true, childUuid);
+        final Long childProjectId = createProject("Test Project Child", "1.0", null, childUuid);
         setProjectParent(childProjectId, parentProjectId);
         final UUID grandChildUuid = UUID.randomUUID();
-        final Long grandChildProjectId = createProject("Test Project Grandchild", "1.0", true, grandChildUuid);
+        final Long grandChildProjectId = createProject("Test Project Grandchild", "1.0", null, grandChildUuid);
         setProjectParent(grandChildProjectId, childProjectId);
         addProjectToRule(grandParentProjectId, ruleId);
         // Creates a new notification
@@ -762,15 +763,15 @@ class NotificationRouterTest {
         setNotifyChildren(ruleId, true);
         // Creates a project which will later be matched on
         final UUID grandParentUuid = UUID.randomUUID();
-        final Long grandParentProjectId = createProject("Test Project Grandparent", "1.0", true, grandParentUuid);
+        final Long grandParentProjectId = createProject("Test Project Grandparent", "1.0", null, grandParentUuid);
         final UUID parentUuid = UUID.randomUUID();
-        final Long parentProjectId = createProject("Test Project Parent", "1.0", true, parentUuid);
+        final Long parentProjectId = createProject("Test Project Parent", "1.0", null, parentUuid);
         setProjectParent(parentProjectId, grandParentProjectId);
         final UUID childUuid = UUID.randomUUID();
-        final Long childProjectId = createProject("Test Project Child", "1.0", true, childUuid);
+        final Long childProjectId = createProject("Test Project Child", "1.0", null, childUuid);
         setProjectParent(childProjectId, parentProjectId);
         final UUID grandChildUuid = UUID.randomUUID();
-        final Long grandChildProjectId = createProject("Test Project Grandchild", "1.0", false, grandChildUuid);
+        final Long grandChildProjectId = createProject("Test Project Grandchild", "1.0", new Date(), grandChildUuid);
         setProjectParent(grandChildProjectId, childProjectId);
         addProjectToRule(grandParentProjectId, ruleId);
         // Creates a new notification
@@ -807,7 +808,7 @@ class NotificationRouterTest {
                 NotificationGroup.NEW_VULNERABILITY, publisherId);
         // Creates a project which will later be matched on
         final UUID projectUuid = UUID.randomUUID();
-        createProject("Test Project", "1.0", true, projectUuid);
+        createProject("Test Project", "1.0", null, projectUuid);
         // Creates a new notification
         final var notification = Notification.newBuilder()
                 .setScope(SCOPE_PORTFOLIO)
@@ -860,7 +861,7 @@ class NotificationRouterTest {
     @TestTransaction
     void testResolveRulesLimitedToProjectTag() throws Exception {
         final UUID projectUuidA = UUID.randomUUID();
-        createProject("Project A", "1.0", true, projectUuidA);
+        createProject("Project A", "1.0", null, projectUuidA);
 
         final Long tagId = createTag("test-tag");
 
@@ -899,7 +900,7 @@ class NotificationRouterTest {
                 NotificationGroup.NEW_VULNERABILITY, publisherId);
 
         final UUID projectUuid = UUID.randomUUID();
-        createProject("Test Project", "1.0", true, projectUuid);
+        createProject("Test Project", "1.0", null, projectUuid);
 
         final Long tagId = createTag("test-tag");
         addTagToRule(tagId, ruleId);
@@ -964,15 +965,15 @@ class NotificationRouterTest {
                 .executeUpdate();
     }
 
-    private Long createProject(final String name, final String version, final Boolean active, final UUID uuid) {
+    private Long createProject(final String name, final String version, final Date inactiveSince, final UUID uuid) {
         return (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "PROJECT" ("NAME", "VERSION", "ACTIVE", "UUID") VALUES
-                            (:name, :version, :active, :uuid)
+                        INSERT INTO "PROJECT" ("NAME", "VERSION", "INACTIVE_SINCE", "UUID") VALUES
+                            (:name, :version, :inactiveSince, :uuid)
                         RETURNING "ID";
                         """)
                 .setParameter("name", name)
                 .setParameter("version", version)
-                .setParameter("active", active != null ? active.booleanValue() : null)
+                .setParameter("inactiveSince", inactiveSince)
                 .setParameter("uuid", uuid)
                 .getSingleResult();
     }
