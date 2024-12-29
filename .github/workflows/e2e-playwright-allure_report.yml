@@ -15,9 +15,7 @@ jobs:
         with:
           node-version: lts/*
       - name: Generate Random UUID for password use
-        run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV # add to inner command to limit uuid: | cut -c 1-8
-      - name: Access RANDOM_PASSWORD
-        run: echo "The random password is $RANDOM_PASSWORD"
+        run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: npm ci
@@ -49,13 +47,13 @@ jobs:
         continue-on-error: true
         with:
           ref: gh-pages
-          path: new-results
+          path: latest-test-results
 
       - name: Build test report
         uses: simple-elf/allure-report-action@v1.11
         if: always()
         with:
-          gh_pages: new-results
+          gh_pages: latest-test-results
           allure_history: allure-history
           allure_results: playwright-test-results/allure-results
 
