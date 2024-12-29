@@ -50,7 +50,7 @@ export default defineConfig({
     // baseURL: 'http://127.0.0.1:3000',
 
     // Capture screenshot after each test failure. 'off', 'on' and 'only-on-failure'
-    screenshot: 'on',
+    screenshot: 'only-on-failure',
 
     // Record trace only when retrying a test for the first time. 'off', 'on', 'retain-on-failure' and 'on-first-retry'
     trace: 'on-first-retry',
