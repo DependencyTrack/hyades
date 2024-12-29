@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Generate Random UUID
         run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV # add to inner command -> limits uuid: | cut -c 1-8
+      - name: Access RANDOM_PASSWORD
+        run: echo "The random password is $RANDOM_PASSWORD"
 
   run-playwright-e2e:
     needs: prerequisites
@@ -53,13 +55,13 @@ jobs:
         continue-on-error: true
         with:
           ref: gh-pages
-          path: gh-pages # past-results
+          path: gh-pages/past-results # past-results
 
       - name: Build test report
         uses: simple-elf/allure-report-action@v1.11
         if: always()
         with:
-          gh_pages: gh-pages
+          gh_pages: gh-pages/past-results
           allure_history: allure-history
           allure_results: playwright-test-results/allure-results
 
