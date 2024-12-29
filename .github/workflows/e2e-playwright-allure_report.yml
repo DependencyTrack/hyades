@@ -6,7 +6,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test:
+  run-playwright-e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -25,14 +25,14 @@ jobs:
         run: npx playwright test
 
       - name: Upload test results
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: playwright-results
           path: playwright-test-results/allure-results
 
   publish-results:
-    needs: test
+    needs: run-playwright-e2e
     runs-on: ubuntu-latest
     steps:
       - name: Download test results
