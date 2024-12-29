@@ -6,7 +6,14 @@ on:
     branches: [ main, master ]
 
 jobs:
+  prerequisites:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Random UUID
+        run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV # add to inner command -> limits uuid: | cut -c 1-8
+
   run-playwright-e2e:
+    needs: prerequisites
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -15,15 +22,14 @@ jobs:
         with:
           node-version: lts/*
 
+      - name: Access RANDOM_PASSWORD
+        run: echo "The random password is $RANDOM_PASSWORD"
       - name: Install dependencies
         run: npm ci
-
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-
       - name: Run Playwright tests
         run: npx playwright test
-
       - name: Upload test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -47,7 +53,7 @@ jobs:
         continue-on-error: true
         with:
           ref: gh-pages
-          path: past-results
+          path: gh-pages # past-results
 
       - name: Build test report
         uses: simple-elf/allure-report-action@v1.11
