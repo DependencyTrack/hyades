@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 test('has title', async ({ page }) => {
+  const tmp = process.env.CI ? process.env.RANDOM_PASSWORD : "not CI";
+  console.log(tmp);
   await page.goto('https://playwright.dev/');
 
   // Expect a title "to contain" a substring.
