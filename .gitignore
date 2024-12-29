@@ -57,8 +57,7 @@ testdata/boms/generated/*.cdx.json
 
 # Material for MkDocs
 .cache/
-node_modules/
+/node_modules/
 /test-results/
-/playwright-test-results
+/playwright-test-results/
 /blob-report/
-/playwright/.cache/
