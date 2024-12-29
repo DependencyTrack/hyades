@@ -11,6 +11,7 @@ import * as os from "node:os";
 
 const defTestDir = "./e2e/playwright-tests";
 const defOutDir = "./playwright-test-results";
+// process.env.RANDOM_PASSWORD
 
 /**
  * See https://playwright.dev/docs/test-configuration.
