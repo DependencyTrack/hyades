@@ -28,7 +28,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [["list"],
+  reporter: [["list"], ["github"],
     ["allure-playwright",
       {
         resultsDir: defOutDir + "/allure-results",
