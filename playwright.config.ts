@@ -49,14 +49,14 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 
-    // Capture screenshot after each test failure.
+    // Capture screenshot after each test failure. 'off', 'on' and 'only-on-failure'
     screenshot: 'on',
 
-    // Record trace only when retrying a test for the first time.
+    // Record trace only when retrying a test for the first time. 'off', 'on', 'retain-on-failure' and 'on-first-retry'
     trace: 'on-first-retry',
 
-    // Record video only when retrying a test for the first time.
-    video: 'on'
+    // Record video only when retrying a test for the first time. 'off', 'on', 'retain-on-failure' and 'on-first-retry'
+    video: 'retain-on-failure'
   },
 
   /* Configure projects for major browsers */
