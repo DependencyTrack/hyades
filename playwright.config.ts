@@ -15,11 +15,7 @@ const defOutDir = "./playwright-test-results";
 // process.env.RANDOM_PASSWORD for creating safe passwords for users
 
 // Todo introduce gherkin into config
-const testDir = defineBddConfig({
-  features: './features/**/*.feature',
-  steps: './features/steps/**/*.js',
-  featuresRoot: './features',
-});
+// https://vitalets.github.io/playwright-bdd/#/blog/whats-new-in-v8?id=improved-configuration-options
 
 /**
  * See https://playwright.dev/docs/test-configuration.
