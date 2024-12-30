@@ -1,7 +1,7 @@
 name: Playwright Tests
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 0,10,20 * * *"
 
 jobs:
   run-playwright-e2e:
