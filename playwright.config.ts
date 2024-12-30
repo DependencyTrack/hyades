@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as os from "node:os";
+import { defineBddConfig } from "playwright-bdd";
 
 /**
  * Read environment variables from file.
@@ -11,6 +12,10 @@ import * as os from "node:os";
 
 const defTestDir = "./e2e/playwright-tests";
 const defOutDir = "./playwright-test-results";
+// process.env.RANDOM_PASSWORD for creating safe passwords for users
+
+// Todo introduce gherkin into config
+// https://vitalets.github.io/playwright-bdd/#/blog/whats-new-in-v8?id=improved-configuration-options
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -28,7 +33,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [["list"],
+  reporter: [["list"], ["github"],
     ["allure-playwright",
       {
         resultsDir: defOutDir + "/allure-results",
@@ -48,8 +53,14 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    // Capture screenshot after each test failure. 'off', 'on' and 'only-on-failure'
+    screenshot: 'only-on-failure',
+
+    // Record trace only when retrying a test for the first time. 'off', 'on', 'retain-on-failure' and 'on-first-retry'
     trace: 'on-first-retry',
+
+    // Record video only when retrying a test for the first time. 'off', 'on', 'retain-on-failure' and 'on-first-retry'
+    video: 'retain-on-failure'
   },
 
   /* Configure projects for major browsers */
