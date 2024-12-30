@@ -2,11 +2,6 @@ name: Playwright Tests
 on:
   schedule:
     - cron: "*/5 * * * *"
-  push:
-    branches:
-      - feature/**
-  pull_request:
-    branches: [ main, master ]
 
 jobs:
   run-playwright-e2e:
