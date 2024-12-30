@@ -1,7 +1,10 @@
 name: Playwright Tests
 on:
+  schedule:
+    - cron: "0 0 * * *"
   push:
-    branches: feature/**
+    branches:
+      - feature/**
   pull_request:
     branches: [ main, master ]
 
