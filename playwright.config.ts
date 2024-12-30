@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as os from "node:os";
+import { defineBddConfig } from "playwright-bdd";
 
 /**
  * Read environment variables from file.
@@ -12,6 +13,13 @@ import * as os from "node:os";
 const defTestDir = "./e2e/playwright-tests";
 const defOutDir = "./playwright-test-results";
 // process.env.RANDOM_PASSWORD for creating safe passwords for users
+
+// Todo introduce gherkin into config
+const testDir = defineBddConfig({
+  features: './features/**/*.feature',
+  steps: './features/steps/**/*.js',
+  featuresRoot: './features',
+});
 
 /**
  * See https://playwright.dev/docs/test-configuration.
