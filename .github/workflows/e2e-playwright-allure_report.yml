@@ -44,7 +44,7 @@ jobs:
         if: always()
         continue-on-error: true
         with:
-          ref: gh-pages
+          ref: allure-report # branch-name to copy history from
           path: latest-test-results
 
       - name: Build test report
@@ -60,5 +60,5 @@ jobs:
         if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
+          publish_branch: allure-report # branch-name to paste history to
           publish_dir: allure-history
