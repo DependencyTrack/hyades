@@ -59,5 +59,8 @@ testdata/boms/generated/*.cdx.json
 .cache/
 /node_modules/
 /test-results/
-/playwright-test-results/
 /blob-report/
+
+# Playwright
+/playwright-test-results/
+/e2e/playwright-tests/setup/locales
