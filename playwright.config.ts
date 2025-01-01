@@ -12,6 +12,7 @@ import { defineBddConfig } from "playwright-bdd";
 
 const defTestDir = "./e2e/playwright-tests";
 const defOutDir = "./playwright-test-results";
+const setupDir = "./e2e/playwright-tests/setup";
 
 // Todo introduce gherkin into config
 // https://vitalets.github.io/playwright-bdd/#/blog/whats-new-in-v8?id=improved-configuration-options
@@ -65,7 +66,7 @@ export default defineConfig({
       ],
 
   // globalSetup for: Locale Determination
-  globalSetup: require.resolve('./e2e/playwright-tests/setup/global-setup.spec.ts'),
+  globalSetup: require.resolve(setupDir + "/global-setup.ts"),
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -87,7 +88,7 @@ export default defineConfig({
     {
       name: 'preconditions',
       use: { ...devices['Desktop Chrome'] },
-      testMatch: /.*preconditions.spec.ts/,
+      testMatch: /.*preconditions.ts/,
       retries: 0,
     },
 
