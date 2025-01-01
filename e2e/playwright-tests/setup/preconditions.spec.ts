@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 
 // auch locale selection
 // hier denke ich auch storage state mit neuen usern etc
+// https://playwright.dev/docs/auth
 
 // --> das aber denke ich ebenfalls mit BDD
 
