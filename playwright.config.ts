@@ -12,10 +12,11 @@ import { defineBddConfig } from "playwright-bdd";
 
 const defTestDir = "./e2e/playwright-tests";
 const defOutDir = "./playwright-test-results";
-// process.env.RANDOM_PASSWORD for creating safe passwords for users
 
 // Todo introduce gherkin into config
 // https://vitalets.github.io/playwright-bdd/#/blog/whats-new-in-v8?id=improved-configuration-options
+// Todo introduce advanced timeouts into config
+// Todo introduce storageState into config
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -33,7 +34,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [["list"], ["github"],
+  reporter: process.env.CI ? [["list"], ["github"],
     ["allure-playwright",
       {
         resultsDir: defOutDir + "/allure-results",
@@ -47,7 +48,25 @@ export default defineConfig({
         },
       },
     ],
-  ],
+  ]: [["list"],
+        ["allure-playwright",
+          {
+            resultsDir: defOutDir + "/allure-results",
+            detail: true,
+            suiteTitle: true,
+            environmentInfo: {
+              os_platform: os.platform(),
+              os_release: os.release(),
+              os_version: os.version(),
+              node_version: process.version,
+            },
+          },
+        ],
+      ],
+
+  // globalSetup for: Locale Determination
+  globalSetup: require.resolve('./e2e/playwright-tests/setup/global-setup.spec.ts'),
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -66,18 +85,28 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'preconditions',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /.*preconditions.spec.ts/,
+      retries: 0,
+    },
+
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      dependencies: ['preconditions'],
     },
 
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      dependencies: ['preconditions'],
     },
 
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      dependencies: ['preconditions'],
     },
 
     /* Test against mobile viewports. */
