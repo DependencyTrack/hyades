@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test as setup, expect, type Page } from '@playwright/test';
 
 // auch locale selection
 // hier denke ich auch storage state mit neuen usern etc
@@ -7,10 +7,11 @@ import { test, expect, type Page } from '@playwright/test';
 // --> das aber denke ich ebenfalls mit BDD
 
 // PRECONDITIONS SIND LOGIN
-test('Should log password', async ({ page }) => {
+setup('Should log password', async ({ page }) => {
     const pw = process.env.RANDOM_PASSWORD;
-    // const json = JSON.parse(process.env.LOCALE_JSON);
-
     console.log(pw);
-    // console.log(json);
+
+    const json = JSON.parse(process.env.LOCALE_JSON);
+    console.log(json.language);
+    // console.log(json.language['pt-BR']);
 });
