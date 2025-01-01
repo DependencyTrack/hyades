@@ -1,5 +1,26 @@
 name: Playwright Tests
 on:
+  workflow_dispatch:
+    inputs:
+      Locale:
+        description: 'Select the Locale to be used for E2E Testing'
+        required: true
+        default: 'en'
+        type: choice
+        options:
+          - en
+          - de
+          - es
+          - fr
+          - hi
+          - it
+          - ja
+          - pl
+          - pt-BR
+          - pt
+          - ru
+          - uk-UA
+          - zh
   schedule:
     - cron: "0 0,10,20 * * *"
 
@@ -12,16 +33,30 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
+
+      # Hier muss Dependency Track in all ihrer Pracht gestartet werden
+
+      - name: Set the Locale as an environment variable
+        run: |
+          echo "LOCALE=${{ github.event.inputs.Locale }}" >> $GITHUB_ENV
+
+      - name: Download Locales
+        run: |
+          curl -L "https://download-directory.github.io?url=https://github.com/DependencyTrack/frontend/tree/master/src/i18n/locales" -o locales.zip
+          unzip locales.zip
+          cp -r locales ./e2e/playwright-tests/setup/
+
       - name: Generate Random UUID for password use
         run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV
 
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - name: Install necessary dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps
 
       - name: Run Playwright tests
         run: npx playwright test
+
       - name: Upload test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
