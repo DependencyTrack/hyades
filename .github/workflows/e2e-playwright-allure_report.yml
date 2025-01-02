@@ -22,7 +22,7 @@ on:
           - uk-UA
           - zh
   schedule:
-    - cron: "0 0,10,20 * * *"
+    - cron: "0 0,10,15,20 * * *"
 
 jobs:
   run-playwright-e2e:
@@ -38,7 +38,7 @@ jobs:
 
       - name: Set the Locale as an environment variable
         run: |
-          echo "LOCALE=${{ github.event.inputs.Locale }}" >> $GITHUB_ENV
+          echo "LOCALE=${{ github.event.inputs.Locale || 'en' }}" >> $GITHUB_ENV
 
       - name: Generate Random UUID for password use
         run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV
