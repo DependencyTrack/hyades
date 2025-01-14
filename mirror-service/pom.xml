@@ -125,8 +125,8 @@
 
         <dependency>
             <groupId>io.github.csaf-sbom</groupId>
-            <artifactId>csaf-retrieval</artifactId>     
-          </dependency>
+            <artifactId>csaf-retrieval-jvm</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>io.quarkus</groupId>

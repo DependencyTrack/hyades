@@ -32,6 +32,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import io.github.csaf.sbom.retrieval.CsafLoader;
+import io.github.csaf.sbom.retrieval.RetrievedAggregator;
+import io.github.csaf.sbom.retrieval.RetrievedDocument;
 import io.github.csaf.sbom.retrieval.RetrievedProvider;
 import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
 import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
@@ -113,8 +115,8 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         final var documentStream = provider.streamDocuments();
         documentStream.forEach((document) -> {
             if (document.isSuccess()) {
-                var sourceUrl = document.getOrNull().getSourceUrl();
-                System.out.println(sourceUrl);
+                //var sourceUrl = document.getOrNull().();
+                //System.out.println(sourceUrl);
                 var csaf = document.getOrNull().getJson();
                 csaf.getVulnerabilities().forEach((vuln) -> {
                     System.out.println(vuln);
@@ -149,20 +151,25 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     public static void main(String[] args) {
 
         try {
+            //var docstring = RetrievedDocument.Companion.fromJson(inputString);
+            //var docstream = RetrievedDocument.Companion.fromJson(inputStream);
+            
 
             final var loader = new CsafLoader();
             // final var provider = RetrievedProvider.fromAsync("wid.cert-bund.de").get();
             final var provider = RetrievedProvider.fromAsync("redhat.com/").get();
             final var documentStream = provider.streamDocuments();
+            
 
             documentStream.forEach((document) -> {
 
                 if (document.isSuccess()) {
-                    var sourceUrl = document.getOrNull().getSourceUrl();
-                    System.out.println(sourceUrl);
+                    //var sourceUrl = document.getOrNull().getJson();
+                    //System.out.println(sourceUrl);
                     var csaf = document.getOrNull().getJson();
                     csaf.getVulnerabilities().forEach((vuln) -> {
                         System.out.println(vuln);
+
 
                     });
                 } else {
