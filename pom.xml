@@ -85,7 +85,7 @@
     <lib.resilience4j.version>2.2.0</lib.resilience4j.version>
     <lib.open.vulnerability.clients.version>7.1.0</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
-    <lib.protobuf-java.version>4.29.2</lib.protobuf-java.version>
+    <lib.protobuf-java.version>4.29.3</lib.protobuf-java.version>
     <lib.quarkus-mailpit.version>1.3.0</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.7</lib.snappy-java.version>
     <lib.testcontainers-minio.version>1.20.4</lib.testcontainers-minio.version>
