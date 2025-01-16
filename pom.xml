@@ -71,7 +71,6 @@
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
-    <lib.github-api.version>1.324</lib.github-api.version>
     <lib.greenmail.version>2.1.2</lib.greenmail.version>
     <lib.java-uuid-generator.version>5.1.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>4.0.0</lib.json-unit.version>
@@ -86,6 +85,7 @@
     <lib.open.vulnerability.clients.version>7.1.0</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>4.29.3</lib.protobuf-java.version>
+    <lib.quarkus-github-api.version>1.322.0</lib.quarkus-github-api.version>
     <lib.quarkus-mailpit.version>1.3.0</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.7</lib.snappy-java.version>
     <lib.testcontainers-minio.version>1.20.4</lib.testcontainers-minio.version>
@@ -179,12 +179,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.kohsuke</groupId>
-        <artifactId>github-api</artifactId>
-        <version>${lib.github-api.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>io.github.jeremylong</groupId>
         <artifactId>open-vulnerability-clients</artifactId>
         <version>${lib.open.vulnerability.clients.version}</version>
@@ -275,6 +269,12 @@
         <groupId>org.dependencytrack</groupId>
         <artifactId>quarkus-config-dependencytrack</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.quarkiverse.githubapi</groupId>
+        <artifactId>quarkus-github-api</artifactId>
+        <version>${lib.quarkus-github-api.version}</version>
       </dependency>
 
       <dependency>
