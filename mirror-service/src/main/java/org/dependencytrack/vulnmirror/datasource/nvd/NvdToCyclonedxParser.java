@@ -167,7 +167,7 @@ public final class NvdToCyclonedxParser {
         //
         // Original logic ported from vanilla Dependency-Track:
         // https://github.com/DependencyTrack/dependency-track/blob/58a83978f714d5940ef7f35cc386b255cbd510f7/src/main/java/org/dependencytrack/parser/nvd/NvdParser.java#L238-L269
-        if (node.getOperator() != Node.Operator.AND) {
+        if (node.getOperator() == Node.Operator.AND) {
             // Re-group `CpeMatch`es by CPE part to determine which are against applications,
             // and which against operating systems. When matches are present for both of them,
             // only use the ones for applications.
