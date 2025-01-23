@@ -62,7 +62,7 @@
     <project.parentBaseDir>.</project.parentBaseDir>
 
     <!-- Dependency Versions -->
-    <lib.assertj.version>3.27.2</lib.assertj.version>
+    <lib.assertj.version>3.27.3</lib.assertj.version>
     <lib.checkstyle.version>10.21.1</lib.checkstyle.version>
     <lib.cloud-sql-postgres-socket-factory.version>1.22.0</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>2.1.0</lib.cpe-parser.version>
