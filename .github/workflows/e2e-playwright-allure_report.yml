@@ -38,9 +38,9 @@ jobs:
         run: |
           docker compose --profile demo up -d --pull always
 
-      - name: Install JQ to parse json inside shell
-        run: |
-          sudo apt install jq
+      #- name: Install JQ to parse json inside shell
+      #  run: |
+      #    sudo apt install jq
 
       # todo fix after talk with niklas
       # - name: Set the Locale as an environment variable
@@ -58,19 +58,18 @@ jobs:
           npm ci
           npx playwright install --with-deps
 
-      - name: Wait for API server to respond (HTTP 200)
-        run: |
-          chmod +x ./scripts/check-api.sh
-          ./scripts/check-api.sh
+      #- name: Wait for API server to respond (HTTP 200)
+      #  run: |
+      #    chmod +x ./scripts/check-api.sh
+      #    ./scripts/check-api.sh
 
-      - name: Wait for DependencyTrack to be ready
-        run: |
-          chmod +x ./scripts/check-dependencytrack.sh
-          ./scripts/check-dependencytrack.sh
+      #- name: Wait for DependencyTrack to be ready
+      #  run: |
+      #    chmod +x ./scripts/check-dependencytrack.sh
+      #    ./scripts/check-dependencytrack.sh
 
       - name: Run Playwright tests
         run: npx playwright test
-        continue-on-error: true
 
       - name: Upload test results
         if: ${{ !cancelled() }}
@@ -82,7 +81,7 @@ jobs:
   publish-results:
     needs: run-playwright-e2e
     runs-on: ubuntu-latest
-    # if: always()
+    if: always()
     steps:
       - name: Download test results
         uses: actions/download-artifact@v4
