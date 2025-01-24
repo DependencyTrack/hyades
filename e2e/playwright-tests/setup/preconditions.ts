@@ -9,7 +9,6 @@ setup('Initial Login', async ({ page }) => {
     const initialPasswordChangePage = new PasswordChangePage(page);
     await initialPasswordChangePage.isPasswordChangePageVisible();
     await initialPasswordChangePage.doPasswordChangeFlow("admin", "admin", process.env.RANDOM_PASSWORD);
-    console.log(process.env.RANDOM_PASSWORD); // todo remove afterwards
 
     await page.waitForTimeout(2000);
 });

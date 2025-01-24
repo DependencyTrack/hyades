@@ -16,7 +16,6 @@ async function globalSetup() {
     }
     const filePath = await findMatchingLocaleFile('en'); // todo fix after talk with Niklas
     process.env.LOCALE_JSON = await fsPromises.readFile(filePath, 'utf8');
-    console.log(process.env.RANDOM_PASSWORD); // todo remove afterwards
 }
 
 async function findMatchingLocaleFile(locale: string, localeDir = './locales') {
