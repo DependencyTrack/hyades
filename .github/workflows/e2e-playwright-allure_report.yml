@@ -42,9 +42,10 @@ jobs:
         run: |
           sudo apt install jq
 
-      - name: Set the Locale as an environment variable
-        run: |
-          echo "LOCALE=${{ github.event.inputs.Locale }}" >> $GITHUB_ENV
+      # todo fix after talk with niklas
+      # - name: Set the Locale as an environment variable
+      #  run: |
+      #    echo "LOCALE=${{ github.event.inputs.Locale }}" >> $GITHUB_ENV
 
       - name: Generate Random UUID for password use
         run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV
