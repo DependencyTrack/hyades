@@ -11,10 +11,10 @@ async function globalSetup() {
         locale = process.env.LOCALE;
         // process.env.RANDOM_PASSWORD is set via uuidgen inside workflow
     } else {
-        locale = 'en';
+        // locale = 'en';
         process.env.RANDOM_PASSWORD = 'difficultPw123'
     }
-    const filePath = await findMatchingLocaleFile(locale);
+    const filePath = await findMatchingLocaleFile('en'); // todo fix after talk with Niklas
     process.env.LOCALE_JSON = await fsPromises.readFile(filePath, 'utf8');
 }
 
