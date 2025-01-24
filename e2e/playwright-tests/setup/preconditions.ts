@@ -10,7 +10,7 @@ setup('Initial Login', async ({ page }) => {
     await initialPasswordChangePage.isPasswordChangePageVisible();
     await initialPasswordChangePage.doPasswordChangeFlow("admin", "admin", process.env.RANDOM_PASSWORD);
 
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 });
 
 const adminFile = 'e2e/playwright-tests/.auth/admin.json';
