@@ -48,7 +48,10 @@ jobs:
       #    echo "LOCALE=${{ github.event.inputs.Locale }}" >> $GITHUB_ENV
 
       - name: Generate Random UUID for password use
-        run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV
+        run: |
+          RANDOM_PASSWORD=$(uuidgen -r)
+          echo "::add-mask::$RANDOM_PASSWORD" # Mask the value
+          echo "RANDOM_PASSWORD=$RANDOM_PASSWORD" >> $GITHUB_ENV
 
       - name: Install necessary playwright dependencies
         run: |
@@ -67,6 +70,7 @@ jobs:
 
       - name: Run Playwright tests
         run: npx playwright test
+        continue-on-error: true
 
       - name: Upload test results
         if: ${{ !cancelled() }}
@@ -78,6 +82,7 @@ jobs:
   publish-results:
     needs: run-playwright-e2e
     runs-on: ubuntu-latest
+    # if: always()
     steps:
       - name: Download test results
         uses: actions/download-artifact@v4
