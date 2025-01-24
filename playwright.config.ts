@@ -49,7 +49,7 @@ export default defineConfig({
         },
       },
     ],
-  ]: [["list"],
+  ]: [["list"], ["html"],
         ["allure-playwright",
           {
             resultsDir: defOutDir + "/allure-results",
@@ -71,7 +71,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
+    baseURL: 'http://localhost:8081',
 
     // Capture screenshot after each test failure. 'off', 'on' and 'only-on-failure'
     screenshot: 'only-on-failure',
@@ -80,35 +80,66 @@ export default defineConfig({
     trace: 'on-first-retry',
 
     // Record video only when retrying a test for the first time. 'off', 'on', 'retain-on-failure' and 'on-first-retry'
-    video: 'retain-on-failure'
+    video: {
+      mode: "retain-on-failure",
+      size: { width: 1600, height: 1080 }
+    },
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'preconditions',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1600, height: 1080 },
+      },
+      testDir: defTestDir + '/setup/',
       testMatch: /.*preconditions.ts/,
       retries: 0,
     },
 
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1600, height: 1080 },
+        storageState: defTestDir + '/.auth/admin.json',
+      },
       dependencies: ['preconditions'],
     },
 
+/* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)
+https://vitalets.github.io/playwright-bdd/#/faq?id=can-i-manually-apply-testuse-in-a-generated-file
+    {
+      name: 'permissions',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1600, height: 1080 },
+      },
+      dependencies: ['preconditions'],
+    },
+*/
+
+    /*
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: { width: 1600, height: 1080 },
+      },
       dependencies: ['preconditions'],
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: {
+        ...devices['Desktop Safari'],
+        viewport: { width: 1600, height: 1080 },
+      },
       dependencies: ['preconditions'],
     },
+    */
 
     /* Test against mobile viewports. */
     // {

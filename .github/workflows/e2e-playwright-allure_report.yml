@@ -1,26 +1,26 @@
-name: Playwright Tests
+name: Playwright E2E Tests
 on:
   workflow_dispatch:
-    inputs:
-      Locale:
-        description: 'Select the Locale to be used for E2E Testing'
-        required: true
-        default: 'en'
-        type: choice
-        options:
-          - en
-          - de
-          - es
-          - fr
-          - hi
-          - it
-          - ja
-          - pl
-          - pt-BR
-          - pt
-          - ru
-          - uk-UA
-          - zh
+    # inputs:
+    #  Locale:
+    #    description: 'Select the Locale to be used for E2E Testing'
+    #    required: true
+    #    default: 'en'
+    #    type: choice
+    #    options:
+    #      - en
+    #      - de
+    #      - es
+    #      - fr
+    #      - hi
+    #      - it
+    #      - ja
+    #      - pl
+    #      - pt-BR
+    #      - pt
+    #      - ru
+    #      - uk-UA
+    #      - zh
   schedule:
     - cron: "0 0,10,20 * * *"
 
@@ -34,7 +34,13 @@ jobs:
         with:
           node-version: lts/*
 
-      # Hier muss Dependency Track in all ihrer Pracht gestartet werden
+      - name: Start DependencyTrack
+        run: |
+          docker compose --profile demo up -d --pull always
+
+      - name: Install JQ to parse json inside shell
+        run: |
+          sudo apt install jq
 
       - name: Set the Locale as an environment variable
         run: |
@@ -43,10 +49,20 @@ jobs:
       - name: Generate Random UUID for password use
         run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV
 
-      - name: Install necessary dependencies
+      - name: Install necessary playwright dependencies
         run: |
           npm ci
           npx playwright install --with-deps
+
+      - name: Wait for API server to respond (HTTP 200)
+        run: |
+          chmod +x ./scripts/check-api.sh
+          ./scripts/check-api.sh
+
+      - name: Wait for DependencyTrack to be ready
+        run: |
+          chmod +x ./scripts/check-dependencytrack.sh
+          ./scripts/check-dependencytrack.sh
 
       - name: Run Playwright tests
         run: npx playwright test
