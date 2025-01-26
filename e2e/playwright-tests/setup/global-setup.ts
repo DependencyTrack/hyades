@@ -1,24 +1,28 @@
 import { request } from '@playwright/test';
-import { promises as fsPromises } from 'fs';
 import * as fs from 'fs';
 import * as path from "node:path";
 
-// WILL NOT BE TRACKED IN REPORT
+// WILL NOT BE TRACKED IN TEST REPORT
 async function globalSetup() {
-    let locale: string;
+    const locale = 'en'
 
     if (process.env.CI) {
-        locale = process.env.LOCALE;
+        // locale = process.env.LOCALE;
         // process.env.RANDOM_PASSWORD is set via uuidgen inside workflow
     } else {
         // locale = 'en';
         process.env.RANDOM_PASSWORD = 'difficultPw123'
     }
-    const filePath = await findMatchingLocaleFile('en'); // todo fix after talk with Niklas
-    process.env.LOCALE_JSON = await fsPromises.readFile(filePath, 'utf8');
+    const filePath = await findMatchingLocaleFileOnGithub(locale); // todo fix after talk with Niklas
+    process.env.LOCALE_JSON = fs.readFileSync(filePath, 'utf-8');
 }
 
-async function findMatchingLocaleFile(locale: string, localeDir = './locales') {
+/**
+ * Finds the corresponding locale file from the _i18n_ directory on @link [DependencyTrack Frontend Project](https://github.com/DependencyTrack/frontend/tree/master/src/i18n/locales)
+ * @param locale which is being searched in that repository
+ * @param localeDir where it should be stored at
+ */
+async function findMatchingLocaleFileOnGithub(locale: string, localeDir = './locales') {
     let filePath: fs.PathOrFileDescriptor;
     console.info(`Will try to download correct Locale...`);
 
