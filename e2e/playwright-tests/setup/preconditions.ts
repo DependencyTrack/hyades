@@ -2,18 +2,21 @@ import { test as setup } from '@playwright/test';
 import { LoginPage, PasswordChangePage } from "../page-objects/login.pom";
 import {AccessManagementMenu, AdministrationPage} from "../page-objects/administration.pom";
 import {NavigationParPage} from "../page-objects/navigation-bar.pom";
-import {NotificationPage} from "../page-objects/notification.pom";
+import {NotificationToast} from "../page-objects/notification-toast.pom";
 
 setup('Initial Login', async ({ page }) => {
     const loginPage = new LoginPage(page);
+    const initialPasswordChangePage = new PasswordChangePage(page);
+    const notificationToast = new NotificationToast(page);
+
     await page.goto('/');
     await loginPage.login("admin", "admin");
 
-    const initialPasswordChangePage = new PasswordChangePage(page);
     await initialPasswordChangePage.isPasswordChangePageVisible();
     await initialPasswordChangePage.doPasswordChangeFlow("admin", "admin", process.env.RANDOM_PASSWORD);
+    await notificationToast.verifySuccessfulPasswordChangeToast();
 
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(5000);
 });
 
 
@@ -31,14 +34,15 @@ setup('authenticate as admin', async ({ page }) => {
     const navBarPage = new NavigationParPage(page);
     const administrationPage = new AdministrationPage(page);
     const accessManagementMenu = new AccessManagementMenu(page);
-    const notificationPage = new NotificationPage(page);
+    const notificationPage = new NotificationToast(page);
 
     await page.goto('/');
 
     await loginPage.isLoginPageVisible();
     await loginPage.login("admin", process.env.RANDOM_PASSWORD);
 
-    await page.waitForURL('http://localhost:8081/dashboard');
+    await page.waitForURL('http://localhost:8081/dashboard', { timeout: 5000 });
+    await navBarPage.closeSnapshotPopup();
 
     // await dashboardPage.isDashboardPageVisible();
     // await administrationPage
@@ -49,7 +53,7 @@ setup('authenticate as admin', async ({ page }) => {
 
     for(const username of users) {
         await accessManagementMenu.createUser(username.username, process.env.RANDOM_PASSWORD);
-        // todo await notificationPage.verifyUserCreatedAlert();
+        // todo await notificationPage.verifySuccessfulUserCreatedToast();
         await page.waitForTimeout(1000);
         // todo await accessManagementMenu.addPermissionsToUser(username.username, username.permissions);
         await page.waitForTimeout(1000);

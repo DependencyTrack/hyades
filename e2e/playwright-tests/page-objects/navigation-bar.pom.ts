@@ -14,6 +14,7 @@ export class NavigationParPage {
     administrationTab: Locator;
     navBarToggle: Locator;
     sideBarMinimizer: Locator;
+    snapshotPopup: Locator;
 
     accountDropDown: Locator;
     accountDropDownUpdatePassword: Locator;
@@ -40,6 +41,7 @@ export class NavigationParPage {
         this.administrationTab = page.locator('/admin');
         this.navBarToggle = page.locator('button.d-md-down-none.navbar-toggler');
         this.sideBarMinimizer = page.locator('button.sidebar-minimizer');
+        this.snapshotPopup = page.locator('.modal-content');
 
         // Account Dropdown top right
         this.accountDropDown = page.locator('li.dropdown'); //todo if not working a.dropdown-toggle aber dann alle darunter anpassen
@@ -103,6 +105,10 @@ export class NavigationParPage {
 
     async clickOnSideBarMinimizer() {
         await this.sideBarMinimizer.click();
+    }
+    async closeSnapshotPopup() {
+        await this.snapshotPopup.locator('button').click();
+        await this.page.waitForTimeout(1000);
     }
 
     async clickOnAccountDropDown() {
