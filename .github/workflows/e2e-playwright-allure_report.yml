@@ -28,6 +28,8 @@ jobs:
   run-playwright-e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    outputs:
+      tests-ran: ${{ steps.run-tests.conclusion != null }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -70,6 +72,7 @@ jobs:
           ./scripts/check-dependencytrack.sh
 
       - name: Run Playwright tests
+        id: run-tests
         run: npx playwright test
 
       - name: Upload test results
@@ -82,7 +85,7 @@ jobs:
   publish-results:
     needs: run-playwright-e2e
     runs-on: ubuntu-latest
-    if: always()
+    if: needs.run-playwright-e2e.outputs.tests-ran == 'true'
     steps:
       - name: Download test results
         uses: actions/download-artifact@v4
