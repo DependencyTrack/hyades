@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Skript zum Überprüfen, ob DependencyTrack den Status "UP" hat
-for i in {1..30}; do
+for i in {1..6}; do
   RESPONSE=$(curl -s http://localhost:8080/health)
   STATUS=$(echo "$RESPONSE" | jq -r '.status')
 

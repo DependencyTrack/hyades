@@ -85,7 +85,7 @@ jobs:
   publish-results:
     needs: run-playwright-e2e
     runs-on: ubuntu-latest
-    if: needs.run-playwright-e2e.outputs.tests-ran == 'true'
+    if: needs.run-playwright-e2e.outputs.tests-ran == 'true' # only run when playwright tests were executed
     steps:
       - name: Download test results
         uses: actions/download-artifact@v4
