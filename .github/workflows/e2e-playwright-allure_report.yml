@@ -59,7 +59,7 @@ jobs:
           ./scripts/check-dependencytrack.sh
 
       - name: Run Playwright tests
-        run: npx playwright test --projects=${{ inputs.project || 'run_workflow_chromium' }}
+        run: npx playwright test --project=${{ inputs.project || 'run_workflow_chromium' }}
 
 
       - name: Upload test results
