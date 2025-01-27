@@ -10,9 +10,21 @@ import { defineBddConfig } from "playwright-bdd";
 // import path from 'path';
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-const defTestDir = "./e2e/playwright-tests";
+const playwrightTestDir = "./e2e/playwright-tests";
 const defOutDir = "./playwright-test-results";
 const setupDir = "./e2e/playwright-tests/setup";
+
+const gherkinTestDir = defineBddConfig({
+  features: playwrightTestDir + '/features/*.test.feature',
+  steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
+  outputDir: playwrightTestDir + '/.features-gen/tests',
+});
+
+const gherkinSetupDir = defineBddConfig({
+  features: playwrightTestDir + '/features/*.setup.feature',
+  steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
+  outputDir: playwrightTestDir + '/.features-gen/setup',
+});
 
 // Todo introduce gherkin into config
 // https://vitalets.github.io/playwright-bdd/#/blog/whats-new-in-v8?id=improved-configuration-options
@@ -23,11 +35,12 @@ const setupDir = "./e2e/playwright-tests/setup";
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: defTestDir,
+  testDir: gherkinTestDir,
   // Folder for test artifacts such as screenshots, videos, traces, etc.
   outputDir: defOutDir,
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false
+  ,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -84,6 +97,12 @@ export default defineConfig({
       mode: "retain-on-failure",
       size: { width: 1600, height: 1080 }
     },
+
+    /* low level timeouts in ms */
+    // e.g. locator.click()
+    actionTimeout: 5 * 1000, // 5 sec
+    // e.g. page.goto()
+    navigationTimeout: 5 * 1000, // 5 sec
   },
 
   /* Configure projects for major browsers */
@@ -94,19 +113,71 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
       },
-      testDir: defTestDir + '/setup/',
-      testMatch: /.*preconditions.ts/,
+      testDir: playwrightTestDir + '/setup/',
+      testMatch: /.*initial-setup.ts/,
       retries: 0,
     },
-
     {
-      name: 'chromium',
+      name: 'admin_authentication',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
-        storageState: defTestDir + '/.auth/admin.json',
       },
-      dependencies: ['preconditions'],
+      testDir: playwrightTestDir + '/setup/',
+      testMatch: /.*auth-setup.ts/,
+      retries: 0,
+      dependencies: process.env.CI ? ['preconditions'] : [],
+    }, // todo maybe not working on DTRACK bc not stored correctly ?
+    {
+      name: 'provisioning',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1600, height: 1080 },
+        storageState: playwrightTestDir + '/.auth/admin.json',
+      },
+      testDir: gherkinSetupDir,
+      dependencies: ['admin_authentication'],
+    },
+
+    // ONLY THE FOLLOWING PROJECTS CAN BE USED FOR TESTING
+    {
+      name: 'run_workflow_chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1600, height: 1080 },
+        storageState: playwrightTestDir + '/.auth/admin.json',
+      },
+      dependencies: ['provisioning'],
+    },
+
+    {
+      name: 'run_workflow_firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: { width: 1600, height: 1080 },
+        storageState: playwrightTestDir + '/.auth/admin.json',
+      },
+      dependencies: ['provisioning'],
+    },
+
+    {
+      name: 'run_workflow_webkit',
+      use: {
+        ...devices['Desktop Safari'],
+        viewport: { width: 1600, height: 1080 },
+        storageState: playwrightTestDir + '/.auth/admin.json',
+      },
+      dependencies: ['provisioning'],
+    },
+
+    {
+      name: 'chromium_without_provisioning',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1600, height: 1080 },
+        storageState: playwrightTestDir + '/.auth/admin.json',
+      },
+      dependencies: ['provisioning'],
     },
 
 /* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)

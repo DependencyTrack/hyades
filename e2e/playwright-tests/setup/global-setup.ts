@@ -7,7 +7,10 @@ async function globalSetup() {
     const locale = 'en'
 
     if (!process.env.CI) {
-        process.env.RANDOM_PASSWORD = 'difficultPw123'
+        const localAuthJson = fs.readFileSync(__dirname + '/local-auth.json', 'utf-8');
+        const json = JSON.parse(localAuthJson);
+
+        process.env.RANDOM_PASSWORD = json.password;
         // process.env.RANDOM_PASSWORD is set via uuidgen inside workflow
     }
     const filePath = await findMatchingLocaleFileOnGithub(locale);

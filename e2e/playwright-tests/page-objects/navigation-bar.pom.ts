@@ -30,15 +30,16 @@ export class NavigationParPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.dashboardTab = page.locator('/dashboard');
-        this.projectsTab = page.locator('/projects');
-        this.componentsTab = page.locator('/components');
-        this.vulnerabilitiesTab = page.locator('/vulnerabilities');
-        this.licencesTab = page.locator('/licences');
-        this.tagsTab = page.locator('/tags');
-        this.vulnerabilityAuditTab = page.locator('/vulnerabilityAudit');
-        this.policyManagementTab = page.locator('/policy');
-        this.administrationTab = page.locator('/admin');
+        this.dashboardTab = page.getByRole('link', { name: getValue("message", "dashboard") }); //locator('a[href="/dashboard"]')
+        this.projectsTab = page.getByRole('link', { name: getValue("message", "projects") }); //locator('a[href="/projects"]')
+        this.componentsTab = page.getByRole('link', { name: getValue("message", "components") }); //locator('a[href="/components"]')
+        this.vulnerabilitiesTab = page.getByRole('link', { name: getValue("message", "vulnerabilities") }); //locator('a[href="/vulnerabilities"]')
+        this.licencesTab = page.getByRole('link', { name: getValue("message", "licenses") }); //locator('a[href="/licenses"]')
+        this.tagsTab = page.getByRole('link', { name: getValue("message", "tags") }); //locator('a[href="/tags"]')
+        this.vulnerabilityAuditTab = page.getByRole('link', { name: getValue("message", "vulnerability_audit") }); //locator('a[href="/vulnerabilityAudit"]')
+        this.policyManagementTab = page.getByRole('link', { name: getValue("message", "policy_management") }); //locator('a[href="/policy"]')
+        this.administrationTab = page.getByRole('link', { name: getValue("message", "administration") }); // locator('a[href="/admin"]')
+
         this.navBarToggle = page.locator('button.d-md-down-none.navbar-toggler');
         this.sideBarMinimizer = page.locator('button.sidebar-minimizer');
         this.snapshotPopup = page.locator('.modal-content');

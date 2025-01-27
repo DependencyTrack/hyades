@@ -1,15 +1,16 @@
 name: Playwright E2E Tests
 on:
   workflow_dispatch:
-    # inputs:
-    #  browser:
-    #    description: 'Select the Browser to be used for E2E Testing'
-    #    required: true
-    #    default: 'chromium'
-    #    type: choice
-    #    options:
-    #      - firefox
-    #      - webkit
+     inputs:
+      project:
+        description: 'Select the Browser to be used for E2E Testing'
+        required: true
+        default: 'run_workflow_chromium'
+        type: choice
+        options:
+          - run_workflow_chromium
+          - run_workflow_firefox
+          - run_workflow_webkit
   schedule:
     - cron: "0 0,10,20 * * *"
 
@@ -17,14 +18,11 @@ jobs:
   run-playwright-e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    outputs:
-      tests-ran: ${{ steps.run-tests.conclusion != null }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          # browser: ${{ inputs.browser || 'chromium' }}
 
       - name: Add Environment Variable To Apiserver
         run: |
@@ -61,11 +59,8 @@ jobs:
           ./scripts/check-dependencytrack.sh
 
       - name: Run Playwright tests
-        id: run-tests
-        run: npx playwright test
+        run: npx playwright test --projects=${{ inputs.project || 'run_workflow_chromium' }}
 
-      - name: Output
-        run: echo ${{ steps.run-tests.conclusion }}
 
       - name: Upload test results
         if: ${{ !cancelled() }}
@@ -77,7 +72,7 @@ jobs:
   publish-results:
     needs: run-playwright-e2e
     runs-on: ubuntu-latest
-    if: needs.run-playwright-e2e.outputs.tests-ran == 'true' # only run when playwright tests were executed
+    if: always()
     steps:
       - name: Download test results
         uses: actions/download-artifact@v4
