@@ -2,25 +2,14 @@ name: Playwright E2E Tests
 on:
   workflow_dispatch:
     # inputs:
-    #  Locale:
-    #    description: 'Select the Locale to be used for E2E Testing'
+    #  browser:
+    #    description: 'Select the Browser to be used for E2E Testing'
     #    required: true
-    #    default: 'en'
+    #    default: 'chromium'
     #    type: choice
     #    options:
-    #      - en
-    #      - de
-    #      - es
-    #      - fr
-    #      - hi
-    #      - it
-    #      - ja
-    #      - pl
-    #      - pt-BR
-    #      - pt
-    #      - ru
-    #      - uk-UA
-    #      - zh
+    #      - firefox
+    #      - webkit
   schedule:
     - cron: "0 0,10,20 * * *"
 
@@ -37,18 +26,18 @@ jobs:
           node-version: lts/*
           # browser: ${{ inputs.browser || 'chromium' }}
 
+      - name: Add Environment Variable To Apiserver
+        run: |
+          cat <<EOF > docker-compose.override.yml
+          services:
+            apiserver:
+              environment:
+                ALPINE_BCRYPT_ROUNDS: "4"
+          EOF
+
       - name: Start DependencyTrack
         run: |
-          docker compose --profile demo up -d --pull always
-
-      #- name: Install JQ to parse json inside shell
-      #  run: |
-      #    sudo apt install jq
-
-      # todo fix after talk with niklas
-      # - name: Set the Locale as an environment variable
-      #  run: |
-      #    echo "LOCALE=${{ github.event.inputs.Locale }}" >> $GITHUB_ENV
+          docker compose -f docker-compose.yml -f docker-compose.override.yml --profile demo up -d --pull always
 
       - name: Generate Random UUID for password use
         run: |
