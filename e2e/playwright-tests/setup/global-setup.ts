@@ -53,7 +53,7 @@ async function findMatchingLocaleFileOnGithub(locale: string, localeDir = './loc
 
                 fs.writeFileSync(filePath, fileContent);
 
-                console.log(`Downloaded: ${matchingItem.name}`);
+                console.info(`Downloaded: ${matchingItem.name}`);
             } else {
                 throw new Error(`Failed to download ${matchingItem.name}: ${fileResponse.status()}`);
             }
