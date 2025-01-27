@@ -6,14 +6,11 @@ import * as path from "node:path";
 async function globalSetup() {
     const locale = 'en'
 
-    if (process.env.CI) {
-        // locale = process.env.LOCALE;
-        // process.env.RANDOM_PASSWORD is set via uuidgen inside workflow
-    } else {
-        // locale = 'en';
+    if (!process.env.CI) {
         process.env.RANDOM_PASSWORD = 'difficultPw123'
+        // process.env.RANDOM_PASSWORD is set via uuidgen inside workflow
     }
-    const filePath = await findMatchingLocaleFileOnGithub(locale); // todo fix after talk with Niklas
+    const filePath = await findMatchingLocaleFileOnGithub(locale);
     process.env.LOCALE_JSON = fs.readFileSync(filePath, 'utf-8');
 }
 
