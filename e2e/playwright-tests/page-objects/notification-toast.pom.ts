@@ -39,9 +39,14 @@ export class NotificationToast {
     }
 
     async verifySuccessfulUserCreatedToast() {
-        // success
-        // user_created
-        // close afterwards
-        // .toHaveText
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("admin", "user_created"));
+        await this.successToast.click();
+    }
+
+    async verifySuccessfulUpdatedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "updated"));
+        await this.successToast.click();
     }
 }

@@ -61,8 +61,8 @@ testdata/boms/generated/*.cdx.json
 /test-results/
 /blob-report/
 
-# Playwright
+# Playwright E2E
 /playwright-test-results/
 /e2e/playwright-tests/setup/locales
-/e2e/playwright-tests/.auth
+/e2e/playwright-tests/.*
 playwright-report
