@@ -20,9 +20,11 @@ package org.dependencytrack.vulnmirror.datasource.github;
 
 import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClient;
 import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClientBuilder;
-import jakarta.enterprise.context.ApplicationScoped;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClientBuilder;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.dependencytrack.common.SecretDecryptor;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -41,17 +43,23 @@ class GitHubApiClientFactory {
     }
 
     GitHubSecurityAdvisoryClient create(final long lastUpdatedEpochSeconds) {
-        final GitHubSecurityAdvisoryClientBuilder builder = aGitHubSecurityAdvisoryClient();
+        final HttpAsyncClientBuilder httpClientBuilder = HttpAsyncClients.custom()
+                .setRetryStrategy(new GitHubHttpRequestRetryStrategy())
+                .useSystemProperties();
+
+        final GitHubSecurityAdvisoryClientBuilder builder = aGitHubSecurityAdvisoryClient()
+                .withHttpClientSupplier(httpClientBuilder::build);
 
         config.baseUrl().ifPresent(builder::withEndpoint);
         config.apiKey()
-                .map(encryptedApiKey -> {
-                    try {
-                        return secretDecryptor.decryptAsString(encryptedApiKey);
-                    } catch (Exception e) {
-                        throw new IllegalStateException("Failed to decrypt API key", e);
-                    }
-                })
+                // TODO: https://github.com/DependencyTrack/dependency-track/issues/3332
+//                .map(encryptedApiKey -> {
+//                    try {
+//                        return secretDecryptor.decryptAsString(encryptedApiKey);
+//                    } catch (Exception e) {
+//                        throw new IllegalStateException("Failed to decrypt API key", e);
+//                    }
+//                })
                 .ifPresent(builder::withApiKey);
 
         if (lastUpdatedEpochSeconds > 0) {

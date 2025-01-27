@@ -85,9 +85,11 @@
               "endCursor": "Y3Vyc29yOnYyOpK5MjAyMi0wOS0wOVQyMTozNDo0MCswMjowMM0R1Q=="
             }
           },
-          "cvss": {
-            "score": 5.4,
-            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+          "cvssSeverities": {
+            "cvssV3": {
+              "score": 5.4,
+              "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N"
+            }
           },
           "cwes": {
             "edges": [
