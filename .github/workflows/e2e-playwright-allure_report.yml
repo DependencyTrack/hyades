@@ -59,15 +59,15 @@ jobs:
           npm ci
           npx playwright install --with-deps
 
-      #- name: Wait for API server to respond (HTTP 200)
-      #  run: |
-      #    chmod +x ./scripts/check-api.sh
-      #    ./scripts/check-api.sh
+      - name: Wait for API server to respond (HTTP 200)
+        run: |
+          chmod +x ./scripts/check-api.sh
+          ./scripts/check-api.sh
 
-      #- name: Wait for DependencyTrack to be ready
-      #  run: |
-      #    chmod +x ./scripts/check-dependencytrack.sh
-      #    ./scripts/check-dependencytrack.sh
+      - name: Wait for DependencyTrack to be ready
+        run: |
+          chmod +x ./scripts/check-dependencytrack.sh
+          ./scripts/check-dependencytrack.sh
 
       - name: Run Playwright tests
         run: npx playwright test
