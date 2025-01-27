@@ -64,6 +64,9 @@ jobs:
         id: run-tests
         run: npx playwright test
 
+      - name: Output
+        run: echo ${{ steps.run-tests.conclusion }}
+
       - name: Upload test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
