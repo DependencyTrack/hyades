@@ -4,7 +4,16 @@ import {AccessManagementMenu, AdministrationPage} from "../page-objects/administ
 import {NavigationParPage} from "../page-objects/navigation-bar.pom";
 import {NotificationToast} from "../page-objects/notification-toast.pom";
 
-setup('Initial Login', async ({ page }) => {
+const adminFile = 'e2e/playwright-tests/.auth/admin.json';
+const users = [
+    { username: 'test-user1', userFile: 'playwright-tests/.auth/user1.json', description: 'authenticate as user1', permissions: ["xyz", "xyz"], },
+    { username: 'test-user2', userFile: 'playwright-tests/.auth/user2.json', description: 'authenticate as user2', permissions: ["xyz", "xyz"], },
+    { username: 'test-user3', userFile: 'playwright-tests/.auth/user3.json', description: 'authenticate as user3', permissions: ["xyz", "xyz"], },
+    { username: 'test-user4', userFile: 'playwright-tests/.auth/user4.json', description: 'authenticate as user4', permissions: ["xyz", "xyz"], },
+    { username: 'test-user5', userFile: 'playwright-tests/.auth/user5.json', description: 'authenticate as user5', permissions: ["xyz", "xyz"], },
+];
+
+setup('Change Initial Password As Admin', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const initialPasswordChangePage = new PasswordChangePage(page);
     const notificationToast = new NotificationToast(page);
@@ -19,27 +28,24 @@ setup('Initial Login', async ({ page }) => {
     await page.waitForTimeout(5000);
 });
 
-
-const users = [
-    { username: 'test-user1', userFile: 'playwright-tests/.auth/user1.json', description: 'authenticate as user1', permissions: ["xyz", "xyz"], },
-    { username: 'test-user2', userFile: 'playwright-tests/.auth/user2.json', description: 'authenticate as user2', permissions: ["xyz", "xyz"], },
-    { username: 'test-user3', userFile: 'playwright-tests/.auth/user3.json', description: 'authenticate as user3', permissions: ["xyz", "xyz"], },
-    { username: 'test-user4', userFile: 'playwright-tests/.auth/user4.json', description: 'authenticate as user4', permissions: ["xyz", "xyz"], },
-    { username: 'test-user5', userFile: 'playwright-tests/.auth/user5.json', description: 'authenticate as user5', permissions: ["xyz", "xyz"], },
-];
-const adminFile = 'e2e/playwright-tests/.auth/admin.json';
-setup('authenticate as admin', async ({ page }) => {
+setup('Store Admin Authentication', async ({ page }) => {
     const loginPage = new LoginPage(page);
+
+    await page.goto('/');
+    await loginPage.login("admin", process.env.RANDOM_PASSWORD);
+
+    await page.waitForURL('http://localhost:8081/dashboard', { timeout: 5000 });
+    await page.context().storageState({ path: adminFile });
+});
+
+setup('authenticate as admin', async ({ page }) => {
+    setup.use({ storageState: adminFile });
+
     // const dashboardPage = new DashboardPage(page);
     const navBarPage = new NavigationParPage(page);
     const administrationPage = new AdministrationPage(page);
     const accessManagementMenu = new AccessManagementMenu(page);
     const notificationPage = new NotificationToast(page);
-
-    await page.goto('/');
-
-    await loginPage.isLoginPageVisible();
-    await loginPage.login("admin", process.env.RANDOM_PASSWORD);
 
     await page.waitForURL('http://localhost:8081/dashboard', { timeout: 5000 });
     await navBarPage.closeSnapshotPopup();
@@ -60,11 +66,7 @@ setup('authenticate as admin', async ({ page }) => {
     }
 
     await navBarPage.clickOnDashboardTab();
-
-    await page.context().storageState({ path: adminFile });
 });
-
-
 
 const authenticateUser = async (username: string, userFile: string, description: string) => {
     setup(description, async ({ page }) => {
