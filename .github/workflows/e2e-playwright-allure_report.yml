@@ -1,26 +1,16 @@
-name: Playwright Tests
+name: Playwright E2E Tests
 on:
   workflow_dispatch:
-    inputs:
-      Locale:
-        description: 'Select the Locale to be used for E2E Testing'
+     inputs:
+      project:
+        description: 'Select the Browser to be used for E2E Testing'
         required: true
-        default: 'en'
+        default: 'run_workflow_chromium'
         type: choice
         options:
-          - en
-          - de
-          - es
-          - fr
-          - hi
-          - it
-          - ja
-          - pl
-          - pt-BR
-          - pt
-          - ru
-          - uk-UA
-          - zh
+          - run_workflow_chromium
+          - run_workflow_firefox
+          - run_workflow_webkit
   schedule:
     - cron: "0 0,10,15,20 * * *"
 
@@ -34,22 +24,45 @@ jobs:
         with:
           node-version: lts/*
 
-      # Hier muss Dependency Track in all ihrer Pracht gestartet werden
-
-      - name: Set the Locale as an environment variable
+      - name: Add Environment Variable To DependencyTrack Apiserver
         run: |
-          echo "LOCALE=${{ github.event.inputs.Locale || 'en' }}" >> $GITHUB_ENV
+          cat <<EOF > docker-compose.override.yml
+          services:
+            apiserver:
+              environment:
+                ALPINE_BCRYPT_ROUNDS: "4"
+          EOF
+
+      - name: Start DependencyTrack
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.override.yml --profile demo up -d --pull always
 
       - name: Generate Random UUID for password use
-        run: echo "RANDOM_PASSWORD=$(uuidgen -r)" >> $GITHUB_ENV
+        run: |
+          RANDOM_PASSWORD=$(uuidgen -r)
+          echo "::add-mask::$RANDOM_PASSWORD" # Mask the value
+          echo "RANDOM_PASSWORD=$RANDOM_PASSWORD" >> $GITHUB_ENV
 
-      - name: Install necessary dependencies
+      - name: Install necessary playwright dependencies
         run: |
           npm ci
           npx playwright install --with-deps
 
+      #- name: Wait for API server to respond (HTTP 200)
+      #  run: |
+      #    chmod +x ./scripts/check-api.sh
+      #    ./scripts/check-api.sh
+
+      #- name: Wait for DependencyTrack to be ready
+      #  run: |
+      #    chmod +x ./scripts/check-dependencytrack.sh
+      #    ./scripts/check-dependencytrack.sh
+
+      - name: Generate BDD Tests
+        run:  npx bddgen
+
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --project=${{ inputs.project || 'run_workflow_chromium' }}
 
       - name: Upload test results
         if: ${{ !cancelled() }}
@@ -61,6 +74,7 @@ jobs:
   publish-results:
     needs: run-playwright-e2e
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - name: Download test results
         uses: actions/download-artifact@v4

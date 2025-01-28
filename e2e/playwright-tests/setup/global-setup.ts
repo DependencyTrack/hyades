@@ -1,45 +1,30 @@
-import { request, type FullConfig } from '@playwright/test';
-import { promises as fsPromises } from 'fs';
+import { request } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from "node:path";
 
-// process.env.RANDOM_PASSWORD for creating safe passwords for users
-// hier login mit password change etc.
-// auch locale selection
+// WILL NOT BE TRACKED IN TEST REPORT
+async function globalSetup() {
+    const locale = 'en'
 
-// --> das aber denke ich ebenfalls mit BDD
+    if (!process.env.CI) {
+        const localAuthJson = fs.readFileSync(__dirname + '/local-auth.json', 'utf-8');
+        const json = JSON.parse(localAuthJson);
 
-async function globalSetup(config: FullConfig) {
-    let locale: string;
-
-    if (process.env.CI) {
-        locale = process.env.LOCALE;
-        // process.env.RANDOM_PASSWORD set via uuidgen inside workflow
-    } else {
-        locale = 'en';
-        process.env.RANDOM_PASSWORD = 'difficultPw123'
+        process.env.RANDOM_PASSWORD = json.password;
+        // process.env.RANDOM_PASSWORD is set via uuidgen inside workflow
     }
-    const filePath = await findMatchingLocaleFile(locale);
-
-    process.env.LOCALE_JSON = await fsPromises.readFile(filePath, 'utf8');
-
-
-    /* HIER NUR PASSWORD CHANGE KEIN STORAGE STATE
-    const { baseURL, storageState } = config.projects[0].use;
-    const browser = await chromium.launch();
-    const page = await browser.newPage();
-    await page.goto(baseURL!);
-    await page.getByLabel('User Name').fill('user');
-    await page.getByLabel('Password').fill('password');
-    await page.getByText('Sign in').click();
-    await page.context().storageState({ path: storageState as string });
-    await browser.close();
-     */
+    const filePath = await findMatchingLocaleFileOnGithub(locale);
+    process.env.LOCALE_JSON = fs.readFileSync(filePath, 'utf-8');
 }
 
-async function findMatchingLocaleFile(locale: string, localeDir = './locales') {
+/**
+ * Finds the corresponding locale file from the _i18n_ directory on @link [DependencyTrack Frontend Project](https://github.com/DependencyTrack/frontend/tree/master/src/i18n/locales)
+ * @param locale which is being searched in that repository
+ * @param localeDir where it should be stored at
+ */
+async function findMatchingLocaleFileOnGithub(locale: string, localeDir = './locales') {
     let filePath: fs.PathOrFileDescriptor;
-    console.info(`Will try to download correct Locale...`);
+    console.info(`Will try to download ${locale} Locale`);
 
     const context = await request.newContext({
         baseURL: 'https://api.github.com',
@@ -68,7 +53,7 @@ async function findMatchingLocaleFile(locale: string, localeDir = './locales') {
 
                 fs.writeFileSync(filePath, fileContent);
 
-                console.log(`Downloaded: ${matchingItem.name}`);
+                console.info(`Downloaded: ${matchingItem.name}`);
             } else {
                 throw new Error(`Failed to download ${matchingItem.name}: ${fileResponse.status()}`);
             }
