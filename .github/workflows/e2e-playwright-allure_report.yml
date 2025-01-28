@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Add Environment Variable To Apiserver
+      - name: Add Environment Variable To DependencyTrack Apiserver
         run: |
           cat <<EOF > docker-compose.override.yml
           services:

@@ -26,11 +26,11 @@ export class AdministrationPage {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
+        await this.page.waitForTimeout(2000);
     }
 }
 
-
-export class ConfigurationMenu {
+export class ConfigurationSubMenu {
     page: Page;
     configMenuItems: Record<string, Locator>;
 
@@ -40,29 +40,30 @@ export class ConfigurationMenu {
 
         this.page = page;
         this.configMenuItems = {
-            general: page.locator(configElementID).locator(`${configElementURN}/general`),
-            bomFormats: page.locator(configElementID).locator(`${configElementURN}/bomFormats`),
-            email: page.locator(configElementID).locator(`${configElementURN}/email`),
-            welcomeMessage: page.locator(configElementID).locator(`${configElementURN}/welcomeMessage`),
-            internalComponents: page.locator(configElementID).locator(`${configElementURN}/internalComponents`),
-            maintenance: page.locator(configElementID).locator(`${configElementURN}/maintenance`),
-            taskScheduler: page.locator(configElementID).locator(`${configElementURN}/taskScheduler`),
-            search: page.locator(configElementID).locator(`${configElementURN}/search`),
-            riskScore: page.locator(configElementID).locator(`${configElementURN}/RiskScore`),
-            experimental: page.locator(configElementID).locator(`${configElementURN}/experimental`),
+            general: page.locator(configElementID).locator(`a[href='${configElementURN}/general']`),
+            bomFormats: page.locator(configElementID).locator(`a[href='${configElementURN}/bomFormats']`),
+            email: page.locator(configElementID).locator(`a[href='${configElementURN}/email']`),
+            welcomeMessage: page.locator(configElementID).locator(`a[href='{configElementURN}/welcomeMessage']`),
+            internalComponents: page.locator(configElementID).locator(`a[href='${configElementURN}/internalComponents']`),
+            maintenance: page.locator(configElementID).locator(`a[href='${configElementURN}/maintenance']`),
+            taskScheduler: page.locator(configElementID).locator(`a[href='${configElementURN}/taskScheduler']`),
+            search: page.locator(configElementID).locator(`a[href='${configElementURN}/search']`),
+            riskScore: page.locator(configElementID).locator(`a[href='${configElementURN}/RiskScore']`),
+            experimental: page.locator(configElementID).locator(`a[href='${configElementURN}/experimental']`),
         };
     }
 
-    async clickMenu(menuName: string) {
+    async clickOnMenuItem(menuName: string) {
         const menu = this.configMenuItems[menuName];
         if (!menu) {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
+        await this.page.waitForTimeout(2000);
     }
 }
 
-export class AnalyzersMenu {
+export class AnalyzersSubMenu {
     page: Page;
     analyzersMenuItems: Record<string, Locator>;
 
@@ -72,24 +73,25 @@ export class AnalyzersMenu {
 
         this.page = page;
         this.analyzersMenuItems = {
-            internal: page.locator(analyzersElementID).locator(`${analyzersElementURN}/internal`),
-            oss: page.locator(analyzersElementID).locator(`${analyzersElementURN}/oss`),
-            vulnDB: page.locator(analyzersElementID).locator(`${analyzersElementURN}/vulnDB`),
-            snyk: page.locator(analyzersElementID).locator(`${analyzersElementURN}/snyk`),
-            trivy: page.locator(analyzersElementID).locator(`${analyzersElementURN}/trivy`),
+            internal: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/internal']`),
+            oss: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/oss']`),
+            vulnDB: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/vulnDB']`),
+            snyk: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/snyk']`),
+            trivy: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/trivy']`),
         };
     }
 
-    async clickMenu(menuName: string) {
+    async clickOnMenuItem(menuName: string) {
         const menu = this.analyzersMenuItems[menuName];
         if (!menu) {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
+        await this.page.waitForTimeout(2000);
     }
 }
 
-export class VulnerabilitySourcesMenu {
+export class VulnerabilitySourcesSubMenu {
     page: Page;
     vulnerabilitySourcesMenuItems: Record<string, Locator>;
 
@@ -99,22 +101,23 @@ export class VulnerabilitySourcesMenu {
 
         this.page = page;
         this.vulnerabilitySourcesMenuItems = {
-            nvd: page.locator(vulnerabilitySourcesElementID).locator(`${vulnerabilitySourcesElementURN}/nvd`),
-            github: page.locator(vulnerabilitySourcesElementID).locator(`${vulnerabilitySourcesElementURN}/github`),
-            osv: page.locator(vulnerabilitySourcesElementID).locator(`${vulnerabilitySourcesElementURN}/osv`),
+            nvd: page.locator(vulnerabilitySourcesElementID).locator(`a[href='${vulnerabilitySourcesElementURN}/nvd']`),
+            github: page.locator(vulnerabilitySourcesElementID).locator(`a[href='${vulnerabilitySourcesElementURN}/github']`),
+            osv: page.locator(vulnerabilitySourcesElementID).locator(`a[href='${vulnerabilitySourcesElementURN}/osv']`),
         };
     }
 
-    async clickMenu(menuName: string) {
+    async clickOnMenuItem(menuName: string) {
         const menu = this.vulnerabilitySourcesMenuItems[menuName];
         if (!menu) {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
+        await this.page.waitForTimeout(2000);
     }
 }
 
-export class RepositoriesMenu {
+export class RepositoriesSubMenu {
     page: Page;
     repositoriesMenuItems: Record<string, Locator>;
 
@@ -124,32 +127,33 @@ export class RepositoriesMenu {
 
         this.page = page;
         this.repositoriesMenuItems = {
-            cargo: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/cargo`),
-            composer: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/composer`),
-            cpan: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/cpan`),
-            gem: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/gem`),
-            github: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/github`),
-            go: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/goModules`),
-            hackage: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/hackage`),
-            hex: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/hex`),
-            maven: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/maven`),
-            nix: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/nixpkgs`),
-            npm: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/npm`),
-            nuget: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/nuget`),
-            python: page.locator(repositoriesElementID).locator(`${repositoriesElementURN}/python`),
+            cargo: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/cargo']`),
+            composer: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/composer']`),
+            cpan: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/cpan']`),
+            gem: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/gem']`),
+            github: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/github']`),
+            go: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/goModules']`),
+            hackage: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/hackage']`),
+            hex: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/hex']`),
+            maven: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/maven']`),
+            nix: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/nixpkgs']`),
+            npm: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/npm']`),
+            nuget: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/nuget']`),
+            python: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/python']`),
         };
     }
 
-    async clickMenu(menuName: string) {
+    async clickOnMenuItem(menuName: string) {
         const menu = this.repositoriesMenuItems[menuName];
         if (!menu) {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
+        await this.page.waitForTimeout(2000);
     }
 }
 
-export class NotificationsMenu {
+export class NotificationsSubMenu {
     page: Page;
     notificationsMenuItems: Record<string, Locator>;
 
@@ -159,21 +163,22 @@ export class NotificationsMenu {
 
         this.page = page;
         this.notificationsMenuItems = {
-            alerts: page.locator(notificationsElementID).locator(`${notificationsElementURN}/alerts`),
-            templates: page.locator(notificationsElementID).locator(`${notificationsElementURN}/templates`),
+            alerts: page.locator(notificationsElementID).locator(`a[href='${notificationsElementURN}/alerts']`),
+            templates: page.locator(notificationsElementID).locator(`a[href='${notificationsElementURN}/templates']`),
         };
     }
 
-    async clickMenu(menuName: string) {
+    async clickOnMenuItem(menuName: string) {
         const menu = this.notificationsMenuItems[menuName];
         if (!menu) {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
+        await this.page.waitForTimeout(2000);
     }
 }
 
-export class IntegrationsMenu {
+export class IntegrationsSubMenu {
     page: Page;
     integrationsMenuItems: Record<string, Locator>;
 
@@ -183,28 +188,30 @@ export class IntegrationsMenu {
 
         this.page = page;
         this.integrationsMenuItems = {
-            defectDojo: page.locator(integrationsElementID).locator(`${integrationsElementURN}/defectDojo`),
-            fortifySSC: page.locator(integrationsElementID).locator(`${integrationsElementURN}/fortifySSC`),
-            jira: page.locator(integrationsElementID).locator(`${integrationsElementURN}/jira`),
-            kennaSecurity: page.locator(integrationsElementID).locator(`${integrationsElementURN}/kennaSecurity`),
+            defectDojo: page.locator(integrationsElementID).locator(`a[href='${integrationsElementURN}/defectDojo']`),
+            fortifySSC: page.locator(integrationsElementID).locator(`a[href='${integrationsElementURN}/fortifySSC']`),
+            jira: page.locator(integrationsElementID).locator(`a[href='${integrationsElementURN}/jira']`),
+            kennaSecurity: page.locator(integrationsElementID).locator(`a[href='${integrationsElementURN}/kennaSecurity']`),
         };
     }
 
-    async clickMenu(menuName: string) {
+    async clickOnMenuItem(menuName: string) {
         const menu = this.integrationsMenuItems[menuName];
         if (!menu) {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
+        await this.page.waitForTimeout(2000);
     }
 }
 
-export class AccessManagementMenu {
+export class AccessManagementSubMenu {
     page: Page;
     accessManagementMenuItems: Record<string, Locator>;
 
     createTeamButton: Locator;
     createUserButton: Locator;
+    deleteUserButton: Locator;
     modalContent: Locator;
     searchField: Locator;
 
@@ -217,28 +224,40 @@ export class AccessManagementMenu {
         this.searchField = page.locator('.search-input');
 
         this.accessManagementMenuItems = {
-            ldapUsers: page.locator(accessManagementElementID).locator(`${accessManagementElementURN}/ldapUsers`),
-            managedUsers: page.locator(accessManagementElementID).locator(`${accessManagementElementURN}/managedUsers`),
-            oidcUsers: page.locator(accessManagementElementID).locator(`${accessManagementElementURN}/oidcUsers`),
-            oidcGroups: page.locator(accessManagementElementID).locator(`${accessManagementElementURN}/oidcGroups`),
-            teams: page.locator(accessManagementElementID).locator(`${accessManagementElementURN}/teams`),
-            permissions: page.locator(accessManagementElementID).locator(`${accessManagementElementURN}/permissions`),
-            portfolioAccessControl: page.locator(accessManagementElementID).locator(`${accessManagementElementURN}/portfolioAccessControl`),
+            ldapUsers: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/ldapUsers']`),
+            managedUsers: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/managedUsers']`),
+            oidcUsers: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/oidcUsers']`),
+            oidcGroups: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/oidcGroups']`),
+            teams: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/teams']`),
+            permissions: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/permissions']`),
+            portfolioAccessControl: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/portfolioAccessControl']`),
         };
 
-        // todo create team; edit team
+        // TEAM
         this.createTeamButton = page.getByRole('button', { name: getValue("admin", "create_team") });
 
-        // todo create user; edit user
+        // USER
         this.createUserButton = page.getByRole('button', { name: getValue("admin", "create_user") });
+        this.deleteUserButton = page.getByRole('button', { name: getValue("admin", "delete_user") });
     }
 
-    async clickMenu(menuName: string) {
+    async fillSearchField(search: string) {
+        await this.searchField.clear();
+        await this.searchField.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+    async clearSearchField() {
+        await this.searchField.clear();
+        await this.page.waitForTimeout(1000);
+    }
+
+    async clickOnMenuItem(menuName: string) {
         const menu = this.accessManagementMenuItems[menuName];
         if (!menu) {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
+        await this.page.waitForTimeout(2000);
     }
 
     async createTeam(teamName: string) {
@@ -261,24 +280,32 @@ export class AccessManagementMenu {
         await this.modalContent.getByRole('button', { name: getValue("message", "create") }).click();
     }
 
-    async addPermissionsToUser(username: string, permissions: string | string[]) {
+    async deleteUser(username: string) {
+        await this.clickOnSpecificUser(username);
+        await this.deleteUserButton.click();
+    }
+    
+    async clickOnSpecificUser(username: string) {
+        await this.page.getByRole('row', { name: username }).click();
+        await this.page.waitForTimeout(1000);
+    }
+
+    async addPermissionsToSelectedUser(username: string, permissions: string | string[]) {
         const permissionsArray = Array.isArray(permissions) ? permissions : [permissions];
 
-        await this.searchField.fill(username);
-        await this.page.locator(username).click();
-        await this.page.locator('legend:has-text("Permissions")').locator('>> following-sibling::div//button').click();
+        await this.page.locator('button.btn.pull-right').last().click();
 
-        const searchField = this.modalContent.locator('.search-input');
+        const modalSearchField = this.modalContent.locator('.search-input');
         for(const permission of permissionsArray) {
-            await searchField.fill(permission);
+            await modalSearchField.pressSequentially(permission);
             await this.page.waitForTimeout(2000);
 
-            const tableRow = this.modalContent.locator(`tbody tr:has(td:text-is(${permission}))`);
+            const tableRow = this.modalContent.locator(`tbody tr`).filter({ hasText: permission }).first();
             await expect(tableRow).toBeVisible();
             await tableRow.getByRole('checkbox').click();
+            await modalSearchField.clear();
         }
 
         await this.modalContent.getByRole('button', { name: getValue("message", "select") }).click();
-        await this.searchField.clear();
     }
 }

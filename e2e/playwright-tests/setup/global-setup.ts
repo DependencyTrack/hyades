@@ -24,7 +24,7 @@ async function globalSetup() {
  */
 async function findMatchingLocaleFileOnGithub(locale: string, localeDir = './locales') {
     let filePath: fs.PathOrFileDescriptor;
-    console.info(`Will try to download correct Locale...`);
+    console.info(`Will try to download ${locale} Locale`);
 
     const context = await request.newContext({
         baseURL: 'https://api.github.com',

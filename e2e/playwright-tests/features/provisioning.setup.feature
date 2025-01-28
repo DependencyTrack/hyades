@@ -1,57 +1,87 @@
+@mode:serial
 Feature:
-  # already logged in due to storageState in playwright config
-  Scenario: The admin creates test users
-    Given the admin user navigates to dashboard
+  Scenario: Cleanup Test Users Before Tests
+    Given the admin user logs in to DependencyTrack
+    Then the dashboard should be visible
     Then the admin user navigates to administration page
-    And the admin user navigates to administration "access-management"
+    And the admin user navigates to administration "accessManagement"
+    And the admin user clicks on access-management "managedUsers"
+    Then the admin user deletes the following test users
+      | username     |
+      | test-user01  |
+      | test-user02  |
+      | test-user03  |
+      | test-user04  |
+      | test-user05  |
+      | test-user06  |
+      | test-user07  |
+      | test-user08  |
+      | test-user09  |
+      | test-user10  |
+      | test-user11  |
+      | test-user12  |
+      | test-user13  |
+
+  Scenario: Create Test Users
+    Given the admin user logs in to DependencyTrack
+    Then the dashboard should be visible
+    Then the admin user navigates to administration page
+    And the admin user navigates to administration "accessManagement"
     And the admin user clicks on access-management "managedUsers"
     Then the admin user creates the following test users
-      | username    |
-      | test-user1  |
-      | test-user2  |
-      | test-user3  |
-      | test-user4  |
-      | test-user5  |
-      | test-user6  |
-      | test-user7  |
-      | test-user8  |
-      | test-user9  |
-      | test-user10 |
-      | test-user11 |
-      | test-user12 |
-      | test-user13 |
-    Then the admin user provides "test-user1" with the following permissions
+      | username     |
+      | test-user01  |
+      | test-user02  |
+      | test-user03  |
+      | test-user04  |
+      | test-user05  |
+      | test-user06  |
+      | test-user07  |
+      | test-user08  |
+      | test-user09  |
+      | test-user10  |
+      | test-user11  |
+      | test-user12  |
+      | test-user13  |
+
+  Scenario: Provide Test Users With Respective Permissions
+    Given the admin user logs in to DependencyTrack
+    Then the dashboard should be visible
+    Then the admin user navigates to administration page
+    And the admin user navigates to administration "accessManagement"
+    And the admin user clicks on access-management "managedUsers"
+    Then the admin user provides "test-user01" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
-    Then the admin user provides "test-user2" with the following permissions
+    Then the admin user provides "test-user02" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | SYSTEM_CONFIGURATION  |
-    Then the admin user provides "test-user3" with the following permissions
+    Then the admin user provides "test-user03" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | ACCESS_MANAGEMENT     |
-    Then the admin user provides "test-user4" with the following permissions
+    Then the admin user provides "test-user04" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | BOM_UPLOAD            |
-    Then the admin user provides "test-user5" with the following permissions
+    Then the admin user provides "test-user05" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | POLICY_MANAGEMENT     |
-    Then the admin user provides "test-user6" with the following permissions
+    Then the admin user provides "test-user06" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | VIEW_POLICY_VIOLATION |
-    Then the admin user provides "test-user7" with the following permissions
+    Then the admin user provides "test-user07" with the following permissions
       | permission                |
       | VIEW_PORTFOLIO            |
       | POLICY_VIOLATION_ANALYSIS |
-    Then the admin user provides "test-user8" with the following permissions
+    Then the admin user provides "test-user08" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | TAG_MANAGEMENT        |
-    Then the admin user provides "test-user9" with the following permissions
+    Then the admin user provides "test-user09" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | PORTFOLIO_MANAGEMENT  |

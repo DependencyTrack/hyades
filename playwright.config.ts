@@ -15,12 +15,14 @@ const defOutDir = "./playwright-test-results";
 const setupDir = "./e2e/playwright-tests/setup";
 
 const gherkinTestDir = defineBddConfig({
-  features: playwrightTestDir + '/features/*.test.feature',
+  tags: 'not @todo',
+  features: playwrightTestDir + './e2e/playwright-tests/features/*.test.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/tests',
 });
 
 const gherkinSetupDir = defineBddConfig({
+  tags: 'not @todo',
   features: playwrightTestDir + '/features/*.setup.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/setup',
@@ -35,12 +37,20 @@ const gherkinSetupDir = defineBddConfig({
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  // Folder for the tests. Defaulting to this if not explicitly mentioned in projects
   testDir: gherkinTestDir,
   // Folder for test artifacts such as screenshots, videos, traces, etc.
   outputDir: defOutDir,
   /* Run tests in files in parallel */
-  fullyParallel: false
-  ,
+  fullyParallel: false,
+  /* If the tests in total exceed a certain timeout */
+  globalTimeout: 15 * 60 * 1000, // 15 min
+  /* Set the timeout each test has in ms (also one Gherkin-Scenario is treated as one test) */
+  timeout: 5 * 60 * 1000, // 3 mins
+  /* Set the timeout for each executed expect-line in ms */
+  expect: {
+    timeout: 5 * 1000, // 15 sec
+  },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -94,7 +104,7 @@ export default defineConfig({
 
     // Record video only when retrying a test for the first time. 'off', 'on', 'retain-on-failure' and 'on-first-retry'
     video: {
-      mode: "retain-on-failure",
+      mode: "on",
       size: { width: 1600, height: 1080 }
     },
 
@@ -117,26 +127,29 @@ export default defineConfig({
       testMatch: /.*initial-setup.ts/,
       retries: 0,
     },
+    /* todo at the moment it is not possible to use sessionStorage with dependencyTrack. FOr some reason it wont work
     {
       name: 'admin_authentication',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
       },
-      testDir: playwrightTestDir + '/setup/',
+      testDir: playwrightTestDir + '/setup',
       testMatch: /.*auth-setup.ts/,
       retries: 0,
       dependencies: process.env.CI ? ['preconditions'] : [],
-    }, // todo maybe not working on DTRACK bc not stored correctly ?
+    },
+     */
+
     {
       name: 'provisioning',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
-        storageState: playwrightTestDir + '/.auth/admin.json',
+        // storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinSetupDir,
-      dependencies: ['admin_authentication'],
+      // dependencies: ['admin_authentication'],
     },
 
     // ONLY THE FOLLOWING PROJECTS CAN BE USED FOR TESTING
@@ -145,7 +158,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
-        storageState: playwrightTestDir + '/.auth/admin.json',
+        //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       dependencies: ['provisioning'],
     },
@@ -155,7 +168,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1600, height: 1080 },
-        storageState: playwrightTestDir + '/.auth/admin.json',
+        //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       dependencies: ['provisioning'],
     },
@@ -165,7 +178,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1600, height: 1080 },
-        storageState: playwrightTestDir + '/.auth/admin.json',
+        //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       dependencies: ['provisioning'],
     },
@@ -175,7 +188,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
-        storageState: playwrightTestDir + '/.auth/admin.json',
+        //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       dependencies: ['provisioning'],
     },

@@ -2,13 +2,13 @@
 import { test as base, createBdd } from 'playwright-bdd';
 import {
     AdministrationPage,
-    ConfigurationMenu,
-    AnalyzersMenu,
-    VulnerabilitySourcesMenu,
-    RepositoriesMenu,
-    NotificationsMenu,
-    IntegrationsMenu,
-    AccessManagementMenu
+    ConfigurationSubMenu,
+    AnalyzersSubMenu,
+    VulnerabilitySourcesSubMenu,
+    RepositoriesSubMenu,
+    NotificationsSubMenu,
+    IntegrationsSubMenu,
+    AccessManagementSubMenu
 } from "../page-objects/administration.pom";
 import {
     LoginPage
@@ -19,49 +19,56 @@ import {
 import {
     NotificationToast
 } from "../page-objects/notification-toast.pom";
+import {
+    DashboardPage
+} from "../page-objects/dashboard.pom";
 
 
 // export custom test fixtures
 export const test = base.extend<
     {
         administrationPage: AdministrationPage;
-        configurationMenu: ConfigurationMenu;
-        analyzersMenu: AnalyzersMenu;
-        vulnerabilitySourcesMenu: VulnerabilitySourcesMenu;
-        repositoriesMenu: RepositoriesMenu;
-        notificationsMenu: NotificationsMenu;
-        integrationsMenu: IntegrationsMenu;
-        accessManagementMenu: AccessManagementMenu;
+        configurationSubMenu: ConfigurationSubMenu;
+        analyzersSubMenu: AnalyzersSubMenu;
+        vulnerabilitySourcesSubMenu: VulnerabilitySourcesSubMenu;
+        repositoriesSubMenu: RepositoriesSubMenu;
+        notificationsSubMenu: NotificationsSubMenu;
+        integrationsSubMenu: IntegrationsSubMenu;
+        accessManagementSubMenu: AccessManagementSubMenu;
         loginPage: LoginPage;
+        dashboardPage: DashboardPage;
         navBarPage: NavigationParPage;
         notificationToast: NotificationToast;
     }>({
     administrationPage: async ({ page }, use) => {
         await use(new AdministrationPage(page));
     },
-    configurationMenu: async ({ page }, use) => {
-        await use(new ConfigurationMenu(page));
+    configurationSubMenu: async ({ page }, use) => {
+        await use(new ConfigurationSubMenu(page));
     },
-    analyzersMenu: async ({ page }, use) => {
-        await use(new AnalyzersMenu(page));
+    analyzersSubMenu: async ({ page }, use) => {
+        await use(new AnalyzersSubMenu(page));
     },
-    vulnerabilitySourcesMenu: async ({ page }, use) => {
-        await use(new VulnerabilitySourcesMenu(page));
+    vulnerabilitySourcesSubMenu: async ({ page }, use) => {
+        await use(new VulnerabilitySourcesSubMenu(page));
     },
-    repositoriesMenu: async ({ page }, use) => {
-        await use(new RepositoriesMenu(page));
+    repositoriesSubMenu: async ({ page }, use) => {
+        await use(new RepositoriesSubMenu(page));
     },
-    notificationsMenu: async ({ page }, use) => {
-        await use(new NotificationsMenu(page));
+    notificationsSubMenu: async ({ page }, use) => {
+        await use(new NotificationsSubMenu(page));
     },
-    integrationsMenu: async ({ page }, use) => {
-        await use(new IntegrationsMenu(page));
+    integrationsSubMenu: async ({ page }, use) => {
+        await use(new IntegrationsSubMenu(page));
     },
-    accessManagementMenu: async ({ page }, use) => {
-        await use(new AccessManagementMenu(page));
+    accessManagementSubMenu: async ({ page }, use) => {
+        await use(new AccessManagementSubMenu(page));
     },
     loginPage: async ({ page }, use) => {
         await use(new LoginPage(page));
+    },
+    dashboardPage: async ({ page }, use) => {
+        await use(new DashboardPage(page));
     },
     navBarPage: async ({ page }, use) => {
         await use(new NavigationParPage(page));

@@ -107,9 +107,13 @@ export class NavigationParPage {
     async clickOnSideBarMinimizer() {
         await this.sideBarMinimizer.click();
     }
-    async closeSnapshotPopup() {
-        await this.snapshotPopup.locator('button').click();
-        await this.page.waitForTimeout(1000);
+    async closeSnapshotPopupIfVisible() {
+        const isVisible = await this.snapshotPopup.isVisible();
+
+        if(isVisible) {
+            await this.snapshotPopup.locator('button').click();
+            await this.page.waitForTimeout(1000);
+        }
     }
 
     async clickOnAccountDropDown() {
