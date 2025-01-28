@@ -24,6 +24,7 @@ export class LoginPage {
         await this.username.fill(username);
         await this.password.fill(password);
         await this.submitButton.click();
+        await this.page.waitForTimeout(2000);
     }
 
     async isLoginPageVisible() {

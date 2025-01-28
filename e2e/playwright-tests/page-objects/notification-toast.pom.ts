@@ -44,6 +44,12 @@ export class NotificationToast {
         await this.successToast.click();
     }
 
+    async verifySuccessfulUserDeletedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("admin", "user_deleted"));
+        await this.successToast.click();
+    }
+
     async verifySuccessfulUpdatedToast() {
         await expect(this.successToast).toBeVisible();
         await expect(this.successToast).toContainText(getValue("message", "updated"));

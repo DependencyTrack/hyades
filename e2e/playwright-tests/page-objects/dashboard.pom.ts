@@ -3,10 +3,17 @@ import { getValue } from "../utilities/utils";
 
 export class DashboardPage {
     page: Page;
+    breadCrumb: Locator;
+    dashBoardContainer: Locator;
 
     constructor(page: Page) {
         this.page = page;
+        this.breadCrumb = page.locator('.breadcrumb');
+        this.dashBoardContainer = page.locator('.container-fluid');
+    }
 
-        const adminElementClass = '.card.admin-menu';
+    async pageShouldBeVisible() {
+        await expect(this.breadCrumb).toContainText(getValue("message", "dashboard"));
+        await expect(this.dashBoardContainer).toBeVisible();
     }
 }
