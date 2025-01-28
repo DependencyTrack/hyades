@@ -72,6 +72,7 @@
     <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
     <lib.greenmail.version>2.1.2</lib.greenmail.version>
+    <lib.httpclient5.version>5.4.1</lib.httpclient5.version>
     <lib.java-uuid-generator.version>5.1.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>4.1.0</lib.json-unit.version>
     <lib.kafka.version>3.7.1</lib.kafka.version>
@@ -164,6 +165,12 @@
         <groupId>io.confluent.parallelconsumer</groupId>
         <artifactId>parallel-consumer-core</artifactId>
         <version>${lib.confluent-parallel-consumer.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5</artifactId>
+        <version>${lib.httpclient5.version}</version>
       </dependency>
 
       <dependency>

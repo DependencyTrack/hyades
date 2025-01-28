@@ -90,9 +90,11 @@
       "endCursor": "Y3Vyc29yOnYyOpK5MjAxOS0wMi0yMlQyMTo1MzowNCswMTowMM0H6w=="
     }
   },
-  "cvss": {
-    "score": 0.0,
-    "vectorString": null
+  "cvssSeverities": {
+    "cvssV3": {
+      "score": 0.0,
+      "vectorString": null
+    }
   },
   "cwes": {
     "edges": [],

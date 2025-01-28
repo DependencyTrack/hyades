@@ -193,7 +193,9 @@ class KafkaStreamsTopologyIT {
             public Map<String, String> getConfigOverrides() {
                 return Map.ofEntries(
                         Map.entry("dtrack.vuln-source.github.advisories.enabled", "true"),
-                        Map.entry("dtrack.vuln-source.github.advisories.access.token", /* encrypted "foobar" */ "0fsdpawY5lis3lZK7BiJmjR5Nr1MjXlqa3vso9kLSEM="),
+                        // TODO: Should be an encrypted, base64-encoded value.
+                        //  https://github.com/DependencyTrack/dependency-track/issues/3332
+                        Map.entry("dtrack.vuln-source.github.advisories.access.token", "foobar"),
                         Map.entry("dtrack.vuln-source.github.advisories.base.url", "http://localhost:${quarkus.wiremock.devservices.port}"),
                         Map.entry("secret.key.path", "src/test/resources/secret.key")
                 );
