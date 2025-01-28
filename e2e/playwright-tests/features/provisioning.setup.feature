@@ -20,7 +20,6 @@ Feature:
       | test-user10  |
       | test-user11  |
       | test-user12  |
-      | test-user13  |
 
   Scenario: Create Test Users
     Given the admin user logs in to DependencyTrack
@@ -42,7 +41,6 @@ Feature:
       | test-user10  |
       | test-user11  |
       | test-user12  |
-      | test-user13  |
 
   Scenario: Provide Test Users With Respective Permissions
     Given the admin user logs in to DependencyTrack
@@ -98,7 +96,3 @@ Feature:
       | permission               |
       | VIEW_PORTFOLIO           |
       | VULNERABILITY_MANAGEMENT |
-    Then the admin user provides "test-user13" with the following permissions
-      | permission               |
-      | VIEW_PORTFOLIO           |
-      | PORTFOLIO_ACCESS_CONTROL |

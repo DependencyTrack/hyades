@@ -7,7 +7,11 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Hello World \""
+    "playwright:init": "npm ci && npx playwright install --with-deps",
+    "playwright:generate:tests": "npx bddgen",
+    "playwright:clean:test": "npx bddgen && npx playwright test --project=preconditions && npx playwright test --project=run_workflow_chromium",
+    "playwright:test": "npx bddgen && npx playwright test --project=run_workflow_chromium",
+    "playwright:show:report": "npx playwright show-report"
   },
   "author": "",
   "license": "ISC",
