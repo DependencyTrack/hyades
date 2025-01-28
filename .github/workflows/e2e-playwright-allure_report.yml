@@ -105,3 +105,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: allure-report # branch-name to paste history to
           publish_dir: allure-history
+          destination_dir: ./subdir1
