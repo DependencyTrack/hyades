@@ -136,8 +136,6 @@ export default defineConfig({
       retries: 0,
       dependencies: process.env.CI ? ['preconditions'] : [],
     },
-
-
     {
       name: 'provisioning',
       use: {
