@@ -1,7 +1,7 @@
 import { Given } from '../fixtures/fixtures';
 
 // todo add dashboardPage to verify aswell
-// todo fix with sessionStorage
+
 Given('the admin user navigates to dashboard', async ({ }) => {
     // Set session storage in a new context
     // https://playwright.dev/docs/auth#session-storage

@@ -4,7 +4,7 @@ import * as fs from "node:fs";
 
 const adminFile = 'e2e/playwright-tests/.auth/admin.json';
 
-
+// todo currently not working..fix with sessionStorage https://playwright.dev/docs/auth#session-storage add in common.steps when fixed and change playwright.config
 setup('Store Admin Authentication', async ({ page }) => {
     const loginPage = new LoginPage(page);
 

@@ -28,10 +28,7 @@ const gherkinSetupDir = defineBddConfig({
   outputDir: playwrightTestDir + '/.features-gen/setup',
 });
 
-// Todo introduce gherkin into config
 // https://vitalets.github.io/playwright-bdd/#/blog/whats-new-in-v8?id=improved-configuration-options
-// Todo introduce advanced timeouts into config
-// Todo introduce storageState into config
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -104,7 +101,7 @@ export default defineConfig({
 
     // Record video only when retrying a test for the first time. 'off', 'on', 'retain-on-failure' and 'on-first-retry'
     video: {
-      mode: "on",
+      mode: "retain-on-failure",
       size: { width: 1600, height: 1080 }
     },
 
@@ -127,7 +124,7 @@ export default defineConfig({
       testMatch: /.*initial-setup.ts/,
       retries: 0,
     },
-    /* todo at the moment it is not possible to use sessionStorage with dependencyTrack. FOr some reason it wont work
+    // todo at the moment admin_authentication doesnt possible to use sessionStorage with dependencyTrack. FOr some reason it wont work
     {
       name: 'admin_authentication',
       use: {
@@ -139,7 +136,7 @@ export default defineConfig({
       retries: 0,
       dependencies: process.env.CI ? ['preconditions'] : [],
     },
-     */
+
 
     {
       name: 'provisioning',
@@ -149,7 +146,7 @@ export default defineConfig({
         // storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinSetupDir,
-      // dependencies: ['admin_authentication'],
+      dependencies: ['admin_authentication'],
     },
 
     // ONLY THE FOLLOWING PROJECTS CAN BE USED FOR TESTING
