@@ -15,8 +15,8 @@ const defOutDir = "./playwright-test-results";
 const setupDir = "./e2e/playwright-tests/setup";
 
 const gherkinTestDir = defineBddConfig({
-  tags: 'not @todo',
-  features: playwrightTestDir + './e2e/playwright-tests/features/*.test.feature',
+  tags: '@test and not @todo',
+  features: playwrightTestDir + '/features/*.test.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/tests',
 });
@@ -155,6 +155,7 @@ export default defineConfig({
         viewport: { width: 1600, height: 1080 },
         //storageState: playwrightTestDir + '/.auth/admin.json',
       },
+      testDir: gherkinTestDir,
       dependencies: ['provisioning'],
     },
 
@@ -165,6 +166,7 @@ export default defineConfig({
         viewport: { width: 1600, height: 1080 },
         //storageState: playwrightTestDir + '/.auth/admin.json',
       },
+      testDir: gherkinTestDir,
       dependencies: ['provisioning'],
     },
 
@@ -175,16 +177,7 @@ export default defineConfig({
         viewport: { width: 1600, height: 1080 },
         //storageState: playwrightTestDir + '/.auth/admin.json',
       },
-      dependencies: ['provisioning'],
-    },
-
-    {
-      name: 'chromium_without_provisioning',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: { width: 1600, height: 1080 },
-        //storageState: playwrightTestDir + '/.auth/admin.json',
-      },
+      testDir: gherkinTestDir,
       dependencies: ['provisioning'],
     },
 
