@@ -22,6 +22,10 @@ import {
 import {
     DashboardPage
 } from "../page-objects/dashboard.pom";
+import {
+    ProjectComponentsPage,
+    ProjectPage, SelectedProjectPage
+} from "../page-objects/project.pom";
 
 
 // export custom test fixtures
@@ -35,6 +39,9 @@ export const test = base.extend<
         notificationsSubMenu: NotificationsSubMenu;
         integrationsSubMenu: IntegrationsSubMenu;
         accessManagementSubMenu: AccessManagementSubMenu;
+        projectPage: ProjectPage;
+        selectedProjectPage: SelectedProjectPage;
+        projectComponentsPage: ProjectComponentsPage;
         loginPage: LoginPage;
         dashboardPage: DashboardPage;
         navBarPage: NavigationParPage;
@@ -63,6 +70,15 @@ export const test = base.extend<
     },
     accessManagementSubMenu: async ({ page }, use) => {
         await use(new AccessManagementSubMenu(page));
+    },
+    projectPage: async ({ page }, use) => {
+        await use(new ProjectPage(page));
+    },
+    selectedProjectPage: async ({ page }, use) => {
+        await use(new SelectedProjectPage(page));
+    },
+    projectComponentsPage: async ({ page }, use) => {
+        await use(new ProjectComponentsPage(page));
     },
     loginPage: async ({ page }, use) => {
         await use(new LoginPage(page));

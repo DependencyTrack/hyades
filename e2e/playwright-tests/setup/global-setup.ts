@@ -7,7 +7,7 @@ async function globalSetup() {
     const locale = 'en'
 
     if (!process.env.CI) {
-        const localAuthJson = fs.readFileSync(__dirname + '/local-auth.json', 'utf-8');
+        const localAuthJson = fs.readFileSync(__dirname + '/../resources/local-auth.json', 'utf-8');
         const json = JSON.parse(localAuthJson);
 
         process.env.RANDOM_PASSWORD = json.password;

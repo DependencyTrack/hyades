@@ -9,8 +9,10 @@
   "scripts": {
     "playwright:init": "npm ci && npx playwright install --with-deps",
     "playwright:generate:tests": "npx bddgen",
-    "playwright:clean:test": "npx bddgen && npx playwright test --project=preconditions && npx playwright test --project=run_workflow_chromium",
-    "playwright:test": "npx bddgen && npx playwright test --project=run_workflow_chromium",
+    "playwright:clean:test:chromium": "npx bddgen && npx playwright test --project=preconditions && npx playwright test --project=run_workflow_chromium",
+    "playwright:test:chromium": "npx bddgen && npx playwright test --project=run_workflow_chromium",
+    "playwright:test:firefox": "npx bddgen && npx playwright test --project=run_workflow_firefox",
+    "playwright:test:webkit": "npx bddgen && npx playwright test --project=run_workflow_webkit",
     "playwright:show:report": "npx playwright show-report"
   },
   "author": "",

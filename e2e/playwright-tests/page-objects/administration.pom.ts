@@ -8,15 +8,15 @@ export class AdministrationPage {
     constructor(page: Page) {
         this.page = page;
 
-        const adminElementClass = '.card.admin-menu';
+        const adminElement = page.locator('.card.admin-menu');
         this.adminMenuItems = {
-            configuration: page.locator(adminElementClass).getByText(getValue("admin", "configuration")),
-            analyzers: page.locator(adminElementClass).getByText(getValue("admin", "analyzers")),
-            vulnerabilitySources: page.locator(adminElementClass).getByText(getValue("admin", "vuln_sources")),
-            repositories: page.locator(adminElementClass).getByText(getValue("admin", "repositories")),
-            notifications: page.locator(adminElementClass).getByText(getValue("admin", "notifications")),
-            integrations: page.locator(adminElementClass).getByText(getValue("admin", "integrations")),
-            accessManagement: page.locator(adminElementClass).getByText(getValue("admin", "access_management")),
+            configuration: adminElement.getByText(getValue("admin", "configuration")),
+            analyzers: adminElement.getByText(getValue("admin", "analyzers")),
+            vulnerabilitySources: adminElement.getByText(getValue("admin", "vuln_sources")),
+            repositories: adminElement.getByText(getValue("admin", "repositories")),
+            notifications: adminElement.getByText(getValue("admin", "notifications")),
+            integrations: adminElement.getByText(getValue("admin", "integrations")),
+            accessManagement: adminElement.getByText(getValue("admin", "access_management")),
         };
     }
 
@@ -26,7 +26,7 @@ export class AdministrationPage {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
     }
 }
 
@@ -35,21 +35,21 @@ export class ConfigurationSubMenu {
     configMenuItems: Record<string, Locator>;
 
     constructor(page: Page) {
-        const configElementID = "#configuration";
-        const configElementURN = "/admin/configuration";
-
         this.page = page;
+        
+        const configElement = page.locator('#configuration');
+        const configElementURN = '/admin/configuration';
         this.configMenuItems = {
-            general: page.locator(configElementID).locator(`a[href='${configElementURN}/general']`),
-            bomFormats: page.locator(configElementID).locator(`a[href='${configElementURN}/bomFormats']`),
-            email: page.locator(configElementID).locator(`a[href='${configElementURN}/email']`),
-            welcomeMessage: page.locator(configElementID).locator(`a[href='{configElementURN}/welcomeMessage']`),
-            internalComponents: page.locator(configElementID).locator(`a[href='${configElementURN}/internalComponents']`),
-            maintenance: page.locator(configElementID).locator(`a[href='${configElementURN}/maintenance']`),
-            taskScheduler: page.locator(configElementID).locator(`a[href='${configElementURN}/taskScheduler']`),
-            search: page.locator(configElementID).locator(`a[href='${configElementURN}/search']`),
-            riskScore: page.locator(configElementID).locator(`a[href='${configElementURN}/RiskScore']`),
-            experimental: page.locator(configElementID).locator(`a[href='${configElementURN}/experimental']`),
+            general: configElement.locator(`a[href='${configElementURN}/general']`),
+            bomFormats: configElement.locator(`a[href='${configElementURN}/bomFormats']`),
+            email: configElement.locator(`a[href='${configElementURN}/email']`),
+            welcomeMessage: configElement.locator(`a[href='{configElementURN}/welcomeMessage']`),
+            internalComponents: configElement.locator(`a[href='${configElementURN}/internalComponents']`),
+            maintenance: configElement.locator(`a[href='${configElementURN}/maintenance']`),
+            taskScheduler: configElement.locator(`a[href='${configElementURN}/taskScheduler']`),
+            search: configElement.locator(`a[href='${configElementURN}/search']`),
+            riskScore: configElement.locator(`a[href='${configElementURN}/RiskScore']`),
+            experimental: configElement.locator(`a[href='${configElementURN}/experimental']`),
         };
     }
 
@@ -59,7 +59,7 @@ export class ConfigurationSubMenu {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
     }
 }
 
@@ -68,16 +68,16 @@ export class AnalyzersSubMenu {
     analyzersMenuItems: Record<string, Locator>;
 
     constructor(page: Page) {
-        const analyzersElementID = "#analyzers";
-        const analyzersElementURN = "/admin/analyzers";
-
         this.page = page;
+        
+        const analyzersElement = page.locator('#analyzers');
+        const analyzersElementURN = '/admin/analyzers';
         this.analyzersMenuItems = {
-            internal: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/internal']`),
-            oss: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/oss']`),
-            vulnDB: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/vulnDB']`),
-            snyk: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/snyk']`),
-            trivy: page.locator(analyzersElementID).locator(`a[href='${analyzersElementURN}/trivy']`),
+            internal: analyzersElement.locator(`a[href='${analyzersElementURN}/internal']`),
+            oss: analyzersElement.locator(`a[href='${analyzersElementURN}/oss']`),
+            vulnDB: analyzersElement.locator(`a[href='${analyzersElementURN}/vulnDB']`),
+            snyk: analyzersElement.locator(`a[href='${analyzersElementURN}/snyk']`),
+            trivy: analyzersElement.locator(`a[href='${analyzersElementURN}/trivy']`),
         };
     }
 
@@ -87,7 +87,7 @@ export class AnalyzersSubMenu {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
     }
 }
 
@@ -96,14 +96,14 @@ export class VulnerabilitySourcesSubMenu {
     vulnerabilitySourcesMenuItems: Record<string, Locator>;
 
     constructor(page: Page) {
-        const vulnerabilitySourcesElementID = "#vulnerabilitysources";
-        const vulnerabilitySourcesElementURN = "/admin/vulnerabilitySources";
-
         this.page = page;
+        
+        const vulnerabilitySourcesElement = page.locator('#vulnerabilitysources');
+        const vulnerabilitySourcesElementURN = '/admin/vulnerabilitySources';
         this.vulnerabilitySourcesMenuItems = {
-            nvd: page.locator(vulnerabilitySourcesElementID).locator(`a[href='${vulnerabilitySourcesElementURN}/nvd']`),
-            github: page.locator(vulnerabilitySourcesElementID).locator(`a[href='${vulnerabilitySourcesElementURN}/github']`),
-            osv: page.locator(vulnerabilitySourcesElementID).locator(`a[href='${vulnerabilitySourcesElementURN}/osv']`),
+            nvd: vulnerabilitySourcesElement.locator(`a[href='${vulnerabilitySourcesElementURN}/nvd']`),
+            github: vulnerabilitySourcesElement.locator(`a[href='${vulnerabilitySourcesElementURN}/github']`),
+            osv: vulnerabilitySourcesElement.locator(`a[href='${vulnerabilitySourcesElementURN}/osv']`),
         };
     }
 
@@ -113,7 +113,7 @@ export class VulnerabilitySourcesSubMenu {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
     }
 }
 
@@ -122,24 +122,24 @@ export class RepositoriesSubMenu {
     repositoriesMenuItems: Record<string, Locator>;
 
     constructor(page: Page) {
-        const repositoriesElementID = "#repositories";
-        const repositoriesElementURN = "/admin/repositories";
-
         this.page = page;
+        
+        const repositoriesElement = page.locator('#repositories');
+        const repositoriesElementURN = '/admin/repositories';
         this.repositoriesMenuItems = {
-            cargo: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/cargo']`),
-            composer: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/composer']`),
-            cpan: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/cpan']`),
-            gem: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/gem']`),
-            github: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/github']`),
-            go: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/goModules']`),
-            hackage: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/hackage']`),
-            hex: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/hex']`),
-            maven: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/maven']`),
-            nix: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/nixpkgs']`),
-            npm: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/npm']`),
-            nuget: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/nuget']`),
-            python: page.locator(repositoriesElementID).locator(`a[href='${repositoriesElementURN}/python']`),
+            cargo: repositoriesElement.locator(`a[href='${repositoriesElementURN}/cargo']`),
+            composer: repositoriesElement.locator(`a[href='${repositoriesElementURN}/composer']`),
+            cpan: repositoriesElement.locator(`a[href='${repositoriesElementURN}/cpan']`),
+            gem: repositoriesElement.locator(`a[href='${repositoriesElementURN}/gem']`),
+            github: repositoriesElement.locator(`a[href='${repositoriesElementURN}/github']`),
+            go: repositoriesElement.locator(`a[href='${repositoriesElementURN}/goModules']`),
+            hackage: repositoriesElement.locator(`a[href='${repositoriesElementURN}/hackage']`),
+            hex: repositoriesElement.locator(`a[href='${repositoriesElementURN}/hex']`),
+            maven: repositoriesElement.locator(`a[href='${repositoriesElementURN}/maven']`),
+            nix: repositoriesElement.locator(`a[href='${repositoriesElementURN}/nixpkgs']`),
+            npm: repositoriesElement.locator(`a[href='${repositoriesElementURN}/npm']`),
+            nuget: repositoriesElement.locator(`a[href='${repositoriesElementURN}/nuget']`),
+            python: repositoriesElement.locator(`a[href='${repositoriesElementURN}/python']`),
         };
     }
 
@@ -149,7 +149,7 @@ export class RepositoriesSubMenu {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
     }
 }
 
@@ -158,13 +158,13 @@ export class NotificationsSubMenu {
     notificationsMenuItems: Record<string, Locator>;
 
     constructor(page: Page) {
-        const notificationsElementID = "#notifications";
-        const notificationsElementURN = "/admin/notifications";
-
         this.page = page;
+        
+        const notificationsElement = page.locator('#notifications');
+        const notificationsElementURN = '/admin/notifications';
         this.notificationsMenuItems = {
-            alerts: page.locator(notificationsElementID).locator(`a[href='${notificationsElementURN}/alerts']`),
-            templates: page.locator(notificationsElementID).locator(`a[href='${notificationsElementURN}/templates']`),
+            alerts: notificationsElement.locator(`a[href='${notificationsElementURN}/alerts']`),
+            templates: notificationsElement.locator(`a[href='${notificationsElementURN}/templates']`),
         };
     }
 
@@ -174,7 +174,7 @@ export class NotificationsSubMenu {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
     }
 }
 
@@ -183,15 +183,15 @@ export class IntegrationsSubMenu {
     integrationsMenuItems: Record<string, Locator>;
 
     constructor(page: Page) {
-        const integrationsElementID = "#integrations";
-        const integrationsElementURN = "/admin/integrations";
-
         this.page = page;
+
+        const integrationsElement = page.locator('#integrations');
+        const integrationsElementURN = '/admin/integrations';
         this.integrationsMenuItems = {
-            defectDojo: page.locator(integrationsElementID).locator(`a[href='${integrationsElementURN}/defectDojo']`),
-            fortifySSC: page.locator(integrationsElementID).locator(`a[href='${integrationsElementURN}/fortifySSC']`),
-            jira: page.locator(integrationsElementID).locator(`a[href='${integrationsElementURN}/jira']`),
-            kennaSecurity: page.locator(integrationsElementID).locator(`a[href='${integrationsElementURN}/kennaSecurity']`),
+            defectDojo: integrationsElement.locator(`a[href='${integrationsElementURN}/defectDojo']`),
+            fortifySSC: integrationsElement.locator(`a[href='${integrationsElementURN}/fortifySSC']`),
+            jira: integrationsElement.locator(`a[href='${integrationsElementURN}/jira']`),
+            kennaSecurity: integrationsElement.locator(`a[href='${integrationsElementURN}/kennaSecurity']`),
         };
     }
 
@@ -201,7 +201,7 @@ export class IntegrationsSubMenu {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
     }
 }
 
@@ -213,24 +213,24 @@ export class AccessManagementSubMenu {
     createUserButton: Locator;
     deleteUserButton: Locator;
     modalContent: Locator;
-    searchField: Locator;
+    searchFieldInput: Locator;
+    userPaginationInfo: Locator;
 
     constructor(page: Page) {
-        const accessManagementElementID = "#accessmanagement";
-        const accessManagementElementURN = "/admin/accessManagement";
-
         this.page = page;
         this.modalContent = page.locator('.modal-content');
-        this.searchField = page.locator('.search-input');
-
+        this.searchFieldInput = page.locator('.search-input');
+        
+        const accessManagementElement = page.locator('#accessmanagement');
+        const accessManagementElementURN = '/admin/accessManagement';
         this.accessManagementMenuItems = {
-            ldapUsers: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/ldapUsers']`),
-            managedUsers: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/managedUsers']`),
-            oidcUsers: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/oidcUsers']`),
-            oidcGroups: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/oidcGroups']`),
-            teams: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/teams']`),
-            permissions: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/permissions']`),
-            portfolioAccessControl: page.locator(accessManagementElementID).locator(`a[href='${accessManagementElementURN}/portfolioAccessControl']`),
+            ldapUsers: accessManagementElement.locator(`a[href='${accessManagementElementURN}/ldapUsers']`),
+            managedUsers: accessManagementElement.locator(`a[href='${accessManagementElementURN}/managedUsers']`),
+            oidcUsers: accessManagementElement.locator(`a[href='${accessManagementElementURN}/oidcUsers']`),
+            oidcGroups: accessManagementElement.locator(`a[href='${accessManagementElementURN}/oidcGroups']`),
+            teams: accessManagementElement.locator(`a[href='${accessManagementElementURN}/teams']`),
+            permissions: accessManagementElement.locator(`a[href='${accessManagementElementURN}/permissions']`),
+            portfolioAccessControl: accessManagementElement.locator(`a[href='${accessManagementElementURN}/portfolioAccessControl']`),
         };
 
         // TEAM
@@ -239,15 +239,16 @@ export class AccessManagementSubMenu {
         // USER
         this.createUserButton = page.getByRole('button', { name: getValue("admin", "create_user") });
         this.deleteUserButton = page.getByRole('button', { name: getValue("admin", "delete_user") });
+        this.userPaginationInfo = page.locator('.pagination-info');
     }
 
-    async fillSearchField(search: string) {
-        await this.searchField.clear();
-        await this.searchField.pressSequentially(search);
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
         await this.page.waitForTimeout(1000);
     }
-    async clearSearchField() {
-        await this.searchField.clear();
+    async clearSearchFieldInput() {
+        await this.searchFieldInput.clear();
         await this.page.waitForTimeout(1000);
     }
 
@@ -257,7 +258,7 @@ export class AccessManagementSubMenu {
             throw new Error(`Menu '${menuName}' does not exist.`);
         }
         await menu.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(1000);
     }
 
     async createTeam(teamName: string) {
@@ -295,15 +296,15 @@ export class AccessManagementSubMenu {
 
         await this.page.locator('button.btn.pull-right').last().click();
 
-        const modalSearchField = this.modalContent.locator('.search-input');
+        const modalsearchFieldInput = this.modalContent.locator('.search-input');
         for(const permission of permissionsArray) {
-            await modalSearchField.pressSequentially(permission);
+            await modalsearchFieldInput.pressSequentially(permission);
             await this.page.waitForTimeout(2000);
 
             const tableRow = this.modalContent.locator(`tbody tr`).filter({ hasText: permission }).first();
             await expect(tableRow).toBeVisible();
             await tableRow.getByRole('checkbox').click();
-            await modalSearchField.clear();
+            await modalsearchFieldInput.clear();
         }
 
         await this.modalContent.getByRole('button', { name: getValue("message", "select") }).click();
