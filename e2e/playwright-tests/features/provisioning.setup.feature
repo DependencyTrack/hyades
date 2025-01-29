@@ -42,7 +42,6 @@ Feature:
       | test-user11  |
       | test-user12  |
 
-  @only
   Scenario: Delete Test Project
     Given the admin user logs in to DependencyTrack
     Then the dashboard should be visible
@@ -51,7 +50,6 @@ Feature:
       | name           |
       | test-project01 |
 
-  @only
   Scenario: Create Test Project With Default BOM
     Given the admin user logs in to DependencyTrack
     Then the dashboard should be visible
