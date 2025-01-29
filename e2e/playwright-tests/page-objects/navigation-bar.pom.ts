@@ -3,18 +3,14 @@ import { getValue } from "../utilities/utils";
 
 export class NavigationParPage {
     page: Page;
-    dashboardTab: Locator;
-    projectsTab: Locator;
-    componentsTab: Locator;
-    vulnerabilitiesTab: Locator;
-    licencesTab: Locator;
-    tagsTab: Locator;
-    vulnerabilityAuditTab: Locator;
-    policyManagementTab: Locator;
-    administrationTab: Locator;
+
     navBarToggle: Locator;
     sideBarMinimizer: Locator;
     snapshotPopup: Locator;
+
+    navBarItems: Record<string, Locator>;
+
+    breadCrumb: Locator;
 
     accountDropDown: Locator;
     accountDropDownUpdatePassword: Locator;
@@ -30,15 +26,21 @@ export class NavigationParPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.dashboardTab = page.getByRole('link', { name: getValue("message", "dashboard") }); //locator('a[href="/dashboard"]')
-        this.projectsTab = page.getByRole('link', { name: getValue("message", "projects") }); //locator('a[href="/projects"]')
-        this.componentsTab = page.getByRole('link', { name: getValue("message", "components") }); //locator('a[href="/components"]')
-        this.vulnerabilitiesTab = page.getByRole('link', { name: getValue("message", "vulnerabilities") }); //locator('a[href="/vulnerabilities"]')
-        this.licencesTab = page.getByRole('link', { name: getValue("message", "licenses") }); //locator('a[href="/licenses"]')
-        this.tagsTab = page.getByRole('link', { name: getValue("message", "tags") }); //locator('a[href="/tags"]')
-        this.vulnerabilityAuditTab = page.getByRole('link', { name: getValue("message", "vulnerability_audit") }); //locator('a[href="/vulnerabilityAudit"]')
-        this.policyManagementTab = page.getByRole('link', { name: getValue("message", "policy_management") }); //locator('a[href="/policy"]')
-        this.administrationTab = page.getByRole('link', { name: getValue("message", "administration") }); // locator('a[href="/admin"]')
+
+        this.navBarItems = {
+            dashboardTab: page.getByRole('link', { name: getValue("message", "dashboard") }),
+            projectsTab: page.getByRole('link', { name: getValue("message", "projects") }),
+            componentsTab: page.getByRole('link', { name: getValue("message", "components") }),
+            vulnerabilitiesTab: page.getByRole('link', { name: getValue("message", "vulnerabilities") }),
+            licencesTab: page.getByRole('link', { name: getValue("message", "licenses") }),
+            tagsTab: page.getByRole('link', { name: getValue("message", "tags") }),
+            vulnerabilityAuditTab: page.getByRole('link', { name: getValue("message", "vulnerability_audit") }),
+            policyViolationAuditTab: page.getByRole('link', { name: getValue("message", "policy_violation_audit") }),
+            policyManagementTab: page.getByRole('link', { name: getValue("message", "policy_management") }),
+            administrationTab: page.getByRole('link', { name: getValue("message", "administration") }),
+        };
+
+        this.breadCrumb = page.locator('.breadcrumb');
 
         this.navBarToggle = page.locator('button.d-md-down-none.navbar-toggler');
         this.sideBarMinimizer = page.locator('button.sidebar-minimizer');
@@ -61,43 +63,17 @@ export class NavigationParPage {
 
     async logout() {
         await this.clickOnAccountDropDown();
-        await this.clickOnaccountDropDownLogout();
+        await this.clickOnAccountDropDownLogout();
     }
 
-    async clickOnDashboardTab() {
-        await this.dashboardTab.click();
-    }
-
-    async clickOnProjectsTab() {
-        await this.projectsTab.click();
-    }
-
-    async clickOnComponentsTab() {
-        await this.componentsTab.click();
-    }
-
-    async clickOnVulnerabilitiesTab() {
-        await this.vulnerabilitiesTab.click();
-    }
-
-    async clickOnLicencesTab() {
-        await this.licencesTab.click();
-    }
-
-    async clickOnTagsTab() {
-        await this.tagsTab.click();
-    }
-
-    async clickOnVulnerabilityAuditTab() {
-        await this.vulnerabilityAuditTab.click();
-    }
-
-    async clickOnPolicyManagementTab() {
-        await this.policyManagementTab.click();
-    }
-
-    async clickOnAdministrationTab() {
-        await this.administrationTab.click();
+    async clickOnNavTab(tabName: string) {
+        const tab = this.navBarItems[tabName];
+        if (!tab) {
+            throw new Error(`Menu '${tabName}' does not exist.`);
+        }
+        await tab.click();
+        await this.page.waitForTimeout(1000);
+        await expect(this.breadCrumb).toContainText(await tab.textContent());
     }
 
     async clickOnNavBarToggler() {
@@ -107,6 +83,7 @@ export class NavigationParPage {
     async clickOnSideBarMinimizer() {
         await this.sideBarMinimizer.click();
     }
+
     async closeSnapshotPopupIfVisible() {
         const isVisible = await this.snapshotPopup.isVisible();
 
@@ -120,35 +97,35 @@ export class NavigationParPage {
         await this.accountDropDown.click();
     }
 
-    async clickOnaccountDropDownUpdatePassword() {
+    async clickOnAccountDropDownUpdatePassword() {
         await this.accountDropDownUpdatePassword.click();
     }
 
-    async clickOnaccountDropDownChangePassword() {
+    async clickOnAccountDropDownChangePassword() {
         await this.accountDropDownChangePassword.click();
     }
 
-    async clickOnaccountDropDownChangeLanguage() {
+    async clickOnAccountDropDownChangeLanguage() {
         await this.accountDropDownChangeLanguage.click();
     }
 
-    async clickOnaccountDropDownLogout() {
+    async clickOnAccountDropDownLogout() {
         await this.accountDropDownLogout.click();
     }
 
-    async fillupdateProfilePopupUsernameInput(username: string) {
+    async fillUpdateProfilePopupUsernameInput(username: string) {
         await this.updateProfilePopupUsernameInput.fill(username);
     }
 
-    async fillupdateProfilePopupEmailInput(email: string) {
+    async fillUpdateProfilePopupEmailInput(email: string) {
         await this.updateProfilePopupEmailInput.fill(email);
     }
 
-    async clickupdateProfilePopupCloseButton() {
+    async clickUpdateProfilePopupCloseButton() {
         await this.updateProfilePopupCloseButton.click();
     }
 
-    async clickupdateProfilePopupUpdateButton() {
+    async clickUpdateProfilePopupUpdateButton() {
         await this.updateProfilePopupUpdateButton.click();
     }
 
