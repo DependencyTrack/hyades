@@ -169,11 +169,15 @@ Based on interactions with the community, it is clear that not everyone is able 
 for centralized log monitoring and alerting. Further, it is very common for users, even administrative ones,
 to *not* have direct access to application logs.
 
-We can thus not rely on logging and metrics instrumentation to ensure observability. We need a solution that has
-observability built in, and allows us to expose it on the application layer.
+We can thus not rely on logging and metrics instrumentation to ensure observability.  
+We need a solution that has observability built in, and allows us to expose it on the application layer.
 
 In extension, records of workflow instances should be retained for a specified amount of time.
 This allows retrospective investigation of failures. The retention duration should be configurable.
+
+The intention is to make it easier for users without log access to see what's going on.  
+The intention is **not** to replace logs and metrics.  
+Both remain crucial for operators of Dependency-Track and must continue to be part of our implementation.
 
 ### Possible solutions
 
