@@ -1,3 +1,4 @@
+@test
 Feature:
   Scenario: Create Project With Default BOM
     Given the admin user logs in to DependencyTrack
