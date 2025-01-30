@@ -5,12 +5,12 @@ on:
       project:
         description: 'Select the Browser to be used for E2E Testing'
         required: true
-        default: 'run_workflow_chromium'
+        default: 'chromium_test_workflow'
         type: choice
         options:
-          - run_workflow_chromium
-          - run_workflow_firefox
-          - run_workflow_webkit
+          - chromium_test_workflow
+          - firefox_test_workflow
+          - webkit_test_workflow
   schedule:
     - cron: "0 0,10,20 * * *"
 
@@ -62,7 +62,7 @@ jobs:
         run:  npx bddgen
 
       - name: Run Playwright tests
-        run: npx playwright test --project=${{ inputs.project || 'run_workflow_chromium' }}
+        run: npx playwright test --project=${{ inputs.project || 'chromium_test_workflow' }}
 
       - name: Upload test results
         if: ${{ !cancelled() }}
