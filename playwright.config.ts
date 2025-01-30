@@ -149,7 +149,7 @@ export default defineConfig({
 
     // ONLY THE FOLLOWING PROJECTS CAN BE USED FOR TESTING
     {
-      name: 'run_workflow_chromium',
+      name: 'chromium_test_workflow',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
@@ -160,7 +160,7 @@ export default defineConfig({
     },
 
     {
-      name: 'run_workflow_firefox',
+      name: 'firefox_test_workflow',
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1600, height: 1080 },
@@ -171,7 +171,7 @@ export default defineConfig({
     },
 
     {
-      name: 'run_workflow_webkit',
+      name: 'webkit_test_workflow',
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1600, height: 1080 },
