@@ -115,7 +115,7 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'preconditions',
+      name: 'setup_initial',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
@@ -126,7 +126,7 @@ export default defineConfig({
     },
     // todo at the moment admin_authentication doesnt possible to use sessionStorage with dependencyTrack. FOr some reason it wont work
     {
-      name: 'admin_authentication',
+      name: 'setup_admin_authentication',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
@@ -134,17 +134,17 @@ export default defineConfig({
       testDir: playwrightTestDir + '/setup',
       testMatch: /.*auth-setup.ts/,
       retries: 0,
-      dependencies: process.env.CI ? ['preconditions'] : [],
+      dependencies: process.env.CI ? ['setup_initial'] : [],
     },
     {
-      name: 'provisioning',
+      name: 'setup_provisioning',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
         // storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinSetupDir,
-      dependencies: ['admin_authentication'],
+      dependencies: ['setup_admin_authentication'],
     },
 
     // ONLY THE FOLLOWING PROJECTS CAN BE USED FOR TESTING
@@ -156,7 +156,7 @@ export default defineConfig({
         //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinTestDir,
-      dependencies: ['provisioning'],
+      dependencies: ['setup_provisioning'],
     },
 
     {
@@ -167,7 +167,7 @@ export default defineConfig({
         //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinTestDir,
-      dependencies: ['provisioning'],
+      dependencies: ['setup_provisioning'],
     },
 
     {
@@ -178,7 +178,7 @@ export default defineConfig({
         //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinTestDir,
-      dependencies: ['provisioning'],
+      dependencies: ['setup_provisioning'],
     },
 
 /* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)
