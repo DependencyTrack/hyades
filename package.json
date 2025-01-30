@@ -9,10 +9,11 @@
   "scripts": {
     "playwright:init": "npm ci && npx playwright install --with-deps",
     "playwright:generate:tests": "npx bddgen",
-    "playwright:clean:test:chromium": "npx bddgen && npx playwright test --project=preconditions && npx playwright test --project=run_workflow_chromium",
-    "playwright:test:chromium": "npx bddgen && npx playwright test --project=run_workflow_chromium",
-    "playwright:test:firefox": "npx bddgen && npx playwright test --project=run_workflow_firefox",
-    "playwright:test:webkit": "npx bddgen && npx playwright test --project=run_workflow_webkit",
+    "playwright:clean:initial:chromium": "npx bddgen && npx playwright test --project=setup_initial",
+    "playwright:clean:test:chromium": "npx bddgen && npx playwright test --project=setup_initial && npx playwright test --project=chromium_test_workflow",
+    "playwright:test:chromium": "npx bddgen && npx playwright test --project=chromium_test_workflow",
+    "playwright:test:firefox": "npx bddgen && npx playwright test --project=firefox_test_workflow",
+    "playwright:test:webkit": "npx bddgen && npx playwright test --project=webkit_test_workflow",
     "playwright:show:report": "npx playwright show-report"
   },
   "author": "",

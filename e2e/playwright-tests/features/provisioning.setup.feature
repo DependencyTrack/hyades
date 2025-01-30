@@ -42,13 +42,14 @@ Feature:
       | test-user11  |
       | test-user12  |
 
-  Scenario: Delete Test Project
+  Scenario: Delete All Test Project
     Given the admin user logs in to DependencyTrack
     Then the dashboard should be visible
     Then the user navigates to project page
     And the user deletes the following test projects if they exist
       | name           |
       | test-project01 |
+      | test-project02 |
 
   Scenario: Create Test Project With Default BOM
     Given the admin user logs in to DependencyTrack
@@ -57,9 +58,10 @@ Feature:
     And the user creates projects with the following values
       | name           | classifier  | version | isLastVersion | team | parent | description | tag |
       | test-project01 | APPLICATION |         |               |      |        |             |     |
-    Then the user opens the project with the name "test-project01"
-    And the user navigates to project "components" tab
-    And the user uploads default BOM
+      | test-project02 | APPLICATION |         |               |      |        |             |     |
+    #Then the user opens the project with the name "test-project01"
+    #And the user navigates to project "components" tab
+    #And the user uploads default BOM
 
   Scenario: Provide Test Users With Respective Permissions
     Given the admin user logs in to DependencyTrack
