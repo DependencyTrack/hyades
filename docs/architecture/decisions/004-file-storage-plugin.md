@@ -50,17 +50,18 @@ in this format. It will allow us to easily attach it to other Protobuf messages.
 ```protobuf linenums="1"
 syntax = "proto3";
 
-// Metadata of a file stored by a storage provider.
-message FileMetadata {
-  // Unique identifier of the file.
-  string key = 1;
+package org.dependencytrack.storage.v1alpha1;
 
-  // Name of the storage provider that hosts the file.
-  string storage_name = 2;
+// Metadata of a stored file.
+message FileMetadata {
+  // Location of the file in URI format.
+  // The URI's scheme is the name of the storage provider.
+  // Examples: "memory:///foo/bar", "s3://bucket/foo/bar".
+  string location = 1;
 
   // Additional metadata of the storage provider,
   // i.e. values used for integrity verification.
-  map<string, string> storage_metadata = 3;
+  map<string, string> storage_metadata = 2;
 }
 ```
 
@@ -73,6 +74,7 @@ package org.dependencytrack.storage;
 import org.dependencytrack.plugin.api.ExtensionPoint;
 import org.dependencytrack.proto.storage.v1alpha1.FileMetadata;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -80,52 +82,45 @@ public interface FileStorage extends ExtensionPoint {
 
     /**
      * Persist data to a file in storage.
-     * <br/>
+     * <p>
      * Storage providers may transparently perform additional steps,
      * such as encryption and compression.
-     * 
-     * @param name Name of the file. This name is not guaranteed to be reflected
-     *             in storage as-is. It may be modified or changed entirely.
-     * @param content Data to store.
+     *
+     * @param fileName Name of the file. This fileName is not guaranteed to be reflected
+     *                 in storage as-is. It may be modified or changed entirely.
+     * @param content  Data to store.
      * @return Metadata of the stored file.
      * @throws IOException When storing the file failed.
      */
-    FileMetadata store(String name, byte[] content) throws IOException;
+    FileMetadata store(String fileName, byte[] content) throws IOException;
 
     /**
      * Retrieves a file from storage.
-     * <br/>
+     * <p>
      * Storage providers may transparently perform additional steps,
      * such as integrity verification, decryption and decompression.
-     * <br/>
+     * <p>
      * Trying to retrieve a file from a different storage provider
      * is an illegal operation and yields an exception.
-     * 
+     *
      * @param fileMetadata Metadata of the file to retrieve.
      * @return The file's content.
-     * @throws IOException When retrieving the file failed.
+     * @throws IOException           When retrieving the file failed.
+     * @throws FileNotFoundException When the requested file was not found.
      */
     byte[] get(FileMetadata fileMetadata) throws IOException;
 
     /**
      * Deletes a file from storage.
-     * <br/>
+     * <p>
      * Trying to delete a file from a different storage provider
      * is an illegal operation and yields an exception.
-     * 
+     *
      * @param fileMetadata Metadata of the file to delete.
      * @return {@code true} when the file was deleted, otherwise {@code false}.
      * @throws IOException When deleting the file failed.
      */
     boolean delete(FileMetadata fileMetadata) throws IOException;
-
-    /**
-     * Some providers support batch deletes.
-     * 
-     * @see #delete(FileMetadata)
-     * @see <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjects.html">S3 DeleteObjects API</a>
-     */
-    void deleteMany(Collection<FileMetadata> fileMetadata) throws IOException;
 
 }
 ```
@@ -143,7 +138,7 @@ This allows storage providers to be configured as follows:
 #
 # @category:     Storage
 # @type:         enum
-# @valid-values: [local, memory]
+# @valid-values: [local, memory, s3]
 file.storage.default.extension=
 
 # Whether the local file storage extension shall be enabled.
@@ -165,6 +160,42 @@ file.storage.extension.local.directory=
 # @category: Storage
 # @type:     boolean
 file.storage.extension.memory.enabled=false
+
+# Whether the s3 file storage extension shall be enabled.
+#
+# @category: Storage
+# @type:     boolean
+file.storage.extension.s3.enabled=false
+
+# Defines the S3 endpoint URL.
+#
+# @category: Storage
+# @type:     string
+file.storage.extension.s3.endpoint=
+
+# Defines the name of the S3 bucket.
+#
+# @category: Storage
+# @type:     string
+file.storage.extension.s3.bucket=
+
+# Defines the S3 access key / username.
+#
+# @category: Storage
+# @type:     string
+file.storage.extension.s3.access.key=
+
+# Defines the S3 secret key / password.
+#
+# @category: Storage
+# @type:     string
+file.storage.extension.s3.secret.key=
+
+# Defines the region of the S3 bucket.
+#
+# @category: Storage
+# @type:     string
+file.storage.extension.s3.region=
 ```
 
 Application code can interact with `FileStorage` via the `PluginManager`:
