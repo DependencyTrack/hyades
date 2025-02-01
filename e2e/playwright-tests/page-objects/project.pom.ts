@@ -18,7 +18,7 @@ export class ProjectModal {
         this.modalContent = page.locator('.modal-content');
         this.projectNameInput = this.modalContent.locator('#project-name-input-input');
         this.projectVersionInput = this.modalContent.locator('#project-version-input-input');
-        this.projectIsLastVersionSlider = this.modalContent.locator('#project-create-islatest-input');
+        this.projectIsLastVersionSlider = this.modalContent.locator('#project-create-islatest .switch-slider'); // #project-create-islatest-input
         this.projectClassifierSelect = this.modalContent.locator('#v-classifier-input-input');
         this.projectTeamSelect = this.modalContent.locator('#v-team-input-input');
         this.projectParentSelect = this.modalContent.locator('##multiselect');
@@ -121,6 +121,7 @@ export class ProjectPage extends ProjectModal {
 export class SelectedProjectPage extends ProjectModal {
     page: Page;
     projectDetails: Locator;
+    projectTabs: Locator;
     projectTabList: Record<string, Locator>;
 
     projectDetailsDeleteButton: Locator;
@@ -133,15 +134,15 @@ export class SelectedProjectPage extends ProjectModal {
 
         this.projectDetails = page.getByRole('link', { name: getValue("message", "view_details") });
 
-        const projectTabsList = page.getByRole('tablist');
+        this.projectTabs = page.getByRole('tablist');
         this.projectTabList = {
-            overview: projectTabsList.getByText(getValue("message", "overview")),
-            components: projectTabsList.getByText(getValue("message", "components")),
-            services: projectTabsList.getByText(getValue("message", "services")),
-            dependencyGraph: projectTabsList.getByText(getValue("message", "dependency_graph")),
-            auditVulnerabilities: projectTabsList.getByText(getValue("message", "audit_vulnerabilities")),
-            exploitPredictions: projectTabsList.getByText(getValue("message", "exploit_predictions")),
-            policyViolations: projectTabsList.getByText(getValue("message", "policy_violations")),
+            overview: this.projectTabs.getByText(getValue("message", "overview")),
+            components: this.projectTabs.getByText(getValue("message", "components")),
+            services: this.projectTabs.getByText(getValue("message", "services")),
+            dependencyGraph: this.projectTabs.getByText(getValue("message", "dependency_graph")),
+            auditVulnerabilities: this.projectTabs.getByText(getValue("message", "audit_vulnerabilities")),
+            exploitPredictions: this.projectTabs.getByText(getValue("message", "exploit_predictions")),
+            policyViolations: this.projectTabs.getByText(getValue("message", "policy_violations")),
         };
 
         this.projectDetailsDeleteButton = this.modalContent.getByRole('button', { name: getValue("message", "delete") });
@@ -156,6 +157,54 @@ export class SelectedProjectPage extends ProjectModal {
         }
         await tab.click();
         await this.page.waitForTimeout(1000);
+    }
+
+    async getTotalTabBadgeValue(tabName: string) {
+        const tab = this.projectTabList[tabName];
+        if (!tab) {
+            throw new Error(`Tab '${tabName}' does not exist.`);
+        }
+        const name = await tab.textContent();
+        const regex = new RegExp(name.split("\n")[0].trim());
+
+        const textContent = await this.projectTabs.getByRole('tab', { name: regex }).locator('span.badge.badge-tab-total').textContent();
+        return parseInt(textContent, 10);
+    }
+
+    async getInfoTabBadgeValue(tabName: string) {
+        const tab = this.projectTabList[tabName];
+        if (!tab) {
+            throw new Error(`Tab '${tabName}' does not exist.`);
+        }
+        const name = await tab.textContent();
+        const regex = new RegExp(name.split("\n")[0].trim());
+
+        const textContent = await this.projectTabs.getByRole('tab', { name: regex }).locator('span.badge.badge-tab-info').textContent();
+        return parseInt(textContent, 10);
+    }
+
+    async getWarnTabBadgeValue(tabName: string) {
+        const tab = this.projectTabList[tabName];
+        if (!tab) {
+            throw new Error(`Tab '${tabName}' does not exist.`);
+        }
+        const name = await tab.textContent();
+        const regex = new RegExp(name.split("\n")[0].trim());
+
+        const textContent = await this.projectTabs.getByRole('tab', { name: regex }).locator('span.badge.badge-tab-warn').textContent();
+        return parseInt(textContent, 10);
+    }
+
+    async getFailTabBadgeValue(tabName: string) {
+        const tab = this.projectTabList[tabName];
+        if (!tab) {
+            throw new Error(`Tab '${tabName}' does not exist.`);
+        }
+        const name = await tab.textContent();
+        const regex = new RegExp(name.split("\n")[0].trim());
+
+        const textContent = await this.projectTabs.getByRole('tab', { name: regex }).locator('span.badge.badge-tab-fail').textContent();
+        return parseInt(textContent, 10);
     }
 
     async openProjectDetails() {
@@ -217,6 +266,11 @@ export class ProjectComponentsPage {
     bomUploadResetButton: Locator;
     bomUploadConfirmButton: Locator;
 
+    downloadBomInventoryButton: Locator;
+    downloadBomInventoryWithVulnerabilitiesButton: Locator;
+
+    downloadComponentsCSVButton: Locator;
+
     constructor(page: Page) {
         this.page = page;
         this.addComponentButton = page.getByRole('button', { name: getValue("message", "add_component") });
@@ -233,6 +287,13 @@ export class ProjectComponentsPage {
         this.bomUploadCancelButton = this.modalContent.getByRole('button', { name: getValue("message", "cancel") });
         this.bomUploadResetButton = this.modalContent.getByRole('button', { name: getValue("message", "reset") });
         this.bomUploadConfirmButton = this.modalContent.getByRole('button', { name: getValue("message", "upload") });
+
+        // BOM Download
+        this.downloadBomInventoryButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory") });
+        this.downloadBomInventoryWithVulnerabilitiesButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory_with_vulnerabilities") });
+
+        // Components Download
+        this.downloadComponentsCSVButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "csv_filetype") });
     }
 
     async uploadBom(filePathFromProjectRoot?: string) {

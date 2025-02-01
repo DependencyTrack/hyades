@@ -17,30 +17,25 @@ export class LoginPage {
         this.password = page.getByPlaceholder(getValue("message","password"));
         this.submitButton = page.getByRole('button', { name: getValue("message", "login") });
         this.loginDescription = page.locator('.text-muted');
-        this.loginErrorPopup = page.locator('.modal-content'); //language.json key -> login_unauthorized
+        this.loginErrorPopup = page.locator('.modal-content');
     }
-
     async login(username: string, password: string) {
         await this.username.fill(username);
         await this.password.fill(password);
         await this.submitButton.click();
         await this.page.waitForTimeout(2000);
     }
-
     async isLoginPageVisible() {
         await expect(this.page).toHaveTitle(/Login/);
         await expect(this.heading).toBeVisible();
     }
-
     async getLoginDescription() {
         return await this.loginDescription.innerText();
     }
-
     async verifyLoginErrorPopup() {
         await expect(this.loginErrorPopup).toBeVisible();
         await expect(this.loginErrorPopup).toContainText(getValue("message", "login_unauthorized"));
     }
-
     async closeLoginErrorPopup() {
         await this.loginErrorPopup.locator('button').click();
     }
