@@ -60,4 +60,22 @@ export class NotificationToast {
         await expect(this.successToast).toContainText(getValue("message", "bom_uploaded"));
         await this.successToast.click();
     }
+
+    async verifySuccessfulPolicyCreatedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "policy_created"));
+        await this.successToast.click();
+    }
+
+    async verifySuccessfulPolicyDeletedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "policy_deleted"));
+        await this.successToast.click();
+    }
+
+    async verifySuccessfulConditionDeletedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "condition_deleted"));
+        await this.successToast.click();
+    }
 }

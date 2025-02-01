@@ -18,7 +18,7 @@ export class ProjectModal {
         this.modalContent = page.locator('.modal-content');
         this.projectNameInput = this.modalContent.locator('#project-name-input-input');
         this.projectVersionInput = this.modalContent.locator('#project-version-input-input');
-        this.projectIsLastVersionSlider = this.modalContent.locator('#project-create-islatest-input');
+        this.projectIsLastVersionSlider = this.modalContent.locator('#project-create-islatest .switch-slider'); // #project-create-islatest-input
         this.projectClassifierSelect = this.modalContent.locator('#v-classifier-input-input');
         this.projectTeamSelect = this.modalContent.locator('#v-team-input-input');
         this.projectParentSelect = this.modalContent.locator('##multiselect');
@@ -266,6 +266,11 @@ export class ProjectComponentsPage {
     bomUploadResetButton: Locator;
     bomUploadConfirmButton: Locator;
 
+    downloadBomInventoryButton: Locator;
+    downloadBomInventoryWithVulnerabilitiesButton: Locator;
+
+    downloadComponentsCSVButton: Locator;
+
     constructor(page: Page) {
         this.page = page;
         this.addComponentButton = page.getByRole('button', { name: getValue("message", "add_component") });
@@ -282,6 +287,13 @@ export class ProjectComponentsPage {
         this.bomUploadCancelButton = this.modalContent.getByRole('button', { name: getValue("message", "cancel") });
         this.bomUploadResetButton = this.modalContent.getByRole('button', { name: getValue("message", "reset") });
         this.bomUploadConfirmButton = this.modalContent.getByRole('button', { name: getValue("message", "upload") });
+
+        // BOM Download
+        this.downloadBomInventoryButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory") });
+        this.downloadBomInventoryWithVulnerabilitiesButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory_with_vulnerabilities") });
+
+        // Components Download
+        this.downloadComponentsCSVButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "csv_filetype") });
     }
 
     async uploadBom(filePathFromProjectRoot?: string) {

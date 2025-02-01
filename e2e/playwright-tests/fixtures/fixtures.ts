@@ -26,6 +26,7 @@ import {
     ProjectComponentsPage,
     ProjectPage, SelectedProjectPage
 } from "../page-objects/project.pom";
+import {PolicyPage} from "../page-objects/policy-management.pom";
 
 
 // export custom test fixtures
@@ -46,6 +47,7 @@ export const test = base.extend<
         dashboardPage: DashboardPage;
         navBarPage: NavigationParPage;
         notificationToast: NotificationToast;
+        policyPage: PolicyPage;
     }>({
     administrationPage: async ({ page }, use) => {
         await use(new AdministrationPage(page));
@@ -91,7 +93,10 @@ export const test = base.extend<
     },
     notificationToast: async ({ page }, use) => {
         await use(new NotificationToast(page));
-    }
+    },
+    policyPage: async ({ page }, use) => {
+        await use(new PolicyPage(page));
+    },
 });
 
 // export changes
