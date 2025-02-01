@@ -29,8 +29,8 @@ Then('the user deletes the following test projects if they exist', async ({ page
     for(const row of dataTable.hashes()) {
         await projectPage.fillSearchFieldInput(row.name);
 
-        const userDoesntExist = await page.locator('.no-records-found').isVisible();
-        if(userDoesntExist) {
+        const projectDoesntExist = await page.locator('.no-records-found').isVisible();
+        if(projectDoesntExist) {
             console.warn(`Couldn't find project with name ${row.name}. Moving on.`);
             continue;
         }
@@ -45,9 +45,9 @@ Then('the user deletes the following test projects', async ({ page, projectPage,
     for(const row of dataTable.hashes()) {
         await projectPage.fillSearchFieldInput(row.name);
 
-        const userDoesntExist = await page.locator('.no-records-found').isVisible();
-        if(userDoesntExist) {
-            throw new Error(`Couldn't find project with name ${row.name}. This shouldn't happen`);
+        const projectDoesntExist = await page.locator('.no-records-found').isVisible();
+        if(projectDoesntExist) {
+            throw new Error(`Couldn't find project with name ${row.name}. This shouldn't happen.`);
         }
 
         await projectPage.deleteProject(row.name);

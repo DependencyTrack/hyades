@@ -1,9 +1,5 @@
-import { Given, Then } from '../fixtures/fixtures';
+import { Then } from '../fixtures/fixtures';
 
-Given('the user navigates to administration page', async ({ navBarPage }) => {
-    await navBarPage.clickOnNavTab("administrationTab");
-});
-
-Then('the user navigates to project page', async ({ navBarPage }) => {
-    await navBarPage.clickOnNavTab("projectsTab");
+Then('the user navigates to {string} page', async ({ navBarPage }, navTab: string) => {
+    await navBarPage.clickOnNavTab(navTab);
 });
