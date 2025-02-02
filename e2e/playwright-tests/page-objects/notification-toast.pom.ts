@@ -78,4 +78,14 @@ export class NotificationToast {
         await expect(this.successToast).toContainText(getValue("message", "condition_deleted"));
         await this.successToast.click();
     }
+
+    async verifyFailedProjectCreatedToasts() {
+        await expect(this.errorToast).toBeVisible();
+        await expect(this.errorToast).toContainText(getValue("condition", "http_request_error"));
+        await expect(this.errorToast).toContainText(/Conflict \(409\)/i);
+        await this.errorToast.click();
+        await expect(this.warnToast).toBeVisible();
+        await expect(this.warnToast).toContainText(getValue("condition", "unsuccessful_action"));
+        await this.warnToast.click();
+    }
 }

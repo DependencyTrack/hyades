@@ -88,7 +88,7 @@ export class ProjectPage extends ProjectModal {
 
     async clickOnProject(projectName: string) {
         await this.page.getByRole('link', { name: projectName, exact: true }).first().click();
-        await this.page.waitForTimeout(1000);
+        await this.page.waitForTimeout(1500);
         await expect(this.page.locator('.container-fluid')).toBeVisible();
         await expect(this.page.locator('.text-nowrap.col-md-auto')).toContainText(projectName);
     }
@@ -253,11 +253,15 @@ export class SelectedProjectPage extends ProjectModal {
 
 export class ProjectComponentsPage {
     readonly page: Page;
+    tabPanel: Locator;
+
     addComponentButton: Locator;
     removeComponentButton: Locator;
     uploadBomButton: Locator;
     downloadBomButton: Locator;
     downloadComponentsButton: Locator;
+
+    tableList: Locator;
 
     modalContent: Locator;
 
@@ -273,12 +277,15 @@ export class ProjectComponentsPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.addComponentButton = page.getByRole('button', { name: getValue("message", "add_component") });
-        this.removeComponentButton = page.getByRole('button', { name: getValue("message", "remove_component") });
-        this.uploadBomButton = page.locator('#upload-button');
-        this.downloadBomButton = page.getByRole('button', { name: getValue("message", "download_bom") });
-        this.downloadComponentsButton = page.getByRole('button', { name: getValue("message", "download_component") });
+        this.tabPanel = page.locator('.tab-pane.active');
 
+        this.addComponentButton = this.tabPanel.getByRole('button', { name: getValue("message", "add_component") });
+        this.removeComponentButton = this.tabPanel.getByRole('button', { name: getValue("message", "remove_component") });
+        this.uploadBomButton = this.tabPanel.locator('#upload-button');
+        this.downloadBomButton = this.tabPanel.getByRole('button', { name: getValue("message", "download_bom") });
+        this.downloadComponentsButton = this.tabPanel.getByRole('button', { name: getValue("message", "download_component") });
+
+        this.tableList = this.tabPanel.locator('tbody tr');
 
         this.modalContent = page.locator('.modal-content');
 
@@ -289,11 +296,11 @@ export class ProjectComponentsPage {
         this.bomUploadConfirmButton = this.modalContent.getByRole('button', { name: getValue("message", "upload") });
 
         // BOM Download
-        this.downloadBomInventoryButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory") });
-        this.downloadBomInventoryWithVulnerabilitiesButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory_with_vulnerabilities") });
+        this.downloadBomInventoryButton = this.tabPanel.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory") });
+        this.downloadBomInventoryWithVulnerabilitiesButton = this.tabPanel.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory_with_vulnerabilities") });
 
         // Components Download
-        this.downloadComponentsCSVButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "csv_filetype") });
+        this.downloadComponentsCSVButton = this.tabPanel.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "csv_filetype") });
     }
 
     async uploadBom(filePathFromProjectRoot?: string) {
@@ -312,5 +319,176 @@ export class ProjectComponentsPage {
         await fileChooser.setFiles(filePathFromProjectRoot);
 
         await this.bomUploadConfirmButton.click();
+    }
+}
+
+export class ProjectServicesPage {
+    readonly page: Page;
+    tabPanel: Locator;
+    searchFieldInput: Locator;
+    tableList: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.tableList = this.tabPanel.locator('tbody tr');
+    }
+
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+}
+
+export class ProjectDependencyGraphPage {
+    readonly page: Page;
+    tabPanel: Locator;
+
+    treeNode: Locator;
+    isExpanded: boolean;
+    treeNodeChildrenList: Locator;
+    treeNodeChild: Locator;
+    treeNodeExpandButton: Locator;
+    treeNodeExpandedButton: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+
+        this.treeNode = this.tabPanel.locator('.org-tree-container');
+        this.isExpanded = false;
+        this.treeNodeChildrenList = this.tabPanel.locator('.org-tree-node-children');
+        this.treeNodeChild = this.treeNodeChildrenList.locator('.org-tree-node');
+        this.treeNodeExpandButton = this.treeNode.locator('.org-tree-node-btn');
+        this.treeNodeExpandedButton = this.treeNode.locator('.org-tree-node-btn.expanded');
+    }
+
+    async toggleTreeNodeExpansion() {
+        if(this.isExpanded) {
+            await this.treeNodeExpandedButton.click();
+            this.isExpanded = false;
+        } else {
+            await this.treeNodeExpandButton.click();
+            this.isExpanded = true;
+        }
+        await this.page.waitForTimeout(1000);
+    }
+}
+
+// Todo add functionality for auditing
+export class ProjectAuditVulnerabilitiesPage {
+    readonly page: Page;
+    tabPanel: Locator;
+    searchFieldInput: Locator;
+    tableList: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.tableList = this.tabPanel.locator('tbody tr');
+    }
+
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+}
+
+export class ProjectExploitPredictionsPage {
+    readonly page: Page;
+    tabPanel: Locator;
+    searchFieldInput: Locator;
+    tableList: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.tableList = this.tabPanel.locator('tbody tr');
+    }
+
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+}
+
+export class ProjectPolicyViolationsPage {
+    readonly page: Page;
+    tabPanel: Locator;
+    searchFieldInput: Locator;
+    tableList: Locator;
+
+    suppressSlider: Locator;
+
+    detailView: Locator;
+
+    detailViewFailedConditionField: Locator;
+    detailViewAuditTrailField: Locator;
+    detailViewCommentField: Locator;
+    detailViewCommentButton: Locator;
+    detailViewAnalysisSelect: Locator;
+    lastDetailViewAnalysisSelect: string;
+    detailViewSuppressToggle: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+
+        this.suppressSlider = this.tabPanel.locator('.switch-slider');
+
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.tableList = this.tabPanel.locator('tbody tr');
+        this.detailView = this.tabPanel.locator('.detail-view');
+
+        this.detailViewFailedConditionField = this.detailView.locator('#failedCondition-input');
+        this.detailViewAuditTrailField = this.detailView.locator('#auditTrailField');
+        this.detailViewCommentField = this.detailView.locator('#input-8');
+        this.detailViewCommentButton = this.detailView.locator('.pull-right');
+        this.detailViewAnalysisSelect = this.detailView.locator('.custom-select');
+        this.lastDetailViewAnalysisSelect = "NOT_SET"
+        this.detailViewSuppressToggle = this.detailView.locator('.toggle.btn');
+    }
+
+    async clearSearchFieldInput() {
+        await this.searchFieldInput.clear();
+        await this.page.waitForTimeout(1000);
+    }
+
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+
+    async clickOnSpecificViolation(violation: string) {
+        await this.page.getByRole('row', { name: violation }).locator('td').first().click();
+        await this.page.waitForTimeout(1000);
+    }
+
+    async fillDetailViewCommentField(input: string) {
+        await this.detailViewCommentField.fill(input);
+    }
+
+    async clickOnDetailViewCommentButton() {
+        await this.detailViewCommentButton.click();
+    }
+
+    async setDetailViewAnalysisSelect(option: string) {
+        await this.detailViewAnalysisSelect.selectOption(option);
+        this.lastDetailViewAnalysisSelect = await this.detailViewAnalysisSelect.getByRole('option', { name: option }).getAttribute('value');
+    }
+
+    async clickDetailViewSuppressToggle() {
+        await this.detailViewSuppressToggle.click();
+    }
+
+    async toggleSuppressedViolations() {
+        await this.suppressSlider.click();
     }
 }

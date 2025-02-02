@@ -4,6 +4,7 @@ import {NotificationToast} from "./notification-toast.pom";
 
 export class PolicyPage {
     page: Page;
+    tabPanel: Locator;
     createPolicyButton: Locator;
     searchFieldInput: Locator;
 
@@ -30,17 +31,19 @@ export class PolicyPage {
     constructor(page: Page) {
         this.page = page;
 
-        this.createPolicyButton = page.getByRole('button', { name: getValue("message", "create_policy") });
-        this.searchFieldInput = page.locator('.search-input').first(); // Todo nach talk mit Niklas .first() removen
+        this.tabPanel = page.locator('.tab-pane.active');
 
-        this.modalContent = page.locator('.modal-content');
+        this.createPolicyButton = this.tabPanel.getByRole('button', { name: getValue("message", "create_policy") });
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+
+        this.modalContent = this.page.locator('.modal-content');
 
         // Create Policy
         this.policyNameInput = this.modalContent.locator('#identifier-input');
         this.policyCreationCreateButton = this.modalContent.getByRole('button', { name: getValue("message", "create") });
         this.policyCreationClosePolicyButton = this.modalContent.getByRole('button', { name: getValue("message", "close") });
 
-        this.policyDetailView = page.locator('.detail-view');
+        this.policyDetailView = this.tabPanel.locator('.detail-view');
 
         // Edit Policy
         this.policyDetailNameInput = this.policyDetailView.locator('#identifier-input');
@@ -81,7 +84,7 @@ export class PolicyPage {
 
     async togglePolicyDetailView(policyName: string) {
         await this.fillSearchFieldInput(policyName);
-        await this.page.getByRole('cell', { name: policyName }).click();
+        await this.tabPanel.getByRole('row', { name: policyName }).click();
     }
 
     async addConditionToPolicy(subject: string, operator: string, value: string) {

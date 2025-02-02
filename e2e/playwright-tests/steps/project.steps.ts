@@ -20,6 +20,21 @@ Then('the user creates projects with the following values', async ({ page, proje
     }
 });
 
+Then('the user tries to create a project with name {string} and classifier {string}', async ({ page, projectPage, notificationToast }, projectName: string, classifier: string) => {
+    await projectPage.clickOnCreateProject();
+    await projectPage.createProject(
+        projectName,
+        classifier,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+    await page.waitForTimeout(1000);
+});
+
 Then('the user deletes the following test projects if they exist', async ({ page, projectPage, notificationToast }, dataTable: DataTable) => {
     const count = await page.locator('tbody tr').count();
     if(count === 0) {
@@ -92,8 +107,57 @@ Then('the user verifies Policy Violations with the badge number of {int} total {
     const actualWarnBadge = await selectedProjectPage.getWarnTabBadgeValue(tabName);
     const actualFailBadge = await selectedProjectPage.getFailTabBadgeValue(tabName);
 
-    expect(actualTotalBadge).toEqual(totalBadge);
-    expect(actualInfoBadge).toEqual(infoBadge);
-    expect(actualWarnBadge).toEqual(warnBadge);
-    expect(actualFailBadge).toEqual(failBadge);
+    expect(actualTotalBadge).toBe(totalBadge);
+    expect(actualInfoBadge).toBe(infoBadge);
+    expect(actualWarnBadge).toBe(warnBadge);
+    expect(actualFailBadge).toBe(failBadge);
+});
+
+Then('the table on the respective projects tab is visible and contains entries', async ({ page }) => {
+    const tabPanelListLocator = page.locator('.tab-pane.active');
+
+    await expect(tabPanelListLocator).toBeVisible();
+    expect(await tabPanelListLocator.locator('tbody tr').count()).toBeGreaterThan(0);
+});
+
+Then('the dependency graph tab is visible and contains a node with child entries', async ({ projectDependencyGraphPage }) => {
+    await projectDependencyGraphPage.toggleTreeNodeExpansion();
+
+    await expect(projectDependencyGraphPage.tabPanel).toBeVisible();
+    expect(await projectDependencyGraphPage.treeNodeChild.count()).toBeGreaterThan(0);
+
+    await projectDependencyGraphPage.toggleTreeNodeExpansion();
+});
+
+Then('the user opens the policy violation of Component {string}', async ({ projectPolicyViolationsPage }, component: string) => {
+    await projectPolicyViolationsPage.fillSearchFieldInput(component);
+    await projectPolicyViolationsPage.clickOnSpecificViolation(component);
+});
+
+Then('the user comments the current policy violation with {string}', async ({ projectPolicyViolationsPage, notificationToast }, comment: string) => {
+    await projectPolicyViolationsPage.fillDetailViewCommentField(comment);
+    await projectPolicyViolationsPage.clickOnDetailViewCommentButton();
+    await notificationToast.verifySuccessfulUpdatedToast();
+});
+
+Then('the user sets the analysis to {string}', async ({ projectPolicyViolationsPage, notificationToast }, option: string) => {
+    await projectPolicyViolationsPage.setDetailViewAnalysisSelect(option);
+    await notificationToast.verifySuccessfulUpdatedToast();
+});
+
+Then('the user suppresses the current policy violation', async ({ projectPolicyViolationsPage, notificationToast }) => {
+    await projectPolicyViolationsPage.clickDetailViewSuppressToggle();
+    await notificationToast.verifySuccessfulUpdatedToast();
+});
+
+Then('the audit trail should contain {string}', async ({ projectPolicyViolationsPage }, content: string) => {
+    const regex = new RegExp(content, "i");
+    await expect(projectPolicyViolationsPage.detailViewAuditTrailField).toHaveValue(regex);
+});
+
+Then('the policy violation of the component {string} will not appear in search result', async ({ projectPolicyViolationsPage }, component: string) => {
+    await projectPolicyViolationsPage.fillSearchFieldInput(component);
+    await projectPolicyViolationsPage.clearSearchFieldInput();
+    await projectPolicyViolationsPage.fillSearchFieldInput(component);
+    await expect(projectPolicyViolationsPage.tableList).toContainText(/No matching records found/);
 });

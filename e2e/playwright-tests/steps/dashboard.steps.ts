@@ -1,5 +1,5 @@
-import { Given } from '../fixtures/fixtures';
+import { When } from '../fixtures/fixtures';
 
-Given('the dashboard should be visible', async ({ dashboardPage }) => {
+When('the dashboard should be visible', async ({ dashboardPage }) => {
     await dashboardPage.pageShouldBeVisible();
 });
