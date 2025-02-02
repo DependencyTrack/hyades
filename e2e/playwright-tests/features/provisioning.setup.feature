@@ -1,13 +1,14 @@
 @mode:serial
 Feature:
-  Scenario: Cleanup Test Users Before Tests
+  Scenario: Delete All Test Users Before Tests
     Given the admin user logs in to DependencyTrack
-    Then the dashboard should be visible
+    When the dashboard should be visible
     Then the user navigates to "administrationTab" page
     And the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user deletes the following test users if they exist
       | username     |
+      | test-user00  |
       | test-user01  |
       | test-user02  |
       | test-user03  |
@@ -21,38 +22,48 @@ Feature:
       | test-user11  |
       | test-user12  |
 
-  Scenario: Create Test Users
+  Scenario: Delete All Test Policies Before Tests
     Given the admin user logs in to DependencyTrack
-    Then the dashboard should be visible
-    Then the user navigates to "administrationTab" page
-    And the user navigates to administration menu "accessManagement"
-    And the user clicks on access-management submenu "managedUsers"
-    Then the user creates the following test users
-      | username     |
-      | test-user01  |
-      | test-user02  |
-      | test-user03  |
-      | test-user04  |
-      | test-user05  |
-      | test-user06  |
-      | test-user07  |
-      | test-user08  |
-      | test-user09  |
-      | test-user10  |
-      | test-user11  |
-      | test-user12  |
-
-  Scenario: Delete All Test Policies
-    Given the admin user logs in to DependencyTrack
-    Then the dashboard should be visible
+    When the dashboard should be visible
     Then the user navigates to "policyManagementTab" page
     Then the user deletes the following test policies if they exist
       | policyName    |
       | test-policy01 |
 
+  Scenario: Delete All Test Project Before Tests
+    Given the admin user logs in to DependencyTrack
+    When the dashboard should be visible
+    Then the user navigates to "projectsTab" page
+    And the user deletes the following test projects if they exist
+      | name           |
+      | test-project01 |
+      | test-project02 |
+
+  Scenario: Create Test Users
+    Given the admin user logs in to DependencyTrack
+    When the dashboard should be visible
+    Then the user navigates to "administrationTab" page
+    And the user navigates to administration menu "accessManagement"
+    And the user clicks on access-management submenu "managedUsers"
+    Then the user creates the following test users
+      | username     |
+      | test-user00  |
+      | test-user01  |
+      | test-user02  |
+      | test-user03  |
+      | test-user04  |
+      | test-user05  |
+      | test-user06  |
+      | test-user07  |
+      | test-user08  |
+      | test-user09  |
+      | test-user10  |
+      | test-user11  |
+      | test-user12  |
+
   Scenario: Create Test Policies
     Given the admin user logs in to DependencyTrack
-    Then the dashboard should be visible
+    When the dashboard should be visible
     Then the user navigates to "policyManagementTab" page
     Then the user creates the following test policies
       | policyName    |
@@ -64,18 +75,9 @@ Feature:
       | conditionSubject | conditionOperator | conditionInputValue |
       | AGE              | >                 | P1D                 |
 
-  Scenario: Delete All Test Project
-    Given the admin user logs in to DependencyTrack
-    Then the dashboard should be visible
-    Then the user navigates to "projectsTab" page
-    And the user deletes the following test projects if they exist
-      | name           |
-      | test-project01 |
-      | test-project02 |
-
   Scenario: Create Test Project With Default BOM
     Given the admin user logs in to DependencyTrack
-    Then the dashboard should be visible
+    When the dashboard should be visible
     Then the user navigates to "projectsTab" page
     And the user creates projects with the following values
       | name           | classifier  | version | isLastVersion | team | parent | description | tag |
@@ -84,10 +86,14 @@ Feature:
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "components" tab
     And the user uploads default BOM
+    Then the user navigates to "projectsTab" page
+    Then the user opens the project with the name "test-project02"
+    And the user navigates to project "components" tab
+    And the user uploads default BOM
 
   Scenario: Provide Test Users With Respective Permissions
     Given the admin user logs in to DependencyTrack
-    Then the dashboard should be visible
+    When the dashboard should be visible
     Then the user navigates to "administrationTab" page
     And the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
@@ -101,6 +107,7 @@ Feature:
     Then the user provides "test-user03" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
+      | SYSTEM_CONFIGURATION  |
       | ACCESS_MANAGEMENT     |
     Then the user provides "test-user04" with the following permissions
       | permission            |
