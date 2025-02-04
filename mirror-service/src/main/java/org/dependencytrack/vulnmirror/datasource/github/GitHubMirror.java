@@ -21,7 +21,6 @@ package org.dependencytrack.vulnmirror.datasource.github;
 import io.github.jeremylong.openvulnerability.client.ghsa.GitHubSecurityAdvisoryClient;
 import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import io.micrometer.core.instrument.Timer;
-import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_6.Bom;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
@@ -31,10 +30,12 @@ import org.dependencytrack.vulnmirror.state.VulnerabilityDigestStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.chrono.ChronoZonedDateTime;
-import java.util.Optional;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -102,6 +103,9 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
 
         LOGGER.info("Mirroring GitHub Advisories that were modified since {}", Instant.ofEpochSecond(lastModified));
         final Timer.Sample durationSample = Timer.start();
+        int numMirrored = 0;
+        Instant lastStatusLog = Instant.now();
+        ZonedDateTime committedLastModified = null;
 
         try (final GitHubSecurityAdvisoryClient apiClient = apiClientFactory.create(lastModified)) {
             while (apiClient.hasNext()) {
@@ -110,17 +114,44 @@ class GitHubMirror extends AbstractDatasourceMirror<GitHubMirrorState> {
                         Bom bov = GitHubAdvisoryToCdxParser.parse(advisory, this.config.aliasSyncEnabled().orElse(false));
                         publishIfChanged(bov);
                     }
-                }
-            }
 
-            // lastUpdated is null when nothing changed
-            Optional.ofNullable(apiClient.getLastUpdated())
-                    .map(ChronoZonedDateTime::toEpochSecond)
-                    .ifPresent(epochSeconds -> updateState(new GitHubMirrorState(epochSeconds)));
+                    final int currentNumMirrored = ++numMirrored;
+                    if (lastStatusLog.plus(5, ChronoUnit.SECONDS).isBefore(Instant.now())) {
+                        final int currentMirroredPercentage = (currentNumMirrored * 100) / apiClient.getTotalAvailable();
+                        LOGGER.info("Mirrored {}/{} GHSAs ({}%); Last committed modification timestamp: {}",
+                                currentNumMirrored, apiClient.getTotalAvailable(), currentMirroredPercentage, committedLastModified);
+                        lastStatusLog = Instant.now();
+                    }
+                }
+
+                committedLastModified = maybeCommitLastModified(apiClient.getLastUpdated());
+            }
         } finally {
             final long durationNanos = durationSample.stop(durationTimer);
-            LOGGER.info("Mirroring of GitHub Advisories completed in {}", Duration.ofNanos(durationNanos));
+            LOGGER.info("""
+                    Mirroring of {} GitHub Advisories completed in {} \
+                    (last committed modification timestamp: {})""",
+                    numMirrored, Duration.ofNanos(durationNanos), committedLastModified);
         }
+    }
+
+    private ZonedDateTime maybeCommitLastModified(final ZonedDateTime lastModifiedDateTime) {
+        if (lastModifiedDateTime == null) {
+            return null;
+        }
+
+        final ZonedDateTime previous = getState()
+                .map(GitHubMirrorState::lastUpdatedEpochSeconds)
+                .map(lastModifiedEpochSeconds -> ZonedDateTime.ofInstant(
+                        Instant.ofEpochSecond(lastModifiedEpochSeconds), ZoneOffset.UTC))
+                .orElseGet(() -> ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC));
+        if (previous.isBefore(lastModifiedDateTime)) {
+            LOGGER.debug("Updating last captured modification date: {} -> {}", previous, lastModifiedDateTime);
+            updateState(new GitHubMirrorState(lastModifiedDateTime.toEpochSecond()));
+            return lastModifiedDateTime;
+        }
+
+        return previous;
     }
 
 }

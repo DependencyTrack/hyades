@@ -29,6 +29,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
         classNames = {
                 "io.github.jeremylong.openvulnerability.client.ghsa.AbstractPageable",
                 "io.github.jeremylong.openvulnerability.client.ghsa.CVSS",
+                "io.github.jeremylong.openvulnerability.client.ghsa.CVSSSeverities",
                 "io.github.jeremylong.openvulnerability.client.ghsa.CWE",
                 "io.github.jeremylong.openvulnerability.client.ghsa.CWEs",
                 "io.github.jeremylong.openvulnerability.client.ghsa.Identifier",
