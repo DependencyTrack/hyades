@@ -1,4 +1,4 @@
-@mode:serial
+@provisioning @mode:serial
 Feature:
   Scenario: Delete All Test Users Before Tests
     Given the admin user logs in to DependencyTrack

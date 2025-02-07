@@ -19,13 +19,18 @@ export class LoginPage {
         this.loginDescription = page.locator('.text-muted');
         this.loginErrorPopup = page.locator('.modal-content');
     }
+    async goto() {
+        await this.page.goto('/');
+        await this.verifyVisibleLoginPage();
+    }
+
     async login(username: string, password: string) {
         await this.username.fill(username);
         await this.password.fill(password);
         await this.submitButton.click();
         await this.page.waitForTimeout(2000);
     }
-    async isLoginPageVisible() {
+    async verifyVisibleLoginPage() {
         await expect(this.page).toHaveTitle(/Login/);
         await expect(this.heading).toBeVisible();
     }

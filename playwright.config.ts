@@ -15,14 +15,14 @@ const defOutDir = "./playwright-test-results";
 const setupDir = "./e2e/playwright-tests/setup";
 
 const gherkinTestDir = defineBddConfig({
-  tags: '@test and not @todo',
-  features: playwrightTestDir + '/features/*.test.feature',
+  tags: '@projects or @permissions and not @todo',
+  features: playwrightTestDir + '/features/**/*.test.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/tests',
 });
 
 const gherkinSetupDir = defineBddConfig({
-  tags: 'not @todo',
+  tags: '@provisioning and not @todo',
   features: playwrightTestDir + '/features/*.setup.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/setup',

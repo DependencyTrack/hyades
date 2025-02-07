@@ -1,4 +1,3 @@
-@test
 Feature:
 
   Scenario: The Admin User Validates A Test Project With A Recently Uploaded BOM

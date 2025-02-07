@@ -1,4 +1,3 @@
-@test
 Feature:
 
   Scenario: The Admin User Suppresses A Policy Violation
