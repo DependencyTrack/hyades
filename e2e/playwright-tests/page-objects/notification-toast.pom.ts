@@ -88,4 +88,16 @@ export class NotificationToast {
         await expect(this.warnToast).toContainText(getValue("condition", "unsuccessful_action"));
         await this.warnToast.click();
     }
+
+    async verifyFailedLogInAttemptToast() {
+        await expect(this.errorToast).toBeVisible();
+        await expect(this.errorToast).toContainText(getValue("condition", "forbidden"));
+        await this.errorToast.click();
+    }
+
+    async verifyFailedLogInAttemptWrongCredentialsToast() {
+        await expect(this.errorToast).toBeVisible();
+        await expect(this.errorToast).toContainText(/Unauthorized \(401\)/i);
+        await this.errorToast.click();
+    }
 }

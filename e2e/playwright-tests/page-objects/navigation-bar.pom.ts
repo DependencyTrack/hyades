@@ -66,6 +66,14 @@ export class NavigationParPage {
         await this.clickOnAccountDropDownLogout();
     }
 
+    async verifyNavTabIsActive(tabName: string) {
+        const tab = this.navBarItems[tabName];
+        if (!tab) {
+            throw new Error(`Menu '${tabName}' does not exist.`);
+        }
+        await expect(tab).toHaveClass('router-link-exact-active open active nav-link');
+    }
+
     async clickOnNavTab(tabName: string) {
         const tab = this.navBarItems[tabName];
         if (!tab) {
