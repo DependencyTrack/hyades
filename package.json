@@ -12,6 +12,7 @@
     "playwright:clean:initial:chromium": "npx bddgen && npx playwright test --project=setup_initial",
     "playwright:clean:test:chromium": "npx bddgen && npx playwright test --project=setup_initial && npx playwright test --project=chromium_test_workflow",
     "playwright:test:chromium": "npx bddgen && npx playwright test --project=chromium_test_workflow",
+    "playwright:test:only:chromium": "npx bddgen && npx playwright test --project=chromium_test_only_workflow",
     "playwright:test:firefox": "npx bddgen && npx playwright test --project=firefox_test_workflow",
     "playwright:test:webkit": "npx bddgen && npx playwright test --project=webkit_test_workflow",
     "playwright:show:report": "npx playwright show-report"

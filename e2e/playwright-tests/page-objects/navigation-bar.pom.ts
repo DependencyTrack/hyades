@@ -85,7 +85,7 @@ export class NavigationParPage {
     }
 
     async closeSnapshotPopupIfVisible() {
-        const isVisible = await this.snapshotPopup.isVisible(); // Todo ask niklas if this can be removed somehow
+        const isVisible = await this.snapshotPopup.isVisible();
 
         if(isVisible) {
             await this.snapshotPopup.locator('button').click();

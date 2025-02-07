@@ -9,6 +9,4 @@ Given('the authenticated admin user navigates to dashboard', async ({ }) => {
 Given('the admin user logs in to DependencyTrack', async ({ page, loginPage, navBarPage }) => {
     await page.goto('/');
     await loginPage.login('admin', process.env.RANDOM_PASSWORD);
-
-    await navBarPage.closeSnapshotPopupIfVisible()
 });
