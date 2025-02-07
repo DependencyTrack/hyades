@@ -47,7 +47,7 @@ Then('the user deletes the following test policies if they exist', async ({ page
     for(const row of dataTable.hashes()) {
         await policyPage.fillSearchFieldInput(row.policyName);
 
-        const policyDoesntExist = await page.locator('.no-records-found').first().isVisible(); // Todo nach talk mit Niklas .first() removen
+        const policyDoesntExist = await page.locator('.no-records-found').first().isVisible();
         if(policyDoesntExist) {
             console.warn(`Couldn't find project with name ${row.policyName}. Moving on.`);
             continue;

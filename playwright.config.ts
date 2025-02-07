@@ -181,6 +181,15 @@ export default defineConfig({
       dependencies: ['setup_provisioning'],
     },
 
+    {
+      name: 'chromium_test_only_workflow',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1600, height: 1080 },
+        //storageState: playwrightTestDir + '/.auth/admin.json',
+      },
+      testDir: gherkinTestDir,
+    },
 /* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)
 https://vitalets.github.io/playwright-bdd/#/faq?id=can-i-manually-apply-testuse-in-a-generated-file
     {
