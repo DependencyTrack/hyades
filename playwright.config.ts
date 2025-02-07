@@ -190,32 +190,13 @@ export default defineConfig({
       },
       testDir: gherkinTestDir,
     },
-/* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)
-https://vitalets.github.io/playwright-bdd/#/faq?id=can-i-manually-apply-testuse-in-a-generated-file
+
+    /* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)
+    https://vitalets.github.io/playwright-bdd/#/faq?id=can-i-manually-apply-testuse-in-a-generated-file
     {
       name: 'permissions',
       use: {
         ...devices['Desktop Chrome'],
-        viewport: { width: 1600, height: 1080 },
-      },
-      dependencies: ['preconditions'],
-    },
-*/
-
-    /*
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        viewport: { width: 1600, height: 1080 },
-      },
-      dependencies: ['preconditions'],
-    },
-
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
         viewport: { width: 1600, height: 1080 },
       },
       dependencies: ['preconditions'],
