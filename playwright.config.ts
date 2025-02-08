@@ -16,14 +16,14 @@ const setupDir = "./e2e/playwright-tests/setup";
 
 const gherkinTestDir = defineBddConfig({
   tags: '@projects or @permissions and not @todo',
-  features: playwrightTestDir + '/features/**/*.test.feature',
+  features: playwrightTestDir + '/features/**/*.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/tests',
 });
 
 const gherkinSetupDir = defineBddConfig({
-  tags: '@provisioning and not @todo',
-  features: playwrightTestDir + '/features/*.setup.feature',
+  tags: '@setup and not @todo',
+  features: playwrightTestDir + '/features/**/*.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/setup',
 });
@@ -37,7 +37,7 @@ export default defineConfig({
   // Folder for the tests. Defaulting to this if not explicitly mentioned in projects
   testDir: gherkinTestDir,
   // Folder for test artifacts such as screenshots, videos, traces, etc.
-  outputDir: defOutDir,
+  outputDir: defOutDir + '/artifacts',
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* If the tests in total exceed a certain timeout */
@@ -69,21 +69,7 @@ export default defineConfig({
         },
       },
     ],
-  ]: [["list"], ["html"],
-        ["allure-playwright",
-          {
-            resultsDir: defOutDir + "/allure-results",
-            detail: true,
-            suiteTitle: true,
-            environmentInfo: {
-              os_platform: os.platform(),
-              os_release: os.release(),
-              os_version: os.version(),
-              node_version: process.version,
-            },
-          },
-        ],
-      ],
+  ]: [["list"], ["html", { outputFolder: defOutDir + '/playwright-report' }]],
 
   // globalSetup for: Locale Determination
   globalSetup: require.resolve(setupDir + "/global-setup.ts"),
@@ -124,7 +110,6 @@ export default defineConfig({
       testMatch: /.*initial-setup.ts/,
       retries: 0,
     },
-    // todo at the moment admin_authentication doesnt possible to use sessionStorage with dependencyTrack. FOr some reason it wont work
     {
       name: 'setup_admin_authentication',
       use: {

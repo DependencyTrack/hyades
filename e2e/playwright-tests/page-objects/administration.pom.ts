@@ -10,14 +10,30 @@ export class AdministrationPage {
 
         const adminElement = page.locator('.card.admin-menu');
         this.adminMenuItems = {
-            configuration: adminElement.getByText(getValue("admin", "configuration")),
-            analyzers: adminElement.getByText(getValue("admin", "analyzers")),
-            vulnerabilitySources: adminElement.getByText(getValue("admin", "vuln_sources")),
-            repositories: adminElement.getByText(getValue("admin", "repositories")),
-            notifications: adminElement.getByText(getValue("admin", "notifications")),
-            integrations: adminElement.getByText(getValue("admin", "integrations")),
-            accessManagement: adminElement.getByText(getValue("admin", "access_management")),
+            configuration: adminElement.filter({ hasText: getValue("admin", "configuration")}),
+            analyzers: adminElement.filter({ hasText: getValue("admin", "analyzers")}),
+            vulnerabilitySources: adminElement.filter({ hasText: getValue("admin", "vuln_sources")}),
+            repositories: adminElement.filter({ hasText: getValue("admin", "repositories")}),
+            notifications: adminElement.filter({ hasText: getValue("admin", "notifications")}),
+            integrations: adminElement.filter({ hasText: getValue("admin", "integrations")}),
+            accessManagement: adminElement.filter({ hasText: getValue("admin", "access_management")})
         };
+    }
+
+    async getNavTabLocator(menuName: string) {
+        const menu = this.adminMenuItems[menuName];
+        if (!menu) {
+            throw new Error(`Menu '${menuName}' does not exist.`);
+        }
+        return menu;
+    }
+
+    async verifyMenuTabIsShown(menuName: string) {
+        const menu = this.adminMenuItems[menuName];
+        if (!menu) {
+            throw new Error(`Menu '${menuName}' does not exist.`);
+        }
+        await expect(menu.locator('.not-collapsed')).toHaveClass('not-collapsed');
     }
 
     async clickOnAdminMenu(menuName: string) {
@@ -207,6 +223,7 @@ export class IntegrationsSubMenu {
 
 export class AccessManagementSubMenu {
     page: Page;
+    accessManagementMenu: Locator;
     accessManagementMenuItems: Record<string, Locator>;
 
     createTeamButton: Locator;
@@ -220,17 +237,17 @@ export class AccessManagementSubMenu {
         this.page = page;
         this.modalContent = page.locator('.modal-content');
         this.searchFieldInput = page.locator('.search-input');
-        
-        const accessManagementElement = page.locator('#accessmanagement');
+
+        this.accessManagementMenu = page.locator('#accessmanagement');
         const accessManagementElementURN = '/admin/accessManagement';
         this.accessManagementMenuItems = {
-            ldapUsers: accessManagementElement.locator(`a[href='${accessManagementElementURN}/ldapUsers']`),
-            managedUsers: accessManagementElement.locator(`a[href='${accessManagementElementURN}/managedUsers']`),
-            oidcUsers: accessManagementElement.locator(`a[href='${accessManagementElementURN}/oidcUsers']`),
-            oidcGroups: accessManagementElement.locator(`a[href='${accessManagementElementURN}/oidcGroups']`),
-            teams: accessManagementElement.locator(`a[href='${accessManagementElementURN}/teams']`),
-            permissions: accessManagementElement.locator(`a[href='${accessManagementElementURN}/permissions']`),
-            portfolioAccessControl: accessManagementElement.locator(`a[href='${accessManagementElementURN}/portfolioAccessControl']`),
+            ldapUsers: this.accessManagementMenu.locator(`a[href='${accessManagementElementURN}/ldapUsers']`),
+            managedUsers: this.accessManagementMenu.locator(`a[href='${accessManagementElementURN}/managedUsers']`),
+            oidcUsers: this.accessManagementMenu.locator(`a[href='${accessManagementElementURN}/oidcUsers']`),
+            oidcGroups: this.accessManagementMenu.locator(`a[href='${accessManagementElementURN}/oidcGroups']`),
+            teams: this.accessManagementMenu.locator(`a[href='${accessManagementElementURN}/teams']`),
+            permissions: this.accessManagementMenu.locator(`a[href='${accessManagementElementURN}/permissions']`),
+            portfolioAccessControl: this.accessManagementMenu.locator(`a[href='${accessManagementElementURN}/portfolioAccessControl']`),
         };
 
         // TEAM
@@ -240,6 +257,10 @@ export class AccessManagementSubMenu {
         this.createUserButton = page.getByRole('button', { name: getValue("admin", "create_user") });
         this.deleteUserButton = page.getByRole('button', { name: getValue("admin", "delete_user") });
         this.userPaginationInfo = page.locator('.pagination-info');
+    }
+
+    async verifySubMenuIsVisible() {
+        await expect(this.accessManagementMenu).toHaveClass(/show/);
     }
 
     async fillSearchFieldInput(search: string) {
