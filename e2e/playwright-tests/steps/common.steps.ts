@@ -13,7 +13,7 @@ Given('the admin user logs in to DependencyTrack', async ({ loginPage, navBarPag
     await navBarPage.verifyNavTabIsActive('dashboardTab');
 });
 
-Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage, navBarPage }, username: string) => {
+Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage }, username: string) => {
     await loginPage.goto();
     await loginPage.verifyVisibleLoginPage();
     await loginPage.login(username, process.env.RANDOM_PASSWORD);

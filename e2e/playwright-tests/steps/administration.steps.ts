@@ -1,5 +1,6 @@
 import { Then } from '../fixtures/fixtures';
 import { DataTable } from 'playwright-bdd';
+import {expect} from "@playwright/test";
 
 Then('the user navigates to administration menu {string}', async ({ administrationPage }, adminMenu: string) => {
     await administrationPage.clickOnAdminMenu(adminMenu);
@@ -29,17 +30,6 @@ Then('the user provides {string} with the following permissions', async ({ page,
     await notificationToast.verifySuccessfulUpdatedToast();
     await accessManagementSubMenu.clickOnSpecificUser(username);
     await page.waitForTimeout(2000);
-
-    /*
-    for(const row of dataTable.hashes()) {
-        await accessManagementSubMenu.fillSearchFieldInput(username);
-        await accessManagementSubMenu.clickOnSpecificUser(username);
-        await accessManagementSubMenu.addPermissionsToSelectedUser(username, row.permission);
-        await notificationToast.verifySuccessfulUpdatedToast();
-        await accessManagementSubMenu.clickOnSpecificUser(username);
-        await page.waitForTimeout(2000);
-    }
-    */
 });
 
 Then('the user deletes the following test users if they exist', async ({ page, accessManagementSubMenu, notificationToast }, dataTable: DataTable) => {
@@ -60,4 +50,19 @@ Then('the user deletes the following test users if they exist', async ({ page, a
         await notificationToast.verifySuccessfulUserDeletedToast();
         await page.waitForTimeout(1000);
     }
+});
+
+Then('the {string} menu should be visible', async ({ administrationPage }, adminMenu: string) => {
+    const menuLocator = await administrationPage.getNavTabLocator(adminMenu);
+    await expect(menuLocator).toBeVisible();
+});
+
+Then('the {string} menu should not be visible', async ({ administrationPage }, adminMenu: string) => {
+    const menuLocator = await administrationPage.getNavTabLocator(adminMenu);
+    await expect(menuLocator).not.toBeVisible();
+});
+
+Then('the accessManagement submenu should be visible', async ({ administrationPage, accessManagementSubMenu }) => {
+    await administrationPage.verifyMenuTabIsShown('accessManagement');
+    await accessManagementSubMenu.verifySubMenuIsVisible();
 });
