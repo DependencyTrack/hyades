@@ -87,7 +87,7 @@ export class NavigationParPage {
         if (!tab) {
             throw new Error(`Menu '${tabName}' does not exist.`);
         }
-        await tab.click();
+        await tab.first().click();
         await this.page.waitForTimeout(1000);
     }
 

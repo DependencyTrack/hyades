@@ -1,5 +1,4 @@
 Feature:
-
   Scenario: The Admin User Suppresses A Policy Violation
     Given the admin user logs in to DependencyTrack
     When the "dashboardTab" tab should be visible and active

@@ -1,5 +1,4 @@
 Feature:
-
   Scenario: The Admin User Validates A Test Project With A Recently Uploaded BOM
     Given the admin user logs in to DependencyTrack
     When the "dashboardTab" tab should be visible and active

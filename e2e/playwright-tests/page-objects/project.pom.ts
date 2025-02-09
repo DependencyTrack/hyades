@@ -8,11 +8,12 @@ export class ProjectModal {
     projectIsLastVersionSlider: Locator;
     projectTeamSelect: Locator;
     projectClassifierSelect: Locator;
-    projectParentSelect: Locator;
+    projectParentField: Locator;
     projectDescriptionField: Locator;
     projectTag: Locator;
     projectActionButton: Locator;
     projectCloseButton: Locator;
+    projectActiveSlider: Locator;
 
     constructor(page: Page, actionButtonName: string) {
         this.modalContent = page.locator('.modal-content');
@@ -21,30 +22,39 @@ export class ProjectModal {
         this.projectIsLastVersionSlider = this.modalContent.locator('#project-create-islatest .switch-slider'); // #project-create-islatest-input
         this.projectClassifierSelect = this.modalContent.locator('#v-classifier-input-input');
         this.projectTeamSelect = this.modalContent.locator('#v-team-input-input');
-        this.projectParentSelect = this.modalContent.locator('##multiselect');
+        this.projectParentField = this.modalContent.locator('#multiselect');
         this.projectDescriptionField = this.modalContent.locator('#project-description-description');
         this.projectTag = this.modalContent.locator('.ti-new-tag-input');
 
+        // Either Create or Update
         this.projectActionButton = this.modalContent.getByRole('button', { name: getValue("message", actionButtonName) });
         this.projectCloseButton = this.modalContent.getByRole('button', { name: getValue("message", "close") });
+
+        // Project Details Active Inactive Button
+        this.projectActiveSlider = this.modalContent.locator('#project-details-active .switch-slider');
     }
 }
 
 export class ProjectPage extends ProjectModal {
     page: Page;
+    toolBar: Locator;
     createProjectButton: Locator;
     inactiveProjectSlider: Locator;
     flatProjectSlider: Locator;
     searchFieldInput: Locator;
+    projectList: Locator;
 
     constructor(page: Page) {
         super(page, "create");
         this.page = page;
 
-        this.createProjectButton = page.getByRole('button', { name: getValue("message", "create_project")});
-        this.inactiveProjectSlider = page.locator('#showInactiveProjects');
-        this.flatProjectSlider = page.locator('#showFlatView');
+        this.toolBar = page.locator('#projectsToolbar');
+
+        this.createProjectButton = this.toolBar.getByRole('button', { name: getValue("message", "create_project")});
+        this.inactiveProjectSlider = this.toolBar.locator('.switch').filter({ has: page.locator('#showInactiveProjects')}).locator('.switch-slider');
+        this.flatProjectSlider = this.toolBar.locator('.switch').filter({ has: page.locator('#showFlatView')}).locator('.switch-slider');
         this.searchFieldInput = page.locator('.search-input');
+        this.projectList = page.locator('tbody');
     }
 
     async clickOnCreateProject() {
@@ -65,7 +75,8 @@ export class ProjectPage extends ProjectModal {
             await this.projectTeamSelect.selectOption(team);
         }
         if(parent) {
-            await this.projectParentSelect.selectOption(parent);
+            await this.projectParentField.pressSequentially(parent);
+            await this.modalContent.locator('#listbox-multiselect').locator('#multiselect-0').click();
         }
         if(description) {
             await this.projectDescriptionField.fill(description);
@@ -75,6 +86,10 @@ export class ProjectPage extends ProjectModal {
         }
 
         await this.projectActionButton.click();
+    }
+
+    async getProjectTableRow(projectName: string) {
+        return this.projectList.locator('tr').filter({ hasText: projectName });
     }
 
     async deleteProject(projectName: string) {
@@ -103,13 +118,12 @@ export class ProjectPage extends ProjectModal {
         await this.page.waitForTimeout(1000);
     }
 
-    async checkInactiveProjects() {
+    async showInactiveProjects() {
         await this.inactiveProjectSlider.check();
     }
-    async uncheckInactiveProjects() {
+    async hideInactiveProjects() {
         await this.inactiveProjectSlider.uncheck();
     }
-
     async checkFlatProjectSlider() {
         await this.flatProjectSlider.check();
     }
@@ -120,6 +134,7 @@ export class ProjectPage extends ProjectModal {
 
 export class SelectedProjectPage extends ProjectModal {
     page: Page;
+    projectCards: Locator;
     projectDetails: Locator;
     projectTabs: Locator;
     projectTabList: Record<string, Locator>;
@@ -132,6 +147,7 @@ export class SelectedProjectPage extends ProjectModal {
         super(page, "update");
         this.page = page;
 
+        this.projectCards = page.locator('.card');
         this.projectDetails = page.getByRole('link', { name: getValue("message", "view_details") });
 
         this.projectTabs = page.getByRole('tablist');
@@ -148,6 +164,10 @@ export class SelectedProjectPage extends ProjectModal {
         this.projectDetailsDeleteButton = this.modalContent.getByRole('button', { name: getValue("message", "delete") });
         this.projectDetailsPropertiesButton = this.modalContent.getByRole('button', { name: getValue("message", "properties") });
         this.projectDetailsAddVersionButton = this.modalContent.getByRole('button', { name: getValue("message", "add_version") });
+    }
+
+    async getProjectCard(cardNumber: number) {
+        return this.projectCards.nth(cardNumber);
     }
 
     async clickOnTab(tabName: string) {
@@ -213,6 +233,10 @@ export class SelectedProjectPage extends ProjectModal {
         await expect(this.modalContent).toContainText(getValue("message", "project_details"));
     }
 
+    async clickOnUpdateButton() {
+        await this.projectActionButton.click();
+    }
+
     async deleteProjectInProjectDetails() {
         await this.projectDetailsDeleteButton.click();
 
@@ -248,6 +272,14 @@ export class SelectedProjectPage extends ProjectModal {
         }
 
         await this.modalContent.getByRole('button', { name: getValue("message", "create") }).click();
+    }
+
+    async makeProjectActive() {
+        await this.projectActiveSlider.check();
+    }
+
+    async makeProjectInactive() {
+        await this.projectActiveSlider.uncheck();
     }
 }
 

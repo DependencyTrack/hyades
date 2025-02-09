@@ -43,10 +43,10 @@ export default defineConfig({
   /* If the tests in total exceed a certain timeout */
   globalTimeout: 15 * 60 * 1000, // 15 min
   /* Set the timeout each test has in ms (also one Gherkin-Scenario is treated as one test) */
-  timeout: 5 * 60 * 1000, // 3 mins
+  timeout: 5 * 60 * 1000, // 5 min
   /* Set the timeout for each executed expect-line in ms */
   expect: {
-    timeout: 5 * 1000, // 15 sec
+    timeout: 5 * 1000, // 5 sec
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -71,7 +71,7 @@ export default defineConfig({
     ],
   ]: [["list"], ["html", { outputFolder: defOutDir + '/playwright-report' }]],
 
-  // globalSetup for: Locale Determination
+  // globalSetup for: locale.json Determination
   globalSetup: require.resolve(setupDir + "/global-setup.ts"),
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
