@@ -15,15 +15,15 @@ const defOutDir = "./playwright-test-results";
 const setupDir = "./e2e/playwright-tests/setup";
 
 const gherkinTestDir = defineBddConfig({
-  tags: '@test and not @todo',
-  features: playwrightTestDir + '/features/*.test.feature',
+  tags: '@projects or @permissions and not @todo',
+  features: playwrightTestDir + '/features/**/*.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/tests',
 });
 
 const gherkinSetupDir = defineBddConfig({
-  tags: 'not @todo',
-  features: playwrightTestDir + '/features/*.setup.feature',
+  tags: '@setup and not @todo',
+  features: playwrightTestDir + '/features/**/*.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/setup',
 });
@@ -37,16 +37,16 @@ export default defineConfig({
   // Folder for the tests. Defaulting to this if not explicitly mentioned in projects
   testDir: gherkinTestDir,
   // Folder for test artifacts such as screenshots, videos, traces, etc.
-  outputDir: defOutDir,
+  outputDir: defOutDir + '/artifacts',
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* If the tests in total exceed a certain timeout */
   globalTimeout: 15 * 60 * 1000, // 15 min
   /* Set the timeout each test has in ms (also one Gherkin-Scenario is treated as one test) */
-  timeout: 5 * 60 * 1000, // 3 mins
+  timeout: 5 * 60 * 1000, // 5 min
   /* Set the timeout for each executed expect-line in ms */
   expect: {
-    timeout: 5 * 1000, // 15 sec
+    timeout: 5 * 1000, // 5 sec
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -69,23 +69,9 @@ export default defineConfig({
         },
       },
     ],
-  ]: [["list"], ["html"],
-        ["allure-playwright",
-          {
-            resultsDir: defOutDir + "/allure-results",
-            detail: true,
-            suiteTitle: true,
-            environmentInfo: {
-              os_platform: os.platform(),
-              os_release: os.release(),
-              os_version: os.version(),
-              node_version: process.version,
-            },
-          },
-        ],
-      ],
+  ]: [["list"], ["html", { outputFolder: defOutDir + '/playwright-report' }]],
 
-  // globalSetup for: Locale Determination
+  // globalSetup for: locale.json Determination
   globalSetup: require.resolve(setupDir + "/global-setup.ts"),
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -124,7 +110,6 @@ export default defineConfig({
       testMatch: /.*initial-setup.ts/,
       retries: 0,
     },
-    // todo at the moment admin_authentication doesnt possible to use sessionStorage with dependencyTrack. FOr some reason it wont work
     {
       name: 'setup_admin_authentication',
       use: {
@@ -181,32 +166,22 @@ export default defineConfig({
       dependencies: ['setup_provisioning'],
     },
 
-/* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)
-https://vitalets.github.io/playwright-bdd/#/faq?id=can-i-manually-apply-testuse-in-a-generated-file
+    {
+      name: 'chromium_test_only_workflow',
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1600, height: 1080 },
+        //storageState: playwrightTestDir + '/.auth/admin.json',
+      },
+      testDir: gherkinTestDir,
+    },
+
+    /* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)
+    https://vitalets.github.io/playwright-bdd/#/faq?id=can-i-manually-apply-testuse-in-a-generated-file
     {
       name: 'permissions',
       use: {
         ...devices['Desktop Chrome'],
-        viewport: { width: 1600, height: 1080 },
-      },
-      dependencies: ['preconditions'],
-    },
-*/
-
-    /*
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        viewport: { width: 1600, height: 1080 },
-      },
-      dependencies: ['preconditions'],
-    },
-
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
         viewport: { width: 1600, height: 1080 },
       },
       dependencies: ['preconditions'],

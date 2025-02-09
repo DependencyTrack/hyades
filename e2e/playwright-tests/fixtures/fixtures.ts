@@ -23,8 +23,9 @@ import {
     DashboardPage
 } from "../page-objects/dashboard.pom";
 import {
-    ProjectComponentsPage,
-    ProjectPage, SelectedProjectPage
+    ProjectAuditVulnerabilitiesPage,
+    ProjectComponentsPage, ProjectDependencyGraphPage, ProjectExploitPredictionsPage,
+    ProjectPage, ProjectPolicyViolationsPage, ProjectServicesPage, SelectedProjectPage
 } from "../page-objects/project.pom";
 import {PolicyPage} from "../page-objects/policy-management.pom";
 
@@ -43,6 +44,11 @@ export const test = base.extend<
         projectPage: ProjectPage;
         selectedProjectPage: SelectedProjectPage;
         projectComponentsPage: ProjectComponentsPage;
+        projectServicesPage: ProjectServicesPage;
+        projectDependencyGraphPage: ProjectDependencyGraphPage;
+        projectAuditVulnerabilitiesPage: ProjectAuditVulnerabilitiesPage;
+        projectExploitPredictionsPage: ProjectExploitPredictionsPage;
+        projectPolicyViolationsPage: ProjectPolicyViolationsPage;
         loginPage: LoginPage;
         dashboardPage: DashboardPage;
         navBarPage: NavigationParPage;
@@ -81,6 +87,21 @@ export const test = base.extend<
     },
     projectComponentsPage: async ({ page }, use) => {
         await use(new ProjectComponentsPage(page));
+    },
+    projectServicesPage: async ({ page }, use) => {
+        await use(new ProjectServicesPage(page));
+    },
+    projectDependencyGraphPage: async ({ page }, use) => {
+        await use(new ProjectDependencyGraphPage(page));
+    },
+    projectAuditVulnerabilitiesPage: async ({ page }, use) => {
+        await use(new ProjectAuditVulnerabilitiesPage(page));
+    },
+    projectExploitPredictionsPage: async ({ page }, use) => {
+        await use(new ProjectExploitPredictionsPage(page));
+    },
+    projectPolicyViolationsPage: async ({ page }, use) => {
+        await use(new ProjectPolicyViolationsPage(page));
     },
     loginPage: async ({ page }, use) => {
         await use(new LoginPage(page));

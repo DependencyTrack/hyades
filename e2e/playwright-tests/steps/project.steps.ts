@@ -20,6 +20,21 @@ Then('the user creates projects with the following values', async ({ page, proje
     }
 });
 
+Then('the user tries to create a project with name {string} and classifier {string}', async ({ page, projectPage, notificationToast }, projectName: string, classifier: string) => {
+    await projectPage.clickOnCreateProject();
+    await projectPage.createProject(
+        projectName,
+        classifier,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+    await page.waitForTimeout(1000);
+});
+
 Then('the user deletes the following test projects if they exist', async ({ page, projectPage, notificationToast }, dataTable: DataTable) => {
     const count = await page.locator('tbody tr').count();
     if(count === 0) {
@@ -56,12 +71,36 @@ Then('the user deletes the following test projects', async ({ page, projectPage,
     }
 });
 
-Then('the user opens the project with the name {string}', async ({ page, projectPage }, projectName: string) => {
+Then('the user opens the project with the name {string}', async ({ projectPage }, projectName: string) => {
     await projectPage.clickOnProject(projectName);
 });
 
 Then('the user navigates to project {string} tab', async ({ selectedProjectPage }, projectTab: string) => {
     await selectedProjectPage.clickOnTab(projectTab);
+});
+
+Then('the user opens project details', async ({ selectedProjectPage }) => {
+    await selectedProjectPage.openProjectDetails();
+});
+
+const projectShouldNotBeVisible = Then('the project {string} should not be visible in the list', async ({ projectPage }, projectName: string) => {
+    await expect(projectPage.projectList).not.toContainText(projectName);
+});
+
+Then('the user makes inactive projects visible in the list', async ({ projectPage }) => {
+    await projectPage.showInactiveProjects();
+});
+
+const projectShouldBeVisible = Then('the project {string} should be visible in the list', async ({ projectPage }, projectName: string) => {
+    await expect(projectPage.projectList).toContainText(projectName);
+});
+
+Then('the user sets the current project to inactive and verifies', async ({ selectedProjectPage, notificationToast }) => {
+    await selectedProjectPage.makeProjectInactive();
+    await selectedProjectPage.clickOnUpdateButton();
+    await notificationToast.verifySuccessfulProjectUpdatedToast();
+    const inactiveTag = (await selectedProjectPage.getProjectCard(0)).locator('.badge.badge-tab-warn');
+    await expect(inactiveTag).toContainText(/INACTIVE/);
 });
 
 Then('the user uploads default BOM', async ({ projectComponentsPage, notificationToast }) => {
@@ -92,8 +131,76 @@ Then('the user verifies Policy Violations with the badge number of {int} total {
     const actualWarnBadge = await selectedProjectPage.getWarnTabBadgeValue(tabName);
     const actualFailBadge = await selectedProjectPage.getFailTabBadgeValue(tabName);
 
-    expect(actualTotalBadge).toEqual(totalBadge);
-    expect(actualInfoBadge).toEqual(infoBadge);
-    expect(actualWarnBadge).toEqual(warnBadge);
-    expect(actualFailBadge).toEqual(failBadge);
+    expect(actualTotalBadge).toBe(totalBadge);
+    expect(actualInfoBadge).toBe(infoBadge);
+    expect(actualWarnBadge).toBe(warnBadge);
+    expect(actualFailBadge).toBe(failBadge);
+});
+
+Then('the table on the respective projects tab is visible and contains entries', async ({ page }) => {
+    const tabPanelListLocator = page.locator('.tab-pane.active');
+
+    await expect(tabPanelListLocator).toBeVisible();
+    expect(await tabPanelListLocator.locator('tbody tr').count()).toBeGreaterThan(0);
+});
+
+Then('the dependency graph tab is visible and contains a node with child entries', async ({ projectDependencyGraphPage }) => {
+    await projectDependencyGraphPage.toggleTreeNodeExpansion();
+
+    await expect(projectDependencyGraphPage.tabPanel).toBeVisible();
+    expect(await projectDependencyGraphPage.treeNodeChild.count()).toBeGreaterThan(0);
+
+    await projectDependencyGraphPage.toggleTreeNodeExpansion();
+});
+
+Then('the user opens the policy violation of Component {string}', async ({ projectPolicyViolationsPage }, component: string) => {
+    await projectPolicyViolationsPage.fillSearchFieldInput(component);
+    await projectPolicyViolationsPage.clickOnSpecificViolation(component);
+});
+
+Then('the user comments the current policy violation with {string}', async ({ projectPolicyViolationsPage, notificationToast }, comment: string) => {
+    await projectPolicyViolationsPage.fillDetailViewCommentField(comment);
+    await projectPolicyViolationsPage.clickOnDetailViewCommentButton();
+    await notificationToast.verifySuccessfulUpdatedToast();
+});
+
+Then('the user sets the analysis to {string}', async ({ projectPolicyViolationsPage, notificationToast }, option: string) => {
+    await projectPolicyViolationsPage.setDetailViewAnalysisSelect(option);
+    await notificationToast.verifySuccessfulUpdatedToast();
+});
+
+Then('the user suppresses the current policy violation', async ({ projectPolicyViolationsPage, notificationToast }) => {
+    await projectPolicyViolationsPage.clickDetailViewSuppressToggle();
+    await notificationToast.verifySuccessfulUpdatedToast();
+});
+
+Then('the audit trail should contain {string}', async ({ projectPolicyViolationsPage }, content: string) => {
+    const regex = new RegExp(content, "i");
+    await expect(projectPolicyViolationsPage.detailViewAuditTrailField).toHaveValue(regex);
+});
+
+Then('the policy violation of the component {string} will not appear in search result', async ({ projectPolicyViolationsPage }, component: string) => {
+    await projectPolicyViolationsPage.fillSearchFieldInput(component);
+    await projectPolicyViolationsPage.clearSearchFieldInput();
+    await projectPolicyViolationsPage.fillSearchFieldInput(component);
+    await expect(projectPolicyViolationsPage.tableList).toContainText(/No matching records found/);
+});
+
+Then('the project {string} should be a parent project and contain {string} as child project', async ({ projectPage }, parent: string, child: string) => {
+    const parentRow = await projectPage.getProjectTableRow(parent);
+
+    await expect(parentRow).toHaveClass(/treegrid-collapsed/);
+    await projectShouldNotBeVisible({projectPage}, child);
+    await expect(projectPage.projectList).not.toContainText(child);
+
+    await parentRow.locator('.treegrid-expander').click();
+    await projectShouldBeVisible({projectPage}, child);
+});
+
+Then('the upload\-bom button is invisible', async ({ projectComponentsPage }) => {
+    await expect(projectComponentsPage.uploadBomButton).not.toBeVisible();
+});
+
+Then('the upload\-bom button is visible', async ({ projectComponentsPage }) => {
+    await expect(projectComponentsPage.uploadBomButton).toBeVisible();
 });

@@ -66,14 +66,29 @@ export class NavigationParPage {
         await this.clickOnAccountDropDownLogout();
     }
 
+    async getNavTabLocator(tabName: string) {
+        const tab = this.navBarItems[tabName];
+        if (!tab) {
+            throw new Error(`Menu '${tabName}' does not exist.`);
+        }
+        return tab;
+    }
+
+    async verifyNavTabIsActive(tabName: string) {
+        const tab = this.navBarItems[tabName];
+        if (!tab) {
+            throw new Error(`Menu '${tabName}' does not exist.`);
+        }
+        await expect(tab).toHaveClass('router-link-exact-active open active nav-link');
+    }
+
     async clickOnNavTab(tabName: string) {
         const tab = this.navBarItems[tabName];
         if (!tab) {
             throw new Error(`Menu '${tabName}' does not exist.`);
         }
-        await tab.click();
+        await tab.first().click();
         await this.page.waitForTimeout(1000);
-        await expect(this.breadCrumb).toContainText(await tab.textContent());
     }
 
     async clickOnNavBarToggler() {

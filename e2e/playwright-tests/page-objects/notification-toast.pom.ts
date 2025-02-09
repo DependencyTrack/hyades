@@ -43,6 +43,12 @@ export class NotificationToast {
         await this.successToast.click();
     }
 
+    async verifySuccessfulProjectUpdatedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "project_updated"));
+        await this.successToast.click();
+    }
+
     async verifySuccessfulProjectCreatedToast() {
         await expect(this.successToast).toBeVisible();
         await expect(this.successToast).toContainText(getValue("message", "project_created"));
@@ -77,5 +83,27 @@ export class NotificationToast {
         await expect(this.successToast).toBeVisible();
         await expect(this.successToast).toContainText(getValue("message", "condition_deleted"));
         await this.successToast.click();
+    }
+
+    async verifyFailedProjectCreatedToasts() {
+        await expect(this.errorToast).toBeVisible();
+        await expect(this.errorToast).toContainText(getValue("condition", "http_request_error"));
+        await expect(this.errorToast).toContainText(/Conflict \(409\)/i);
+        await this.errorToast.click();
+        await expect(this.warnToast).toBeVisible();
+        await expect(this.warnToast).toContainText(getValue("condition", "unsuccessful_action"));
+        await this.warnToast.click();
+    }
+
+    async verifyFailedLogInAttemptToast() {
+        await expect(this.errorToast).toBeVisible();
+        await expect(this.errorToast).toContainText(getValue("condition", "forbidden"));
+        await this.errorToast.click();
+    }
+
+    async verifyFailedLogInAttemptWrongCredentialsToast() {
+        await expect(this.errorToast).toBeVisible();
+        await expect(this.errorToast).toContainText(/Unauthorized \(401\)/i);
+        await this.errorToast.click();
     }
 }

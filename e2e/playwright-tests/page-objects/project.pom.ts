@@ -8,11 +8,12 @@ export class ProjectModal {
     projectIsLastVersionSlider: Locator;
     projectTeamSelect: Locator;
     projectClassifierSelect: Locator;
-    projectParentSelect: Locator;
+    projectParentField: Locator;
     projectDescriptionField: Locator;
     projectTag: Locator;
     projectActionButton: Locator;
     projectCloseButton: Locator;
+    projectActiveSlider: Locator;
 
     constructor(page: Page, actionButtonName: string) {
         this.modalContent = page.locator('.modal-content');
@@ -21,30 +22,39 @@ export class ProjectModal {
         this.projectIsLastVersionSlider = this.modalContent.locator('#project-create-islatest .switch-slider'); // #project-create-islatest-input
         this.projectClassifierSelect = this.modalContent.locator('#v-classifier-input-input');
         this.projectTeamSelect = this.modalContent.locator('#v-team-input-input');
-        this.projectParentSelect = this.modalContent.locator('##multiselect');
+        this.projectParentField = this.modalContent.locator('#multiselect');
         this.projectDescriptionField = this.modalContent.locator('#project-description-description');
         this.projectTag = this.modalContent.locator('.ti-new-tag-input');
 
+        // Either Create or Update
         this.projectActionButton = this.modalContent.getByRole('button', { name: getValue("message", actionButtonName) });
         this.projectCloseButton = this.modalContent.getByRole('button', { name: getValue("message", "close") });
+
+        // Project Details Active Inactive Button
+        this.projectActiveSlider = this.modalContent.locator('#project-details-active .switch-slider');
     }
 }
 
 export class ProjectPage extends ProjectModal {
     page: Page;
+    toolBar: Locator;
     createProjectButton: Locator;
     inactiveProjectSlider: Locator;
     flatProjectSlider: Locator;
     searchFieldInput: Locator;
+    projectList: Locator;
 
     constructor(page: Page) {
         super(page, "create");
         this.page = page;
 
-        this.createProjectButton = page.getByRole('button', { name: getValue("message", "create_project")});
-        this.inactiveProjectSlider = page.locator('#showInactiveProjects');
-        this.flatProjectSlider = page.locator('#showFlatView');
+        this.toolBar = page.locator('#projectsToolbar');
+
+        this.createProjectButton = this.toolBar.getByRole('button', { name: getValue("message", "create_project")});
+        this.inactiveProjectSlider = this.toolBar.locator('.switch').filter({ has: page.locator('#showInactiveProjects')}).locator('.switch-slider');
+        this.flatProjectSlider = this.toolBar.locator('.switch').filter({ has: page.locator('#showFlatView')}).locator('.switch-slider');
         this.searchFieldInput = page.locator('.search-input');
+        this.projectList = page.locator('tbody');
     }
 
     async clickOnCreateProject() {
@@ -65,7 +75,8 @@ export class ProjectPage extends ProjectModal {
             await this.projectTeamSelect.selectOption(team);
         }
         if(parent) {
-            await this.projectParentSelect.selectOption(parent);
+            await this.projectParentField.pressSequentially(parent);
+            await this.modalContent.locator('#listbox-multiselect').locator('#multiselect-0').click();
         }
         if(description) {
             await this.projectDescriptionField.fill(description);
@@ -75,6 +86,10 @@ export class ProjectPage extends ProjectModal {
         }
 
         await this.projectActionButton.click();
+    }
+
+    async getProjectTableRow(projectName: string) {
+        return this.projectList.locator('tr').filter({ hasText: projectName });
     }
 
     async deleteProject(projectName: string) {
@@ -88,7 +103,7 @@ export class ProjectPage extends ProjectModal {
 
     async clickOnProject(projectName: string) {
         await this.page.getByRole('link', { name: projectName, exact: true }).first().click();
-        await this.page.waitForTimeout(1000);
+        await this.page.waitForTimeout(1500);
         await expect(this.page.locator('.container-fluid')).toBeVisible();
         await expect(this.page.locator('.text-nowrap.col-md-auto')).toContainText(projectName);
     }
@@ -103,13 +118,12 @@ export class ProjectPage extends ProjectModal {
         await this.page.waitForTimeout(1000);
     }
 
-    async checkInactiveProjects() {
+    async showInactiveProjects() {
         await this.inactiveProjectSlider.check();
     }
-    async uncheckInactiveProjects() {
+    async hideInactiveProjects() {
         await this.inactiveProjectSlider.uncheck();
     }
-
     async checkFlatProjectSlider() {
         await this.flatProjectSlider.check();
     }
@@ -120,6 +134,7 @@ export class ProjectPage extends ProjectModal {
 
 export class SelectedProjectPage extends ProjectModal {
     page: Page;
+    projectCards: Locator;
     projectDetails: Locator;
     projectTabs: Locator;
     projectTabList: Record<string, Locator>;
@@ -132,6 +147,7 @@ export class SelectedProjectPage extends ProjectModal {
         super(page, "update");
         this.page = page;
 
+        this.projectCards = page.locator('.card');
         this.projectDetails = page.getByRole('link', { name: getValue("message", "view_details") });
 
         this.projectTabs = page.getByRole('tablist');
@@ -148,6 +164,10 @@ export class SelectedProjectPage extends ProjectModal {
         this.projectDetailsDeleteButton = this.modalContent.getByRole('button', { name: getValue("message", "delete") });
         this.projectDetailsPropertiesButton = this.modalContent.getByRole('button', { name: getValue("message", "properties") });
         this.projectDetailsAddVersionButton = this.modalContent.getByRole('button', { name: getValue("message", "add_version") });
+    }
+
+    async getProjectCard(cardNumber: number) {
+        return this.projectCards.nth(cardNumber);
     }
 
     async clickOnTab(tabName: string) {
@@ -213,6 +233,10 @@ export class SelectedProjectPage extends ProjectModal {
         await expect(this.modalContent).toContainText(getValue("message", "project_details"));
     }
 
+    async clickOnUpdateButton() {
+        await this.projectActionButton.click();
+    }
+
     async deleteProjectInProjectDetails() {
         await this.projectDetailsDeleteButton.click();
 
@@ -249,15 +273,27 @@ export class SelectedProjectPage extends ProjectModal {
 
         await this.modalContent.getByRole('button', { name: getValue("message", "create") }).click();
     }
+
+    async makeProjectActive() {
+        await this.projectActiveSlider.check();
+    }
+
+    async makeProjectInactive() {
+        await this.projectActiveSlider.uncheck();
+    }
 }
 
 export class ProjectComponentsPage {
     readonly page: Page;
+    tabPanel: Locator;
+
     addComponentButton: Locator;
     removeComponentButton: Locator;
     uploadBomButton: Locator;
     downloadBomButton: Locator;
     downloadComponentsButton: Locator;
+
+    tableList: Locator;
 
     modalContent: Locator;
 
@@ -273,12 +309,15 @@ export class ProjectComponentsPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.addComponentButton = page.getByRole('button', { name: getValue("message", "add_component") });
-        this.removeComponentButton = page.getByRole('button', { name: getValue("message", "remove_component") });
-        this.uploadBomButton = page.locator('#upload-button');
-        this.downloadBomButton = page.getByRole('button', { name: getValue("message", "download_bom") });
-        this.downloadComponentsButton = page.getByRole('button', { name: getValue("message", "download_component") });
+        this.tabPanel = page.locator('.tab-pane.active');
 
+        this.addComponentButton = this.tabPanel.getByRole('button', { name: getValue("message", "add_component") });
+        this.removeComponentButton = this.tabPanel.getByRole('button', { name: getValue("message", "remove_component") });
+        this.uploadBomButton = this.tabPanel.locator('#upload-button');
+        this.downloadBomButton = this.tabPanel.getByRole('button', { name: getValue("message", "download_bom") });
+        this.downloadComponentsButton = this.tabPanel.getByRole('button', { name: getValue("message", "download_component") });
+
+        this.tableList = this.tabPanel.locator('tbody tr');
 
         this.modalContent = page.locator('.modal-content');
 
@@ -289,11 +328,11 @@ export class ProjectComponentsPage {
         this.bomUploadConfirmButton = this.modalContent.getByRole('button', { name: getValue("message", "upload") });
 
         // BOM Download
-        this.downloadBomInventoryButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory") });
-        this.downloadBomInventoryWithVulnerabilitiesButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory_with_vulnerabilities") });
+        this.downloadBomInventoryButton = this.tabPanel.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory") });
+        this.downloadBomInventoryWithVulnerabilitiesButton = this.tabPanel.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory_with_vulnerabilities") });
 
         // Components Download
-        this.downloadComponentsCSVButton = this.page.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "csv_filetype") });
+        this.downloadComponentsCSVButton = this.tabPanel.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "csv_filetype") });
     }
 
     async uploadBom(filePathFromProjectRoot?: string) {
@@ -312,5 +351,176 @@ export class ProjectComponentsPage {
         await fileChooser.setFiles(filePathFromProjectRoot);
 
         await this.bomUploadConfirmButton.click();
+    }
+}
+
+export class ProjectServicesPage {
+    readonly page: Page;
+    tabPanel: Locator;
+    searchFieldInput: Locator;
+    tableList: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.tableList = this.tabPanel.locator('tbody tr');
+    }
+
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+}
+
+export class ProjectDependencyGraphPage {
+    readonly page: Page;
+    tabPanel: Locator;
+
+    treeNode: Locator;
+    isExpanded: boolean;
+    treeNodeChildrenList: Locator;
+    treeNodeChild: Locator;
+    treeNodeExpandButton: Locator;
+    treeNodeExpandedButton: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+
+        this.treeNode = this.tabPanel.locator('.org-tree-container');
+        this.isExpanded = false;
+        this.treeNodeChildrenList = this.tabPanel.locator('.org-tree-node-children');
+        this.treeNodeChild = this.treeNodeChildrenList.locator('.org-tree-node');
+        this.treeNodeExpandButton = this.treeNode.locator('.org-tree-node-btn');
+        this.treeNodeExpandedButton = this.treeNode.locator('.org-tree-node-btn.expanded');
+    }
+
+    async toggleTreeNodeExpansion() {
+        if(this.isExpanded) {
+            await this.treeNodeExpandedButton.click();
+            this.isExpanded = false;
+        } else {
+            await this.treeNodeExpandButton.click();
+            this.isExpanded = true;
+        }
+        await this.page.waitForTimeout(1000);
+    }
+}
+
+// Todo add functionality for auditing
+export class ProjectAuditVulnerabilitiesPage {
+    readonly page: Page;
+    tabPanel: Locator;
+    searchFieldInput: Locator;
+    tableList: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.tableList = this.tabPanel.locator('tbody tr');
+    }
+
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+}
+
+export class ProjectExploitPredictionsPage {
+    readonly page: Page;
+    tabPanel: Locator;
+    searchFieldInput: Locator;
+    tableList: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.tableList = this.tabPanel.locator('tbody tr');
+    }
+
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+}
+
+export class ProjectPolicyViolationsPage {
+    readonly page: Page;
+    tabPanel: Locator;
+    searchFieldInput: Locator;
+    tableList: Locator;
+
+    suppressSlider: Locator;
+
+    detailView: Locator;
+
+    detailViewFailedConditionField: Locator;
+    detailViewAuditTrailField: Locator;
+    detailViewCommentField: Locator;
+    detailViewCommentButton: Locator;
+    detailViewAnalysisSelect: Locator;
+    lastDetailViewAnalysisSelect: string;
+    detailViewSuppressToggle: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.tabPanel = page.locator('.tab-pane.active');
+
+        this.suppressSlider = this.tabPanel.locator('.switch-slider');
+
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.tableList = this.tabPanel.locator('tbody tr');
+        this.detailView = this.tabPanel.locator('.detail-view');
+
+        this.detailViewFailedConditionField = this.detailView.locator('#failedCondition-input');
+        this.detailViewAuditTrailField = this.detailView.locator('#auditTrailField');
+        this.detailViewCommentField = this.detailView.locator('#input-8');
+        this.detailViewCommentButton = this.detailView.locator('.pull-right');
+        this.detailViewAnalysisSelect = this.detailView.locator('.custom-select');
+        this.lastDetailViewAnalysisSelect = "NOT_SET"
+        this.detailViewSuppressToggle = this.detailView.locator('.toggle.btn');
+    }
+
+    async clearSearchFieldInput() {
+        await this.searchFieldInput.clear();
+        await this.page.waitForTimeout(1000);
+    }
+
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+
+    async clickOnSpecificViolation(violation: string) {
+        await this.page.getByRole('row', { name: violation }).locator('td').first().click();
+        await this.page.waitForTimeout(1000);
+    }
+
+    async fillDetailViewCommentField(input: string) {
+        await this.detailViewCommentField.fill(input);
+    }
+
+    async clickOnDetailViewCommentButton() {
+        await this.detailViewCommentButton.click();
+    }
+
+    async setDetailViewAnalysisSelect(option: string) {
+        await this.detailViewAnalysisSelect.selectOption(option);
+        this.lastDetailViewAnalysisSelect = await this.detailViewAnalysisSelect.getByRole('option', { name: option }).getAttribute('value');
+    }
+
+    async clickDetailViewSuppressToggle() {
+        await this.detailViewSuppressToggle.click();
+    }
+
+    async toggleSuppressedViolations() {
+        await this.suppressSlider.click();
     }
 }
