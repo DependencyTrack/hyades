@@ -196,3 +196,11 @@ Then('the project {string} should be a parent project and contain {string} as ch
     await parentRow.locator('.treegrid-expander').click();
     await projectShouldBeVisible({projectPage}, child);
 });
+
+Then('the upload\-bom button is invisible', async ({ projectComponentsPage }) => {
+    await expect(projectComponentsPage.uploadBomButton).not.toBeVisible();
+});
+
+Then('the upload\-bom button is visible', async ({ projectComponentsPage }) => {
+    await expect(projectComponentsPage.uploadBomButton).toBeVisible();
+});

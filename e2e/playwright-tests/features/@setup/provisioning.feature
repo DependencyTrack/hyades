@@ -7,20 +7,20 @@ Feature:
     And the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user deletes the following test users if they exist
-      | username     |
-      | test-user00  |
-      | test-user01  |
-      | test-user02  |
-      | test-user03  |
-      | test-user04  |
-      | test-user05  |
-      | test-user06  |
-      | test-user07  |
-      | test-user08  |
-      | test-user09  |
-      | test-user10  |
-      | test-user11  |
-      | test-user12  |
+      | username                      |
+      | test-user0_PERMS              |
+      | test-user_VP_PERMS            |
+      | test-user_VP_SC_PERMS         |
+      | test-user_VP_SC_AM_PERMS      |
+      | test-user_VP_BU_PERMS         |
+      | test-user_VP_PolicyM_PERMS    |
+      | test-user_VP_VPV_PERMS        |
+      | test-user_VP_PVA_PERMS        |
+      | test-user_VP_TM_PERMS         |
+      | test-user_VP_PortfolioM_PERMS |
+      | test-user_VP_VV_PERMS         |
+      | test-user_VP_VV_VA_PERMS      |
+      | test-user_VP_VM_PERMS         |
 
   Scenario: Delete All Test Policies Before Tests
     Given the admin user logs in to DependencyTrack
@@ -48,19 +48,19 @@ Feature:
     And the user clicks on access-management submenu "managedUsers"
     Then the user creates the following test users
       | username     |
-      | test-user00  |
-      | test-user01  |
-      | test-user02  |
-      | test-user03  |
-      | test-user04  |
-      | test-user05  |
-      | test-user06  |
-      | test-user07  |
-      | test-user08  |
-      | test-user09  |
-      | test-user10  |
-      | test-user11  |
-      | test-user12  |
+      | test-user0_PERMS  |
+      | test-user_VP_PERMS  |
+      | test-user_VP_SC_PERMS  |
+      | test-user_VP_SC_AM_PERMS  |
+      | test-user_VP_BU_PERMS  |
+      | test-user_VP_PolicyM_PERMS  |
+      | test-user_VP_VPV_PERMS  |
+      | test-user_VP_PVA_PERMS  |
+      | test-user_VP_TM_PERMS  |
+      | test-user_VP_PortfolioM_PERMS  |
+      | test-user_VP_VV_PERMS  |
+      | test-user_VP_VV_VA_PERMS  |
+      | test-user_VP_VM_PERMS  |
 
   Scenario: Create Test Policies
     Given the admin user logs in to DependencyTrack
@@ -99,52 +99,52 @@ Feature:
     Then the user navigates to "administrationTab" page and verifies
     And the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
-    Then the user provides "test-user01" with the following permissions
+    Then the user provides "test-user_VP_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
-    Then the user provides "test-user02" with the following permissions
+    Then the user provides "test-user_VP_SC_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | SYSTEM_CONFIGURATION  |
-    Then the user provides "test-user03" with the following permissions
+    Then the user provides "test-user_VP_SC_AM_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | SYSTEM_CONFIGURATION  |
       | ACCESS_MANAGEMENT     |
-    Then the user provides "test-user04" with the following permissions
+    Then the user provides "test-user_VP_BU_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | BOM_UPLOAD            |
-    Then the user provides "test-user05" with the following permissions
+    Then the user provides "test-user_VP_PolicyM_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | POLICY_MANAGEMENT     |
-    Then the user provides "test-user06" with the following permissions
+    Then the user provides "test-user_VP_VPV_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | VIEW_POLICY_VIOLATION |
-    Then the user provides "test-user07" with the following permissions
+    Then the user provides "test-user_VP_PVA_PERMS" with the following permissions
       | permission                |
       | VIEW_PORTFOLIO            |
       | POLICY_VIOLATION_ANALYSIS |
-    Then the user provides "test-user08" with the following permissions
+    Then the user provides "test-user_VP_TM_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | TAG_MANAGEMENT        |
-    Then the user provides "test-user09" with the following permissions
+    Then the user provides "test-user_VP_PortfolioM_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | PORTFOLIO_MANAGEMENT  |
-    Then the user provides "test-user10" with the following permissions
+    Then the user provides "test-user_VP_VV_PERMS" with the following permissions
       | permission            |
       | VIEW_PORTFOLIO        |
       | VIEW_VULNERABILITY    |
-    Then the user provides "test-user11" with the following permissions
+    Then the user provides "test-user_VP_VV_VA_PERMS" with the following permissions
       | permission             |
       | VIEW_PORTFOLIO         |
       | VIEW_VULNERABILITY     |
       | VULNERABILITY_ANALYSIS |
-    Then the user provides "test-user12" with the following permissions
+    Then the user provides "test-user_VP_VM_PERMS" with the following permissions
       | permission               |
       | VIEW_PORTFOLIO           |
       | VULNERABILITY_MANAGEMENT |
