@@ -38,6 +38,7 @@ Feature:
       | name           |
       | test-project01 |
       | test-project02 |
+      | test-project03 |
 
   Scenario: Create Test Users
     Given the admin user logs in to DependencyTrack
@@ -83,6 +84,7 @@ Feature:
       | name           | classifier  | version | isLastVersion | team | parent | description | tag |
       | test-project01 | APPLICATION |         |               |      |        |             |     |
       | test-project02 | APPLICATION |         |               |      |        |             |     |
+      | test-project03 | APPLICATION |         |               |      |        |             |     |
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "components" tab
     And the user uploads default BOM

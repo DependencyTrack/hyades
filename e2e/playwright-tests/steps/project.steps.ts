@@ -71,12 +71,36 @@ Then('the user deletes the following test projects', async ({ page, projectPage,
     }
 });
 
-Then('the user opens the project with the name {string}', async ({ page, projectPage }, projectName: string) => {
+Then('the user opens the project with the name {string}', async ({ projectPage }, projectName: string) => {
     await projectPage.clickOnProject(projectName);
 });
 
 Then('the user navigates to project {string} tab', async ({ selectedProjectPage }, projectTab: string) => {
     await selectedProjectPage.clickOnTab(projectTab);
+});
+
+Then('the user opens project details', async ({ selectedProjectPage }) => {
+    await selectedProjectPage.openProjectDetails();
+});
+
+const projectShouldNotBeVisible = Then('the project {string} should not be visible in the list', async ({ projectPage }, projectName: string) => {
+    await expect(projectPage.projectList).not.toContainText(projectName);
+});
+
+Then('the user makes inactive projects visible in the list', async ({ projectPage }) => {
+    await projectPage.showInactiveProjects();
+});
+
+const projectShouldBeVisible = Then('the project {string} should be visible in the list', async ({ projectPage }, projectName: string) => {
+    await expect(projectPage.projectList).toContainText(projectName);
+});
+
+Then('the user sets the current project to inactive and verifies', async ({ selectedProjectPage, notificationToast }) => {
+    await selectedProjectPage.makeProjectInactive();
+    await selectedProjectPage.clickOnUpdateButton();
+    await notificationToast.verifySuccessfulProjectUpdatedToast();
+    const inactiveTag = (await selectedProjectPage.getProjectCard(0)).locator('.badge.badge-tab-warn');
+    await expect(inactiveTag).toContainText(/INACTIVE/);
 });
 
 Then('the user uploads default BOM', async ({ projectComponentsPage, notificationToast }) => {
@@ -160,4 +184,15 @@ Then('the policy violation of the component {string} will not appear in search r
     await projectPolicyViolationsPage.clearSearchFieldInput();
     await projectPolicyViolationsPage.fillSearchFieldInput(component);
     await expect(projectPolicyViolationsPage.tableList).toContainText(/No matching records found/);
+});
+
+Then('the project {string} should be a parent project and contain {string} as child project', async ({ projectPage }, parent: string, child: string) => {
+    const parentRow = await projectPage.getProjectTableRow(parent);
+
+    await expect(parentRow).toHaveClass(/treegrid-collapsed/);
+    await projectShouldNotBeVisible({projectPage}, child);
+    await expect(projectPage.projectList).not.toContainText(child);
+
+    await parentRow.locator('.treegrid-expander').click();
+    await projectShouldBeVisible({projectPage}, child);
 });

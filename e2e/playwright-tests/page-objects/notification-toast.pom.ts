@@ -43,6 +43,12 @@ export class NotificationToast {
         await this.successToast.click();
     }
 
+    async verifySuccessfulProjectUpdatedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "project_updated"));
+        await this.successToast.click();
+    }
+
     async verifySuccessfulProjectCreatedToast() {
         await expect(this.successToast).toBeVisible();
         await expect(this.successToast).toContainText(getValue("message", "project_created"));
