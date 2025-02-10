@@ -79,8 +79,10 @@ jobs:
         if: always()
         continue-on-error: true
         with:
-          ref: allure-report # branch-name to copy history from
+          repository: elAlmani/allure-report
+          ref: main
           path: latest-test-results
+          token: ${{ secrets.PERSONAL_TOKEN }}
 
       - name: Build test report
         uses: simple-elf/allure-report-action@v1.11
