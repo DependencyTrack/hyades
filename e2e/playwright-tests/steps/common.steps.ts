@@ -1,9 +1,16 @@
 import { Given, Then } from '../fixtures/fixtures';
+import * as fs from "node:fs";
 
-Given('the authenticated admin user navigates to dashboard', async ({ }) => {
-    // Set session storage in a new context
-    // add dashboardPage to verify aswell
-    // https://playwright.dev/docs/auth#session-storage
+Given('the user {string} is already authenticated for DependencyTrack', async ({ page, navBarPage }, username: string) => {
+    const sessionStorage = JSON.parse(fs.readFileSync(__dirname + `/../resources/.auth/${username}.json`, 'utf-8'));
+    await page.context().addInitScript(storage => {
+        for (const [key, value] of Object.entries(storage))
+            if (typeof value === "string") {
+                window.sessionStorage.setItem(key, value);
+            }
+    }, sessionStorage);
+    await page.goto('/');
+    await navBarPage.verifyNavTabIsActive('dashboardTab');
 });
 
 Given('the admin user logs in to DependencyTrack', async ({ loginPage, navBarPage }) => {

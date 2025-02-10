@@ -30,7 +30,7 @@ Feature:
       | policyName    |
       | test-policy01 |
 
-  Scenario: Delete All Test Project Before Tests
+  Scenario: Delete All Test Projects Before Tests
     Given the admin user logs in to DependencyTrack
     When the "dashboardTab" tab should be visible and active
     Then the user navigates to "projectsTab" page and verifies

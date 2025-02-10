@@ -2,7 +2,7 @@ import { test as setup } from '@playwright/test';
 import { LoginPage } from "../page-objects/login.pom";
 import * as fs from "node:fs";
 
-const adminFile = 'e2e/playwright-tests/.auth/admin.json';
+const adminFile = 'e2e/playwright-tests/resources/.auth/admin.json';
 
 setup('Store Admin Authentication', async ({ page }) => {
     const loginPage = new LoginPage(page);
@@ -14,4 +14,9 @@ setup('Store Admin Authentication', async ({ page }) => {
     await page.context().storageState({ path: adminFile });
     // todo currently not working..fix with sessionStorage https://playwright.dev/docs/auth#session-storage
     //  add in common.steps when fixed and change playwright.config
+    const sessionStorage = await page.evaluate(() => JSON.stringify(sessionStorage));
+    fs.writeFileSync(adminFile, sessionStorage, 'utf-8');
 });
+
+// AUTH SETUP FOR TEST USERS SHOULD BE INSIDE PROVISIONING
+// AS EVERY PROVISIONED OBJECT NEEDS TO BE REMOVED AND CREATED FOR EVERY RUN
