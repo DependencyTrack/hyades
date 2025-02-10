@@ -89,19 +89,16 @@ jobs:
           gh_pages: latest-test-results
           allure_history: allure-history # directory to be published
           allure_results: playwright-test-results/allure-results # path in project to allure report
+          github_repo: elAlmani/allure-report
+          github_repo_owner: elAlmani
 
       - name: Publish test report
         uses: peaceiris/actions-gh-pages@v4
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          external_repository: elAlmani/allure-report
           publish_branch: allure-report # branch-name to paste history to
           publish_dir: allure-history # directory to be published
-
-      - name: Publish test report
-        uses: peaceiris/actions-gh-pages@v4
-        if: always()
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-history # directory to publish
-          destination_dir: docs/ # directory to publish into
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
