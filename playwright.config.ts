@@ -60,7 +60,6 @@ export default defineConfig({
       {
         resultsDir: defOutDir + "/allure-results",
         detail: true,
-        suiteTitle: true,
         environmentInfo: {
           os_platform: os.platform(),
           os_release: os.release(),
