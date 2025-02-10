@@ -2,17 +2,46 @@ import {Page, Locator, expect} from '@playwright/test';
 import { getValue } from "../utilities/utils";
 import {NotificationToast} from "./notification-toast.pom";
 
-export class PolicyPage {
+export class PolicyManagementModal {
     page: Page;
-    tabPanel: Locator;
-    createPolicyButton: Locator;
-    searchFieldInput: Locator;
 
     modalContent: Locator;
 
-    policyNameInput: Locator;
-    policyCreationCreateButton: Locator;
-    policyCreationClosePolicyButton: Locator;
+    modalCloseButton: Locator;
+    modalNameInput: Locator;
+    modalCreateButton: Locator;
+
+    context: string;
+
+    constructor(page: Page, context: string) {
+        this.page = page;
+        this.context = context;
+        this.modalContent = this.page.locator('.modal-content');
+
+        // Create Policy
+        this.modalNameInput = this.modalContent.locator('#identifier-input');
+        this.modalCreateButton = this.modalContent.getByRole('button', { name: getValue("message", "create") });
+        this.modalCloseButton = this.modalContent.getByRole('button', { name: getValue("message", "close") });
+    }
+    
+    async createPolicy(policyName: string) {
+        await expect(this.modalContent).toBeVisible();
+        await expect(this.modalContent).toContainText(this.context);
+
+        await this.modalNameInput.pressSequentially(policyName);
+        await this.modalCreateButton.click();
+    }
+}
+
+export class PolicyPage extends PolicyManagementModal{
+    page: Page;
+    tabPanel: Locator;
+    policyList: Locator;
+    createPolicyButton: Locator;
+    searchFieldInput: Locator;
+
+    policyManagementTabs: Locator;
+    policyManagementTabList: Record<string, Locator>;
 
     policyDetailView: Locator;
 
@@ -29,19 +58,23 @@ export class PolicyPage {
     policyDeletionButton: Locator;
 
     constructor(page: Page) {
+        const context = getValue("message", "create_policy");
+
+        super(page, context);
         this.page = page;
 
         this.tabPanel = page.locator('.tab-pane.active');
+        this.policyList = this.tabPanel.locator('tbody');
 
-        this.createPolicyButton = this.tabPanel.getByRole('button', { name: getValue("message", "create_policy") });
+        this.createPolicyButton = this.tabPanel.getByRole('button', { name: context });
         this.searchFieldInput = this.tabPanel.locator('.search-input');
 
-        this.modalContent = this.page.locator('.modal-content');
-
-        // Create Policy
-        this.policyNameInput = this.modalContent.locator('#identifier-input');
-        this.policyCreationCreateButton = this.modalContent.getByRole('button', { name: getValue("message", "create") });
-        this.policyCreationClosePolicyButton = this.modalContent.getByRole('button', { name: getValue("message", "close") });
+        this.policyManagementTabs = page.getByRole('tablist');
+        this.policyManagementTabList = {
+            policies: this.policyManagementTabs.getByText(getValue("message", "policies")),
+            licenceGroup: this.policyManagementTabs.getByText(getValue("message", "license_groups")),
+            vulnerabilityPolicies: this.policyManagementTabs.getByText("Vulnerability Policies") // getValue("message", "vulnerability_policies")
+        }
 
         this.policyDetailView = this.tabPanel.locator('.detail-view');
 
@@ -60,6 +93,15 @@ export class PolicyPage {
         this.policyDeletionButton = this.policyDetailView.getByRole('button', { name: getValue("message", "delete_policy")})
     }
 
+    async clickOnTab(tabName: string) {
+        const tab = this.policyManagementTabList[tabName];
+        if (!tab) {
+            throw new Error(`Tab '${tabName}' does not exist.`);
+        }
+        await tab.click();
+        await this.page.waitForTimeout(1000);
+    }
+
     async clickOnCreatePolicy() {
         await this.createPolicyButton.click();
     }
@@ -72,14 +114,6 @@ export class PolicyPage {
 
     async ClearSearchFieldInput() {
         await this.searchFieldInput.clear();
-    }
-
-    async createPolicy(policyName: string) {
-        await expect(this.modalContent).toBeVisible();
-        await expect(this.modalContent).toContainText(getValue("message", "create_policy"));
-
-        await this.policyNameInput.pressSequentially(policyName);
-        await this.policyCreationCreateButton.click();
     }
 
     async togglePolicyDetailView(policyName: string) {
@@ -121,5 +155,26 @@ export class PolicyPage {
     async updatePolicyViolationState(violationState: string) {
         await this.policyDetailViolationStateSelect.selectOption(violationState);
     }
+}
 
+export class LicenceGroupPage extends PolicyManagementModal {
+    page: Page;
+    tabPanel: Locator;
+    licenceGroupList: Locator;
+    createLicenceGroupButton: Locator;
+    searchFieldInput: Locator;
+
+    constructor(page: Page) {
+        const context = getValue("message", "create_license_group");
+
+        super(page, context);
+        this.page = page;
+
+        this.tabPanel = page.locator('.tab-pane.active');
+        this.licenceGroupList = this.tabPanel.locator('tbody');
+
+        this.createLicenceGroupButton = this.tabPanel.getByRole('button', { name: context });
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
+
+    }
 }

@@ -14,3 +14,4 @@ Feature:
     Then the user opens the project with the name "test-project03"
     Then the user navigates to project "components" tab
     And the upload-bom button is visible
+    # Upload could be tested here as well
