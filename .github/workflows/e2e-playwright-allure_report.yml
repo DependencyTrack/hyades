@@ -98,7 +98,8 @@ jobs:
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           external_repository: elAlmani/allure-report
-          publish_branch: allure-report # branch-name to paste history to
+          publish_branch: main # branch-name to paste history to
           publish_dir: allure-history # directory to be published
+
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
