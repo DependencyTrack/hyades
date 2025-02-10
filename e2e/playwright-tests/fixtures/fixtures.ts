@@ -29,7 +29,6 @@ import {
 } from "../page-objects/project.pom";
 import {LicenceGroupPage, PolicyPage} from "../page-objects/policy-management.pom";
 
-
 // export custom test fixtures
 export const test = base.extend<
     {

@@ -36,6 +36,7 @@ Then('the user tries to create a project with name {string} and classifier {stri
 });
 
 Then('the user deletes the following test projects if they exist', async ({ page, projectPage, notificationToast }, dataTable: DataTable) => {
+    await projectPage.showInactiveProjects();
     const count = await page.locator('tbody tr').count();
     if(count === 0) {
         return;
@@ -54,6 +55,7 @@ Then('the user deletes the following test projects if they exist', async ({ page
         await notificationToast.verifySuccessfulProjectDeletedToast();
         await page.waitForTimeout(1000);
     }
+    await projectPage.hideInactiveProjects();
 });
 
 Then('the user deletes the following test projects', async ({ page, projectPage, notificationToast }, dataTable: DataTable) => {
@@ -203,4 +205,14 @@ Then('the upload-bom button is invisible', async ({ projectComponentsPage }) => 
 
 Then('the upload-bom button is visible', async ({ projectComponentsPage }) => {
     await expect(projectComponentsPage.uploadBomButton).toBeVisible();
+});
+
+Then('the project {string} tab should not be visible', async function ({ selectedProjectPage }, projectTab: string) {
+    const tabLocator = await selectedProjectPage.getTabLocator(projectTab);
+    await expect(tabLocator).not.toBeVisible();
+});
+
+Then('the project {string} tab should be visible', async function ({selectedProjectPage}, projectTab: string) {
+    const tabLocator = await selectedProjectPage.getTabLocator(projectTab)
+    await expect(tabLocator).toBeVisible();
 });
