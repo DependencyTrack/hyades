@@ -1,5 +1,6 @@
 import { Then } from '../fixtures/fixtures';
 import { DataTable } from 'playwright-bdd';
+import {expect} from "@playwright/test";
 
 Then('the user creates the following test policies', async ({ page, policyPage, notificationToast }, dataTable: DataTable) => {
     for(const row of dataTable.hashes()) {
@@ -58,4 +59,24 @@ Then('the user deletes the following test policies if they exist', async ({ page
         await notificationToast.verifySuccessfulPolicyDeletedToast();
         await page.waitForTimeout(1000);
     }
+});
+
+Then('the create-policy button is visible', async ({ policyPage }) => {
+    await expect(policyPage.createPolicyButton).toBeVisible();
+});
+
+Then('the policy {string} is visible', async ({ policyPage }, policyName: string) => {
+    await expect(policyPage.policyList).toContainText(policyName);
+});
+
+Then('the user navigates to {string} tab on policyManagement', async ({ policyPage }, tabName: string) => {
+    await policyPage.clickOnTab(tabName);
+});
+
+Then('the create-licence-group button is visible', async ({ licenceGroupPage }) => {
+    await expect(licenceGroupPage.createLicenceGroupButton).toBeVisible();
+});
+
+Then('the licence-group {string} is visible', async ({ licenceGroupPage }, licenceGroupName: string) => {
+    await expect(licenceGroupPage.licenceGroupList).toContainText(licenceGroupName);
 });
