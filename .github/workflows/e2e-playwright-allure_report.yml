@@ -87,8 +87,8 @@ jobs:
         if: always()
         with:
           gh_pages: latest-test-results
-          allure_history: allure-history # directory to publish
-          allure_results: playwright-test-results/allure-results
+          allure_history: allure-history # directory to be published
+          allure_results: playwright-test-results/allure-results # path in project to allure report
 
       - name: Publish test report
         uses: peaceiris/actions-gh-pages@v4
@@ -96,5 +96,12 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: allure-report # branch-name to paste history to
+          publish_dir: allure-history # directory to be published
+
+      - name: Publish test report
+        uses: peaceiris/actions-gh-pages@v4
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-history # directory to publish
-          # destination_dir: docs/allure/ # directory to publish into
+          destination_dir: docs/allure/ # directory to publish into
