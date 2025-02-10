@@ -79,22 +79,28 @@ jobs:
         if: always()
         continue-on-error: true
         with:
-          ref: allure-report # branch-name to copy history from
+          repository: elAlmani/allure-report
+          ref: main
           path: latest-test-results
+          token: ${{ secrets.PERSONAL_TOKEN }}
 
       - name: Build test report
         uses: simple-elf/allure-report-action@v1.11
         if: always()
         with:
           gh_pages: latest-test-results
-          allure_history: allure-history # directory to publish
-          allure_results: playwright-test-results/allure-results
+          allure_history: allure-history # directory to be published
+          allure_results: playwright-test-results/allure-results # path in project to allure report
+          github_repo: elAlmani/allure-report
+          github_repo_owner: elAlmani
 
       - name: Publish test report
         uses: peaceiris/actions-gh-pages@v4
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: allure-report # branch-name to paste history to
-          publish_dir: allure-history # directory to publish
-          # destination_dir: docs/allure/ # directory to publish into
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          external_repository: elAlmani/allure-report
+          publish_branch: main # branch-name to paste history to
+          publish_dir: allure-history # directory to be published
+          user_name: 'github-actions[bot]' # user for publishing
+          user_email: 'github-actions[bot]@users.noreply.github.com' # email for publishing
