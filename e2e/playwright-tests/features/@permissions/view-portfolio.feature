@@ -1,14 +1,14 @@
 Feature:
-  Scenario: Without VIEW_PORTFOLIO Permissions The Test-User Cannot Log In
+  Scenario: Without VIEW_PORTFOLIO Permissions The User Cannot Log In
     Given the user "test-user0_PERMS" tries to log in to DependencyTrack
     Then the user receives login error toast
 
-  Scenario: With VIEW_PORTFOLIO Permissions The Test-User Tries To Log In With Wrong Credentials
+  Scenario: With VIEW_PORTFOLIO Permissions The User Tries To Log In With Wrong Credentials
     Given the user "test-user_VP_PERMS" tries to log in to DependencyTrack with password "wrongPassword"
     When the user receives login credentials error toast
     Then the user sees wrong log in credentials modal content popup
 
-  Scenario: With VIEW_PORTFOLIO Permissions The Test-User Verifies Access
+  Scenario: With VIEW_PORTFOLIO Permissions The User Verifies Access
     Given the user "test-user_VP_PERMS" tries to log in to DependencyTrack
     When the "dashboardTab" tab should be visible and active
     Then the user navigates to "projectsTab" page and verifies

@@ -69,7 +69,7 @@ Then('the policy {string} is visible', async ({ policyPage }, policyName: string
     await expect(policyPage.policyList).toContainText(policyName);
 });
 
-Then('the user navigates to {string} tab on policyManagement', async ({ policyPage }, tabName: string) => {
+Then('the user navigates to policyManagement {string} tab', async ({ policyPage }, tabName: string) => {
     await policyPage.clickOnTab(tabName);
 });
 

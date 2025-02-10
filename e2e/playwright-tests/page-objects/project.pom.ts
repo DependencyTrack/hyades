@@ -124,10 +124,10 @@ export class ProjectPage extends ProjectModal {
     async hideInactiveProjects() {
         await this.inactiveProjectSlider.uncheck();
     }
-    async checkFlatProjectSlider() {
+    async showFlatProjectView() {
         await this.flatProjectSlider.check();
     }
-    async uncheckFlatProjectSlider() {
+    async hideFlatProjectView() {
         await this.flatProjectSlider.uncheck();
     }
 }
@@ -168,6 +168,14 @@ export class SelectedProjectPage extends ProjectModal {
 
     async getProjectCard(cardNumber: number) {
         return this.projectCards.nth(cardNumber);
+    }
+
+    async getTabLocator(tabName: string) {
+        const tab = this.projectTabList[tabName];
+        if (!tab) {
+            throw new Error(`Tab '${tabName}' does not exist.`);
+        }
+        return tab;
     }
 
     async clickOnTab(tabName: string) {
