@@ -28,6 +28,7 @@ import {
     ProjectPage, ProjectPolicyViolationsPage, ProjectServicesPage, SelectedProjectPage
 } from "../page-objects/project.pom";
 import {LicenceGroupPage, PolicyPage} from "../page-objects/policy-management.pom";
+import {TagsPage} from "../page-objects/tags.pom";
 
 // export custom test fixtures
 export const test = base.extend<
@@ -54,6 +55,7 @@ export const test = base.extend<
         notificationToast: NotificationToast;
         policyPage: PolicyPage;
         licenceGroupPage: LicenceGroupPage;
+        tagsPage: TagsPage;
     }>({
     administrationPage: async ({ page }, use) => {
         await use(new AdministrationPage(page));
@@ -120,6 +122,9 @@ export const test = base.extend<
     },
     licenceGroupPage: async ({ page }, use) => {
         await use(new LicenceGroupPage(page));
+    },
+    tagsPage: async ({ page }, use) => {
+        await use(new TagsPage(page));
     },
 });
 

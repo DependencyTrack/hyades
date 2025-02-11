@@ -1,9 +1,8 @@
 Feature:
   Scenario: The Admin User Sets A Test Project To Inactive
-    Given the admin user logs in to DependencyTrack
-    When the "dashboardTab" tab should be visible and active
-    Then the user navigates to "projectsTab" page and verifies
-    And the user opens the project with the name "test-project03"
+    Given the admin user logs in to DependencyTrack and verifies
+    When the user navigates to "projectsTab" page and verifies
+    Then the user opens the project with the name "test-project03"
     Then the user opens project details
     And the user sets the current project to inactive and verifies
     Then the user navigates to "projectsTab" page and verifies

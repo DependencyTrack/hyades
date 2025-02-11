@@ -1,5 +1,6 @@
 import { Given, Then } from '../fixtures/fixtures';
 import * as fs from "node:fs";
+import {expect} from "@playwright/test";
 
 Given('the user {string} is already authenticated for DependencyTrack', async ({ page, navBarPage }, username: string) => {
     const sessionStorage = JSON.parse(fs.readFileSync(__dirname + `/../resources/.auth/${username}.json`, 'utf-8'));
@@ -13,7 +14,7 @@ Given('the user {string} is already authenticated for DependencyTrack', async ({
     await navBarPage.verifyNavTabIsActive('dashboardTab');
 });
 
-Given('the admin user logs in to DependencyTrack', async ({ loginPage, navBarPage }) => {
+Given('the admin user logs in to DependencyTrack and verifies', async ({ loginPage, navBarPage }) => {
     await loginPage.goto();
     await loginPage.verifyVisibleLoginPage();
     await loginPage.login('admin', process.env.RANDOM_PASSWORD);
@@ -43,4 +44,12 @@ Then('the user sees wrong log in credentials modal content popup', async ({ logi
     await loginPage.verifyLoginErrorPopup();
     await loginPage.closeLoginErrorPopup();
 
+});
+
+Then('the delete-tag button is not visible', async ({ tagsPage }) => {
+    await expect(tagsPage.deleteButton).not.toBeVisible();
+});
+
+Then('the delete-tag button is visible', async ({ tagsPage }) => {
+    await expect(tagsPage.deleteButton).toBeVisible();
 });
