@@ -9,8 +9,7 @@ Feature:
     Then the user sees wrong log in credentials modal content popup
 
   Scenario: With VIEW_PORTFOLIO Permissions The User Verifies Access
-    Given the user "test-user_VP_PERMS" tries to log in to DependencyTrack
-    When the "dashboardTab" tab should be visible and active
+    Given the user "test-user_VP_PERMS" logs in to DependencyTrack
     Then the user navigates to "projectsTab" page and verifies
     Then the user navigates to "componentsTab" page and verifies
     Then the user navigates to "vulnerabilitiesTab" page and verifies

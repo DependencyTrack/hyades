@@ -1,14 +1,12 @@
 Feature:
   Scenario: Without VIEW_POLICY_VIOLATION Permission The User Cannot See The Policy Violations On Project Page
-    Given the user "test-user_VP_PERMS" tries to log in to DependencyTrack
-    When the "dashboardTab" tab should be visible and active
+    Given the user "test-user_VP_PERMS" logs in to DependencyTrack
     Then the user navigates to "projectsTab" page and verifies
     Then the user opens the project with the name "test-project01"
     Then the project "policyViolations" tab should not be visible
 
   Scenario: With VIEW_POLICY_VIOLATION Permissions The User Can See The Policy Violations On Project Page
-    Given the user "test-user_VP_VPV_PERMS" tries to log in to DependencyTrack
-    When the "dashboardTab" tab should be visible and active
+    Given the user "test-user_VP_VPV_PERMS" logs in to DependencyTrack
     Then the user navigates to "projectsTab" page and verifies
     Then the user opens the project with the name "test-project01"
     Then the project "policyViolations" tab should be visible
