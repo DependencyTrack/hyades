@@ -27,8 +27,16 @@ import {
     ProjectComponentsPage, ProjectDependencyGraphPage, ProjectExploitPredictionsPage,
     ProjectPage, ProjectPolicyViolationsPage, ProjectServicesPage, SelectedProjectPage
 } from "../page-objects/project.pom";
-import {LicenceGroupPage, PolicyPage} from "../page-objects/policy-management.pom";
-import {TagsPage} from "../page-objects/tags.pom";
+import {
+    LicenceGroupPage,
+    PolicyPage
+} from "../page-objects/policy-management.pom";
+import {
+    TagsPage
+} from "../page-objects/tags.pom";
+import {
+    VulnerabilitiesPage
+} from "../page-objects/vulnerabilities.pom";
 
 // export custom test fixtures
 export const test = base.extend<
@@ -56,6 +64,7 @@ export const test = base.extend<
         policyPage: PolicyPage;
         licenceGroupPage: LicenceGroupPage;
         tagsPage: TagsPage;
+        vulnerabilitiesPage: VulnerabilitiesPage;
     }>({
     administrationPage: async ({ page }, use) => {
         await use(new AdministrationPage(page));
@@ -125,6 +134,9 @@ export const test = base.extend<
     },
     tagsPage: async ({ page }, use) => {
         await use(new TagsPage(page));
+    },
+    vulnerabilitiesPage: async ({ page }, use) => {
+        await use(new VulnerabilitiesPage(page));
     },
 });
 
