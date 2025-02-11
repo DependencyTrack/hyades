@@ -106,4 +106,10 @@ export class NotificationToast {
         await expect(this.errorToast).toContainText(/Unauthorized \(401\)/i);
         await this.errorToast.click();
     }
+
+    async verifySuccessfulVulnerabilityCreatedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "vulnerability_created"));
+        await this.successToast.click();
+    }
 }
