@@ -59,9 +59,11 @@ export class ProjectPage extends ProjectModal {
 
     async clickOnCreateProject() {
         await this.createProjectButton.click();
+        await expect(this.modalContent).toBeVisible();
     }
 
     async createProject(projectName: string, projectClassifier: string, version?: string, isLastVersion?: boolean, team?: string, parent?: string, description?: string, tag?: string) {
+        await expect(this.modalContent).toBeVisible();
         await this.projectNameInput.fill(projectName);
         await this.projectClassifierSelect.selectOption(projectClassifier);
 
