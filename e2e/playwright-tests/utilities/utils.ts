@@ -39,7 +39,7 @@ function findValue(obj: any, searchParentKey: string, searchChildKey: string): a
  * @param locale - The locale string (e.g., 'en', 'de', 'fr').
  */
 export function updateLocale(locale: string) {
-    const localesPath = path.resolve(__dirname, '/../setup/locales');
+    const localesPath = path.resolve(__dirname, '/../resources/locales');
     const localeFilePath = path.join(localesPath, `${locale}.json`);
 
     if (fs.existsSync(localeFilePath)) {

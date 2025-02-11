@@ -80,11 +80,11 @@ Feature:
       | test-project02 | APPLICATION |         |               |      |        |             |     |
       | test-project03 | APPLICATION |         |               |      |        |             |     |
     Then the user opens the project with the name "test-project01"
-    And the user navigates to project "components" tab
+    And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
     Then the user navigates to "projectsTab" page and verifies
     Then the user opens the project with the name "test-project02"
-    And the user navigates to project "components" tab
+    And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
 
   Scenario: Provide Test Users With Respective Permissions

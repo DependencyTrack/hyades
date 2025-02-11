@@ -185,6 +185,7 @@ export class SelectedProjectPage extends ProjectModal {
         }
         await tab.click();
         await this.page.waitForTimeout(1000);
+        await expect(tab).toHaveClass(/active/);
     }
 
     async getTotalTabBadgeValue(tabName: string) {

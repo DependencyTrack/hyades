@@ -77,7 +77,7 @@ Then('the user opens the project with the name {string}', async ({ projectPage }
     await projectPage.clickOnProject(projectName);
 });
 
-Then('the user navigates to project {string} tab', async ({ selectedProjectPage }, projectTab: string) => {
+Then('the user navigates to project {string} tab and verifies', async ({ selectedProjectPage }, projectTab: string) => {
     await selectedProjectPage.clickOnTab(projectTab);
 });
 

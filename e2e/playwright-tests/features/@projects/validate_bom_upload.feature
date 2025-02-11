@@ -9,15 +9,15 @@ Feature:
     And the user verifies Audit Vulnerabilities with the badge number of 4 excluding and 4 including aliases on current project
     And the user verifies "exploitPredictions" with the badge number of 4 on current project
     And the user verifies Policy Violations with the badge number of 238 total 0 info 0 warn 238 fail violations on current project
-    Then the user navigates to project "components" tab
+    Then the user navigates to project "components" tab and verifies
     And the table on the respective projects tab is visible and contains entries
-    Then the user navigates to project "services" tab
+    Then the user navigates to project "services" tab and verifies
     And the table on the respective projects tab is visible and contains entries
-    Then the user navigates to project "dependencyGraph" tab
+    Then the user navigates to project "dependencyGraph" tab and verifies
     Then the dependency graph tab is visible and contains a node with child entries
-    Then the user navigates to project "auditVulnerabilities" tab
+    Then the user navigates to project "auditVulnerabilities" tab and verifies
     And the table on the respective projects tab is visible and contains entries
-    Then the user navigates to project "exploitPredictions" tab
+    Then the user navigates to project "exploitPredictions" tab and verifies
     And the table on the respective projects tab is visible and contains entries
-    Then the user navigates to project "policyViolations" tab
+    Then the user navigates to project "policyViolations" tab and verifies
     And the table on the respective projects tab is visible and contains entries

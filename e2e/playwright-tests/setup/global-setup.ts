@@ -13,7 +13,7 @@ async function globalSetup() {
         process.env.RANDOM_PASSWORD = json.password;
         // process.env.RANDOM_PASSWORD is set via uuidgen inside workflow
     }
-    const filePath = await findMatchingLocaleFileOnGithub(locale);
+    const filePath = await findMatchingLocaleFileOnGithub(locale, '/../resources/locales/');
     process.env.LOCALE_JSON = fs.readFileSync(filePath, 'utf-8');
 }
 
