@@ -1,9 +1,8 @@
 Feature:
   Scenario: The Admin User Validates A Test Project With A Recently Uploaded BOM
-    Given the admin user logs in to DependencyTrack
-    When the "dashboardTab" tab should be visible and active
-    Then the user navigates to "projectsTab" page and verifies
-    And the user opens the project with the name "test-project01"
+    Given the admin user logs in to DependencyTrack and verifies
+    When the user navigates to "projectsTab" page and verifies
+    Then the user opens the project with the name "test-project01"
     And the user verifies "components" with the badge number of 238 on current project
     And the user verifies "services" with the badge number of 19 on current project
     And the user verifies "dependencyGraph" with the badge number of 1 on current project

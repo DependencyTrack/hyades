@@ -1,6 +1,6 @@
 Feature:
   Scenario: Without SYSTEM_CONFIGURATION Permissions User Cannot See Administration Tab
-    Given the user "test-user_VP_PERMS" tries to log in to DependencyTrack
+    Given the user "test-user_VP_PERMS" logs in to DependencyTrack
     Then the "administrationTab" tab should not be visible
 
   Scenario: With SYSTEM_CONFIGURATION Permissions User Can See Administration Tab
