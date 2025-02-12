@@ -28,16 +28,16 @@ export class NavigationParPage {
         this.page = page;
 
         this.navBarItems = {
-            dashboardTab: page.getByRole('link', { name: getValue("message", "dashboard") }),
-            projectsTab: page.getByRole('link', { name: getValue("message", "projects") }),
-            componentsTab: page.getByRole('link', { name: getValue("message", "components") }),
-            vulnerabilitiesTab: page.getByRole('link', { name: getValue("message", "vulnerabilities") }),
-            licencesTab: page.getByRole('link', { name: getValue("message", "licenses") }),
-            tagsTab: page.getByRole('link', { name: getValue("message", "tags") }),
-            vulnerabilityAuditTab: page.getByRole('link', { name: getValue("message", "vulnerability_audit") }),
-            policyViolationAuditTab: page.getByRole('link', { name: getValue("message", "policy_violation_audit") }),
-            policyManagementTab: page.getByRole('link', { name: getValue("message", "policy_management") }),
-            administrationTab: page.getByRole('link', { name: getValue("message", "administration") }),
+            dashboard: page.getByRole('link', { name: getValue("message", "dashboard") }),
+            projects: page.getByRole('link', { name: getValue("message", "projects") }),
+            components: page.getByRole('link', { name: getValue("message", "components") }),
+            vulnerabilities: page.getByRole('link', { name: getValue("message", "vulnerabilities") }),
+            licences: page.getByRole('link', { name: getValue("message", "licenses") }),
+            tags: page.getByRole('link', { name: getValue("message", "tags") }),
+            vulnerabilityAudit: page.getByRole('link', { name: getValue("message", "vulnerability_audit") }),
+            policyViolationAudit: page.getByRole('link', { name: getValue("message", "policy_violation_audit") }),
+            policyManagement: page.getByRole('link', { name: getValue("message", "policy_management") }),
+            administration: page.getByRole('link', { name: getValue("message", "administration") }),
         };
 
         this.breadCrumb = page.locator('.breadcrumb');
