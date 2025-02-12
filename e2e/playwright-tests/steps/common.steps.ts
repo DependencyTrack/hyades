@@ -40,10 +40,9 @@ Given('the user {string} tries to log in to DependencyTrack with password {strin
     await loginPage.login(username, password);
 });
 
-Then('the user sees wrong log in credentials modal content popup', async ({ loginPage }) => {
+Then('the user sees wrong log in credentials modal content popup and closes it', async ({ loginPage }) => {
     await loginPage.verifyLoginErrorPopup();
     await loginPage.closeLoginErrorPopup();
-
 });
 
 Then('the delete-tag button is not visible', async ({ tagsPage }) => {
