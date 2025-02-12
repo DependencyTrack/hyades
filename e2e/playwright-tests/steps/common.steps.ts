@@ -27,9 +27,8 @@ Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage
     await loginPage.login(username, process.env.RANDOM_PASSWORD);
 });
 
-Given('the user {string} logs in to DependencyTrack', async ({ loginPage, navBarPage }, username: string) => {
+Given('the user {string} logs in to DependencyTrack and verifies', async ({ loginPage, navBarPage }, username: string) => {
     await loginPage.goto();
-    await loginPage.verifyVisibleLoginPage();
     await loginPage.login(username, process.env.RANDOM_PASSWORD);
     await navBarPage.verifyNavTabIsActive('dashboardTab');
 });
@@ -49,6 +48,6 @@ Then('the delete-tag button is not visible', async ({ tagsPage }) => {
     await expect(tagsPage.deleteButton).not.toBeVisible();
 });
 
-Then('the delete-tag button is visible', async ({ tagsPage }) => {
+Then('the delete-tag button should be visible', async ({ tagsPage }) => {
     await expect(tagsPage.deleteButton).toBeVisible();
 });

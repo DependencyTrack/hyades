@@ -61,7 +61,7 @@ Then('the user deletes the following test policies if they exist', async ({ page
     }
 });
 
-Then('the create-policy button is visible', async ({ policyPage }) => {
+Then('the create-policy button should be visible', async ({ policyPage }) => {
     await expect(policyPage.createPolicyButton).toBeVisible();
 });
 
@@ -73,7 +73,7 @@ Then('the user navigates to policyManagement {string} tab', async ({ policyPage 
     await policyPage.clickOnTab(tabName);
 });
 
-Then('the create-licence-group button is visible', async ({ licenceGroupPage }) => {
+Then('the create-licence-group button should be visible', async ({ licenceGroupPage }) => {
     await expect(licenceGroupPage.createLicenceGroupButton).toBeVisible();
 });
 

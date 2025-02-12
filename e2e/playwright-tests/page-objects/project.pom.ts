@@ -3,6 +3,7 @@ import { getValue } from "../utilities/utils";
 
 export class ProjectModal {
     modalContent: Locator;
+
     projectNameInput: Locator;
     projectVersionInput: Locator;
     projectIsLastVersionSlider: Locator;
@@ -11,11 +12,16 @@ export class ProjectModal {
     projectParentField: Locator;
     projectDescriptionField: Locator;
     projectTag: Locator;
-    projectActionButton: Locator;
     projectCloseButton: Locator;
     projectActiveSlider: Locator;
+    projectCreationButton: Locator;
 
-    constructor(page: Page, actionButtonName: string) {
+    projectDetailsDeleteButton: Locator;
+    projectDetailsPropertiesButton: Locator;
+    projectDetailsAddVersionButton: Locator;
+    projectDetailsUpdateButton: Locator;
+
+    constructor(page: Page, isProjectCreation: boolean) {
         this.modalContent = page.locator('.modal-content');
         this.projectNameInput = this.modalContent.locator('#project-name-input-input');
         this.projectVersionInput = this.modalContent.locator('#project-version-input-input');
@@ -27,8 +33,16 @@ export class ProjectModal {
         this.projectTag = this.modalContent.locator('.ti-new-tag-input');
 
         // Either Create or Update
-        this.projectActionButton = this.modalContent.getByRole('button', { name: getValue("message", actionButtonName) });
         this.projectCloseButton = this.modalContent.getByRole('button', { name: getValue("message", "close") });
+
+        if(isProjectCreation) {
+            this.projectCreationButton = this.modalContent.getByRole('button', { name: getValue("message", "create") });
+        } else {
+            this.projectDetailsDeleteButton = this.modalContent.getByRole('button', { name: getValue("message", "delete") });
+            this.projectDetailsPropertiesButton = this.modalContent.getByRole('button', { name: getValue("message", "properties") });
+            this.projectDetailsAddVersionButton = this.modalContent.getByRole('button', { name: getValue("message", "add_version") });
+            this.projectDetailsUpdateButton = this.modalContent.getByRole('button', { name: getValue("message", "update") });
+        }
 
         // Project Details Active Inactive Button
         this.projectActiveSlider = this.modalContent.locator('#project-details-active .switch-slider');
@@ -45,7 +59,7 @@ export class ProjectPage extends ProjectModal {
     projectList: Locator;
 
     constructor(page: Page) {
-        super(page, "create");
+        super(page, true);
         this.page = page;
 
         this.toolBar = page.locator('#projectsToolbar');
@@ -87,7 +101,7 @@ export class ProjectPage extends ProjectModal {
             await this.projectTag.fill(tag);
         }
 
-        await this.projectActionButton.click();
+        await this.projectCreationButton.click();
     }
 
     async getProjectTableRow(projectName: string) {
@@ -141,12 +155,8 @@ export class SelectedProjectPage extends ProjectModal {
     projectTabs: Locator;
     projectTabList: Record<string, Locator>;
 
-    projectDetailsDeleteButton: Locator;
-    projectDetailsPropertiesButton: Locator;
-    projectDetailsAddVersionButton: Locator;
-
     constructor(page: Page) {
-        super(page, "update");
+        super(page, false);
         this.page = page;
 
         this.projectCards = page.locator('.card');
@@ -162,10 +172,6 @@ export class SelectedProjectPage extends ProjectModal {
             exploitPredictions: this.projectTabs.getByText(getValue("message", "exploit_predictions")),
             policyViolations: this.projectTabs.getByText(getValue("message", "policy_violations")),
         };
-
-        this.projectDetailsDeleteButton = this.modalContent.getByRole('button', { name: getValue("message", "delete") });
-        this.projectDetailsPropertiesButton = this.modalContent.getByRole('button', { name: getValue("message", "properties") });
-        this.projectDetailsAddVersionButton = this.modalContent.getByRole('button', { name: getValue("message", "add_version") });
     }
 
     async getProjectCard(cardNumber: number) {
@@ -245,7 +251,7 @@ export class SelectedProjectPage extends ProjectModal {
     }
 
     async clickOnUpdateButton() {
-        await this.projectActionButton.click();
+        await this.projectDetailsUpdateButton.click();
     }
 
     async deleteProjectInProjectDetails() {

@@ -17,6 +17,3 @@ setup('Store Admin Authentication', async ({ page }) => {
     const sessionStorage = await page.evaluate(() => JSON.stringify(sessionStorage));
     fs.writeFileSync(adminFile, sessionStorage, 'utf-8');
 });
-
-// AUTH SETUP FOR TEST USERS SHOULD BE INSIDE PROVISIONING
-// AS EVERY PROVISIONED OBJECT NEEDS TO BE REMOVED AND CREATED FOR EVERY RUN
