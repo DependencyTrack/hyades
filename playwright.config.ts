@@ -2,14 +2,6 @@ import { defineConfig, devices } from '@playwright/test';
 import * as os from "node:os";
 import { defineBddConfig } from "playwright-bdd";
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
 const playwrightTestDir = "./e2e/playwright-tests";
 const defOutDir = "./playwright-test-results";
 const setupDir = "./e2e/playwright-tests/setup";
@@ -27,8 +19,6 @@ const gherkinSetupDir = defineBddConfig({
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/setup',
 });
-
-// https://vitalets.github.io/playwright-bdd/#/blog/whats-new-in-v8?id=improved-configuration-options
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -125,7 +115,6 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
-        // storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinSetupDir,
       dependencies: ['setup_admin_authentication'],
@@ -137,7 +126,6 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
-        //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinTestDir,
       dependencies: ['setup_provisioning'],
@@ -148,7 +136,6 @@ export default defineConfig({
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1600, height: 1080 },
-        //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinTestDir,
       dependencies: ['setup_provisioning'],
@@ -159,7 +146,6 @@ export default defineConfig({
       use: {
         ...devices['Desktop Safari'],
         viewport: { width: 1600, height: 1080 },
-        //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinTestDir,
       dependencies: ['setup_provisioning'],
@@ -170,22 +156,9 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1600, height: 1080 },
-        //storageState: playwrightTestDir + '/.auth/admin.json',
       },
       testDir: gherkinTestDir,
     },
-
-    /* different permissions for each user -> work with custom fixtures or tags (because test.use doesnt work)
-    https://vitalets.github.io/playwright-bdd/#/faq?id=can-i-manually-apply-testuse-in-a-generated-file
-    {
-      name: 'permissions',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: { width: 1600, height: 1080 },
-      },
-      dependencies: ['preconditions'],
-    },
-    */
 
     /* Test against mobile viewports. */
     // {
