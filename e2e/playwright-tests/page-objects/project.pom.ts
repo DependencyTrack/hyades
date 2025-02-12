@@ -433,16 +433,52 @@ export class ProjectAuditVulnerabilitiesPage {
     searchFieldInput: Locator;
     tableList: Locator;
 
+    detailView: Locator;
+
+    detailViewTitleField: Locator;
+    detailViewDescriptionField: Locator;
+    detailViewCommentField: Locator;
+    detailViewAuditTrailField: Locator;
+    detailViewAddCommentButton: Locator;
+    detailViewAnalysisSelect: Locator;
+    detailViewSuppressToggle: Locator;
+    detailViewJustificationSelect: Locator;
+    detailViewVendorResponseSelect: Locator;
+    detailViewAnalysisDetailsField: Locator;
+
     constructor(page: Page) {
         this.page = page;
         this.tabPanel = page.locator('.tab-pane.active');
         this.searchFieldInput = this.tabPanel.locator('.search-input');
         this.tableList = this.tabPanel.locator('tbody tr');
+
+        this.detailView = this.tabPanel.locator('.detail-view');
+        this.detailViewTitleField = this.detailView.locator('#input-1');
+        this.detailViewDescriptionField = this.detailView.locator('#input-3');
+        this.detailViewCommentField = this.detailView.locator('#input-8');
+        this.detailViewAuditTrailField = this.detailView.locator('#auditTrailField');
+        this.detailViewAddCommentButton = this.detailView.locator('#button');
+        this.detailViewAnalysisSelect = this.detailView.locator('#input-9').locator('.custom-select');
+        this.detailViewSuppressToggle = this.detailView.locator('.toggle.btn');
+        this.detailViewJustificationSelect = this.detailView.locator('#input-10').locator('.custom-select');
+        this.detailViewVendorResponseSelect = this.detailView.locator('#input-11').locator('.custom-select');
+        this.detailViewAnalysisDetailsField = this.detailView.locator('#analysisDetailsField');
+        this.detailViewAnalysisDetailsField = this.detailView.getByRole('button', { name: getValue("message", "update_details") });
     }
 
     async fillSearchFieldInput(search: string) {
         await this.searchFieldInput.clear();
         await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+
+    async clearSearchFieldInput() {
+        await this.searchFieldInput.clear();
+        await this.page.waitForTimeout(1000);
+    }
+
+    async clickOnSpecificVulnerability(violation: string) {
+        await this.tableList.filter({ hasText: violation }).locator('td').first().click();
         await this.page.waitForTimeout(1000);
     }
 }
@@ -471,6 +507,7 @@ export class ProjectPolicyViolationsPage {
     readonly page: Page;
     tabPanel: Locator;
     searchFieldInput: Locator;
+    table: Locator;
     tableList: Locator;
 
     suppressSlider: Locator;
@@ -480,7 +517,7 @@ export class ProjectPolicyViolationsPage {
     detailViewFailedConditionField: Locator;
     detailViewAuditTrailField: Locator;
     detailViewCommentField: Locator;
-    detailViewCommentButton: Locator;
+    detailViewAddCommentButton: Locator;
     detailViewAnalysisSelect: Locator;
     lastDetailViewAnalysisSelect: string;
     detailViewSuppressToggle: Locator;
@@ -492,13 +529,14 @@ export class ProjectPolicyViolationsPage {
         this.suppressSlider = this.tabPanel.locator('.switch-slider');
 
         this.searchFieldInput = this.tabPanel.locator('.search-input');
-        this.tableList = this.tabPanel.locator('tbody tr');
+        this.table = this.tabPanel.locator('tbody');
+        this.tableList = this.table.locator('tr');
         this.detailView = this.tabPanel.locator('.detail-view');
 
         this.detailViewFailedConditionField = this.detailView.locator('#failedCondition-input');
         this.detailViewAuditTrailField = this.detailView.locator('#auditTrailField');
         this.detailViewCommentField = this.detailView.locator('#input-8');
-        this.detailViewCommentButton = this.detailView.locator('.pull-right');
+        this.detailViewAddCommentButton = this.detailView.locator('.pull-right');
         this.detailViewAnalysisSelect = this.detailView.locator('.custom-select');
         this.lastDetailViewAnalysisSelect = "NOT_SET"
         this.detailViewSuppressToggle = this.detailView.locator('.toggle.btn');
@@ -516,7 +554,7 @@ export class ProjectPolicyViolationsPage {
     }
 
     async clickOnSpecificViolation(violation: string) {
-        await this.page.getByRole('row', { name: violation }).locator('td').first().click();
+        await this.tableList.filter({ hasText: violation }).locator('td').first().click();
         await this.page.waitForTimeout(1000);
     }
 
@@ -524,8 +562,8 @@ export class ProjectPolicyViolationsPage {
         await this.detailViewCommentField.fill(input);
     }
 
-    async clickOnDetailViewCommentButton() {
-        await this.detailViewCommentButton.click();
+    async clickOnDetailViewAddCommentButton() {
+        await this.detailViewAddCommentButton.click();
     }
 
     async setDetailViewAnalysisSelect(option: string) {

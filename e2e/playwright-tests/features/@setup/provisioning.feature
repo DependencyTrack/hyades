@@ -2,7 +2,7 @@
 Feature:
   Scenario: Delete All Test Users Before Tests
     Given the user "admin" is already authenticated for DependencyTrack
-    When the user navigates to "administrationTab" page and verifies
+    When the user navigates to "administration" page and verifies
     Then the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user deletes the following test users if they exist
@@ -23,14 +23,14 @@ Feature:
 
   Scenario: Delete All Test Policies Before Tests
     Given the user "admin" is already authenticated for DependencyTrack
-    Then the user navigates to "policyManagementTab" page and verifies
+    Then the user navigates to "policyManagement" page and verifies
     Then the user deletes the following test policies if they exist
       | policyName    |
       | test-policy01 |
 
   Scenario: Delete All Test Projects Before Tests
     Given the user "admin" is already authenticated for DependencyTrack
-    When the user navigates to "projectsTab" page and verifies
+    When the user navigates to "projects" page and verifies
     Then the user deletes the following test projects if they exist
       | name           |
       | test-project01 |
@@ -39,7 +39,7 @@ Feature:
 
   Scenario: Create Test Users
     Given the user "admin" is already authenticated for DependencyTrack
-    When the user navigates to "administrationTab" page and verifies
+    When the user navigates to "administration" page and verifies
     Then the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user creates the following test users
@@ -60,7 +60,7 @@ Feature:
 
   Scenario: Create Test Policies
     Given the user "admin" is already authenticated for DependencyTrack
-    When the user navigates to "policyManagementTab" page and verifies
+    When the user navigates to "policyManagement" page and verifies
     Then the user creates the following test policies
       | policyName    |
       | test-policy01 |
@@ -73,7 +73,7 @@ Feature:
 
   Scenario: Create Test Project With Default BOM
     Given the user "admin" is already authenticated for DependencyTrack
-    When the user navigates to "projectsTab" page and verifies
+    When the user navigates to "projects" page and verifies
     Then the user creates projects with the following values
       | name           | classifier  | version | isLastVersion | team | parent | description | tag |
       | test-project01 | APPLICATION |         |               |      |        |             |     |
@@ -82,14 +82,14 @@ Feature:
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
-    Then the user navigates to "projectsTab" page and verifies
+    Then the user navigates to "projects" page and verifies
     Then the user opens the project with the name "test-project02"
     And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
 
   Scenario: Provide Test Users With Respective Permissions
     Given the user "admin" is already authenticated for DependencyTrack
-    When the user navigates to "administrationTab" page and verifies
+    When the user navigates to "administration" page and verifies
     Then the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user provides "test-user_VP_PERMS" with the following permissions

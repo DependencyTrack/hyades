@@ -40,8 +40,8 @@ export class PolicyPage extends PolicyManagementModal{
     createPolicyButton: Locator;
     searchFieldInput: Locator;
 
-    policyManagementTabs: Locator;
-    policyManagementTabList: Record<string, Locator>;
+    policyManagements: Locator;
+    policyManagementList: Record<string, Locator>;
 
     policyDetailView: Locator;
 
@@ -69,11 +69,11 @@ export class PolicyPage extends PolicyManagementModal{
         this.createPolicyButton = this.tabPanel.getByRole('button', { name: context });
         this.searchFieldInput = this.tabPanel.locator('.search-input');
 
-        this.policyManagementTabs = page.getByRole('tablist');
-        this.policyManagementTabList = {
-            policies: this.policyManagementTabs.getByText(getValue("message", "policies")),
-            licenceGroup: this.policyManagementTabs.getByText(getValue("message", "license_groups")),
-            vulnerabilityPolicies: this.policyManagementTabs.getByText("Vulnerability Policies") // getValue("message", "vulnerability_policies")
+        this.policyManagements = page.getByRole('tablist');
+        this.policyManagementList = {
+            policies: this.policyManagements.getByText(getValue("message", "policies")),
+            licenceGroup: this.policyManagements.getByText(getValue("message", "license_groups")),
+            vulnerabilityPolicies: this.policyManagements.getByText("Vulnerability Policies") // getValue("message", "vulnerability_policies")
         }
 
         this.policyDetailView = this.tabPanel.locator('.detail-view');
@@ -94,7 +94,7 @@ export class PolicyPage extends PolicyManagementModal{
     }
 
     async clickOnTab(tabName: string) {
-        const tab = this.policyManagementTabList[tabName];
+        const tab = this.policyManagementList[tabName];
         if (!tab) {
             throw new Error(`Tab '${tabName}' does not exist.`);
         }

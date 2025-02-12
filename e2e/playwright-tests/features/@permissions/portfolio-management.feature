@@ -1,7 +1,7 @@
-Feature:
-  Scenario: Without PORTFOLIO_MANAGEMENT Permissions User Cannot See Management Buttons For Projects
+Feature: VIEW_PORTFOLIO x PORTFOLIO_MANAGEMENT
+  Scenario: Without PORTFOLIO_MANAGEMENT Permission User Cannot See Management Buttons For Projects
     Given the user "test-user_VP_PERMS" logs in to DependencyTrack and verifies
-    When the user navigates to "projectsTab" page and verifies
+    When the user navigates to "projects" page and verifies
     Then the create-project button should not visible
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "components" tab and verifies
@@ -13,9 +13,9 @@ Feature:
     Then the add-version button in project details should not be visible
     Then the update-project button in project details should not be visible
 
-  Scenario: With SYSTEM_CONFIGURATION Permissions User Can See Management Buttons For Projects
+  Scenario: With PORTFOLIO_MANAGEMENT Permission User Can See Management Buttons For Projects
     Given the user "test-user_VP_PortfolioM_PERMS" logs in to DependencyTrack and verifies
-    When the user navigates to "projectsTab" page and verifies
+    When the user navigates to "projects" page and verifies
     Then the create-project button should be visible
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "components" tab and verifies

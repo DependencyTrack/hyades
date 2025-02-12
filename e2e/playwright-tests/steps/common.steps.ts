@@ -11,14 +11,14 @@ Given('the user {string} is already authenticated for DependencyTrack', async ({
             }
     }, sessionStorage);
     await page.goto('/');
-    await navBarPage.verifyNavTabIsActive('dashboardTab');
+    await navBarPage.verifyNavTabIsActive('dashboard');
 });
 
 Given('the admin user logs in to DependencyTrack and verifies', async ({ loginPage, navBarPage }) => {
     await loginPage.goto();
     await loginPage.verifyVisibleLoginPage();
     await loginPage.login('admin', process.env.RANDOM_PASSWORD);
-    await navBarPage.verifyNavTabIsActive('dashboardTab');
+    await navBarPage.verifyNavTabIsActive('dashboard');
 });
 
 Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage }, username: string) => {
@@ -30,7 +30,7 @@ Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage
 Given('the user {string} logs in to DependencyTrack and verifies', async ({ loginPage, navBarPage }, username: string) => {
     await loginPage.goto();
     await loginPage.login(username, process.env.RANDOM_PASSWORD);
-    await navBarPage.verifyNavTabIsActive('dashboardTab');
+    await navBarPage.verifyNavTabIsActive('dashboard');
 });
 
 Given('the user {string} tries to log in to DependencyTrack with password {string}', async ({ loginPage }, username: string, password: string) => {

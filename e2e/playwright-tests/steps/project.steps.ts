@@ -162,7 +162,7 @@ Then('the user opens the policy violation of Component {string}', async ({ proje
 
 Then('the user comments the current policy violation with {string}', async ({ projectPolicyViolationsPage, notificationToast }, comment: string) => {
     await projectPolicyViolationsPage.fillDetailViewCommentField(comment);
-    await projectPolicyViolationsPage.clickOnDetailViewCommentButton();
+    await projectPolicyViolationsPage.clickOnDetailViewAddCommentButton();
     await notificationToast.verifySuccessfulUpdatedToast();
 });
 
@@ -271,4 +271,14 @@ Then('the add-version button in project details should be visible', async ({ sel
 
 Then('the update-project button in project details should be visible', async ({ selectedProjectPage }) => {
     await expect(selectedProjectPage.projectDetailsUpdateButton).toBeVisible();
+});
+
+Then('the user expands the first vulnerability on audit Vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }) => {
+    await projectAuditVulnerabilitiesPage.tableList.first().locator('td').first().click();
+});
+
+Then('the user verifies read access on the vulnerability audit view on audit Vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }) => {
+    await expect(projectAuditVulnerabilitiesPage.detailViewTitleField).toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewDescriptionField).toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewAuditTrailField).toBeVisible();
 });
