@@ -1,6 +1,6 @@
 Feature:
   Scenario: The Admin User Validates A Test Project With A Recently Uploaded BOM
-    Given the admin user logs in to DependencyTrack and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
     When the user navigates to "projectsTab" page and verifies
     Then the user opens the project with the name "test-project01"
     And the user verifies "components" with the badge number of 238 on current project

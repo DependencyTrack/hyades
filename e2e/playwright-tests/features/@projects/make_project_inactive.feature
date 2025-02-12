@@ -1,6 +1,6 @@
 Feature:
   Scenario: The Admin User Sets A Test Project To Inactive
-    Given the admin user logs in to DependencyTrack and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
     When the user navigates to "projectsTab" page and verifies
     Then the user opens the project with the name "test-project03"
     Then the user opens project details

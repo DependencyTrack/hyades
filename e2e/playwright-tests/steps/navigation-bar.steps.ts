@@ -1,12 +1,8 @@
-import {Then, When} from '../fixtures/fixtures';
+import {Then} from '../fixtures/fixtures';
 import {expect} from "@playwright/test";
 
 Then('the user navigates to {string} page and verifies', async ({ navBarPage }, navTab: string) => {
     await navBarPage.clickOnNavTab(navTab);
-    await navBarPage.verifyNavTabIsActive(navTab);
-});
-
-When('the {string} tab should be visible and active', async ({ navBarPage }, navTab: string) => {
     await navBarPage.verifyNavTabIsActive(navTab);
 });
 

@@ -9,7 +9,7 @@ Feature:
     Then the user sees wrong log in credentials modal content popup and closes it
 
   Scenario: With VIEW_PORTFOLIO Permissions The User Verifies Access
-    Given the user "test-user_VP_PERMS" logs in to DependencyTrack
+    Given the user "test-user_VP_PERMS" logs in to DependencyTrack and verifies
     Then the user navigates to "projectsTab" page and verifies
     Then the user navigates to "componentsTab" page and verifies
     Then the user navigates to "vulnerabilitiesTab" page and verifies
