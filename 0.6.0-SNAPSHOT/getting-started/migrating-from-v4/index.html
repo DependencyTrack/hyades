@@ -880,7 +880,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -890,6 +890,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1476,7 +1633,7 @@
 
   <h1>Migrating from v4</h1>
 
-<h2 id="introduction">Introduction</h2>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>If you're currently running a Dependency-Track v4 deployment, don't worry!</p>
 <p>We're aiming to provide tooling and guides on how to migrate to v5 once it reaches general availability.
 The goal is to offer tools that perform the migration automatically, with little to no manual effort
@@ -1485,7 +1642,7 @@ The goal is to offer tools that perform the migration automatically, with little
 <p class="admonition-title">Tip</p>
 <p>Follow <a href="https://github.com/DependencyTrack/hyades/issues/881">https://github.com/DependencyTrack/hyades/issues/881</a> for updates on this topic.</p>
 </div>
-<h2 id="running-v4-and-v5-in-parallel">Running v4 and v5 in parallel</h2>
+<h2 id="running-v4-and-v5-in-parallel">Running v4 and v5 in parallel<a class="headerlink" href="#running-v4-and-v5-in-parallel" title="Permanent link">&para;</a></h2>
 <p>Given an existing production deployment of v4, it can be helpful to run a v5 test deployment in parallel,
 to compare behavior and testing new features on <em>real</em> data.</p>
 <p>This can be achieved by leveraging notifications, in particular <code>BOM_PROCESSED</code> notifications.
@@ -1514,12 +1671,12 @@ construct a BOM upload request, that can be submitted to another Dependency-Trac
     DT v5-&gt;&gt;DT v5: Validate and&lt;br/&gt;Process</code></pre>
 <!-- TODO: Port instructions from https://github.com/DependencyTrack/hyades/blob/main/scripts/benthos/README.md -->
 
-<h3 id="creating-api-key">Creating API Key</h3>
+<h3 id="creating-api-key">Creating API Key<a class="headerlink" href="#creating-api-key" title="Permanent link">&para;</a></h3>
 <p>In order to upload BOMs to the Dependency-Track v5 system, an API key with <code>BOM_UPLOAD</code> and <code>PROJECT_CREATION_UPLOAD</code>
 permissions is required. Log into your Dependency-Track v5 instance, navigate to <em>Administration</em> -&gt; <em>Access Management</em>
 -&gt; <em>Teams</em>, and create a new team with accompanying API key:</p>
 <p><img alt="Creating an API key for Bento in Dependency-Track v5" src="../../images/getting-started/migrating-from-v4_bento-api-key.png" /></p>
-<h3 id="deploy-bento">Deploy Bento</h3>
+<h3 id="deploy-bento">Deploy Bento<a class="headerlink" href="#deploy-bento" title="Permanent link">&para;</a></h3>
 <p><a href="https://github.com/warpstreamlabs/bento">Bento</a> works with the concept of pipelines, which are <a href="https://warpstreamlabs.github.io/bento/docs/configuration/about">configured via YAML</a>.<br />
 The following pipeline will achieve the desired outcome:</p>
 <div class="language-yaml highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
@@ -1601,7 +1758,7 @@ The following pipeline will achieve the desired outcome:</p>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span>-e<span class="w"> </span><span class="s1">&#39;DTV5_API_KEY=odt_****************&#39;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span>ghcr.io/warpstreamlabs/bento
 </span></code></pre></div></td></tr></table></div>
-<h3 id="configure-notification">Configure Notification</h3>
+<h3 id="configure-notification">Configure Notification<a class="headerlink" href="#configure-notification" title="Permanent link">&para;</a></h3>
 <p>Log into your Dependency-Track v4 instance, navigate to <em>Administration</em> -&gt; <em>Notifications</em> -&gt; <em>Alerts</em>,
 and create a new alert with the following settings:</p>
 <ul>
@@ -1612,7 +1769,7 @@ and create a new alert with the following settings:</p>
 <p><img alt="Creating a new alert in Dependency-Track v4" src="../../images/getting-started/migrating-from-v4_create-alert.png" /></p>
 <p>Once created, enable <code>BOM_PROCESSED</code> under <em>Groups</em>, and configure the URL of your Bento endpoint as <em>Destination</em>:</p>
 <p><img alt="Configuring the alert in Dependency-Track v4" src="../../images/getting-started/migrating-from-v4_configure-alert.png" /></p>
-<h3 id="testing">Testing</h3>
+<h3 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Upload a BOM to a project in your Dependency-Track v4 instance.</li>
 <li>Head over to your Dependency-Track v5 instance and wait for the upload to replicate.</li>

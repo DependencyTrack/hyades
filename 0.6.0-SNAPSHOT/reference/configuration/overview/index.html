@@ -780,7 +780,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -790,6 +790,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1467,12 +1624,12 @@
   
 
 
-<h1 id="configuration">Configuration</h1>
+<h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h1>
 <p>All available configuration options used by all applications are listed in their respective <code>application.properties</code>.<br />
 Options can be provided via environment variables as well, refer to the <a href="https://quarkus.io/guides/config-reference#configuration-sources">Quarkus docs</a> for details.</p>
 <p>Not all options are supposed to be tweaked by users though. This document contains an overview of all
 options that are expected to be changed by users.</p>
-<h3 id="kafka-topic-configuration">Kafka Topic Configuration</h3>
+<h3 id="kafka-topic-configuration">Kafka Topic Configuration<a class="headerlink" href="#kafka-topic-configuration" title="Permanent link">&para;</a></h3>
 <p>Kafka topics (including internal topics) can be configured with custom prefix. In order to provide custom prefix, below
 environment variable can be used.</p>
 <table>
@@ -1493,7 +1650,7 @@ environment variable can be used.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="notification-publisher">Notification Publisher</h3>
+<h3 id="notification-publisher">Notification Publisher<a class="headerlink" href="#notification-publisher" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1578,7 +1735,7 @@ Refer</p>
 <p>to <a href="https://github.com/DependencyTrack/hyades/blob/main/notification-publisher/src/main/resources/application.properties"><code>application.properties</code></a>
 for a complete overview of available config options.</p>
 </blockquote>
-<h3 id="repository-meta-analyzer">Repository Meta Analyzer</h3>
+<h3 id="repository-meta-analyzer">Repository Meta Analyzer<a class="headerlink" href="#repository-meta-analyzer" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1675,7 +1832,7 @@ Refer</p>
 <p>to <a href="https://github.com/DependencyTrack/hyades/blob/main/repository-meta-analyzer/src/main/resources/application.properties"><code>application.properties</code></a>
 for a complete overview of available config options.</p>
 </blockquote>
-<h3 id="vulnerability-analyzer">Vulnerability Analyzer</h3>
+<h3 id="vulnerability-analyzer">Vulnerability Analyzer<a class="headerlink" href="#vulnerability-analyzer" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1904,7 +2061,7 @@ Refer</p>
 <p>to <a href="https://github.com/DependencyTrack/hyades/blob/main/vulnerability-analyzer/src/main/resources/application.properties"><code>application.properties</code></a>
 for a complete overview of available config options.</p>
 </blockquote>
-<h3 id="mirror-service">Mirror Service</h3>
+<h3 id="mirror-service">Mirror Service<a class="headerlink" href="#mirror-service" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>

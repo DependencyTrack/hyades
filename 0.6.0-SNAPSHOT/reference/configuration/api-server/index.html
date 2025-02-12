@@ -780,7 +780,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -790,6 +790,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -3319,8 +3476,8 @@
   Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/api-server.md ./hyades-apiserver/src/main/resources/application.properties
 -->
 
-<h2 id="cors">CORS</h2>
-<h3 id="alpinecorsallowcredentials">alpine.cors.allow.credentials</h3>
+<h2 id="cors">CORS<a class="headerlink" href="#cors" title="Permanent link">&para;</a></h2>
+<h3 id="alpinecorsallowcredentials">alpine.cors.allow.credentials<a class="headerlink" href="#alpinecorsallowcredentials" title="Permanent link">&para;</a></h3>
 <p>Controls the content of the <code>Access-Control-Allow-Credentials</code> response header.  <br/>  Has no effect when <a href="#alpinecorsenabled"><code>alpine.cors.enabled</code></a> is <code>false</code>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3344,7 +3501,7 @@
 </table>
 
 <hr />
-<h3 id="alpinecorsallowheaders">alpine.cors.allow.headers</h3>
+<h3 id="alpinecorsallowheaders">alpine.cors.allow.headers<a class="headerlink" href="#alpinecorsallowheaders" title="Permanent link">&para;</a></h3>
 <p>Controls the content of the <code>Access-Control-Allow-Headers</code> response header.  <br/>  Has no effect when <a href="#alpinecorsenabled"><code>alpine.cors.enabled</code></a> is <code>false</code>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3368,7 +3525,7 @@
 </table>
 
 <hr />
-<h3 id="alpinecorsallowmethods">alpine.cors.allow.methods</h3>
+<h3 id="alpinecorsallowmethods">alpine.cors.allow.methods<a class="headerlink" href="#alpinecorsallowmethods" title="Permanent link">&para;</a></h3>
 <p>Controls the content of the <code>Access-Control-Allow-Methods</code> response header.  <br/>  Has no effect when <a href="#alpinecorsenabled"><code>alpine.cors.enabled</code></a> is <code>false</code>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3392,7 +3549,7 @@
 </table>
 
 <hr />
-<h3 id="alpinecorsalloworigin">alpine.cors.allow.origin</h3>
+<h3 id="alpinecorsalloworigin">alpine.cors.allow.origin<a class="headerlink" href="#alpinecorsalloworigin" title="Permanent link">&para;</a></h3>
 <p>Controls the content of the <code>Access-Control-Allow-Origin</code> response header.  <br/>  Has no effect when <a href="#alpinecorsenabled"><code>alpine.cors.enabled</code></a> is <code>false</code>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3416,7 +3573,7 @@
 </table>
 
 <hr />
-<h3 id="alpinecorsenabled">alpine.cors.enabled</h3>
+<h3 id="alpinecorsenabled">alpine.cors.enabled<a class="headerlink" href="#alpinecorsenabled" title="Permanent link">&para;</a></h3>
 <p>Defines whether <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">Cross Origin Resource Sharing</a>  (CORS) headers shall be included in REST API responses.  </p>
 <table>
   <tbody style="border: 0">
@@ -3440,7 +3597,7 @@
 </table>
 
 <hr />
-<h3 id="alpinecorsexposeheaders">alpine.cors.expose.headers</h3>
+<h3 id="alpinecorsexposeheaders">alpine.cors.expose.headers<a class="headerlink" href="#alpinecorsexposeheaders" title="Permanent link">&para;</a></h3>
 <p>Controls the content of the <code>Access-Control-Expose-Headers</code> response header.  <br/>  Has no effect when <a href="#alpinecorsenabled"><code>alpine.cors.enabled</code></a> is <code>false</code>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3464,7 +3621,7 @@
 </table>
 
 <hr />
-<h3 id="alpinecorsmaxage">alpine.cors.max.age</h3>
+<h3 id="alpinecorsmaxage">alpine.cors.max.age<a class="headerlink" href="#alpinecorsmaxage" title="Permanent link">&para;</a></h3>
 <p>Controls the content of the <code>Access-Control-Max-Age</code> response header.  <br/>  Has no effect when <a href="#alpinecorsenabled"><code>alpine.cors.enabled</code></a> is <code>false</code>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3487,8 +3644,8 @@
   </tbody>
 </table>
 
-<h2 id="database">Database</h2>
-<h3 id="alpinedatabasepassword">alpine.database.password</h3>
+<h2 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h2>
+<h3 id="alpinedatabasepassword">alpine.database.password<a class="headerlink" href="#alpinedatabasepassword" title="Permanent link">&para;</a></h3>
 <p>Specifies the password to use when authenticating to the database.  </p>
 <table>
   <tbody style="border: 0">
@@ -3512,7 +3669,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatabasepasswordfile">alpine.database.password.file</h3>
+<h3 id="alpinedatabasepasswordfile">alpine.database.password.file<a class="headerlink" href="#alpinedatabasepasswordfile" title="Permanent link">&para;</a></h3>
 <p>Specifies the file to load the database password from.  If set, takes precedence over <a href="#alpinedatabasepassword"><code>alpine.database.password</code></a>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3540,7 +3697,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatabasepoolenabled">alpine.database.pool.enabled</h3>
+<h3 id="alpinedatabasepoolenabled">alpine.database.pool.enabled<a class="headerlink" href="#alpinedatabasepoolenabled" title="Permanent link">&para;</a></h3>
 <p>Specifies if the database connection pool is enabled.  </p>
 <table>
   <tbody style="border: 0">
@@ -3564,7 +3721,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatabasepoolidletimeout">alpine.database.pool.idle.timeout</h3>
+<h3 id="alpinedatabasepoolidletimeout">alpine.database.pool.idle.timeout<a class="headerlink" href="#alpinedatabasepoolidletimeout" title="Permanent link">&para;</a></h3>
 <p>This property controls the maximum amount of time that a connection is  allowed to sit idle in the pool.  </p>
 <table>
   <tbody style="border: 0">
@@ -3588,7 +3745,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatabasepoolmaxlifetime">alpine.database.pool.max.lifetime</h3>
+<h3 id="alpinedatabasepoolmaxlifetime">alpine.database.pool.max.lifetime<a class="headerlink" href="#alpinedatabasepoolmaxlifetime" title="Permanent link">&para;</a></h3>
 <p>This property controls the maximum lifetime of a connection in the pool.  An in-use connection will never be retired, only when it is closed will  it then be removed.  </p>
 <table>
   <tbody style="border: 0">
@@ -3612,7 +3769,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatabasepoolmaxsize">alpine.database.pool.max.size</h3>
+<h3 id="alpinedatabasepoolmaxsize">alpine.database.pool.max.size<a class="headerlink" href="#alpinedatabasepoolmaxsize" title="Permanent link">&para;</a></h3>
 <p>This property controls the maximum size that the pool is allowed to reach,  including both idle and in-use connections.  </p>
 <table>
   <tbody style="border: 0">
@@ -3636,7 +3793,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatabasepoolminidle">alpine.database.pool.min.idle</h3>
+<h3 id="alpinedatabasepoolminidle">alpine.database.pool.min.idle<a class="headerlink" href="#alpinedatabasepoolminidle" title="Permanent link">&para;</a></h3>
 <p>This property controls the minimum number of idle connections in the pool.  This value should be equal to or less than <a href="#alpinedatabasepoolmaxsize"><code>alpine.database.pool.max.size</code></a>.  Warning: If the value is less than <a href="#alpinedatabasepoolmaxsize"><code>alpine.database.pool.max.size</code></a>,  <a href="#alpinedatabasepoolidletimeout"><code>alpine.database.pool.idle.timeout</code></a> will have no effect.  </p>
 <table>
   <tbody style="border: 0">
@@ -3660,7 +3817,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatabaseurl">alpine.database.url</h3>
+<h3 id="alpinedatabaseurl">alpine.database.url<a class="headerlink" href="#alpinedatabaseurl" title="Permanent link">&para;</a></h3>
 <p>Specifies the JDBC URL to use when connecting to the database.  For best performance, set the <code>reWriteBatchedInserts</code> query parameter to <code>true</code>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3688,7 +3845,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatabaseusername">alpine.database.username</h3>
+<h3 id="alpinedatabaseusername">alpine.database.username<a class="headerlink" href="#alpinedatabaseusername" title="Permanent link">&para;</a></h3>
 <p>Specifies the username to use when authenticating to the database.  </p>
 <table>
   <tbody style="border: 0">
@@ -3712,7 +3869,7 @@
 </table>
 
 <hr />
-<h3 id="databasemigrationpassword">database.migration.password</h3>
+<h3 id="databasemigrationpassword">database.migration.password<a class="headerlink" href="#databasemigrationpassword" title="Permanent link">&para;</a></h3>
 <p>Defines the database password for executing migrations.  If not set, the value of <a href="#alpinedatabasepassword"><code>alpine.database.password</code></a> will be used.  </p>
 <table>
   <tbody style="border: 0">
@@ -3736,7 +3893,7 @@
 </table>
 
 <hr />
-<h3 id="databasemigrationurl">database.migration.url</h3>
+<h3 id="databasemigrationurl">database.migration.url<a class="headerlink" href="#databasemigrationurl" title="Permanent link">&para;</a></h3>
 <p>Defines the database JDBC URL to use when executing migrations.  If not set, the value of <a href="#alpinedatabaseurl"><code>alpine.database.url</code></a> will be used.  Should generally not be set, unless TLS authentication is used,  and custom connection variables are required.  </p>
 <table>
   <tbody style="border: 0">
@@ -3760,7 +3917,7 @@
 </table>
 
 <hr />
-<h3 id="databasemigrationusername">database.migration.username</h3>
+<h3 id="databasemigrationusername">database.migration.username<a class="headerlink" href="#databasemigrationusername" title="Permanent link">&para;</a></h3>
 <p>Defines the database user for executing migrations.  If not set, the value of <a href="#alpinedatabaseusername"><code>alpine.database.username</code></a> will be used.  </p>
 <table>
   <tbody style="border: 0">
@@ -3784,7 +3941,7 @@
 </table>
 
 <hr />
-<h3 id="databaserunmigrations">database.run.migrations</h3>
+<h3 id="databaserunmigrations">database.run.migrations<a class="headerlink" href="#databaserunmigrations" title="Permanent link">&para;</a></h3>
 <p>Defines whether database migrations should be executed on startup.  <br/><br/>  From v5.6.0 onwards, migrations are considered part of the initialization tasks.  Setting <a href="#inittasksenabled"><code>init.tasks.enabled</code></a> to <code>false</code> will disable migrations,  even if <a href="#databaserunmigrations"><code>database.run.migrations</code></a> is enabled.  </p>
 <table>
   <tbody style="border: 0">
@@ -3808,7 +3965,7 @@
 </table>
 
 <hr />
-<h3 id="databaserunmigrationsonly">database.run.migrations.only</h3>
+<h3 id="databaserunmigrationsonly">database.run.migrations.only<a class="headerlink" href="#databaserunmigrationsonly" title="Permanent link">&para;</a></h3>
 <p>Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless <a href="#databaserunmigrations"><code>database.run.migrations</code></a> is <code>true</code>.  <br/><br/>  From v5.6.0 onwards, usage of <a href="#initandexit"><code>init.and.exit</code></a> should be preferred.  </p>
 <table>
   <tbody style="border: 0">
@@ -3831,8 +3988,8 @@
   </tbody>
 </table>
 
-<h2 id="development">Development</h2>
-<h3 id="devservicesenabled">dev.services.enabled</h3>
+<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
+<h3 id="devservicesenabled">dev.services.enabled<a class="headerlink" href="#devservicesenabled" title="Permanent link">&para;</a></h3>
 <p>Whether dev services shall be enabled.  <br/><br/>  When enabled, Dependency-Track will automatically launch containers for:  <ul>  <li>Frontend</li>  <li>Kafka</li>  <li>PostgreSQL</li>  </ul>  at startup, and configures itself to use them. They are disposed when  Dependency-Track stops. The containers are exposed on randomized ports,  which will be logged during startup.  <br/><br/>  Trying to enable dev services in a production build will prevent  the application from starting.  <br/><br/>  Note that the containers launched by the API server can not currently  be discovered and re-used by other Hyades services. This is a future  enhancement tracked in <a href="https://github.com/DependencyTrack/hyades/issues/1188">https://github.com/DependencyTrack/hyades/issues/1188</a>.  </p>
 <table>
   <tbody style="border: 0">
@@ -3856,7 +4013,7 @@
 </table>
 
 <hr />
-<h3 id="devservicesimagefrontend">dev.services.image.frontend</h3>
+<h3 id="devservicesimagefrontend">dev.services.image.frontend<a class="headerlink" href="#devservicesimagefrontend" title="Permanent link">&para;</a></h3>
 <p>The image to use for the frontend dev services container.  </p>
 <table>
   <tbody style="border: 0">
@@ -3880,7 +4037,7 @@
 </table>
 
 <hr />
-<h3 id="devservicesimagekafka">dev.services.image.kafka</h3>
+<h3 id="devservicesimagekafka">dev.services.image.kafka<a class="headerlink" href="#devservicesimagekafka" title="Permanent link">&para;</a></h3>
 <p>The image to use for the Kafka dev services container.  </p>
 <table>
   <tbody style="border: 0">
@@ -3904,7 +4061,7 @@
 </table>
 
 <hr />
-<h3 id="devservicesimagepostgres">dev.services.image.postgres</h3>
+<h3 id="devservicesimagepostgres">dev.services.image.postgres<a class="headerlink" href="#devservicesimagepostgres" title="Permanent link">&para;</a></h3>
 <p>The image to use for the PostgreSQL dev services container.  </p>
 <table>
   <tbody style="border: 0">
@@ -3927,8 +4084,8 @@
   </tbody>
 </table>
 
-<h2 id="general">General</h2>
-<h3 id="alpineapikeyprefix">alpine.api.key.prefix</h3>
+<h2 id="general">General<a class="headerlink" href="#general" title="Permanent link">&para;</a></h2>
+<h3 id="alpineapikeyprefix">alpine.api.key.prefix<a class="headerlink" href="#alpineapikeyprefix" title="Permanent link">&para;</a></h3>
 <p>Defines the prefix to be used for API keys. A maximum prefix length of 251  characters is supported. The prefix may also be left empty.  </p>
 <table>
   <tbody style="border: 0">
@@ -3952,7 +4109,7 @@
 </table>
 
 <hr />
-<h3 id="alpineauthjwtttlseconds">alpine.auth.jwt.ttl.seconds</h3>
+<h3 id="alpineauthjwtttlseconds">alpine.auth.jwt.ttl.seconds<a class="headerlink" href="#alpineauthjwtttlseconds" title="Permanent link">&para;</a></h3>
 <p>Defines the number of seconds for which JWTs issued by Dependency-Track will be valid for.  </p>
 <table>
   <tbody style="border: 0">
@@ -3976,7 +4133,7 @@
 </table>
 
 <hr />
-<h3 id="alpinebcryptrounds">alpine.bcrypt.rounds</h3>
+<h3 id="alpinebcryptrounds">alpine.bcrypt.rounds<a class="headerlink" href="#alpinebcryptrounds" title="Permanent link">&para;</a></h3>
 <p>Specifies the number of bcrypt rounds to use when hashing a user's password.  The higher the number the more secure the password, at the expense of  hardware resources and additional time to generate the hash.  </p>
 <table>
   <tbody style="border: 0">
@@ -4000,7 +4157,7 @@
 </table>
 
 <hr />
-<h3 id="alpinedatadirectory">alpine.data.directory</h3>
+<h3 id="alpinedatadirectory">alpine.data.directory<a class="headerlink" href="#alpinedatadirectory" title="Permanent link">&para;</a></h3>
 <p>Defines the path to the data directory. This directory will hold logs,  keys, and any database or index files along with application-specific  files or directories.  </p>
 <table>
   <tbody style="border: 0">
@@ -4024,7 +4181,7 @@
 </table>
 
 <hr />
-<h3 id="alpineprivatekeypath">alpine.private.key.path</h3>
+<h3 id="alpineprivatekeypath">alpine.private.key.path<a class="headerlink" href="#alpineprivatekeypath" title="Permanent link">&para;</a></h3>
 <p>Defines the paths to the public-private key pair to be used for signing and verifying digital signatures.  The keys will be generated upon first startup if they do not exist.  </p>
 <table>
   <tbody style="border: 0">
@@ -4052,7 +4209,7 @@
 </table>
 
 <hr />
-<h3 id="alpinepublickeypath">alpine.public.key.path</h3>
+<h3 id="alpinepublickeypath">alpine.public.key.path<a class="headerlink" href="#alpinepublickeypath" title="Permanent link">&para;</a></h3>
 <p>Defines the paths to the public-private key pair to be used for signing and verifying digital signatures.  The keys will be generated upon first startup if they do not exist.  </p>
 <table>
   <tbody style="border: 0">
@@ -4080,7 +4237,7 @@
 </table>
 
 <hr />
-<h3 id="alpinesecretkeypath">alpine.secret.key.path</h3>
+<h3 id="alpinesecretkeypath">alpine.secret.key.path<a class="headerlink" href="#alpinesecretkeypath" title="Permanent link">&para;</a></h3>
 <p>Defines the path to the secret key to be used for data encryption and decryption.  The key will be generated upon first startup if it does not exist.  </p>
 <table>
   <tbody style="border: 0">
@@ -4104,7 +4261,7 @@
 </table>
 
 <hr />
-<h3 id="initandexit">init.and.exit</h3>
+<h3 id="initandexit">init.and.exit<a class="headerlink" href="#initandexit" title="Permanent link">&para;</a></h3>
 <p>Whether to only execute initialization tasks and exit.  </p>
 <table>
   <tbody style="border: 0">
@@ -4128,7 +4285,7 @@
 </table>
 
 <hr />
-<h3 id="inittasksenabled">init.tasks.enabled</h3>
+<h3 id="inittasksenabled">init.tasks.enabled<a class="headerlink" href="#inittasksenabled" title="Permanent link">&para;</a></h3>
 <p>Whether to execute initialization tasks on startup.  Initialization tasks include:  <ul>  <li>Execution of database migrations</li>  <li>Populating the database with default objects (permissions, users, licenses, etc.)</li>  </ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -4152,7 +4309,7 @@
 </table>
 
 <hr />
-<h3 id="integritycheckenabled">integrity.check.enabled</h3>
+<h3 id="integritycheckenabled">integrity.check.enabled<a class="headerlink" href="#integritycheckenabled" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4175,7 +4332,7 @@
 </table>
 
 <hr />
-<h3 id="integrityinitializerenabled">integrity.initializer.enabled</h3>
+<h3 id="integrityinitializerenabled">integrity.initializer.enabled<a class="headerlink" href="#integrityinitializerenabled" title="Permanent link">&para;</a></h3>
 <p>Specifies whether the Integrity Initializer shall be enabled.  </p>
 <table>
   <tbody style="border: 0">
@@ -4199,7 +4356,7 @@
 </table>
 
 <hr />
-<h3 id="tmpdelaybomprocessednotification">tmp.delay.bom.processed.notification</h3>
+<h3 id="tmpdelaybomprocessednotification">tmp.delay.bom.processed.notification<a class="headerlink" href="#tmpdelaybomprocessednotification" title="Permanent link">&para;</a></h3>
 <p>Delays the BOM_PROCESSED notification until the vulnerability analysis associated with a given BOM upload  is completed. The intention being that it is then "safe" to query the API for any identified vulnerabilities.  This is specifically for cases where polling the /api/v1/bom/token/<TOKEN> endpoint is not feasible.  THIS IS A TEMPORARY FUNCTIONALITY AND MAY BE REMOVED IN FUTURE RELEASES WITHOUT FURTHER NOTICE.  </p>
 <table>
   <tbody style="border: 0">
@@ -4223,7 +4380,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicyanalysisenabled">vulnerability.policy.analysis.enabled</h3>
+<h3 id="vulnerabilitypolicyanalysisenabled">vulnerability.policy.analysis.enabled<a class="headerlink" href="#vulnerabilitypolicyanalysisenabled" title="Permanent link">&para;</a></h3>
 <p>Defines whether vulnerability policy analysis is enabled.  </p>
 <table>
   <tbody style="border: 0">
@@ -4247,7 +4404,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicybundleauthpassword">vulnerability.policy.bundle.auth.password</h3>
+<h3 id="vulnerabilitypolicybundleauthpassword">vulnerability.policy.bundle.auth.password<a class="headerlink" href="#vulnerabilitypolicybundleauthpassword" title="Permanent link">&para;</a></h3>
 <p>For nginx server, if username and bearer token both are provided, basic auth will be used,  else the auth header will be added based on the not null values  Defines the password to be used for basic authentication against the service hosting the policy bundle.  </p>
 <table>
   <tbody style="border: 0">
@@ -4271,7 +4428,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicybundleauthusername">vulnerability.policy.bundle.auth.username</h3>
+<h3 id="vulnerabilitypolicybundleauthusername">vulnerability.policy.bundle.auth.username<a class="headerlink" href="#vulnerabilitypolicybundleauthusername" title="Permanent link">&para;</a></h3>
 <p>Defines the username to be used for basic authentication against the service hosting the policy bundle.  </p>
 <table>
   <tbody style="border: 0">
@@ -4295,7 +4452,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicybundlebearertoken">vulnerability.policy.bundle.bearer.token</h3>
+<h3 id="vulnerabilitypolicybundlebearertoken">vulnerability.policy.bundle.bearer.token<a class="headerlink" href="#vulnerabilitypolicybundlebearertoken" title="Permanent link">&para;</a></h3>
 <p>Defines the token to be used as bearerAuth against the service hosting the policy bundle.  </p>
 <table>
   <tbody style="border: 0">
@@ -4319,7 +4476,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicybundlesourcetype">vulnerability.policy.bundle.source.type</h3>
+<h3 id="vulnerabilitypolicybundlesourcetype">vulnerability.policy.bundle.source.type<a class="headerlink" href="#vulnerabilitypolicybundlesourcetype" title="Permanent link">&para;</a></h3>
 <p>Defines the type of source from which policy bundles are being fetched from.  Required when <a href="#vulnerabilitypolicybundleurl"><code>vulnerability.policy.bundle.url</code></a> is set.  </p>
 <table>
   <tbody style="border: 0">
@@ -4347,7 +4504,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicybundleurl">vulnerability.policy.bundle.url</h3>
+<h3 id="vulnerabilitypolicybundleurl">vulnerability.policy.bundle.url<a class="headerlink" href="#vulnerabilitypolicybundleurl" title="Permanent link">&para;</a></h3>
 <p>Defines where to fetch the policy bundle from.For S3, just the base url needs to be provided with port  For nginx, the whole url with bundle name needs to be given  </p>
 <table>
   <tbody style="border: 0">
@@ -4375,7 +4532,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicys3accesskey">vulnerability.policy.s3.access.key</h3>
+<h3 id="vulnerabilitypolicys3accesskey">vulnerability.policy.s3.access.key<a class="headerlink" href="#vulnerabilitypolicys3accesskey" title="Permanent link">&para;</a></h3>
 <p>S3 related details. Access key, secret key, bucket name and bundle names are mandatory if S3 is chosen. Region is optional  </p>
 <table>
   <tbody style="border: 0">
@@ -4399,7 +4556,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicys3bucketname">vulnerability.policy.s3.bucket.name</h3>
+<h3 id="vulnerabilitypolicys3bucketname">vulnerability.policy.s3.bucket.name<a class="headerlink" href="#vulnerabilitypolicys3bucketname" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4422,7 +4579,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicys3bundlename">vulnerability.policy.s3.bundle.name</h3>
+<h3 id="vulnerabilitypolicys3bundlename">vulnerability.policy.s3.bundle.name<a class="headerlink" href="#vulnerabilitypolicys3bundlename" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4445,7 +4602,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicys3region">vulnerability.policy.s3.region</h3>
+<h3 id="vulnerabilitypolicys3region">vulnerability.policy.s3.region<a class="headerlink" href="#vulnerabilitypolicys3region" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4468,7 +4625,7 @@
 </table>
 
 <hr />
-<h3 id="vulnerabilitypolicys3secretkey">vulnerability.policy.s3.secret.key</h3>
+<h3 id="vulnerabilitypolicys3secretkey">vulnerability.policy.s3.secret.key<a class="headerlink" href="#vulnerabilitypolicys3secretkey" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4490,8 +4647,8 @@
   </tbody>
 </table>
 
-<h2 id="http">HTTP</h2>
-<h3 id="alpinehttpproxyaddress">alpine.http.proxy.address</h3>
+<h2 id="http">HTTP<a class="headerlink" href="#http" title="Permanent link">&para;</a></h2>
+<h3 id="alpinehttpproxyaddress">alpine.http.proxy.address<a class="headerlink" href="#alpinehttpproxyaddress" title="Permanent link">&para;</a></h3>
 <p>HTTP proxy address. If set, then <a href="#alpinehttpproxyport"><code>alpine.http.proxy.port</code></a> must be set too.  </p>
 <table>
   <tbody style="border: 0">
@@ -4519,7 +4676,7 @@
 </table>
 
 <hr />
-<h3 id="alpinehttpproxypassword">alpine.http.proxy.password</h3>
+<h3 id="alpinehttpproxypassword">alpine.http.proxy.password<a class="headerlink" href="#alpinehttpproxypassword" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4542,7 +4699,7 @@
 </table>
 
 <hr />
-<h3 id="alpinehttpproxypasswordfile">alpine.http.proxy.password.file</h3>
+<h3 id="alpinehttpproxypasswordfile">alpine.http.proxy.password.file<a class="headerlink" href="#alpinehttpproxypasswordfile" title="Permanent link">&para;</a></h3>
 <p>Specifies the file to load the HTTP proxy password from.  If set, takes precedence over <a href="#alpinehttpproxypassword"><code>alpine.http.proxy.password</code></a>.  </p>
 <table>
   <tbody style="border: 0">
@@ -4570,7 +4727,7 @@
 </table>
 
 <hr />
-<h3 id="alpinehttpproxyport">alpine.http.proxy.port</h3>
+<h3 id="alpinehttpproxyport">alpine.http.proxy.port<a class="headerlink" href="#alpinehttpproxyport" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4597,7 +4754,7 @@
 </table>
 
 <hr />
-<h3 id="alpinehttpproxyusername">alpine.http.proxy.username</h3>
+<h3 id="alpinehttpproxyusername">alpine.http.proxy.username<a class="headerlink" href="#alpinehttpproxyusername" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4620,7 +4777,7 @@
 </table>
 
 <hr />
-<h3 id="alpinehttptimeoutconnection">alpine.http.timeout.connection</h3>
+<h3 id="alpinehttptimeoutconnection">alpine.http.timeout.connection<a class="headerlink" href="#alpinehttptimeoutconnection" title="Permanent link">&para;</a></h3>
 <p>Defines the connection timeout in seconds for outbound HTTP connections.  </p>
 <table>
   <tbody style="border: 0">
@@ -4644,7 +4801,7 @@
 </table>
 
 <hr />
-<h3 id="alpinehttptimeoutpool">alpine.http.timeout.pool</h3>
+<h3 id="alpinehttptimeoutpool">alpine.http.timeout.pool<a class="headerlink" href="#alpinehttptimeoutpool" title="Permanent link">&para;</a></h3>
 <p>Defines the request timeout in seconds for outbound HTTP connections.  </p>
 <table>
   <tbody style="border: 0">
@@ -4668,7 +4825,7 @@
 </table>
 
 <hr />
-<h3 id="alpinehttptimeoutsocket">alpine.http.timeout.socket</h3>
+<h3 id="alpinehttptimeoutsocket">alpine.http.timeout.socket<a class="headerlink" href="#alpinehttptimeoutsocket" title="Permanent link">&para;</a></h3>
 <p>Defines the socket / read timeout in seconds for outbound HTTP connections.  </p>
 <table>
   <tbody style="border: 0">
@@ -4692,7 +4849,7 @@
 </table>
 
 <hr />
-<h3 id="alpinenoproxy">alpine.no.proxy</h3>
+<h3 id="alpinenoproxy">alpine.no.proxy<a class="headerlink" href="#alpinenoproxy" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4718,8 +4875,8 @@
   </tbody>
 </table>
 
-<h2 id="kafka">Kafka</h2>
-<h3 id="dtkafkatopicprefix">dt.kafka.topic.prefix</h3>
+<h2 id="kafka">Kafka<a class="headerlink" href="#kafka" title="Permanent link">&para;</a></h2>
+<h3 id="dtkafkatopicprefix">dt.kafka.topic.prefix<a class="headerlink" href="#dtkafkatopicprefix" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4742,7 +4899,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaautooffsetreset">kafka.auto.offset.reset</h3>
+<h3 id="kafkaautooffsetreset">kafka.auto.offset.reset<a class="headerlink" href="#kafkaautooffsetreset" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4769,7 +4926,7 @@
 </table>
 
 <hr />
-<h3 id="kafkabootstrapservers">kafka.bootstrap.servers</h3>
+<h3 id="kafkabootstrapservers">kafka.bootstrap.servers<a class="headerlink" href="#kafkabootstrapservers" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4796,7 +4953,7 @@
 </table>
 
 <hr />
-<h3 id="kafkakeystorepassword">kafka.keystore.password</h3>
+<h3 id="kafkakeystorepassword">kafka.keystore.password<a class="headerlink" href="#kafkakeystorepassword" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4819,7 +4976,7 @@
 </table>
 
 <hr />
-<h3 id="kafkakeystorepath">kafka.keystore.path</h3>
+<h3 id="kafkakeystorepath">kafka.keystore.path<a class="headerlink" href="#kafkakeystorepath" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4842,7 +4999,7 @@
 </table>
 
 <hr />
-<h3 id="kafkamtlsenabled">kafka.mtls.enabled</h3>
+<h3 id="kafkamtlsenabled">kafka.mtls.enabled<a class="headerlink" href="#kafkamtlsenabled" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4865,7 +5022,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrorconsumerautooffsetreset">kafka.processor.epss.mirror.consumer.auto.offset.reset</h3>
+<h3 id="kafkaprocessorepssmirrorconsumerautooffsetreset">kafka.processor.epss.mirror.consumer.auto.offset.reset<a class="headerlink" href="#kafkaprocessorepssmirrorconsumerautooffsetreset" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4892,7 +5049,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrorconsumergroupid">kafka.processor.epss.mirror.consumer.group.id</h3>
+<h3 id="kafkaprocessorepssmirrorconsumergroupid">kafka.processor.epss.mirror.consumer.group.id<a class="headerlink" href="#kafkaprocessorepssmirrorconsumergroupid" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4915,7 +5072,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrormaxbatchsize">kafka.processor.epss.mirror.max.batch.size</h3>
+<h3 id="kafkaprocessorepssmirrormaxbatchsize">kafka.processor.epss.mirror.max.batch.size<a class="headerlink" href="#kafkaprocessorepssmirrormaxbatchsize" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4938,7 +5095,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrormaxconcurrency">kafka.processor.epss.mirror.max.concurrency</h3>
+<h3 id="kafkaprocessorepssmirrormaxconcurrency">kafka.processor.epss.mirror.max.concurrency<a class="headerlink" href="#kafkaprocessorepssmirrormaxconcurrency" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4961,7 +5118,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrorprocessingorder">kafka.processor.epss.mirror.processing.order</h3>
+<h3 id="kafkaprocessorepssmirrorprocessingorder">kafka.processor.epss.mirror.processing.order<a class="headerlink" href="#kafkaprocessorepssmirrorprocessingorder" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4988,7 +5145,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrorretryinitialdelayms">kafka.processor.epss.mirror.retry.initial.delay.ms</h3>
+<h3 id="kafkaprocessorepssmirrorretryinitialdelayms">kafka.processor.epss.mirror.retry.initial.delay.ms<a class="headerlink" href="#kafkaprocessorepssmirrorretryinitialdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5011,7 +5168,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrorretrymaxdelayms">kafka.processor.epss.mirror.retry.max.delay.ms</h3>
+<h3 id="kafkaprocessorepssmirrorretrymaxdelayms">kafka.processor.epss.mirror.retry.max.delay.ms<a class="headerlink" href="#kafkaprocessorepssmirrorretrymaxdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5034,7 +5191,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrorretrymultiplier">kafka.processor.epss.mirror.retry.multiplier</h3>
+<h3 id="kafkaprocessorepssmirrorretrymultiplier">kafka.processor.epss.mirror.retry.multiplier<a class="headerlink" href="#kafkaprocessorepssmirrorretrymultiplier" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5057,7 +5214,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorepssmirrorretryrandomizationfactor">kafka.processor.epss.mirror.retry.randomization.factor</h3>
+<h3 id="kafkaprocessorepssmirrorretryrandomizationfactor">kafka.processor.epss.mirror.retry.randomization.factor<a class="headerlink" href="#kafkaprocessorepssmirrorretryrandomizationfactor" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5080,7 +5237,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorrepometaanalysisresultconsumerautooffsetreset">kafka.processor.repo.meta.analysis.result.consumer.auto.offset.reset</h3>
+<h3 id="kafkaprocessorrepometaanalysisresultconsumerautooffsetreset">kafka.processor.repo.meta.analysis.result.consumer.auto.offset.reset<a class="headerlink" href="#kafkaprocessorrepometaanalysisresultconsumerautooffsetreset" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5107,7 +5264,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorrepometaanalysisresultconsumergroupid">kafka.processor.repo.meta.analysis.result.consumer.group.id</h3>
+<h3 id="kafkaprocessorrepometaanalysisresultconsumergroupid">kafka.processor.repo.meta.analysis.result.consumer.group.id<a class="headerlink" href="#kafkaprocessorrepometaanalysisresultconsumergroupid" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5130,7 +5287,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorrepometaanalysisresultmaxconcurrency">kafka.processor.repo.meta.analysis.result.max.concurrency</h3>
+<h3 id="kafkaprocessorrepometaanalysisresultmaxconcurrency">kafka.processor.repo.meta.analysis.result.max.concurrency<a class="headerlink" href="#kafkaprocessorrepometaanalysisresultmaxconcurrency" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5153,7 +5310,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorrepometaanalysisresultprocessingorder">kafka.processor.repo.meta.analysis.result.processing.order</h3>
+<h3 id="kafkaprocessorrepometaanalysisresultprocessingorder">kafka.processor.repo.meta.analysis.result.processing.order<a class="headerlink" href="#kafkaprocessorrepometaanalysisresultprocessingorder" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5180,7 +5337,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorrepometaanalysisresultretryinitialdelayms">kafka.processor.repo.meta.analysis.result.retry.initial.delay.ms</h3>
+<h3 id="kafkaprocessorrepometaanalysisresultretryinitialdelayms">kafka.processor.repo.meta.analysis.result.retry.initial.delay.ms<a class="headerlink" href="#kafkaprocessorrepometaanalysisresultretryinitialdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5203,7 +5360,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorrepometaanalysisresultretrymaxdelayms">kafka.processor.repo.meta.analysis.result.retry.max.delay.ms</h3>
+<h3 id="kafkaprocessorrepometaanalysisresultretrymaxdelayms">kafka.processor.repo.meta.analysis.result.retry.max.delay.ms<a class="headerlink" href="#kafkaprocessorrepometaanalysisresultretrymaxdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5226,7 +5383,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorrepometaanalysisresultretrymultiplier">kafka.processor.repo.meta.analysis.result.retry.multiplier</h3>
+<h3 id="kafkaprocessorrepometaanalysisresultretrymultiplier">kafka.processor.repo.meta.analysis.result.retry.multiplier<a class="headerlink" href="#kafkaprocessorrepometaanalysisresultretrymultiplier" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5249,7 +5406,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorrepometaanalysisresultretryrandomizationfactor">kafka.processor.repo.meta.analysis.result.retry.randomization.factor</h3>
+<h3 id="kafkaprocessorrepometaanalysisresultretryrandomizationfactor">kafka.processor.repo.meta.analysis.result.retry.randomization.factor<a class="headerlink" href="#kafkaprocessorrepometaanalysisresultretryrandomizationfactor" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5272,7 +5429,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnmirrorconsumerautooffsetreset">kafka.processor.vuln.mirror.consumer.auto.offset.reset</h3>
+<h3 id="kafkaprocessorvulnmirrorconsumerautooffsetreset">kafka.processor.vuln.mirror.consumer.auto.offset.reset<a class="headerlink" href="#kafkaprocessorvulnmirrorconsumerautooffsetreset" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5299,7 +5456,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnmirrorconsumergroupid">kafka.processor.vuln.mirror.consumer.group.id</h3>
+<h3 id="kafkaprocessorvulnmirrorconsumergroupid">kafka.processor.vuln.mirror.consumer.group.id<a class="headerlink" href="#kafkaprocessorvulnmirrorconsumergroupid" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5322,7 +5479,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnmirrormaxconcurrency">kafka.processor.vuln.mirror.max.concurrency</h3>
+<h3 id="kafkaprocessorvulnmirrormaxconcurrency">kafka.processor.vuln.mirror.max.concurrency<a class="headerlink" href="#kafkaprocessorvulnmirrormaxconcurrency" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5345,7 +5502,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnmirrorprocessingorder">kafka.processor.vuln.mirror.processing.order</h3>
+<h3 id="kafkaprocessorvulnmirrorprocessingorder">kafka.processor.vuln.mirror.processing.order<a class="headerlink" href="#kafkaprocessorvulnmirrorprocessingorder" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5372,7 +5529,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnmirrorretryinitialdelayms">kafka.processor.vuln.mirror.retry.initial.delay.ms</h3>
+<h3 id="kafkaprocessorvulnmirrorretryinitialdelayms">kafka.processor.vuln.mirror.retry.initial.delay.ms<a class="headerlink" href="#kafkaprocessorvulnmirrorretryinitialdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5395,7 +5552,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnmirrorretrymaxdelayms">kafka.processor.vuln.mirror.retry.max.delay.ms</h3>
+<h3 id="kafkaprocessorvulnmirrorretrymaxdelayms">kafka.processor.vuln.mirror.retry.max.delay.ms<a class="headerlink" href="#kafkaprocessorvulnmirrorretrymaxdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5418,7 +5575,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnmirrorretrymultiplier">kafka.processor.vuln.mirror.retry.multiplier</h3>
+<h3 id="kafkaprocessorvulnmirrorretrymultiplier">kafka.processor.vuln.mirror.retry.multiplier<a class="headerlink" href="#kafkaprocessorvulnmirrorretrymultiplier" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5441,7 +5598,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnmirrorretryrandomizationfactor">kafka.processor.vuln.mirror.retry.randomization.factor</h3>
+<h3 id="kafkaprocessorvulnmirrorretryrandomizationfactor">kafka.processor.vuln.mirror.retry.randomization.factor<a class="headerlink" href="#kafkaprocessorvulnmirrorretryrandomizationfactor" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5464,7 +5621,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultconsumerautooffsetreset">kafka.processor.vuln.scan.result.consumer.auto.offset.reset</h3>
+<h3 id="kafkaprocessorvulnscanresultconsumerautooffsetreset">kafka.processor.vuln.scan.result.consumer.auto.offset.reset<a class="headerlink" href="#kafkaprocessorvulnscanresultconsumerautooffsetreset" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5491,7 +5648,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultconsumergroupid">kafka.processor.vuln.scan.result.consumer.group.id</h3>
+<h3 id="kafkaprocessorvulnscanresultconsumergroupid">kafka.processor.vuln.scan.result.consumer.group.id<a class="headerlink" href="#kafkaprocessorvulnscanresultconsumergroupid" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5514,7 +5671,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultmaxconcurrency">kafka.processor.vuln.scan.result.max.concurrency</h3>
+<h3 id="kafkaprocessorvulnscanresultmaxconcurrency">kafka.processor.vuln.scan.result.max.concurrency<a class="headerlink" href="#kafkaprocessorvulnscanresultmaxconcurrency" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5537,7 +5694,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedconsumerautooffsetreset">kafka.processor.vuln.scan.result.processed.consumer.auto.offset.reset</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedconsumerautooffsetreset">kafka.processor.vuln.scan.result.processed.consumer.auto.offset.reset<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedconsumerautooffsetreset" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5564,7 +5721,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedconsumerfetchminbytes">kafka.processor.vuln.scan.result.processed.consumer.fetch.min.bytes</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedconsumerfetchminbytes">kafka.processor.vuln.scan.result.processed.consumer.fetch.min.bytes<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedconsumerfetchminbytes" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5587,7 +5744,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedconsumergroupid">kafka.processor.vuln.scan.result.processed.consumer.group.id</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedconsumergroupid">kafka.processor.vuln.scan.result.processed.consumer.group.id<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedconsumergroupid" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5610,7 +5767,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedconsumermaxpollrecords">kafka.processor.vuln.scan.result.processed.consumer.max.poll.records</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedconsumermaxpollrecords">kafka.processor.vuln.scan.result.processed.consumer.max.poll.records<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedconsumermaxpollrecords" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5633,7 +5790,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedmaxbatchsize">kafka.processor.vuln.scan.result.processed.max.batch.size</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedmaxbatchsize">kafka.processor.vuln.scan.result.processed.max.batch.size<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedmaxbatchsize" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5656,7 +5813,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedmaxconcurrency">kafka.processor.vuln.scan.result.processed.max.concurrency</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedmaxconcurrency">kafka.processor.vuln.scan.result.processed.max.concurrency<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedmaxconcurrency" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5679,7 +5836,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedprocessingorder">kafka.processor.vuln.scan.result.processed.processing.order</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedprocessingorder">kafka.processor.vuln.scan.result.processed.processing.order<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedprocessingorder" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5706,7 +5863,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedretryinitialdelayms">kafka.processor.vuln.scan.result.processed.retry.initial.delay.ms</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedretryinitialdelayms">kafka.processor.vuln.scan.result.processed.retry.initial.delay.ms<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedretryinitialdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5729,7 +5886,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedretrymaxdelayms">kafka.processor.vuln.scan.result.processed.retry.max.delay.ms</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedretrymaxdelayms">kafka.processor.vuln.scan.result.processed.retry.max.delay.ms<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedretrymaxdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5752,7 +5909,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedretrymultiplier">kafka.processor.vuln.scan.result.processed.retry.multiplier</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedretrymultiplier">kafka.processor.vuln.scan.result.processed.retry.multiplier<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedretrymultiplier" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5775,7 +5932,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessedretryrandomizationfactor">kafka.processor.vuln.scan.result.processed.retry.randomization.factor</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessedretryrandomizationfactor">kafka.processor.vuln.scan.result.processed.retry.randomization.factor<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessedretryrandomizationfactor" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5798,7 +5955,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultprocessingorder">kafka.processor.vuln.scan.result.processing.order</h3>
+<h3 id="kafkaprocessorvulnscanresultprocessingorder">kafka.processor.vuln.scan.result.processing.order<a class="headerlink" href="#kafkaprocessorvulnscanresultprocessingorder" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5825,7 +5982,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultretryinitialdelayms">kafka.processor.vuln.scan.result.retry.initial.delay.ms</h3>
+<h3 id="kafkaprocessorvulnscanresultretryinitialdelayms">kafka.processor.vuln.scan.result.retry.initial.delay.ms<a class="headerlink" href="#kafkaprocessorvulnscanresultretryinitialdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5848,7 +6005,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultretrymaxdelayms">kafka.processor.vuln.scan.result.retry.max.delay.ms</h3>
+<h3 id="kafkaprocessorvulnscanresultretrymaxdelayms">kafka.processor.vuln.scan.result.retry.max.delay.ms<a class="headerlink" href="#kafkaprocessorvulnscanresultretrymaxdelayms" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5871,7 +6028,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultretrymultiplier">kafka.processor.vuln.scan.result.retry.multiplier</h3>
+<h3 id="kafkaprocessorvulnscanresultretrymultiplier">kafka.processor.vuln.scan.result.retry.multiplier<a class="headerlink" href="#kafkaprocessorvulnscanresultretrymultiplier" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5894,7 +6051,7 @@
 </table>
 
 <hr />
-<h3 id="kafkaprocessorvulnscanresultretryrandomizationfactor">kafka.processor.vuln.scan.result.retry.randomization.factor</h3>
+<h3 id="kafkaprocessorvulnscanresultretryrandomizationfactor">kafka.processor.vuln.scan.result.retry.randomization.factor<a class="headerlink" href="#kafkaprocessorvulnscanresultretryrandomizationfactor" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5917,7 +6074,7 @@
 </table>
 
 <hr />
-<h3 id="kafkasecurityprotocol">kafka.security.protocol</h3>
+<h3 id="kafkasecurityprotocol">kafka.security.protocol<a class="headerlink" href="#kafkasecurityprotocol" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5944,7 +6101,7 @@
 </table>
 
 <hr />
-<h3 id="kafkatlsenabled">kafka.tls.enabled</h3>
+<h3 id="kafkatlsenabled">kafka.tls.enabled<a class="headerlink" href="#kafkatlsenabled" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5967,7 +6124,7 @@
 </table>
 
 <hr />
-<h3 id="kafkatruststorepassword">kafka.truststore.password</h3>
+<h3 id="kafkatruststorepassword">kafka.truststore.password<a class="headerlink" href="#kafkatruststorepassword" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5990,7 +6147,7 @@
 </table>
 
 <hr />
-<h3 id="kafkatruststorepath">kafka.truststore.path</h3>
+<h3 id="kafkatruststorepath">kafka.truststore.path<a class="headerlink" href="#kafkatruststorepath" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -6012,8 +6169,8 @@
   </tbody>
 </table>
 
-<h2 id="ldap">LDAP</h2>
-<h3 id="alpineldapattributemail">alpine.ldap.attribute.mail</h3>
+<h2 id="ldap">LDAP<a class="headerlink" href="#ldap" title="Permanent link">&para;</a></h2>
+<h3 id="alpineldapattributemail">alpine.ldap.attribute.mail<a class="headerlink" href="#alpineldapattributemail" title="Permanent link">&para;</a></h3>
 <p>Specifies the LDAP attribute used to store a users email address  </p>
 <table>
   <tbody style="border: 0">
@@ -6037,7 +6194,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapattributename">alpine.ldap.attribute.name</h3>
+<h3 id="alpineldapattributename">alpine.ldap.attribute.name<a class="headerlink" href="#alpineldapattributename" title="Permanent link">&para;</a></h3>
 <p>Specifies the Attribute that identifies a users ID.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>userPrincipalName</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>uid</code></li></ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6061,7 +6218,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapauthusernameformat">alpine.ldap.auth.username.format</h3>
+<h3 id="alpineldapauthusernameformat">alpine.ldap.auth.username.format<a class="headerlink" href="#alpineldapauthusernameformat" title="Permanent link">&para;</a></h3>
 <p>Specifies if the username entered during login needs to be formatted prior  to asserting credentials against the directory. For Active Directory, the  userPrincipal attribute typically ends with the domain, whereas the  samAccountName attribute and other directory server implementations do not.  The %s variable will be substituted with the username asserted during login.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>%s@example.com</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>%s</code></li></ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6089,7 +6246,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapbasedn">alpine.ldap.basedn</h3>
+<h3 id="alpineldapbasedn">alpine.ldap.basedn<a class="headerlink" href="#alpineldapbasedn" title="Permanent link">&para;</a></h3>
 <p>Specifies the base DN that all queries should search from  </p>
 <table>
   <tbody style="border: 0">
@@ -6117,7 +6274,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapbindpassword">alpine.ldap.bind.password</h3>
+<h3 id="alpineldapbindpassword">alpine.ldap.bind.password<a class="headerlink" href="#alpineldapbindpassword" title="Permanent link">&para;</a></h3>
 <p>If anonymous access is not permitted, specify a password for the username  used to bind.  </p>
 <table>
   <tbody style="border: 0">
@@ -6141,7 +6298,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapbindusername">alpine.ldap.bind.username</h3>
+<h3 id="alpineldapbindusername">alpine.ldap.bind.username<a class="headerlink" href="#alpineldapbindusername" title="Permanent link">&para;</a></h3>
 <p>If anonymous access is not permitted, specify a username with limited access  to the directory, just enough to perform searches. This should be the fully  qualified DN of the user.  </p>
 <table>
   <tbody style="border: 0">
@@ -6165,7 +6322,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapenabled">alpine.ldap.enabled</h3>
+<h3 id="alpineldapenabled">alpine.ldap.enabled<a class="headerlink" href="#alpineldapenabled" title="Permanent link">&para;</a></h3>
 <p>Defines if LDAP will be used for user authentication. If enabled,  <code>alpine.ldap.*</code> properties should be set accordingly.  </p>
 <table>
   <tbody style="border: 0">
@@ -6189,7 +6346,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapgroupsfilter">alpine.ldap.groups.filter</h3>
+<h3 id="alpineldapgroupsfilter">alpine.ldap.groups.filter<a class="headerlink" href="#alpineldapgroupsfilter" title="Permanent link">&para;</a></h3>
 <p>Specifies the LDAP search filter used to retrieve all groups from the directory.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&amp;(objectClass=group)(objectCategory=Group))</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&amp;(objectClass=groupOfUniqueNames))</code></li></ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6213,7 +6370,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapgroupssearchfilter">alpine.ldap.groups.search.filter</h3>
+<h3 id="alpineldapgroupssearchfilter">alpine.ldap.groups.search.filter<a class="headerlink" href="#alpineldapgroupssearchfilter" title="Permanent link">&para;</a></h3>
 <p>Specifies the LDAP search filter used to search for groups by their name.  The <code>{SEARCH_TERM}</code> variable will be substituted at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&amp;(objectClass=group)(objectCategory=Group)(cn=<em>{SEARCH_TERM}</em>))</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&amp;(objectClass=groupOfUniqueNames)(cn=<em>{SEARCH_TERM}</em>))</code></li></ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6237,7 +6394,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapsecurityauth">alpine.ldap.security.auth</h3>
+<h3 id="alpineldapsecurityauth">alpine.ldap.security.auth<a class="headerlink" href="#alpineldapsecurityauth" title="Permanent link">&para;</a></h3>
 <p>Specifies the LDAP security authentication level to use. Its value is one of  the following strings: "none", "simple", "strong". If this property is empty  or unspecified, the behaviour is determined by the service provider.  </p>
 <table>
   <tbody style="border: 0">
@@ -6265,7 +6422,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapserverurl">alpine.ldap.server.url</h3>
+<h3 id="alpineldapserverurl">alpine.ldap.server.url<a class="headerlink" href="#alpineldapserverurl" title="Permanent link">&para;</a></h3>
 <p>Specifies the LDAP server URL.  <br/><br/>  Examples (Microsoft Active Directory):  <ul>  <li><code>ldap://ldap.example.com:3268</code></li>  <li><code>ldaps://ldap.example.com:3269</code></li>  </ul>  Examples (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul>  <li><code>ldap://ldap.example.com:389</code></li>  <li><code>ldaps://ldap.example.com:636</code></li>  </ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6289,7 +6446,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapteamsynchronization">alpine.ldap.team.synchronization</h3>
+<h3 id="alpineldapteamsynchronization">alpine.ldap.team.synchronization<a class="headerlink" href="#alpineldapteamsynchronization" title="Permanent link">&para;</a></h3>
 <p>This option will ensure that team memberships for LDAP users are dynamic and  synchronized with membership of LDAP groups. When a team is mapped to an LDAP  group, all local LDAP users will automatically be assigned to the team if  they are a member of the group the team is mapped to. If the user is later  removed from the LDAP group, they will also be removed from the team. This  option provides the ability to dynamically control user permissions via an  external directory.  </p>
 <table>
   <tbody style="border: 0">
@@ -6313,7 +6470,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapusergroupsfilter">alpine.ldap.user.groups.filter</h3>
+<h3 id="alpineldapusergroupsfilter">alpine.ldap.user.groups.filter<a class="headerlink" href="#alpineldapusergroupsfilter" title="Permanent link">&para;</a></h3>
 <p>Specifies the LDAP search filter to use to query a user and retrieve a list  of groups the user is a member of. The <code>{USER_DN}</code> variable will be substituted  with the actual value of the users DN at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&amp;(objectClass=group)(objectCategory=Group)(member={USER_DN}))</code></li></ul>  Example (Microsoft Active Directory - with nested group support):  <ul><li><code>(member:1.2.840.113556.1.4.1941:={USER_DN})</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&amp;(objectClass=groupOfUniqueNames)(uniqueMember={USER_DN}))</code></li></ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6337,7 +6494,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapuserprovisioning">alpine.ldap.user.provisioning</h3>
+<h3 id="alpineldapuserprovisioning">alpine.ldap.user.provisioning<a class="headerlink" href="#alpineldapuserprovisioning" title="Permanent link">&para;</a></h3>
 <p>Specifies if mapped LDAP accounts are automatically created upon successful  authentication. When a user logs in with valid credentials but an account has  not been previously provisioned, an authentication failure will be returned.  This allows admins to control specifically which ldap users can access the  system and which users cannot. When this value is set to true, a local ldap  user will be created and mapped to the ldap account automatically. This  automatic provisioning only affects authentication, not authorization.  </p>
 <table>
   <tbody style="border: 0">
@@ -6361,7 +6518,7 @@
 </table>
 
 <hr />
-<h3 id="alpineldapuserssearchfilter">alpine.ldap.users.search.filter</h3>
+<h3 id="alpineldapuserssearchfilter">alpine.ldap.users.search.filter<a class="headerlink" href="#alpineldapuserssearchfilter" title="Permanent link">&para;</a></h3>
 <p>Specifies the LDAP search filter used to search for users by their name.  The <code>{SEARCH_TERM}</code> variable will be substituted at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&amp;(objectClass=group)(objectCategory=Group)(cn=<em>{SEARCH_TERM}</em>))</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&amp;(objectClass=inetOrgPerson)(cn=<em>{SEARCH_TERM}</em>))</code></li></ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6384,8 +6541,8 @@
   </tbody>
 </table>
 
-<h2 id="observability">Observability</h2>
-<h3 id="alpinemetricsauthpassword">alpine.metrics.auth.password</h3>
+<h2 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h2>
+<h3 id="alpinemetricsauthpassword">alpine.metrics.auth.password<a class="headerlink" href="#alpinemetricsauthpassword" title="Permanent link">&para;</a></h3>
 <p>Defines the password required to access metrics.  Has no effect when <a href="#alpinemetricsauthusername"><code>alpine.metrics.auth.username</code></a> is not set.  </p>
 <table>
   <tbody style="border: 0">
@@ -6409,7 +6566,7 @@
 </table>
 
 <hr />
-<h3 id="alpinemetricsauthusername">alpine.metrics.auth.username</h3>
+<h3 id="alpinemetricsauthusername">alpine.metrics.auth.username<a class="headerlink" href="#alpinemetricsauthusername" title="Permanent link">&para;</a></h3>
 <p>Defines the username required to access metrics.  Has no effect when <a href="#alpinemetricsauthpassword"><code>alpine.metrics.auth.password</code></a> is not set.  </p>
 <table>
   <tbody style="border: 0">
@@ -6433,7 +6590,7 @@
 </table>
 
 <hr />
-<h3 id="alpinemetricsenabled">alpine.metrics.enabled</h3>
+<h3 id="alpinemetricsenabled">alpine.metrics.enabled<a class="headerlink" href="#alpinemetricsenabled" title="Permanent link">&para;</a></h3>
 <p>Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be available via the /metrics endpoint.  </p>
 <table>
   <tbody style="border: 0">
@@ -6456,8 +6613,8 @@
   </tbody>
 </table>
 
-<h2 id="openid-connect">OpenID Connect</h2>
-<h3 id="alpineoidcclientid">alpine.oidc.client.id</h3>
+<h2 id="openid-connect">OpenID Connect<a class="headerlink" href="#openid-connect" title="Permanent link">&para;</a></h2>
+<h3 id="alpineoidcclientid">alpine.oidc.client.id<a class="headerlink" href="#alpineoidcclientid" title="Permanent link">&para;</a></h3>
 <p>Defines the client ID to be used for OpenID Connect.  The client ID should be the same as the one configured for the frontend,  and will only be used to validate ID tokens.  </p>
 <table>
   <tbody style="border: 0">
@@ -6481,7 +6638,7 @@
 </table>
 
 <hr />
-<h3 id="alpineoidcenabled">alpine.oidc.enabled</h3>
+<h3 id="alpineoidcenabled">alpine.oidc.enabled<a class="headerlink" href="#alpineoidcenabled" title="Permanent link">&para;</a></h3>
 <p>Defines if OpenID Connect will be used for user authentication.  If enabled, <code>alpine.oidc.*</code> properties should be set accordingly.  </p>
 <table>
   <tbody style="border: 0">
@@ -6505,7 +6662,7 @@
 </table>
 
 <hr />
-<h3 id="alpineoidcissuer">alpine.oidc.issuer</h3>
+<h3 id="alpineoidcissuer">alpine.oidc.issuer<a class="headerlink" href="#alpineoidcissuer" title="Permanent link">&para;</a></h3>
 <p>Defines the issuer URL to be used for OpenID Connect.  This issuer MUST support provider configuration via the <code>/.well-known/openid-configuration</code> endpoint.  See also:  <ul>  <li>https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata</li>  <li>https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig</li>  </ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6529,7 +6686,7 @@
 </table>
 
 <hr />
-<h3 id="alpineoidcteamsynchronization">alpine.oidc.team.synchronization</h3>
+<h3 id="alpineoidcteamsynchronization">alpine.oidc.team.synchronization<a class="headerlink" href="#alpineoidcteamsynchronization" title="Permanent link">&para;</a></h3>
 <p>This option will ensure that team memberships for OpenID Connect users are dynamic and  synchronized with membership of OpenID Connect groups or assigned roles. When a team is  mapped to an OpenID Connect group, all local OpenID Connect users will automatically be  assigned to the team if they are a member of the group the team is mapped to. If the user  is later removed from the OpenID Connect group, they will also be removed from the team. This  option provides the ability to dynamically control user permissions via the identity provider.  Note that team synchronization is only performed during user provisioning and after successful  authentication.  </p>
 <table>
   <tbody style="border: 0">
@@ -6553,7 +6710,7 @@
 </table>
 
 <hr />
-<h3 id="alpineoidcteamsclaim">alpine.oidc.teams.claim</h3>
+<h3 id="alpineoidcteamsclaim">alpine.oidc.teams.claim<a class="headerlink" href="#alpineoidcteamsclaim" title="Permanent link">&para;</a></h3>
 <p>Defines the name of the claim that contains group memberships or role assignments in the provider's userinfo endpoint.  The claim must be an array of strings. Most public identity providers do not support group or role management.  When using a customizable / on-demand hosted identity provider, name, content, and inclusion in the userinfo endpoint  will most likely need to be configured.  </p>
 <table>
   <tbody style="border: 0">
@@ -6577,7 +6734,7 @@
 </table>
 
 <hr />
-<h3 id="alpineoidcuserprovisioning">alpine.oidc.user.provisioning</h3>
+<h3 id="alpineoidcuserprovisioning">alpine.oidc.user.provisioning<a class="headerlink" href="#alpineoidcuserprovisioning" title="Permanent link">&para;</a></h3>
 <p>Specifies if mapped OpenID Connect accounts are automatically created upon successful  authentication. When a user logs in with a valid access token but an account has  not been previously provisioned, an authentication failure will be returned.  This allows admins to control specifically which OpenID Connect users can access the  system and which users cannot. When this value is set to true, a local OpenID Connect  user will be created and mapped to the OpenID Connect account automatically. This  automatic provisioning only affects authentication, not authorization.  </p>
 <table>
   <tbody style="border: 0">
@@ -6601,7 +6758,7 @@
 </table>
 
 <hr />
-<h3 id="alpineoidcusernameclaim">alpine.oidc.username.claim</h3>
+<h3 id="alpineoidcusernameclaim">alpine.oidc.username.claim<a class="headerlink" href="#alpineoidcusernameclaim" title="Permanent link">&para;</a></h3>
 <p>Defines the name of the claim that contains the username in the provider's userinfo endpoint.  Common claims are <code>name</code>, <code>username</code>, <code>preferred_username</code> or <code>nickname</code>.  See also:  <ul>  <li>https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse</li>  </ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -6624,8 +6781,8 @@
   </tbody>
 </table>
 
-<h2 id="task-execution">Task Execution</h2>
-<h3 id="alpineworkerthreadmultiplier">alpine.worker.thread.multiplier</h3>
+<h2 id="task-execution">Task Execution<a class="headerlink" href="#task-execution" title="Permanent link">&para;</a></h2>
+<h3 id="alpineworkerthreadmultiplier">alpine.worker.thread.multiplier<a class="headerlink" href="#alpineworkerthreadmultiplier" title="Permanent link">&para;</a></h3>
 <p>Defines a multiplier that is used to calculate the number of threads used  by the event subsystem. This property is only used when <a href="#alpineworkerthreads"><code>alpine.worker.threads</code></a>  is set to 0. A machine with 4 cores and a multiplier of 4, will use (at most)  16 worker threads.  </p>
 <table>
   <tbody style="border: 0">
@@ -6649,7 +6806,7 @@
 </table>
 
 <hr />
-<h3 id="alpineworkerthreads">alpine.worker.threads</h3>
+<h3 id="alpineworkerthreads">alpine.worker.threads<a class="headerlink" href="#alpineworkerthreads" title="Permanent link">&para;</a></h3>
 <p>Defines the number of worker threads that the event subsystem will consume.  Events occur asynchronously and are processed by the Event subsystem. This  value should be large enough to handle most production situations without  introducing much delay, yet small enough not to pose additional load on an  already resource-constrained server.  A value of 0 will instruct Alpine to allocate 1 thread per CPU core. This  can further be tweaked using the <a href="#alpineworkerthreadmultiplier"><code>alpine.worker.thread.multiplier</code></a> property.  </p>
 <table>
   <tbody style="border: 0">
@@ -6672,8 +6829,8 @@
   </tbody>
 </table>
 
-<h2 id="task-scheduling">Task Scheduling</h2>
-<h3 id="taskcomponentmetadatamaintenancecron">task.component.metadata.maintenance.cron</h3>
+<h2 id="task-scheduling">Task Scheduling<a class="headerlink" href="#task-scheduling" title="Permanent link">&para;</a></h2>
+<h3 id="taskcomponentmetadatamaintenancecron">task.component.metadata.maintenance.cron<a class="headerlink" href="#taskcomponentmetadatamaintenancecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the component metadata maintenance task.  <br/><br/>  The task deletes orphaned records from the <code>INTEGRITY_META_COMPONENT</code> and  <code>REPOSITORY_META_COMPONENT</code> tables.  </p>
 <table>
   <tbody style="border: 0">
@@ -6697,7 +6854,7 @@
 </table>
 
 <hr />
-<h3 id="taskcomponentmetadatamaintenancelockmaxduration">task.component.metadata.maintenance.lock.max.duration</h3>
+<h3 id="taskcomponentmetadatamaintenancelockmaxduration">task.component.metadata.maintenance.lock.max.duration<a class="headerlink" href="#taskcomponentmetadatamaintenancelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the component metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -6721,7 +6878,7 @@
 </table>
 
 <hr />
-<h3 id="taskcomponentmetadatamaintenancelockminduration">task.component.metadata.maintenance.lock.min.duration</h3>
+<h3 id="taskcomponentmetadatamaintenancelockminduration">task.component.metadata.maintenance.lock.min.duration<a class="headerlink" href="#taskcomponentmetadatamaintenancelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the component metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -6745,7 +6902,7 @@
 </table>
 
 <hr />
-<h3 id="taskdefectdojouploadcron">task.defect.dojo.upload.cron</h3>
+<h3 id="taskdefectdojouploadcron">task.defect.dojo.upload.cron<a class="headerlink" href="#taskdefectdojouploadcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the DefectDojo upload task.  </p>
 <table>
   <tbody style="border: 0">
@@ -6769,7 +6926,7 @@
 </table>
 
 <hr />
-<h3 id="taskepssmirrorcron">task.epss.mirror.cron</h3>
+<h3 id="taskepssmirrorcron">task.epss.mirror.cron<a class="headerlink" href="#taskepssmirrorcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the EPSS mirroring task.  </p>
 <table>
   <tbody style="border: 0">
@@ -6793,7 +6950,7 @@
 </table>
 
 <hr />
-<h3 id="taskfortifysscuploadcron">task.fortify.ssc.upload.cron</h3>
+<h3 id="taskfortifysscuploadcron">task.fortify.ssc.upload.cron<a class="headerlink" href="#taskfortifysscuploadcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the Fortify SSC upload task.  </p>
 <table>
   <tbody style="border: 0">
@@ -6817,7 +6974,7 @@
 </table>
 
 <hr />
-<h3 id="taskgithubadvisorymirrorcron">task.git.hub.advisory.mirror.cron</h3>
+<h3 id="taskgithubadvisorymirrorcron">task.git.hub.advisory.mirror.cron<a class="headerlink" href="#taskgithubadvisorymirrorcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the vulnerability GitHub Advisories mirroring task.  </p>
 <table>
   <tbody style="border: 0">
@@ -6841,7 +6998,7 @@
 </table>
 
 <hr />
-<h3 id="taskintegritymetainitializercron">task.integrity.meta.initializer.cron</h3>
+<h3 id="taskintegritymetainitializercron">task.integrity.meta.initializer.cron<a class="headerlink" href="#taskintegritymetainitializercron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the integrity metadata initializer task.  </p>
 <table>
   <tbody style="border: 0">
@@ -6865,7 +7022,7 @@
 </table>
 
 <hr />
-<h3 id="taskintegritymetainitializerlockmaxduration">task.integrity.meta.initializer.lock.max.duration</h3>
+<h3 id="taskintegritymetainitializerlockmaxduration">task.integrity.meta.initializer.lock.max.duration<a class="headerlink" href="#taskintegritymetainitializerlockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the integrity metadata initializer task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -6889,7 +7046,7 @@
 </table>
 
 <hr />
-<h3 id="taskintegritymetainitializerlockminduration">task.integrity.meta.initializer.lock.min.duration</h3>
+<h3 id="taskintegritymetainitializerlockminduration">task.integrity.meta.initializer.lock.min.duration<a class="headerlink" href="#taskintegritymetainitializerlockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the integrity metadata initializer task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -6913,7 +7070,7 @@
 </table>
 
 <hr />
-<h3 id="taskinternalcomponentidentificationcron">task.internal.component.identification.cron</h3>
+<h3 id="taskinternalcomponentidentificationcron">task.internal.component.identification.cron<a class="headerlink" href="#taskinternalcomponentidentificationcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the internal component identification task.  </p>
 <table>
   <tbody style="border: 0">
@@ -6937,7 +7094,7 @@
 </table>
 
 <hr />
-<h3 id="taskinternalcomponentidentificationlockmaxduration">task.internal.component.identification.lock.max.duration</h3>
+<h3 id="taskinternalcomponentidentificationlockmaxduration">task.internal.component.identification.lock.max.duration<a class="headerlink" href="#taskinternalcomponentidentificationlockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the internal component identification task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -6961,7 +7118,7 @@
 </table>
 
 <hr />
-<h3 id="taskinternalcomponentidentificationlockminduration">task.internal.component.identification.lock.min.duration</h3>
+<h3 id="taskinternalcomponentidentificationlockminduration">task.internal.component.identification.lock.min.duration<a class="headerlink" href="#taskinternalcomponentidentificationlockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the internal component identification task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -6985,7 +7142,7 @@
 </table>
 
 <hr />
-<h3 id="taskkennasecurityuploadcron">task.kenna.security.upload.cron</h3>
+<h3 id="taskkennasecurityuploadcron">task.kenna.security.upload.cron<a class="headerlink" href="#taskkennasecurityuploadcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the Kenna Security upload task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7009,7 +7166,7 @@
 </table>
 
 <hr />
-<h3 id="taskldapsynccron">task.ldap.sync.cron</h3>
+<h3 id="taskldapsynccron">task.ldap.sync.cron<a class="headerlink" href="#taskldapsynccron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the LDAP synchronization task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7033,7 +7190,7 @@
 </table>
 
 <hr />
-<h3 id="taskldapsynclockmaxduration">task.ldap.sync.lock.max.duration</h3>
+<h3 id="taskldapsynclockmaxduration">task.ldap.sync.lock.max.duration<a class="headerlink" href="#taskldapsynclockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the LDAP synchronization task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7057,7 +7214,7 @@
 </table>
 
 <hr />
-<h3 id="taskldapsynclockminduration">task.ldap.sync.lock.min.duration</h3>
+<h3 id="taskldapsynclockminduration">task.ldap.sync.lock.min.duration<a class="headerlink" href="#taskldapsynclockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the LDAP synchronization task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7081,7 +7238,7 @@
 </table>
 
 <hr />
-<h3 id="taskmetricsmaintenancecron">task.metrics.maintenance.cron</h3>
+<h3 id="taskmetricsmaintenancecron">task.metrics.maintenance.cron<a class="headerlink" href="#taskmetricsmaintenancecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the metrics maintenance task.  <br/><br/>  The task deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  <li><code>PORTFOLIOMETRICS</code></li>  </ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -7105,7 +7262,7 @@
 </table>
 
 <hr />
-<h3 id="taskmetricsmaintenancelockmaxduration">task.metrics.maintenance.lock.max.duration</h3>
+<h3 id="taskmetricsmaintenancelockmaxduration">task.metrics.maintenance.lock.max.duration<a class="headerlink" href="#taskmetricsmaintenancelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the metrics maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7129,7 +7286,7 @@
 </table>
 
 <hr />
-<h3 id="taskmetricsmaintenancelockminduration">task.metrics.maintenance.lock.min.duration</h3>
+<h3 id="taskmetricsmaintenancelockminduration">task.metrics.maintenance.lock.min.duration<a class="headerlink" href="#taskmetricsmaintenancelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the metrics maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7153,7 +7310,7 @@
 </table>
 
 <hr />
-<h3 id="tasknistmirrorcron">task.nist.mirror.cron</h3>
+<h3 id="tasknistmirrorcron">task.nist.mirror.cron<a class="headerlink" href="#tasknistmirrorcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the NIST / NVD mirroring task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7177,7 +7334,7 @@
 </table>
 
 <hr />
-<h3 id="taskosvmirrorcron">task.osv.mirror.cron</h3>
+<h3 id="taskosvmirrorcron">task.osv.mirror.cron<a class="headerlink" href="#taskosvmirrorcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the OSV mirroring task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7201,7 +7358,7 @@
 </table>
 
 <hr />
-<h3 id="taskportfoliometricsupdatecron">task.portfolio.metrics.update.cron</h3>
+<h3 id="taskportfoliometricsupdatecron">task.portfolio.metrics.update.cron<a class="headerlink" href="#taskportfoliometricsupdatecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the portfolio metrics update task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7225,7 +7382,7 @@
 </table>
 
 <hr />
-<h3 id="taskportfoliometricsupdatelockmaxduration">task.portfolio.metrics.update.lock.max.duration</h3>
+<h3 id="taskportfoliometricsupdatelockmaxduration">task.portfolio.metrics.update.lock.max.duration<a class="headerlink" href="#taskportfoliometricsupdatelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the portfolio metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7249,7 +7406,7 @@
 </table>
 
 <hr />
-<h3 id="taskportfoliometricsupdatelockminduration">task.portfolio.metrics.update.lock.min.duration</h3>
+<h3 id="taskportfoliometricsupdatelockminduration">task.portfolio.metrics.update.lock.min.duration<a class="headerlink" href="#taskportfoliometricsupdatelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the portfolio metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7273,7 +7430,7 @@
 </table>
 
 <hr />
-<h3 id="taskprojectmaintenancecron">task.project.maintenance.cron</h3>
+<h3 id="taskprojectmaintenancecron">task.project.maintenance.cron<a class="headerlink" href="#taskprojectmaintenancecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the project maintenance task.  <br/><br/>  The task deletes inactive projects based on retention policy.  </p>
 <table>
   <tbody style="border: 0">
@@ -7297,7 +7454,7 @@
 </table>
 
 <hr />
-<h3 id="taskprojectmaintenancelockmaxduration">task.project.maintenance.lock.max.duration</h3>
+<h3 id="taskprojectmaintenancelockmaxduration">task.project.maintenance.lock.max.duration<a class="headerlink" href="#taskprojectmaintenancelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the project maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7321,7 +7478,7 @@
 </table>
 
 <hr />
-<h3 id="taskprojectmaintenancelockminduration">task.project.maintenance.lock.min.duration</h3>
+<h3 id="taskprojectmaintenancelockminduration">task.project.maintenance.lock.min.duration<a class="headerlink" href="#taskprojectmaintenancelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the project maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7345,7 +7502,7 @@
 </table>
 
 <hr />
-<h3 id="taskrepositorymetaanalysiscron">task.repository.meta.analysis.cron</h3>
+<h3 id="taskrepositorymetaanalysiscron">task.repository.meta.analysis.cron<a class="headerlink" href="#taskrepositorymetaanalysiscron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the portfolio repository metadata analysis task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7369,7 +7526,7 @@
 </table>
 
 <hr />
-<h3 id="taskrepositorymetaanalysislockmaxduration">task.repository.meta.analysis.lock.max.duration</h3>
+<h3 id="taskrepositorymetaanalysislockmaxduration">task.repository.meta.analysis.lock.max.duration<a class="headerlink" href="#taskrepositorymetaanalysislockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the portfolio repository metadata analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7393,7 +7550,7 @@
 </table>
 
 <hr />
-<h3 id="taskrepositorymetaanalysislockminduration">task.repository.meta.analysis.lock.min.duration</h3>
+<h3 id="taskrepositorymetaanalysislockminduration">task.repository.meta.analysis.lock.min.duration<a class="headerlink" href="#taskrepositorymetaanalysislockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the portfolio repository metadata analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7417,7 +7574,7 @@
 </table>
 
 <hr />
-<h3 id="taskschedulerinitialdelay">task.scheduler.initial.delay</h3>
+<h3 id="taskschedulerinitialdelay">task.scheduler.initial.delay<a class="headerlink" href="#taskschedulerinitialdelay" title="Permanent link">&para;</a></h3>
 <p>Scheduling tasks after 3 minutes (3<em>60</em>1000) of starting application  </p>
 <table>
   <tbody style="border: 0">
@@ -7441,7 +7598,7 @@
 </table>
 
 <hr />
-<h3 id="taskschedulerpollinginterval">task.scheduler.polling.interval</h3>
+<h3 id="taskschedulerpollinginterval">task.scheduler.polling.interval<a class="headerlink" href="#taskschedulerpollinginterval" title="Permanent link">&para;</a></h3>
 <p>Cron expressions for tasks have the precision of minutes so polling every minute  </p>
 <table>
   <tbody style="border: 0">
@@ -7465,7 +7622,7 @@
 </table>
 
 <hr />
-<h3 id="tasktagmaintenancecron">task.tag.maintenance.cron</h3>
+<h3 id="tasktagmaintenancecron">task.tag.maintenance.cron<a class="headerlink" href="#tasktagmaintenancecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the tag maintenance task.  <br/><br/>  The task deletes orphaned tags that are not used anymore.  </p>
 <table>
   <tbody style="border: 0">
@@ -7489,7 +7646,7 @@
 </table>
 
 <hr />
-<h3 id="tasktagmaintenancelockmaxduration">task.tag.maintenance.lock.max.duration</h3>
+<h3 id="tasktagmaintenancelockmaxduration">task.tag.maintenance.lock.max.duration<a class="headerlink" href="#tasktagmaintenancelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the tag maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7513,7 +7670,7 @@
 </table>
 
 <hr />
-<h3 id="tasktagmaintenancelockminduration">task.tag.maintenance.lock.min.duration</h3>
+<h3 id="tasktagmaintenancelockminduration">task.tag.maintenance.lock.min.duration<a class="headerlink" href="#tasktagmaintenancelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the tag maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7537,7 +7694,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilityanalysiscron">task.vulnerability.analysis.cron</h3>
+<h3 id="taskvulnerabilityanalysiscron">task.vulnerability.analysis.cron<a class="headerlink" href="#taskvulnerabilityanalysiscron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the portfolio vulnerability analysis task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7561,7 +7718,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilityanalysislockmaxduration">task.vulnerability.analysis.lock.max.duration</h3>
+<h3 id="taskvulnerabilityanalysislockmaxduration">task.vulnerability.analysis.lock.max.duration<a class="headerlink" href="#taskvulnerabilityanalysislockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the portfolio vulnerability analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7585,7 +7742,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilityanalysislockminduration">task.vulnerability.analysis.lock.min.duration</h3>
+<h3 id="taskvulnerabilityanalysislockminduration">task.vulnerability.analysis.lock.min.duration<a class="headerlink" href="#taskvulnerabilityanalysislockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the portfolio vulnerability analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7609,7 +7766,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitydatabasemaintenancecron">task.vulnerability.database.maintenance.cron</h3>
+<h3 id="taskvulnerabilitydatabasemaintenancecron">task.vulnerability.database.maintenance.cron<a class="headerlink" href="#taskvulnerabilitydatabasemaintenancecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the vulnerability database maintenance task.  <br/><br/>  The task deletes orphaned records from the <code>VULNERABLESOFTWARE</code> table.  </p>
 <table>
   <tbody style="border: 0">
@@ -7633,7 +7790,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitydatabasemaintenancelockmaxduration">task.vulnerability.database.maintenance.lock.max.duration</h3>
+<h3 id="taskvulnerabilitydatabasemaintenancelockmaxduration">task.vulnerability.database.maintenance.lock.max.duration<a class="headerlink" href="#taskvulnerabilitydatabasemaintenancelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7657,7 +7814,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitydatabasemaintenancelockminduration">task.vulnerability.database.maintenance.lock.min.duration</h3>
+<h3 id="taskvulnerabilitydatabasemaintenancelockminduration">task.vulnerability.database.maintenance.lock.min.duration<a class="headerlink" href="#taskvulnerabilitydatabasemaintenancelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7681,7 +7838,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitymetricsupdatecron">task.vulnerability.metrics.update.cron</h3>
+<h3 id="taskvulnerabilitymetricsupdatecron">task.vulnerability.metrics.update.cron<a class="headerlink" href="#taskvulnerabilitymetricsupdatecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the vulnerability metrics update task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7705,7 +7862,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitymetricsupdatelockmaxduration">task.vulnerability.metrics.update.lock.max.duration</h3>
+<h3 id="taskvulnerabilitymetricsupdatelockmaxduration">task.vulnerability.metrics.update.lock.max.duration<a class="headerlink" href="#taskvulnerabilitymetricsupdatelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the vulnerability metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7729,7 +7886,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitymetricsupdatelockminduration">task.vulnerability.metrics.update.lock.min.duration</h3>
+<h3 id="taskvulnerabilitymetricsupdatelockminduration">task.vulnerability.metrics.update.lock.min.duration<a class="headerlink" href="#taskvulnerabilitymetricsupdatelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the vulnerability metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7753,7 +7910,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitypolicyfetchcron">task.vulnerability.policy.fetch.cron</h3>
+<h3 id="taskvulnerabilitypolicyfetchcron">task.vulnerability.policy.fetch.cron<a class="headerlink" href="#taskvulnerabilitypolicyfetchcron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the vulnerability policy bundle fetch task.  </p>
 <table>
   <tbody style="border: 0">
@@ -7777,7 +7934,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitypolicyfetchlockmaxduration">task.vulnerability.policy.fetch.lock.max.duration</h3>
+<h3 id="taskvulnerabilitypolicyfetchlockmaxduration">task.vulnerability.policy.fetch.lock.max.duration<a class="headerlink" href="#taskvulnerabilitypolicyfetchlockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the vulnerability policy bundle fetch task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7801,7 +7958,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilitypolicyfetchlockminduration">task.vulnerability.policy.fetch.lock.min.duration</h3>
+<h3 id="taskvulnerabilitypolicyfetchlockminduration">task.vulnerability.policy.fetch.lock.min.duration<a class="headerlink" href="#taskvulnerabilitypolicyfetchlockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the vulnerability policy bundle fetch task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7825,7 +7982,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilityscanmaintenancecron">task.vulnerability.scan.maintenance.cron</h3>
+<h3 id="taskvulnerabilityscanmaintenancecron">task.vulnerability.scan.maintenance.cron<a class="headerlink" href="#taskvulnerabilityscanmaintenancecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the vulnerability scan maintenance task.  <br/><br/>  The task deletes records older than the configured retention duration from the <code>VULNERABILITYSCAN</code> table.  </p>
 <table>
   <tbody style="border: 0">
@@ -7849,7 +8006,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilityscanmaintenancelockmaxduration">task.vulnerability.scan.maintenance.lock.max.duration</h3>
+<h3 id="taskvulnerabilityscanmaintenancelockmaxduration">task.vulnerability.scan.maintenance.lock.max.duration<a class="headerlink" href="#taskvulnerabilityscanmaintenancelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7873,7 +8030,7 @@
 </table>
 
 <hr />
-<h3 id="taskvulnerabilityscanmaintenancelockminduration">task.vulnerability.scan.maintenance.lock.min.duration</h3>
+<h3 id="taskvulnerabilityscanmaintenancelockminduration">task.vulnerability.scan.maintenance.lock.min.duration<a class="headerlink" href="#taskvulnerabilityscanmaintenancelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">
@@ -7897,7 +8054,7 @@
 </table>
 
 <hr />
-<h3 id="taskworkflowmaintenancecron">task.workflow.maintenance.cron</h3>
+<h3 id="taskworkflowmaintenancecron">task.workflow.maintenance.cron<a class="headerlink" href="#taskworkflowmaintenancecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the workflow maintenance task.  <br/><br/>  The task:  <ul>  <li>Transitions workflow steps from <code>PENDING</code> to <code>TIMED_OUT</code> state</li>  <li>Transitions workflow steps from <code>TIMED_OUT</code> to <code>FAILED</code> state</li>  <li>Transitions children of <code>FAILED</code> steps to <code>CANCELLED</code> state</li>  <li>Deletes finished workflows according to the configured retention duration</li>  </ul>  </p>
 <table>
   <tbody style="border: 0">
@@ -7921,7 +8078,7 @@
 </table>
 
 <hr />
-<h3 id="taskworkflowmaintenancelockmaxduration">task.workflow.maintenance.lock.max.duration</h3>
+<h3 id="taskworkflowmaintenancelockmaxduration">task.workflow.maintenance.lock.max.duration<a class="headerlink" href="#taskworkflowmaintenancelockmaxduration" title="Permanent link">&para;</a></h3>
 <p>Maximum duration in ISO 8601 format for which the workflow maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
 <table>
   <tbody style="border: 0">
@@ -7945,7 +8102,7 @@
 </table>
 
 <hr />
-<h3 id="taskworkflowmaintenancelockminduration">task.workflow.maintenance.lock.min.duration</h3>
+<h3 id="taskworkflowmaintenancelockminduration">task.workflow.maintenance.lock.min.duration<a class="headerlink" href="#taskworkflowmaintenancelockminduration" title="Permanent link">&para;</a></h3>
 <p>Minimum duration in ISO 8601 format for which the workflow maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
 <table>
   <tbody style="border: 0">

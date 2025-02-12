@@ -778,7 +778,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -788,6 +788,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1107,30 +1264,6 @@
       hyades
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="hyades">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Execution
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#execution-in-ci" class="md-nav__link">
-    <span class="md-ellipsis">
-      Execution in CI
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1601,49 +1734,49 @@
   
 
 
-<h1 id="testing">Testing</h1>
-<h2 id="introduction">Introduction</h2>
+<h1 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>We generally aim for a test coverage of ~80%. This is also true for new code introduced through pull requests.
 We value integration tests more than unit tests, and try to avoid using mocks as much as possible.
 If reaching the 80% test coverage requires us to write tests that don't really test anything meaningful,
 or require loads of mocking, we rather take lower coverage than writing those tests.</p>
 <p>We use <a href="https://testcontainers.com/">Testcontainers</a>, <a href="https://wiremock.org/">Wiremock</a>, and <a href="https://greenmail-mail-test.github.io/greenmail/">GreenMail</a> to test how the system interacts with the outside world.</p>
-<h2 id="unit-tests">Unit Tests</h2>
-<h3 id="hyades"><code>hyades</code></h3>
+<h2 id="unit-tests">Unit Tests<a class="headerlink" href="#unit-tests" title="Permanent link">&para;</a></h2>
+<h3 id="hyades"><code>hyades</code><a class="headerlink" href="#hyades" title="Permanent link">&para;</a></h3>
 <p>TBD</p>
-<h3 id="hyades-apiserver"><code>hyades-apiserver</code></h3>
+<h3 id="hyades-apiserver"><code>hyades-apiserver</code><a class="headerlink" href="#hyades-apiserver" title="Permanent link">&para;</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>To reduce execution time of the test suite in CI, the PostgreSQL Testcontainer is <a href="https://java.testcontainers.org/features/reuse/">reused</a>.
 While tables are truncated after each test, sequences (e.g. for <code>ID</code> columns) won't be reset.
 As a consequence, you should not assert on IDs of database records.</p>
 </div>
-<h3 id="hyades-frontend"><code>hyades-frontend</code></h3>
+<h3 id="hyades-frontend"><code>hyades-frontend</code><a class="headerlink" href="#hyades-frontend" title="Permanent link">&para;</a></h3>
 <p>There are currently no unit tests for the frontend.</p>
-<h2 id="integration-tests">Integration Tests</h2>
-<h3 id="hyades_1"><code>hyades</code></h3>
+<h2 id="integration-tests">Integration Tests<a class="headerlink" href="#integration-tests" title="Permanent link">&para;</a></h2>
+<h3 id="hyades_1"><code>hyades</code><a class="headerlink" href="#hyades_1" title="Permanent link">&para;</a></h3>
 <p>Integration tests in the <code>hyades</code> repository are implemented as <a href="https://quarkus.io/guides/getting-started-testing#quarkus-integration-test">@QuarkusIntegrationTest</a>. 
 As such, they are executed against an actual build artifact (JAR, container, or native executable).</p>
 <p>Class names of integration tests are suffixed with <code>IT</code> instead of <code>Test</code>.</p>
-<h4 id="execution">Execution</h4>
+<h4 id="execution">Execution<a class="headerlink" href="#execution" title="Permanent link">&para;</a></h4>
 <p>Integration tests can be launched individually through your IDE, or all at once using Maven:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mvn<span class="w"> </span>-pl<span class="w"> </span><span class="s1">&#39;!e2e&#39;</span><span class="w"> </span>clean<span class="w"> </span>verify<span class="w"> </span>failsafe:integration-test<span class="w"> </span>-DskipITs<span class="o">=</span><span class="nb">false</span>
 </span></code></pre></div>
 <p>To limit the test run to specific modules, use <code>-pl &lt;module&gt;</code>, for example:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>mvn<span class="w"> </span>-pl<span class="w"> </span>vulnerability-analyzer<span class="w"> </span>clean<span class="w"> </span>verify<span class="w"> </span>failsafe:integration-test<span class="w"> </span>-DskipITs<span class="o">=</span><span class="nb">false</span>
 </span></code></pre></div>
-<h4 id="execution-in-ci">Execution in CI</h4>
+<h4 id="execution-in-ci">Execution in CI<a class="headerlink" href="#execution-in-ci" title="Permanent link">&para;</a></h4>
 <p>In CI, integration tests are executed:</p>
 <ul>
 <li>Against all JARs, as part of the <code>CI / Test</code> workflow</li>
 <li>Against native executables, as part of the <code>CI / Test Native Image</code> workflow(s)</li>
 </ul>
 <p>Both workflows run for pushes and pull requests to the <code>main</code> branch.</p>
-<h3 id="hyades-apiserver_1"><code>hyades-apiserver</code></h3>
+<h3 id="hyades-apiserver_1"><code>hyades-apiserver</code><a class="headerlink" href="#hyades-apiserver_1" title="Permanent link">&para;</a></h3>
 <p>The API server repository does not currently differentiate between unit- and integration-tests.</p>
-<h3 id="hyades-frontend_1"><code>hyades-frontend</code></h3>
+<h3 id="hyades-frontend_1"><code>hyades-frontend</code><a class="headerlink" href="#hyades-frontend_1" title="Permanent link">&para;</a></h3>
 <p>There are currently no integration tests for the frontend.</p>
-<h2 id="end-to-end-tests">End-to-End Tests</h2>
+<h2 id="end-to-end-tests">End-to-End Tests<a class="headerlink" href="#end-to-end-tests" title="Permanent link">&para;</a></h2>
 <p>End-to-End tests spin up containers for all services of the system. The test environment is torn down
 and rebuilt for every test case. Containers are started and managed using <a href="https://testcontainers.com/">Testcontainers</a>.</p>
 <p>The tests are located in the <a href="https://github.com/DependencyTrack/hyades/tree/main/e2e"><code>e2e</code></a> module of the
@@ -1655,7 +1788,7 @@ class.</p>
 <li><code>APISERVER_VERSION</code></li>
 <li><code>HYADES_VERSION</code></li>
 </ul>
-<h3 id="execution_1">Execution</h3>
+<h3 id="execution_1">Execution<a class="headerlink" href="#execution_1" title="Permanent link">&para;</a></h3>
 <p>Tests can be launched individually through your IDE, or all at once using Maven:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mvn<span class="w"> </span>-pl<span class="w"> </span>e2e<span class="w"> </span>clean<span class="w"> </span>verify<span class="w"> </span>-Pe2e-all
 </span></code></pre></div>
@@ -1665,12 +1798,12 @@ class.</p>
 <li>Update the image tags in <code>AbstractE2ET</code> accordingly</li>
 <li>Run e2e tests as detailed above</li>
 </ol>
-<h3 id="execution-in-ci_1">Execution in CI</h3>
+<h3 id="execution-in-ci_1">Execution in CI<a class="headerlink" href="#execution-in-ci_1" title="Permanent link">&para;</a></h3>
 <p>In CI, end-to-end tests are executed for every push to the <code>main</code> branch, as well as every night at 12AM.</p>
 <p>They can additionally be run manually, via the GitHub Actions UI. Both the API server and Hyades version
 can be customized before execution.</p>
-<h2 id="manual-tests">Manual Tests</h2>
-<h3 id="docker-compose">Docker Compose</h3>
+<h2 id="manual-tests">Manual Tests<a class="headerlink" href="#manual-tests" title="Permanent link">&para;</a></h2>
+<h3 id="docker-compose">Docker Compose<a class="headerlink" href="#docker-compose" title="Permanent link">&para;</a></h3>
 <p>The easiest way to test the entire system is by using Docker Compose.</p>
 <p>A <a href="https://github.com/DependencyTrack/hyades/blob/main/docker-compose.yml"><code>docker-compose.yml</code> file is provided</a>
 in the <code>DependencyTrack/hyades</code> repository.</p>
@@ -1684,7 +1817,7 @@ in the <code>DependencyTrack/hyades</code> repository.</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--profile<span class="w"> </span>demo
 </span></code></pre></div>
 <p>To test different versions of the services, simply modify the <code>image</code> property of the respective Compose <code>service</code>.</p>
-<h3 id="api-server">API Server</h3>
+<h3 id="api-server">API Server<a class="headerlink" href="#api-server" title="Permanent link">&para;</a></h3>
 <p>When testing changes that are limited to the API server, such as updates to the REST API,
 it's possible to launch the API server in <a href="../../reference/configuration/api-server/#devservicesenabled">dev services</a> mode:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mvn<span class="w"> </span>-Penhance<span class="w"> </span>-Pdev-services<span class="w"> </span>jetty:run<span class="w"> </span>-Dlogback.configurationFile<span class="o">=</span>src/main/docker/logback.xml

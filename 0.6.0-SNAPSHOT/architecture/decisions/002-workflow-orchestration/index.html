@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/configuration/repo-meta-analyzer/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/002-workflow-orchestration/">
       
       
-        <link rel="prev" href="../mirror-service/">
+        <link rel="prev" href="../001-drop-kafka-dependency/">
       
       
-        <link rel="next" href="../../schemas/notification/">
+        <link rel="next" href="../003-notification-publishing/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Repository Metadata Analyzer - Hyades</title>
+        <title>ADR-002: Workflow Orchestration - Hyades</title>
       
     
     
@@ -57,11 +57,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="Repository Metadata Analyzer - Hyades" >
+        <meta  property="og:title"  content="ADR-002: Workflow Orchestration - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/reference/configuration/repo-meta-analyzer.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/002-workflow-orchestration.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +69,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/configuration/repo-meta-analyzer/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/002-workflow-orchestration/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="Repository Metadata Analyzer - Hyades" >
+        <meta  name="twitter:title"  content="ADR-002: Workflow Orchestration - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/reference/configuration/repo-meta-analyzer.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/002-workflow-orchestration.png" >
       
     
     
@@ -100,7 +100,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cache" class="md-skip">
+        <a href="#context" class="md-skip">
           Skip to content
         </a>
       
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Repository Metadata Analyzer
+              ADR-002: Workflow Orchestration
             
           </span>
         </div>
@@ -289,11 +289,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../architecture/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   Architecture
@@ -343,21 +345,17 @@
         
   
   
-    
-  
   
     
     
       
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../overview/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../reference/configuration/overview/" class="md-tabs__link">
           
   
   Reference
@@ -699,23 +697,28 @@
       
   
   
+    
   
   
+  
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -727,7 +730,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -741,7 +744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -760,6 +763,8 @@
                 
   
   
+    
+  
   
   
     
@@ -769,11 +774,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
@@ -788,7 +793,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             Decisions
@@ -802,7 +807,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
+      <a href="../000-index/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -824,7 +829,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../001-drop-kafka-dependency/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -843,10 +848,29 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -856,6 +880,75 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Possible solutions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -868,7 +961,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+      <a href="../003-notification-publishing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -890,7 +983,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+      <a href="../004-file-storage-plugin/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -959,7 +1052,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/design/workflow-state-tracking/" class="md-nav__link">
+      <a href="../../design/workflow-state-tracking/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1217,28 +1310,23 @@
       
   
   
-    
   
   
-  
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1250,7 +1338,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -1261,8 +1349,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1272,11 +1358,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
         
           
           <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
@@ -1291,7 +1377,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6_1">
             <span class="md-nav__icon md-icon"></span>
             Configuration
@@ -1305,7 +1391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
+      <a href="../../../reference/configuration/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1327,7 +1413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-server/" class="md-nav__link">
+      <a href="../../../reference/configuration/api-server/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1349,7 +1435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mirror-service/" class="md-nav__link">
+      <a href="../../../reference/configuration/mirror-service/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1368,29 +1454,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Repository Metadata Analyzer
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../reference/configuration/repo-meta-analyzer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1400,312 +1467,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cache
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Cache">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#quarkuscachecaffeinemetaanalyzerexpire-after-write" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.cache.caffeine."metaAnalyzer".expire-after-write
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#quarkuscachecaffeinemetaanalyzerinitial-capacity" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.cache.caffeine."metaAnalyzer".initial-capacity
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#quarkuscacheenabled" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.cache.enabled
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#database" class="md-nav__link">
-    <span class="md-ellipsis">
-      Database
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Database">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#quarkusdatasourcejdbcurl" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.datasource.jdbc.url
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#quarkusdatasourcepassword" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.datasource.password
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#quarkusdatasourceusername" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.datasource.username
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#general" class="md-nav__link">
-    <span class="md-ellipsis">
-      General
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="General">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#secretkeypath" class="md-nav__link">
-    <span class="md-ellipsis">
-      secret.key.path
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#http" class="md-nav__link">
-    <span class="md-ellipsis">
-      HTTP
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="HTTP">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#quarkushttpport" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.http.port
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kafka" class="md-nav__link">
-    <span class="md-ellipsis">
-      Kafka
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Kafka">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#dtkafkatopicprefix" class="md-nav__link">
-    <span class="md-ellipsis">
-      dt.kafka.topic.prefix
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsautooffsetreset" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.auto.offset.reset
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamscommitintervalms" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.commit.interval.ms
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsexceptionthresholdsdeserializationcount" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.exception.thresholds.deserialization.count
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsexceptionthresholdsdeserializationinterval" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.exception.thresholds.deserialization.interval
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsexceptionthresholdsprocessingcount" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.exception.thresholds.processing.count
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsexceptionthresholdsprocessinginterval" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.exception.thresholds.processing.interval
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsexceptionthresholdsproductioncount" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.exception.thresholds.production.count
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsexceptionthresholdsproductioninterval" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.exception.thresholds.production.interval
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsmetricsrecordinglevel" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.metrics.recording.level
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafka-streamsnumstreamthreads" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka-streams.num.stream.threads
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kafkabootstrapservers" class="md-nav__link">
-    <span class="md-ellipsis">
-      kafka.bootstrap.servers
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#quarkuskafka-streamsapplication-id" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.kafka-streams.application-id
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#observability" class="md-nav__link">
-    <span class="md-ellipsis">
-      Observability
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Observability">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#quarkuslogconsolejson" class="md-nav__link">
-    <span class="md-ellipsis">
-      quarkus.log.console.json
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1765,7 +1526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../schemas/notification/" class="md-nav__link">
+      <a href="../../../reference/schemas/notification/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1787,7 +1548,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../schemas/policy/" class="md-nav__link">
+      <a href="../../../reference/schemas/policy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1817,7 +1578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../topics/" class="md-nav__link">
+      <a href="../../../reference/topics/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1855,7 +1616,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/reference/configuration/repo-meta-analyzer.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/002-workflow-orchestration.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1863,557 +1624,227 @@
   
 
 
-  <h1>Repository Metadata Analyzer</h1>
+  <h1>ADR-002: Workflow Orchestration</h1>
 
-<!--
-  GENERATED. DO NOT EDIT.
-
-  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/repo-meta-analyzer.md ./repository-meta-analyzer/src/main/resources/application.properties
--->
-
-<h2 id="cache">Cache<a class="headerlink" href="#cache" title="Permanent link">&para;</a></h2>
-<h3 id="quarkuscachecaffeinemetaanalyzerexpire-after-write">quarkus.cache.caffeine."metaAnalyzer".expire-after-write<a class="headerlink" href="#quarkuscachecaffeinemetaanalyzerexpire-after-write" title="Permanent link">&para;</a></h3>
-<p>Defines the time-to-live of cache entries.  </p>
 <table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT2H</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_CACHE_CAFFEINE__METAANALYZER__EXPIRE_AFTER_WRITE</code></td>
-    </tr>
-  </tbody>
+<thead>
+<tr>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Author(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Proposed</td>
+<td style="text-align: left;">2025-01-16</td>
+<td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
+</tr>
+</tbody>
 </table>
-
-<hr />
-<h3 id="quarkuscachecaffeinemetaanalyzerinitial-capacity">quarkus.cache.caffeine."metaAnalyzer".initial-capacity<a class="headerlink" href="#quarkuscachecaffeinemetaanalyzerinitial-capacity" title="Permanent link">&para;</a></h3>
-<p>Defines the initial capacity of the cache.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_CACHE_CAFFEINE__METAANALYZER__INITIAL_CAPACITY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="quarkuscacheenabled">quarkus.cache.enabled<a class="headerlink" href="#quarkuscacheenabled" title="Permanent link">&para;</a></h3>
-<p>Defines whether caching of analysis results shall be enabled.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>true</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_CACHE_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h2>
-<h3 id="quarkusdatasourcejdbcurl">quarkus.datasource.jdbc.url<a class="headerlink" href="#quarkusdatasourcejdbcurl" title="Permanent link">&para;</a></h3>
-<p>Specifies the JDBC URL to use when connecting to the database.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_JDBC_URL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="quarkusdatasourcepassword">quarkus.datasource.password<a class="headerlink" href="#quarkusdatasourcepassword" title="Permanent link">&para;</a></h3>
-<p>Specifies the password to use when authenticating to the database.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_PASSWORD</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="quarkusdatasourceusername">quarkus.datasource.username<a class="headerlink" href="#quarkusdatasourceusername" title="Permanent link">&para;</a></h3>
-<p>Specifies the username to use when authenticating to the database.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_DATASOURCE_USERNAME</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="general">General<a class="headerlink" href="#general" title="Permanent link">&para;</a></h2>
-<h3 id="secretkeypath">secret.key.path<a class="headerlink" href="#secretkeypath" title="Permanent link">&para;</a></h3>
-<p>Defines the path to the secret key to be used for data encryption and decryption.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>~/.dependency-track/keys/secret.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>SECRET_KEY_PATH</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="http">HTTP<a class="headerlink" href="#http" title="Permanent link">&para;</a></h2>
-<h3 id="quarkushttpport">quarkus.http.port<a class="headerlink" href="#quarkushttpport" title="Permanent link">&para;</a></h3>
-<p>HTTP port to listen on. Application metrics will be available via this port.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>8091</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_HTTP_PORT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="kafka">Kafka<a class="headerlink" href="#kafka" title="Permanent link">&para;</a></h2>
-<h3 id="dtkafkatopicprefix">dt.kafka.topic.prefix<a class="headerlink" href="#dtkafkatopicprefix" title="Permanent link">&para;</a></h3>
-<p>Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>acme-</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsautooffsetreset">kafka-streams.auto.offset.reset<a class="headerlink" href="#kafka-streamsautooffsetreset" title="Permanent link">&para;</a></h3>
-<p>Refer to <a href="https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset">https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset</a> for details.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamscommitintervalms">kafka-streams.commit.interval.ms<a class="headerlink" href="#kafka-streamscommitintervalms" title="Permanent link">&para;</a></h3>
-<p>Defines the interval in milliseconds at which consumer offsets are committed to the Kafka brokers.  The Kafka default of <code>30s</code> has been modified to <code>5s</code>.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_commit.interval.ms">https://kafka.apache.org/documentation/#streamsconfigs_commit.interval.ms</a> for details.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_COMMIT_INTERVAL_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsexceptionthresholdsdeserializationcount">kafka-streams.exception.thresholds.deserialization.count<a class="headerlink" href="#kafka-streamsexceptionthresholdsdeserializationcount" title="Permanent link">&para;</a></h3>
-<p>Defines the threshold for records failing to be deserialized within <a href="#kafka-streamsexceptionthresholdsdeserializationinterval"><code>kafka-streams.exception.thresholds.deserialization.interval</code></a>.  Deserialization failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_EXCEPTION_THRESHOLDS_DESERIALIZATION_COUNT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsexceptionthresholdsdeserializationinterval">kafka-streams.exception.thresholds.deserialization.interval<a class="headerlink" href="#kafka-streamsexceptionthresholdsdeserializationinterval" title="Permanent link">&para;</a></h3>
-<p>Defines the interval within which up to <a href="#kafka-streamsexceptionthresholdsdeserializationcount"><code>kafka-streams.exception.thresholds.deserialization.count</code></a> records are  allowed to fail deserialization. Deserialization failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT30M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_EXCEPTION_THRESHOLDS_DESERIALIZATION_INTERVAL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsexceptionthresholdsprocessingcount">kafka-streams.exception.thresholds.processing.count<a class="headerlink" href="#kafka-streamsexceptionthresholdsprocessingcount" title="Permanent link">&para;</a></h3>
-<p>Defines the threshold for records failing to be processed within <a href="#kafka-streamsexceptionthresholdsprocessinginterval"><code>kafka-streams.exception.thresholds.processing.interval</code></a>.  Processing failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>50</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_EXCEPTION_THRESHOLDS_PROCESSING_COUNT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsexceptionthresholdsprocessinginterval">kafka-streams.exception.thresholds.processing.interval<a class="headerlink" href="#kafka-streamsexceptionthresholdsprocessinginterval" title="Permanent link">&para;</a></h3>
-<p>Defines the interval within which up to <a href="#kafka-streamsexceptionthresholdsprocessingcount"><code>kafka-streams.exception.thresholds.processing.count</code></a> records are  allowed to fail processing. Processing failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT30M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_EXCEPTION_THRESHOLDS_PROCESSING_INTERVAL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsexceptionthresholdsproductioncount">kafka-streams.exception.thresholds.production.count<a class="headerlink" href="#kafka-streamsexceptionthresholdsproductioncount" title="Permanent link">&para;</a></h3>
-<p>Defines the threshold for records failing to be produced within <a href="#kafka-streamsexceptionthresholdsproductioninterval"><code>kafka-streams.exception.thresholds.production.interval</code></a>.  Production failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_EXCEPTION_THRESHOLDS_PRODUCTION_COUNT</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsexceptionthresholdsproductioninterval">kafka-streams.exception.thresholds.production.interval<a class="headerlink" href="#kafka-streamsexceptionthresholdsproductioninterval" title="Permanent link">&para;</a></h3>
-<p>Defines the interval within which up to <a href="#kafka-streamsexceptionthresholdsproductioncount"><code>kafka-streams.exception.thresholds.production.count</code></a> records are  allowed to fail producing. Production failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT30M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_EXCEPTION_THRESHOLDS_PRODUCTION_INTERVAL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsmetricsrecordinglevel">kafka-streams.metrics.recording.level<a class="headerlink" href="#kafka-streamsmetricsrecordinglevel" title="Permanent link">&para;</a></h3>
-<p>Refer to <a href="https://kafka.apache.org/documentation/#adminclientconfigs_metrics.recording.level">https://kafka.apache.org/documentation/#adminclientconfigs_metrics.recording.level</a> for details.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[INFO, DEBUG, TRACE]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>DEBUG</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_METRICS_RECORDING_LEVEL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafka-streamsnumstreamthreads">kafka-streams.num.stream.threads<a class="headerlink" href="#kafka-streamsnumstreamthreads" title="Permanent link">&para;</a></h3>
-<p>Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads">https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads</a> for details.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_STREAMS_NUM_STREAM_THREADS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="kafkabootstrapservers">kafka.bootstrap.servers<a class="headerlink" href="#kafkabootstrapservers" title="Permanent link">&para;</a></h3>
-<p>Comma-separated list of brokers to use for establishing the initial connection to the Kafka cluster.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#consumerconfigs_bootstrap.servers">https://kafka.apache.org/documentation/#consumerconfigs_bootstrap.servers</a> for details.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>broker-01.acme.com:9092,broker-02.acme.com:9092</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_BOOTSTRAP_SERVERS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="quarkuskafka-streamsapplication-id">quarkus.kafka-streams.application-id<a class="headerlink" href="#quarkuskafka-streamsapplication-id" title="Permanent link">&para;</a></h3>
-<p>Defines the ID to uniquely identify this application in the Kafka cluster.  <br/><br/>  Refer to <a href="https://kafka.apache.org/documentation/#streamsconfigs_application.id">https://kafka.apache.org/documentation/#streamsconfigs_application.id</a> for details.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${dt.kafka.topic.prefix}hyades-repository-meta-analyzer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_KAFKA_STREAMS_APPLICATION_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h2>
-<h3 id="quarkuslogconsolejson">quarkus.log.console.json<a class="headerlink" href="#quarkuslogconsolejson" title="Permanent link">&para;</a></h3>
-<p>Defines whether logs should be written in JSON format.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>QUARKUS_LOG_CONSOLE_JSON</code></td>
-    </tr>
-  </tbody>
-</table>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>By dropping the Kafka dependency (<a href="../001-drop-kafka-dependency/">ADR-001</a>), we are now missing a way to enqueue
+and distribute work for asynchronous execution.</p>
+<p>Dependency-Track v4 used an in-memory queue, which is neither reliable (queued messages are lost on restart),
+nor cluster-friendly (queue is not shared by multiple instances).</p>
+<p>As part of <a href="../001-drop-kafka-dependency/">ADR-001</a>, we explored options such as introducing a different, more lightweight message
+broker. Another alternative was the introduction of an in-memory data grid (IMDG).
+We decided against these options, and opted for leveraging the existing Postgres infrastructure instead.</p>
+<p>We also expressed having grown unhappy with the choreography-style architecture,
+as it complicates observability and is hard to grasp. A solution that is more akin to an
+orchestrator is desirable.</p>
+<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
+<p>To better understand our requirements, we explain them based on workflows we're dealing with today.
+One of the core workflows in Dependency-Track is processing uploaded BOMs:</p>
+<pre class="mermaid"><code>---
+title: BOM Processing Workflow
+---
+flowchart LR
+    A@{ shape: circle, label: "Start" }
+    B["BOM Ingestion"]
+    C@{ shape: fork, label: "Fork" }
+    D["Vulnerability Analysis"]
+    E["Repository Metadata Analysis"]
+    F@{ shape: fork, label: "Join" }
+    G["Policy Evaluation"]
+    H["Metrics Update"]
+    I@{ shape: dbl-circ, label: "Stop" }
+    A --&gt; B
+    B --&gt; C
+    C --&gt; D
+    C --&gt; E
+    D --&gt; F
+    E --&gt; F
+    F --&gt; G
+    G --&gt; H
+    H --&gt; I</code></pre>
+<blockquote>
+<p>Workflow simplified for brevity. Omitted failure compensations and further fork-join patterns.<br />
+In reality, <em>Vulnerability Analysis</em> would split into more steps, one for each enabled analyzer.</p>
+</blockquote>
+<p>Each step is either I/O intensive, or relies on external systems. It is not practical to execute
+all steps synchronously. Depending on the size of the BOM and system load, an execution of this
+workflow can take anywhere from a few milliseconds, to multiple minutes.</p>
+<p>However, BOM uploads are not the only way in which a project analysis may be triggered:</p>
+<ul>
+<li>All projects are re-analyzed on a recurring basis, at least daily.</li>
+<li>Users can manually request a re-analysis of specific projects.</li>
+</ul>
+<p>This means that project analysis should ideally be its own, reusable workflow:</p>
+<pre class="mermaid"><code>---
+title: Project Analysis Workflow
+---
+flowchart LR
+    A@{ shape: circle, label: "Start" }
+    C@{ shape: fork, label: "Fork" }
+    D["Vulnerability Analysis"]
+    E["Repository Metadata Analysis"]
+    F@{ shape: fork, label: "Join" }
+    G["Policy Evaluation"]
+    H["Metrics Update"]
+    I@{ shape: dbl-circ, label: "Stop" }
+    A --&gt; C
+    C --&gt; D
+    C --&gt; E
+    D --&gt; F
+    E --&gt; F
+    F --&gt; G
+    G --&gt; H
+    H --&gt; I</code></pre>
+<p>It could then be launched individually, or reused as follows:</p>
+<pre class="mermaid"><code>---
+title: Goal BOM Processing Workflow
+---
+flowchart LR
+    A@{ shape: circle, label: "Start" }
+    B["BOM Ingestion"]
+    C@{ shape: subproc, label: "Project Analysis Workflow" }
+    D@{ shape: dbl-circ, label: "Stop" }
+    A --&gt; B
+    B --&gt; C
+    C --&gt; D</code></pre>
+<h4 id="concurrency-control">Concurrency control<a class="headerlink" href="#concurrency-control" title="Permanent link">&para;</a></h4>
+<p>To prevent race conditions and redundant work, an instance of the <em>Project Analysis</em> workflow for any given
+project should prevent other instances of <em>Project Analysis</em> for the same project from executing concurrently.
+This should be true even if the <em>Project Analysis</em> is part of another workflow, e.g. <em>BOM Upload Processing</em>.
+As such, <strong>workflow instances must be treated as dedicated units of work, rather than a simple chain of tasks</strong>.</p>
+<h4 id="fairness">Fairness<a class="headerlink" href="#fairness" title="Permanent link">&para;</a></h4>
+<p>Since workflows can be triggered as part of a client interaction (i.e. BOM upload, explicit request), <em>and</em> on schedule,
+it is critical that the former take precedence over the latter. The system performing a scheduled analysis of all projects
+in the portfolio should not prevent clients from receiving feedback in a timely manner. There must be a mechanism
+to prioritize work.</p>
+<p>We expect to run multiple types of workflows on the system. Many instances of workflow <code>A</code> being scheduled for
+execution should not cause execution of instances of workflow <code>B</code> to be delayed. Work queues must be isolated.</p>
+<h4 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h4>
+<p>Throughput is more important than latency for Dependency-Track. This is particularly true
+as we aim to raise the ceiling of how many projects we can support in a portfolio.</p>
+<p>Due to tasks being I/O-heavy, speed of scheduling and queueing of tasks in itself is not anticipated to be a
+limiting factor of the system. If the execution of a single task takes longer than a second, it's acceptable
+for dequeueing of <code>N &gt;= 1</code> tasks to take up to a few hundreds of milliseconds. Given proper indexing, autovacuum
+configuration, and fast disks, Postgres should support dequeue queries <em>well below</em> 100ms, even for very large queues.</p>
+<p>Since we have at least one workflow that will be scheduled for each project in the portfolio, at least daily,
+the system must be able to handle large queue depths. Assuming a portfolio of 100k projects, a queue depth of
+at least 100k tasks must be supported with little to no performance degradation as the bare minimum.</p>
+<p>We chose to rely on Postgres. A relational, <a href="https://www.postgresql.org/docs/current/mvcc.html">MVCC</a>-based database. The workflow orchestration solution
+should avoid usage patterns that are suboptimal for Postgres (e.g. lots of small transactions),
+and make use of features that allow Postgres to operate more efficiently (e.g. batching, advisory locks, 
+<code>FOR UPDATE SKIP LOCKED</code>, partitioned tables).</p>
+<p>It is expected that the solution can optionally be pointed to a Postgres instance separate from the main
+application. This may be necessary for larger deployments, as more tasks are enqueued and more workers
+poll for tasks.</p>
+<h4 id="resiliency">Resiliency<a class="headerlink" href="#resiliency" title="Permanent link">&para;</a></h4>
+<p>We frequently interact with external systems which can experience temporary downtime,
+or enforce rate limiting, causing RPCs to fail or be rejected. In the majority of cases,
+retries are sufficient to recover from such failures. </p>
+<p>Individual workflow steps must be retryable. It should be possible to define a backoff strategy,
+as well as a limit after which no more retries will be attempted. A workflow step being retried
+should not block the execution of steps belonging to other workflow instances.</p>
+<p>In case of node failures, it is expected that uncompleted work is not lost,
+and will be picked up by the same node upon restart, or other nodes in the cluster.</p>
+<h4 id="scheduling">Scheduling<a class="headerlink" href="#scheduling" title="Permanent link">&para;</a></h4>
+<p>We have many tasks that need to run repeatedly on a schedule. The currently implemented solution is based on
+a combination of in-memory timers and database-backed locks to prevent duplicate executions.</p>
+<p>The orchestration system should allow us to schedule recurring workflow executions, e.g. using cron expressions.</p>
+<p>Ideally, the system would allow for schedules to be adjusted at runtime, instead of requiring a restart.</p>
+<h4 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h4>
+<p>Based on interactions with the community, it is clear that not everyone is able or willing to operate infrastructure
+for centralized log monitoring and alerting. Further, it is very common for users, even administrative ones,
+to <em>not</em> have direct access to application logs.</p>
+<p>We can thus not rely on logging and metrics instrumentation to ensure observability.<br />
+We need a solution that has observability built in, and allows us to expose it on the application layer.</p>
+<p>In extension, records of workflow instances should be retained for a specified amount of time.
+This allows retrospective investigation of failures. The retention duration should be configurable.</p>
+<p>The intention is to make it easier for users without log access to see what's going on.<br />
+The intention is <strong>not</strong> to replace logs and metrics.<br />
+Both remain crucial for operators of Dependency-Track and must continue to be part of our implementation.</p>
+<h3 id="possible-solutions">Possible solutions<a class="headerlink" href="#possible-solutions" title="Permanent link">&para;</a></h3>
+<h4 id="a-adopt-a-job-scheduling-framework">A: Adopt a job scheduling framework<a class="headerlink" href="#a-adopt-a-job-scheduling-framework" title="Permanent link">&para;</a></h4>
+<p>Multiple open source frameworks for job scheduling using relational databases exist.
+Among them <a href="https://github.com/kagkarlsson/db-scheduler">db-scheduler</a>, <a href="https://www.jobrunr.io/en/">JobRunr</a> and <a href="https://www.quartz-scheduler.org/">Quartz</a>. While they focus on execution of individual
+jobs, they usually ship with basic workflow capabilities as well.</p>
+<p>Quartz jobs can be chained to form workflows, using <a href="https://www.quartz-scheduler.org/api/2.3.0/org/quartz/listeners/JobChainingJobListener.html"><code>JobChainingJobListener</code></a>.
+This functionality is self-described as "poor man's workflow".</p>
+<p><a href="https://www.jobrunr.io/en/">JobRunr</a> has a <a href="https://www.jobrunr.io/en/documentation/pro/job-chaining/">similar concept</a>, 
+but it's only available in the commercial Pro version. As an open source project, we cannot use
+commercial tooling.</p>
+<p><a href="https://github.com/kagkarlsson/db-scheduler">db-scheduler</a> appears to be the most capable option, while being entirely free without commercial offering.
+It, too supports job chaining to form workflows of multiple steps.</p>
+<p>Job chaining is an implementation of the <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/RoutingTable.html">routing slip pattern</a>. This model is akin to what Dependency-Track v4
+relied on, and we found it to be both unreliable and limiting at times. Since there is no orchestration layer
+in this setup, failure compensations are harder to implement.</p>
+<p>Fork-join / <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/BroadcastAggregate.html">scatter-gather</a> patterns are not supported by this approach. We need this capability to run certain
+workflow steps concurrently, e.g. <em>Vulnerability Analysis</em> and <em>Repository Metadata Analysis</em>. Additional state-keeping
+and coordination is necessary to achieve the desired behavior with job chaining.</p>
+<p>Also, none of these options allow job chains to be treated as logical units of work,
+which complicates concurrency control, fairness, and monitoring.</p>
+<h4 id="b-adopt-an-embedded-workflow-engine">B: Adopt an embedded workflow engine<a class="headerlink" href="#b-adopt-an-embedded-workflow-engine" title="Permanent link">&para;</a></h4>
+<p>Per the <a href="https://github.com/meirwah/awesome-workflow-engines">awesome-workflow-engines</a> list, available Java-based embedded workflow engines
+that can cater to our requirements include <a href="https://copper-engine.org/">COPPER</a> and <a href="https://nflow.io/">nFlow</a>.</p>
+<p>At the time of writing, the <a href="https://copper-engine.org/">COPPER</a> repository has not seen any activity for over 6 months.
+The documentation is scarce, but <a href="https://copper-engine.org/">COPPER</a> appears to be achieving durability by serializing stack
+frames of Java code, which leads to many restrictions when it comes to modifying workflows.</p>
+<p><a href="https://nflow.io/">nFlow</a> requires Spring Framework which we do not use, and we don't plan on changing this.</p>
+<h4 id="c-adopt-an-external-workflow-engine">C: Adopt an external workflow engine<a class="headerlink" href="#c-adopt-an-external-workflow-engine" title="Permanent link">&para;</a></h4>
+<p>Out of all external engines we encountered, <a href="https://temporal.io/">Temporal</a> is a perfect match. It supports everything we need,
+allows us to write workflows as code, and is open source. The same is true for <a href="https://cadenceworkflow.io/">Cadence</a>, the spiritual predecessor
+of <a href="https://temporal.io/">Temporal</a>.</p>
+<p>But systems like the above are built so scale, and scale in such a way that can support
+entire enterprises in running their workflows on shared infrastructure. This is great,
+but comes with a lot of additional complexity that we can't justify to introduce. 
+We just need something that supports our own use cases, without additional operational burden.</p>
+<h4 id="d-build-our-own">D: Build our own<a class="headerlink" href="#d-build-our-own" title="Permanent link">&para;</a></h4>
+<p><a href="https://temporal.io/">Temporal</a> is a spiritual successor to Microsoft's <a href="https://github.com/Azure/durabletask">Durable Task Framework</a> (DTFx). DTFx is not an external service,
+but an embeddable library. Unfortunately, DTFx is written in C#, so we can not use it.</p>
+<p>Microsoft has further invested into a Go port of DTFx: <a href="https://github.com/microsoft/durabletask-go">durabletask-go</a>, which can be used as a Go library,
+but also as an external service (i.e. sidecar). It powers <a href="https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/">Dapr Workflow</a> in this configuration. 
+<a href="https://github.com/microsoft/durabletask-go">durabletask-go</a> can be used with various storage backends, among them Postgres. A Java SDK for the 
+<a href="https://github.com/microsoft/durabletask-go">durabletask-go</a> sidecar is available with <a href="https://github.com/microsoft/durabletask-java">durabletask-java</a>. We don't want to require an external service though,
+even if it's <em>just</em> a sidecar.</p>
+<p>There are also some features that the DTFx implementations do not offer, for example scheduling, prioritization,
+and concurrency control. But the foundation for everything else we want is there. And judging by <a href="https://github.com/microsoft/durabletask-go">durabletask-go</a>'s
+code, implementing a DTFx-like engine is doable without a lot of complexity. Various patterns enabled by the DTFx model
+can be seen in the <a href="https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-patterns/">Dapr Workflow Patterns</a> documentation.</p>
+<p>In short, the plan for this solution is as follows:</p>
+<ul>
+<li>Build a Java-based, embeddable port of DTFx, roughly based on the logic of <a href="https://github.com/microsoft/durabletask-go">durabletask-go</a>.</li>
+<li>Omit abstractions to support multiple storage backends, focus entirely on Postgres instead.</li>
+<li>Omit features that we do not need to keep the porting effort low.</li>
+<li>Build features we need on top of this foundation.</li>
+</ul>
+<p>This approach allows us to fulfill our current requirements, but also adapt more quickly to new ones in the future.
+We completely avoid introduction of additional infrastructure or services, keeping operational complexity low.
+The solution is also not entirely bespoke, since we can lean on design decisions of the mature and proven DTFx ecosystem.</p>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>We will follow option <em>D</em>.</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<p>A DTFx port as outlined in <a href="#d-build-our-own">D: Build our own</a> needs to be developed.</p>
+<p>This work was already started to evaluate feasibility of this approach.
+The current state of the code is available here:</p>
+<ul>
+<li><a href="https://github.com/DependencyTrack/hyades-apiserver/tree/workflow-v2/src/main/java/org/dependencytrack/workflow"><code>DependencyTrack/hyades-apiserver@workflow-v2</code></a></li>
+<li><a href="https://github.com/DependencyTrack/hyades-frontend/tree/workflow-v2/src/views/workflowRuns"><code>DependencyTrack/hyades-frontend@workflow-v2</code></a></li>
+</ul>
+<p>A corresponding design document that describes our implementation will follow.</p>
 
 
 

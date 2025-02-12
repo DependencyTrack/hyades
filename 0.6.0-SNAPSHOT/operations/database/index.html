@@ -778,7 +778,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -788,6 +788,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -958,63 +1115,6 @@
       Bare Metal / Docker
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Bare Metal / Docker">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#basic-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Basic Configuration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#advanced-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Configuration
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#checkpoint_completion_target" class="md-nav__link">
-    <span class="md-ellipsis">
-      checkpoint_completion_target
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#autovacuum_vacuum_scale_factor" class="md-nav__link">
-    <span class="md-ellipsis">
-      autovacuum_vacuum_scale_factor
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#upgrades" class="md-nav__link">
-    <span class="md-ellipsis">
-      Upgrades
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1537,7 +1637,7 @@
 <p>The lowest supported version is 11. You are encouraged to use the <a href="https://www.postgresql.org/support/versioning/">newest available version</a>.</p>
 <p>Depending on available resources, individual preferences, or organizational policies,
 you will have to choose between a <a href="#managed-solutions">managed</a>, or <a href="#self-hosting">self-hosted</a> solution.</p>
-<h2 id="extensions">Extensions</h2>
+<h2 id="extensions">Extensions<a class="headerlink" href="#extensions" title="Permanent link">&para;</a></h2>
 <p>The following PostgreSQL <a href="https://www.postgresql.org/docs/current/external-extensions.html">extensions</a>
 are <strong>required</strong> by Dependency-Track. When choosing a hosting solution, verify that the extensions listed
 here are supported.</p>
@@ -1556,7 +1656,7 @@ during <a href="#schema-migrations">schema migration</a>. Enabling extensions ma
 </ol>
 <p>This ensures compatibility with <em>most</em> <a href="#managed-solutions">managed solutions</a>,
 and reduces setup effort for <a href="#self-hosting">self-hosted</a> deployments.</p>
-<h2 id="managed-solutions">Managed Solutions</h2>
+<h2 id="managed-solutions">Managed Solutions<a class="headerlink" href="#managed-solutions" title="Permanent link">&para;</a></h2>
 <p>The official PostgreSQL website hosts a <a href="https://www.postgresql.org/support/professional_hosting/">list of well-known commercial hosting providers</a>.</p>
 <p>Popular choices include:</p>
 <ul>
@@ -1570,8 +1670,8 @@ or extensions of it (for example <a href="https://neon.tech/">Neon</a> or <a hre
 <p>The same is not necessarily true for platforms based on heavily modified PostgreSQL, or even entire re-implementations
 such as <a href="https://www.cockroachlabs.com/">CockroachDB</a> or <a href="https://www.yugabyte.com/">YugabyteDB</a>. Such solutions make certain trade-offs to achieve higher levels of scalability,
 which might impact functionality that Dependency-Track relies on. If you'd like to see support for those, please <a href="https://github.com/DependencyTrack/hyades/issues/new?assignees=&amp;labels=enhancement&amp;projects=&amp;template=enhancement-request.yml">let us know</a>!</p>
-<h2 id="self-hosting">Self-Hosting</h2>
-<h3 id="bare-metal-docker">Bare Metal / Docker</h3>
+<h2 id="self-hosting">Self-Hosting<a class="headerlink" href="#self-hosting" title="Permanent link">&para;</a></h2>
+<h3 id="bare-metal-docker">Bare Metal / Docker<a class="headerlink" href="#bare-metal-docker" title="Permanent link">&para;</a></h3>
 <p>For Docker deployments, use the official <a href="https://hub.docker.com/_/postgres"><code>postgres</code></a> image.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1590,7 +1690,7 @@ See for example:</p>
 than the application containers. You want PostgreSQL to be able to leverage the entire machine's resources,
 without being impacted by other applications.</p>
 <p>For smaller and non-critical deployments, it is totally fine to run everything on a single machine.</p>
-<h4 id="basic-configuration">Basic Configuration</h4>
+<h4 id="basic-configuration">Basic Configuration<a class="headerlink" href="#basic-configuration" title="Permanent link">&para;</a></h4>
 <p>You should be aware that the default PostgreSQL configuration is <em>extremely</em> conservative.
 It is intended to make PostgreSQL usable on minimal hardware, which is great for testing,
 but can seriously cripple performance in production environments.
@@ -1611,7 +1711,7 @@ For example:</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="no">-c &#39;shared_buffers=2GB&#39;</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="no">-c &#39;effective_cache_size=6GB&#39;</span>
 </span></code></pre></div>
-<h4 id="advanced-configuration">Advanced Configuration</h4>
+<h4 id="advanced-configuration">Advanced Configuration<a class="headerlink" href="#advanced-configuration" title="Permanent link">&para;</a></h4>
 <p>For larger deployments, you may eventually run into situations where database performance degrades
 with just the basic configuration applied. Oftentimes, tweaking advanced settings can resolve
 such problems. But knowing which knobs to turn is a challenge in itself.</p>
@@ -1625,7 +1725,7 @@ applied for certain tables.</p>
 <p>Got more tips to configure or tune PostgreSQL, that may be helpful to others?<br />
 We'd love to include it in the docs, please do raise a PR!</p>
 </div>
-<h5 id="checkpoint_completion_target">checkpoint_completion_target</h5>
+<h5 id="checkpoint_completion_target">checkpoint_completion_target<a class="headerlink" href="#checkpoint_completion_target" title="Permanent link">&para;</a></h5>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1657,7 +1757,7 @@ resulting in a more evenly distributed I/O load. A lower value has been observed
 to cause undesirable spikes in I/O usage on the database server.</p>
 <div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">CHECKPOINT_COMPLETION_TARGET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">9</span><span class="p">;</span>
 </span></code></pre></div>
-<h5 id="autovacuum_vacuum_scale_factor">autovacuum_vacuum_scale_factor</h5>
+<h5 id="autovacuum_vacuum_scale_factor">autovacuum_vacuum_scale_factor<a class="headerlink" href="#autovacuum_vacuum_scale_factor" title="Permanent link">&para;</a></h5>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1694,7 +1794,7 @@ query planner to choose inefficient execution plans.</p>
 <div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="ss">&quot;COMPONENT&quot;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="p">(</span><span class="n">AUTOVACUUM_VACUUM_SCALE_FACTOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">02</span><span class="p">);</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="ss">&quot;DEPENDENCYMETRICS&quot;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="p">(</span><span class="n">AUTOVACUUM_VACUUM_SCALE_FACTOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">02</span><span class="p">);</span>
 </span></code></pre></div>
-<h4 id="upgrades">Upgrades</h4>
+<h4 id="upgrades">Upgrades<a class="headerlink" href="#upgrades" title="Permanent link">&para;</a></h4>
 <p>Follow the <a href="https://www.postgresql.org/docs/current/upgrading.html">official upgrading guide</a>. Be sure to select the version of the documentation that corresponds to the
 PostgreSQL version you are running.</p>
 <div class="admonition warning">
@@ -1703,11 +1803,11 @@ PostgreSQL version you are running.</p>
 breaking changes in the underlying data storage format. Minor version upgrades are usually safe to perform in a
 rolling manor.</p>
 </div>
-<h3 id="kubernetes">Kubernetes</h3>
+<h3 id="kubernetes">Kubernetes<a class="headerlink" href="#kubernetes" title="Permanent link">&para;</a></h3>
 <p>We generally advise <strong>against</strong> running PostgreSQL on Kubernetes, unless you <em>really</em> know what you're doing.
 Wielding heavy machinery such as <a href="https://github.com/zalando/postgres-operator">Postgres Operator</a> is not something you should do lightheartedly.</p>
 <p>If you know what you're doing, you definitely don't need advice from us. Smooth sailing! ⚓️</p>
-<h2 id="schema-migrations">Schema Migrations</h2>
+<h2 id="schema-migrations">Schema Migrations<a class="headerlink" href="#schema-migrations" title="Permanent link">&para;</a></h2>
 <p>Schema migrations are performed automatically by the API server upon startup. It leverages <a href="https://www.liquibase.com/">Liquibase</a> for doing so.
 There is usually no manual action required when upgrading from an older Dependency-Track version, unless explicitly
 stated otherwise in the release notes.</p>

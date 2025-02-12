@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/design/workflow-state-tracking/">
       
       
-        <link rel="prev" href="../../">
+        <link rel="prev" href="../../decisions/004-file-storage-plugin/">
       
       
         <link rel="next" href="../../../operations/database/">
@@ -763,6 +763,163 @@
                 
   
   
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Decisions
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -778,10 +935,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -793,8 +950,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -860,66 +1017,6 @@
       Design
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Design">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-to-track" class="md-nav__link">
-    <span class="md-ellipsis">
-      What to track
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#states" class="md-nav__link">
-    <span class="md-ellipsis">
-      States
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#workflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Workflow
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#proposed-table-schema" class="md-nav__link">
-    <span class="md-ellipsis">
-      Proposed Table Schema
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#retention" class="md-nav__link">
-    <span class="md-ellipsis">
-      Retention
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rest-api-endpoints" class="md-nav__link">
-    <span class="md-ellipsis">
-      REST API endpoints
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1489,7 +1586,7 @@
   
 
 
-<h1 id="tracking-of-workflow-state-for-bom-processing-and-analysis">Tracking of Workflow State for BOM Processing and Analysis</h1>
+<h1 id="tracking-of-workflow-state-for-bom-processing-and-analysis">Tracking of Workflow State for BOM Processing and Analysis<a class="headerlink" href="#tracking-of-workflow-state-for-bom-processing-and-analysis" title="Permanent link">&para;</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This document was extracted from <a href="https://github.com/DependencyTrack/hyades/issues/664">#664</a>.</p>
@@ -1510,12 +1607,12 @@
 <p>Events can be chained, such that a <code>BomUploadEvent</code> will trigger a <code>VulnerabilityAnalysisEvent</code>, which will trigger a <code>PolicyEvaluationEvent</code>, and so on. The event identifier is inherited by chained events.</p>
 <p>As everything happens in-memory, this mechanism does not work when multiple instances of the API server are used in an active-active deployment. For the functionality to continue to work, the state of processing steps must be persistent to external storage.</p>
 <p>Decoupled from #633.</p>
-<h3 id="design">Design</h3>
+<h3 id="design">Design<a class="headerlink" href="#design" title="Permanent link">&para;</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The goal for now is <em>not</em> to build a multi-purpose workflow engine, but to track state of one specific workflow. In a future iteration, we may invest more time into coming up with a generic workflow engine concept.</p>
 </div>
-<h4 id="what-to-track">What to track</h4>
+<h4 id="what-to-track">What to track<a class="headerlink" href="#what-to-track" title="Permanent link">&para;</a></h4>
 <ol>
 <li>BOM consumption (parsing, de-duplication, etc.)</li>
 <li>BOM processing (ingestion into database)</li>
@@ -1536,7 +1633,7 @@
 <p class="admonition-title">Note</p>
 <p>Completion of repository metadata analysis can currently not be tracked. We'll need something similar to what we introduced in https://github.com/DependencyTrack/hyades-apiserver/pull/40 for vulnerability analysis completion tracking. For the initial implementation, it may be OK to not track it.</p>
 </div>
-<h4 id="states">States</h4>
+<h4 id="states">States<a class="headerlink" href="#states" title="Permanent link">&para;</a></h4>
 <p>There are multiple states a processing step can be in:</p>
 <ul>
 <li><code>PENDING</code>: Initial state</li>
@@ -1572,7 +1669,7 @@
 <p class="admonition-title">Note</p>
 <p>There should be a deadline mechanism, which automatically transitions steps from <code>PENDING</code> into <code>TIMED_OUT</code> state. Steps in <code>TIMED_OUT</code> state communicate that it is <em>unlikely</em> that a terminal state can be reached (<code>COMPLETED</code>, <code>FAILED</code>). However, it is still possible (e.g. due to significant consumer lag, events may arrive late).</p>
 </div>
-<h4 id="workflow">Workflow</h4>
+<h4 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h4>
 <p>The API server will act as workflow orchestrator, kicking off new steps as needed. This implies that completion of a step must be registered by the API server.</p>
 <p>To illustrate how the initial stage of the workflow should look like:</p>
 <pre class="mermaid"><code>sequenceDiagram
@@ -1628,7 +1725,7 @@
         Client -&gt;&gt; FindingResource: Poll Status
         Note over Client, FindingResource: GET /api/v1/bom/token/&lt;CORRELATION_ID&gt;/status
     end</code></pre>
-<h4 id="proposed-table-schema">Proposed Table Schema</h4>
+<h4 id="proposed-table-schema">Proposed Table Schema<a class="headerlink" href="#proposed-table-schema" title="Permanent link">&para;</a></h4>
 <p>Each step of the workflow will be represented in a dedicated row. This allows us to add or remove steps without altering the database schema (see original version of the schema further down below), or even <em>add</em> steps while the workflow is running. It also plays better with concurrent writes, as no two threads / instances will need to modify the same row.</p>
 <table>
 <thead>
@@ -1694,13 +1791,13 @@
 * Do we need/want to capture the order in which steps are supposed to be executed?
 * Do we need/want to capture metadata of the overall workflow (who triggered it, when was it triggered, correlation id, ...)?</p>
 <p>Where applicable, the "detailed" status of a step is tracked in a dedicated table.</p>
-<h4 id="retention">Retention</h4>
+<h4 id="retention">Retention<a class="headerlink" href="#retention" title="Permanent link">&para;</a></h4>
 <p>Rows in the table should be cleaned up on a recurring basis.</p>
 <p>This could be as simple as scheduling a job that executes this SQL query:</p>
 <div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">org</span><span class="p">.</span><span class="n">dependencytrack</span><span class="p">.</span><span class="n">repometaanalyzer</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">WorkflowStep</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">updatedAt</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">:</span><span class="n">threshold</span>
 </span></code></pre></div>
 <p>A retention time of 1-3 days since the last update should be reasonable.</p>
-<h4 id="rest-api-endpoints">REST API endpoints</h4>
+<h4 id="rest-api-endpoints">REST API endpoints<a class="headerlink" href="#rest-api-endpoints" title="Permanent link">&para;</a></h4>
 <p>The existing endpoint to check whether a BOM is still being processed should continue to work as expected:</p>
 <p><div class="language-http highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="err">GET /api/v1/bom/token/&lt;CORRELATION_ID&gt;</span>
 </span></code></pre></div>

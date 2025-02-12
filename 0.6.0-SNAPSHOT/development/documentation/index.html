@@ -778,7 +778,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -788,6 +788,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1478,14 +1635,14 @@
   
 
 
-<h1 id="documentation">Documentation</h1>
-<h2 id="introduction">Introduction</h2>
+<h1 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>User-facing documentation is implemented with <a href="https://www.mkdocs.org/">MkDocs</a> and <a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a>.
 The sources are located in <a href="https://github.com/DependencyTrack/hyades/tree/main/docs"><code>docs</code></a>.
 Changes to the documentation are automatically deployed to GitHub pages, using the
 <a href="https://github.com/DependencyTrack/hyades/blob/main/.github/workflows/deploy-docs.yml"><code>deploy-docs.yml</code></a>
 GitHub Actions workflow. Once deployed, the documentation is available at <a href="https://dependencytrack.github.io/hyades/snapshot">https://dependencytrack.github.io/hyades/snapshot</a>.</p>
-<h2 id="versioning">Versioning</h2>
+<h2 id="versioning">Versioning<a class="headerlink" href="#versioning" title="Permanent link">&para;</a></h2>
 <p>Documentation is published for each version of the project, including unstable <code>SNAPSHOT</code> versions.
 This allows users to browse the docs most relevant to their Dependency-Track deployment.</p>
 <figure>
@@ -1503,17 +1660,17 @@ as documentation evolves.</p>
 </div>
 <p>The versioning logic is handled by <a href="https://github.com/jimporter/mike">mike</a> as part of the
 <a href="https://github.com/DependencyTrack/hyades/blob/main/.github/workflows/deploy-docs.yml"><code>deploy-docs.yml</code></a> workflow.</p>
-<h2 id="local-development">Local Development</h2>
+<h2 id="local-development">Local Development<a class="headerlink" href="#local-development" title="Permanent link">&para;</a></h2>
 <p>For local building and rendering of the docs, use the 
 <a href="https://github.com/DependencyTrack/hyades/blob/main/scripts/docs-dev.sh"><code>docs-dev.sh</code></a> script:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./scripts/docs-dev.sh
 </span></code></pre></div>
 <p>It will launch a development server that listens on <a href="http://localhost:8000">http://localhost:8000</a> and reloads whenever changes
 are made to the documentation sources. The script requires the <code>docker</code> command to be available.</p>
-<h2 id="configuration-documentation">Configuration Documentation</h2>
+<h2 id="configuration-documentation">Configuration Documentation<a class="headerlink" href="#configuration-documentation" title="Permanent link">&para;</a></h2>
 <p>To make it easier for users to discover available configuration options (i.e. environment variables),
 we generate human-readable documentation for it. You can see the result of this <a href="../../reference/configuration/api-server/">here</a>.</p>
-<h3 id="applicationproperties-annotations"><code>application.properties</code> Annotations</h3>
+<h3 id="applicationproperties-annotations"><code>application.properties</code> Annotations<a class="headerlink" href="#applicationproperties-annotations" title="Permanent link">&para;</a></h3>
 <p>We leverage comments on property definitions to gather metadata. Other than a property's description,
 the following <em>annotations</em> are supported to provide further information:</p>
 <table>
@@ -1586,7 +1743,7 @@ A deep-link will automatically be generated for it. For example:</p>
     <img alt="" src="../../images/dev_docs_config-deeplink.png" />
     <figcaption>Example of a generated deep-link for <code>alpine.cors.enabled</code></figcaption>
 </figure>
-<h3 id="generation">Generation</h3>
+<h3 id="generation">Generation<a class="headerlink" href="#generation" title="Permanent link">&para;</a></h3>
 <p>Configuration documentation is generated from <code>application.properties</code> files.
 We use the <a href="https://github.com/DependencyTrack/hyades/blob/main/scripts/GenerateConfigDocs.java"><code>GenerateConfigDocs</code></a>
 <a href="https://www.jbang.dev/">JBang</a> script for this:</p>

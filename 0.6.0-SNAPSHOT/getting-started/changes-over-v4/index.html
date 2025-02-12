@@ -871,7 +871,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -881,6 +881,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1467,7 +1624,7 @@
 
   <h1>Changes over v4</h1>
 
-<h2 id="new-features">New Features</h2>
+<h2 id="new-features">New Features<a class="headerlink" href="#new-features" title="Permanent link">&para;</a></h2>
 <!-- TODO: Add more! -->
 
 <ul>
@@ -1482,7 +1639,7 @@ than the engine shipped with v4. <!-- TODO: Link to policy docs when ready! --><
   <a href="../../architecture/design/workflow-state-tracking/">tracked in a persistent manner</a>,
   improving observability.</li>
 </ul>
-<h2 id="architecture-operations">Architecture / Operations</h2>
+<h2 id="architecture-operations">Architecture / Operations<a class="headerlink" href="#architecture-operations" title="Permanent link">&para;</a></h2>
 <!-- TODO: Add more! -->
 
 <ul>
@@ -1502,7 +1659,7 @@ and vulnerability analysis is performed by services separately from the API serv
 (thanks to <a href="https://www.graalvm.org/">GraalVM</a>), offering a lower resource footprint than their JVM-based counterparts.</li>
 <li><a href="../../development/database-migrations/">Database migrations</a> are performed through a more reliable, changelog-based approach.</li>
 </ul>
-<h2 id="breaking-changes">Breaking Changes</h2>
+<h2 id="breaking-changes">Breaking Changes<a class="headerlink" href="#breaking-changes" title="Permanent link">&para;</a></h2>
 <ul>
 <li>All deprecated endpoints mentioned below were removed:<ul>
 <li>POST <code>/api/v1/policy/{policyUuid}/tag/{tagName}</code></li>
@@ -1512,7 +1669,7 @@ and vulnerability analysis is performed by services separately from the API serv
 </ul>
 </li>
 </ul>
-<h3 id="notifications">Notifications</h3>
+<h3 id="notifications">Notifications<a class="headerlink" href="#notifications" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>subject</code> objects passed to notification templates are now objects generated from <a href="https://protobuf.dev/">Protobuf</a> definitions.<ul>
 <li>The respective schema is defined in <a href="https://github.com/DependencyTrack/hyades/blob/main/proto/src/main/proto/org/dependencytrack/notification/v1/notification.proto">notification.proto</a>.</li>
@@ -1546,7 +1703,7 @@ and vulnerability analysis is performed by services separately from the API serv
 </ul>
 </li>
 </ul>
-<h3 id="search">Search</h3>
+<h3 id="search">Search<a class="headerlink" href="#search" title="Permanent link">&para;</a></h3>
 <ul>
 <li>The API server no longer maintains <a href="https://lucene.apache.org/">Lucene</a> indexes.<ul>
 <li>The local <code>~/.dependency-track/index</code> directory is no longer required.</li>

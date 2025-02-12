@@ -9,6 +9,26 @@
          <lastmod>2025-02-12</lastmod>
     </url>
     <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/000-index/</loc>
+         <lastmod>2025-02-12</lastmod>
+    </url>
+    <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/001-drop-kafka-dependency/</loc>
+         <lastmod>2025-02-12</lastmod>
+    </url>
+    <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/002-workflow-orchestration/</loc>
+         <lastmod>2025-02-12</lastmod>
+    </url>
+    <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/003-notification-publishing/</loc>
+         <lastmod>2025-02-12</lastmod>
+    </url>
+    <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/004-file-storage-plugin/</loc>
+         <lastmod>2025-02-12</lastmod>
+    </url>
+    <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/design/workflow-state-tracking/</loc>
          <lastmod>2025-02-12</lastmod>
     </url>

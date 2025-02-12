@@ -778,7 +778,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -788,6 +788,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1487,7 +1644,7 @@
   
 
 
-<h1 id="overview">Overview</h1>
+<h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h1>
 <p>Want to hack on Hyades, the upcoming Dependency-Track v5?<br />
 Awesome, here's what you need to know to get started!</p>
 <div class="admonition abstract">
@@ -1495,7 +1652,7 @@ Awesome, here's what you need to know to get started!</p>
 <p>Please be sure to read <a href="https://github.com/DependencyTrack/hyades/blob/main/CONTRIBUTING.md"><code>CONTRIBUTING.md</code></a> and
 <a href="https://github.com/DependencyTrack/hyades/blob/main/CODE_OF_CONDUCT.md"><code>CODE_OF_CONDUCT.md</code></a> as well.</p>
 </div>
-<h2 id="repositories">Repositories</h2>
+<h2 id="repositories">Repositories<a class="headerlink" href="#repositories" title="Permanent link">&para;</a></h2>
 <p>The project consists of the following repositories:</p>
 <table>
 <thead>
@@ -1530,7 +1687,7 @@ which should result in less overhead and more opportunities for code sharing.</p
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/DependencyTrack/hyades-apiserver.git
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/DependencyTrack/hyades-frontend.git
 </span></code></pre></div>
-<h2 id="prerequisites">Prerequisites</h2>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <p>There are a few things you'll need on your journey:</p>
 <ul>
 <li>Java Development Kit<sup>1</sup> &gt;=21 (<a href="https://adoptium.net/temurin/releases">Temurin</a> distribution recommended)</li>
@@ -1550,9 +1707,9 @@ you should obviously prefer the packages provided by your organization.</p>
 in the <code>.idea/runConfigurations</code> directories of each repository for convenience.
 IntelliJ will automatically pick those up when you open this repository.</p>
 </details>
-<h2 id="core-technologies">Core Technologies</h2>
+<h2 id="core-technologies">Core Technologies<a class="headerlink" href="#core-technologies" title="Permanent link">&para;</a></h2>
 <p>Knowing about the core technologies may help you with understanding the code base.</p>
-<h3 id="infrastructure">Infrastructure</h3>
+<h3 id="infrastructure">Infrastructure<a class="headerlink" href="#infrastructure" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1571,7 +1728,7 @@ IntelliJ will automatically pick those up when you open this repository.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="api-server">API Server</h3>
+<h3 id="api-server">API Server<a class="headerlink" href="#api-server" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1626,7 +1783,7 @@ IntelliJ will automatically pick those up when you open this repository.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="hyades-services">Hyades Services</h3>
+<h3 id="hyades-services">Hyades Services<a class="headerlink" href="#hyades-services" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1653,7 +1810,7 @@ IntelliJ will automatically pick those up when you open this repository.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="frontend">Frontend</h3>
+<h3 id="frontend">Frontend<a class="headerlink" href="#frontend" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>

@@ -851,7 +851,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -861,6 +861,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1461,15 +1618,15 @@ limited to specific projects. Policies are evaluated when an SBOM is uploaded.</
 <li>Security</li>
 <li>Operational</li>
 </ul>
-<h2 id="license-violation">License Violation</h2>
+<h2 id="license-violation">License Violation<a class="headerlink" href="#license-violation" title="Permanent link">&para;</a></h2>
 <p>Policy conditions can specify zero or more SPDX license IDs as well as license groups. Dependency-Track comes with
 pre-configured groups of related licenses (e.g. Copyleft) that provide a starting point for organizations to create
 custom license policies.</p>
-<h2 id="security-violation">Security Violation</h2>
+<h2 id="security-violation">Security Violation<a class="headerlink" href="#security-violation" title="Permanent link">&para;</a></h2>
 <p>Policy conditions can specify the severity of vulnerabilities. A vulnerability affecting a component can result in a
 policy violation if the policy condition matches the severity of the vulnerability. Vulnerabilities that are suppressed
 will not result in a policy violation.</p>
-<h2 id="operational-violation">Operational Violation</h2>
+<h2 id="operational-violation">Operational Violation<a class="headerlink" href="#operational-violation" title="Permanent link">&para;</a></h2>
 <p>Policy conditions can specify zero or more:</p>
 <ul>
 <li>Coordinates (group, name, version)</li>

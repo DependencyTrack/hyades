@@ -860,7 +860,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -870,6 +870,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1460,7 +1617,7 @@
     <img alt="" src="images/hyades-star-cluster.png" />
     <figcaption>&quot;<a href="https://commons.wikimedia.org/wiki/File:Hyades.jpg">Hyades</a>&quot; by Todd Vance (<a href="https://creativecommons.org/licenses/by-sa/2.5/legalcode" rel="license">CC BY-SA 2.5</a>)</figcaption>
 </figure>
-<h2 id="introduction">Introduction</h2>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>Project <em>Hyades</em>, named after <a href="https://en.wikipedia.org/wiki/Hyades_(star_cluster)">the star cluster closest to earth</a>, is an <em>incubating</em> project for decoupling
 responsibilities from <a href="https://dependencytrack.org/">Dependency-Track</a>'s monolithic API server into separate, scalable™ services.</p>
 <p>The main objectives of Hyades are:</p>
@@ -1484,7 +1641,7 @@ and features made possible by the new architecture have been implemented on top.
 <p>Check out <a href="getting-started/changes-over-v4/">Changes over v4</a> for a complete overview of changes, and have a look at <a href="getting-started/migrating-from-v4/">Migrating from v4</a>
 for migration instructions.</p>
 </div>
-<h2 id="background">Background</h2>
+<h2 id="background">Background<a class="headerlink" href="#background" title="Permanent link">&para;</a></h2>
 <details class="abstract">
 <summary>tl;dr</summary>
 <p>The architecture of Dependency-Track v4 prevents it from scaling past a certain workload.</p>
@@ -1527,7 +1684,7 @@ Common tasks handled by this worker pool include:</p>
 </ul>
 <p><code>NotificationService</code> is a dedicated worker pool for dispatching <a href="https://docs.dependencytrack.org/integrations/notifications/">notifications</a>.
 Its thread pool size defaults to <code>4</code> and is not configurable.</p>
-<h3 id="limitations-of-the-v4-architecture">Limitations of the v4 architecture</h3>
+<h3 id="limitations-of-the-v4-architecture">Limitations of the v4 architecture<a class="headerlink" href="#limitations-of-the-v4-architecture" title="Permanent link">&para;</a></h3>
 <p>While this architecture works great for small to medium workloads, it presents various challenges for larger ones:</p>
 <ol>
 <li><strong>Not horizontally scalable</strong>. As pub-sub is happening entirely in-memory, it is not possible to distribute
@@ -1552,7 +1709,7 @@ Its thread pool size defaults to <code>4</code> and is not configurable.</p>
    distributed locking as a countermeasure, which is <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">inherently hard to get right</a>.</li>
 </ol>
 <p>In order to scale Dependency-Track beyond its current capabilities, a distributed messaging service is required.</p>
-<h3 id="related-issues">Related Issues</h3>
+<h3 id="related-issues">Related Issues<a class="headerlink" href="#related-issues" title="Permanent link">&para;</a></h3>
 <p>On multiple occasions in the past, the Dependency-Track community raised questions about high availability (HA)
 deployments, and / or how to better scale the platform:</p>
 <ul>

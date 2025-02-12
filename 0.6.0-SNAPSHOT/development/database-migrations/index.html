@@ -778,7 +778,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -788,6 +788,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1445,8 +1602,8 @@
   
 
 
-<h1 id="database-migrations">Database Migrations</h1>
-<h2 id="introduction">Introduction</h2>
+<h1 id="database-migrations">Database Migrations<a class="headerlink" href="#database-migrations" title="Permanent link">&para;</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>In contrast to Dependency-Track v4 and earlier, Dependency-Track v5 manages database migrations with <a href="https://www.liquibase.com/">Liquibase</a>.
 The database schema is still <em>owned</em> by the API server though. It will execute migrations upon startup,
 unless explicitly disabled via <a href="../../reference/configuration/api-server/#databaserunmigrations"><code>database.run.migrations</code></a>.</p>
@@ -1455,7 +1612,7 @@ For the sake of better visibility, Dependency-Track uses separate changelogs for
 Individual changelogs are referenced by <a href="https://github.com/DependencyTrack/hyades-apiserver/blob/main/src/main/resources/migration/changelog-main.xml"><code>changelog-main.xml</code></a>.</p>
 <p>Stored procedures and custom SQL functions are treated differently: They are re-created whenever their
 content changes. Their sources are located in the <a href="https://github.com/DependencyTrack/hyades-apiserver/tree/main/src/main/resources/migration/procedures"><code>procedures</code></a> directory.</p>
-<h2 id="adding-migrations">Adding Migrations</h2>
+<h2 id="adding-migrations">Adding Migrations<a class="headerlink" href="#adding-migrations" title="Permanent link">&para;</a></h2>
 <ol>
 <li>If it doesn't exist already, create a <code>changelog-vX.Y.Z.xml</code> file<ul>
 <li><code>X</code>, <code>Y</code>, and <code>Z</code> must correspond to the current release version</li>
@@ -1484,7 +1641,7 @@ content changes. Their sources are located in the <a href="https://github.com/De
 </li>
 <li>You <strong>must not</strong> modify <code>changeset</code>s that were already committed to <code>main</code></li>
 </ul>
-<h2 id="making-schema-changes-available-to-hyades-services">Making Schema Changes Available to Hyades Services</h2>
+<h2 id="making-schema-changes-available-to-hyades-services">Making Schema Changes Available to Hyades Services<a class="headerlink" href="#making-schema-changes-available-to-hyades-services" title="Permanent link">&para;</a></h2>
 <p>Because the schema is owned by the API server, and the API server is also responsible for executing migrations,
 other services that access the database must replicate the current schema, in order to run tests against it.</p>
 <p>Currently, this is achieved by:</p>

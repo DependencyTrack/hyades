@@ -780,7 +780,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -790,6 +790,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1727,7 +1884,7 @@
   <h1>Notification</h1>
 
 <p><a name="org-dependencytrack-notification-v1-Notification"></a></p>
-<h2 id="notification">Notification</h2>
+<h2 id="notification">Notification<a class="headerlink" href="#notification" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -1774,9 +1931,9 @@
 </tr>
 </tbody>
 </table>
-<h2 id="subjects">Subjects</h2>
+<h2 id="subjects">Subjects<a class="headerlink" href="#subjects" title="Permanent link">&para;</a></h2>
 <p><a name="org-dependencytrack-notification-v1-BomConsumedOrProcessedSubject"></a></p>
-<h3 id="bomconsumedorprocessedsubject">BomConsumedOrProcessedSubject</h3>
+<h3 id="bomconsumedorprocessedsubject">BomConsumedOrProcessedSubject<a class="headerlink" href="#bomconsumedorprocessedsubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1804,7 +1961,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-BomProcessingFailedSubject"></a></p>
-<h3 id="bomprocessingfailedsubject">BomProcessingFailedSubject</h3>
+<h3 id="bomprocessingfailedsubject">BomProcessingFailedSubject<a class="headerlink" href="#bomprocessingfailedsubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1837,7 +1994,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-BomValidationFailedSubject"></a></p>
-<h3 id="bomvalidationfailedsubject">BomValidationFailedSubject</h3>
+<h3 id="bomvalidationfailedsubject">BomValidationFailedSubject<a class="headerlink" href="#bomvalidationfailedsubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1865,7 +2022,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-ComponentVulnAnalysisCompleteSubject"></a></p>
-<h3 id="componentvulnanalysiscompletesubject">ComponentVulnAnalysisCompleteSubject</h3>
+<h3 id="componentvulnanalysiscompletesubject">ComponentVulnAnalysisCompleteSubject<a class="headerlink" href="#componentvulnanalysiscompletesubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1888,7 +2045,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-NewVulnerabilitySubject"></a></p>
-<h3 id="newvulnerabilitysubject">NewVulnerabilitySubject</h3>
+<h3 id="newvulnerabilitysubject">NewVulnerabilitySubject<a class="headerlink" href="#newvulnerabilitysubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1931,7 +2088,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-NewVulnerableDependencySubject"></a></p>
-<h3 id="newvulnerabledependencysubject">NewVulnerableDependencySubject</h3>
+<h3 id="newvulnerabledependencysubject">NewVulnerableDependencySubject<a class="headerlink" href="#newvulnerabledependencysubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1959,7 +2116,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-PolicyViolationAnalysisDecisionChangeSubject"></a></p>
-<h3 id="policyviolationanalysisdecisionchangesubject">PolicyViolationAnalysisDecisionChangeSubject</h3>
+<h3 id="policyviolationanalysisdecisionchangesubject">PolicyViolationAnalysisDecisionChangeSubject<a class="headerlink" href="#policyviolationanalysisdecisionchangesubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -1992,7 +2149,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-PolicyViolationSubject"></a></p>
-<h3 id="policyviolationsubject">PolicyViolationSubject</h3>
+<h3 id="policyviolationsubject">PolicyViolationSubject<a class="headerlink" href="#policyviolationsubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2020,7 +2177,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-ProjectVulnAnalysisCompleteSubject"></a></p>
-<h3 id="projectvulnanalysiscompletesubject">ProjectVulnAnalysisCompleteSubject</h3>
+<h3 id="projectvulnanalysiscompletesubject">ProjectVulnAnalysisCompleteSubject<a class="headerlink" href="#projectvulnanalysiscompletesubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2053,7 +2210,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-UserSubject"></a></p>
-<h3 id="usersubject">UserSubject</h3>
+<h3 id="usersubject">UserSubject<a class="headerlink" href="#usersubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2076,7 +2233,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-VexConsumedOrProcessedSubject"></a></p>
-<h3 id="vexconsumedorprocessedsubject">VexConsumedOrProcessedSubject</h3>
+<h3 id="vexconsumedorprocessedsubject">VexConsumedOrProcessedSubject<a class="headerlink" href="#vexconsumedorprocessedsubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2109,7 +2266,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-VulnerabilityAnalysisDecisionChangeSubject"></a></p>
-<h3 id="vulnerabilityanalysisdecisionchangesubject">VulnerabilityAnalysisDecisionChangeSubject</h3>
+<h3 id="vulnerabilityanalysisdecisionchangesubject">VulnerabilityAnalysisDecisionChangeSubject<a class="headerlink" href="#vulnerabilityanalysisdecisionchangesubject" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2141,9 +2298,9 @@
 </tr>
 </tbody>
 </table>
-<h2 id="messages">Messages</h2>
+<h2 id="messages">Messages<a class="headerlink" href="#messages" title="Permanent link">&para;</a></h2>
 <p><a name="org-dependencytrack-notification-v1-BackReference"></a></p>
-<h3 id="backreference">BackReference</h3>
+<h3 id="backreference">BackReference<a class="headerlink" href="#backreference" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2166,7 +2323,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Bom"></a></p>
-<h3 id="bom">Bom</h3>
+<h3 id="bom">Bom<a class="headerlink" href="#bom" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2194,7 +2351,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Component"></a></p>
-<h3 id="component">Component</h3>
+<h3 id="component">Component<a class="headerlink" href="#component" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2252,7 +2409,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Policy"></a></p>
-<h3 id="policy">Policy</h3>
+<h3 id="policy">Policy<a class="headerlink" href="#policy" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2280,7 +2437,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-PolicyCondition"></a></p>
-<h3 id="policycondition">PolicyCondition</h3>
+<h3 id="policycondition">PolicyCondition<a class="headerlink" href="#policycondition" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2318,7 +2475,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-PolicyViolation"></a></p>
-<h3 id="policyviolation">PolicyViolation</h3>
+<h3 id="policyviolation">PolicyViolation<a class="headerlink" href="#policyviolation" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2351,7 +2508,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-PolicyViolationAnalysis"></a></p>
-<h3 id="policyviolationanalysis">PolicyViolationAnalysis</h3>
+<h3 id="policyviolationanalysis">PolicyViolationAnalysis<a class="headerlink" href="#policyviolationanalysis" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2389,7 +2546,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Project"></a></p>
-<h3 id="project">Project</h3>
+<h3 id="project">Project<a class="headerlink" href="#project" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2432,7 +2589,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Vulnerability"></a></p>
-<h3 id="vulnerability">Vulnerability</h3>
+<h3 id="vulnerability">Vulnerability<a class="headerlink" href="#vulnerability" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2535,7 +2692,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Vulnerability-Alias"></a></p>
-<h3 id="vulnerabilityalias">Vulnerability.Alias</h3>
+<h3 id="vulnerabilityalias">Vulnerability.Alias<a class="headerlink" href="#vulnerabilityalias" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2558,7 +2715,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Vulnerability-Cwe"></a></p>
-<h3 id="vulnerabilitycwe">Vulnerability.Cwe</h3>
+<h3 id="vulnerabilitycwe">Vulnerability.Cwe<a class="headerlink" href="#vulnerabilitycwe" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2581,7 +2738,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-VulnerabilityAnalysis"></a></p>
-<h3 id="vulnerabilityanalysis">VulnerabilityAnalysis</h3>
+<h3 id="vulnerabilityanalysis">VulnerabilityAnalysis<a class="headerlink" href="#vulnerabilityanalysis" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2618,9 +2775,9 @@
 </tr>
 </tbody>
 </table>
-<h2 id="enums">Enums</h2>
+<h2 id="enums">Enums<a class="headerlink" href="#enums" title="Permanent link">&para;</a></h2>
 <p><a name="org-dependencytrack-notification-v1-Group"></a></p>
-<h3 id="group">Group</h3>
+<h3 id="group">Group<a class="headerlink" href="#group" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2716,7 +2873,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Level"></a></p>
-<h3 id="level">Level</h3>
+<h3 id="level">Level<a class="headerlink" href="#level" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2744,7 +2901,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-ProjectVulnAnalysisStatus"></a></p>
-<h3 id="projectvulnanalysisstatus">ProjectVulnAnalysisStatus</h3>
+<h3 id="projectvulnanalysisstatus">ProjectVulnAnalysisStatus<a class="headerlink" href="#projectvulnanalysisstatus" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -2768,7 +2925,7 @@
 </tbody>
 </table>
 <p><a name="org-dependencytrack-notification-v1-Scope"></a></p>
-<h3 id="scope">Scope</h3>
+<h3 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>

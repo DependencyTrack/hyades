@@ -778,7 +778,7 @@
             
   
   <span class="md-ellipsis">
-    Design
+    Decisions
     
   </span>
   
@@ -788,6 +788,163 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Decisions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-001: Drop Kafka Dependency
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-002: Workflow Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-003: Notification Publishing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ADR-004: File Storage Plugin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Design
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             Design
           </label>
@@ -1526,10 +1683,10 @@
   
 
 
-<h1 id="building">Building</h1>
-<h2 id="hyades"><code>hyades</code></h2>
+<h1 id="building">Building<a class="headerlink" href="#building" title="Permanent link">&para;</a></h1>
+<h2 id="hyades"><code>hyades</code><a class="headerlink" href="#hyades" title="Permanent link">&para;</a></h2>
 <p>This segment provides build instructions for the <code>DependencyTrack/hyades</code> repository.</p>
-<h3 id="jars">JARs</h3>
+<h3 id="jars">JARs<a class="headerlink" href="#jars" title="Permanent link">&para;</a></h3>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>IntelliJ users can simply execute the <code>Build</code> run configuration.</p>
@@ -1547,7 +1704,7 @@
 to other modules when building specific modules as shown above. Either include the shared
 modules in the <code>-pl</code> argument, or run <code>mvn clean install -DskipTests</code> beforehand.</p>
 </div>
-<h3 id="containers">Containers</h3>
+<h3 id="containers">Containers<a class="headerlink" href="#containers" title="Permanent link">&para;</a></h3>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>IntelliJ users can simply execute the <code>Build Container Images</code> run configuration.</p>
@@ -1565,7 +1722,7 @@ modules in the <code>-pl</code> argument, or run <code>mvn clean install -DskipT
 <p>For example:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ghcr.io/dependencytrack/hyades-vulnerability-analyzer:local
 </span></code></pre></div>
-<h3 id="native-executables">Native Executables</h3>
+<h3 id="native-executables">Native Executables<a class="headerlink" href="#native-executables" title="Permanent link">&para;</a></h3>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>IntelliJ users can simply execute the <code>Build Native</code> run configuration.</p>
@@ -1589,9 +1746,9 @@ You can install GraalVM with <code>sdkman</code>: <a href="https://sdkman.io/jdk
 but your host system is <em>not</em> Linux, you can leverage a GraalVM container to perform the build:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>package<span class="w"> </span>-Dnative<span class="w"> </span>-DskipTests<span class="w"> </span>-Dquarkus.native.container-build<span class="o">=</span><span class="nb">true</span>
 </span></code></pre></div>
-<h2 id="hyades-apiserver"><code>hyades-apiserver</code></h2>
+<h2 id="hyades-apiserver"><code>hyades-apiserver</code><a class="headerlink" href="#hyades-apiserver" title="Permanent link">&para;</a></h2>
 <p>This segment provides build instructions for the <code>DependencyTrack/hyades-apiserver</code> repository.</p>
-<h3 id="jar">JAR</h3>
+<h3 id="jar">JAR<a class="headerlink" href="#jar" title="Permanent link">&para;</a></h3>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>IntelliJ users can simply execute the <code>Build API Server</code> run configuration.</p>
@@ -1606,7 +1763,7 @@ but your host system is <em>not</em> Linux, you can leverage a GraalVM container
 </span></code></pre></div>
 <p>The resulting file is placed in <code>./target</code> as <code>dependency-track-apiserver.jar</code>.<br />
 The JAR ships with an embedded Jetty server, there's no need to deploy it in an application server like Tomcat or WildFly.</p>
-<h3 id="container">Container</h3>
+<h3 id="container">Container<a class="headerlink" href="#container" title="Permanent link">&para;</a></h3>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>IntelliJ users can simply execute the <code>Build API Server Image</code> run configuration.</p>
@@ -1619,15 +1776,15 @@ The JAR ships with an embedded Jetty server, there's no need to deploy it in an 
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>-f<span class="w"> </span>./src/main/docker/Dockerfile<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>.
 </span></code></pre></div>
-<h2 id="hyades-frontend"><code>hyades-frontend</code></h2>
+<h2 id="hyades-frontend"><code>hyades-frontend</code><a class="headerlink" href="#hyades-frontend" title="Permanent link">&para;</a></h2>
 <p>This segment provides build instructions for the <code>DependencyTrack/hyades-frontend</code> repository.</p>
-<h3 id="distribution">Distribution</h3>
+<h3 id="distribution">Distribution<a class="headerlink" href="#distribution" title="Permanent link">&para;</a></h3>
 <p>To build the frontend using webpack:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>npm<span class="w"> </span>run<span class="w"> </span>build
 </span></code></pre></div>
 <p>The build artifacts are placed in <code>./dist</code>.<br />
 The contents of <code>dist</code> can be deployed to any webserver capable of serving static files.</p>
-<h3 id="container_1">Container</h3>
+<h3 id="container_1">Container<a class="headerlink" href="#container_1" title="Permanent link">&para;</a></h3>
 <p>Ensure you've built the frontend as outlined above.</p>
 <p>To build the frontend image:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker<span class="w"> </span>build<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile.alpine<span class="w"> </span>-t<span class="w"> </span>ghcr.io/dependencytrack/hyades-frontend:local<span class="w"> </span>.
