@@ -57,7 +57,7 @@ export default defineConfig({
           node_version: process.version,
         },
       },
-    ],
+    ]
   ]: [["list"], ["html", { outputFolder: defOutDir + '/playwright-report' }]],
 
   // globalSetup for: locale.json Determination
