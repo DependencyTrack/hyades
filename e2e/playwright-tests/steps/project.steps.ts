@@ -273,7 +273,7 @@ Then('the update-project button in project details should be visible', async ({ 
     await expect(selectedProjectPage.projectDetailsUpdateButton).toBeVisible();
 });
 
-Then('the user expands the first vulnerability on audit Vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }) => {
+Then('the user expands the first vulnerability on audit vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }) => {
     await projectAuditVulnerabilitiesPage.tableList.first().locator('td').first().click();
 });
 
@@ -281,4 +281,34 @@ Then('the user verifies read access on the vulnerability audit view on audit Vul
     await expect(projectAuditVulnerabilitiesPage.detailViewTitleField).toBeVisible();
     await expect(projectAuditVulnerabilitiesPage.detailViewDescriptionField).toBeVisible();
     await expect(projectAuditVulnerabilitiesPage.detailViewAuditTrailField).toBeVisible();
+
+    await expect(projectAuditVulnerabilitiesPage.detailViewCommentField).not.toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewAddCommentButton).not.toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewAnalysisSelect).not.toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewSuppressToggle).not.toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewJustificationSelect).not.toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewVendorResponseSelect).not.toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewAnalysisDetailsField).not.toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewUpdateAnalysisDetailsButton).not.toBeVisible();
+});
+
+Then('the user verifies read access on the policy violation audit view on policy violations project tab', async ({ projectPolicyViolationsPage }) => {
+    await expect(projectPolicyViolationsPage.detailViewFailedConditionField).toBeVisible();
+    await expect(projectPolicyViolationsPage.detailViewAuditTrailField).toBeVisible();
+
+    await expect(projectPolicyViolationsPage.detailViewSuppressToggle).not.toBeVisible();
+    await expect(projectPolicyViolationsPage.detailViewCommentField).not.toBeVisible();
+    await expect(projectPolicyViolationsPage.detailViewAddCommentButton).not.toBeVisible();
+    await expect(projectPolicyViolationsPage.detailViewAnalysisSelect).not.toBeVisible();
+});
+
+Then('the user verifies write access on the policy violation audit view on policy violations project tab', async ({ projectPolicyViolationsPage }) => {
+    await expect(projectPolicyViolationsPage.detailViewSuppressToggle).toBeVisible();
+    await expect(projectPolicyViolationsPage.detailViewCommentField).toBeVisible();
+    await expect(projectPolicyViolationsPage.detailViewAddCommentButton).toBeVisible();
+    await expect(projectPolicyViolationsPage.detailViewAnalysisSelect).toBeVisible();
+});
+
+Then('the user expands the first violation on policy violation project tab', async ({ projectPolicyViolationsPage }) => {
+    await projectPolicyViolationsPage.tableList.first().locator('td').first().click();
 });
