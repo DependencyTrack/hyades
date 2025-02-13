@@ -11,14 +11,14 @@ Given('the user {string} is already authenticated for DependencyTrack', async ({
             }
     }, sessionStorage);
     await page.goto('/');
-    await navBarPage.verifyNavTabIsActive('dashboardTab');
+    await navBarPage.verifyNavTabIsActive('dashboard');
 });
 
 Given('the admin user logs in to DependencyTrack and verifies', async ({ loginPage, navBarPage }) => {
     await loginPage.goto();
     await loginPage.verifyVisibleLoginPage();
     await loginPage.login('admin', process.env.RANDOM_PASSWORD);
-    await navBarPage.verifyNavTabIsActive('dashboardTab');
+    await navBarPage.verifyNavTabIsActive('dashboard');
 });
 
 Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage }, username: string) => {
@@ -27,11 +27,10 @@ Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage
     await loginPage.login(username, process.env.RANDOM_PASSWORD);
 });
 
-Given('the user {string} logs in to DependencyTrack', async ({ loginPage, navBarPage }, username: string) => {
+Given('the user {string} logs in to DependencyTrack and verifies', async ({ loginPage, navBarPage }, username: string) => {
     await loginPage.goto();
-    await loginPage.verifyVisibleLoginPage();
     await loginPage.login(username, process.env.RANDOM_PASSWORD);
-    await navBarPage.verifyNavTabIsActive('dashboardTab');
+    await navBarPage.verifyNavTabIsActive('dashboard');
 });
 
 Given('the user {string} tries to log in to DependencyTrack with password {string}', async ({ loginPage }, username: string, password: string) => {
@@ -40,16 +39,15 @@ Given('the user {string} tries to log in to DependencyTrack with password {strin
     await loginPage.login(username, password);
 });
 
-Then('the user sees wrong log in credentials modal content popup', async ({ loginPage }) => {
+Then('the user sees wrong log in credentials modal content popup and closes it', async ({ loginPage }) => {
     await loginPage.verifyLoginErrorPopup();
     await loginPage.closeLoginErrorPopup();
-
 });
 
 Then('the delete-tag button is not visible', async ({ tagsPage }) => {
     await expect(tagsPage.deleteButton).not.toBeVisible();
 });
 
-Then('the delete-tag button is visible', async ({ tagsPage }) => {
+Then('the delete-tag button should be visible', async ({ tagsPage }) => {
     await expect(tagsPage.deleteButton).toBeVisible();
 });

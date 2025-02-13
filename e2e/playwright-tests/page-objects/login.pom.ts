@@ -19,6 +19,7 @@ export class LoginPage {
         this.loginDescription = page.locator('.text-muted');
         this.loginErrorPopup = page.locator('.modal-content');
     }
+
     async goto() {
         await this.page.goto('/');
         await this.verifyVisibleLoginPage();

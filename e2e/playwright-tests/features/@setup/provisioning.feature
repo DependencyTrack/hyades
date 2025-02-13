@@ -1,8 +1,8 @@
 @mode:serial
 Feature:
   Scenario: Delete All Test Users Before Tests
-    Given the admin user logs in to DependencyTrack and verifies
-    When the user navigates to "administrationTab" page and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
+    When the user navigates to "administration" page and verifies
     Then the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user deletes the following test users if they exist
@@ -22,15 +22,15 @@ Feature:
       | test-user_VP_VM_PERMS         |
 
   Scenario: Delete All Test Policies Before Tests
-    Given the admin user logs in to DependencyTrack and verifies
-    Then the user navigates to "policyManagementTab" page and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
+    Then the user navigates to "policyManagement" page and verifies
     Then the user deletes the following test policies if they exist
       | policyName    |
       | test-policy01 |
 
   Scenario: Delete All Test Projects Before Tests
-    Given the admin user logs in to DependencyTrack and verifies
-    When the user navigates to "projectsTab" page and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
+    When the user navigates to "projects" page and verifies
     Then the user deletes the following test projects if they exist
       | name           |
       | test-project01 |
@@ -38,8 +38,8 @@ Feature:
       | test-project03 |
 
   Scenario: Create Test Users
-    Given the admin user logs in to DependencyTrack and verifies
-    When the user navigates to "administrationTab" page and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
+    When the user navigates to "administration" page and verifies
     Then the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user creates the following test users
@@ -59,8 +59,8 @@ Feature:
       | test-user_VP_VM_PERMS  |
 
   Scenario: Create Test Policies
-    Given the admin user logs in to DependencyTrack and verifies
-    When the user navigates to "policyManagementTab" page and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
+    When the user navigates to "policyManagement" page and verifies
     Then the user creates the following test policies
       | policyName    |
       | test-policy01 |
@@ -72,8 +72,8 @@ Feature:
       | AGE              | >                 | P1D                 |
 
   Scenario: Create Test Project With Default BOM
-    Given the admin user logs in to DependencyTrack and verifies
-    When the user navigates to "projectsTab" page and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
+    When the user navigates to "projects" page and verifies
     Then the user creates projects with the following values
       | name           | classifier  | version | isLastVersion | team | parent | description | tag |
       | test-project01 | APPLICATION |         |               |      |        |             |     |
@@ -82,14 +82,14 @@ Feature:
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
-    Then the user navigates to "projectsTab" page and verifies
+    Then the user navigates to "projects" page and verifies
     Then the user opens the project with the name "test-project02"
     And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
 
   Scenario: Provide Test Users With Respective Permissions
-    Given the admin user logs in to DependencyTrack and verifies
-    When the user navigates to "administrationTab" page and verifies
+    Given the user "admin" is already authenticated for DependencyTrack
+    When the user navigates to "administration" page and verifies
     Then the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user provides "test-user_VP_PERMS" with the following permissions

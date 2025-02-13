@@ -12,11 +12,6 @@ setup('Store Admin Authentication', async ({ page }) => {
 
     await page.waitForURL('http://localhost:8081/dashboard', { timeout: 5000 });
     await page.context().storageState({ path: adminFile });
-    // todo currently not working..fix with sessionStorage https://playwright.dev/docs/auth#session-storage
-    //  add in common.steps when fixed and change playwright.config
     const sessionStorage = await page.evaluate(() => JSON.stringify(sessionStorage));
     fs.writeFileSync(adminFile, sessionStorage, 'utf-8');
 });
-
-// AUTH SETUP FOR TEST USERS SHOULD BE INSIDE PROVISIONING
-// AS EVERY PROVISIONED OBJECT NEEDS TO BE REMOVED AND CREATED FOR EVERY RUN

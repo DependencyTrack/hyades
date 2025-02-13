@@ -162,7 +162,7 @@ Then('the user opens the policy violation of Component {string}', async ({ proje
 
 Then('the user comments the current policy violation with {string}', async ({ projectPolicyViolationsPage, notificationToast }, comment: string) => {
     await projectPolicyViolationsPage.fillDetailViewCommentField(comment);
-    await projectPolicyViolationsPage.clickOnDetailViewCommentButton();
+    await projectPolicyViolationsPage.clickOnDetailViewAddCommentButton();
     await notificationToast.verifySuccessfulUpdatedToast();
 });
 
@@ -203,16 +203,82 @@ Then('the upload-bom button is invisible', async ({ projectComponentsPage }) => 
     await expect(projectComponentsPage.uploadBomButton).not.toBeVisible();
 });
 
-Then('the upload-bom button is visible', async ({ projectComponentsPage }) => {
+Then('the upload-bom button should be visible', async ({ projectComponentsPage }) => {
     await expect(projectComponentsPage.uploadBomButton).toBeVisible();
 });
 
-Then('the project {string} tab should not be visible', async function ({ selectedProjectPage }, projectTab: string) {
+Then('the project {string} tab should not be visible', async ({ selectedProjectPage }, projectTab: string) => {
     const tabLocator = await selectedProjectPage.getTabLocator(projectTab);
     await expect(tabLocator).not.toBeVisible();
 });
 
-Then('the project {string} tab should be visible', async function ({selectedProjectPage}, projectTab: string) {
+Then('the project {string} tab should be visible', async ({ selectedProjectPage }, projectTab: string) => {
     const tabLocator = await selectedProjectPage.getTabLocator(projectTab)
     await expect(tabLocator).toBeVisible();
+});
+
+Then('the create-project button should not visible', async ({ projectPage }) => {
+    await expect(projectPage.createProjectButton).not.toBeVisible();
+});
+
+Then('the create-project button should be visible', async ({ projectPage }) => {
+    await expect(projectPage.createProjectButton).toBeVisible();
+});
+
+Then('the add-component button should not be visible', async ({ projectComponentsPage }) => {
+    await expect(projectComponentsPage.addComponentButton).not.toBeVisible();
+});
+
+Then('the remove-component button should not be visible', async ({ projectComponentsPage }) => {
+    await expect(projectComponentsPage.removeComponentButton).not.toBeVisible();
+});
+
+Then('the add-component button should be visible', async ({ projectComponentsPage }) => {
+    await expect(projectComponentsPage.addComponentButton).toBeVisible();
+});
+
+Then('the remove-component button should be visible', async ({ projectComponentsPage }) => {
+    await expect(projectComponentsPage.removeComponentButton).toBeVisible();
+});
+
+Then('the delete-project button in project details should not be visible', async ({ selectedProjectPage }) => {
+    await expect(selectedProjectPage.projectDetailsDeleteButton).not.toBeVisible();
+});
+
+Then('the project-properties button in project details should not be visible', async ({ selectedProjectPage }) => {
+    await expect(selectedProjectPage.projectDetailsPropertiesButton).not.toBeVisible();
+});
+
+Then('the add-version button in project details should not be visible', async ({ selectedProjectPage }) => {
+    await expect(selectedProjectPage.projectDetailsAddVersionButton).not.toBeVisible();
+});
+
+Then('the update-project button in project details should not be visible', async ({ selectedProjectPage }) => {
+    await expect(selectedProjectPage.projectDetailsUpdateButton).not.toBeVisible();
+});
+
+Then('the delete-project button in project details should be visible', async ({ selectedProjectPage }) => {
+    await expect(selectedProjectPage.projectDetailsDeleteButton).toBeVisible();
+});
+
+Then('the project-properties button in project details should be visible', async ({ selectedProjectPage }) => {
+    await expect(selectedProjectPage.projectDetailsPropertiesButton).toBeVisible();
+});
+
+Then('the add-version button in project details should be visible', async ({ selectedProjectPage }) => {
+    await expect(selectedProjectPage.projectDetailsAddVersionButton).toBeVisible();
+});
+
+Then('the update-project button in project details should be visible', async ({ selectedProjectPage }) => {
+    await expect(selectedProjectPage.projectDetailsUpdateButton).toBeVisible();
+});
+
+Then('the user expands the first vulnerability on audit Vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }) => {
+    await projectAuditVulnerabilitiesPage.tableList.first().locator('td').first().click();
+});
+
+Then('the user verifies read access on the vulnerability audit view on audit Vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }) => {
+    await expect(projectAuditVulnerabilitiesPage.detailViewTitleField).toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewDescriptionField).toBeVisible();
+    await expect(projectAuditVulnerabilitiesPage.detailViewAuditTrailField).toBeVisible();
 });
