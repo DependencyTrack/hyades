@@ -14,7 +14,7 @@ Feature:
       | test-user_VP_BU_PERMS         |
       | test-user_VP_PolicyM_PERMS    |
       | test-user_VP_VPV_PERMS        |
-      | test-user_VP_PVA_PERMS        |
+      | test-user_VP_VPV_PVA_PERMS    |
       | test-user_VP_TM_PERMS         |
       | test-user_VP_PortfolioM_PERMS |
       | test-user_VP_VV_PERMS         |
@@ -43,20 +43,20 @@ Feature:
     Then the user navigates to administration menu "accessManagement"
     And the user clicks on access-management submenu "managedUsers"
     Then the user creates the following test users
-      | username     |
-      | test-user0_PERMS  |
-      | test-user_VP_PERMS  |
-      | test-user_VP_SC_PERMS  |
-      | test-user_VP_SC_AM_PERMS  |
-      | test-user_VP_BU_PERMS  |
-      | test-user_VP_PolicyM_PERMS  |
-      | test-user_VP_VPV_PERMS  |
-      | test-user_VP_PVA_PERMS  |
-      | test-user_VP_TM_PERMS  |
-      | test-user_VP_PortfolioM_PERMS  |
-      | test-user_VP_VV_PERMS  |
-      | test-user_VP_VV_VA_PERMS  |
-      | test-user_VP_VM_PERMS  |
+      | username                      |
+      | test-user0_PERMS              |
+      | test-user_VP_PERMS            |
+      | test-user_VP_SC_PERMS         |
+      | test-user_VP_SC_AM_PERMS      |
+      | test-user_VP_BU_PERMS         |
+      | test-user_VP_PolicyM_PERMS    |
+      | test-user_VP_VPV_PERMS        |
+      | test-user_VP_VPV_PVA_PERMS    |
+      | test-user_VP_TM_PERMS         |
+      | test-user_VP_PortfolioM_PERMS |
+      | test-user_VP_VV_PERMS         |
+      | test-user_VP_VV_VA_PERMS      |
+      | test-user_VP_VM_PERMS         |
 
   Scenario: Create Test Policies
     Given the user "admin" is already authenticated for DependencyTrack
@@ -116,9 +116,10 @@ Feature:
       | permission            |
       | VIEW_PORTFOLIO        |
       | VIEW_POLICY_VIOLATION |
-    Then the user provides "test-user_VP_PVA_PERMS" with the following permissions
+    Then the user provides "test-user_VP_VPV_PVA_PERMS" with the following permissions
       | permission                |
       | VIEW_PORTFOLIO            |
+      | VIEW_POLICY_VIOLATION     |
       | POLICY_VIOLATION_ANALYSIS |
     Then the user provides "test-user_VP_TM_PERMS" with the following permissions
       | permission            |

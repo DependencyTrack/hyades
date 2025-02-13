@@ -445,6 +445,7 @@ export class ProjectAuditVulnerabilitiesPage {
     detailViewJustificationSelect: Locator;
     detailViewVendorResponseSelect: Locator;
     detailViewAnalysisDetailsField: Locator;
+    detailViewUpdateAnalysisDetailsButton: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -463,7 +464,7 @@ export class ProjectAuditVulnerabilitiesPage {
         this.detailViewJustificationSelect = this.detailView.locator('#input-10').locator('.custom-select');
         this.detailViewVendorResponseSelect = this.detailView.locator('#input-11').locator('.custom-select');
         this.detailViewAnalysisDetailsField = this.detailView.locator('#analysisDetailsField');
-        this.detailViewAnalysisDetailsField = this.detailView.getByRole('button', { name: getValue("message", "update_details") });
+        this.detailViewUpdateAnalysisDetailsButton = this.detailView.getByRole('button', { name: getValue("message", "update_details") });
     }
 
     async fillSearchFieldInput(search: string) {

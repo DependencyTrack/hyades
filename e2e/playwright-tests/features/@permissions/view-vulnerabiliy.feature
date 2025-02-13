@@ -12,5 +12,5 @@ Feature: VIEW_PORTFOLIO x VIEW_VULNERABILITY
     When the user navigates to "projects" page and verifies
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "auditVulnerabilities" tab and verifies
-    Then the user expands the first vulnerability on audit Vulnerability project tab
+    Then the user expands the first vulnerability on audit vulnerability project tab
     And the user verifies read access on the vulnerability audit view on audit Vulnerability project tab
