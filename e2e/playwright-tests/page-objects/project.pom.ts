@@ -426,7 +426,6 @@ export class ProjectDependencyGraphPage {
     }
 }
 
-// Todo add functionality for auditing
 export class ProjectAuditVulnerabilitiesPage {
     readonly page: Page;
     tabPanel: Locator;
@@ -458,7 +457,7 @@ export class ProjectAuditVulnerabilitiesPage {
         this.detailViewDescriptionField = this.detailView.locator('#input-3');
         this.detailViewCommentField = this.detailView.locator('#input-8');
         this.detailViewAuditTrailField = this.detailView.locator('#auditTrailField');
-        this.detailViewAddCommentButton = this.detailView.locator('#button');
+        this.detailViewAddCommentButton = this.detailView.getByRole('button', { name: getValue("message", "add_comment") });
         this.detailViewAnalysisSelect = this.detailView.locator('#input-9').locator('.custom-select');
         this.detailViewSuppressToggle = this.detailView.locator('.toggle.btn');
         this.detailViewJustificationSelect = this.detailView.locator('#input-10').locator('.custom-select');
@@ -520,8 +519,8 @@ export class ProjectPolicyViolationsPage {
     detailViewCommentField: Locator;
     detailViewAddCommentButton: Locator;
     detailViewAnalysisSelect: Locator;
-    lastDetailViewAnalysisSelect: string;
     detailViewSuppressToggle: Locator;
+    lastDetailViewAnalysisSelect: string;
 
     constructor(page: Page) {
         this.page = page;
@@ -537,10 +536,10 @@ export class ProjectPolicyViolationsPage {
         this.detailViewFailedConditionField = this.detailView.locator('#failedCondition-input');
         this.detailViewAuditTrailField = this.detailView.locator('#auditTrailField');
         this.detailViewCommentField = this.detailView.locator('#input-8');
-        this.detailViewAddCommentButton = this.detailView.locator('.pull-right');
+        this.detailViewAddCommentButton = this.detailView.getByRole('button', { name: getValue("message", "add_comment") });
         this.detailViewAnalysisSelect = this.detailView.locator('.custom-select');
-        this.lastDetailViewAnalysisSelect = "NOT_SET"
         this.detailViewSuppressToggle = this.detailView.locator('.toggle.btn');
+        this.lastDetailViewAnalysisSelect = "NOT_SET"
     }
 
     async clearSearchFieldInput() {

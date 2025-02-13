@@ -1,5 +1,5 @@
 Feature: VIEW_PORTFOLIO x VIEW_POLICY_VIOLATION x POLICY_VIOLATION_ANALYSIS
-  Scenario: With VIEW_POLICY_VIOLATION But Without POLICY_VIOLATION_ANALYSIS Permission Can See Audit View On Policy Violations Project Page But Cannot Audit Them
+  Scenario: With VIEW_POLICY_VIOLATION But Without POLICY_VIOLATION_ANALYSIS Permission The User Can See Audit View On Policy Violations Project Page But Cannot Audit Them
     Given the user "test-user_VP_VPV_PERMS" logs in to DependencyTrack and verifies
     Then the user navigates to "projects" page and verifies
     Then the user opens the project with the name "test-project01"
