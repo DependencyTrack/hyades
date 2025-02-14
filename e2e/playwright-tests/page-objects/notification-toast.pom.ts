@@ -118,4 +118,22 @@ export class NotificationToast {
         await expect(this.successToast).toContainText(getValue("message", "vulnerability_deleted"));
         await this.successToast.click();
     }
+
+    async verifySuccessfulComponentCreatedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "component_created"));
+        await this.successToast.click();
+    }
+
+    async verifySuccessfulComponentDeletedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "component_deleted"));
+        await this.successToast.click();
+    }
+
+    async verifySuccessfulVexUploadedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "vex_uploaded"));
+        await this.successToast.click();
+    }
 }

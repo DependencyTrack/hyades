@@ -12,6 +12,7 @@
   - [Local HTML Report](#31-local---html-report-desktop_computer)
   - [CI/CD Allure Report](#32-cicd---allure-report-satellite)
 - [Troubleshoot](#4-troubleshooting-ambulance)
+- [Coverage](#5-current-coverage-white_check_mark)
 
 ---
 
@@ -33,7 +34,7 @@ To set up Playwright, run the following command in the root directory of your pr
 npm run playwright:init
 ```
 
-This script installs the dev-dependencies inside `package.json` and the dependencies necessary for playwright to function (e.g. browsers)
+This script installs the dev-dependencies present inside `package.json` and the dependencies necessary for playwright to function (e.g. browsers)
 
 If no errors occur, you're ready to use Playwright! 🎉 _If errors occur, stay calm and troubleshoot!_ 🚨
 
@@ -60,6 +61,7 @@ But rather than creating another wiki here, we would suggest visiting the [Playw
 ## 2. Tests with Playwright BDD :scroll:
 
 Playwright does not natively support Behavior-Driven Development (BDD) ([official issue](https://github.com/microsoft/playwright/issues/11975)), but recommends a plugin that makes it possible: [Playwright BDD](https://vitalets.github.io/playwright-bdd/#/).
+That Plugin basically translates Gherkin into executable tests for the Playwright runner. The generated tests will be located in `/.feature-gen`
 
 ### 2.1 Writing a Test with Gherkin Syntax :writing_hand:
 
@@ -147,5 +149,9 @@ We basically execute the tests, let allure generate a report and publish it on t
 - **Test Errors occur?**
   - _Verify that the .feature-files are referenced properly inside the .steps.ts-files_
 - _There may be more issues coming in the future_
+
+## 5 Current Coverage :white_check_mark:
+As of March 2025 V1 of the tests do not cover all functionality, that DependencyTrack provides.
+It provides coverage for the main permissions and important features for projects. Check out `/features`.
 
 For more details, visit the [official Playwright documentation](https://playwright.dev/) and [Playwright-BDD](https://vitalets.github.io/playwright-bdd/#/) for the BDD approach.

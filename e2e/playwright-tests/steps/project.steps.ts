@@ -133,10 +133,10 @@ Then('the user verifies Policy Violations with the badge number of {int} total {
     const actualWarnBadge = await selectedProjectPage.getWarnTabBadgeValue(tabName);
     const actualFailBadge = await selectedProjectPage.getFailTabBadgeValue(tabName);
 
-    expect(actualTotalBadge).toBe(totalBadge);
-    expect(actualInfoBadge).toBe(infoBadge);
-    expect(actualWarnBadge).toBe(warnBadge);
-    expect(actualFailBadge).toBe(failBadge);
+    expect(actualTotalBadge).toEqual(totalBadge);
+    expect(actualInfoBadge).toEqual(infoBadge);
+    expect(actualWarnBadge).toEqual(warnBadge);
+    expect(actualFailBadge).toEqual(failBadge);
 });
 
 Then('the table on the respective projects tab is visible and contains entries', async ({ page }) => {
@@ -329,4 +329,48 @@ Then('the user verifies write access on the policy violation audit view on polic
     await expect(projectPolicyViolationsPage.detailViewCommentField).toBeVisible();
     await expect(projectPolicyViolationsPage.detailViewAddCommentButton).toBeVisible();
     await expect(projectPolicyViolationsPage.detailViewAnalysisSelect).toBeVisible();
+});
+
+Then('the user adds a custom component on projects component page with the following values', async ({ page, projectComponentsPage, notificationToast }, dataTable: DataTable) => {
+    for(const row of dataTable.hashes()) {
+        await projectComponentsPage.clickOnAddComponent();
+        await projectComponentsPage.addComponent(row.componentName, row.componentVersion, row.componentPURL);
+        await notificationToast.verifySuccessfulComponentCreatedToast();
+        await page.waitForTimeout(1000);
+    }
+});
+
+Then('the user deletes the custom component {string} on projects component page', async ({ page, projectComponentsPage, selectedComponentsPage, notificationToast }, componentName: string) => {
+    await projectComponentsPage.fillSearchFieldInput(componentName);
+    await projectComponentsPage.clickOnSpecificComponent(componentName);
+    await selectedComponentsPage.clickOnViewDetails();
+    await selectedComponentsPage.deleteComponent();
+    await notificationToast.verifySuccessfulComponentDeletedToast();
+    await page.waitForTimeout(1000);
+});
+
+Then('the user applies default VEX for current project', async ({ page, projectAuditVulnerabilitiesPage, notificationToast }) => {
+    await projectAuditVulnerabilitiesPage.applyVex();
+    await notificationToast.verifySuccessfulVexUploadedToast();
+    await page.waitForTimeout(1000);
+});
+
+Then('the user verifies default VEX application for current project with the following values', async ({ page, projectAuditVulnerabilitiesPage, notificationToast }, dataTable: DataTable) => {
+    await projectAuditVulnerabilitiesPage.showSuppressedVulnerabilities();
+    for(const row of dataTable.hashes()) {
+        await projectAuditVulnerabilitiesPage.fillSearchFieldInput(row.componentName);
+        await projectAuditVulnerabilitiesPage.toggleDetailViewOnSpecificVulnerability(row.componentName);
+
+        await projectAuditVulnerabilitiesPage.detailView.scrollIntoViewIfNeeded();
+
+        await expect(projectAuditVulnerabilitiesPage.detailViewAnalysisSelect).toHaveValue(new RegExp(row.analysisState, 'i'));
+        await expect(projectAuditVulnerabilitiesPage.detailViewJustificationSelect).toHaveValue(new RegExp(row.justification, 'i'));
+        await expect(projectAuditVulnerabilitiesPage.detailViewVendorResponseSelect).toHaveValue(new RegExp(row.response, 'i'));
+
+        await expect(projectAuditVulnerabilitiesPage.detailViewAnalysisDetailsField).toHaveValue(new RegExp(row.details, 'i'));
+
+        await projectAuditVulnerabilitiesPage.toggleDetailViewOnSpecificVulnerability(row.componentName);
+        await page.waitForTimeout(1000);
+    }
+    await projectAuditVulnerabilitiesPage.hideSuppressedVulnerabilities();
 });
