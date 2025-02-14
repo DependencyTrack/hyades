@@ -25,6 +25,7 @@ import com.github.packageurl.PackageURLBuilder;
 import com.google.protobuf.util.Timestamps;
 import io.github.jeremylong.openvulnerability.client.ghsa.CWEs;
 import io.github.jeremylong.openvulnerability.client.ghsa.Identifier;
+import io.github.jeremylong.openvulnerability.client.ghsa.Package;
 import io.github.jeremylong.openvulnerability.client.ghsa.SecurityAdvisory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,9 +59,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
+import static com.github.packageurl.PackageURLBuilder.aPackageURL;
 import static io.github.nscuro.versatile.VersUtils.versFromGhsaRange;
 
 public class GitHubAdvisoryToCdxParser {
@@ -106,7 +107,7 @@ public class GitHubAdvisoryToCdxParser {
             CollectionUtils.isNotEmpty(advisory.getVulnerabilities().getEdges())) {
 
             for (final io.github.jeremylong.openvulnerability.client.ghsa.Vulnerability gitHubVulnerability : advisory.getVulnerabilities().getEdges()) {
-                PackageURL purl = generatePurlFromGitHubVulnerability(gitHubVulnerability);
+                PackageURL purl = convertToPurl(gitHubVulnerability.getPackage());
                 if (purl == null) {
                     //drop mapping if purl is null
                     break;
@@ -152,8 +153,10 @@ public class GitHubAdvisoryToCdxParser {
     }
 
     private static Optional<VulnerabilityRating> parseRating(final SecurityAdvisory advisory) {
-        if (advisory.getCvss() != null && StringUtils.trimToNull(advisory.getCvss().getVectorString()) != null) {
-            final String cvssVector = StringUtils.trimToNull(advisory.getCvss().getVectorString());
+        if (advisory.getCvssSeverities() != null
+            && advisory.getCvssSeverities().getCvssV3() != null
+            && StringUtils.trimToNull(advisory.getCvssSeverities().getCvssV3().getVectorString()) != null) {
+            final String cvssVector = StringUtils.trimToNull(advisory.getCvssSeverities().getCvssV3().getVectorString());
             final Cvss cvss;
             try {
                 cvss = Cvss.fromVector(cvssVector);
@@ -262,27 +265,54 @@ public class GitHubAdvisoryToCdxParser {
         return cwes;
     }
 
-    private static PackageURL generatePurlFromGitHubVulnerability(final io.github.jeremylong.openvulnerability.client.ghsa.Vulnerability vuln) {
-        final String purlType = ParserUtil.mapGitHubEcosystemToPurlType(vuln.getPackage().getEcosystem());
-        try {
-            if (purlType != null) {
-                if (PackageURL.StandardTypes.NPM.equals(purlType) && vuln.getPackage().getName().contains("/")) {
-                    final String[] parts = vuln.getPackage().getName().split("/");
-                    return PackageURLBuilder.aPackageURL().withType(purlType).withNamespace(parts[0]).withName(parts[1]).build();
-                } else if (PackageURL.StandardTypes.MAVEN.equals(purlType) && vuln.getPackage().getName().contains(":")) {
-                    final String[] parts = vuln.getPackage().getName().split(":");
-                    return PackageURLBuilder.aPackageURL().withType(purlType).withNamespace(parts[0]).withName(parts[1]).build();
-                } else if (Set.of(PackageURL.StandardTypes.COMPOSER, PackageURL.StandardTypes.GOLANG).contains(purlType) && vuln.getPackage().getName().contains("/")) {
-                    final String[] parts = vuln.getPackage().getName().split("/");
-                    final String namespace = String.join("/", Arrays.copyOfRange(parts, 0, parts.length - 1));
-                    return PackageURLBuilder.aPackageURL().withType(purlType).withNamespace(namespace).withName(parts[parts.length - 1]).build();
-                } else {
-                    return PackageURLBuilder.aPackageURL().withType(purlType).withName(vuln.getPackage().getName()).build();
-                }
+    private static PackageURL convertToPurl(final Package pkg) {
+        final String purlType = switch (pkg.getEcosystem().toLowerCase()) {
+            case "composer" -> PackageURL.StandardTypes.COMPOSER;
+            case "erlang" -> PackageURL.StandardTypes.HEX;
+            case "go" -> PackageURL.StandardTypes.GOLANG;
+            case "maven" -> PackageURL.StandardTypes.MAVEN;
+            case "npm" -> PackageURL.StandardTypes.NPM;
+            case "nuget" -> PackageURL.StandardTypes.NUGET;
+            case "other" -> PackageURL.StandardTypes.GENERIC;
+            case "pip" -> PackageURL.StandardTypes.PYPI;
+            case "pub" -> "pub"; // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#pub
+            case "rubygems" -> PackageURL.StandardTypes.GEM;
+            case "rust" -> PackageURL.StandardTypes.CARGO;
+            case "swift" -> "swift"; // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#swift
+            default -> {
+                // Not optimal, but still better than ignoring the package entirely.
+                LOGGER.warn("Unrecognized ecosystem %s; Assuming PURL type %s for %s".formatted(
+                        pkg.getEcosystem(), PackageURL.StandardTypes.GENERIC, pkg));
+                yield PackageURL.StandardTypes.GENERIC;
             }
-        } catch (MalformedPackageURLException e) {
-            LOGGER.warn("Unable to create purl from GitHub Vulnerability. Skipping " + vuln.getPackage().getEcosystem() + " : " + vuln.getPackage().getName());
+        };
+
+        final PackageURLBuilder purlBuilder = aPackageURL().withType(purlType);
+        if (PackageURL.StandardTypes.MAVEN.equals(purlType) && pkg.getName().contains(":")) {
+            final String[] nameParts = pkg.getName().split(":", 2);
+            purlBuilder
+                    .withNamespace(nameParts[0])
+                    .withName(nameParts[1]);
+        } else if ((PackageURL.StandardTypes.COMPOSER.equals(purlType)
+                    || PackageURL.StandardTypes.GOLANG.equals(purlType)
+                    || PackageURL.StandardTypes.NPM.equals(purlType)
+                    || PackageURL.StandardTypes.GENERIC.equals(purlType))
+                   && pkg.getName().contains("/")) {
+            final String[] nameParts = pkg.getName().split("/");
+            final String namespace = String.join("/", Arrays.copyOfRange(nameParts, 0, nameParts.length - 1));
+            purlBuilder
+                    .withNamespace(namespace)
+                    .withName(nameParts[nameParts.length - 1]);
+        } else {
+            purlBuilder.withName(pkg.getName());
         }
-        return null;
+
+        try {
+            return purlBuilder.build();
+        } catch (MalformedPackageURLException e) {
+            LOGGER.warn("Failed to assemble a valid PURL from {}", pkg, e);
+            return null;
+        }
     }
+
 }

@@ -25,6 +25,7 @@ import com.google.protobuf.util.JsonFormat;
 import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
 import net.javacrumbs.jsonunit.core.Option;
 import org.cyclonedx.proto.v1_6.Bom;
+import org.cyclonedx.proto.v1_6.Component;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
@@ -33,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class NvdToCyclonedxParserTest {
 
@@ -482,5 +484,24 @@ class NvdToCyclonedxParserTest {
                         """);
     }
 
+    @Test
+    public void testParsingWithIgnoringAmbiguousRunningOnCpeMatchesAlt() throws Exception {
+        final byte[] cveBytes = IOUtils.resourceToByteArray("/datasource/nvd/cve-2024-23113.json");
+        final DefCveItem cveItem = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(new JavaTimeModule()).readValue(cveBytes, DefCveItem.class);
+
+        final Bom bov = NvdToCyclonedxParser.parse(cveItem);
+
+        final var components = bov.getComponentsList();
+        assertThat(components).isNotNull();
+        assertThat(components).extracting(Component::getCpe).containsExactlyInAnyOrder(
+                "cpe:2.3:a:fortinet:fortiproxy:*:*:*:*:*:*:*:*",
+                "cpe:2.3:a:fortinet:fortiswitchmanager:*:*:*:*:*:*:*:*",
+                "cpe:2.3:o:fortinet:fortios:*:*:*:*:*:*:*:*",
+                "cpe:2.3:o:fortinet:fortipam:*:*:*:*:*:*:*:*",
+                "cpe:2.3:o:fortinet:fortipam:1.2.0:*:*:*:*:*:*:*"
+        );
+    }
 }
 

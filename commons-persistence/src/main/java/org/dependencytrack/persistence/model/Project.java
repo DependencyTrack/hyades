@@ -113,8 +113,8 @@ public class Project implements Serializable {
     @Column(name = "LAST_RISKSCORE")
     private Double lastInheritedRiskScore;
 
-    @Column(name = "ACTIVE")
-    private boolean active;
+    @Column(name = "INACTIVE_SINCE")
+    private Date inactiveSince;
 
     public long getId() {
         return id;
@@ -241,11 +241,15 @@ public class Project implements Serializable {
     }
 
     public boolean isActive() {
-        return active;
+        return inactiveSince == null;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public Date getInactiveSince() {
+        return inactiveSince;
+    }
+
+    public void setInactiveSince(Date inactiveSince) {
+        this.inactiveSince = inactiveSince;
     }
 
     public Collection<Project> getChildren() {
