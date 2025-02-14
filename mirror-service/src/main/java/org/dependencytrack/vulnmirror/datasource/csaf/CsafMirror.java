@@ -113,22 +113,20 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 //System.out.println(sourceUrl);
                 var csaf = document.getOrNull().getJson();
                 csaf.getVulnerabilities().forEach((vuln) -> {
-                    System.out.println(vuln);
+                    LOGGER.info("Processing vulnerability {}", vuln.getTitle());
 
                     final Bom bov = CsafToCdxParser.parse(vuln);
                     try {
                         publishIfChanged(bov);
                     } catch (ExecutionException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        LOGGER.error("Error while publishing document", e);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
 
                 });
             } else {
-                // System.out.println(document);
+                LOGGER.error("Error while processing document", document.exceptionOrNull());
             }
         });
 
