@@ -18,39 +18,28 @@
  */
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
-import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
-import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.time.chrono.ChronoZonedDateTime;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
 import io.github.csaf.sbom.retrieval.CsafLoader;
-import io.github.csaf.sbom.retrieval.RetrievedAggregator;
-import io.github.csaf.sbom.retrieval.RetrievedDocument;
 import io.github.csaf.sbom.retrieval.RetrievedProvider;
-import io.github.jeremylong.openvulnerability.client.nvd.DefCveItem;
-import io.github.jeremylong.openvulnerability.client.nvd.NvdCveClient;
 import io.micrometer.core.instrument.Timer;
-
+import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_6.Bom;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.dependencytrack.vulnmirror.datasource.Datasource;
-import org.dependencytrack.vulnmirror.datasource.nvd.NvdMirrorState;
-import org.dependencytrack.vulnmirror.datasource.nvd.NvdToCyclonedxParser;
 import org.dependencytrack.vulnmirror.state.MirrorStateStore;
 import org.dependencytrack.vulnmirror.state.VulnerabilityDigestStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
+import static java.util.concurrent.CompletableFuture.completedFuture;
+import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
+import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
 
 @ApplicationScoped
 public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {

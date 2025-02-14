@@ -1,29 +1,32 @@
+/*
+ * This file is part of Dependency-Track.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) OWASP Foundation. All Rights Reserved.
+ */
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
+import com.google.protobuf.Timestamp;
+import io.github.csaf.sbom.schema.generated.Csaf;
+import io.github.csaf.sbom.schema.generated.Csaf.Id;
 import org.cyclonedx.proto.v1_6.Bom;
 import org.cyclonedx.proto.v1_6.Property;
-import org.cyclonedx.proto.v1_6.ScoreMethod;
 import org.cyclonedx.proto.v1_6.Source;
 import org.cyclonedx.proto.v1_6.Vulnerability;
-import org.cyclonedx.proto.v1_6.VulnerabilityCredits;
-import org.cyclonedx.proto.v1_6.VulnerabilityRating;
-import org.dependencytrack.common.cwe.CweResolver;
-import org.dependencytrack.commonutil.VulnerabilityUtil;
 
-import com.google.protobuf.Timestamp;
-
-import io.github.csaf.sbom.schema.generated.Csaf;
-import io.github.csaf.sbom.schema.generated.Csaf.Acknowledgment;
-import io.github.csaf.sbom.schema.generated.Csaf.Id;
-import io.github.csaf.sbom.schema.generated.Csaf.Remediation;
-import us.springett.cvss.Cvss;
+import java.util.stream.Collectors;
 
 public class CsafToCdxParser {
     private static final String TITLE_PROPERTY_NAME = "dependency-track:vuln:title";
@@ -45,11 +48,11 @@ public class CsafToCdxParser {
 
         out.setRecommendation("TODO");
 
-        out.setPublished(Timestamp.newBuilder().setSeconds(in.getRelease_date().toEpochSecond()));
+        out.setPublished(Timestamp.newBuilder().setSeconds(in.getRelease_date().getEpochSeconds()));
 
         // out.setUpdated(null)
 
-        out.setCreated(Timestamp.newBuilder().setSeconds(in.getDiscovery_date().toEpochSecond()));
+        out.setCreated(Timestamp.newBuilder().setSeconds(in.getDiscovery_date().getEpochSeconds()));
 
         // out.setCredits(VulnerabilityCredits.newBuilder().addIndivi)
 
