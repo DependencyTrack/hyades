@@ -6,7 +6,7 @@ Feature: Validate BOM Upload
     And the user verifies "components" with the badge number of 238 on current project
     And the user verifies "services" with the badge number of 19 on current project
     And the user verifies "dependencyGraph" with the badge number of 1 on current project
-    And the user verifies Audit Vulnerabilities with the badge number of 4 excluding and 4 including aliases on current project
+    And the user verifies Audit Vulnerabilities with the badge number of 5 excluding and 5 including aliases on current project
     And the user verifies "exploitPredictions" with the badge number of 4 on current project
     And the user verifies Policy Violations with the badge number of 238 total 0 info 0 warn 238 fail violations on current project
     Then the user navigates to project "components" tab and verifies

@@ -6,7 +6,7 @@ Then('the user creates projects with the following values', async ({ page, proje
     for(const row of dataTable.hashes()) {
         await projectPage.clickOnCreateProject();
         await projectPage.createProject(
-            row.name,
+            row.projectName,
             row.classifier,
             row.version || undefined,
             row.isLastVersion ? row.isLastVersion === "true" : undefined,
@@ -43,15 +43,15 @@ Then('the user deletes the following test projects if they exist', async ({ page
     }
 
     for(const row of dataTable.hashes()) {
-        await projectPage.fillSearchFieldInput(row.name);
+        await projectPage.fillSearchFieldInput(row.projectName);
 
         const projectDoesntExist = await page.locator('.no-records-found').isVisible();
         if(projectDoesntExist) {
-            console.warn(`Couldn't find project with name ${row.name}. Moving on.`);
+            console.warn(`Couldn't find project with name ${row.projectName}. Moving on.`);
             continue;
         }
 
-        await projectPage.deleteProject(row.name);
+        await projectPage.deleteProject(row.projectName);
         await notificationToast.verifySuccessfulProjectDeletedToast();
         await page.waitForTimeout(1000);
     }
@@ -60,14 +60,14 @@ Then('the user deletes the following test projects if they exist', async ({ page
 
 Then('the user deletes the following test projects', async ({ page, projectPage, notificationToast }, dataTable: DataTable) => {
     for(const row of dataTable.hashes()) {
-        await projectPage.fillSearchFieldInput(row.name);
+        await projectPage.fillSearchFieldInput(row.projectName);
 
         const projectDoesntExist = await page.locator('.no-records-found').isVisible();
         if(projectDoesntExist) {
-            throw new Error(`Couldn't find project with name ${row.name}. This shouldn't happen.`);
+            throw new Error(`Couldn't find project with name ${row.projectName}. This shouldn't happen.`);
         }
 
-        await projectPage.deleteProject(row.name);
+        await projectPage.deleteProject(row.projectName);
         await notificationToast.verifySuccessfulProjectDeletedToast();
         await page.waitForTimeout(1000);
     }
