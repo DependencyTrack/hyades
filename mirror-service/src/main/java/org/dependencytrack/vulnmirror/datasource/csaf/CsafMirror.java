@@ -105,17 +105,17 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         // TODO retrieve configured documents
         // TODO filter by latest timestamp per doc?
 
-        final var provider = RetrievedProvider.fromAsync("redhat.com/").get();
+        final var provider = RetrievedProvider.fromAsync("sick.com").get();
         final var documentStream = provider.streamDocuments();
         documentStream.forEach((document) -> {
             if (document.isSuccess()) {
-                //var sourceUrl = document.getOrNull().();
-                //System.out.println(sourceUrl);
                 var csaf = document.getOrNull().getJson();
-                csaf.getVulnerabilities().forEach((vuln) -> {
+                var vulns = csaf.getVulnerabilities();
+                for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
+                    var vuln = vulns.get(idx);
                     LOGGER.info("Processing vulnerability {}", vuln.getTitle());
 
-                    final Bom bov = CsafToCdxParser.parse(vuln);
+                    final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
                     try {
                         publishIfChanged(bov);
                     } catch (ExecutionException e) {
@@ -123,8 +123,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-
-                });
+                }
             } else {
                 LOGGER.error("Error while processing document", document.exceptionOrNull());
             }
@@ -136,7 +135,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         // .ifPresent(epochSeconds -> updateState(new NvdMirrorState(epochSeconds)));
         // } finally {
         final long durationNanos = durationSample.stop(durationTimer);
-        LOGGER.info("Mirroring of CSAF-Vulnerabilities completed in {}", Duration.ofNanos(durationNanos));
+        LOGGER.info("Mirroring of CSAF vulnerabilities completed in {}", Duration.ofNanos(durationNanos));
     }
 
     // TODO remove debug code
@@ -149,7 +148,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
             final var loader = new CsafLoader();
             // final var provider = RetrievedProvider.fromAsync("wid.cert-bund.de").get();
-            final var provider = RetrievedProvider.fromAsync("redhat.com/").get();
+            final var provider = RetrievedProvider.fromAsync("intevation.de").get();
             final var documentStream = provider.streamDocuments();
             
 
