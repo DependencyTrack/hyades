@@ -45,6 +45,7 @@ Feature:
       | test-project02 |
       | test-project03 |
       | test-project04 |
+      | test-project05 |
 
   Scenario: Create Test Users
     Given the user "admin" is already authenticated for DependencyTrack
@@ -91,16 +92,29 @@ Feature:
     Given the user "admin" is already authenticated for DependencyTrack
     When the user navigates to "projects" page and verifies
     Then the user creates projects with the following values
-      | projectName    | classifier  | version | isLastVersion | team | parent | description | tag |
-      | test-project01 | APPLICATION |         |               |      |        |             |     |
-      | test-project02 | APPLICATION |         |               |      |        |             |     |
-      | test-project03 | APPLICATION |         |               |      |        |             |     |
-      | test-project04 | APPLICATION |         |               |      |        |             |     |
+      | projectName    | classifier  | version | isLastVersion | team | parent | description       | tag |
+      | test-project01 | APPLICATION |         |               |      |        | readOnly          |     |
+      | test-project02 | APPLICATION |         |               |      |        | suppressViolation |     |
+      | test-project03 | APPLICATION |         |               |      |        | makeInactive      |     |
+      | test-project04 | APPLICATION |         |               |      |        | customComponent   |     |
+      | test-project05 | APPLICATION |         |               |      |        | uploadVex         |     |
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
     Then the user navigates to "projects" page and verifies
     Then the user opens the project with the name "test-project02"
+    And the user navigates to project "components" tab and verifies
+    And the user uploads default BOM
+    Then the user navigates to "projects" page and verifies
+    Then the user opens the project with the name "test-project03"
+    And the user navigates to project "components" tab and verifies
+    And the user uploads default BOM
+    Then the user navigates to "projects" page and verifies
+    Then the user opens the project with the name "test-project04"
+    And the user navigates to project "components" tab and verifies
+    And the user uploads default BOM
+    Then the user navigates to "projects" page and verifies
+    Then the user opens the project with the name "test-project05"
     And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
 

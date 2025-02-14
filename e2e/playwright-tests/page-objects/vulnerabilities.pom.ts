@@ -62,6 +62,7 @@ class CreateVulnerabilityModal {
 
     async createVulnerability(vulnerabilityId: string, severity: string, title?: string, cvssSeverity?: string, owaspRiskRating?: string, cwe?: string, description?: string, affectedComponent?: string) {
         await expect(this.modalContent).toBeVisible();
+
         await this.vulnerabilityIdInput.fill(vulnerabilityId);
         await this.severitySelect.selectOption(severity);
 
@@ -165,6 +166,7 @@ class DetailsViewModal {
     }
 
     async deleteVulnerability() {
+        await expect(this.modalContent).toBeVisible();
         await this.detailsViewDeleteButton.click();
     }
 }
@@ -217,6 +219,8 @@ class AffectedComponentsPage {
 
     async addNewAffectedComponent(identifier: string, identifierType?: string, versionType?: string) {
         await this.addNewAffectedComponentButton.click();
+        await expect(this.affectedComponentsModalContent).toBeVisible();
+
         await this.affectedComponentsIdentifierInput.fill(identifier);
 
         if(identifierType) {
