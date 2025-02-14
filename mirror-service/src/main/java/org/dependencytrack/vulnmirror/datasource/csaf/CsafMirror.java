@@ -22,6 +22,7 @@ import io.github.csaf.sbom.retrieval.CsafLoader;
 import io.github.csaf.sbom.retrieval.RetrievedProvider;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_6.Bom;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
@@ -96,6 +97,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         });
     }
 
+    @Transactional
     void mirrorInternal() throws Throwable, Exception {
         long lastModified = getState()
                 .map(CsafMirrorState::lastModifiedEpochSeconds)
