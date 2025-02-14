@@ -68,6 +68,11 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     }
 
     @Override
+    public boolean supportsDatasource(final Datasource datasource) {
+        return datasource == Datasource.CSAF;
+    }
+
+    @Override
     public Future<?> doMirror() {
         if (!config.enabled().orElse(false)) {
             LOGGER.warn("Mirroring of the {} datasource was requested, but it is not enabled", Datasource.CSAF);

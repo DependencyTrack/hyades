@@ -25,34 +25,31 @@ import org.cyclonedx.proto.v1_6.Bom;
 import org.cyclonedx.proto.v1_6.Property;
 import org.cyclonedx.proto.v1_6.Source;
 import org.cyclonedx.proto.v1_6.Vulnerability;
+import org.dependencytrack.vulnmirror.datasource.Datasource;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CsafToCdxParser {
     private static final String TITLE_PROPERTY_NAME = "dependency-track:vuln:title";
+    private static final Source SOURCE = Source.newBuilder().setName(Datasource.GITHUB.name()).build();
 
     public static Bom parse(Csaf.Vulnerability in) {
         Vulnerability.Builder out = Vulnerability.newBuilder();
 
         out.setId("CSAF-" + in.getIds().stream().map(Id::getText).collect(Collectors.joining()));
-        out.setSource(Source.newBuilder()
-                .setName(null)
-                .setUrl(null)
-                .build());
+        out.setSource(SOURCE)
+                .addProperties(
+                        Property.newBuilder().setName(TITLE_PROPERTY_NAME).setValue(in.getTitle()).build()
+                )
+                .setDescription(in.getTitle()) // TODO tracking summary
+                .setDetail(in.getNotes().stream().map((note) -> note.toString()).collect(Collectors.joining()))
+                .setRecommendation("TODO")
+                .setPublished(Timestamp.newBuilder().setSeconds(in.getRelease_date().getEpochSeconds()));
 
-        out.setProperties(0, Property.newBuilder().setName(TITLE_PROPERTY_NAME).setValue(in.getTitle()));
-
-        out.setDescription(in.getTitle()); // TODO tracking summary
-
-        out.setDetail(in.getNotes().stream().map((note) -> note.toString()).collect(Collectors.joining()));
-
-        out.setRecommendation("TODO");
-
-        out.setPublished(Timestamp.newBuilder().setSeconds(in.getRelease_date().getEpochSeconds()));
-
-        // out.setUpdated(null)
-
-        out.setCreated(Timestamp.newBuilder().setSeconds(in.getDiscovery_date().getEpochSeconds()));
+        Optional.ofNullable(in.getDiscovery_date())
+                .map(created -> Timestamp.newBuilder().setSeconds(created.getEpochSeconds()).build())
+                .ifPresent(out::setCreated);
 
         // out.setCredits(VulnerabilityCredits.newBuilder().addIndivi)
 
@@ -72,7 +69,9 @@ public class CsafToCdxParser {
         //     vuln.setReferences(sb.toString());
         // }
 
-        out.addCwes(Integer.parseInt(in.getCwe().getId()));
+        Optional.ofNullable(in.getCwe())
+                        .map(cwe -> Integer.parseInt(cwe.getId()))
+                                .ifPresent(out::addCwes);
 
         // out.addRatings(null)
 
