@@ -35,6 +35,7 @@ import {
     TagsPage
 } from "../page-objects/tags.pom";
 import {
+    SelectedVulnerabilitiesPage,
     VulnerabilitiesPage
 } from "../page-objects/vulnerabilities.pom";
 
@@ -65,6 +66,7 @@ export const test = base.extend<
         licenceGroupPage: LicenceGroupPage;
         tagsPage: TagsPage;
         vulnerabilitiesPage: VulnerabilitiesPage;
+        selectedVulnerabilitiesPage: SelectedVulnerabilitiesPage;
     }>({
     administrationPage: async ({ page }, use) => {
         await use(new AdministrationPage(page));
@@ -137,6 +139,9 @@ export const test = base.extend<
     },
     vulnerabilitiesPage: async ({ page }, use) => {
         await use(new VulnerabilitiesPage(page));
+    },
+    selectedVulnerabilitiesPage: async ({ page }, use) => {
+        await use(new SelectedVulnerabilitiesPage(page));
     },
 });
 

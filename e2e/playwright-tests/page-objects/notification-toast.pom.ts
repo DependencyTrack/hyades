@@ -112,4 +112,10 @@ export class NotificationToast {
         await expect(this.successToast).toContainText(getValue("message", "vulnerability_created"));
         await this.successToast.click();
     }
+
+    async verifySuccessfulVulnerabilityDeletedToast() {
+        await expect(this.successToast).toBeVisible();
+        await expect(this.successToast).toContainText(getValue("message", "vulnerability_deleted"));
+        await this.successToast.click();
+    }
 }

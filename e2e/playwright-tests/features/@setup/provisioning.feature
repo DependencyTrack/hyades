@@ -23,19 +23,28 @@ Feature:
 
   Scenario: Delete All Test Policies Before Tests
     Given the user "admin" is already authenticated for DependencyTrack
-    Then the user navigates to "policyManagement" page and verifies
+    When the user navigates to "policyManagement" page and verifies
     Then the user deletes the following test policies if they exist
       | policyName    |
       | test-policy01 |
+
+  Scenario: Delete All Test Vulnerabilities Before Tests
+    Given the user "admin" is already authenticated for DependencyTrack
+    When the user navigates to "vulnerabilities" page and verifies
+    Then the user deletes the following test vulnerabilities if they exist
+      | vulnerabilityName | isInternal |
+      | CVE-2018-14335    | true       |
+
 
   Scenario: Delete All Test Projects Before Tests
     Given the user "admin" is already authenticated for DependencyTrack
     When the user navigates to "projects" page and verifies
     Then the user deletes the following test projects if they exist
-      | name           |
+      | projectName    |
       | test-project01 |
       | test-project02 |
       | test-project03 |
+      | test-project04 |
 
   Scenario: Create Test Users
     Given the user "admin" is already authenticated for DependencyTrack
@@ -71,14 +80,22 @@ Feature:
       | conditionSubject | conditionOperator | conditionInputValue |
       | AGE              | >                 | P1D                 |
 
+  Scenario: Create Test Vulnerability
+    Given the user "admin" is already authenticated for DependencyTrack
+    When the user navigates to "vulnerabilities" page and verifies
+    Then the user creates the following test vulnerabilities
+      | vulnerabilityName | severity | title | cvssSeverity | owaspRiskRating | cwe | description | affectedComponent                                       |
+      | CVE-2018-14335    | Low      |       |              |                 |     |             | pkg:maven/org.hdrhistogram/HdrHistogram@2.1.12?type=jar |
+
   Scenario: Create Test Project With Default BOM
     Given the user "admin" is already authenticated for DependencyTrack
     When the user navigates to "projects" page and verifies
     Then the user creates projects with the following values
-      | name           | classifier  | version | isLastVersion | team | parent | description | tag |
+      | projectName    | classifier  | version | isLastVersion | team | parent | description | tag |
       | test-project01 | APPLICATION |         |               |      |        |             |     |
       | test-project02 | APPLICATION |         |               |      |        |             |     |
       | test-project03 | APPLICATION |         |               |      |        |             |     |
+      | test-project04 | APPLICATION |         |               |      |        |             |     |
     Then the user opens the project with the name "test-project01"
     And the user navigates to project "components" tab and verifies
     And the user uploads default BOM
