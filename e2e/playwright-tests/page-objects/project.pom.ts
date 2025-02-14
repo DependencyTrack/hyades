@@ -300,7 +300,29 @@ export class SelectedProjectPage extends ProjectModal {
     }
 }
 
-export class ProjectComponentsPage {
+class AddComponentModal {
+    addComponentModal: Locator;
+
+    componentNameInput: Locator;
+    componentVersionInput: Locator;
+    componentPackageURLInput: Locator;
+
+    createComponentButton: Locator;
+    closeComponentButton: Locator;
+
+    constructor(page: Page) {
+        this.addComponentModal = page.locator('.modal-content');
+
+        this.componentNameInput = this.addComponentModal.locator('#component-name-input-input');
+        this.componentVersionInput = this.addComponentModal.locator('#component-version-input-input');
+        this.componentPackageURLInput = this.addComponentModal.locator('#component-purl-input-input');
+
+        this.createComponentButton = this.addComponentModal.getByRole('button', { name: getValue("message", "create") });
+        this.closeComponentButton = this.addComponentModal.getByRole('button', { name: getValue("message", "close") });
+    }
+}
+
+export class ProjectComponentsPage extends AddComponentModal {
     readonly page: Page;
     tabPanel: Locator;
 
@@ -310,9 +332,11 @@ export class ProjectComponentsPage {
     downloadBomButton: Locator;
     downloadComponentsButton: Locator;
 
+    searchFieldInput: Locator;
+
     tableList: Locator;
 
-    modalContent: Locator;
+    uploadBomModal: Locator;
 
     bomUploadBrowseButton: Locator;
     bomUploadCancelButton: Locator;
@@ -325,6 +349,8 @@ export class ProjectComponentsPage {
     downloadComponentsCSVButton: Locator;
 
     constructor(page: Page) {
+        super(page);
+
         this.page = page;
         this.tabPanel = page.locator('.tab-pane.active');
 
@@ -333,16 +359,17 @@ export class ProjectComponentsPage {
         this.uploadBomButton = this.tabPanel.locator('#upload-button');
         this.downloadBomButton = this.tabPanel.getByRole('button', { name: getValue("message", "download_bom") });
         this.downloadComponentsButton = this.tabPanel.getByRole('button', { name: getValue("message", "download_component") });
+        this.searchFieldInput = this.tabPanel.locator('.search-input');
 
         this.tableList = this.tabPanel.locator('tbody tr');
 
-        this.modalContent = page.locator('.modal-content');
+        this.uploadBomModal = page.locator('.modal-content');
 
         // BOM Upload
-        this.bomUploadBrowseButton = this.modalContent.locator('.custom-file-label');
-        this.bomUploadCancelButton = this.modalContent.getByRole('button', { name: getValue("message", "cancel") });
-        this.bomUploadResetButton = this.modalContent.getByRole('button', { name: getValue("message", "reset") });
-        this.bomUploadConfirmButton = this.modalContent.getByRole('button', { name: getValue("message", "upload") });
+        this.bomUploadBrowseButton = this.uploadBomModal.locator('.custom-file-label');
+        this.bomUploadCancelButton = this.uploadBomModal.getByRole('button', { name: getValue("message", "cancel") });
+        this.bomUploadResetButton = this.uploadBomModal.getByRole('button', { name: getValue("message", "reset") });
+        this.bomUploadConfirmButton = this.uploadBomModal.getByRole('button', { name: getValue("message", "upload") });
 
         // BOM Download
         this.downloadBomInventoryButton = this.tabPanel.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "inventory") });
@@ -352,14 +379,25 @@ export class ProjectComponentsPage {
         this.downloadComponentsCSVButton = this.tabPanel.locator('.dropdown-menu.show').getByRole('menuitem', { name: getValue("message", "csv_filetype") });
     }
 
+    async fillSearchFieldInput(search: string) {
+        await this.searchFieldInput.clear();
+        await this.searchFieldInput.pressSequentially(search);
+        await this.page.waitForTimeout(1000);
+    }
+
+    async clearSearchFieldInput() {
+        await this.searchFieldInput.clear();
+        await this.page.waitForTimeout(1000);
+    }
+
     async uploadBom(filePathFromProjectRoot?: string) {
         filePathFromProjectRoot ??= "e2e/playwright-tests/resources/dtrack-5.6.0-sbom.json";
 
         await this.uploadBomButton.click();
         await this.page.waitForTimeout(1000);
 
-        await expect(this.modalContent).toBeVisible();
-        await expect(this.modalContent).toContainText(getValue("message", "upload_bom"));
+        await expect(this.uploadBomModal).toBeVisible();
+        await expect(this.uploadBomModal).toContainText(getValue("message", "upload_bom"));
 
         const fileChooserPromise = this.page.waitForEvent('filechooser');
         await this.bomUploadBrowseButton.click();
@@ -368,6 +406,24 @@ export class ProjectComponentsPage {
         await fileChooser.setFiles(filePathFromProjectRoot);
 
         await this.bomUploadConfirmButton.click();
+    }
+
+    async clickOnAddComponent() {
+        await this.addComponentButton.click();
+    }
+
+    async addComponent(componentName: string, componentVersion: string, componentPURL: string) {
+        await expect(this.addComponentModal).toBeVisible();
+
+        await this.componentNameInput.fill(componentName);
+        await this.componentVersionInput.fill(componentVersion);
+        await this.componentPackageURLInput.fill(componentPURL);
+
+        await this.createComponentButton.click();
+    }
+
+    async clickOnSpecificComponent(componentName: string) {
+        await this.tableList.getByRole('link', { name: componentName }).click();
     }
 }
 
@@ -429,7 +485,20 @@ export class ProjectDependencyGraphPage {
 export class ProjectAuditVulnerabilitiesPage {
     readonly page: Page;
     tabPanel: Locator;
+    toolbar: Locator;
     searchFieldInput: Locator;
+    applyVexButton: Locator;
+    exportVexButton: Locator;
+    exportVdrButton: Locator;
+    reanalyzeButton: Locator;
+    suppressedFindingsSlider: Locator;
+
+    applyVexModal: Locator;
+    applyVexBrowseButton: Locator;
+    applyVexCancelButton: Locator;
+    applyVexResetButton: Locator;
+    applyVexUploadButton: Locator;
+
     tableList: Locator;
 
     detailView: Locator;
@@ -449,7 +518,21 @@ export class ProjectAuditVulnerabilitiesPage {
     constructor(page: Page) {
         this.page = page;
         this.tabPanel = page.locator('.tab-pane.active');
-        this.searchFieldInput = this.tabPanel.locator('.search-input');
+        this.toolbar = this.tabPanel.locator('.fixed-table-toolbar');
+
+        this.searchFieldInput = this.toolbar.locator('.search-input');
+        this.applyVexButton = this.toolbar.locator('#apply-vex-button');
+        this.exportVexButton = this.toolbar.locator('#export-vex-button');
+        this.exportVdrButton = this.toolbar.locator('#export-vdr-button');
+        this.reanalyzeButton = this.toolbar.locator('#reanalyze-button');
+        this.suppressedFindingsSlider = this.toolbar.locator('.switch-slider');
+
+        this.applyVexModal = this.page.locator('.modal-content');
+        this.applyVexBrowseButton = this.page.locator('.custom-file-label');
+        this.applyVexCancelButton = this.page.getByRole("button", { name: getValue("message", "cancel") });
+        this.applyVexResetButton = this.page.getByRole("button", { name: getValue("message", "reset") });
+        this.applyVexUploadButton = this.page.getByRole("button", { name: getValue("message", "upload") });
+
         this.tableList = this.tabPanel.locator('tbody tr');
 
         this.detailView = this.tabPanel.locator('.detail-view');
@@ -478,8 +561,38 @@ export class ProjectAuditVulnerabilitiesPage {
     }
 
     async clickOnSpecificVulnerability(violation: string) {
+        await this.tableList.getByRole('link', { name: violation }).click();
+        await this.page.waitForTimeout(1000);
+    }
+
+    async toggleDetailViewOnSpecificVulnerability(violation: string) {
         await this.tableList.filter({ hasText: violation }).locator('td').first().click();
         await this.page.waitForTimeout(1000);
+    }
+
+    async showSuppressedVulnerabilities() {
+        await this.suppressedFindingsSlider.check();
+    }
+
+    async hideSuppressedVulnerabilities() {
+        await this.suppressedFindingsSlider.uncheck();
+    }
+
+    async applyVex(filePathFromProjectRoot?: string) {
+        filePathFromProjectRoot ??= "e2e/playwright-tests/resources/dtrack-4.8.0.vex.cdx.json";
+        await this.applyVexButton.click();
+        await this.page.waitForTimeout(1000);
+
+        await expect(this.applyVexModal).toBeVisible();
+        await expect(this.applyVexModal).toContainText(getValue("message", "upload_vex"));
+
+        const fileChooserPromise = this.page.waitForEvent('filechooser');
+        await this.applyVexBrowseButton.click();
+        const fileChooser = await fileChooserPromise;
+
+        await fileChooser.setFiles(filePathFromProjectRoot);
+
+        await this.applyVexUploadButton.click();
     }
 }
 

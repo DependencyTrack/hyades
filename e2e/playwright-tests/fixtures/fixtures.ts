@@ -35,8 +35,10 @@ import {
     TagsPage
 } from "../page-objects/tags.pom";
 import {
+    SelectedVulnerabilitiesPage,
     VulnerabilitiesPage
 } from "../page-objects/vulnerabilities.pom";
+import {ComponentsPage, SelectedComponentsPage} from "../page-objects/components.pom";
 
 // export custom test fixtures
 export const test = base.extend<
@@ -65,6 +67,9 @@ export const test = base.extend<
         licenceGroupPage: LicenceGroupPage;
         tagsPage: TagsPage;
         vulnerabilitiesPage: VulnerabilitiesPage;
+        selectedVulnerabilitiesPage: SelectedVulnerabilitiesPage;
+        componentsPage: ComponentsPage;
+        selectedComponentsPage: SelectedComponentsPage;
     }>({
     administrationPage: async ({ page }, use) => {
         await use(new AdministrationPage(page));
@@ -137,6 +142,15 @@ export const test = base.extend<
     },
     vulnerabilitiesPage: async ({ page }, use) => {
         await use(new VulnerabilitiesPage(page));
+    },
+    selectedVulnerabilitiesPage: async ({ page }, use) => {
+        await use(new SelectedVulnerabilitiesPage(page));
+    },
+    componentsPage: async ({ page }, use) => {
+        await use(new ComponentsPage(page));
+    },
+    selectedComponentsPage: async ({ page }, use) => {
+        await use(new SelectedComponentsPage(page));
     },
 });
 

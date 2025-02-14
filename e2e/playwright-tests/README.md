@@ -1,97 +1,157 @@
-# E2E Test Execution with Playwright
-- [Playwright](#1-playwright-minimum-requirements)
-    - [Installation](#12-installation)
-- [Non-Cucumber Tests with Playwright](#2-Non-Cucumber-Tests-with-Playwright)
-    - [Running a test](#21-running-a-test)
-    - [Debugging](#22-Debugging)
-- [Cucumber Tests with Playwright](#3-Cucumber-Tests-with-Playwright)
-    - [Writing a Test with Gherkin Syntax](#31-writing-a-test-with-gherkin-syntax)
-    - [Running a test](#32-Running-a-test)
-- [Test Report](#4-test-report)
-    - [Open report manually](#41-Open-report-manually)
-    - [Open report via script](#42-Open-report-via-script)
-***
+# E2E Test Execution with Playwright BDD
 
-# 1 Playwright minimum requirements
-In order to install and execute playwright tests, check whether you meet the minimum requirements:
--  Node.js 16+
--  OS
-    - Windows 10+, Windows Server 2016+ or Windows Subsystem for Linux (WSL).
-    -  MacOS 12 Monterey, MacOS 13 Ventura, or MacOS 14 Sonoma.
-    -  Debian 11, Debian 12, Ubuntu 20.04 or Ubuntu 22.04, with x86-64 or arm64 architecture.
+## Table of Contents
 
-⚠️ As the main  `.\package.json`  runs the `\playwright-tests\package.json` which uses at least Node.js 16, you can
-**ONLY** run the following scripts using at least `npm version >= 7.x`
-## 1.2 Installation
-As of now, there is a script command inside the package.json within the root directory, that allows a simple installation of playwright and it's dependencies:
+- [Playwright Minimum Requirements](#1-playwright-minimum-requirements-as-of-march-2025-wrench)
+  - [Installation](#11-installation-package)
+  - [Configuration](#12-configuration-hammer_and_wrench)
+- [Cucumber Tests with Playwright](#2-tests-with-playwright-bdd-scroll)
+  - [Writing a Test with Gherkin Syntax](#21-writing-a-test-with-gherkin-syntax-writing_hand)
+  - [Running a Test](#22-running-a-test-test_tube)
+- [Test Report](#3-test-report-bar_chart)
+  - [Local HTML Report](#31-local---html-report-desktop_computer)
+  - [CI/CD Allure Report](#32-cicd---allure-report-satellite)
+- [Troubleshoot](#4-troubleshooting-ambulance)
+- [Coverage](#5-current-coverage-white_check_mark)
 
-    npm run playwright:initialize
+---
 
-If no error occurred during setup, you can start using playwright :grin:
+## 1. Playwright Minimum Requirements (as of March 2025) :wrench:
 
-## 1.3 Local Proxy Configuration
-When a https_proxy variable is set inside the terminal/CMD where you start playwright tests, https_proxy is automatically used for all tests against non-localhost URLs (UI and API-Tests)
+To install and execute Playwright tests, ensure you meet the following minimum requirements:
 
-# 2 Non-Cucumber Tests with Playwright
-## 2.1 Running a test
-For starters, there is a second script inside the same package.json as mentioned before, that will execute all `.spec.ts` files inside `./playwright-tests/e2e` using chromium.
+- Latest version of Node.js 18, 20, or 22.
+- Supported Operating Systems:
+  - Windows 10+, Windows Server 2016+, or Windows Subsystem for Linux (WSL).
+  - macOS 13 Ventura or later.
+  - Debian 12, Ubuntu 22.04, Ubuntu 24.04 (x86-64 and arm64 architecture).
 
-    npm run playwright:run
+### 1.1 Installation :package:
 
-In order to run a single file just add the relative path to that file (including `--` to inform node, that there are parameters):
+To set up Playwright, run the following command in the root directory of your project:
 
-    npm run playwright:run -- relative/path/to/the/test
+```sh
+npm run playwright:init
+```
 
-## 2.2 Debugging
-These parameters are the most common to be used. Just add them to the run-command (including `--`)
-- `--headed` - If you want to run the tests visually (though it is very fast)
-- `--debug` - If you want to use the integrated debugger (Does not need `--headed`)
-- `--ui` - If you want to have a UI, similar to Cypress
+This script installs the dev-dependencies present inside `package.json` and the dependencies necessary for playwright to function (e.g. browsers)
 
-Another way to debug, would be the Trace Viewer, which helps to get a better understanding of what happened
+If no errors occur, you're ready to use Playwright! 🎉 _If errors occur, stay calm and troubleshoot!_ 🚨
 
-    npm run playwright:traceViewer -- "relative/path/to/trace/.zip"
+### 1.2 Configuration :hammer_and_wrench:
 
-Or open https://trace.playwright.dev/ and search for the file in the explorer
+All the configuration is happening inside `playwright.config.ts`.
+Most of the configuration should be trivial, but adding playwright-bdd to it is a bit different. Here is the gist:
 
-In order for it to work, both the application (frontend + backend) and keycloak need to be running.
+- **testDir**: Specifies the directory where the test files are located.
+- **outputDir**: Defines where test artifacts (e.g., screenshots, videos) are saved.
+- **globalTimeout**: Maximum time for all tests to complete.
+- **timeout**: Time allowed for each individual test to run.
+- **expect.timeout**: Timeout for assertions within tests.
+- **fullyParallel**: Determines whether tests run in parallel or sequentially.
+- **forbidOnly**: Prevents the use of `test.only()` in the code on CI.
+- **retries**: Number of retries for failed tests.
+- **reporter**: Specifies the format and destination for test reports.
+- **globalSetup**: A script that runs before all tests to set up the environment.
+- **use**: Global settings for browser context, like base URL, video recording, and screenshots.
+- **projects**: Defines configurations for running tests across different browsers or devices.
 
-# 3 Cucumber Tests with Playwright
-As of March 2024 Playwright does not support Behavior-Driven-Development (BDD). ([See official issue](https://github.com/microsoft/playwright/issues/11975))
-Luckily someone created a plugin for that making all the features of Playwright possible with Cucumber tests: https://vitalets.github.io/playwright-bdd/#/
+But rather than creating another wiki here, we would suggest visiting the [Playwright Config Documentation](https://playwright.dev/docs/test-configuration)
 
-## 3.1 Writing a Test with Gherkin Syntax
-The _.feature_ files stay the same, but the _.step_ files need the following snippet added.
+## 2. Tests with Playwright BDD :scroll:
 
-    import { expect } from '@playwright/test';
-    import { createBdd } from 'playwright-bdd';
+Playwright does not natively support Behavior-Driven Development (BDD) ([official issue](https://github.com/microsoft/playwright/issues/11975)), but recommends a plugin that makes it possible: [Playwright BDD](https://vitalets.github.io/playwright-bdd/#/).
+That Plugin basically translates Gherkin into executable tests for the Playwright runner. The generated tests will be located in `/.feature-gen`
 
-    const { Given, When, Then } = createBdd();
+### 2.1 Writing a Test with Gherkin Syntax :writing_hand:
 
-All the tests use fixtures instead of the page-object-model. Orientate on the implementation of already migrated tests. (You can also have a look at the fixture file inside cucumber)
+We use Playwright-BDD for the tests, which makes use of cucumber/gherkin. 
 
-## 3.2 Running a test
-Using the plugin we can generate playwright tests out of the _.feature_ and _.step_ files. The only thing that needs to happen is, that the _.feature_ files and the _.step_ files are in their respective folder inside `\playwright-tests\cucumber`
+**Feature**: High-level functionality written in `.feature` files using Gherkin syntax.
+```gherkin
+Feature: VIEW_PORTFOLIO
+  Scenario: Without VIEW_PORTFOLIO Permission The User Cannot Log In
+    Given the user "test-user0_PERMS" tries to log in to DependencyTrack
+    Then the user receives login error toast
+```
+**Steps**: Define the behavior for each scenario step, implemented in `.step.ts`-files linking with the Gherkin steps:
+```typescript
+Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage }, username: string) => {
+  await loginPage.goto();
+  await loginPage.verifyVisibleLoginPage();
+  await loginPage.login(username, process.env.RANDOM_PASSWORD);
+});
+```
+**Page Objects**: Similar to classes but for locators of a page (e.g. [LoginPage](./page-objects/login.pom.ts))
 
-To generate the test files manually you can use bddgen (you can exclude any tags you want):
+**Fixtures**: Used to isolate test steps from another by initializing page-objects for each step (e.g. loginPage from the Given-step above)
 
-    npx bddgen --tags "not @todo"
+### 2.2 Running a Test :test_tube:
 
-A script has been provided to execute inmemory cucumber tests from the root-dir inside the project
+Some scripts are already present within `package.json`. They refer to the respective projects mentioned inside `playwright.config.ts` and follow a default structure:
+![Playwright Setup Order](../../docs/images/playwright-setup-order.png)
 
-    npm run playwright:cucumber:inmemory:run
+When running the tests for example in chromium, you would use the following script
 
-# 4 Test report
-The current solution uses [Allure](https://allurereport.org/) to generate a test report out of the test results. In order to use it, just execute the following command after a run:
+```sh
+npm run playwright:test:chromium
+```
 
-    npm run allure:report
-## 4.1 Open report manually
-Open the file at `./target/playwright-report/allure-report/index.html`
+It will run all the tests, including the setup. **V1 of the setup takes quite long so if you just want to run the tests without the setup, use**:
 
-## 4.2 Open report via script
-    npm run allure:open
+```sh
+npm run playwright:test:only:chromium
+```
 
-If it doesn't work with your default browser, try it with a different one. Otherwise, open it manually
+By adding `@only` above a feature (or scenario), you can reduce the test count to just that feature, or even to just a scenario, depending on your use case :sunglasses::ok_hand:
 
-For more information on playwright visit the [official dev page](https://playwright.dev/)
+### 2.3 Debugging :bug:
 
+When a test is failing and there is not enough information in the report, running the test-command with certain parameters can help to narrow it down.
+Common debugging parameters are:
+
+- `--headed` - Runs tests visually.
+- `--debug` - Enables the integrated debugger (does not require `--headed`).
+- `--ui` - Opens a UI similar.
+
+E.g. (Don't forget to add `--` before, as you are passing a parameter into a script)
+
+```sh
+npm run playwright:test:chromium -- --headed
+```
+
+To use the Trace Viewer for debugging just open [Playwright Trace Viewer](https://trace.playwright.dev/) and locate the trace file inside the report folder.
+
+## 3. Test Report :bar_chart:
+
+For reporting, different solutions are used based on the environment:
+
+### 3.1 Local - HTML Report :desktop_computer:
+
+Playwright's built-in HTML report is used locally. The report opens automatically if there were failing tests, but you can still open the report by running:
+
+```sh
+npm run playwright:show:report
+```
+
+### 3.2 CI/CD - Allure Report :satellite:
+
+For CI/CD purposes [Allure Report](https://allurereport.org/) is used for reporting.
+The configuration is inside `.github/workflows/e2e-playwright-allure_report.yml`.
+We basically execute the tests, let allure generate a report and publish it on the owasp allure-report-repository by using github-pages. :raised_hands:
+
+## 4 Troubleshooting :ambulance:
+
+**Potential Issues:**
+
+- **Playwright installation errors?**
+  - _Ensure you have the correct Node.js version (18, 20, or 22) and try reinstalling dependencies:_
+- **Test Errors occur?**
+  - _Verify that the .feature-files are referenced properly inside the .steps.ts-files_
+- _There may be more issues coming in the future_
+
+## 5 Current Coverage :white_check_mark:
+As of March 2025 V1 of the tests do not cover all functionality, that DependencyTrack provides.
+It provides coverage for the main permissions and important features for projects. Check out `/features`.
+
+For more details, visit the [official Playwright documentation](https://playwright.dev/) and [Playwright-BDD](https://vitalets.github.io/playwright-bdd/#/) for the BDD approach.
