@@ -20,9 +20,11 @@ package org.dependencytrack.vulnmirror.datasource.csaf;
 
 import io.github.csaf.sbom.retrieval.CsafLoader;
 import io.github.csaf.sbom.retrieval.RetrievedProvider;
+import io.github.csaf.sbom.schema.generated.Csaf;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import kotlinx.serialization.json.Json;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_6.Bom;
 import org.dependencytrack.persistence.model.CsafEntity;
@@ -34,9 +36,7 @@ import org.dependencytrack.vulnmirror.state.VulnerabilityDigestStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
@@ -144,6 +144,21 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         documentStream.forEach((document) -> {
             if (document.isSuccess()) {
                 var csaf = document.getOrNull().getJson();
+
+                // TODO: Can we access the raw directly?
+                var raw = Json.Default.encodeToString(Csaf.Companion.serializer(), csaf);
+
+                // Build a new CSAF entity in our database
+                var csafEntity = new CsafEntity();
+                csafEntity.setUrl("https://" + domain + "/todo");
+                csafEntity.setEntityType("DOCUMENT");
+                csafEntity.setContent(raw.getBytes());
+                csafEntity.setFetchInterval(0);
+                csafEntity.setSeen(false);
+                csafEntity.setName(csaf.getDocument().getTitle());
+
+                csafEntityRepository.persist(csafEntity);
+
                 var vulns = csaf.getVulnerabilities();
                 for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
                     var vuln = vulns.get(idx);

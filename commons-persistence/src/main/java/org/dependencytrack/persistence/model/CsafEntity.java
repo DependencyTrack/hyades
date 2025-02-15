@@ -20,6 +20,8 @@ package org.dependencytrack.persistence.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -35,6 +37,7 @@ import java.io.Serializable;
 public class CsafEntity implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CSAFENTRYID")
     private long csafEntryId;
 
@@ -51,6 +54,19 @@ public class CsafEntity implements Serializable {
     @Column(name = "ENABLED")
     @NotNull
     private boolean enabled;
+
+    // TODO: remove
+    @Column(name = "FETCHINTERVAL")
+    @NotNull
+    private int fetchInterval;
+
+    @Column(name = "NAME")
+    @NotBlank
+    private String name;
+
+    @Column(name = "SEEN")
+    @NotNull
+    private boolean seen;
 
     public long getCsafEntryId() {
         return csafEntryId;
@@ -90,5 +106,29 @@ public class CsafEntity implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public int getFetchInterval() {
+        return fetchInterval;
+    }
+
+    public void setFetchInterval(int fetchInterval) {
+        this.fetchInterval = fetchInterval;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 }
