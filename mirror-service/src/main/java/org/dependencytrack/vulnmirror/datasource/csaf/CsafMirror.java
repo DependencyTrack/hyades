@@ -25,6 +25,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_6.Bom;
+import org.dependencytrack.persistence.model.CsafEntity;
+import org.dependencytrack.persistence.repository.CsafEntityRepository;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.dependencytrack.vulnmirror.datasource.Datasource;
 import org.dependencytrack.vulnmirror.state.MirrorStateStore;
@@ -32,6 +34,9 @@ import org.dependencytrack.vulnmirror.state.VulnerabilityDigestStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
@@ -51,11 +56,13 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     private final CsafConfig config;
     private final CsafLoader csafLoader;
     private final ExecutorService executorService;
+    private final CsafEntityRepository csafEntityRepository;
     private final Timer durationTimer;
 
     CsafMirror(
             final CsafConfig config,
             @ForCsafMirror final ExecutorService executorService,
+            final CsafEntityRepository csafEntityRepository,
             final MirrorStateStore mirrorStateStore,
             final VulnerabilityDigestStore vulnDigestStore,
             final Producer<String, byte[]> kafkaProducer,
@@ -64,6 +71,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         super(Datasource.CSAF, mirrorStateStore, vulnDigestStore, kafkaProducer, CsafMirrorState.class);
         this.config = config;
         this.executorService = executorService;
+        this.csafEntityRepository = csafEntityRepository;
         this.csafLoader = csafLoader;
         this.durationTimer = durationTimer;
     }
@@ -104,10 +112,34 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 .orElse(0L);
         LOGGER.info("Mirroring CSAF-Vulnerabilities that were modified since {}", Instant.ofEpochSecond(lastModified));
         final Timer.Sample durationSample = Timer.start();
-        // TODO retrieve configured documents
-        // TODO filter by latest timestamp per doc?
 
-        final var provider = RetrievedProvider.fromAsync("sick.com").get();
+        var list = csafEntityRepository.findActiveProvider();
+        for(CsafEntity provider : list) {
+            mirrorProvider(provider.getUrl());
+        }
+
+        // lastUpdated is null when nothing changed
+        // Optional.ofNullable(apiClient.getLastUpdated())
+        // .map(ChronoZonedDateTime::toEpochSecond)
+        // .ifPresent(epochSeconds -> updateState(new NvdMirrorState(epochSeconds)));
+        // } finally {
+        final long durationNanos = durationSample.stop(durationTimer);
+        LOGGER.info("Mirroring of CSAF vulnerabilities completed in {}", Duration.ofNanos(durationNanos));
+    }
+
+    /**
+     * Mirrors a single provider based on the given URL.
+     *
+     * @param url the canonical URL for the provider-metadata.
+     */
+    private void mirrorProvider(String url) throws InterruptedException, ExecutionException {
+        // Needs a little bit of a hack until https://github.com/csaf-sbom/kotlin-csaf/issues/147 is resolved
+        var parsedURL = URI.create(url);
+        var domain = parsedURL.getHost();
+
+        LOGGER.info("Mirroring CSAF provider {}", domain);
+
+        final var provider = RetrievedProvider.fromAsync(domain).get();
         final var documentStream = provider.streamDocuments();
         documentStream.forEach((document) -> {
             if (document.isSuccess()) {
@@ -130,14 +162,6 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 LOGGER.error("Error while processing document", document.exceptionOrNull());
             }
         });
-
-        // lastUpdated is null when nothing changed
-        // Optional.ofNullable(apiClient.getLastUpdated())
-        // .map(ChronoZonedDateTime::toEpochSecond)
-        // .ifPresent(epochSeconds -> updateState(new NvdMirrorState(epochSeconds)));
-        // } finally {
-        final long durationNanos = durationSample.stop(durationTimer);
-        LOGGER.info("Mirroring of CSAF vulnerabilities completed in {}", Duration.ofNanos(durationNanos));
     }
 
     // TODO remove debug code
