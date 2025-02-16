@@ -47,7 +47,7 @@ export class NavigationParPage {
         this.snapshotPopup = page.locator('.modal-content');
 
         // Account Dropdown top right
-        this.accountDropDown = page.locator('li.dropdown'); //todo if not working a.dropdown-toggle aber dann alle darunter anpassen
+        this.accountDropDown = page.locator('li.dropdown');
         this.accountDropDownUpdatePassword = this.accountDropDown.getByText(getValue("message", "logout"));
         this.accountDropDownChangePassword = this.accountDropDown.locator('/change-password');
         this.accountDropDownChangeLanguage = this.accountDropDown.locator('#locale-picker-form').locator('.custom-select');
