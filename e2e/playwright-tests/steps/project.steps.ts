@@ -157,7 +157,7 @@ Then('the dependency graph tab is visible and contains a node with child entries
 
 Then('the user opens the policy violation of Component {string}', async ({ projectPolicyViolationsPage }, component: string) => {
     await projectPolicyViolationsPage.fillSearchFieldInput(component);
-    await projectPolicyViolationsPage.clickOnSpecificViolation(component);
+    await projectPolicyViolationsPage.toggleDetailViewOnSpecificViolation(component);
 });
 
 Then('the user comments the current policy violation with {string}', async ({ projectPolicyViolationsPage, notificationToast }, comment: string) => {
@@ -273,10 +273,6 @@ Then('the update-project button in project details should be visible', async ({ 
     await expect(selectedProjectPage.projectDetailsUpdateButton).toBeVisible();
 });
 
-Then('the user expands the first vulnerability on audit vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }) => {
-    await projectAuditVulnerabilitiesPage.tableList.first().locator('td').first().click();
-});
-
 Then('the user verifies read access on the vulnerability audit view on audit Vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }) => {
     await expect(projectAuditVulnerabilitiesPage.detailViewTitleField).toBeVisible();
     await expect(projectAuditVulnerabilitiesPage.detailViewDescriptionField).toBeVisible();
@@ -305,10 +301,6 @@ Then('the user verifies write access on the vulnerability audit view on audit Vu
     await expect(projectAuditVulnerabilitiesPage.detailViewVendorResponseSelect).toBeVisible();
     await expect(projectAuditVulnerabilitiesPage.detailViewAnalysisDetailsField).toBeVisible();
     await expect(projectAuditVulnerabilitiesPage.detailViewUpdateAnalysisDetailsButton).toBeVisible();
-});
-
-Then('the user expands the first violation on policy violation project tab', async ({ projectPolicyViolationsPage }) => {
-    await projectPolicyViolationsPage.tableList.first().locator('td').first().click();
 });
 
 Then('the user verifies read access on the policy violation audit view on policy violations project tab', async ({ projectPolicyViolationsPage }) => {
@@ -355,7 +347,7 @@ Then('the user applies default VEX for current project', async ({ page, projectA
     await page.waitForTimeout(1000);
 });
 
-Then('the user verifies default VEX application for current project with the following values', async ({ page, projectAuditVulnerabilitiesPage, notificationToast }, dataTable: DataTable) => {
+Then('the user verifies default VEX application for current project with the following values', async ({ page, projectAuditVulnerabilitiesPage }, dataTable: DataTable) => {
     await projectAuditVulnerabilitiesPage.showSuppressedVulnerabilities();
     for(const row of dataTable.hashes()) {
         await projectAuditVulnerabilitiesPage.fillSearchFieldInput(row.componentName);
@@ -373,4 +365,14 @@ Then('the user verifies default VEX application for current project with the fol
         await page.waitForTimeout(1000);
     }
     await projectAuditVulnerabilitiesPage.hideSuppressedVulnerabilities();
+});
+
+Then('the user expands the violation {string} on policy violation project tab', async ({ projectPolicyViolationsPage }, violationName: string) => {
+    await projectPolicyViolationsPage.fillSearchFieldInput(violationName);
+    await projectPolicyViolationsPage.toggleDetailViewOnSpecificViolation(violationName);
+});
+
+Then('the user expands the vulnerability {string} on audit vulnerability project tab', async ({ projectAuditVulnerabilitiesPage }, violationName: string) => {
+    await projectAuditVulnerabilitiesPage.fillSearchFieldInput(violationName);
+    await projectAuditVulnerabilitiesPage.toggleDetailViewOnSpecificVulnerability(violationName);
 });

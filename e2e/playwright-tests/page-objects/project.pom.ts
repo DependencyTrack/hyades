@@ -666,7 +666,7 @@ export class ProjectPolicyViolationsPage {
         await this.page.waitForTimeout(1000);
     }
 
-    async clickOnSpecificViolation(violation: string) {
+    async toggleDetailViewOnSpecificViolation(violation: string) {
         await this.tableList.filter({ hasText: violation }).locator('td').first().click();
         await this.page.waitForTimeout(1000);
     }
