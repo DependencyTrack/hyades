@@ -16,6 +16,7 @@
     - [3.2 CI/CD - Allure Report 📡](#32-cicd---allure-report-)
   - [4 Troubleshooting 🚑](#4-troubleshooting-)
   - [5 Current Coverage ✅](#5-current-coverage-)
+  - [6 Updating Dependencies](#6-updating-dependencies-)
 
 ---
 
@@ -44,22 +45,26 @@ If no errors occur, you're ready to use Playwright! 🎉 _If errors occur, stay 
 ### 1.2 Configuration 🛠️
 
 All the configuration is happening inside `playwright.config.ts`.
-Most of the configuration should be trivial, but adding playwright-bdd to it is a bit different. Here is the gist:
+Most of the configuration should be trivial, but adding playwright-bdd to it is a bit different.
+This snippet is used to configure BDD part of Playwright. 
+```typescript
+const gherkinTestDir = defineBddConfig({
+  tags: '@projects or @permissions and not @todo',
+  features: playwrightTestDir + '/features/**/*.feature',
+  steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
+  outputDir: playwrightTestDir + '/.features-gen/tests',
+});
+```
 
 - **testDir**: Specifies the directory where the test files are located.
 - **outputDir**: Defines where test artifacts (e.g., screenshots, videos) are saved.
-- **globalTimeout**: Maximum time for all tests to complete.
 - **timeout**: Time allowed for each individual test to run.
-- **expect.timeout**: Timeout for assertions within tests.
-- **fullyParallel**: Determines whether tests run in parallel or sequentially.
-- **forbidOnly**: Prevents the use of `test.only()` in the code on CI.
-- **retries**: Number of retries for failed tests.
 - **reporter**: Specifies the format and destination for test reports.
 - **globalSetup**: A script that runs before all tests to set up the environment.
 - **use**: Global settings for browser context, like base URL, video recording, and screenshots.
-- **projects**: Defines configurations for running tests across different browsers or devices.
+- **projects**: Defines configurations for running tests across different browsers or devices. Makes use of the bdd code-snippet
 
-But rather than creating another wiki here, we would suggest visiting the [Playwright Config Documentation](https://playwright.dev/docs/test-configuration)
+But rather than creating another wiki here, we would suggest visiting the [Playwright Config Documentation](https://playwright.dev/docs/test-configuration) or look at the [playwright.config.ts](./../../playwright.config.ts)
 
 ## 2. Tests with Playwright BDD 📜
 
@@ -90,22 +95,27 @@ Given('the user {string} tries to log in to DependencyTrack', async ({ loginPage
 **Fixtures**: Used to isolate test steps from another by initializing page-objects for each step (e.g. loginPage from the Given-step above)
 
 ### 2.2 Running a Test 🧪
+
 In order to run the tests, DependencyTrack must be running on `localhost`. Configuration for the baseURL can be done in `playwright.config.ts`.
 Some scripts are already present within `package.json`. They refer to the respective projects mentioned inside `playwright.config.ts` and follow a default structure:
 ![Playwright Setup Order](../../docs/images/playwright-setup-order.png)
 
 When running the tests for example in chromium, you would use the following script
-
 ```sh
 npm run playwright:test:chromium
 ```
 
-It will run all the tests, including the setup. **V1 of the setup takes quite long so if you just want to run the tests without the setup, use**:
+It will run all the tests, including the setup. 
+Initially DependencyTrack is not set up, so you can run the following command, which will change the password of admin to the value set inside [local-auth.json](./resources/local-auth.json)
+```shell
+playwright:clean:initial:chromium
+```
 
+**V1 of the setup takes quite long so if you just want to run the tests without the setup, use**:
 ```sh
 npm run playwright:test:only:chromium
 ```
-
+**But keep in mind, that when only running the tests, the previous data will not be cleaned up.**
 By adding `@only` above a feature (or scenario), you can reduce the test count to just that feature (or to just a scenario), depending on your use case 😎👌
 
 ### 2.3 Debugging 🐛
@@ -140,8 +150,8 @@ npm run playwright:show:report
 ### 3.2 CI/CD - Allure Report 📡
 
 For CI/CD purposes [Allure Report](https://allurereport.org/) is used for reporting.
-The configuration is inside `.github/workflows/e2e-playwright-allure_report.yml`.
-We basically execute the tests, let allure generate a report and publish it on the owasp allure-report-repository by using github-pages. :raised_hands:
+The configuration is inside [e2e-playwright-allure_report.yml](./../../.github/workflows/e2e-playwright-allure_report.yml).
+We basically execute the tests, let allure generate a report and publish it on the owasp allure-report-repository by using github-pages. 🙌
 
 ## 4 Troubleshooting 🚑
 
@@ -154,7 +164,16 @@ We basically execute the tests, let allure generate a report and publish it on t
 - _There may be more issues coming in the future_
 
 ## 5 Current Coverage ✅
+
 As of March 2025 V1 of the tests do not cover all functionality, that DependencyTrack provides.
-It provides coverage for the main permissions and important features for projects. Check out `/features`.
+It provides coverage for the main permissions and important features for projects. Check out `e2e/playwright-tests/features`.
+
+## 6 Updating Dependencies 🎭
+
+Updating the dependencies inside `package.json` also needs updating `package-lock.json`. This can be achieved by running
+
+```shell
+npm install
+```
 
 For more details, visit the [official Playwright documentation](https://playwright.dev/) and [Playwright-BDD](https://vitalets.github.io/playwright-bdd/#/) for the BDD approach.
