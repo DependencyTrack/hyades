@@ -11,5 +11,5 @@ Feature: VIEW_PORTFOLIO x VIEW_POLICY_VIOLATION
     Then the user opens the project with the name "test-project01"
     Then the project "policyViolations" tab should be visible
     And the user navigates to project "policyViolations" tab and verifies
-    Then the user expands the first violation on policy violation project tab
+    Then the user expands the violation "json-smart" on policy violation project tab
     Then the user verifies read access on the policy violation audit view on policy violations project tab
