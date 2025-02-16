@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 /**
- * Get the corresponding value
+ * Get the corresponding value from locale.json stored inside process.env.LOCALE_JSON
  * @param parentKey
  * @param childKey
  */
