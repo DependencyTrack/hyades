@@ -6,17 +6,17 @@
   - [Table of Contents](#table-of-contents)
   - [1. Playwright Minimum Requirements (as of March 2025) 🔧](#1-playwright-minimum-requirements-as-of-march-2025-)
     - [1.1 Installation 📦](#11-installation-)
-    - [1.2 Configuration 🛠️](#12-configuration-)
+    - [1.2 Configuration 🛠️](#12-configuration-️)
   - [2. Tests with Playwright BDD 📜](#2-tests-with-playwright-bdd-)
-    - [2.1 Writing a Test with Gherkin Syntax ✍️](#21-writing-a-test-with-gherkin-syntax-)
+    - [2.1 Writing a Test with Gherkin Syntax ✍️](#21-writing-a-test-with-gherkin-syntax-️)
     - [2.2 Running a Test 🧪](#22-running-a-test-)
     - [2.3 Debugging 🐛](#23-debugging-)
   - [3. Test Report 📊](#3-test-report-)
-    - [3.1 Local - HTML Report 🖥️](#31-local---html-report-)
+    - [3.1 Local - HTML Report 🖥️](#31-local---html-report-️)
     - [3.2 CI/CD - Allure Report 📡](#32-cicd---allure-report-)
   - [4 Troubleshooting 🚑](#4-troubleshooting-)
   - [5 Current Coverage ✅](#5-current-coverage-)
-  - [6 Updating Dependencies](#6-updating-dependencies-)
+  - [6 Updating Dependencies 🎭](#6-updating-dependencies-)
 
 ---
 
