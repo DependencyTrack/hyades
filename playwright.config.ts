@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-nocheck
 
 import { defineConfig, devices } from '@playwright/test';
 import * as os from "node:os";
