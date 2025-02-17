@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Note: import base from playwright-bdd, not from @playwright/test!
 import { test as base, createBdd } from 'playwright-bdd';
 import {

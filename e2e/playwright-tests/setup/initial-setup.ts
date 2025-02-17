@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { test as setup } from '@playwright/test';
 import { LoginPage, PasswordChangePage } from "../page-objects/login.pom";
 import { NotificationToast } from "../page-objects/notification-toast.pom";
