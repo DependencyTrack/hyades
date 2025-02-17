@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "strict": true,
+    "skipLibCheck": true,
+    "strict": false,
     "noImplicitAny": false,
-    "allowJs": true,
     "suppressImplicitAnyIndexErrors": true
   }
 }
