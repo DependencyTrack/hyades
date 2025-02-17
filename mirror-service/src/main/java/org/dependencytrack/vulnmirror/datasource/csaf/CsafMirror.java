@@ -50,6 +50,7 @@ import java.util.concurrent.Future;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
+import static org.dependencytrack.vulnmirror.datasource.csaf.CsafToCdxParser.computeId;
 
 @ApplicationScoped
 public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
@@ -120,18 +121,11 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         LOGGER.info("Mirroring CSAF-Vulnerabilities that were modified since {}", Instant.ofEpochSecond(lastModified));
         final Timer.Sample durationSample = Timer.start();
 
-        var aggregators = csafSourceRepository.findEnabledAggregators();
-        for (CsafSourceEntity aggregator : aggregators) {
-            try {
-                discoverProvider(aggregator);
-            } catch (ExecutionException e) {
-                LOGGER.error("Error while discovering providers from aggregator {}", aggregator.getUrl(), e);
-            }
-        }
+        discoverProvidersFromAggregators();
 
         var list = csafSourceRepository.findEnabledProviders();
         for (CsafSourceEntity provider : list) {
-            mirrorProvider(provider.getUrl());
+            mirrorProvider(provider);
         }
 
         // lastUpdated is null when nothing changed
@@ -141,6 +135,23 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         // } finally {
         final long durationNanos = durationSample.stop(durationTimer);
         LOGGER.info("Mirroring of CSAF vulnerabilities completed in {}", Duration.ofNanos(durationNanos));
+    }
+
+    /**
+     * Discovers potentially new providers from all enabled aggregators.
+     *
+     * @throws InterruptedException if the thread is interrupted
+     */
+    @Transactional
+    protected void discoverProvidersFromAggregators() throws InterruptedException {
+        var aggregators = csafSourceRepository.findEnabledAggregators();
+        for (CsafSourceEntity aggregator : aggregators) {
+            try {
+                discoverProvider(aggregator);
+            } catch (ExecutionException e) {
+                LOGGER.error("Error while discovering providers from aggregator {}", aggregator.getUrl(), e);
+            }
+        }
     }
 
     private void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
@@ -158,7 +169,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                     var newProvider = createCsafSourceEntity(url, metadataJson);
                     csafSourceRepository.persist(newProvider);
 
-                    LOGGER.info("Discovered new CSAF provider {}", url);
+                    LOGGER.info("Discovered new CSAF provider {} from aggregator {}", url, aggregatorEntity.getName());
                 }
             }
         });
@@ -183,12 +194,12 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     /**
      * Mirrors a single provider based on the given URL.
      *
-     * @param url the canonical URL for the provider-metadata.
+     * @param providerEntity the provider to mirror as a database entity (see {@link CsafSourceEntity})
      */
-    private void mirrorProvider(String url) throws InterruptedException, ExecutionException {
-        LOGGER.info("Mirroring CSAF provider {}", url);
+    private void mirrorProvider(CsafSourceEntity providerEntity) throws InterruptedException, ExecutionException {
+        LOGGER.info("Mirroring CSAF provider {}", providerEntity.getUrl());
 
-        final var provider = RetrievedProvider.fromUrlAsync(url).get();
+        final var provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl()).get();
         final var documentStream = provider.streamDocuments();
         documentStream.forEach((document) -> {
             if (document.isSuccess()) {
@@ -199,7 +210,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
                 // Build a new CSAF entity in our database
                 var csafEntity = new CsafDocumentEntity();
-                csafEntity.setUrl(url);
+                csafEntity.setUrl(providerEntity.getUrl());
                 csafEntity.setContent(raw);
                 csafEntity.setFetchInterval(0);
                 csafEntity.setSeen(false);
@@ -210,7 +221,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 var vulns = csaf.getVulnerabilities();
                 for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
                     var vuln = vulns.get(idx);
-                    LOGGER.info("Processing vulnerability {}", vuln.getTitle());
+                    LOGGER.info("Processing vulnerability {}{}", computeId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
 
                     final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
                     try {
@@ -225,6 +236,10 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 LOGGER.error("Error while processing document", document.exceptionOrNull());
             }
         });
+
+        // Update the last fetched date of the provider
+        providerEntity.setLastFetched(Instant.now().getEpochSecond());
+        csafSourceRepository.persist(providerEntity);
     }
 
 }
