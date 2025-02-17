@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Then } from '../fixtures/fixtures';
 import {expect} from "@playwright/test";
 import {DataTable} from "playwright-bdd";

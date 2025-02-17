@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Given, Then } from '../fixtures/fixtures';
 import * as fs from "node:fs";
 import {expect} from "@playwright/test";
