@@ -38,7 +38,6 @@ import org.dependencytrack.vulnmirror.state.VulnerabilityDigestStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
@@ -138,13 +137,9 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      * @param url the canonical URL for the provider-metadata.
      */
     private void mirrorProvider(String url) throws InterruptedException, ExecutionException {
-        // Needs a little bit of a hack until https://github.com/csaf-sbom/kotlin-csaf/issues/147 is resolved
-        var parsedURL = URI.create(url);
-        var domain = parsedURL.getHost();
+        LOGGER.info("Mirroring CSAF provider {}", url);
 
-        LOGGER.info("Mirroring CSAF provider {}", domain);
-
-        final var provider = RetrievedProvider.fromAsync(domain).get();
+        final var provider = RetrievedProvider.fromUrlAsync(url).get();
         final var documentStream = provider.streamDocuments();
         documentStream.forEach((document) -> {
             if (document.isSuccess()) {
@@ -155,7 +150,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
                 // Build a new CSAF entity in our database
                 var csafEntity = new CsafDocumentEntity();
-                csafEntity.setUrl("https://" + domain + "/todo");
+                csafEntity.setUrl(url);
                 csafEntity.setContent(raw);
                 csafEntity.setFetchInterval(0);
                 csafEntity.setSeen(false);
@@ -181,41 +176,6 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 LOGGER.error("Error while processing document", document.exceptionOrNull());
             }
         });
-    }
-
-    // TODO remove debug code
-    public static void main(String[] args) {
-
-        try {
-            //var docstring = RetrievedDocument.Companion.fromJson(inputString);
-            //var docstream = RetrievedDocument.Companion.fromJson(inputStream);
-            
-
-            final var loader = new CsafLoader();
-            // final var provider = RetrievedProvider.fromAsync("wid.cert-bund.de").get();
-            final var provider = RetrievedProvider.fromAsync("intevation.de").get();
-            final var documentStream = provider.streamDocuments();
-            
-
-            documentStream.forEach((document) -> {
-
-                if (document.isSuccess()) {
-                    //var sourceUrl = document.getOrNull().getJson();
-                    //System.out.println(sourceUrl);
-                    var csaf = document.getOrNull().getJson();
-                    csaf.getVulnerabilities().forEach((vuln) -> {
-                        System.out.println(vuln);
-
-
-                    });
-                } else {
-                    // System.out.println(document);
-                }
-            });
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-        LOGGER.info("hello");
     }
 
 }

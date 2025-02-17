@@ -21,11 +21,6 @@ package org.dependencytrack.persistence.repository;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.dependencytrack.persistence.model.CsafDocumentEntity;
-import org.dependencytrack.persistence.model.CsafSourceEntity;
-
-import java.util.List;
-
-import static org.hibernate.jpa.HibernateHints.HINT_READ_ONLY;
 
 @ApplicationScoped
 public class CsafDocumentRepository implements PanacheRepository<CsafDocumentEntity> {
