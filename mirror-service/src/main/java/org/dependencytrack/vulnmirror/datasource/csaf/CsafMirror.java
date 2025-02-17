@@ -22,6 +22,7 @@ import io.github.csaf.sbom.retrieval.CsafLoader;
 import io.github.csaf.sbom.retrieval.RetrievedAggregator;
 import io.github.csaf.sbom.retrieval.RetrievedProvider;
 import io.github.csaf.sbom.schema.generated.Csaf;
+import io.github.csaf.sbom.schema.generated.Provider;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -36,6 +37,7 @@ import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.dependencytrack.vulnmirror.datasource.Datasource;
 import org.dependencytrack.vulnmirror.state.MirrorStateStore;
 import org.dependencytrack.vulnmirror.state.VulnerabilityDigestStore;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +122,11 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
         var aggregators = csafSourceRepository.findEnabledAggregators();
         for (CsafSourceEntity aggregator : aggregators) {
-            discoverProvider(aggregator);
+            try {
+                discoverProvider(aggregator);
+            } catch (ExecutionException e) {
+                LOGGER.error("Error while discovering providers from aggregator {}", aggregator.getUrl(), e);
+            }
         }
 
         var list = csafSourceRepository.findEnabledProviders();
@@ -140,29 +146,38 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     private void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
         var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl()).get();
+
         aggregator.fetchAllAsync().get().forEach((provider) -> {
-            if (provider.isSuccess()) {
-                var url = provider.getOrNull().getJson().getCanonical_url().toString();
+            if (provider.getOrNull() != null) {
+                var metadataJson = provider.getOrNull().getJson();
+                var url = metadataJson.getCanonical_url().toString();
+                var existing = csafSourceRepository.find("url", url);
                 // Check if we already know about this provider
-                if (csafSourceRepository.find("url", url) == null) {
+                if (existing.count() == 0) {
                     // If not, add it to the list of providers to mirror
-                    var newProvider = new CsafSourceEntity();
-                    newProvider.setUrl(url);
-                    // We don't enable it yet
-                    newProvider.setEnabled(true);
-                    // It's a provider, not an aggregator
-                    newProvider.setAggregator(false);
-                    // Set it to discovery mode so we can inform the user,
-                    // and he can decide, whether he wants to enable it
-                    newProvider.setDiscovery(true);
+                    var newProvider = createCsafSourceEntity(url, metadataJson);
                     csafSourceRepository.persist(newProvider);
 
                     LOGGER.info("Discovered new CSAF provider {}", url);
                 }
             }
         });
+    }
 
-        // If so, add them to the list of providers to mirror
+    private static @NotNull CsafSourceEntity createCsafSourceEntity(String url, Provider metadataJson) {
+        var newProvider = new CsafSourceEntity();
+        newProvider.setUrl(url);
+        // We can take the name of the publisher as the name of the provider.
+        // The user can change this later
+        newProvider.setName(metadataJson.getPublisher().getName());
+        // We don't enable it yet
+        newProvider.setEnabled(false);
+        // It's a provider, not an aggregator
+        newProvider.setAggregator(false);
+        // Set it to discovery mode so we can inform the user,
+        // and he can decide, whether he wants to enable it
+        newProvider.setDiscovery(true);
+        return newProvider;
     }
 
     /**

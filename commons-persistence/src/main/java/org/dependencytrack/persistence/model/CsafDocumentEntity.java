@@ -38,6 +38,7 @@ import java.io.Serializable;
 public class CsafDocumentEntity implements Serializable {
 
     @Id
+    @Column(name = "ENTRYID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long entryId;
 
