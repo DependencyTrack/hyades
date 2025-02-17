@@ -1,3 +1,5 @@
+// @ts-ignore
+
 import { defineConfig, devices } from '@playwright/test';
 import * as os from "node:os";
 import { defineBddConfig } from "playwright-bdd";
@@ -6,14 +8,14 @@ const playwrightTestDir = "./e2e/playwright-tests";
 const defOutDir = "./playwright-test-results";
 const setupDir = "./e2e/playwright-tests/setup";
 
-const gherkinTestDir: string = defineBddConfig({
+const gherkinTestDir = defineBddConfig({
   tags: '@projects or @permissions and not @todo',
   features: playwrightTestDir + '/features/**/*.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
   outputDir: playwrightTestDir + '/.features-gen/tests',
 });
 
-const gherkinSetupDir: string = defineBddConfig({
+const gherkinSetupDir = defineBddConfig({
   tags: '@setup and not @todo',
   features: playwrightTestDir + '/features/**/*.feature',
   steps: [playwrightTestDir + '/steps/*.steps.ts', playwrightTestDir + '/fixtures/fixtures.ts'],
