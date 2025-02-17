@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false,
+    "allowJs": true,
+    "suppressImplicitAnyIndexErrors": true
+  }
+}
