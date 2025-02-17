@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { request } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from "node:path";

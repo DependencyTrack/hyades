@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {Page, Locator, expect} from '@playwright/test';
 import { getValue } from "../utilities/utils";
 

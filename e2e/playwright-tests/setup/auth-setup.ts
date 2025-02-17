@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { test as setup } from '@playwright/test';
 import { LoginPage } from "../page-objects/login.pom";
 import * as fs from "node:fs";

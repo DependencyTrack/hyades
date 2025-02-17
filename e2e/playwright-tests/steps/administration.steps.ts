@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Then } from '../fixtures/fixtures';
 import { DataTable } from 'playwright-bdd';
 import {expect} from "@playwright/test";
