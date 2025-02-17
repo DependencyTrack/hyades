@@ -212,7 +212,7 @@ services:
     restart: unless-stopped
 
   redpanda:
-    image: docker.redpanda.com/redpandadata/redpanda:v24.2.12
+    image: docker.redpanda.com/redpandadata/redpanda:v24.2.17
     container_name: dt-redpanda
     command:
       - redpanda
@@ -249,7 +249,7 @@ services:
     restart: unless-stopped
 
   redpanda-init:
-    image: docker.redpanda.com/redpandadata/redpanda:v24.2.12
+    image: docker.redpanda.com/redpandadata/redpanda:v24.2.17
     container_name: dt-redpanda-init
     depends_on:
       redpanda:
