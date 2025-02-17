@@ -27,8 +27,10 @@ import jakarta.transaction.Transactional;
 import kotlinx.serialization.json.Json;
 import org.apache.kafka.clients.producer.Producer;
 import org.cyclonedx.proto.v1_6.Bom;
-import org.dependencytrack.persistence.model.CsafEntity;
-import org.dependencytrack.persistence.repository.CsafEntityRepository;
+import org.dependencytrack.persistence.model.CsafDocumentEntity;
+import org.dependencytrack.persistence.model.CsafSourceEntity;
+import org.dependencytrack.persistence.repository.CsafDocumentRepository;
+import org.dependencytrack.persistence.repository.CsafSourceRepository;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.dependencytrack.vulnmirror.datasource.Datasource;
 import org.dependencytrack.vulnmirror.state.MirrorStateStore;
@@ -56,13 +58,15 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     private final CsafConfig config;
     private final CsafLoader csafLoader;
     private final ExecutorService executorService;
-    private final CsafEntityRepository csafEntityRepository;
+    private final CsafSourceRepository csafSourceRepository;
+    private final CsafDocumentRepository csafDocumentRepository;
     private final Timer durationTimer;
 
     CsafMirror(
             final CsafConfig config,
             @ForCsafMirror final ExecutorService executorService,
-            final CsafEntityRepository csafEntityRepository,
+            final CsafSourceRepository csafSourceRepository,
+            final CsafDocumentRepository csafDocumentRepository,
             final MirrorStateStore mirrorStateStore,
             final VulnerabilityDigestStore vulnDigestStore,
             final Producer<String, byte[]> kafkaProducer,
@@ -71,7 +75,8 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         super(Datasource.CSAF, mirrorStateStore, vulnDigestStore, kafkaProducer, CsafMirrorState.class);
         this.config = config;
         this.executorService = executorService;
-        this.csafEntityRepository = csafEntityRepository;
+        this.csafSourceRepository = csafSourceRepository;
+        this.csafDocumentRepository = csafDocumentRepository;
         this.csafLoader = csafLoader;
         this.durationTimer = durationTimer;
     }
@@ -113,8 +118,8 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         LOGGER.info("Mirroring CSAF-Vulnerabilities that were modified since {}", Instant.ofEpochSecond(lastModified));
         final Timer.Sample durationSample = Timer.start();
 
-        var list = csafEntityRepository.findActiveProvider();
-        for(CsafEntity provider : list) {
+        var list = csafSourceRepository.findActiveProvider();
+        for(CsafSourceEntity provider : list) {
             mirrorProvider(provider.getUrl());
         }
 
@@ -149,15 +154,14 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 var raw = Json.Default.encodeToString(Csaf.Companion.serializer(), csaf);
 
                 // Build a new CSAF entity in our database
-                var csafEntity = new CsafEntity();
+                var csafEntity = new CsafDocumentEntity();
                 csafEntity.setUrl("https://" + domain + "/todo");
-                csafEntity.setEntityType("DOCUMENT");
-                csafEntity.setContent(raw.getBytes());
+                csafEntity.setContent(raw);
                 csafEntity.setFetchInterval(0);
                 csafEntity.setSeen(false);
                 csafEntity.setName(csaf.getDocument().getTitle());
 
-                csafEntityRepository.persist(csafEntity);
+                csafDocumentRepository.persist(csafEntity);
 
                 var vulns = csaf.getVulnerabilities();
                 for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
