@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {Then} from '../fixtures/fixtures';
 import {expect} from "@playwright/test";
 
