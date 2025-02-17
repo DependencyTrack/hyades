@@ -1,5 +1,4 @@
-// @ts-nocheck
-
+/* eslint-disable */
 import { defineConfig, devices } from '@playwright/test';
 import * as os from "node:os";
 import { defineBddConfig } from "playwright-bdd";
