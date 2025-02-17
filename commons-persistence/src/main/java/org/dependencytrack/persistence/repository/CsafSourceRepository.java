@@ -29,8 +29,14 @@ import static org.hibernate.jpa.HibernateHints.HINT_READ_ONLY;
 @ApplicationScoped
 public class CsafSourceRepository implements PanacheRepository<CsafSourceEntity> {
 
-    public List<CsafSourceEntity> findActiveProvider() {
+    public List<CsafSourceEntity> findEnabledProviders() {
         return find("where enabled=true and aggregator=false")
+                .withHint(HINT_READ_ONLY, true)
+                .list();
+    }
+
+    public List<CsafSourceEntity> findEnabledAggregators() {
+        return find("where enabled=true and aggregator=true")
                 .withHint(HINT_READ_ONLY, true)
                 .list();
     }

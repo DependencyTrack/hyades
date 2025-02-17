@@ -19,6 +19,7 @@
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
 import io.github.csaf.sbom.retrieval.CsafLoader;
+import io.github.csaf.sbom.retrieval.RetrievedAggregator;
 import io.github.csaf.sbom.retrieval.RetrievedProvider;
 import io.github.csaf.sbom.schema.generated.Csaf;
 import io.micrometer.core.instrument.Timer;
@@ -117,8 +118,13 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         LOGGER.info("Mirroring CSAF-Vulnerabilities that were modified since {}", Instant.ofEpochSecond(lastModified));
         final Timer.Sample durationSample = Timer.start();
 
-        var list = csafSourceRepository.findActiveProvider();
-        for(CsafSourceEntity provider : list) {
+        var aggregators = csafSourceRepository.findEnabledAggregators();
+        for (CsafSourceEntity aggregator : aggregators) {
+            discoverProvider(aggregator);
+        }
+
+        var list = csafSourceRepository.findEnabledProviders();
+        for (CsafSourceEntity provider : list) {
             mirrorProvider(provider.getUrl());
         }
 
@@ -129,6 +135,34 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         // } finally {
         final long durationNanos = durationSample.stop(durationTimer);
         LOGGER.info("Mirroring of CSAF vulnerabilities completed in {}", Duration.ofNanos(durationNanos));
+    }
+
+    private void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
+        // Check if this contains any providers that we don't know about yet
+        var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl()).get();
+        aggregator.fetchAllAsync().get().forEach((provider) -> {
+            if (provider.isSuccess()) {
+                var url = provider.getOrNull().getJson().getCanonical_url().toString();
+                // Check if we already know about this provider
+                if (csafSourceRepository.find("url", url) == null) {
+                    // If not, add it to the list of providers to mirror
+                    var newProvider = new CsafSourceEntity();
+                    newProvider.setUrl(url);
+                    // We don't enable it yet
+                    newProvider.setEnabled(true);
+                    // It's a provider, not an aggregator
+                    newProvider.setAggregator(false);
+                    // Set it to discovery mode so we can inform the user,
+                    // and he can decide, whether he wants to enable it
+                    newProvider.setDiscovery(true);
+                    csafSourceRepository.persist(newProvider);
+
+                    LOGGER.info("Discovered new CSAF provider {}", url);
+                }
+            }
+        });
+
+        // If so, add them to the list of providers to mirror
     }
 
     /**
