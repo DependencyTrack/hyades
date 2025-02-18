@@ -115,24 +115,17 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
     @Transactional
     void mirrorInternal() throws Throwable, Exception {
-        long lastModified = getState()
-                .map(CsafMirrorState::lastModifiedEpochSeconds)
-                .orElse(0L);
-        LOGGER.info("Mirroring CSAF-Vulnerabilities that were modified since {}", Instant.ofEpochSecond(lastModified));
+        var providers = csafSourceRepository.findEnabledProviders();
+
+        LOGGER.info("Mirroring CSAF Vulnerabilities from {} providers", providers.size());
         final Timer.Sample durationSample = Timer.start();
 
         discoverProvidersFromAggregators();
 
-        var list = csafSourceRepository.findEnabledProviders();
-        for (CsafSourceEntity provider : list) {
+        for (CsafSourceEntity provider : providers) {
             mirrorProvider(provider);
         }
 
-        // lastUpdated is null when nothing changed
-        // Optional.ofNullable(apiClient.getLastUpdated())
-        // .map(ChronoZonedDateTime::toEpochSecond)
-        // .ifPresent(epochSeconds -> updateState(new NvdMirrorState(epochSeconds)));
-        // } finally {
         final long durationNanos = durationSample.stop(durationTimer);
         LOGGER.info("Mirroring of CSAF vulnerabilities completed in {}", Duration.ofNanos(durationNanos));
     }
@@ -196,12 +189,13 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      *
      * @param providerEntity the provider to mirror as a database entity (see {@link CsafSourceEntity})
      */
-    @Transactional
     protected void mirrorProvider(CsafSourceEntity providerEntity) throws InterruptedException, ExecutionException {
-        LOGGER.info("Mirroring CSAF provider {}", providerEntity.getUrl());
+        LOGGER.info("Mirroring documents from CSAF provider {} that were modified since {}", providerEntity.getUrl(), providerEntity.getLastFetched());
 
+        final var since = providerEntity.getLastFetched() != null ?
+                kotlinx.datetime.Instant.Companion.fromEpochMilliseconds(providerEntity.getLastFetched().toEpochMilli()) : null;
         final var provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl()).get();
-        final var documentStream = provider.streamDocuments();
+        final var documentStream = provider.streamDocuments(since);
         documentStream.forEach((document) -> {
             if (document.isSuccess()) {
                 var csaf = document.getOrNull().getJson();
@@ -238,9 +232,12 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
             }
         });
 
+        final var done = Instant.now();
+
         // Update the last fetched date of the provider
-        providerEntity.setLastFetched(Instant.now());
-        csafSourceRepository.persist(providerEntity);
+        providerEntity.setLastFetched(done);
+
+        LOGGER.info("Mirroring documents from CSAF provider {} completed at {}", providerEntity.getUrl(), done);
     }
 
 }

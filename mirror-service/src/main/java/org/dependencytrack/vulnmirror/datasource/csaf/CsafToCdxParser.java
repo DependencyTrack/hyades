@@ -100,6 +100,9 @@ public class CsafToCdxParser {
      * @return a (hopefully) unique ID.
      */
     public static String computeId(Csaf.Vulnerability vuln, Csaf.Document doc, int vulnIndex) {
+        // Hash publisher namespace and cut it to 8 characters and tracking ID.
+        // TODO: create hash at creation
+
         // If we have a CVE, we can use that as the ID, but we want to prefix it with "CSAF"
         // to make it clear that it's a CSAF vulnerability.
         var cve = vuln.getCve();
