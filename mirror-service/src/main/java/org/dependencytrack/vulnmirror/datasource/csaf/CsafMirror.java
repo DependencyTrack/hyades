@@ -41,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
@@ -135,7 +136,6 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      *
      * @throws InterruptedException if the thread is interrupted
      */
-    @Transactional
     protected void discoverProvidersFromAggregators() throws InterruptedException {
         var aggregators = csafSourceRepository.findEnabledAggregators();
         for (CsafSourceEntity aggregator : aggregators) {
@@ -147,7 +147,8 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         }
     }
 
-    private void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
+    @Transactional
+    protected void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
         var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl()).get();
 
@@ -189,6 +190,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      *
      * @param providerEntity the provider to mirror as a database entity (see {@link CsafSourceEntity})
      */
+    @Transactional
     protected void mirrorProvider(CsafSourceEntity providerEntity) throws InterruptedException, ExecutionException {
         LOGGER.info("Mirroring documents from CSAF provider {} that were modified since {}", providerEntity.getUrl(), providerEntity.getLastFetched());
 
@@ -216,12 +218,11 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 var vulns = csaf.getVulnerabilities();
                 for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
                     var vuln = vulns.get(idx);
-                    LOGGER.info("Processing vulnerability {}{}", computeId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
-
-                    final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
                     try {
+                        LOGGER.info("Processing vulnerability {}{}", computeId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
+                        final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
                         publishIfChanged(bov);
-                    } catch (ExecutionException e) {
+                    } catch (ExecutionException | NoSuchAlgorithmException e) {
                         LOGGER.error("Error while publishing document", e);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();

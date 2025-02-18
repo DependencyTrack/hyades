@@ -22,8 +22,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -39,9 +37,8 @@ import java.time.Instant;
 public class CsafSourceEntity implements Serializable {
 
     @Id
-    @Column(name = "ENTRYID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long entryId;
+    @Column(name = "ID")
+    private String id;
 
     @Column(name = "NAME")
     private String name;
@@ -79,12 +76,12 @@ public class CsafSourceEntity implements Serializable {
         this.url = url;
     }
 
-    public long getEntryId() {
-        return entryId;
+    public String getId() {
+        return id;
     }
 
-    public void setEntryId(long entryId) {
-        this.entryId = entryId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
