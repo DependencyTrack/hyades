@@ -24,6 +24,7 @@ import io.github.csaf.sbom.retrieval.RetrievedProvider;
 import io.github.csaf.sbom.schema.generated.Csaf;
 import io.github.csaf.sbom.schema.generated.Provider;
 import io.micrometer.core.instrument.Timer;
+import io.quarkus.hibernate.orm.panache.Panache;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import kotlinx.serialization.json.Json;
@@ -221,7 +222,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                     csafEntity.setSeen(false);
                     csafEntity.setName(csaf.getDocument().getTitle());
 
-                    csafDocumentRepository.persist(csafEntity);
+                    Panache.getEntityManager().merge(csafEntity);
 
                     var vulns = csaf.getVulnerabilities();
                     for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
