@@ -18,16 +18,14 @@
  */
 package org.dependencytrack.persistence.repository;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.dependencytrack.persistence.model.CsafSourceEntity;
 
 import java.util.List;
 
-import static org.hibernate.jpa.HibernateHints.HINT_READ_ONLY;
-
 @ApplicationScoped
-public class CsafSourceRepository implements PanacheRepository<CsafSourceEntity> {
+public class CsafSourceRepository implements PanacheRepositoryBase<CsafSourceEntity, String> {
 
     public List<CsafSourceEntity> findEnabledProviders() {
         return find("where enabled=true and aggregator=false")

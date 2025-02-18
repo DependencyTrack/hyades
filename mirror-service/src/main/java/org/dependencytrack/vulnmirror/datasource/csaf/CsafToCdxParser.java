@@ -21,6 +21,7 @@ package org.dependencytrack.vulnmirror.datasource.csaf;
 import com.google.protobuf.Timestamp;
 import io.github.csaf.sbom.schema.generated.Csaf;
 import io.github.csaf.sbom.schema.generated.Csaf.Id;
+import org.apache.commons.codec.binary.Hex;
 import org.cyclonedx.proto.v1_6.Bom;
 import org.cyclonedx.proto.v1_6.Property;
 import org.cyclonedx.proto.v1_6.Source;
@@ -43,7 +44,7 @@ public class CsafToCdxParser {
     public static Bom parse(Csaf.Vulnerability csafVuln, Csaf.Document csafDoc, int vulnIndex) throws NoSuchAlgorithmException {
         Vulnerability.Builder out = Vulnerability.newBuilder();
 
-        out.setId(computeId(csafVuln, csafDoc, vulnIndex));
+        out.setId(computeVulnerabilityId(csafVuln, csafDoc, vulnIndex));
         out.setSource(SOURCE);
 
         Optional.ofNullable(csafVuln.getTitle())
@@ -115,7 +116,7 @@ public class CsafToCdxParser {
     public static String computeDocumentId(Csaf.Document doc) throws NoSuchAlgorithmException {
         var digest = MessageDigest.getInstance("SHA-256");
 
-        return "CSAF-" + new String(
+        return "CSAF-" + Hex.encodeHexString(
                 digest.digest(
                         doc.getPublisher().getNamespace().toString().getBytes()
                 )).substring(0, 8) + "-" + doc.getTracking().getId();
@@ -128,7 +129,7 @@ public class CsafToCdxParser {
      *
      * @return a (hopefully) unique ID.
      */
-    public static String computeId(Csaf.Vulnerability vuln, Csaf.Document doc, int vulnIndex) throws NoSuchAlgorithmException {
+    public static String computeVulnerabilityId(Csaf.Vulnerability vuln, Csaf.Document doc, int vulnIndex) throws NoSuchAlgorithmException {
         var prefix = computeDocumentId(doc);
 
         // If we have a CVE, we can use that as the ID

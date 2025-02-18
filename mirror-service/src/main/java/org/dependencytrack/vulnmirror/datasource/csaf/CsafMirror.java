@@ -51,7 +51,8 @@ import java.util.concurrent.Future;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
-import static org.dependencytrack.vulnmirror.datasource.csaf.CsafToCdxParser.computeId;
+import static org.dependencytrack.vulnmirror.datasource.csaf.CsafToCdxParser.computeDocumentId;
+import static org.dependencytrack.vulnmirror.datasource.csaf.CsafToCdxParser.computeVulnerabilityId;
 
 @ApplicationScoped
 public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
@@ -207,26 +208,27 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
                 // Build a new CSAF entity in our database
                 var csafEntity = new CsafDocumentEntity();
-                csafEntity.setUrl(providerEntity.getUrl());
-                csafEntity.setContent(raw);
-                csafEntity.setFetchInterval(0);
-                csafEntity.setSeen(false);
-                csafEntity.setName(csaf.getDocument().getTitle());
+                try {
+                    csafEntity.setId(computeDocumentId(csaf.getDocument()));
+                    csafEntity.setUrl(providerEntity.getUrl());
+                    csafEntity.setContent(raw);
+                    csafEntity.setFetchInterval(0);
+                    csafEntity.setSeen(false);
+                    csafEntity.setName(csaf.getDocument().getTitle());
 
-                csafDocumentRepository.persist(csafEntity);
+                    csafDocumentRepository.persist(csafEntity);
 
-                var vulns = csaf.getVulnerabilities();
-                for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
-                    var vuln = vulns.get(idx);
-                    try {
-                        LOGGER.info("Processing vulnerability {}{}", computeId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
-                        final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
-                        publishIfChanged(bov);
-                    } catch (ExecutionException | NoSuchAlgorithmException e) {
-                        LOGGER.error("Error while publishing document", e);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                    var vulns = csaf.getVulnerabilities();
+                    for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
+                        var vuln = vulns.get(idx);
+                            LOGGER.info("Processing vulnerability {}{}", computeVulnerabilityId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
+                            final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
+                            publishIfChanged(bov);
                     }
+                } catch (ExecutionException | NoSuchAlgorithmException e) {
+                    LOGGER.error("Error while processing document", e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             } else {
                 LOGGER.error("Error while processing document", document.exceptionOrNull());
