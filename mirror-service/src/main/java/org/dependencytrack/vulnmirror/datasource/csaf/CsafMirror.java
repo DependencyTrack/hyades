@@ -137,6 +137,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      *
      * @throws InterruptedException if the thread is interrupted
      */
+    @Transactional
     protected void discoverProvidersFromAggregators() throws InterruptedException {
         var aggregators = csafSourceRepository.findEnabledAggregators();
         for (CsafSourceEntity aggregator : aggregators) {
@@ -148,10 +149,10 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         }
     }
 
-    @Transactional
     protected void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
         var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl()).get();
+        var begin = Instant.now();
 
         aggregator.fetchAllAsync().get().forEach((provider) -> {
             if (provider.getOrNull() != null) {
@@ -168,6 +169,8 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 }
             }
         });
+
+        aggregatorEntity.setLastFetched(begin);
     }
 
     private static @NotNull CsafSourceEntity createCsafSourceEntity(String url, Provider metadataJson) {
@@ -181,7 +184,8 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         // It's a provider, not an aggregator
         newProvider.setAggregator(false);
         // Set it to discovery mode so we can inform the user,
-        // and he can decide, whether he wants to enable it
+        // and he can decide, whether he wants to "add" it to
+        // the list of providers to mirror
         newProvider.setDiscovery(true);
         return newProvider;
     }
@@ -197,6 +201,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
         final var since = providerEntity.getLastFetched() != null ?
                 kotlinx.datetime.Instant.Companion.fromEpochMilliseconds(providerEntity.getLastFetched().toEpochMilli()) : null;
+        final var begin = Instant.now();
         final var provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl()).get();
         final var documentStream = provider.streamDocuments(since);
         documentStream.forEach((document) -> {
@@ -235,12 +240,11 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
             }
         });
 
-        final var done = Instant.now();
+        // Update the last fetched date of the provider to the beginning of our update process. This way we can
+        // ensure that we don't miss any documents that would be published while we are mirroring (however unlikely).
+        providerEntity.setLastFetched(begin);
 
-        // Update the last fetched date of the provider
-        providerEntity.setLastFetched(done);
-
-        LOGGER.info("Mirroring documents from CSAF provider {} completed at {}", providerEntity.getUrl(), done);
+        LOGGER.info("Mirroring documents from CSAF provider {} completed", providerEntity.getUrl());
     }
 
 }

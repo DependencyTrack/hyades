@@ -39,9 +39,9 @@ import java.time.Instant;
 public class CsafSourceEntity implements Serializable {
 
     @Id
-    @Column(name = "ENTRYID")
+    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long entryId;
+    private long id;
 
     @Column(name = "NAME")
     private String name;
@@ -79,12 +79,12 @@ public class CsafSourceEntity implements Serializable {
         this.url = url;
     }
 
-    public long getEntryId() {
-        return entryId;
+    public long getId() {
+        return id;
     }
 
-    public void setEntryId(long entryId) {
-        this.entryId = entryId;
+    public void setEntryId(long id) {
+        this.id = id;
     }
 
     public String getName() {
