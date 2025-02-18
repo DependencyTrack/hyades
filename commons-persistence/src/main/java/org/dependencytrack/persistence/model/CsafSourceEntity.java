@@ -26,6 +26,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * Model for configured CSAF source entities.
@@ -58,7 +59,7 @@ public class CsafSourceEntity implements Serializable {
     private boolean seen;
 
     @Column(name = "LASTFETCHED")
-    private long lastFetched;
+    private Instant lastFetched;
 
     @Column(name = "FETCHINTERVAL")
     private int fetchInterval;
@@ -126,11 +127,11 @@ public class CsafSourceEntity implements Serializable {
         this.seen = seen;
     }
 
-    public long getLastFetched() {
+    public Instant getLastFetched() {
         return lastFetched;
     }
 
-    public void setLastFetched(long lastFetched) {
+    public void setLastFetched(Instant lastFetched) {
         this.lastFetched = lastFetched;
     }
 

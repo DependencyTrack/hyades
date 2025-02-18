@@ -196,7 +196,8 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      *
      * @param providerEntity the provider to mirror as a database entity (see {@link CsafSourceEntity})
      */
-    private void mirrorProvider(CsafSourceEntity providerEntity) throws InterruptedException, ExecutionException {
+    @Transactional
+    protected void mirrorProvider(CsafSourceEntity providerEntity) throws InterruptedException, ExecutionException {
         LOGGER.info("Mirroring CSAF provider {}", providerEntity.getUrl());
 
         final var provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl()).get();
@@ -238,7 +239,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         });
 
         // Update the last fetched date of the provider
-        providerEntity.setLastFetched(Instant.now().getEpochSecond());
+        providerEntity.setLastFetched(Instant.now());
         csafSourceRepository.persist(providerEntity);
     }
 
