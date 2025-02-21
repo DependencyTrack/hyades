@@ -226,6 +226,9 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
                     var vulns = csaf.getVulnerabilities();
                     for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
+                        // We already prepare a list of existing vulnerabilities with the
+
+
                         var vuln = vulns.get(idx);
                             LOGGER.info("Processing vulnerability {}{}", computeVulnerabilityId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
                             final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
