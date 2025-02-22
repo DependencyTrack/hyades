@@ -175,6 +175,18 @@
             <artifactId>json-unit-assertj</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-client-mock-jvm</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-http-jvm</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>io.github.resilience4j</groupId>
@@ -194,6 +206,12 @@
         <dependency>
             <groupId>io.github.nscuro</groupId>
             <artifactId>versatile</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-http-jvm</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -62,13 +62,12 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     private static final String NOTIFICATION_TITLE = "CSAF Mirroring";
 
     private final CsafConfig config;
-    private final CsafLoader csafLoader;
+    private final CsafLoaderFactory csafLoaderFactory;
     private final ExecutorService executorService;
     private final CsafSourceRepository csafSourceRepository;
-    private final CsafDocumentRepository csafDocumentRepository;
     private final Timer durationTimer;
 
-    CsafMirror(
+    CsafMirror(final CsafLoaderFactory csafLoaderFactory,
             final CsafConfig config,
             @ForCsafMirror final ExecutorService executorService,
             final CsafSourceRepository csafSourceRepository,
@@ -76,14 +75,12 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
             final MirrorStateStore mirrorStateStore,
             final VulnerabilityDigestStore vulnDigestStore,
             final Producer<String, byte[]> kafkaProducer,
-            @ForCsafMirror final CsafLoader csafLoader,
             @ForCsafMirror final Timer durationTimer) {
         super(Datasource.CSAF, mirrorStateStore, vulnDigestStore, kafkaProducer, CsafMirrorState.class);
         this.config = config;
         this.executorService = executorService;
         this.csafSourceRepository = csafSourceRepository;
-        this.csafDocumentRepository = csafDocumentRepository;
-        this.csafLoader = csafLoader;
+        this.csafLoaderFactory = csafLoaderFactory;
         this.durationTimer = durationTimer;
     }
 
@@ -119,14 +116,15 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     @Transactional
     void mirrorInternal() throws Throwable, Exception {
         var providers = csafSourceRepository.findEnabledProviders();
+        var csafLoader = csafLoaderFactory.create();
 
         LOGGER.info("Mirroring CSAF Vulnerabilities from {} providers", providers.size());
         final Timer.Sample durationSample = Timer.start();
 
-        discoverProvidersFromAggregators();
+        discoverProvidersFromAggregators(csafLoader);
 
         for (CsafSourceEntity provider : providers) {
-            mirrorProvider(provider);
+            mirrorProvider(provider, csafLoader);
         }
 
         final long durationNanos = durationSample.stop(durationTimer);
@@ -139,20 +137,20 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      * @throws InterruptedException if the thread is interrupted
      */
     @Transactional
-    protected void discoverProvidersFromAggregators() throws InterruptedException {
+    protected void discoverProvidersFromAggregators(CsafLoader csafLoader) throws InterruptedException {
         var aggregators = csafSourceRepository.findEnabledAggregators();
         for (CsafSourceEntity aggregator : aggregators) {
             try {
-                discoverProvider(aggregator);
+                discoverProvider(aggregator, csafLoader);
             } catch (ExecutionException e) {
                 LOGGER.error("Error while discovering providers from aggregator {}", aggregator.getUrl(), e);
             }
         }
     }
 
-    protected void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
+    protected void discoverProvider(CsafSourceEntity aggregatorEntity, CsafLoader csafLoader) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
-        var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl()).get();
+        var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl(), csafLoader).get();
         var begin = Instant.now();
 
         aggregator.fetchAllAsync().get().forEach((provider) -> {
@@ -195,15 +193,16 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      * Mirrors a single provider based on the given URL.
      *
      * @param providerEntity the provider to mirror as a database entity (see {@link CsafSourceEntity})
+     * @param csafLoader
      */
     @Transactional
-    protected void mirrorProvider(CsafSourceEntity providerEntity) throws InterruptedException, ExecutionException {
+    protected void mirrorProvider(CsafSourceEntity providerEntity, CsafLoader csafLoader) throws InterruptedException, ExecutionException {
         LOGGER.info("Mirroring documents from CSAF provider {} that were modified since {}", providerEntity.getUrl(), providerEntity.getLastFetched());
 
         final var since = providerEntity.getLastFetched() != null ?
                 kotlinx.datetime.Instant.Companion.fromEpochMilliseconds(providerEntity.getLastFetched().toEpochMilli()) : null;
         final var begin = Instant.now();
-        final var provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl()).get();
+        final var provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl(), csafLoader).get();
         final var documentStream = provider.streamDocuments(since);
         documentStream.forEach((document) -> {
             if (document.isSuccess()) {
