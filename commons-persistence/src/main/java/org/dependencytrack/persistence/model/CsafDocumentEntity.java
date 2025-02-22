@@ -24,6 +24,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * Model for configured CSAF document entities.
@@ -55,7 +56,7 @@ public class CsafDocumentEntity implements Serializable {
     private boolean seen;
 
     @Column(name = "LASTFETCHED")
-    private long lastFetched;
+    private Instant lastFetched;
 
     @Column(name = "FETCHINTERVAL")
     private int fetchInterval;
@@ -120,11 +121,11 @@ public class CsafDocumentEntity implements Serializable {
         this.seen = seen;
     }
 
-    public long getLastFetched() {
+    public Instant getLastFetched() {
         return lastFetched;
     }
 
-    public void setLastFetched(long lastFetched) {
+    public void setLastFetched(Instant lastFetched) {
         this.lastFetched = lastFetched;
     }
 
