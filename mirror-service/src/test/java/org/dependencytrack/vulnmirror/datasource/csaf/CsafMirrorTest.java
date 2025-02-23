@@ -34,11 +34,13 @@ import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.persistence.model.CsafSourceEntity;
 import org.dependencytrack.persistence.repository.CsafSourceRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -104,19 +106,32 @@ import static org.mockito.Mockito.when;
             return new CsafLoader(engine);
         }
 
+
+    @BeforeEach
+    @Transactional
+    public void insertTestSource() {
+        var csafSource = new CsafSourceEntity();
+        csafSource.setName("Test CSAF Source");
+        csafSource.setUrl("https://example.com/csaf");
+        csafSource.setEnabled(true);
+        csafSource.setAggregator(false);
+        sourceRepository.persistAndFlush(csafSource);
+    }
+
+
     @Test
     @TestTransaction
     void testDoMirrorSuccessNotification() {
-            var csafSource = new CsafSourceEntity();
+            /*var csafSource = new CsafSourceEntity();
             csafSource.setName("Test CSAF Source");
             csafSource.setUrl("https://example.com/csaf");
             csafSource.setEnabled(true);
             csafSource.setAggregator(false);
 
-            /*entityManager.persist(csafSource);
+            entityManager.persist(csafSource);
             entityManager.flush();*/
         // Works only within the test but not in the called mirror-function :(
-        sourceRepository.persistAndFlush(csafSource);
+        //sourceRepository.persistAndFlush(csafSource);
         var test = sourceRepository.findAll().list();
 
             when(csafLoaderFactory.create()).thenReturn(createLoader());
