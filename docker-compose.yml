@@ -343,6 +343,8 @@ services:
                 valueProtoType: org.cyclonedx.v1_6.Bom
               - topicName: dtrack.epss
                 valueProtoType: org.dependencytrack.mirror.v1.EpssItem
+              - topicName: dtrack.csaf.document
+                valueProtoType: org.dependencytrack.mirror.v1.CsafDocumentItem
               - topicName: dtrack.notification.user
                 valueProtoType: org.dependencytrack.notification.v1.Notification
             fileSystem:

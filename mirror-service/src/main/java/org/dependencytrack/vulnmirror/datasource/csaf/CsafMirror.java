@@ -18,22 +18,24 @@
  */
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Timestamp;
 import io.github.csaf.sbom.retrieval.CsafLoader;
 import io.github.csaf.sbom.retrieval.RetrievedAggregator;
 import io.github.csaf.sbom.retrieval.RetrievedProvider;
 import io.github.csaf.sbom.schema.generated.Csaf;
 import io.github.csaf.sbom.schema.generated.Provider;
 import io.micrometer.core.instrument.Timer;
-import io.quarkus.hibernate.orm.panache.Panache;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import kotlinx.serialization.json.Json;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.cyclonedx.proto.v1_6.Bom;
-import org.dependencytrack.persistence.model.CsafDocumentEntity;
+import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.persistence.model.CsafSourceEntity;
-import org.dependencytrack.persistence.repository.CsafDocumentRepository;
 import org.dependencytrack.persistence.repository.CsafSourceRepository;
+import org.dependencytrack.proto.mirror.v1.CsafDocumentItem;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
 import org.dependencytrack.vulnmirror.datasource.Datasource;
 import org.dependencytrack.vulnmirror.state.MirrorStateStore;
@@ -62,16 +64,15 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
     private final CsafConfig config;
     private final CsafLoaderFactory csafLoaderFactory;
-    private final CsafLoader csafLoader;
     private final ExecutorService executorService;
     private final CsafSourceRepository csafSourceRepository;
     private final Timer durationTimer;
+    private final Producer<String, byte[]> kafkaProducer;
 
     CsafMirror(final CsafLoaderFactory csafLoaderFactory,
             final CsafConfig config,
             @ForCsafMirror final ExecutorService executorService,
             final CsafSourceRepository csafSourceRepository,
-            final CsafDocumentRepository csafDocumentRepository,
             final MirrorStateStore mirrorStateStore,
             final VulnerabilityDigestStore vulnDigestStore,
             final Producer<String, byte[]> kafkaProducer,
@@ -81,8 +82,8 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         this.executorService = executorService;
         this.csafSourceRepository = csafSourceRepository;
         this.csafLoaderFactory = csafLoaderFactory;
-        this.csafLoader = csafLoaderFactory.create();
         this.durationTimer = durationTimer;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Override
@@ -122,10 +123,10 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         LOGGER.info("Mirroring CSAF Vulnerabilities from {} providers", providers.size());
         final Timer.Sample durationSample = Timer.start();
 
-        discoverProvidersFromAggregators();
+        discoverProvidersFromAggregators(csafLoader);
 
         for (CsafSourceEntity provider : providers) {
-            mirrorProvider(provider);
+            mirrorProvider(provider, csafLoader);
         }
 
         final long durationNanos = durationSample.stop(durationTimer);
@@ -138,18 +139,18 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      * @throws InterruptedException if the thread is interrupted
      */
     @Transactional
-    protected void discoverProvidersFromAggregators() throws InterruptedException {
+    protected void discoverProvidersFromAggregators(CsafLoader csafLoader) throws InterruptedException {
         var aggregators = csafSourceRepository.findEnabledAggregators();
         for (CsafSourceEntity aggregator : aggregators) {
             try {
-                discoverProvider(aggregator);
+                discoverProvider(aggregator, csafLoader);
             } catch (ExecutionException e) {
                 LOGGER.error("Error while discovering providers from aggregator {}", aggregator.getUrl(), e);
             }
         }
     }
 
-    protected void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
+    protected void discoverProvider(CsafSourceEntity aggregatorEntity, CsafLoader csafLoader) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
         var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl(), csafLoader).get();
         var begin = Instant.now();
@@ -194,9 +195,10 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      * Mirrors a single provider based on the given URL.
      *
      * @param providerEntity the provider to mirror as a database entity (see {@link CsafSourceEntity})
+     * @param csafLoader the CSAF loader to use for fetching documents
      */
     @Transactional
-    protected void mirrorProvider(CsafSourceEntity providerEntity) throws InterruptedException, ExecutionException {
+    protected void mirrorProvider(CsafSourceEntity providerEntity, CsafLoader csafLoader) throws InterruptedException, ExecutionException {
         LOGGER.info("Mirroring documents from CSAF provider {} that were modified since {}", providerEntity.getUrl(), providerEntity.getLastFetched());
 
         final var since = providerEntity.getLastFetched() != null ?
@@ -209,19 +211,21 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 var csaf = document.getOrNull().getJson();
                 var raw = Json.Default.encodeToString(Csaf.Companion.serializer(), csaf);
 
-                // Build a new CSAF entity in our database
-                var csafEntity = new CsafDocumentEntity();
                 try {
-                    csafEntity.setUrl(providerEntity.getUrl());
-                    csafEntity.setContent(raw);
-                    csafEntity.setLastFetched(Instant.now());
-                    csafEntity.setSeen(false);
-                    csafEntity.setName(csaf.getDocument().getTitle());
-                    csafEntity.setPublisherNamespace(csaf.getDocument().getPublisher().getNamespace().toString());
-                    csafEntity.setTrackingID(csaf.getDocument().getTracking().getId());
-                    csafEntity.setTrackingVersion(csaf.getDocument().getTracking().getVersion());
+                    // Build a new CSAF document item to send back to the API server
+                    var doc = CsafDocumentItem.newBuilder()
+                            .setUrl(providerEntity.getUrl())
+                            .setJsonContent(ByteString.copyFromUtf8(raw))
+                            .setLastFetched(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()))
+                            .setSeen(false)
+                            .setName(csaf.getDocument().getTitle())
+                            .setPublisherNamespace(csaf.getDocument().getPublisher().getNamespace().toString())
+                            .setTrackingId(csaf.getDocument().getTracking().getId())
+                            .setTrackingVersion(csaf.getDocument().getTracking().getVersion())
+                            .build();
 
-                    Panache.getEntityManager().merge(csafEntity);
+                    LOGGER.info("Processing CSAF document {} from provider {}", csaf.getDocument().getTracking().getId(), providerEntity.getUrl());
+                    publishCsafDocument(doc);
 
                     var vulns = csaf.getVulnerabilities();
                     for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
@@ -245,6 +249,20 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         providerEntity.setLastFetched(begin);
 
         LOGGER.info("Mirroring documents from CSAF provider {} completed", providerEntity.getUrl());
+    }
+
+    /**
+     * Publish CSAF documents to Kafka if they are new or have changed.
+     *
+     * @param item the item (as a {@link CsafDocumentItem} to publish
+     */
+    private void publishCsafDocument(CsafDocumentItem item) throws ExecutionException, InterruptedException {
+            kafkaProducer.send(new ProducerRecord<>(
+                    KafkaTopic.NEW_CSAF_DOCUMENT.getName(), computeKafkaKey(item), item.toByteArray())).get();
+    }
+
+    String computeKafkaKey(CsafDocumentItem item) {
+        return "CSAF-" + item.getPublisherNamespace() + "-" + item.getTrackingId();
     }
 
 }
