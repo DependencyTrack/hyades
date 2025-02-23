@@ -5,6 +5,7 @@ import io.github.csaf.sbom.retrieval.CsafLoader;
 import io.ktor.client.engine.mock.MockEngine;
 import io.ktor.http.HttpStatusCode;
 import io.quarkus.test.InjectMock;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
@@ -14,9 +15,12 @@ import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.dependencytrack.common.KafkaTopic;
+import org.dependencytrack.persistence.model.CsafSourceEntity;
+import org.dependencytrack.persistence.repository.CsafSourceRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -48,14 +52,20 @@ import static org.mockito.Mockito.when;
         CsafLoaderFactory csafLoaderFactory;
 
         @Inject
-        CsafMirror csafMirror;
-
-        @Inject
         @Default
         ObjectMapper objectMapper;
 
+        @Inject
+        EntityManager entityManager;
+
+        @Inject
+        CsafSourceRepository sourceRepository;
+
         @InjectKafkaCompanion
         KafkaCompanion kafkaCompanion;
+
+    @Inject
+    CsafMirror csafMirror;
 
         @AfterEach
         void afterEach() {
@@ -78,6 +88,17 @@ import static org.mockito.Mockito.when;
 
     @Test
     void testDoMirrorSuccessNotification() {
+            var csafSource = new CsafSourceEntity();
+            csafSource.setName("Test CSAF Source");
+            csafSource.setUrl("https://example.com/csaf");
+            csafSource.setEnabled(true);
+            csafSource.setAggregator(false);
+
+            /*entityManager.persist(csafSource);
+            entityManager.flush();*/
+        sourceRepository.persistAndFlush(csafSource);
+        var test = sourceRepository.findAll().list();
+
             when(csafLoaderFactory.create()).thenReturn(createLoader());
 
         assertThatNoException().isThrownBy(() -> csafMirror.doMirror().get());
