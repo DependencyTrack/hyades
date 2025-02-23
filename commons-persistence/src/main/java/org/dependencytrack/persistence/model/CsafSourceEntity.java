@@ -61,9 +61,6 @@ public class CsafSourceEntity implements Serializable {
     @Column(name = "LASTFETCHED")
     private Instant lastFetched;
 
-    @Column(name = "FETCHINTERVAL")
-    private int fetchInterval;
-
     @Column(name = "AGGREGATOR")
     private boolean aggregator;
 
@@ -134,15 +131,6 @@ public class CsafSourceEntity implements Serializable {
     public void setLastFetched(Instant lastFetched) {
         this.lastFetched = lastFetched;
     }
-
-    public int getFetchInterval() {
-        return fetchInterval;
-    }
-
-    public void setFetchInterval(int fetchInterval) {
-        this.fetchInterval = fetchInterval;
-    }
-
 
     public boolean isAggregator() {
         return aggregator;
