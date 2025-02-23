@@ -20,6 +20,8 @@ package org.dependencytrack.persistence.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -28,9 +30,6 @@ import java.time.Instant;
 
 /**
  * Model for configured CSAF document entities.
- *
- *
- * @since 5.6.0 //TODO set when merged
  */
 @Entity
 @Table(name = "CSAFDOCUMENTENTITY")
@@ -38,7 +37,8 @@ public class CsafDocumentEntity implements Serializable {
 
     @Id
     @Column(name = "ID")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @Column(name = "NAME")
     private String name;
@@ -46,11 +46,17 @@ public class CsafDocumentEntity implements Serializable {
     @Column(name = "URL")
     private String url;
 
-    @Column(name = "ENABLED")
-    private boolean enabled;
-
     @Column(name = "CONTENT", columnDefinition = "CLOB")
     private String content;
+
+    @Column(name = "PUBLISHERNAMESPACE")
+    private String publisherNamespace;
+
+    @Column(name = "TRACKINGID")
+    private String trackingID;
+
+    @Column(name = "TRACKINGVERSION")
+    private String trackingVersion;
 
     @Column(name = "SEEN")
     private boolean seen;
@@ -58,26 +64,15 @@ public class CsafDocumentEntity implements Serializable {
     @Column(name = "LASTFETCHED")
     private Instant lastFetched;
 
-    @Column(name = "FETCHINTERVAL")
-    private int fetchInterval;
-
-    @Column(name = "DISCOVERY")
-    private boolean discovery;
-
     public CsafDocumentEntity() {
         // no args for jdo
     }
 
-    public CsafDocumentEntity(String name, String url) {
-        this.name = name;
-        this.url = url;
-    }
-
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -97,20 +92,36 @@ public class CsafDocumentEntity implements Serializable {
         this.url = url;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getPublisherNamespace() {
+        return publisherNamespace;
+    }
+
+    public void setPublisherNamespace(String publisherNamespace) {
+        this.publisherNamespace = publisherNamespace;
+    }
+
+    public String getTrackingID() {
+        return trackingID;
+    }
+
+    public void setTrackingID(String trackingID) {
+        this.trackingID = trackingID;
+    }
+
+    public String getTrackingVersion() {
+        return trackingVersion;
+    }
+
+    public void setTrackingVersion(String trackingVersion) {
+        this.trackingVersion = trackingVersion;
     }
 
     public boolean isSeen() {
@@ -129,19 +140,4 @@ public class CsafDocumentEntity implements Serializable {
         this.lastFetched = lastFetched;
     }
 
-    public int getFetchInterval() {
-        return fetchInterval;
-    }
-
-    public void setFetchInterval(int fetchInterval) {
-        this.fetchInterval = fetchInterval;
-    }
-
-    public boolean isDiscovery() {
-        return discovery;
-    }
-
-    public void setDiscovery(boolean discovery) {
-        this.discovery = discovery;
-    }
 }

@@ -52,7 +52,6 @@ import java.util.concurrent.Future;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
 import static org.dependencytrack.proto.notification.v1.Level.LEVEL_INFORMATIONAL;
-import static org.dependencytrack.vulnmirror.datasource.csaf.CsafToCdxParser.computeDocumentId;
 import static org.dependencytrack.vulnmirror.datasource.csaf.CsafToCdxParser.computeVulnerabilityId;
 
 @ApplicationScoped
@@ -63,6 +62,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
     private final CsafConfig config;
     private final CsafLoaderFactory csafLoaderFactory;
+    private final CsafLoader csafLoader;
     private final ExecutorService executorService;
     private final CsafSourceRepository csafSourceRepository;
     private final Timer durationTimer;
@@ -81,6 +81,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         this.executorService = executorService;
         this.csafSourceRepository = csafSourceRepository;
         this.csafLoaderFactory = csafLoaderFactory;
+        this.csafLoader = csafLoaderFactory.create();
         this.durationTimer = durationTimer;
     }
 
@@ -121,10 +122,10 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         LOGGER.info("Mirroring CSAF Vulnerabilities from {} providers", providers.size());
         final Timer.Sample durationSample = Timer.start();
 
-        discoverProvidersFromAggregators(csafLoader);
+        discoverProvidersFromAggregators();
 
         for (CsafSourceEntity provider : providers) {
-            mirrorProvider(provider, csafLoader);
+            mirrorProvider(provider);
         }
 
         final long durationNanos = durationSample.stop(durationTimer);
@@ -137,18 +138,18 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      * @throws InterruptedException if the thread is interrupted
      */
     @Transactional
-    protected void discoverProvidersFromAggregators(CsafLoader csafLoader) throws InterruptedException {
+    protected void discoverProvidersFromAggregators() throws InterruptedException {
         var aggregators = csafSourceRepository.findEnabledAggregators();
         for (CsafSourceEntity aggregator : aggregators) {
             try {
-                discoverProvider(aggregator, csafLoader);
+                discoverProvider(aggregator);
             } catch (ExecutionException e) {
                 LOGGER.error("Error while discovering providers from aggregator {}", aggregator.getUrl(), e);
             }
         }
     }
 
-    protected void discoverProvider(CsafSourceEntity aggregatorEntity, CsafLoader csafLoader) throws ExecutionException, InterruptedException {
+    protected void discoverProvider(CsafSourceEntity aggregatorEntity) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
         var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl(), csafLoader).get();
         var begin = Instant.now();
@@ -193,10 +194,9 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
      * Mirrors a single provider based on the given URL.
      *
      * @param providerEntity the provider to mirror as a database entity (see {@link CsafSourceEntity})
-     * @param csafLoader
      */
     @Transactional
-    protected void mirrorProvider(CsafSourceEntity providerEntity, CsafLoader csafLoader) throws InterruptedException, ExecutionException {
+    protected void mirrorProvider(CsafSourceEntity providerEntity) throws InterruptedException, ExecutionException {
         LOGGER.info("Mirroring documents from CSAF provider {} that were modified since {}", providerEntity.getUrl(), providerEntity.getLastFetched());
 
         final var since = providerEntity.getLastFetched() != null ?
@@ -205,29 +205,26 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         final var provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl(), csafLoader).get();
         final var documentStream = provider.streamDocuments(since);
         documentStream.forEach((document) -> {
-            if (document.isSuccess()) {
+            if (document.getOrNull() != null) {
                 var csaf = document.getOrNull().getJson();
-
-                // TODO: Can we access the raw directly?
                 var raw = Json.Default.encodeToString(Csaf.Companion.serializer(), csaf);
 
                 // Build a new CSAF entity in our database
                 var csafEntity = new CsafDocumentEntity();
                 try {
-                    csafEntity.setId(computeDocumentId(csaf.getDocument()));
                     csafEntity.setUrl(providerEntity.getUrl());
                     csafEntity.setContent(raw);
-                    csafEntity.setFetchInterval(0);
+                    csafEntity.setLastFetched(Instant.now());
                     csafEntity.setSeen(false);
                     csafEntity.setName(csaf.getDocument().getTitle());
+                    csafEntity.setPublisherNamespace(csaf.getDocument().getPublisher().getNamespace().toString());
+                    csafEntity.setTrackingID(csaf.getDocument().getTracking().getId());
+                    csafEntity.setTrackingVersion(csaf.getDocument().getTracking().getVersion());
 
                     Panache.getEntityManager().merge(csafEntity);
 
                     var vulns = csaf.getVulnerabilities();
                     for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
-                        // We already prepare a list of existing vulnerabilities with the
-
-
                         var vuln = vulns.get(idx);
                             LOGGER.info("Processing vulnerability {}{}", computeVulnerabilityId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
                             final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
