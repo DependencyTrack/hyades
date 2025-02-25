@@ -188,4 +188,12 @@ public class MattermostPublisherTest extends AbstractWebhookPublisherTest<Matter
                         }
                         """)));
     }
+
+    @Test
+    @Override
+    @TestTransaction
+    void testInformWithTemplateInclude() throws Exception {
+        super.testInformWithTemplateInclude();
+    }
+
 }

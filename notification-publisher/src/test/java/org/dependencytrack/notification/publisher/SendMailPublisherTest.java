@@ -18,6 +18,7 @@
  */
 package org.dependencytrack.notification.publisher;
 
+import com.google.protobuf.util.Timestamps;
 import io.quarkiverse.mailpit.test.InjectMailbox;
 import io.quarkiverse.mailpit.test.Mailbox;
 import io.quarkiverse.mailpit.test.WithMailbox;
@@ -25,14 +26,16 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonObjectBuilder;
+import org.dependencytrack.notification.NotificationConstants;
 import org.dependencytrack.persistence.model.Team;
+import org.dependencytrack.proto.notification.v1.Notification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +43,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.dependencytrack.proto.notification.v1.Group.GROUP_ANALYZER;
+import static org.dependencytrack.proto.notification.v1.Level.LEVEL_ERROR;
+import static org.dependencytrack.proto.notification.v1.Scope.SCOPE_SYSTEM;
 
 @QuarkusTest
 @WithMailbox
@@ -326,6 +333,31 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
                     1970-01-01T18:31:06.000Z
                     """);
         });
+    }
+
+    @Test
+    @Override
+    @TestTransaction
+    void testInformWithTemplateInclude() throws Exception {
+        final var notification = Notification.newBuilder()
+                .setScope(SCOPE_SYSTEM)
+                .setGroup(GROUP_ANALYZER)
+                .setTitle(NotificationConstants.Title.NOTIFICATION_TEST)
+                .setLevel(LEVEL_ERROR)
+                .setTimestamp(Timestamps.fromSeconds(66666))
+                .build();
+
+        final JsonObject config = Json.createObjectBuilder(createConfig())
+                .add(Publisher.CONFIG_TEMPLATE_KEY, "{% include '/some/path' %}")
+                .build();
+
+        // NB: In contrast to other publishers, SendMailPublisher catches and logs
+        // failures during template evaluation. Instead of expecting an exception
+        // being thrown, we verify that no email was sent.
+        assertThatNoException()
+                .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, config));
+
+        assertThat(mailbox.findFirst("recipient@example.com")).isNull();
     }
 
     @Test

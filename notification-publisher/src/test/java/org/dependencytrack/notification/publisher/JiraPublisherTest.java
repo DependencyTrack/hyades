@@ -256,4 +256,12 @@ public class JiraPublisherTest extends AbstractWebhookPublisherTest<JiraPublishe
                         }
                         """)));
     }
+
+    @Test
+    @Override
+    @TestTransaction
+    void testInformWithTemplateInclude() throws Exception {
+        super.testInformWithTemplateInclude();
+    }
+
 }
