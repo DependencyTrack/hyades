@@ -157,4 +157,11 @@ public class CsWebexPublisherTest extends AbstractWebhookPublisherTest<CsWebexPu
                         """)));
     }
 
+    @Test
+    @Override
+    @TestTransaction
+    void testInformWithTemplateInclude() throws Exception {
+        super.testInformWithTemplateInclude();
+    }
+
 }
