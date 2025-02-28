@@ -617,4 +617,11 @@ public class SlackPublisherTest extends AbstractWebhookPublisherTest<SlackPublis
                         """)));
     }
 
+    @Test
+    @Override
+    @TestTransaction
+    void testInformWithTemplateInclude() throws Exception {
+        super.testInformWithTemplateInclude();
+    }
+
 }

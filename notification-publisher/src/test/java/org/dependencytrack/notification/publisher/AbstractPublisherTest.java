@@ -21,6 +21,7 @@ package org.dependencytrack.notification.publisher;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.google.protobuf.Any;
 import com.google.protobuf.util.Timestamps;
+import io.pebbletemplates.pebble.error.ParserException;
 import io.quarkiverse.wiremock.devservice.ConnectWireMock;
 import io.quarkiverse.wiremock.devservice.WireMockConfigKey;
 import jakarta.inject.Inject;
@@ -49,7 +50,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.dependencytrack.proto.notification.v1.Group.GROUP_ANALYZER;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_CONSUMED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_PROCESSING_FAILED;
 import static org.dependencytrack.proto.notification.v1.Group.GROUP_BOM_VALIDATION_FAILED;
@@ -268,7 +271,25 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, createConfig()));
     }
 
-    private JsonObject createConfig() throws Exception {
+    void testInformWithTemplateInclude() throws Exception {
+        final var notification = Notification.newBuilder()
+                .setScope(SCOPE_SYSTEM)
+                .setGroup(GROUP_ANALYZER)
+                .setTitle(NotificationConstants.Title.NOTIFICATION_TEST)
+                .setLevel(LEVEL_ERROR)
+                .setTimestamp(Timestamps.fromSeconds(66666))
+                .build();
+
+        final JsonObject config = Json.createObjectBuilder(createConfig())
+                .add(Publisher.CONFIG_TEMPLATE_KEY, "{% include '/some/path' %}")
+                .build();
+
+        assertThatExceptionOfType(ParserException.class)
+                .isThrownBy(() -> publisherInstance.inform(createPublishContext(notification), notification, config))
+                .withMessage("Unexpected tag name \"include\" ({% include '/some/path' %}:1)");
+    }
+
+    JsonObject createConfig() throws Exception {
         return Json.createObjectBuilder()
                 .add(Publisher.CONFIG_TEMPLATE_MIME_TYPE_KEY, getTemplateMimeType())
                 .add(Publisher.CONFIG_TEMPLATE_KEY, getTemplate())
@@ -377,7 +398,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .build();
     }
 
-    private static PublishContext createPublishContext(final Notification notification) throws Exception {
+    static PublishContext createPublishContext(final Notification notification) throws Exception {
         final var record = new ConsumerRecord<>("topic", 1, 2L, "key", notification);
         return PublishContext.fromRecord(record);
     }
