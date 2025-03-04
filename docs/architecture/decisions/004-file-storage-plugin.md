@@ -59,9 +59,16 @@ message FileMetadata {
   // Examples: "memory:///foo/bar", "s3://bucket/foo/bar".
   string location = 1;
 
+  // Media type of the file.
+  // https://www.iana.org/assignments/media-types/media-types.xhtml
+  string media_type = 2;
+
+  // Hex-encoded SHA-256 digest of the file content.
+  string sha256_digest = 3;
+
   // Additional metadata of the storage provider,
   // i.e. values used for integrity verification.
-  map<string, string> storage_metadata = 2;
+  map<string, string> additional_metadata = 100;
 }
 ```
 
@@ -86,13 +93,24 @@ public interface FileStorage extends ExtensionPoint {
      * Storage providers may transparently perform additional steps,
      * such as encryption and compression.
      *
-     * @param fileName Name of the file. This fileName is not guaranteed to be reflected
-     *                 in storage as-is. It may be modified or changed entirely.
-     * @param content  Data to store.
+     * @param fileName  Name of the file. This fileName is not guaranteed to be reflected
+     *                  in storage as-is. It may be modified or changed entirely.
+     * @param mediaType Media type of the file.
+     * @param content   Data to store.
      * @return Metadata of the stored file.
      * @throws IOException When storing the file failed.
+     * @see <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANA Media Types</a>
      */
-    FileMetadata store(String fileName, byte[] content) throws IOException;
+    FileMetadata store(final String fileName, final String mediaType, final byte[] content) throws IOException;
+
+    /**
+     * Persist data to a file in storage, assuming the media type to be {@code application/octet-stream}.
+     *
+     * @see #store(String, String, byte[])
+     */
+    default FileMetadata store(final String fileName, final byte[] content) throws IOException {
+        return store(fileName, "application/octet-stream", content);
+    }
 
     /**
      * Retrieves a file from storage.
