@@ -2,8 +2,9 @@
 import { test as setup } from '@playwright/test';
 import { LoginPage } from "../page-objects/login.pom";
 import * as fs from "node:fs";
+import {getAuthFilePath} from "../utilities/utils";
 
-const adminFile = 'e2e/playwright-tests/resources/.auth/admin.json';
+const adminFile = getAuthFilePath('admin');
 
 setup('Store Admin Authentication', async ({ page }) => {
     const loginPage = new LoginPage(page);

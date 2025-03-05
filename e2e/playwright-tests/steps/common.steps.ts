@@ -1,10 +1,10 @@
 /* eslint-disable */
 import { Given, Then } from '../fixtures/fixtures';
-import * as fs from "node:fs";
 import {expect} from "@playwright/test";
+import {readAuthFile} from "../utilities/utils";
 
 Given('the user {string} is already authenticated for DependencyTrack', async ({ page, navBarPage }, username: string) => {
-    const sessionStorage = JSON.parse(fs.readFileSync(__dirname + `/../resources/.auth/${username}.json`, 'utf-8'));
+    const sessionStorage = JSON.parse(readAuthFile(username));
     await page.context().addInitScript(storage => {
         for (const [key, value] of Object.entries(storage))
             if (typeof value === "string") {

@@ -49,3 +49,11 @@ export function updateLocale(locale: string) {
         console.warn(`Locale file not found for: ${locale}`);
     }
 }
+
+export function getAuthFilePath(user: string): string {
+    return path.join(__dirname, `/../resources/.auth/${user}.json`);
+}
+
+export function readAuthFile(user: string): string {
+    return fs.readFileSync(getAuthFilePath(user), 'utf-8');
+}

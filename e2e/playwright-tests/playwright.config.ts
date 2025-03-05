@@ -3,9 +3,9 @@ import { defineConfig, devices } from '@playwright/test';
 import * as os from "node:os";
 import { defineBddConfig } from "playwright-bdd";
 
-const playwrightTestDir = "./e2e/playwright-tests";
-const defOutDir = "./playwright-test-results";
-const setupDir = "./e2e/playwright-tests/setup";
+const playwrightTestDir = "./";
+const defOutDir = "../../playwright-test-results";
+const setupDir = "./setup";
 
 const gherkinTestDir = defineBddConfig({
   tags: '@projects or @permissions and not @todo',

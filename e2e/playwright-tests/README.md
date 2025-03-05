@@ -108,7 +108,7 @@ npm run playwright:test:chromium
 It will run all the tests, including the setup. 
 Initially DependencyTrack is not set up, so you can run the following command, which will change the password of admin to the value set inside [local-auth.json](./resources/local-auth.json)
 ```shell
-playwright:clean:initial:chromium
+npm run playwright:clean:initial:chromium
 ```
 
 **V1 of the setup takes quite long so if you just want to run the tests without the setup, use**:
