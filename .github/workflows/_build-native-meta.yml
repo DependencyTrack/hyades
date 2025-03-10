@@ -78,7 +78,7 @@ jobs:
         echo "Including resources: ${RESOURCES_INCLUDES:-None}"
         echo "Excluding resources: ${RESOURCES_EXCLUDES:-None}"
         mvn -B --no-transfer-progress -pl ${{ inputs.module }} package -Dnative -DskipTests \
-          -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 \
+          -Dquarkus.native.builder-image=quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:23.1-java21 \
           -Dquarkus.native.container-build=true \
           -Dquarkus.native.resources.includes="$RESOURCES_INCLUDES" \
           -Dquarkus.native.resources.excludes="$RESOURCES_EXCLUDES"
