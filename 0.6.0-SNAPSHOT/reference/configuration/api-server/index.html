@@ -2730,6 +2730,147 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Storage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Storage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filestoragedefaultextension" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.default.extension
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensionlocalcompressionlevel" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.local.compression.level
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensionlocalcompressionthresholdbytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.local.compression.threshold.bytes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensionlocaldirectory" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.local.directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensionlocalenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.local.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensionmemoryenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.memory.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensions3accesskey" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.s3.access.key
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensions3bucket" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.s3.bucket
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensions3compressionlevel" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.s3.compression.level
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensions3compressionthresholdbytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.s3.compression.threshold.bytes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensions3enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.s3.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensions3endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.s3.endpoint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensions3region" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.s3.region
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filestorageextensions3secretkey" class="md-nav__link">
+    <span class="md-ellipsis">
+      file.storage.extension.s3.secret.key
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#task-execution" class="md-nav__link">
     <span class="md-ellipsis">
       Task Execution
@@ -6777,6 +6918,354 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_OIDC_USERNAME_CLAIM</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="storage">Storage<a class="headerlink" href="#storage" title="Permanent link">&para;</a></h2>
+<h3 id="filestoragedefaultextension">file.storage.default.extension<a class="headerlink" href="#filestoragedefaultextension" title="Permanent link">&para;</a></h3>
+<p>Defines the file storage extension to use.  When not set, an enabled extension will be chosen based on its priority.  It is recommended to explicitly configure an extension for predictable behavior.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[local, memory, s3]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_DEFAULT_EXTENSION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensionlocalcompressionlevel">file.storage.extension.local.compression.level<a class="headerlink" href="#filestorageextensionlocalcompressionlevel" title="Permanent link">&para;</a></h3>
+<p>Defines the zstd compression level to use.  Has no effect unless <a href="#filestorageextensionlocalenabled"><code>file.storage.extension.local.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[-7..22]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_COMPRESSION_LEVEL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensionlocalcompressionthresholdbytes">file.storage.extension.local.compression.threshold.bytes<a class="headerlink" href="#filestorageextensionlocalcompressionthresholdbytes" title="Permanent link">&para;</a></h3>
+<p>Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless <a href="#filestorageextensionlocalenabled"><code>file.storage.extension.local.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>4096</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_COMPRESSION_THRESHOLD_BYTES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensionlocaldirectory">file.storage.extension.local.directory<a class="headerlink" href="#filestorageextensionlocaldirectory" title="Permanent link">&para;</a></h3>
+<p>Defines the local directory where files shall be stored.  Has no effect unless <a href="#filestorageextensionlocalenabled"><code>file.storage.extension.local.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.data.directory}/storage</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_DIRECTORY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensionlocalenabled">file.storage.extension.local.enabled<a class="headerlink" href="#filestorageextensionlocalenabled" title="Permanent link">&para;</a></h3>
+<p>Whether the local file storage extension shall be enabled.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensionmemoryenabled">file.storage.extension.memory.enabled<a class="headerlink" href="#filestorageextensionmemoryenabled" title="Permanent link">&para;</a></h3>
+<p>Whether the in-memory file storage extension shall be enabled.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_MEMORY_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensions3accesskey">file.storage.extension.s3.access.key<a class="headerlink" href="#filestorageextensions3accesskey" title="Permanent link">&para;</a></h3>
+<p>Defines the S3 access key / username.  Has no effect unless <a href="#filestorageextensions3enabled"><code>file.storage.extension.s3.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ACCESS_KEY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensions3bucket">file.storage.extension.s3.bucket<a class="headerlink" href="#filestorageextensions3bucket" title="Permanent link">&para;</a></h3>
+<p>Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup,  even when S3 is not configured as default extension.  Has no effect unless <a href="#filestorageextensions3enabled"><code>file.storage.extension.s3.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_BUCKET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensions3compressionlevel">file.storage.extension.s3.compression.level<a class="headerlink" href="#filestorageextensions3compressionlevel" title="Permanent link">&para;</a></h3>
+<p>Defines the zstd compression level to use.  Has no effect unless <a href="#filestorageextensions3enabled"><code>file.storage.extension.s3.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[-7..22]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_LEVEL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensions3compressionthresholdbytes">file.storage.extension.s3.compression.threshold.bytes<a class="headerlink" href="#filestorageextensions3compressionthresholdbytes" title="Permanent link">&para;</a></h3>
+<p>Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless <a href="#filestorageextensions3enabled"><code>file.storage.extension.s3.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>4096</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_THRESHOLD_BYTES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensions3enabled">file.storage.extension.s3.enabled<a class="headerlink" href="#filestorageextensions3enabled" title="Permanent link">&para;</a></h3>
+<p>Whether the s3 file storage extension shall be enabled.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensions3endpoint">file.storage.extension.s3.endpoint<a class="headerlink" href="#filestorageextensions3endpoint" title="Permanent link">&para;</a></h3>
+<p>Defines the S3 endpoint URL.  Has no effect unless <a href="#filestorageextensions3enabled"><code>file.storage.extension.s3.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ENDPOINT</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensions3region">file.storage.extension.s3.region<a class="headerlink" href="#filestorageextensions3region" title="Permanent link">&para;</a></h3>
+<p>Defines the region of the S3 bucket.  Has no effect unless <a href="#filestorageextensions3enabled"><code>file.storage.extension.s3.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_REGION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="filestorageextensions3secretkey">file.storage.extension.s3.secret.key<a class="headerlink" href="#filestorageextensions3secretkey" title="Permanent link">&para;</a></h3>
+<p>Defines the S3 secret key / password.  Has no effect unless <a href="#filestorageextensions3enabled"><code>file.storage.extension.s3.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_SECRET_KEY</code></td>
     </tr>
   </tbody>
 </table>
