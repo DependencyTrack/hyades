@@ -678,7 +678,7 @@ The image to use for the Kafka dev services container.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>apache/kafka-native:3.8.0</code></td>
+      <td style="border-width: 0"><code>apache/kafka-native:3.9.0</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -706,7 +706,7 @@ The image to use for the PostgreSQL dev services container.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>postgres:16</code></td>
+      <td style="border-width: 0"><code>postgres:17</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
