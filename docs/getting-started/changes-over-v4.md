@@ -74,3 +74,11 @@ and vulnerability analysis is performed by services separately from the API serv
 [Lucene]: https://lucene.apache.org/
 [PostgreSQL]: https://www.postgresql.org/
 [Protobuf]: https://protobuf.dev/
+[sarif.peb]: https://github.com/DependencyTrack/hyades-apiserver/blob/main/src/main/resources/templates/findings/sarif.peb
+
+### Findings
+
+* The Findings response object's `vulnerability` will no longer contain two fields below, `cwes` will hold the respective ids. 
+    * `cweId`
+    * `cweName`
+* In the SARIF file (schema defined in [sarif.peb]), `cweId` will be replaced by list of cwe ids in `cwes`. And name of the SARIF rule will be vulnerability's `vulnId` instead of `cweName`.
