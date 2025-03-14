@@ -252,6 +252,14 @@ public class Project implements Serializable {
         this.inactiveSince = inactiveSince;
     }
 
+    public Project getParent() {
+        return parent;
+    }
+
+    public void setParent(Project parent) {
+        this.parent = parent;
+    }
+
     public Collection<Project> getChildren() {
         return children;
     }
