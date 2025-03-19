@@ -76,7 +76,7 @@ The initial admin credentials are `admin` / `admin` 🌚
 ## Deployment 🚢
 
 The recommended way to deploy Hyades is via Helm.
-The ` chart is maintained in the [`DependencyTrack/helm-charts`](https://github.com/DependencyTrack/helm-charts) repository.
+The chart is maintained in the [`DependencyTrack/helm-charts`](https://github.com/DependencyTrack/helm-charts) repository.
 
 ```shell
 $ helm repo add dependency-track https://dependencytrack.github.io/helm-charts
