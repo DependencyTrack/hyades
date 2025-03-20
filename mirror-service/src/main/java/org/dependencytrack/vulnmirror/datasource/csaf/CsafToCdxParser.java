@@ -69,14 +69,14 @@ public class CsafToCdxParser {
 
         // Set details. We will use the first note with category "description" as the description.
         // All other notes will be added to the details.
-        if(csafVuln.getNotes() != null) {
+        if (csafVuln.getNotes() != null) {
             var details = new StringBuilder();
             for (Csaf.Note note : csafVuln.getNotes()) {
-                if(note.getCategory() == Csaf.Category.description) {
+                if (note.getCategory() == Csaf.Category.description) {
                     out.setDescription(note.getText());
                 } else {
                     if (note.getTitle() != null) {
-                        details.append(note.getTitle()).append("\n");
+                        details.append("##### ").append(note.getTitle()).append("\n\n");
                     }
                     details.append(note.getText()).append("\n");
                 }
@@ -104,7 +104,7 @@ public class CsafToCdxParser {
                         });
 
         // Set vulnerability scores (CVSS values)
-        if(csafVuln.getScores() != null) {
+        if (csafVuln.getScores() != null) {
             for (Csaf.Score score : csafVuln.getScores()) {
                 Optional.ofNullable(score.getCvss_v2())
                         .flatMap(cvssV2 -> parseCvssVector(cvssV2.getVectorString(), ScoreMethod.SCORE_METHOD_CVSSV2))
