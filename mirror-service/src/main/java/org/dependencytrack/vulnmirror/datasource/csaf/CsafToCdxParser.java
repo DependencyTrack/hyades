@@ -23,11 +23,21 @@ import io.github.csaf.sbom.schema.generated.Csaf;
 import io.github.csaf.sbom.schema.generated.Csaf.Id;
 import org.apache.commons.codec.binary.Hex;
 import org.cyclonedx.proto.v1_6.Bom;
+import org.cyclonedx.proto.v1_6.OrganizationalContact;
+import org.cyclonedx.proto.v1_6.OrganizationalEntity;
 import org.cyclonedx.proto.v1_6.Property;
+import org.cyclonedx.proto.v1_6.ScoreMethod;
 import org.cyclonedx.proto.v1_6.Source;
 import org.cyclonedx.proto.v1_6.Vulnerability;
+import org.cyclonedx.proto.v1_6.VulnerabilityCredits;
+import org.cyclonedx.proto.v1_6.VulnerabilityRating;
 import org.cyclonedx.proto.v1_6.VulnerabilityReference;
 import org.dependencytrack.vulnmirror.datasource.Datasource;
+import org.dependencytrack.vulnmirror.datasource.util.ParserUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import us.springett.cvss.Cvss;
+import us.springett.cvss.MalformedVectorException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -40,33 +50,51 @@ import java.util.stream.Collectors;
 public class CsafToCdxParser {
     private static final String TITLE_PROPERTY_NAME = "dependency-track:vuln:title";
     private static final Source SOURCE = Source.newBuilder().setName(Datasource.CSAF.name()).build();
+    private static final Logger LOGGER = LoggerFactory.getLogger(CsafToCdxParser.class);
 
     public static Bom parse(Csaf.Vulnerability csafVuln, Csaf.Document csafDoc, int vulnIndex) throws NoSuchAlgorithmException {
         Vulnerability.Builder out = Vulnerability.newBuilder();
 
+        // Set ID and source
         out.setId(computeVulnerabilityId(csafVuln, csafDoc, vulnIndex));
         out.setSource(SOURCE);
 
+        // Set title
         Optional.ofNullable(csafVuln.getTitle())
                 .ifPresent(title -> {
                     out.addProperties(
                             Property.newBuilder().setName(TITLE_PROPERTY_NAME).setValue(csafVuln.getTitle()).build()
                     );
-                    out.setDescription(title);
                 });
 
-        out
-                .setDetail(csafVuln.getNotes().stream().map((note) -> note.toString()).collect(Collectors.joining()))
-                .setRecommendation("TODO");
+        // Set details. We will use the first note with category "description" as the description.
+        // All other notes will be added to the details.
+        if(csafVuln.getNotes() != null) {
+            var details = new StringBuilder();
+            for (Csaf.Note note : csafVuln.getNotes()) {
+                if(note.getCategory() == Csaf.Category.description) {
+                    out.setDescription(note.getText());
+                } else {
+                    if (note.getTitle() != null) {
+                        details.append(note.getTitle()).append("\n");
+                    }
+                    details.append(note.getText()).append("\n");
+                }
+            }
+            if (!details.isEmpty()) {
+                out.setDetail(details.toString());
+            }
+        }
 
+        // Set the published and created timestamps
         Optional.ofNullable(csafVuln.getRelease_date())
                 .map(published -> Timestamp.newBuilder().setSeconds(published.getEpochSeconds()).build())
                 .ifPresent(out::setPublished);
-
         Optional.ofNullable(csafVuln.getDiscovery_date())
                 .map(created -> Timestamp.newBuilder().setSeconds(created.getEpochSeconds()).build())
                 .ifPresent(out::setCreated);
 
+        // Set references to CVE entries
         Optional.ofNullable(csafVuln.getCve())
                 .ifPresent(cve -> {
                     out.addReferences(VulnerabilityReference.newBuilder()
@@ -75,32 +103,40 @@ public class CsafToCdxParser {
                             .build()));
                         });
 
-        // out.setCredits(VulnerabilityCredits.newBuilder().addIndivi)
+        // Set vulnerability scores (CVSS values)
+        if(csafVuln.getScores() != null) {
+            for (Csaf.Score score : csafVuln.getScores()) {
+                Optional.ofNullable(score.getCvss_v2())
+                        .flatMap(cvssV2 -> parseCvssVector(cvssV2.getVectorString(), ScoreMethod.SCORE_METHOD_CVSSV2))
+                        .ifPresent(out::addRatings);
 
-        // external links
-        final StringBuilder sb = new StringBuilder();
-        // if (!bom.getExternalReferencesList().isEmpty()) {
-        //     bom.getExternalReferencesList().forEach(externalReference -> {
-        //         sb.append("* [").append(externalReference.getUrl()).append("](").append(externalReference.getUrl())
-        //                 .append(")\n");
-        //     });
-        //     vuln.setReferences(sb.toString());
-        // }
-        // if (!cycloneVuln.getAdvisoriesList().isEmpty()) {
-        //     cycloneVuln.getAdvisoriesList().forEach(advisory -> {
-        //         sb.append("* [").append(advisory.getUrl()).append("](").append(advisory.getUrl()).append(")\n");
-        //     });
-        //     vuln.setReferences(sb.toString());
-        // }
+                Optional.ofNullable(score.getCvss_v3())
+                        .flatMap(cvssV2 -> parseCvssVector(cvssV2.getVectorString(), ScoreMethod.SCORE_METHOD_CVSSV3))
+                        .ifPresent(out::addRatings);
+            }
+        }
 
-        // Split CWE- from CWE ID string
+        // Set credits / acknowledgments
+        var builder = VulnerabilityCredits.newBuilder();
+        Optional.ofNullable(csafVuln.getAcknowledgments()).ifPresent(acks -> acks.forEach(ack -> {
+            if(ack.getOrganization() != null) {
+                builder.addOrganizations(OrganizationalEntity.newBuilder()
+                        .setName(ack.getOrganization()).build());
+            }
+
+            if(ack.getNames() != null) {
+                ack.getNames().forEach(name -> {
+                    builder.addIndividuals(OrganizationalContact.newBuilder()
+                            .setName(name).build());
+                });
+            }
+        }));
+        out.setCredits(builder.build());
+
+        // Set CWE. by splitting "CWE-" from CWE ID string
         Optional.ofNullable(csafVuln.getCwe())
                 .map(cwe -> Integer.parseInt(cwe.getId().split("-")[1]))
                 .ifPresent(out::addCwes);
-
-        // out.addRatings(null)
-
-        // TODO add references
 
         return Bom.newBuilder().addVulnerabilities(out).build();
     }
@@ -120,6 +156,27 @@ public class CsafToCdxParser {
                 digest.digest(
                         doc.getPublisher().getNamespace().toString().getBytes()
                 )).substring(0, 8) + "-" + doc.getTracking().getId();
+    }
+
+    public static Optional<VulnerabilityRating> parseCvssVector(String vector, ScoreMethod method) {
+        final Cvss cvss;
+        try {
+            cvss = Cvss.fromVector(vector);
+            if (cvss == null) {
+                return Optional.empty();
+            }
+        } catch (MalformedVectorException e) {
+            LOGGER.warn("Failed to parse rating: CVSS vector {} is malformed; Skipping", vector, e);
+            return Optional.empty();
+        }
+
+        return Optional.of(VulnerabilityRating.newBuilder()
+                .setMethod(method)
+                .setSource(SOURCE)
+                .setVector(cvss.getVector())
+                .setScore(cvss.calculateScore().getBaseScore())
+                .setSeverity(ParserUtil.calculateCvssSeverity(cvss))
+                .build());
     }
 
     /**
