@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.8608ea7d.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4af4bdda.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -579,6 +579,15 @@
   <a href="#search" class="md-nav__link">
     <span class="md-ellipsis">
       Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Findings
     </span>
   </a>
   
@@ -1711,6 +1720,15 @@ and vulnerability analysis is performed by services separately from the API serv
 </li>
 <li>All REST endpoints under <code>/api/v1/search</code> were removed.</li>
 <li>Fuzzy matching for the internal analyzer is no longer supported.</li>
+</ul>
+<h3 id="findings">Findings<a class="headerlink" href="#findings" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The Findings response object's <code>vulnerability</code> will no longer contain two fields below, <code>cwes</code> will hold the respective ids. <ul>
+<li><code>cweId</code></li>
+<li><code>cweName</code></li>
+</ul>
+</li>
+<li>In the SARIF file (schema defined in <a href="https://github.com/DependencyTrack/hyades-apiserver/blob/main/src/main/resources/templates/findings/sarif.peb">sarif.peb</a>), <code>cweId</code> will be replaced by list of cwe ids in <code>cwes</code>. And name of the SARIF rule will be vulnerability's <code>vulnId</code> instead of <code>cweName</code>.</li>
 </ul>
 
 
