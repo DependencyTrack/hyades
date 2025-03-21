@@ -23,13 +23,6 @@ import io.confluent.parallelconsumer.PCRetriableException;
 import io.confluent.parallelconsumer.ParallelStreamProcessor;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.runtime.StartupEvent;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.UnsatisfiedResolutionException;
-import jakarta.enterprise.inject.spi.CDI;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -44,6 +37,7 @@ import org.dependencytrack.persistence.model.Project;
 import org.dependencytrack.persistence.model.Tag;
 import org.dependencytrack.persistence.model.Team;
 import org.dependencytrack.persistence.repository.NotificationRuleRepository;
+import org.dependencytrack.persistence.repository.ProjectRepository;
 import org.dependencytrack.persistence.repository.TeamRepository;
 import org.dependencytrack.proto.notification.v1.BomConsumedOrProcessedSubject;
 import org.dependencytrack.proto.notification.v1.BomProcessingFailedSubject;
@@ -59,11 +53,19 @@ import org.hibernate.QueryTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.UnsatisfiedResolutionException;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -80,13 +82,17 @@ public class NotificationRouter {
 
     private final ParallelStreamProcessor<String, Notification> parallelConsumer;
     private final NotificationRuleRepository ruleRepository;
+    private final ProjectRepository projectRepository;
     private final TeamRepository teamRepository;
 
-    public NotificationRouter(final ParallelStreamProcessor<String, Notification> parallelConsumer,
-                              final NotificationRuleRepository ruleRepository,
-                              final TeamRepository teamRepository) {
+    NotificationRouter(
+            final ParallelStreamProcessor<String, Notification> parallelConsumer,
+            final NotificationRuleRepository ruleRepository,
+            final ProjectRepository projectRepository,
+            final TeamRepository teamRepository) {
         this.parallelConsumer = parallelConsumer;
         this.ruleRepository = ruleRepository;
+        this.projectRepository = projectRepository;
         this.teamRepository = teamRepository;
     }
 
@@ -281,23 +287,25 @@ public class NotificationRouter {
             }
 
             if (isLimitedToProjects) {
+                final UUID limitToProjectUuid = UUID.fromString(limitToProject.getUuid());
+
                 var matched = false;
                 for (final Project project : rule.getProjects()) {
-                    if (project.getUuid().toString().equals(limitToProject.getUuid())) {
+                    if (project.getUuid().equals(limitToProjectUuid)) {
                         LOGGER.debug("Project %s is part of the \"limit to\" list of the rule; Rule is applicable (%s)"
-                                .formatted(limitToProject.getUuid(), ruleCtx));
+                                .formatted(limitToProjectUuid, ruleCtx));
                         matched = true;
                         break;
                     } else if (rule.isNotifyChildren()) {
-                        final boolean isChildOfLimitToProject = checkIfChildrenAreAffected(project, limitToProject.getUuid());
+                        final boolean isChildOfLimitToProject = projectRepository.isParentOfActiveChild(project, limitToProjectUuid);
                         if (isChildOfLimitToProject) {
                             LOGGER.debug("Project %s is child of \"limit to\" project %s; Rule is applicable (%s)"
-                                    .formatted(limitToProject.getUuid(), project.getUuid(), ruleCtx));
+                                    .formatted(limitToProjectUuid, project.getUuid(), ruleCtx));
                             matched = true;
                             break;
                         } else {
                             LOGGER.debug("Project %s is not a child of \"limit to\" project %s (%s)"
-                                    .formatted(limitToProject.getUuid(), project.getUuid(), ruleCtx));
+                                    .formatted(limitToProjectUuid, project.getUuid(), ruleCtx));
                         }
                     }
                 }
@@ -305,7 +313,7 @@ public class NotificationRouter {
                     applicableRules.add(rule);
                 } else {
                     LOGGER.debug("Project %s is not part of the \"limit to\" list of the rule; Rule is not applicable (%s)"
-                            .formatted(limitToProject.getUuid(), ruleCtx));
+                            .formatted(limitToProjectUuid, ruleCtx));
                 }
             } else {
                 LOGGER.debug("Rule is not limited to projects (%s)".formatted(ruleCtx));
@@ -315,17 +323,4 @@ public class NotificationRouter {
                 .formatted(applicableRules.stream().map(NotificationRule::getName).collect(Collectors.joining(", ")), ctx));
     }
 
-    private boolean checkIfChildrenAreAffected (Project parent, String uuid){
-        boolean isChild = false;
-        if (parent.getChildren() == null || parent.getChildren().isEmpty()) {
-            return false;
-        }
-        for (Project child : parent.getChildren()) {
-            if ((child.getUuid().toString().equals(uuid) && child.isActive()) || isChild) {
-                return true;
-            }
-            isChild = checkIfChildrenAreAffected(child, uuid);
-        }
-        return isChild;
-    }
 }
