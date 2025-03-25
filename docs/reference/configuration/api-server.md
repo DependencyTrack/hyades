@@ -706,7 +706,7 @@ The image to use for the PostgreSQL dev services container.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>postgres:17</code></td>
+      <td style="border-width: 0"><code>postgres:13-alpine</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
