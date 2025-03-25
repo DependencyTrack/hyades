@@ -1656,7 +1656,7 @@
   <h1>Database</h1>
 
 <p>Dependency-Track requires a <a href="https://www.postgresql.org/">PostgreSQL</a>, or PostgreSQL-compatible database to operate.</p>
-<p>The lowest supported version is 11. You are encouraged to use the <a href="https://www.postgresql.org/support/versioning/">newest available version</a>.</p>
+<p>The lowest supported version is 13. You are encouraged to use the <a href="https://www.postgresql.org/support/versioning/">newest available version</a>.</p>
 <p>Depending on available resources, individual preferences, or organizational policies,
 you will have to choose between a <a href="#managed-solutions">managed</a>, or <a href="#self-hosting">self-hosted</a> solution.</p>
 <h2 id="extensions">Extensions<a class="headerlink" href="#extensions" title="Permanent link">&para;</a></h2>
@@ -1728,7 +1728,7 @@ Most of these settings require a restart of the application.</p>
 For example:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">services</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">postgres</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:16</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres:17</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="no">-c &#39;shared_buffers=2GB&#39;</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="no">-c &#39;effective_cache_size=6GB&#39;</span>

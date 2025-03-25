@@ -2,110 +2,110 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/000-index/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/001-drop-kafka-dependency/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/002-workflow-orchestration/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/003-notification-publishing/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/004-file-storage-plugin/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/005-materialize-project-hierarchies/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/design/workflow-state-tracking/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/building/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/database-migrations/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/documentation/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/overview/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/testing/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/getting-started/changes-over-v4/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/getting-started/migrating-from-v4/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/getting-started/upgrading/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/operations/database/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/topics/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/configuration/api-server/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/configuration/mirror-service/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/configuration/overview/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/configuration/repo-meta-analyzer/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/schemas/notification/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/reference/schemas/policy/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/usage/policy-compliance/expressions/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/usage/policy-compliance/overview/</loc>
-         <lastmod>2025-03-24</lastmod>
+         <lastmod>2025-03-25</lastmod>
     </url>
 </urlset>
