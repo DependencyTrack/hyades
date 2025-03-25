@@ -678,7 +678,7 @@ The image to use for the Kafka dev services container.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>apache/kafka-native:3.8.0</code></td>
+      <td style="border-width: 0"><code>apache/kafka-native:3.9.0</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -706,7 +706,7 @@ The image to use for the PostgreSQL dev services container.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>postgres:16</code></td>
+      <td style="border-width: 0"><code>postgres:13-alpine</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -3934,6 +3934,412 @@ Defines the name of the claim that contains the username in the provider's useri
 
 
 
+## Storage
+
+### file.storage.default.extension
+
+Defines the file storage extension to use.  When not set, an enabled extension will be chosen based on its priority.  It is recommended to explicitly configure an extension for predictable behavior.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[local, memory, s3]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_DEFAULT_EXTENSION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.local.compression.level
+
+Defines the zstd compression level to use.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[-7..22]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_COMPRESSION_LEVEL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.local.compression.threshold.bytes
+
+Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>4096</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_COMPRESSION_THRESHOLD_BYTES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.local.directory
+
+Defines the local directory where files shall be stored.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.data.directory}/storage</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_DIRECTORY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.local.enabled
+
+Whether the local file storage extension shall be enabled.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.memory.enabled
+
+Whether the in-memory file storage extension shall be enabled.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_MEMORY_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.s3.access.key
+
+Defines the S3 access key / username.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ACCESS_KEY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.s3.bucket
+
+Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup,  even when S3 is not configured as default extension.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_BUCKET</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.s3.compression.level
+
+Defines the zstd compression level to use.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[-7..22]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_LEVEL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.s3.compression.threshold.bytes
+
+Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>4096</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_THRESHOLD_BYTES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.s3.enabled
+
+Whether the s3 file storage extension shall be enabled.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.s3.endpoint
+
+Defines the S3 endpoint URL.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ENDPOINT</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.s3.region
+
+Defines the region of the S3 bucket.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_REGION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### file.storage.extension.s3.secret.key
+
+Defines the S3 secret key / password.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_SECRET_KEY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
 ## Task Execution
 
 ### alpine.worker.thread.multiplier
@@ -4687,6 +5093,90 @@ Minimum duration in ISO 8601 format for which the portfolio metrics update task 
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_PORTFOLIO_METRICS_UPDATE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.project.maintenance.cron
+
+Cron expression of the project maintenance task.  <br/><br/>  The task deletes inactive projects based on retention policy.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0 */4 * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PROJECT_MAINTENANCE_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.project.maintenance.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the project maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PROJECT_MAINTENANCE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.project.maintenance.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the project maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PROJECT_MAINTENANCE_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>

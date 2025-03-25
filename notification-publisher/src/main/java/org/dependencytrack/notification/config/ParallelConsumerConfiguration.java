@@ -26,19 +26,19 @@ import io.micrometer.core.instrument.binder.kafka.KafkaClientMetrics;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.common.annotation.Identifier;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.Produces;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.internals.AsyncKafkaConsumer;
+import org.apache.kafka.clients.consumer.internals.ClassicKafkaConsumer;
 import org.apache.kafka.clients.consumer.internals.ConsumerCoordinator;
-import org.apache.kafka.clients.consumer.internals.LegacyKafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.dependencytrack.notification.serialization.NotificationKafkaProtobufDeserializer;
 import org.dependencytrack.proto.notification.v1.Notification;
 import org.eclipse.microprofile.config.ConfigProvider;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Produces;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
         // https://github.com/confluentinc/parallel-consumer/pull/762
         KafkaConsumer.class,
         AsyncKafkaConsumer.class,
-        LegacyKafkaConsumer.class,
+        ClassicKafkaConsumer.class,
         ConsumerCoordinator.class
 })
 class ParallelConsumerConfiguration {
@@ -91,6 +91,7 @@ class ParallelConsumerConfiguration {
         final var parallelConsumerOptions = ParallelConsumerOptions.<String, Notification>builder()
                 .consumer(consumer)
                 .maxConcurrency(parallelConsumerConfig.maxConcurrency())
+                .ignoreReflectiveAccessExceptionsForAutoCommitDisabledCheck(true)
                 .ordering(ProcessingOrder.KEY)
                 .retryDelayProvider(recordCtx -> {
                     final long delayMillis = RetryConfig

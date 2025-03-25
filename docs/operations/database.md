@@ -1,6 +1,6 @@
 Dependency-Track requires a [PostgreSQL], or PostgreSQL-compatible database to operate.
 
-The lowest supported version is 11. You are encouraged to use the [newest available version].
+The lowest supported version is 13. You are encouraged to use the [newest available version].
 
 Depending on available resources, individual preferences, or organizational policies,
 you will have to choose between a [managed](#managed-solutions), or [self-hosted](#self-hosting) solution.
@@ -91,7 +91,7 @@ For example:
 ```yaml
 services:
   postgres:
-    image: postgres:16
+    image: postgres:17
     command: >-
         -c 'shared_buffers=2GB'
         -c 'effective_cache_size=6GB'

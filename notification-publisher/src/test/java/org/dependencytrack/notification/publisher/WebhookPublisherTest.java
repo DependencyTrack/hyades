@@ -498,4 +498,12 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                         }
                         """)));
     }
+
+    @Test
+    @Override
+    @TestTransaction
+    void testInformWithTemplateInclude() throws Exception {
+        super.testInformWithTemplateInclude();
+    }
+
 }
