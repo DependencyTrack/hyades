@@ -32,11 +32,15 @@ Refer to the [kafka configuration reference] for details. Example of name change
     | `GET /api/v1/tag/{policyUuid}`                     | `GET /api/v1/tag/policy/{uuid}`    |
     | `GET /api/v1/bom/token/{uuid}`                     | `GET /api/v1/event/token/{uuid}`   |
 
+* The minimum supported PostgreSQL version has been raised from 11 to 13 ([hyades/#1724]).
+  Lower versions may still work, but are no longer tested against.
+
 [apiserver/#840]: https://github.com/DependencyTrack/hyades-apiserver/pull/840
 [apiserver/#888]: https://github.com/DependencyTrack/hyades-apiserver/pull/888
 [apiserver/#904]: https://github.com/DependencyTrack/hyades-apiserver/pull/904
 [apiserver/#910]: https://github.com/DependencyTrack/hyades-apiserver/pull/910
 [hyades/#1392]: https://github.com/DependencyTrack/hyades/issues/1392
+[hyades/#1724]: https://github.com/DependencyTrack/hyades/issues/1724
 
 [kafka configuration reference]: ../reference/configuration/api-server.md#kafka
 [task scheduling configuration reference]: ../reference/configuration/api-server.md#task-scheduling
