@@ -72,7 +72,7 @@
     <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
     <lib.failsafe.version>3.3.2</lib.failsafe.version>
     <lib.greenmail.version>2.1.3</lib.greenmail.version>
-    <lib.httpclient5.version>5.4.2</lib.httpclient5.version>
+    <lib.httpclient5.version>5.4.3</lib.httpclient5.version>
     <lib.java-uuid-generator.version>5.1.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>4.1.0</lib.json-unit.version>
     <lib.kafka.version>3.9.0</lib.kafka.version>
