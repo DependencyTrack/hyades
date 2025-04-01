@@ -415,7 +415,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserIdB = createManagedUser("anotherManagedUserTest", "anotherManagedUser@Test.com");
         final var ldapUserIdB = createLdapUser("anotherLdapUserTest", "anotherLdapUser@Test.com");
         final var oidcUserIdB = createOidcUser("anotherOidcUserTest", "anotherOidcUser@Test.com");
-        final var teamB = createTeam("teamA", List.of(managedUserIdB), List.of(ldapUserIdB), List.of(oidcUserIdB));
+        final var teamB = createTeam("teamB", List.of(managedUserIdB), List.of(ldapUserIdB), List.of(oidcUserIdB));
 
         assertThat(publisherInstance.parseDestination(config, List.of(teamA, teamB)))
                 .containsExactlyInAnyOrder(
@@ -441,7 +441,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserIdB = createManagedUser("anotherManagedUserTest", "anotherManagedUser@Test.com");
         final var ldapUserIdB = createLdapUser("anotherLdapUserTest", "anotherLdapUser@Test.com");
         final var oidcUserIdB = createOidcUser("anotherOidcUserTest", "anotherOidcUser@Test.com");
-        final var teamB = createTeam("teamA",
+        final var teamB = createTeam("teamB",
                 List.of(managedUserIdB, managedUserIdA),
                 List.of(ldapUserIdB, ldapUserIdA),
                 List.of(oidcUserIdB, oidcUserIdA));

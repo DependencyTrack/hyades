@@ -778,6 +778,87 @@ BEGIN
 end;
 $$;
 
+CREATE FUNCTION public.effective_permissions_mx_on_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+            DECLARE
+              project_ids BIGINT[];
+            BEGIN
+              IF TG_TABLE_NAME = 'PROJECT_ACCESS_TEAMS' THEN
+                PERFORM recalc_user_project_effective_permissions(
+                  (SELECT ARRAY_AGG(DISTINCT "PROJECT_ID") FROM old_table)
+                );
+              ELSIF TG_TABLE_NAME IN (
+                'LDAPUSERS_TEAMS', 'MANAGEDUSERS_TEAMS', 'OIDCUSERS_TEAMS', 'TEAMS_PERMISSIONS'
+              ) THEN
+                PERFORM recalc_user_project_effective_permissions((
+                  SELECT ARRAY_AGG(DISTINCT pat."PROJECT_ID")
+                    FROM "PROJECT_ACCESS_TEAMS" AS pat
+                   INNER JOIN old_table
+                      ON old_table."TEAM_ID" = pat."TEAM_ID"
+                ));
+              END IF;
+              RETURN NULL;
+            END;
+            $$;
+
+CREATE FUNCTION public.effective_permissions_mx_on_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+            DECLARE
+              project_ids BIGINT[];
+            BEGIN
+              IF TG_TABLE_NAME = 'PROJECT_ACCESS_TEAMS' THEN
+                PERFORM recalc_user_project_effective_permissions(
+                  (SELECT ARRAY_AGG(DISTINCT "PROJECT_ID") FROM new_table)
+                );
+              ELSIF TG_TABLE_NAME IN (
+                'LDAPUSERS_TEAMS', 'MANAGEDUSERS_TEAMS', 'OIDCUSERS_TEAMS', 'TEAMS_PERMISSIONS'
+              ) THEN
+                PERFORM recalc_user_project_effective_permissions((
+                  SELECT ARRAY_AGG(DISTINCT pat."PROJECT_ID")
+                    FROM "PROJECT_ACCESS_TEAMS" AS pat
+                   INNER JOIN new_table
+                      ON new_table."TEAM_ID" = pat."TEAM_ID"
+                ));
+              END IF;
+              RETURN NULL;
+            END;
+            $$;
+
+CREATE FUNCTION public.effective_permissions_mx_on_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+            DECLARE
+              project_ids BIGINT[];
+            BEGIN
+              IF TG_TABLE_NAME = 'PROJECT_ACCESS_TEAMS' THEN
+                PERFORM recalc_user_project_effective_permissions((
+                  SELECT ARRAY_AGG("PROJECT_ID")
+                    FROM (
+                      SELECT "PROJECT_ID" FROM old_table
+                      UNION
+                      SELECT "PROJECT_ID" FROM new_table
+                    ) AS combined_projects
+                ));
+              ELSIF TG_TABLE_NAME IN (
+                'LDAPUSERS_TEAMS', 'MANAGEDUSERS_TEAMS', 'OIDCUSERS_TEAMS', 'TEAMS_PERMISSIONS'
+              ) THEN
+                PERFORM recalc_user_project_effective_permissions((
+                  SELECT ARRAY_AGG(DISTINCT pat."PROJECT_ID")
+                    FROM "PROJECT_ACCESS_TEAMS" pat
+                    JOIN (
+                      SELECT "TEAM_ID" FROM old_table
+                      UNION
+                      SELECT "TEAM_ID" FROM new_table
+                    ) AS teams
+                      ON pat."TEAM_ID" = teams."TEAM_ID"
+                ));
+              END IF;
+              RETURN NULL;
+            END;
+            $$;
+
 CREATE FUNCTION public.has_project_access(project_id bigint, team_ids bigint[]) RETURNS boolean
     LANGUAGE sql STABLE PARALLEL SAFE
     AS $$
@@ -814,6 +895,20 @@ SELECT JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
     OR ("vuln_source" = 'SNYK' AND "VA"."SNYK_ID" = "vuln_id")
     OR ("vuln_source" = 'VULNDB' AND "VA"."VULNDB_ID" = "vuln_id")
 $$;
+
+CREATE FUNCTION public.prevent_direct_effective_permissions_writes() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+            BEGIN
+              -- Depth of 1 means this trigger was fired by an attempted direct
+              -- insert, update, or delete on USER_PROJECT_EFFECTIVE_PERMISSIONS.
+              -- Depth should be 2, meaning this trigger was fired from another trigger.
+              IF pg_trigger_depth() < 2 THEN
+                RAISE EXCEPTION 'Direct modifications to USER_PROJECT_EFFECTIVE_PERMISSIONS are not allowed.';
+              END IF;
+              RETURN NEW;
+            END;
+            $$;
 
 CREATE FUNCTION public.project_hierarchy_maintenance_on_project_delete() RETURNS trigger
     LANGUAGE plpgsql
@@ -861,9 +956,58 @@ CREATE FUNCTION public.project_hierarchy_maintenance_on_project_update() RETURNS
             END;
             $$;
 
+CREATE FUNCTION public.recalc_user_project_effective_permissions(project_ids bigint[]) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+            BEGIN
+              -- Remove any existing effective permissions for this project.
+              DELETE FROM "USER_PROJECT_EFFECTIVE_PERMISSIONS"
+              WHERE "PROJECT_ID" = ANY(project_ids);
+
+              -- Rebuild effective permissions for LDAP users
+              INSERT INTO "USER_PROJECT_EFFECTIVE_PERMISSIONS"
+                ("LDAPUSER_ID", "PROJECT_ID", "PERMISSION_ID", "PERMISSION_NAME")
+              SELECT DISTINCT lt."LDAPUSER_ID", pat."PROJECT_ID", tp."PERMISSION_ID", p."NAME"
+                FROM "PROJECT_ACCESS_TEAMS" pat
+               INNER JOIN "TEAMS_PERMISSIONS" tp
+                  ON tp."TEAM_ID" = pat."TEAM_ID"
+               INNER JOIN "PERMISSION" p
+                  ON p."ID" = tp."PERMISSION_ID"
+               INNER JOIN "LDAPUSERS_TEAMS" lt
+                  ON lt."TEAM_ID" = pat."TEAM_ID"
+               WHERE pat."PROJECT_ID" = ANY(project_ids);
+
+              -- Rebuild effective permissions for managed users
+              INSERT INTO "USER_PROJECT_EFFECTIVE_PERMISSIONS"
+                ("MANAGEDUSER_ID", "PROJECT_ID", "PERMISSION_ID", "PERMISSION_NAME")
+              SELECT DISTINCT mt."MANAGEDUSER_ID", pat."PROJECT_ID", tp."PERMISSION_ID", p."NAME"
+                FROM "PROJECT_ACCESS_TEAMS" pat
+               INNER JOIN "TEAMS_PERMISSIONS" tp
+                  ON tp."TEAM_ID" = pat."TEAM_ID"
+               INNER JOIN "PERMISSION" p
+                  ON p."ID" = tp."PERMISSION_ID"
+               INNER JOIN "MANAGEDUSERS_TEAMS" mt
+                  ON mt."TEAM_ID" = pat."TEAM_ID"
+               WHERE pat."PROJECT_ID" = ANY(project_ids);
+
+              -- Rebuild effective permissions for OIDC users
+              INSERT INTO "USER_PROJECT_EFFECTIVE_PERMISSIONS"
+                ("OIDCUSER_ID", "PROJECT_ID", "PERMISSION_ID", "PERMISSION_NAME")
+              SELECT DISTINCT ot."OIDCUSERS_ID", pat."PROJECT_ID", tp."PERMISSION_ID", p."NAME"
+                FROM "PROJECT_ACCESS_TEAMS" pat
+               INNER JOIN "TEAMS_PERMISSIONS" tp
+                  ON tp."TEAM_ID" = pat."TEAM_ID"
+               INNER JOIN "PERMISSION" p
+                  ON p."ID" = tp."PERMISSION_ID"
+               INNER JOIN "OIDCUSERS_TEAMS" ot
+                  ON ot."TEAM_ID" = pat."TEAM_ID"
+               WHERE pat."PROJECT_ID" = ANY(project_ids);
+            END;
+            $$;
+
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 CREATE TABLE public."AFFECTEDVERSIONATTRIBUTION" (
     "ID" bigint NOT NULL,
@@ -1426,7 +1570,7 @@ CREATE TABLE public."NOTIFICATIONRULE_TAGS" (
 
 CREATE TABLE public."NOTIFICATIONRULE_TEAMS" (
     "NOTIFICATIONRULE_ID" bigint NOT NULL,
-    "TEAM_ID" bigint
+    "TEAM_ID" bigint NOT NULL
 );
 
 CREATE TABLE public."OIDCGROUP" (
@@ -1852,6 +1996,16 @@ ALTER TABLE public."TEAM" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY
     CACHE 1
 );
 
+CREATE TABLE public."USER_PROJECT_EFFECTIVE_PERMISSIONS" (
+    "LDAPUSER_ID" bigint,
+    "MANAGEDUSER_ID" bigint,
+    "OIDCUSER_ID" bigint,
+    "PROJECT_ID" bigint NOT NULL,
+    "PERMISSION_ID" bigint NOT NULL,
+    "PERMISSION_NAME" character varying(255) NOT NULL,
+    CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_check" CHECK (((((("LDAPUSER_ID" IS NOT NULL))::integer + (("MANAGEDUSER_ID" IS NOT NULL))::integer) + (("OIDCUSER_ID" IS NOT NULL))::integer) = 1))
+);
+
 CREATE TABLE public."VEX" (
     "ID" bigint NOT NULL,
     "IMPORTED" timestamp with time zone NOT NULL,
@@ -2173,6 +2327,9 @@ ALTER TABLE ONLY public."ANALYSIS"
 ALTER TABLE ONLY public."ANALYSIS"
     ADD CONSTRAINT "ANALYSIS_PK" PRIMARY KEY ("ID");
 
+ALTER TABLE ONLY public."APIKEYS_TEAMS"
+    ADD CONSTRAINT "APIKEYS_TEAMS_PK" PRIMARY KEY ("TEAM_ID", "APIKEY_ID");
+
 ALTER TABLE ONLY public."APIKEY"
     ADD CONSTRAINT "APIKEY_IDX" UNIQUE ("APIKEY");
 
@@ -2230,6 +2387,12 @@ ALTER TABLE ONLY public."INTEGRITY_ANALYSIS"
 ALTER TABLE ONLY public."INTEGRITY_META_COMPONENT"
     ADD CONSTRAINT "INTEGRITY_META_COMPONENT_PK" PRIMARY KEY ("ID");
 
+ALTER TABLE ONLY public."LDAPUSERS_PERMISSIONS"
+    ADD CONSTRAINT "LDAPUSERS_PERMISSIONS_PK" PRIMARY KEY ("LDAPUSER_ID", "PERMISSION_ID");
+
+ALTER TABLE ONLY public."LDAPUSERS_TEAMS"
+    ADD CONSTRAINT "LDAPUSERS_TEAMS_PK" PRIMARY KEY ("TEAM_ID", "LDAPUSER_ID");
+
 ALTER TABLE ONLY public."LDAPUSER"
     ADD CONSTRAINT "LDAPUSER_PK" PRIMARY KEY ("ID");
 
@@ -2247,6 +2410,12 @@ ALTER TABLE ONLY public."LICENSE"
 
 ALTER TABLE ONLY public."LICENSE"
     ADD CONSTRAINT "LICENSE_UUID_IDX" UNIQUE ("UUID");
+
+ALTER TABLE ONLY public."MANAGEDUSERS_PERMISSIONS"
+    ADD CONSTRAINT "MANAGEDUSERS_PERMISSIONS_PK" PRIMARY KEY ("MANAGEDUSER_ID", "PERMISSION_ID");
+
+ALTER TABLE ONLY public."MANAGEDUSERS_TEAMS"
+    ADD CONSTRAINT "MANAGEDUSERS_TEAMS_PK" PRIMARY KEY ("TEAM_ID", "MANAGEDUSER_ID");
 
 ALTER TABLE ONLY public."MANAGEDUSER"
     ADD CONSTRAINT "MANAGEDUSER_PK" PRIMARY KEY ("ID");
@@ -2281,6 +2450,9 @@ ALTER TABLE ONLY public."NOTIFICATIONPUBLISHER"
 ALTER TABLE ONLY public."NOTIFICATIONRULE"
     ADD CONSTRAINT "NOTIFICATIONRULE_PK" PRIMARY KEY ("ID");
 
+ALTER TABLE ONLY public."NOTIFICATIONRULE_TEAMS"
+    ADD CONSTRAINT "NOTIFICATIONRULE_TEAMS_PK" PRIMARY KEY ("NOTIFICATIONRULE_ID", "TEAM_ID");
+
 ALTER TABLE ONLY public."NOTIFICATIONRULE"
     ADD CONSTRAINT "NOTIFICATIONRULE_UUID_IDX" UNIQUE ("UUID");
 
@@ -2289,6 +2461,12 @@ ALTER TABLE ONLY public."OIDCGROUP"
 
 ALTER TABLE ONLY public."OIDCGROUP"
     ADD CONSTRAINT "OIDCGROUP_UUID_IDX" UNIQUE ("UUID");
+
+ALTER TABLE ONLY public."OIDCUSERS_PERMISSIONS"
+    ADD CONSTRAINT "OIDCUSERS_PERMISSIONS_PK" PRIMARY KEY ("OIDCUSER_ID", "PERMISSION_ID");
+
+ALTER TABLE ONLY public."OIDCUSERS_TEAMS"
+    ADD CONSTRAINT "OIDCUSERS_TEAMS_PK" PRIMARY KEY ("TEAM_ID", "OIDCUSERS_ID");
 
 ALTER TABLE ONLY public."OIDCUSER"
     ADD CONSTRAINT "OIDCUSER_PK" PRIMARY KEY ("ID");
@@ -2368,6 +2546,12 @@ ALTER TABLE ONLY public."SERVICECOMPONENT"
 ALTER TABLE ONLY public."TAG"
     ADD CONSTRAINT "TAG_PK" PRIMARY KEY ("ID");
 
+ALTER TABLE ONLY public."TEAMS_PERMISSIONS"
+    ADD CONSTRAINT "TEAMS_PERMISSIONS_PK" PRIMARY KEY ("TEAM_ID", "PERMISSION_ID");
+
+ALTER TABLE ONLY public."TEAM"
+    ADD CONSTRAINT "TEAM_NAME_IDX" UNIQUE ("NAME");
+
 ALTER TABLE ONLY public."TEAM"
     ADD CONSTRAINT "TEAM_PK" PRIMARY KEY ("ID");
 
@@ -2444,10 +2628,6 @@ CREATE INDEX "ANALYSISCOMMENT_ANALYSIS_ID_IDX" ON public."ANALYSISCOMMENT" USING
 CREATE INDEX "ANALYSIS_COMPONENT_ID_IDX" ON public."ANALYSIS" USING btree ("COMPONENT_ID");
 
 CREATE INDEX "ANALYSIS_VULNERABILITY_ID_IDX" ON public."ANALYSIS" USING btree ("VULNERABILITY_ID");
-
-CREATE INDEX "APIKEYS_TEAMS_APIKEY_ID_IDX" ON public."APIKEYS_TEAMS" USING btree ("APIKEY_ID");
-
-CREATE INDEX "APIKEYS_TEAMS_TEAM_ID_IDX" ON public."APIKEYS_TEAMS" USING btree ("TEAM_ID");
 
 CREATE INDEX "BOM_PROJECT_ID_IDX" ON public."BOM" USING btree ("PROJECT_ID");
 
@@ -2529,14 +2709,6 @@ CREATE UNIQUE INDEX "INTEGRITY_META_COMPONENT_PURL_IDX" ON public."INTEGRITY_MET
 
 CREATE INDEX "LAST_FETCH_IDX" ON public."INTEGRITY_META_COMPONENT" USING btree ("LAST_FETCH");
 
-CREATE INDEX "LDAPUSERS_PERMISSIONS_LDAPUSER_ID_IDX" ON public."LDAPUSERS_PERMISSIONS" USING btree ("LDAPUSER_ID");
-
-CREATE INDEX "LDAPUSERS_PERMISSIONS_PERMISSION_ID_IDX" ON public."LDAPUSERS_PERMISSIONS" USING btree ("PERMISSION_ID");
-
-CREATE INDEX "LDAPUSERS_TEAMS_LDAPUSER_ID_IDX" ON public."LDAPUSERS_TEAMS" USING btree ("LDAPUSER_ID");
-
-CREATE INDEX "LDAPUSERS_TEAMS_TEAM_ID_IDX" ON public."LDAPUSERS_TEAMS" USING btree ("TEAM_ID");
-
 CREATE INDEX "LICENSEGROUP_LICENSE_LICENSEGROUP_ID_IDX" ON public."LICENSEGROUP_LICENSE" USING btree ("LICENSEGROUP_ID");
 
 CREATE INDEX "LICENSEGROUP_LICENSE_LICENSE_ID_IDX" ON public."LICENSEGROUP_LICENSE" USING btree ("LICENSE_ID");
@@ -2546,14 +2718,6 @@ CREATE INDEX "LICENSEGROUP_NAME_IDX" ON public."LICENSEGROUP" USING btree ("NAME
 CREATE UNIQUE INDEX "LICENSE_LICENSEID_IDX" ON public."LICENSE" USING btree ("LICENSEID");
 
 CREATE INDEX "LICENSE_NAME_IDX" ON public."LICENSE" USING btree ("NAME");
-
-CREATE INDEX "MANAGEDUSERS_PERMISSIONS_MANAGEDUSER_ID_IDX" ON public."MANAGEDUSERS_PERMISSIONS" USING btree ("MANAGEDUSER_ID");
-
-CREATE INDEX "MANAGEDUSERS_PERMISSIONS_PERMISSION_ID_IDX" ON public."MANAGEDUSERS_PERMISSIONS" USING btree ("PERMISSION_ID");
-
-CREATE INDEX "MANAGEDUSERS_TEAMS_MANAGEDUSER_ID_IDX" ON public."MANAGEDUSERS_TEAMS" USING btree ("MANAGEDUSER_ID");
-
-CREATE INDEX "MANAGEDUSERS_TEAMS_TEAM_ID_IDX" ON public."MANAGEDUSERS_TEAMS" USING btree ("TEAM_ID");
 
 CREATE INDEX "MAPPEDOIDCGROUP_GROUP_ID_IDX" ON public."MAPPEDOIDCGROUP" USING btree ("GROUP_ID");
 
@@ -2566,18 +2730,6 @@ CREATE INDEX "NOTIFICATIONRULE_PUBLISHER_IDX" ON public."NOTIFICATIONRULE" USING
 CREATE INDEX "NOTIFICATIONRULE_TAGS_NOTIFICATIONRULE_ID_IDX" ON public."NOTIFICATIONRULE_TAGS" USING btree ("NOTIFICATIONRULE_ID");
 
 CREATE INDEX "NOTIFICATIONRULE_TAGS_TAG_ID_IDX" ON public."NOTIFICATIONRULE_TAGS" USING btree ("TAG_ID");
-
-CREATE INDEX "NOTIFICATIONRULE_TEAMS_NOTIFICATIONRULE_ID_IDX" ON public."NOTIFICATIONRULE_TEAMS" USING btree ("NOTIFICATIONRULE_ID");
-
-CREATE INDEX "NOTIFICATIONRULE_TEAMS_TEAM_ID_IDX" ON public."NOTIFICATIONRULE_TEAMS" USING btree ("TEAM_ID");
-
-CREATE INDEX "OIDCUSERS_PERMISSIONS_OIDCUSER_ID_IDX" ON public."OIDCUSERS_PERMISSIONS" USING btree ("OIDCUSER_ID");
-
-CREATE INDEX "OIDCUSERS_PERMISSIONS_PERMISSION_ID_IDX" ON public."OIDCUSERS_PERMISSIONS" USING btree ("PERMISSION_ID");
-
-CREATE INDEX "OIDCUSERS_TEAMS_OIDCUSERS_ID_IDX" ON public."OIDCUSERS_TEAMS" USING btree ("OIDCUSERS_ID");
-
-CREATE INDEX "OIDCUSERS_TEAMS_TEAM_ID_IDX" ON public."OIDCUSERS_TEAMS" USING btree ("TEAM_ID");
 
 CREATE INDEX "POLICYCONDITION_POLICY_ID_IDX" ON public."POLICYCONDITION" USING btree ("POLICY_ID");
 
@@ -2659,9 +2811,11 @@ CREATE INDEX "SERVICECOMPONENT_PROJECT_ID_IDX" ON public."SERVICECOMPONENT" USIN
 
 CREATE INDEX "SUBSCRIBERCLASS_IDX" ON public."EVENTSERVICELOG" USING btree ("SUBSCRIBERCLASS");
 
-CREATE INDEX "TEAMS_PERMISSIONS_PERMISSION_ID_IDX" ON public."TEAMS_PERMISSIONS" USING btree ("PERMISSION_ID");
+CREATE UNIQUE INDEX "USER_PROJECT_EFFECTIVE_PERMISSIONS_LDAPUSERS_IDX" ON public."USER_PROJECT_EFFECTIVE_PERMISSIONS" USING btree ("LDAPUSER_ID", "PROJECT_ID", "PERMISSION_ID") WHERE ("LDAPUSER_ID" IS NOT NULL);
 
-CREATE INDEX "TEAMS_PERMISSIONS_TEAM_ID_IDX" ON public."TEAMS_PERMISSIONS" USING btree ("TEAM_ID");
+CREATE UNIQUE INDEX "USER_PROJECT_EFFECTIVE_PERMISSIONS_MANAGEDUSERS_IDX" ON public."USER_PROJECT_EFFECTIVE_PERMISSIONS" USING btree ("MANAGEDUSER_ID", "PROJECT_ID", "PERMISSION_ID") WHERE ("MANAGEDUSER_ID" IS NOT NULL);
+
+CREATE UNIQUE INDEX "USER_PROJECT_EFFECTIVE_PERMISSIONS_OIDCUSERS_IDX" ON public."USER_PROJECT_EFFECTIVE_PERMISSIONS" USING btree ("OIDCUSER_ID", "PROJECT_ID", "PERMISSION_ID") WHERE ("OIDCUSER_ID" IS NOT NULL);
 
 CREATE INDEX "VEX_PROJECT_ID_IDX" ON public."VEX" USING btree ("PROJECT_ID");
 
@@ -2713,11 +2867,43 @@ CREATE INDEX "VULNERABLESOFTWARE_VULNERABILITIES_VULNERABLESOFTWARE_ID_IDX" ON p
 
 CREATE INDEX "WORKFLOW_STATE_PARENT_STEP_ID_IDX" ON public."WORKFLOW_STATE" USING btree ("PARENT_STEP_ID");
 
-CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_delete AFTER DELETE ON public."PROJECT" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE PROCEDURE public.project_hierarchy_maintenance_on_project_delete();
+CREATE TRIGGER trigger_effective_permissions_mx_on_ldapusers_teams_delete AFTER DELETE ON public."LDAPUSERS_TEAMS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
 
-CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_insert AFTER INSERT ON public."PROJECT" FOR EACH ROW EXECUTE PROCEDURE public.project_hierarchy_maintenance_on_project_insert();
+CREATE TRIGGER trigger_effective_permissions_mx_on_ldapusers_teams_insert AFTER INSERT ON public."LDAPUSERS_TEAMS" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_insert();
 
-CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_update AFTER UPDATE OF "PARENT_PROJECT_ID" ON public."PROJECT" FOR EACH ROW WHEN ((old."PARENT_PROJECT_ID" IS DISTINCT FROM new."PARENT_PROJECT_ID")) EXECUTE PROCEDURE public.project_hierarchy_maintenance_on_project_update();
+CREATE TRIGGER trigger_effective_permissions_mx_on_ldapusers_teams_update AFTER UPDATE ON public."LDAPUSERS_TEAMS" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_update();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_managedusers_teams_delete AFTER DELETE ON public."MANAGEDUSERS_TEAMS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_managedusers_teams_insert AFTER INSERT ON public."MANAGEDUSERS_TEAMS" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_insert();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_managedusers_teams_update AFTER UPDATE ON public."MANAGEDUSERS_TEAMS" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_update();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_oidcusers_teams_delete AFTER DELETE ON public."OIDCUSERS_TEAMS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_oidcusers_teams_insert AFTER INSERT ON public."OIDCUSERS_TEAMS" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_insert();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_oidcusers_teams_update AFTER UPDATE ON public."OIDCUSERS_TEAMS" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_update();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_project_access_teams_delete AFTER DELETE ON public."PROJECT_ACCESS_TEAMS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_project_access_teams_insert AFTER INSERT ON public."PROJECT_ACCESS_TEAMS" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_insert();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_project_access_teams_update AFTER UPDATE ON public."PROJECT_ACCESS_TEAMS" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_update();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_teams_permissions_delete AFTER DELETE ON public."TEAMS_PERMISSIONS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_teams_permissions_insert AFTER INSERT ON public."TEAMS_PERMISSIONS" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_insert();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_teams_permissions_update AFTER UPDATE ON public."TEAMS_PERMISSIONS" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_update();
+
+CREATE TRIGGER trigger_prevent_direct_effective_permissions_writes BEFORE INSERT OR DELETE OR UPDATE ON public."USER_PROJECT_EFFECTIVE_PERMISSIONS" FOR EACH STATEMENT EXECUTE FUNCTION public.prevent_direct_effective_permissions_writes();
+
+CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_delete AFTER DELETE ON public."PROJECT" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.project_hierarchy_maintenance_on_project_delete();
+
+CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_insert AFTER INSERT ON public."PROJECT" FOR EACH ROW EXECUTE FUNCTION public.project_hierarchy_maintenance_on_project_insert();
+
+CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_update AFTER UPDATE OF "PARENT_PROJECT_ID" ON public."PROJECT" FOR EACH ROW WHEN ((old."PARENT_PROJECT_ID" IS DISTINCT FROM new."PARENT_PROJECT_ID")) EXECUTE FUNCTION public.project_hierarchy_maintenance_on_project_update();
 
 ALTER TABLE ONLY public."AFFECTEDVERSIONATTRIBUTION"
     ADD CONSTRAINT "AFFECTEDVERSIONATTRIBUTION_VULNERABILITY_FK" FOREIGN KEY ("VULNERABILITY") REFERENCES public."VULNERABILITY"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
@@ -2931,6 +3117,24 @@ ALTER TABLE ONLY public."TEAMS_PERMISSIONS"
 
 ALTER TABLE ONLY public."TEAMS_PERMISSIONS"
     ADD CONSTRAINT "TEAMS_PERMISSIONS_TEAM_FK" FOREIGN KEY ("TEAM_ID") REFERENCES public."TEAM"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
+    ADD CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_LDAPUSER_FK" FOREIGN KEY ("LDAPUSER_ID") REFERENCES public."LDAPUSER"("ID") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
+    ADD CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_MANAGEDUSER_FK" FOREIGN KEY ("MANAGEDUSER_ID") REFERENCES public."MANAGEDUSER"("ID") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
+    ADD CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_OIDCUSER_FK" FOREIGN KEY ("OIDCUSER_ID") REFERENCES public."OIDCUSER"("ID") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
+    ADD CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_PERMISSION_ID_FK" FOREIGN KEY ("PERMISSION_ID") REFERENCES public."PERMISSION"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
+    ADD CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_PERMISSION_NAME_FK" FOREIGN KEY ("PERMISSION_NAME") REFERENCES public."PERMISSION"("NAME") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
+    ADD CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_PROJECT_FK" FOREIGN KEY ("PROJECT_ID") REFERENCES public."PROJECT"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE ONLY public."VEX"
     ADD CONSTRAINT "VEX_PROJECT_FK" FOREIGN KEY ("PROJECT_ID") REFERENCES public."PROJECT"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
