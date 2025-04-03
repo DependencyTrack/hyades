@@ -82,3 +82,6 @@ and vulnerability analysis is performed by services separately from the API serv
     * `cweId`
     * `cweName`
 * In the SARIF file (schema defined in [sarif.peb]), `cweId` will be replaced by list of cwe ids in `cwes`. And name of the SARIF rule will be vulnerability's `vulnId` instead of `cweName`.
+* The `/api/v1/finding/project/{uuid}` REST API endpoint now supports pagination
+  [apiserver/#1111](https://github.com/DependencyTrack/hyades-apiserver/pull/1111). The page size defaults to `100`.
+    Clients currently expecting *all* items to be returned at once must be updated to deal with pagination.
