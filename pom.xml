@@ -97,7 +97,7 @@
     <lib.versatile.version>0.7.0</lib.versatile.version>
 
     <!-- Plugin Versions -->
-    <plugin.jacoco.version>0.8.12</plugin.jacoco.version>
+    <plugin.jacoco.version>0.8.13</plugin.jacoco.version>
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
     <!-- Tool Versions -->
