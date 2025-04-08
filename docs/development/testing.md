@@ -140,7 +140,7 @@ When testing changes that are limited to the API server, such as updates to the 
 it's possible to launch the API server in [dev services](../reference/configuration/api-server.md#devservicesenabled) mode:
 
 ```shell
-mvn -Penhance -Pdev-services jetty:run -Dlogback.configurationFile=src/main/docker/logback.xml
+mvn -pl apiserver -Pdev-services jetty:run
 ```
 
 The container images used may be configured via:
