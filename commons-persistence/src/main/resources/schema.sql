@@ -14,6 +14,15 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 
 COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
+CREATE TYPE public.severity AS ENUM (
+    'UNASSIGNED',
+    'INFO',
+    'LOW',
+    'MEDIUM',
+    'HIGH',
+    'CRITICAL'
+);
+
 CREATE FUNCTION public."CALC_RISK_SCORE"(critical integer, high integer, medium integer, low integer, unassigned integer) RETURNS numeric
     LANGUAGE sql STABLE PARALLEL SAFE
     AS $$
@@ -1044,7 +1053,7 @@ CREATE TABLE public."ANALYSIS" (
     "CVSSV2SCORE" numeric,
     "OWASPVECTOR" character varying(255),
     "CVSSV3VECTOR" character varying(255),
-    "SEVERITY" character varying(255),
+    "SEVERITY" public.severity,
     "VULNERABILITY_POLICY_ID" bigint
 );
 
@@ -2090,7 +2099,7 @@ CREATE TABLE public."VULNERABILITY" (
     "PUBLISHED" timestamp with time zone,
     "RECOMMENDATION" text,
     "REFERENCES" text,
-    "SEVERITY" character varying(255),
+    "SEVERITY" public.severity,
     "SOURCE" character varying(255) NOT NULL,
     "SUBTITLE" character varying(255),
     "TITLE" character varying(255),
