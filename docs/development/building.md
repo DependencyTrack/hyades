@@ -98,15 +98,10 @@ This segment provides build instructions for the `DependencyTrack/hyades-apiserv
 To build an executable JAR:
 
 ```shell
-mvn clean package \
-  -Pclean-exclude-wars \
-  -Penhance \
-  -Pembedded-jetty \
-  -DskipTests \
-  -Dlogback.configuration.file=src/main/docker/logback.xml
+mvn clean package -DskipTests
 ```
 
-The resulting file is placed in `./target` as `dependency-track-apiserver.jar`.  
+The resulting file is placed in `./apiserver/target` as `dependency-track-apiserver.jar`.  
 The JAR ships with an embedded Jetty server, there's no need to deploy it in an application server like Tomcat or WildFly.
 
 ### Container
@@ -120,10 +115,9 @@ To build the API server image:
 
 ```shell
 docker build \
-  --build-arg WAR_FILENAME=dependency-track-apiserver.jar \
   -t ghcr.io/dependencytrack/hyades-apiserver:local \
-  -f ./src/main/docker/Dockerfile \
-  .
+  -f ./apiserver/src/main/docker/Dockerfile \
+  ./apiserver
 ```
 
 ## `hyades-frontend`
