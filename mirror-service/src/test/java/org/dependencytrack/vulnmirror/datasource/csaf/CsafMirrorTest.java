@@ -19,7 +19,7 @@
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.csaf.sbom.retrieval.CsafLoader;
+import io.csaf.retrieval.CsafLoader;
 import io.ktor.client.engine.mock.MockEngine;
 import io.ktor.http.HttpStatusCode;
 import io.quarkus.test.InjectMock;

@@ -19,8 +19,8 @@
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
 import com.google.protobuf.Timestamp;
-import io.github.csaf.sbom.schema.generated.Csaf;
-import io.github.csaf.sbom.schema.generated.Csaf.Id;
+import io.csaf.schema.generated.Csaf;
+import io.csaf.schema.generated.Csaf.Id;
 import org.apache.commons.codec.binary.Hex;
 import org.cyclonedx.proto.v1_6.Bom;
 import org.cyclonedx.proto.v1_6.OrganizationalContact;

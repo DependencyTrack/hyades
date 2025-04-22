@@ -124,7 +124,7 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.csaf-sbom</groupId>
+            <groupId>io.csaf</groupId>
             <artifactId>csaf-retrieval-jvm</artifactId>
         </dependency>
 

@@ -20,11 +20,11 @@ package org.dependencytrack.vulnmirror.datasource.csaf;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
-import io.github.csaf.sbom.retrieval.CsafLoader;
-import io.github.csaf.sbom.retrieval.RetrievedAggregator;
-import io.github.csaf.sbom.retrieval.RetrievedProvider;
-import io.github.csaf.sbom.schema.generated.Csaf;
-import io.github.csaf.sbom.schema.generated.Provider;
+import io.csaf.retrieval.CsafLoader;
+import io.csaf.retrieval.RetrievedAggregator;
+import io.csaf.retrieval.RetrievedProvider;
+import io.csaf.schema.generated.Csaf;
+import io.csaf.schema.generated.Provider;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -152,7 +152,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
     protected void discoverProvider(CsafSourceEntity aggregatorEntity, CsafLoader csafLoader) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
-        var aggregator = RetrievedAggregator.fromAsync(aggregatorEntity.getUrl(), csafLoader).get();
+        var aggregator = RetrievedAggregator.fromUrlAsync(aggregatorEntity.getUrl(), csafLoader).get();
         var begin = Instant.now();
 
         aggregator.fetchAllAsync().get().forEach((provider) -> {

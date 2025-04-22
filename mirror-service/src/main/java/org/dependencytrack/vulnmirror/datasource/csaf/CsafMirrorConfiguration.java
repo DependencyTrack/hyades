@@ -18,7 +18,7 @@
  */
 package org.dependencytrack.vulnmirror.datasource.csaf;
 
-import io.github.csaf.sbom.retrieval.CsafLoader;
+import io.csaf.retrieval.CsafLoader;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import jakarta.enterprise.context.ApplicationScoped;
