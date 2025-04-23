@@ -1,6 +1,6 @@
 | Status   | Date       | Author(s)                            |
 |:---------|:-----------|:-------------------------------------|
-| Proposed | 2025-01-29 | [@nscuro](https://github.com/nscuro) |
+| Accepted | 2025-01-29 | [@nscuro](https://github.com/nscuro) |
 
 ## Context
 
