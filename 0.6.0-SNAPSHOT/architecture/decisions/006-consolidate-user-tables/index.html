@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/003-notification-publishing/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/006-consolidate-user-tables/">
       
       
-        <link rel="prev" href="../002-workflow-orchestration/">
+        <link rel="prev" href="../005-materialize-project-hierarchies/">
       
       
-        <link rel="next" href="../004-file-storage-plugin/">
+        <link rel="next" href="../../design/workflow-state-tracking/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>ADR-003: Notification Publishing - Hyades</title>
+        <title>ADR-006: Consolidate User Tables - Hyades</title>
       
     
     
@@ -57,11 +57,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="ADR-003: Notification Publishing - Hyades" >
+        <meta  property="og:title"  content="ADR-006: Consolidate User Tables - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/003-notification-publishing.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/006-consolidate-user-tables.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +69,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/003-notification-publishing/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/006-consolidate-user-tables/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="ADR-003: Notification Publishing - Hyades" >
+        <meta  name="twitter:title"  content="ADR-006: Consolidate User Tables - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/003-notification-publishing.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/006-consolidate-user-tables.png" >
       
     
     
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ADR-003: Notification Publishing
+              ADR-006: Consolidate User Tables
             
           </span>
         </div>
@@ -907,30 +907,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    ADR-003: Notification Publishing
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -941,93 +921,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      Context
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Context">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#background" class="md-nav__link">
-    <span class="md-ellipsis">
-      Background
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Requirements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#constraints" class="md-nav__link">
-    <span class="md-ellipsis">
-      Constraints
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#possible-solutions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Possible Solutions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      Decision
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      Consequences
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1083,10 +976,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../006-consolidate-user-tables/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    ADR-006: Consolidate User Tables
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1097,6 +1010,108 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drawbacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Drawbacks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-model_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      Invariants
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jdo-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      JDO Mapping
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1746,7 +1761,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/003-notification-publishing.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/006-consolidate-user-tables.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1754,7 +1769,7 @@
   
 
 
-  <h1>ADR-003: Notification Publishing</h1>
+  <h1>ADR-006: Consolidate User Tables</h1>
 
 <table>
 <thead>
@@ -1767,302 +1782,235 @@
 <tbody>
 <tr>
 <td style="text-align: left;">Proposed</td>
-<td style="text-align: left;">2025-01-19</td>
+<td style="text-align: left;">2025-04-16</td>
 <td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
 </tr>
 </tbody>
 </table>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
-<p>By dropping the Kafka dependency (<a href="../001-drop-kafka-dependency/">ADR-001</a>), we are now missing a means to reliably dispatch
-notifications. Users are building processes around the notifications we send, so we must ensure
-that whatever we replace Kafka with offers the same or better delivery guarantees.</p>
-<h3 id="background">Background<a class="headerlink" href="#background" title="Permanent link">&para;</a></h3>
-<p>Users can configure multiple notification rules (known as <em>Alerts</em> in the UI). A rule semantically acts like a consumer,
-which subscribes to one or more subjects (aka <em>Notification Groups</em>, e.g. <code>BOM_PROCESSED</code>, <code>NEW_VULNERABILITY</code>),
-and publishes those notification to a destination (e.g. email, Slack, Webhook).</p>
-<p>Rules can further be limited to specific projects or tags, which acts like an additional filter.</p>
-<p>This means that a notification emitted by Dependency-Track "fans-out" to zero or more rules:</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Process
----
-flowchart LR
-    A@{ shape: circle, label: "Start" }
-    B["Emit Notification"]
-    C["Route Notification"]
-    D["Send email to foo\@example.com"]
-    E["Send email to bar\@example.com"]
-    F["Send Slack message to channel X"]
-    G["Send Webhook to example.com"]
-    I@{ shape: dbl-circ, label: "Stop" }
-    A --&gt; B
-    B --&gt; C
-    C --&gt; D
-    C --&gt; E
-    C --&gt; F
-    C --&gt; G
-    D --&gt; I
-    E --&gt; I
-    F --&gt; I
-    G --&gt; I</code></pre>
-<p>Because each rule has a separate destination, the publishing process for them can fail independently.
-For example, the email server could be down, the Jira credentials could have expired, or Slack could enforce rate limiting.</p>
-<p>In Dependency-Track v4, the routing of notifications according to the configured rules, as well as the
-publishing according to those rules, are performed as a single unit of work. There are no retries.</p>
-<p>So far in Hyades, we emit notifications to Kafka instead. The routing and publishing still happens in a single
-unit of work, but in the separate <code>notification-publisher</code> service. The service uses <a href="https://github.com/confluentinc/parallel-consumer">Confluent Parallel Consumer</a>
-to implement retries. However, these retries can cause duplicates, as documented in <a href="https://github.com/DependencyTrack/hyades/issues/771">hyades/#771</a>.</p>
-<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
-<h4 id="atomicity">Atomicity<a class="headerlink" href="#atomicity" title="Permanent link">&para;</a></h4>
-<p>A limitation of the in-memory, as well as the Kafka-based notification mechanism, is that emission of notifications
-can't happen atomically with the state change they inform about. Both approaches suffer from the <a href="https://www.confluent.io/blog/dual-write-problem/">dual write problem</a>.
-Although not technically a hard requirement, we want atomic notification emission to be <em>possible</em>.</p>
-<p>Note that notification <em>delivery</em> to external systems <strong>can't</strong> be atomic.
-Exactly-once delivery is <a href="https://bravenewgeek.com/you-cannot-have-exactly-once-delivery/">impossible</a>.</p>
-<h4 id="at-least-once-delivery">At-least-once delivery<a class="headerlink" href="#at-least-once-delivery" title="Permanent link">&para;</a></h4>
-<p>Notifications must be delivered to destination systems <em>at least once</em>. Duplicate deliveries are acceptable,
-loss of notifications is not.</p>
-<h4 id="isolation-of-deliveries">Isolation of deliveries<a class="headerlink" href="#isolation-of-deliveries" title="Permanent link">&para;</a></h4>
-<p>Notification deliveries must be processed in isolation, and separate from the routing itself.
-Only then can deliveries be retried without causing the issue described in <a href="https://github.com/DependencyTrack/hyades/issues/771">hyades/#771</a>.
-More specifically, each delivery must be a separate unit of work in a queue.</p>
-<h3 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h3>
-<h4 id="notification-format">Notification format<a class="headerlink" href="#notification-format" title="Permanent link">&para;</a></h4>
-<p>All solutions should treat notification contents as binary blobs. During our initial move to Kafka,
-we adopted <a href="https://protobuf.dev/">Protobuf</a> to serialize notifications over-the-wire. We intend to keep it this way,
-since <a href="https://protobuf.dev/">Protobuf</a> makes it easy to perform backward-compatible changes over time. It is also faster
-to serialize, and more compact than JSON.</p>
-<p>The current <a href="https://protobuf.dev/">Protobuf</a> model is defined
-<a href="https://github.com/DependencyTrack/hyades/blob/589b58042c096865c48939c8db79ef950fd94d20/proto/src/main/proto/org/dependencytrack/notification/v1/notification.proto">here</a>.</p>
-<h4 id="no-new-infrastructure">No new infrastructure<a class="headerlink" href="#no-new-infrastructure" title="Permanent link">&para;</a></h4>
-<p>No new infrastructure must be introduced. The solution should leverage the workflow orchestration capabilities
-described in <a href="../002-workflow-orchestration/">ADR-002</a>. This will take care of queueing, observability, and resiliency needs.</p>
-<h4 id="payload-size">Payload size<a class="headerlink" href="#payload-size" title="Permanent link">&para;</a></h4>
-<p>As noted in <a href="../001-drop-kafka-dependency/">ADR-001</a>, notifications can be large: <code>BOM_CONSUMED</code> and <code>BOM_PROCESSED</code> notifications include the entire
-BOM in Base64-encoded format. <code>PROJECT_VULN_ANALYSIS_COMPLETE</code> notifications include all vulnerabilities of a project.
-While Postgres <em>can</em> store large columns (see <a href="https://www.postgresql.org/docs/current/storage-toast.html">TOAST</a>), it comes with penalties affecting performance, maintenance,
-and backups. Potent compression (e.g. using <code>zstd</code>) will most definitely be necessary for all solutions.
-Postgres itself will compress large values, too, but using a less effective algorithm (<code>pglz</code>).</p>
-<blockquote>
-<p>Starting with Postgres v14, the default compression algorithm for <a href="https://www.postgresql.org/docs/current/storage-toast.html">TOAST</a>-ed tables can be changed to <code>lz4</code>.
-This should be added to our <a href="../../../operations/database/">database operations guide</a>.
-<code>lz4</code> <a href="https://www.timescale.com/blog/optimizing-postgresql-performance-compression-pglz-vs-lz4">performs noticeably better</a>
-than <code>pglz</code>.</p>
-</blockquote>
-<h3 id="possible-solutions">Possible Solutions<a class="headerlink" href="#possible-solutions" title="Permanent link">&para;</a></h3>
-<h4 id="a-use-transactional-outbox-pattern">A: Use transactional outbox pattern<a class="headerlink" href="#a-use-transactional-outbox-pattern" title="Permanent link">&para;</a></h4>
-<p>The <a href="https://microservices.io/patterns/data/transactional-outbox.html">transactional outbox</a> pattern involves a separate <em>outbox</em> table, where to-be-dispatched notifications
-are inserted into as part of a database transaction. A simple outbox table might look like this:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Column Name</th>
-<th style="text-align: left;">Column Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>ID</code></td>
-<td style="text-align: left;"><code>BIGINT</code></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>TIMESTAMP</code></td>
-<td style="text-align: left;"><code>TIMESTAMPTZ</code></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>CONTENT</code></td>
-<td style="text-align: left;"><code>BYTEA</code></td>
-</tr>
-</tbody>
-</table>
-<p>The pattern is mostly meant to deal with the <a href="https://www.confluent.io/blog/dual-write-problem/">dual write problem</a>, but it could also act as a work queue:
-A pool of workers polls the table in regular intervals, and either deletes polled records, or marks them as delivered:</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Process with Outbox Table
----
-sequenceDiagram
-    participant D as Domain
-    participant P as Postgres
-    participant N as Notification Router
-    participant W as "Publish Notification"&lt;br/&gt;Workflow
+<p>The current data model treats managed users, LDAP users, and OIDC users as different entities.<br />
+This leads to redundancies, both in database tables and application code.</p>
+<h3 id="data-model">Data Model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>erDiagram
+    ldap_user {
+        bigint id pk
+        text dn
+        text username
+        text email
+    }
 
-    activate D
-    D-&gt;&gt;P: Begin TX
-    D-&gt;&gt;P: ...
-    D-&gt;&gt;P: INSERT INTO "OUTBOX"&lt;br/&gt;(NOW(), &lt;content&gt;)
-    D-&gt;&gt;-P: Commit TX
-    loop continuously
-       activate N
-       N-&gt;&gt;P: Begin TX
-       N-&gt;&gt;P: SELECT * FROM "OUTBOX" ...&lt;br/&gt;FOR UPDATE SKIP LOCKED&lt;br/&gt;LIMIT 1
-       N-&gt;&gt;N: Evaluate&lt;br/&gt;notification rules
-       opt At least one rule matched
-           N-&gt;&gt;W: Schedule "Publish Notification" workflow&lt;br/&gt;Args: Rule names, notification
-       end 
-       N-&gt;&gt;P: DELETE FROM "OUTBOX"&lt;br/&gt;WHERE "ID" = ANY(...)
-       N-&gt;&gt;-P: Commit TX
-    end</code></pre>
-<p>Outbox items are dequeued, processed, and marked as completed in a single database transaction,
-using the <code>FOR UPDATE SKIP LOCKED</code> clause to allow for multiple concurrent pollers.</p>
-<p>If workflow scheduling fails, the transaction is rolled back, and the respective record will be retried
-during the next poll.</p>
-<blockquote>
-<p>The workflow engine may reside on a separate database, so scheduling of workflows 
-can't happen atomically with the polling of outbox records. It is possible that a
-workflow gets scheduled, but committing of the transaction fails. In worst case,
-multiple workflows get scheduled for the same notification. This should be rare,
-but it would still satisfy our at-least-once delivery goal.</p>
-</blockquote>
-<p>The actual delivery is then taken care of by a workflow:</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Workflow
----
-sequenceDiagram
-    participant W as "Publish Notification"&lt;br/&gt;Workflow
-    participant A as "Publish Notification"&lt;br/&gt;Activity
-    participant P as Postgres
-    participant D as Destination
+    managed_user {
+        bigint id pk
+        text username
+        text fullname
+        text email
+        timestamptz last_password_change
+        bool non_expiry_password
+        bool force_password_change
+        bool suspended
+    }
 
-    activate W
-    loop for each matched rule
-        W-&gt;&gt;+A: Invoke&lt;br/&gt;Args: Rule name, notification
-        deactivate W
-        A-&gt;&gt;P: Retrieve publisher config
-        P--&gt;&gt;A: Destination URL,&lt;br/&gt;credentials, template
-        A-&gt;&gt;-D: Publish
-    end</code></pre>
-<p><strong>Pro</strong>:</p>
-<ol>
-<li>Allows for atomic emission of notifications.</li>
-<li>When marking outbox records as processed instead of deleting them, enables (targeted) replay of past notifications.</li>
-<li>When partitioning the outbox table by timestamp, cheap retention enforcement via <code>DROP TABLE</code>.</li>
-<li>Allows for multiple concurrent routers. </li>
-</ol>
-<p><strong>Con</strong>:</p>
-<ol>
-<li>More database overhead: <code>INSERT</code>s, <code>UPDATE</code>s / <code>DELETE</code>s, polling, vacuuming, retention, storage.</li>
-<li>Overhead can't be delegated to separate database without losing transactional guarantees.</li>
-<li>Duplicates queueing logic we already have in the workflow orchestration system.</li>
-<li>Partitioning by timestamp requires partition management, either manually or via <code>pg_partman</code>.</li>
-<li>Multiple concurrent routers increase the chance of delivering notifications out-of-order.</li>
-<li>When not using partitioning, requires a separate retention enforcement mechanism.</li>
-</ol>
-<h4 id="b-use-postgres-logical-replication-messages">B: Use Postgres logical replication messages<a class="headerlink" href="#b-use-postgres-logical-replication-messages" title="Permanent link">&para;</a></h4>
-<p>A way to sidestep the drawbacks of maintaining an outbox table is to emit and consume logical replication messages.
-Here, notifications are written to Postgres' write-ahead-log (WAL), but never materialized into an actual table.
-This still provides transactional guarantees, but completely avoids the overhead of table maintenance.</p>
-<p>The procedure is inspired by Gunnar Morling's 
-<a href="https://www.infoq.com/articles/wonders-of-postgres-logical-decoding-messages/"><em>The Wonders of Postgres Logical Decoding Messages</em></a>
-article.</p>
-<p>Conceptually, the process of publishing notification remains mostly identical to
-<a href="#a-use-transactional-outbox-pattern">option A</a>:</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Process with Logical Replication Messages
----
-sequenceDiagram
-    participant D as Domain
-    participant P as Postgres
-    participant N as Notification Router
-    participant W as "Publish Notification"&lt;br/&gt;Workflow
+    oidc_user {
+        bigint id pk
+        text subject_identifier
+        text username
+        text email
+    }
 
-    activate D
-    D-&gt;&gt;P: Begin TX
-    D-&gt;&gt;P: ...
-    D-&gt;&gt;P: pg_logical_emit_message&lt;br/&gt;(?, 'notification', &lt;content&gt;)
-    D-&gt;&gt;-P: Commit TX
-    loop continuously
-        activate N
-        N-&gt;&gt;P: Consume logical&lt;br/&gt;replication message
-        N-&gt;&gt;N: Evaluate&lt;br/&gt;notification rules
-        opt At least one rule matched
-            N-&gt;&gt;W: Schedule "Publish Notification" workflow&lt;br/&gt;Args: Rule names, notification
-        end
-        N-&gt;&gt;-P: Mark message LSN as&lt;br/&gt;applied / flushed
-    end</code></pre>
-<p>Instead of polling a table, the router reads a stream of messages from a logical replication slot.
-Each message has an associated log sequence number (LSN), which represents its position in the WAL.
-In order for Postgres to know that a message was delivered successfully, the router acknowledges
-the LSN of processed messages. This is similar to how Kafka uses offset commits to track progress
-within a topic partition.</p>
-<p>The <em>Publish Notification</em> workflow being scheduled remains identical to <a href="#a-use-transactional-outbox-pattern">option A</a>.</p>
-<p><strong>Pro</strong>:</p>
-<ol>
-<li>Allows for atomic emission of notifications.</li>
-<li>Less pressure on the WAL. <a href="#a-use-transactional-outbox-pattern">Option A</a> involves <em>at least</em> one <code>INSERT</code>,
-   and one <code>UPDATE</code> or <code>DELETE</code> per notification, each of which writes to the WAL, too.</li>
-<li>No increase in storage requirements.</li>
-<li>No retention logic necessary.</li>
-<li>No additional overhead for autovacuum.</li>
-</ol>
-<p><strong>Con</strong>:</p>
-<ol>
-<li>Only a single instance can consume from a replication slot at a time.</li>
-<li>Logical replication requires a special kind of connection, thus can't go through a connection pooler.</li>
-<li>Requires Postgres v14 or later. This is when the default <code>pgoutput</code> decoding plugin started to support
-   consumption of replication messages.</li>
-</ol>
-<h4 id="c-schedule-workflows-directly">C: Schedule workflows directly<a class="headerlink" href="#c-schedule-workflows-directly" title="Permanent link">&para;</a></h4>
-<p>This option is similar to <a href="#a-use-transactional-outbox-pattern">A</a> and
-<a href="#b-use-postgres-logical-replication-messages">B</a>, but skips the respective intermediary step.</p>
-<p>Notifications are no longer emitted atomically with the domain's persistence operations, 
-but instead <em>after</em> the database transaction committed successfully, effectively re-introducing the <a href="https://www.confluent.io/blog/dual-write-problem/">dual write problem</a>:</p>
-<pre class="mermaid"><code>sequenceDiagram
-    participant D as Domain
-    participant P as Postgres
-    participant W as "Publish Notification"&lt;br/&gt;Workflow
+    permission {
+        bigint id pk
+        text name
+    }
 
-    activate D
-    D-&gt;&gt;P: Begin TX
-    D-&gt;&gt;P: ...
-    D-&gt;&gt;P: Commit TX
-    D-&gt;&gt;-W: Schedule&lt;br/&gt;Args: Notification</code></pre>
-<p>The routing based on configured notification rules is performed as part of the <em>Publish Notification</em> workflow.</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Workflow with Routing
----
-sequenceDiagram
-   participant W as "Publish Notification"&lt;br/&gt;Workflow
-   participant A1 as "Route Notification"&lt;br/&gt;Activity
-   participant A2 as "Publish Notification"&lt;br/&gt;Activity
-   participant P as Postgres
-   participant D as Destination
+    team {
+        bigint id pk
+        text name
+    }
 
-   activate W
-   W-&gt;&gt;A1: Invoke&lt;br/&gt;Args: Notification
-   A1--&gt;&gt;W: Matched rule names
-   loop for each matched rule
-      W-&gt;&gt;+A2: Invoke&lt;br/&gt;Args: Rule name, notification
-      deactivate W
-      A2-&gt;&gt;P: Retrieve publisher config
-      P--&gt;&gt;A2: Destination URL,&lt;br/&gt;credentials, template
-      A2-&gt;&gt;-D: Publish
-   end</code></pre>
-<p><strong>Pro</strong>:</p>
-<ol>
-<li>Fewer moving parts than options <a href="#a-use-transactional-outbox-pattern">A</a> and
-   <a href="#b-use-postgres-logical-replication-messages">B</a>.</li>
-<li>All concerns related to publishing are neatly encapsulated in a workflow.</li>
-<li>Rule resolution benefits from the same reliability guarantees as the publishing itself.</li>
-</ol>
-<p><strong>Con</strong>:</p>
-<ol>
-<li>Atomic emission of notifications is impossible.</li>
-<li>Workflows are scheduled even if no rule may be configured for the notification at hand,
-   increasing pressure on the workflow system.</li>
-</ol>
+    ldap_user }o--o{ permission: "has"
+    managed_user }o--o{ permission: "has"
+    oidc_user }o--o{ permission: "has"
+    ldap_user }o--o{ team: "is member of"
+    managed_user }o--o{ team: "is member of"
+    oidc_user }o--o{ team: "is member of"
+    team }o--o{ permission: "has"</code></pre>
+<h3 id="drawbacks">Drawbacks<a class="headerlink" href="#drawbacks" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The uniqueness of usernames cannot be enforced across all user tables.</li>
+<li>Queries to determine or modify permissions of a user are unnecessarily complex.</li>
+<li>Higher cognitive burden due to the many redundant relationships.</li>
+</ul>
 <h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<p>We propose to follow option <a href="#b-use-postgres-logical-replication-messages">B</a>, because:</p>
-<ol>
-<li>Maintaining an outbox table as detailed in option <a href="#a-use-transactional-outbox-pattern">A</a> comes with a lot of
-overhead that we prefer to not deal with.</li>
-<li>Option <a href="#c-schedule-workflows-directly">C</a> does not provide transactional guarantees.</li>
-</ol>
-<p>TODO: Update with final decision.</p>
+<ul>
+<li>Consolidate all user tables in a single table.</li>
+<li>Use a discriminator column to keep different types apart.</li>
+<li>Leverage check constraints in the database to handle invariants.</li>
+<li>Use inheritance strategies for mapping the new model to JDO classes.</li>
+</ul>
+<p><a href="https://github.com/jhoward-lm">@jhoward-lm</a> provides a more thorough draft implementation in
+<a href="https://gist.github.com/jhoward-lm/39ae80d40ad3ad3b40fe7f17f79e7243">this Gist</a>.</p>
+<h3 id="data-model_1">Data Model<a class="headerlink" href="#data-model_1" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>erDiagram
+    permission {
+        bigint id pk
+        text name
+    }
+
+    team {
+        bigint id pk
+        text name
+    }
+
+    user {
+        bigint id pk
+        enum type
+        text username
+        text fullname
+        text email
+        text ldap_dn
+        text oidc_subject_identifier
+        text password
+        timestamptz last_password_change
+        bool non_expiry_password
+        bool force_password_change
+        bool suspended
+    }
+
+    user }o--o{ permission: "has"
+    user }o--o{ team: "is member of"
+    team }o--o{ permission: "has"</code></pre>
+<h3 id="invariants">Invariants<a class="headerlink" href="#invariants" title="Permanent link">&para;</a></h3>
+<p>Not all fields make sense for all user types:</p>
+<ul>
+<li>LDAP and OIDC users don't have a password.</li>
+<li>Managed users have no LDAP DN or OIDC subject identifier.</li>
+</ul>
+<p>Such invariants should be prevented at the database level, using <code>check</code> constraints. For example:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="w">  </span><span class="k">ADD</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">check_user_type</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;TYPE&quot;</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;MANAGED&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;LDAP&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;OIDC&#39;</span><span class="p">));</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="ss">&quot;USER&quot;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="k">ADD</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">check_managed_columns</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p">(</span><span class="ss">&quot;TYPE&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MANAGED&#39;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;FORCE_PASSWORD_CHANGE&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;LAST_PASSWORD_CHANGE&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;NON_EXPIRY_PASSWORD&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;PASSWORD&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;SUSPENDED&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="k">OR</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="p">(</span><span class="ss">&quot;TYPE&quot;</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;MANAGED&#39;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;FORCE_PASSWORD_CHANGE&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;FULLNAME&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;LAST_PASSWORD_CHANGE&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;NON_EXPIRY_PASSWORD&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;PASSWORD&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;SUSPENDED&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">);</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="ss">&quot;USER&quot;</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">  </span><span class="k">ADD</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">check_ldap_columns</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">    </span><span class="p">(</span><span class="ss">&quot;TYPE&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;LDAP&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;DN&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">    </span><span class="k">OR</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;TYPE&quot;</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;LDAP&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;DN&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="p">);</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="ss">&quot;USER&quot;</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">  </span><span class="k">ADD</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">check_oidc_columns</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;TYPE&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OIDC&#39;</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="ss">&quot;SUBJECT_IDENTIFIER&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">);</span>
+</span></code></pre></div>
+<h3 id="jdo-mapping">JDO Mapping<a class="headerlink" href="#jdo-mapping" title="Permanent link">&para;</a></h3>
+<p>To ease interaction with this consolidated model using JDO / DataNucleus, the mapping will
+be adjusted to use the <a href="https://www.datanucleus.org/products/accessplatform_6_0/jdo/mapping.html#inheritance">inheritance</a>
+strategy <a href="https://www.datanucleus.org/products/accessplatform_6_0/jdo/mapping.html#inheritance_superclasstable"><code>SUPERCLASS_TABLE</code></a>. </p>
+<p>The abstract <code>User</code> class will hold all fields and relationships that are common among all user types.</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@PersistenceCapable</span><span class="p">(</span><span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;USER&quot;</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nd">@Discriminator</span><span class="p">(</span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TYPE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DiscriminatorStrategy</span><span class="p">.</span><span class="na">VALUE_MAP</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;USER&quot;</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nd">@Inheritance</span><span class="p">(</span><span class="n">strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">InheritanceStrategy</span><span class="p">.</span><span class="na">NEW_TABLE</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span> <span class="nc">User</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">Serializable</span><span class="p">,</span><span class="w"> </span><span class="n">Principal</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nd">@PrimaryKey</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nd">@Persistent</span><span class="p">(</span><span class="n">valueStrategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IdGeneratorStrategy</span><span class="p">.</span><span class="na">NATIVE</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nd">@Persistent</span><span class="p">(</span><span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;USERS_TEAMS&quot;</span><span class="p">)</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nd">@Join</span><span class="p">(</span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;USER_ID&quot;</span><span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nd">@Element</span><span class="p">(</span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;TEAM_ID&quot;</span><span class="p">)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">UserTeam</span><span class="o">&gt;</span><span class="w"> </span><span class="n">teams</span><span class="p">;</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="nd">@Persistent</span><span class="p">(</span><span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;USERS_PERMISSIONS&quot;</span><span class="p">)</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="nd">@Join</span><span class="p">(</span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;USER_ID&quot;</span><span class="p">)</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nd">@Element</span><span class="p">(</span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PERMISSION_ID&quot;</span><span class="p">)</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">PermissionsImpl</span><span class="o">&gt;</span><span class="w"> </span><span class="n">permissions</span><span class="p">;</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;USERNAME&quot;</span><span class="p">)</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">username</span><span class="p">;</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">    </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">    </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;EMAIL&quot;</span><span class="p">)</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">email</span><span class="p">;</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">    </span><span class="nd">@PersistenceCapable</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">    </span><span class="nd">@Inheritance</span><span class="p">(</span><span class="n">strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">InheritanceStrategy</span><span class="p">.</span><span class="na">SUPERCLASS_TABLE</span><span class="p">)</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">    </span><span class="nd">@Discriminator</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;LDAP&quot;</span><span class="p">)</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Ldap</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">        </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">        </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DN&quot;</span><span class="p">)</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">dn</span><span class="p">;</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">    </span><span class="nd">@PersistenceCapable</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">    </span><span class="nd">@Inheritance</span><span class="p">(</span><span class="n">strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">InheritanceStrategy</span><span class="p">.</span><span class="na">SUPERCLASS_TABLE</span><span class="p">)</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w">    </span><span class="nd">@Discriminator</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MANAGED&quot;</span><span class="p">)</span>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Managed</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">        </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">        </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;PASSWORD&quot;</span><span class="p">)</span>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">password</span><span class="p">;</span>
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>
+</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">        </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">        </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;LAST_PASSWORD_CHANGE&quot;</span><span class="p">)</span>
+</span><span id="__span-1-50"><a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="n">Date</span><span class="w"> </span><span class="n">lastPasswordChange</span><span class="p">;</span>
+</span><span id="__span-1-51"><a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>
+</span><span id="__span-1-52"><a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="w">        </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-53"><a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="w">        </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;FULLNAME&quot;</span><span class="p">)</span>
+</span><span id="__span-1-54"><a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">fullname</span><span class="p">;</span>
+</span><span id="__span-1-55"><a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>
+</span><span id="__span-1-56"><a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="w">        </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-57"><a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="w">        </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SUSPENDED&quot;</span><span class="p">)</span>
+</span><span id="__span-1-58"><a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">suspended</span><span class="p">;</span>
+</span><span id="__span-1-59"><a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a>
+</span><span id="__span-1-60"><a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="w">        </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-61"><a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="w">        </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;FORCE_PASSWORD_CHANGE&quot;</span><span class="p">)</span>
+</span><span id="__span-1-62"><a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">forcePasswordChange</span><span class="p">;</span>
+</span><span id="__span-1-63"><a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a>
+</span><span id="__span-1-64"><a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="w">        </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-65"><a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="w">        </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;NON_EXPIRY_PASSWORD&quot;</span><span class="p">)</span>
+</span><span id="__span-1-66"><a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">nonExpiryPassword</span><span class="p">;</span>
+</span><span id="__span-1-67"><a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a>
+</span><span id="__span-1-68"><a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-69"><a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a>
+</span><span id="__span-1-70"><a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="w">    </span><span class="nd">@PersistenceCapable</span>
+</span><span id="__span-1-71"><a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="w">    </span><span class="nd">@Inheritance</span><span class="p">(</span><span class="n">strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">InheritanceStrategy</span><span class="p">.</span><span class="na">SUPERCLASS_TABLE</span><span class="p">)</span>
+</span><span id="__span-1-72"><a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a><span class="w">    </span><span class="nd">@Discriminator</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;OIDC&quot;</span><span class="p">)</span>
+</span><span id="__span-1-73"><a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Oidc</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-74"><a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a>
+</span><span id="__span-1-75"><a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a><span class="w">        </span><span class="nd">@Persistent</span>
+</span><span id="__span-1-76"><a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a><span class="w">        </span><span class="nd">@Column</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SUBJECT_IDENTIFIER&quot;</span><span class="p">)</span>
+</span><span id="__span-1-77"><a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">subjectIdentifier</span><span class="p">;</span>
+</span><span id="__span-1-78"><a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a>
+</span><span id="__span-1-79"><a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-80"><a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a>
+</span><span id="__span-1-81"><a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="p">}</span>
+</span></code></pre></div>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
 <ul>
-<li>The minimum required Postgres version becomes 14. This version is over three years old and well-supported
-  across all managed offerings. We don't anticipate it to be a problem.</li>
-<li>It must be possible to configure separate database connection details for the notification router,
-  in case a pooler like PgBouncer is used. Logical replication requires a direct connection.</li>
+<li>Existing user records will need to be migrated.</li>
+<li>Need to decide if we also want to consolidate REST API endpoints or keep the current endpoints and responses
+to avoid breaking changes. This could be a multi-stage effort as well.</li>
 </ul>
 
 
