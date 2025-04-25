@@ -67,6 +67,9 @@ public class CsafSourceEntity implements Serializable {
     @Column(name = "DISCOVERY")
     private boolean discovery;
 
+    @Column(name = "DOMAIN")
+    private boolean domain;
+
     public CsafSourceEntity() {
         // no args for jdo
     }
@@ -146,5 +149,13 @@ public class CsafSourceEntity implements Serializable {
 
     public void setDiscovery(boolean discovery) {
         this.discovery = discovery;
+    }
+
+    public boolean isDomain() {
+        return domain;
+    }
+
+    public void setDomain(boolean domain) {
+        this.domain = domain;
     }
 }

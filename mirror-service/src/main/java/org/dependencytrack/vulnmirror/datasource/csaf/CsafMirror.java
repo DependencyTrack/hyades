@@ -152,7 +152,14 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
 
     protected void discoverProvider(CsafSourceEntity aggregatorEntity, CsafLoader csafLoader) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
-        var aggregator = RetrievedAggregator.fromUrlAsync(aggregatorEntity.getUrl(), csafLoader).get();
+        final RetrievedAggregator aggregator;
+
+        if (aggregatorEntity.isDomain()) {
+            RetrievedAggregator.fromDomainAsync(aggregatorEntity.getUrl(), csafLoader).get();
+        } else {
+            RetrievedAggregator.fromUrlAsync(aggregatorEntity.getUrl(), csafLoader).get();
+        }
+
         var begin = Instant.now();
 
         aggregator.fetchAllAsync().get().forEach((provider) -> {
@@ -204,7 +211,14 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         final var since = providerEntity.getLastFetched() != null ?
                 kotlinx.datetime.Instant.Companion.fromEpochMilliseconds(providerEntity.getLastFetched().toEpochMilli()) : null;
         final var begin = Instant.now();
-        final var provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl(), csafLoader).get();
+        final RetrievedProvider provider;
+
+        if (providerEntity.isDomain()) {
+            provider = RetrievedProvider.fromDomainAsync(providerEntity.getUrl(), csafLoader).get();
+        } else {
+            provider = RetrievedProvider.fromUrlAsync(providerEntity.getUrl(), csafLoader).get();
+        }
+
         final var documentStream = provider.streamDocuments(since);
         documentStream.forEach((document) -> {
             if (document.getOrNull() != null) {
