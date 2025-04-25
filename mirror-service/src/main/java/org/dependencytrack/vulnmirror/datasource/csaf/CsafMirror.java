@@ -153,11 +153,10 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     protected void discoverProvider(CsafSourceEntity aggregatorEntity, CsafLoader csafLoader) throws ExecutionException, InterruptedException {
         // Check if this contains any providers that we don't know about yet
         final RetrievedAggregator aggregator;
-
         if (aggregatorEntity.isDomain()) {
-            RetrievedAggregator.fromDomainAsync(aggregatorEntity.getUrl(), csafLoader).get();
+            aggregator = RetrievedAggregator.fromDomainAsync(aggregatorEntity.getUrl(), csafLoader).get();
         } else {
-            RetrievedAggregator.fromUrlAsync(aggregatorEntity.getUrl(), csafLoader).get();
+            aggregator = RetrievedAggregator.fromUrlAsync(aggregatorEntity.getUrl(), csafLoader).get();
         }
 
         var begin = Instant.now();
