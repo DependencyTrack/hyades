@@ -89,7 +89,7 @@
     <lib.quarkus-github-api.version>1.326.0</lib.quarkus-github-api.version>
     <lib.quarkus-mailpit.version>1.6.2</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.7</lib.snappy-java.version>
-    <lib.testcontainers-minio.version>1.20.6</lib.testcontainers-minio.version>
+    <lib.testcontainers-minio.version>1.21.0</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <quarkus.platform.version>3.21.3</quarkus.platform.version>
     <quarkus.wiremock.version>1.3.3</quarkus.wiremock.version>
