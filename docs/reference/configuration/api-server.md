@@ -1,7 +1,7 @@
 <!--
   GENERATED. DO NOT EDIT.
 
-  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/api-server.md ./hyades-apiserver/src/main/resources/application.properties
+  Generated with: --template ./scripts/config-docs.md.peb --output ./docs/reference/configuration/api-server.md ./hyades-apiserver/apiserver/src/main/resources/application.properties
 -->
 
 ## CORS
