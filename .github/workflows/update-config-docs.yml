@@ -53,7 +53,7 @@ jobs:
         scriptargs: >-
           --template ./scripts/config-docs.md.peb
           --output ./docs/reference/configuration/api-server.md
-          ./hyades-apiserver/src/main/resources/application.properties
+          ./hyades-apiserver/apiserver/src/main/resources/application.properties
     - name: Generate Mirror Service Documentation
       uses: jbangdev/jbang-action@36d4a384d215d91c2c7e74014a486cedfe09d760 # tag=v0.119.0
       with:
