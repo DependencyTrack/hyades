@@ -1866,14 +1866,9 @@ but your host system is <em>not</em> Linux, you can leverage a GraalVM container
 <p>IntelliJ users can simply execute the <code>Build API Server</code> run configuration.</p>
 </div>
 <p>To build an executable JAR:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>package<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>-Pclean-exclude-wars<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>-Penhance<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span>-Pembedded-jetty<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span>-DskipTests<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span>-Dlogback.configuration.file<span class="o">=</span>src/main/docker/logback.xml
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>package<span class="w"> </span>-DskipTests
 </span></code></pre></div>
-<p>The resulting file is placed in <code>./target</code> as <code>dependency-track-apiserver.jar</code>.<br />
+<p>The resulting file is placed in <code>./apiserver/target</code> as <code>dependency-track-apiserver.jar</code>.<br />
 The JAR ships with an embedded Jetty server, there's no need to deploy it in an application server like Tomcat or WildFly.</p>
 <h3 id="container">Container<a class="headerlink" href="#container" title="Permanent link">&para;</a></h3>
 <div class="admonition tip">
@@ -1883,10 +1878,9 @@ The JAR ships with an embedded Jetty server, there's no need to deploy it in an 
 <p>Ensure you've built the API server JAR as outlined above.</p>
 <p>To build the API server image:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>docker<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>--build-arg<span class="w"> </span><span class="nv">WAR_FILENAME</span><span class="o">=</span>dependency-track-apiserver.jar<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>-t<span class="w"> </span>ghcr.io/dependencytrack/hyades-apiserver:local<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>-f<span class="w"> </span>./src/main/docker/Dockerfile<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>.
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>-t<span class="w"> </span>ghcr.io/dependencytrack/hyades-apiserver:local<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>-f<span class="w"> </span>./apiserver/src/main/docker/Dockerfile<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>./apiserver
 </span></code></pre></div>
 <h2 id="hyades-frontend"><code>hyades-frontend</code><a class="headerlink" href="#hyades-frontend" title="Permanent link">&para;</a></h2>
 <p>This segment provides build instructions for the <code>DependencyTrack/hyades-frontend</code> repository.</p>

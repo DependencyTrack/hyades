@@ -1947,7 +1947,7 @@ in the <code>DependencyTrack/hyades</code> repository.</p>
 <h3 id="api-server">API Server<a class="headerlink" href="#api-server" title="Permanent link">&para;</a></h3>
 <p>When testing changes that are limited to the API server, such as updates to the REST API,
 it's possible to launch the API server in <a href="../../reference/configuration/api-server/#devservicesenabled">dev services</a> mode:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mvn<span class="w"> </span>-Penhance<span class="w"> </span>-Pdev-services<span class="w"> </span>jetty:run<span class="w"> </span>-Dlogback.configurationFile<span class="o">=</span>src/main/docker/logback.xml
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mvn<span class="w"> </span>-pl<span class="w"> </span>apiserver<span class="w"> </span>-Pdev-services<span class="w"> </span>jetty:run
 </span></code></pre></div>
 <p>The container images used may be configured via:</p>
 <ul>
