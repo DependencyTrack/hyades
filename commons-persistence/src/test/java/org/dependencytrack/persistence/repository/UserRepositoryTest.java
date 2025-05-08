@@ -51,12 +51,12 @@ class UserRepositoryTest {
         final Long teamBarId = teamIds.get(1);
 
         final var managedUserIds = (List<Long>) entityManager.createNativeQuery("""
-                INSERT INTO "MANAGEDUSER" ("EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED") VALUES 
-                    ('foo@managed.example.com', 'foo', false, NOW(), true, false),
-                    ('bar@managed.example.com', 'bar', false, NOW(), true, false),
-                    ('baz@managed.example.com', 'baz', false, NOW(), true, false),
-                    (NULL, 'qux', false, NOW(), true, false),
-                    ('quux@example.com', 'quux', false, NOW(), true, false)
+                INSERT INTO "USER" ("TYPE", "USERNAME", "EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED") VALUES 
+                    ('MANAGED', 'foo-managed', 'foo@managed.example.com', 'foo', false, NOW(), true, false),
+                    ('MANAGED', 'bar-managed', 'bar@managed.example.com', 'bar', false, NOW(), true, false),
+                    ('MANAGED', 'baz-managed', 'baz@managed.example.com', 'baz', false, NOW(), true, false),
+                    ('MANAGED', 'qux-managed', NULL, 'qux', false, NOW(), true, false),
+                    ('MANAGED', 'quux-managed', 'quux@example.com', 'quux', false, NOW(), true, false)
                 RETURNING "ID";
                 """).getResultList();
         final Long managedUserFooId = managedUserIds.get(0);
@@ -65,7 +65,7 @@ class UserRepositoryTest {
         final Long managedUserQuuxId = managedUserIds.get(4);
 
         entityManager.createNativeQuery("""
-                        INSERT INTO "MANAGEDUSERS_TEAMS" ("MANAGEDUSER_ID", "TEAM_ID") VALUES
+                        INSERT INTO "USERS_TEAMS" ("USER_ID", "TEAM_ID") VALUES
                             (:userFooId, :teamFooId),
                             (:userBarId, :teamFooId),
                             (:userQuxId, :teamFooId),
@@ -81,12 +81,12 @@ class UserRepositoryTest {
                 .executeUpdate();
 
         final var ldapUserIds = (List<Long>) entityManager.createNativeQuery("""
-                INSERT INTO "LDAPUSER" ("EMAIL", "DN") VALUES 
-                    ('foo@ldap.example.com', 'foo'),
-                    ('bar@ldap.example.com', 'bar'),
-                    ('baz@ldap.example.com', 'baz'),
-                    (NULL, 'qux'),
-                    ('quux@example.com', 'quux')
+                INSERT INTO "USER" ("TYPE", "USERNAME", "EMAIL", "DN") VALUES 
+                    ('LDAP', 'foo-ldap', 'foo@ldap.example.com', 'foo'),
+                    ('LDAP', 'bar-ldap', 'bar@ldap.example.com', 'bar'),
+                    ('LDAP', 'baz-ldap', 'baz@ldap.example.com', 'baz'),
+                    ('LDAP', 'qux-ldap', NULL, 'qux'),
+                    ('LDAP', 'quux-ldap', 'quux@example.com', 'quux')
                 RETURNING "ID";
                 """).getResultList();
         final Long ldapUserFooId = ldapUserIds.get(0);
@@ -95,7 +95,7 @@ class UserRepositoryTest {
         final Long ldapUserQuuxId = ldapUserIds.get(4);
 
         entityManager.createNativeQuery("""
-                        INSERT INTO "LDAPUSERS_TEAMS" ("LDAPUSER_ID", "TEAM_ID") VALUES
+                        INSERT INTO "USERS_TEAMS" ("USER_ID", "TEAM_ID") VALUES
                             (:userFooId, :teamFooId),
                             (:userBarId, :teamFooId),
                             (:userQuxId, :teamFooId),
@@ -111,12 +111,12 @@ class UserRepositoryTest {
                 .executeUpdate();
 
         final var oidcUserIds = (List<Long>) entityManager.createNativeQuery("""
-                INSERT INTO "OIDCUSER" ("EMAIL", "USERNAME") VALUES 
-                    ('foo@oidc.example.com', 'foo'),
-                    ('bar@oidc.example.com', 'bar'),
-                    ('baz@oidc.example.com', 'baz'),
-                    (NULL, 'qux'),
-                    ('quux@example.com', 'quux')
+                INSERT INTO "USER" ("TYPE", "EMAIL", "USERNAME") VALUES
+                    ('OIDC', 'foo@oidc.example.com', 'foo-oidc'),
+                    ('OIDC', 'bar@oidc.example.com', 'bar-oidc'),
+                    ('OIDC', 'baz@oidc.example.com', 'baz-oidc'),
+                    ('OIDC', NULL, 'qux-oidc'),
+                    ('OIDC', 'quux@example.com', 'quux-oidc')
                 RETURNING "ID";
                 """).getResultList();
         final Long oidcUserFooId = oidcUserIds.get(0);
@@ -125,7 +125,7 @@ class UserRepositoryTest {
         final Long oidcUserQuuxId = oidcUserIds.get(4);
 
         entityManager.createNativeQuery("""
-                        INSERT INTO "OIDCUSERS_TEAMS" ("OIDCUSERS_ID", "TEAM_ID") VALUES
+                        INSERT INTO "USERS_TEAMS" ("USER_ID", "TEAM_ID") VALUES
                             (:userFooId, :teamFooId),
                             (:userBarId, :teamFooId),
                             (:userQuxId, :teamFooId),
