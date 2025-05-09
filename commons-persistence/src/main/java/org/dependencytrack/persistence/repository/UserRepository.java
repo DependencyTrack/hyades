@@ -39,17 +39,12 @@ public class UserRepository {
     @SuppressWarnings("unchecked")
     public List<String> findEmailsByTeam(final long teamId) {
         return entityManager.createNativeQuery("""
-                        SELECT "MU"."EMAIL" AS "EMAIL" FROM "MANAGEDUSER" AS "MU"
-                            INNER JOIN "MANAGEDUSERS_TEAMS" AS "MUT" ON "MUT"."MANAGEDUSER_ID" = "MU"."ID"
-                        WHERE "MUT"."TEAM_ID" = :teamId AND "MU"."EMAIL" IS NOT NULL
-                        UNION
-                        SELECT "LU"."EMAIL" AS "EMAIL" FROM "LDAPUSER" AS "LU"
-                            INNER JOIN "LDAPUSERS_TEAMS" AS "LUT" ON "LUT"."LDAPUSER_ID" = "LU"."ID"
-                        WHERE "LUT"."TEAM_ID" = :teamId AND "LU"."EMAIL" IS NOT NULL
-                        UNION 
-                        SELECT "OU"."EMAIL" AS "EMAIL" FROM "OIDCUSER" AS "OU"
-                            INNER JOIN "OIDCUSERS_TEAMS" AS "OUT" ON "OUT"."OIDCUSERS_ID" = "OU"."ID"
-                        WHERE "OUT"."TEAM_ID" = :teamId AND "OU"."EMAIL" IS NOT NULL
+                        SELECT DISTINCT "USER"."EMAIL"
+                          FROM "USERS_TEAMS"
+                         INNER JOIN "USER"
+                            ON "USER"."ID" = "USERS_TEAMS"."USER_ID"
+                         WHERE "TEAM_ID" = :teamId
+                           AND "USER"."EMAIL" IS NOT NULL
                         """)
                 .setParameter("teamId", teamId)
                 .setHint(HINT_READ_ONLY, true)

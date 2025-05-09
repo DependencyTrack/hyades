@@ -73,7 +73,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
     Mailbox mailbox;
 
     @AfterEach
-    void afterEach() throws Exception {
+    void afterEach() {
         mailbox.clear();
     }
 
@@ -392,7 +392,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserId = createManagedUser("managedUserTest", "managedUser@Test.com");
         final var ldapUserId = createLdapUser("ldapUserTest", "ldapUser@Test.com");
         final var oidcUserId = createOidcUser("oidcUserTest", "oidcUser@Test.com");
-        final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
+        final var team = createTeam("foo", List.of(managedUserId, ldapUserId, oidcUserId));
 
         assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
@@ -410,12 +410,12 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserIdA = createManagedUser("managedUserTest", "managedUser@Test.com");
         final var ldapUserIdA = createLdapUser("ldapUserTest", "ldapUser@Test.com");
         final var oidcUserIdA = createOidcUser("oidcUserTest", "oidcUser@Test.com");
-        final var teamA = createTeam("teamA", List.of(managedUserIdA), List.of(ldapUserIdA), List.of(oidcUserIdA));
+        final var teamA = createTeam("teamA", List.of(managedUserIdA, ldapUserIdA, oidcUserIdA));
 
         final var managedUserIdB = createManagedUser("anotherManagedUserTest", "anotherManagedUser@Test.com");
         final var ldapUserIdB = createLdapUser("anotherLdapUserTest", "anotherLdapUser@Test.com");
         final var oidcUserIdB = createOidcUser("anotherOidcUserTest", "anotherOidcUser@Test.com");
-        final var teamB = createTeam("teamB", List.of(managedUserIdB), List.of(ldapUserIdB), List.of(oidcUserIdB));
+        final var teamB = createTeam("teamB", List.of(managedUserIdB, ldapUserIdB, oidcUserIdB));
 
         assertThat(publisherInstance.parseDestination(config, List.of(teamA, teamB)))
                 .containsExactlyInAnyOrder(
@@ -436,15 +436,13 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserIdA = createManagedUser("managedUserTest", "managedUser@Test.com");
         final var ldapUserIdA = createLdapUser("ldapUserTest", "ldapUser@Test.com");
         final var oidcUserIdA = createOidcUser("oidcUserTest", "oidcUser@Test.com");
-        final var teamA = createTeam("teamA", List.of(managedUserIdA), List.of(ldapUserIdA), List.of(oidcUserIdA));
+        final var teamA = createTeam("teamA", List.of(managedUserIdA, ldapUserIdA, oidcUserIdA));
 
         final var managedUserIdB = createManagedUser("anotherManagedUserTest", "anotherManagedUser@Test.com");
         final var ldapUserIdB = createLdapUser("anotherLdapUserTest", "anotherLdapUser@Test.com");
         final var oidcUserIdB = createOidcUser("anotherOidcUserTest", "anotherOidcUser@Test.com");
         final var teamB = createTeam("teamB",
-                List.of(managedUserIdB, managedUserIdA),
-                List.of(ldapUserIdB, ldapUserIdA),
-                List.of(oidcUserIdB, oidcUserIdA));
+                List.of(managedUserIdB, managedUserIdA, ldapUserIdB, ldapUserIdA, oidcUserIdB, oidcUserIdA));
 
         assertThat(publisherInstance.parseDestination(config, List.of(teamA, teamB)))
                 .containsExactlyInAnyOrder(
@@ -465,7 +463,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserId = createManagedUser("managedUserTest", "managedUser@Test.com");
         final var ldapUserId = createLdapUser("ldapUserTest", "ldapUser@Test.com");
         final var oidcUserId = createOidcUser("oidcUserTest", "oidcUser@Test.com");
-        final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
+        final var team = createTeam("foo", List.of(managedUserId, ldapUserId, oidcUserId));
 
         assertThat(publisherInstance.parseDestination(config, List.of(team, team)))
                 .containsExactlyInAnyOrder("managedUser@Test.com", "ldapUser@Test.com", "oidcUser@Test.com");
@@ -499,7 +497,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserId = createManagedUser("managedUserTest", null);
         final var ldapUserId = createLdapUser("ldapUserTest", null);
         final var oidcUserId = createOidcUser("oidcUserTest", null);
-        final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
+        final var team = createTeam("foo", List.of(managedUserId, ldapUserId, oidcUserId));
 
         assertThat(publisherInstance.parseDestination(config, List.of(team))).isNull();
     }
@@ -512,7 +510,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserId = createManagedUser("managedUserTest", "managedUser@Test.com");
         final var ldapUserId = createLdapUser("ldapUserTest", "ldapUser@Test.com");
         final var oidcUserId = createOidcUser("oidcUserTest", "john@doe.com");
-        final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
+        final var team = createTeam("foo", List.of(managedUserId, ldapUserId, oidcUserId));
 
         assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
@@ -531,7 +529,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
         final var managedUserId = createManagedUser("managedUserTest", "managedUser@Test.com");
         final var ldapUserId = createLdapUser("ldapUserTest", "ldapUser@Test.com");
         final var oidcUserId = createOidcUser("oidcUserTest", "john@doe.com");
-        final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), List.of(oidcUserId));
+        final var team = createTeam("foo", List.of(managedUserId, ldapUserId, oidcUserId));
 
         assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
@@ -548,7 +546,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
 
         final var ldapUserId = createLdapUser("ldapUserTest", "ldapUser@Test.com");
         final var oidcUserId = createOidcUser("oidcUserTest", "oidcUser@Test.com");
-        final var team = createTeam("foo", Collections.emptyList(), List.of(ldapUserId), List.of(oidcUserId));
+        final var team = createTeam("foo", List.of(ldapUserId, oidcUserId));
 
         assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
@@ -566,7 +564,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
 
         final var managedUserId = createManagedUser("managedUserTest", "managedUser@Test.com");
         final var oidcUserId = createOidcUser("oidcUserTest", "oidcUser@Test.com");
-        final var team = createTeam("foo", List.of(managedUserId), Collections.emptyList(), List.of(oidcUserId));
+        final var team = createTeam("foo", List.of(managedUserId, oidcUserId));
 
         assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
@@ -584,7 +582,7 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
 
         final var managedUserId = createManagedUser("managedUserTest", "managedUser@Test.com");
         final var ldapUserId = createLdapUser("ldapUserTest", "ldapUser@Test.com");
-        final var team = createTeam("foo", List.of(managedUserId), List.of(ldapUserId), Collections.emptyList());
+        final var team = createTeam("foo", List.of(managedUserId, ldapUserId));
 
         assertThat(publisherInstance.parseDestination(config, List.of(team)))
                 .containsExactlyInAnyOrder(
@@ -639,8 +637,8 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
 
     private Long createManagedUser(final String username, final String email) {
         return (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "MANAGEDUSER" ("USERNAME", "EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED") VALUES
-                            (:username, :email, 'password', FALSE, NOW(), TRUE, FALSE)
+                        INSERT INTO "USER" ("TYPE", "USERNAME", "EMAIL", "PASSWORD", "FORCE_PASSWORD_CHANGE", "LAST_PASSWORD_CHANGE", "NON_EXPIRY_PASSWORD", "SUSPENDED") VALUES
+                            ('MANAGED', :username, :email, 'password', FALSE, NOW(), TRUE, FALSE)
                         RETURNING "ID";
                         """)
                 .setParameter("username", username)
@@ -650,8 +648,8 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
 
     private Long createLdapUser(final String username, final String email) {
         return (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "LDAPUSER" ("USERNAME", "EMAIL", "DN") VALUES
-                            (:username, :email, :dn)
+                        INSERT INTO "USER" ("TYPE", "USERNAME", "EMAIL", "DN") VALUES
+                            ('LDAP', :username, :email, :dn)
                         RETURNING "ID";
                         """)
                 .setParameter("username", username)
@@ -662,8 +660,8 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
 
     private Long createOidcUser(final String username, final String email) {
         return (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "OIDCUSER" ("USERNAME", "EMAIL") VALUES
-                            (:username, :email)
+                        INSERT INTO "USER" ("TYPE", "USERNAME", "EMAIL") VALUES
+                            ('OIDC', :username, :email)
                         RETURNING "ID";
                         """)
                 .setParameter("username", username)
@@ -671,12 +669,9 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
                 .getSingleResult();
     }
 
-    private Team createTeam(final String name,
-                            final Collection<Long> managedUserIds,
-                            final Collection<Long> ldapUserIds,
-                            final Collection<Long> oidcUserIds) {
+    private Team createTeam(final String name, final Collection<Long> userIds) {
         final var teamId = (Long) entityManager.createNativeQuery("""
-                        INSERT INTO "TEAM" ("NAME", "UUID") VALUES 
+                        INSERT INTO "TEAM" ("NAME", "UUID") VALUES
                             (:name, :uuid)
                         RETURNING "ID";
                         """)
@@ -684,37 +679,13 @@ public class SendMailPublisherTest extends AbstractPublisherTest<SendMailPublish
                 .setParameter("uuid", UUID.randomUUID().toString())
                 .getSingleResult();
 
-        if (managedUserIds != null) {
-            for (final Long managedUserId : managedUserIds) {
+        if (userIds != null) {
+            for (final Long managedUserId : userIds) {
                 entityManager.createNativeQuery("""
-                                INSERT INTO "MANAGEDUSERS_TEAMS" ("MANAGEDUSER_ID", "TEAM_ID") VALUES 
+                                INSERT INTO "USERS_TEAMS" ("USER_ID", "TEAM_ID") VALUES
                                     (:userId, :teamId);
                                 """)
                         .setParameter("userId", managedUserId)
-                        .setParameter("teamId", teamId)
-                        .executeUpdate();
-            }
-        }
-
-        if (ldapUserIds != null) {
-            for (final Long ldapUserId : ldapUserIds) {
-                entityManager.createNativeQuery("""
-                                INSERT INTO "LDAPUSERS_TEAMS" ("LDAPUSER_ID", "TEAM_ID") VALUES 
-                                    (:userId, :teamId);
-                                """)
-                        .setParameter("userId", ldapUserId)
-                        .setParameter("teamId", teamId)
-                        .executeUpdate();
-            }
-        }
-
-        if (oidcUserIds != null) {
-            for (final Long oidcUserId : oidcUserIds) {
-                entityManager.createNativeQuery("""
-                                INSERT INTO "OIDCUSERS_TEAMS" ("OIDCUSERS_ID", "TEAM_ID") VALUES 
-                                    (:userId, :teamId);
-                                """)
-                        .setParameter("userId", oidcUserId)
                         .setParameter("teamId", teamId)
                         .executeUpdate();
             }
