@@ -13,7 +13,7 @@ Adding GitLab integration to the Dependency Track/Hyades project is under consid
 ## Decision
 
 Implement GitLab job ID token authentication for Dependency Track, allowing users to publish Software Bill of Materials
- (SBOMs) using a GitLab job ID token (in JWT format). The implementation will include the following key components:
+ (SBOMs) using a GitLab job ID token. The implementation will include the following key components:
 
 * Authenticate users using a GitLab job ID token (in JWT format).
 * Authorize actions based on the user's role in GitLab.
