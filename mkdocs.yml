@@ -10,108 +10,109 @@ edit_uri: blob/main/docs/
 theme:
   name: material
   palette:
-  - scheme: default
-    media: "(prefers-color-scheme: light)"
-    toggle:
-      icon: material/brightness-7
-      name: Switch to dark mode
-  - scheme: slate
-    media: "(prefers-color-scheme: dark)"
-    toggle:
-      icon: material/brightness-4
-      name: Switch to light mode
+    - scheme: default
+      media: "(prefers-color-scheme: light)"
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      media: "(prefers-color-scheme: dark)"
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   features:
-  - content.action.edit
-  - content.code.copy
-  - content.code.select
-  - navigation.instant
-  - navigation.tracking
-  - navigation.tabs
-  - navigation.tabs.sticky
-  - navigation.top
-  - search.highlight
-  - search.share
-  - toc.integrate
+    - content.action.edit
+    - content.code.copy
+    - content.code.select
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - search.highlight
+    - search.share
+    - toc.integrate
 
 extra:
   version:
     provider: mike
   social:
-  - icon: fontawesome/brands/slack
-    link: https://dependencytrack.org/slack
-  - icon: fontawesome/brands/github
-    link: https://github.com/DependencyTrack
-  - icon: fontawesome/brands/docker
-    link: https://hub.docker.com/u/dependencytrack
-  - icon: fontawesome/brands/twitter
-    link: https://twitter.com/DependencyTrack
+    - icon: fontawesome/brands/slack
+      link: https://dependencytrack.org/slack
+    - icon: fontawesome/brands/github
+      link: https://github.com/DependencyTrack
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/u/dependencytrack
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/DependencyTrack
 
 markdown_extensions:
-- attr_list
-- admonition
-- footnotes
-- md_in_html
-- pymdownx.details
-- pymdownx.emoji:
-    emoji_index: !!python/name:material.extensions.emoji.twemoji
-    emoji_generator: !!python/name:material.extensions.emoji.to_svg
-- pymdownx.highlight:
-    anchor_linenums: true
-    line_spans: __span
-    pygments_lang_class: true
-- pymdownx.inlinehilite
-- pymdownx.snippets
-- pymdownx.superfences:
-    custom_fences:
-    - name: mermaid
-      class: mermaid
-      format: !!python/name:pymdownx.superfences.fence_code_format
-- tables
-- toc:
-    permalink: true
-    toc_depth: 3
+  - attr_list
+  - admonition
+  - footnotes
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
 
 plugins:
-- search
-- social
+  - search
+  - social
 
 nav:
-- Getting Started:
-  - Overview: index.md
-  - Changes over v4: getting-started/changes-over-v4.md
-  - Migrating from v4: getting-started/migrating-from-v4.md
-  - Upgrading: getting-started/upgrading.md
-- Usage:
-  - Policy Compliance:
-    - Overview: usage/policy-compliance/overview.md
-    - Expressions: usage/policy-compliance/expressions.md
-- Architecture:
-  - Overview: architecture/index.md
-  - Decisions:
-    - Overview: architecture/decisions/000-index.md
-    - "ADR-001: Drop Kafka Dependency": architecture/decisions/001-drop-kafka-dependency.md
-    - "ADR-002: Workflow Orchestration": architecture/decisions/002-workflow-orchestration.md
-    - "ADR-003: Notification Publishing": architecture/decisions/003-notification-publishing.md
-    - "ADR-004: File Storage Plugin": architecture/decisions/004-file-storage-plugin.md
-    - "ADR-005: Materialize Project Hierarchies": architecture/decisions/005-materialize-project-hierarchies.md
-    - "ADR-006: Consolidate User Tables": architecture/decisions/006-consolidate-user-tables.md
-  - Design:
-    - Workflow State Tracking: architecture/design/workflow-state-tracking.md
-- Operations:
-  - Database: operations/database.md
-- Development:
-  - Overview: development/overview.md
-  - Building: development/building.md
-  - Testing: development/testing.md
-  - Database Migrations: development/database-migrations.md
-  - Documentation: development/documentation.md
-- Reference:
-  - Configuration:
-    - Overview: reference/configuration/overview.md
-    - API Server: reference/configuration/api-server.md
-    - Mirror Service: reference/configuration/mirror-service.md
-    - Repository Metadata Analyzer: reference/configuration/repo-meta-analyzer.md
-  - Schemas:
-    - Notification: reference/schemas/notification.md
-    - Policy: reference/schemas/policy.md
-  - Topics: reference/topics.md
+  - Getting Started:
+      - Overview: index.md
+      - Changes over v4: getting-started/changes-over-v4.md
+      - Migrating from v4: getting-started/migrating-from-v4.md
+      - Upgrading: getting-started/upgrading.md
+  - Usage:
+      - Policy Compliance:
+          - Overview: usage/policy-compliance/overview.md
+          - Expressions: usage/policy-compliance/expressions.md
+  - Architecture:
+      - Overview: architecture/index.md
+      - Decisions:
+          - Overview: architecture/decisions/000-index.md
+          - "ADR-001: Drop Kafka Dependency": architecture/decisions/001-drop-kafka-dependency.md
+          - "ADR-002: Workflow Orchestration": architecture/decisions/002-workflow-orchestration.md
+          - "ADR-003: Notification Publishing": architecture/decisions/003-notification-publishing.md
+          - "ADR-004: File Storage Plugin": architecture/decisions/004-file-storage-plugin.md
+          - "ADR-005: Materialize Project Hierarchies": architecture/decisions/005-materialize-project-hierarchies.md
+          - "ADR-006: Consolidate User Tables": architecture/decisions/006-consolidate-user-tables.md
+          - "ADR-009: Auth And Roles": architecture/decisions/009-auth-and-roles.md
+      - Design:
+          - Workflow State Tracking: architecture/design/workflow-state-tracking.md
+  - Operations:
+      - Database: operations/database.md
+  - Development:
+      - Overview: development/overview.md
+      - Building: development/building.md
+      - Testing: development/testing.md
+      - Database Migrations: development/database-migrations.md
+      - Documentation: development/documentation.md
+  - Reference:
+      - Configuration:
+          - Overview: reference/configuration/overview.md
+          - API Server: reference/configuration/api-server.md
+          - Mirror Service: reference/configuration/mirror-service.md
+          - Repository Metadata Analyzer: reference/configuration/repo-meta-analyzer.md
+      - Schemas:
+          - Notification: reference/schemas/notification.md
+          - Policy: reference/schemas/policy.md
+      - Topics: reference/topics.md
