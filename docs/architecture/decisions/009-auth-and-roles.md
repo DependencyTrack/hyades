@@ -20,42 +20,66 @@ We decide to implement a comprehensive overhaul of the Dependency Track permissi
 ## Data Model
 
 ```mermaid
+
 erDiagram
-    USER ||--o{ ROLE : assigns
-    ROLE ||--|{ PERMISSION : has
-    PERMISSION ||--|{ RESOURCE : affects
-    TEAM ||--o{ USER : member
-    TEAM ||--o{ ROLE : assigns
-
-    USER {
-        int id
-        string name
-    }
-
+    %% Table Definitions
     ROLE {
-        int id
-        string name
-        string description
+        bigint ID PK
+        text NAME
+        uuid UUID
     }
 
     PERMISSION {
-        int id
-        string name
-        string description
-        string type
+        bigint ID PK
+        text DESCRIPTION
+        text NAME
     }
 
-    RESOURCE {
-        int id
-        string name
-        string type
+    ROLES_PERMISSIONS {
+        bigint ROLE_ID FK "References ROLE(ID)"
+        bigint PERMISSION_ID FK "References PERMISSION(ID)"
     }
 
     TEAM {
-        int id
-        string name
-        string description
+        bigint ID PK
+        text NAME
+        uuid UUID
     }
+
+    RESOURCE {
+        bigint ID PK
+        text NAME
+        text TYPE
+    }
+
+    USER {
+        bigint ID PK
+    }
+
+    USERS_TEAMS_ROLES {
+        bigint USER_ID FK "References USER(ID)"
+        bigint TEAM_ID FK "References TEAM(ID)"
+        bigint ROLE_ID FK "References ROLE(ID)"
+    }
+
+    ROLES_RESOURCES_PERMISSIONS {
+        bigint ROLE_ID FK "References ROLE(ID)"
+        bigint RESOURCE_ID FK "References RESOURCE(ID)"
+        bigint PERMISSION_ID FK "References PERMISSION(ID)"
+    }
+
+    %% Relationships for USERS_TEAMS_ROLES: This table associates a USER, a TEAM, and a ROLE.
+    USER ||--o{ USERS_TEAMS_ROLES : "assigned"
+    TEAM ||--o{ USERS_TEAMS_ROLES : "has assignment"
+    ROLE ||--o{ USERS_TEAMS_ROLES : "applied to"
+
+    %% Relationships between ROLE and RESOURCE via ROLES_RESOURCES_PERMISSIONS
+    ROLE ||--o{ ROLES_RESOURCES_PERMISSIONS : "has permission on"
+    RESOURCE ||--o{ ROLES_RESOURCES_PERMISSIONS : "has permission"
+    PERMISSION ||--o{ ROLES_RESOURCES_PERMISSIONS : "is granted"
+
+    %% Relationships between TEAM and RESOURCE
+    TEAM ||--o{ RESOURCE : "has resource"
 
 ```
 
@@ -68,6 +92,10 @@ The implementation of the new permission system and roles in Dependency Track is
 - Reduced Administrative Burden: The clarification of roles and responsibilities, particularly the distinction between team and system administration, will simplify the management of the platform, reducing the administrative workload and making it easier to maintain and evolve the system over time.
 - Better Scalability: The introduction of custom roles and the ability to link to external services will make it easier for Dependency Track to integrate with other tools and platforms, improving its scalability and adaptability to different use cases and environments.
 - Increased Complexity for Small Teams: For very small teams or individual users, the introduction of more granular permission controls might add complexity, potentially making it more challenging to manage permissions and access. Guidance and documentation will be crucial in mitigating this impact.
+
+```
+
+```
 
 ```
 
