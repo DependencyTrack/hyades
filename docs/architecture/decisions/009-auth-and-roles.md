@@ -26,8 +26,6 @@ erDiagram
     PERMISSION ||--|{ RESOURCE : affects
     TEAM ||--o{ USER : member
     TEAM ||--o{ ROLE : assigns
-    SYSTEM ||--o{ ROLE : assigns
-    SYSTEM ||--|{ RESOURCE : contains
 
     USER {
         int id
@@ -59,11 +57,6 @@ erDiagram
         string description
     }
 
-    SYSTEM {
-        int id
-        string name
-        string description
-    }
 ```
 
 ## Consequences
