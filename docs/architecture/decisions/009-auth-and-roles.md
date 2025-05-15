@@ -29,6 +29,10 @@ erDiagram
         uuid UUID
     }
 
+    USER {
+        bigint ID PK
+    }
+
     PERMISSION {
         bigint ID PK
         text DESCRIPTION
@@ -40,47 +44,18 @@ erDiagram
         bigint PERMISSION_ID FK "References PERMISSION(ID)"
     }
 
-    TEAM {
-        bigint ID PK
-        text NAME
-        uuid UUID
-    }
-
-    RESOURCE {
-        bigint ID PK
-        text NAME
-        text TYPE
-    }
-
-    USER {
-        bigint ID PK
-    }
-
-    USERS_TEAMS_ROLES {
+    USERS_ROLES {
         bigint USER_ID FK "References USER(ID)"
-        bigint TEAM_ID FK "References TEAM(ID)"
         bigint ROLE_ID FK "References ROLE(ID)"
     }
 
-    ROLES_RESOURCES_PERMISSIONS {
-        bigint ROLE_ID FK "References ROLE(ID)"
-        bigint RESOURCE_ID FK "References RESOURCE(ID)"
-        bigint PERMISSION_ID FK "References PERMISSION(ID)"
-    }
+    %% Relationships for USERS_ROLES: This table associates a USER and a ROLE.
+    USER ||--o{ USERS_ROLES : "assigned"
+    ROLE ||--o{ USERS_ROLES : "applied to"
 
-    %% Relationships for USERS_TEAMS_ROLES: This table associates a USER, a TEAM, and a ROLE.
-    USER ||--o{ USERS_TEAMS_ROLES : "assigned"
-    TEAM ||--o{ USERS_TEAMS_ROLES : "has assignment"
-    ROLE ||--o{ USERS_TEAMS_ROLES : "applied to"
-
-    %% Relationships between ROLE and RESOURCE via ROLES_RESOURCES_PERMISSIONS
-    ROLE ||--o{ ROLES_RESOURCES_PERMISSIONS : "has permission on"
-    RESOURCE ||--o{ ROLES_RESOURCES_PERMISSIONS : "has permission"
-    PERMISSION ||--o{ ROLES_RESOURCES_PERMISSIONS : "is granted"
-
-    %% Relationships between TEAM and RESOURCE
-    TEAM ||--o{ RESOURCE : "has resource"
-
+    %% Relationships between ROLE and PERMISSION via ROLES_PERMISSIONS
+    ROLE ||--o{ ROLES_PERMISSIONS : "has"
+    PERMISSION ||--o{ ROLES_PERMISSIONS : "assigned via"
 ```
 
 ## Consequences
