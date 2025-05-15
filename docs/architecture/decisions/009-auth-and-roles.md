@@ -17,6 +17,55 @@ We decide to implement a comprehensive overhaul of the Dependency Track permissi
 - Fix the issue of flattened permissions to prevent Team Permissions from leaking into global permissions, maintaining the integrity of the access control system and preventing unauthorized access.
 - Fix the Team Admin role to remove global admin privileges, ensuring that Team Admins can manage their teams effectively without posing a risk to the overall system security or stability.
 
+## Data Model
+
+```mermaid
+erDiagram
+    USER ||--o{ ROLE : assigns
+    ROLE ||--|{ PERMISSION : has
+    PERMISSION ||--|{ RESOURCE : affects
+    TEAM ||--o{ USER : member
+    TEAM ||--o{ ROLE : assigns
+    SYSTEM ||--o{ ROLE : assigns
+    SYSTEM ||--|{ RESOURCE : contains
+
+    USER {
+        int id
+        string name
+    }
+
+    ROLE {
+        int id
+        string name
+        string description
+    }
+
+    PERMISSION {
+        int id
+        string name
+        string description
+        string type
+    }
+
+    RESOURCE {
+        int id
+        string name
+        string type
+    }
+
+    TEAM {
+        int id
+        string name
+        string description
+    }
+
+    SYSTEM {
+        int id
+        string name
+        string description
+    }
+```
+
 ## Consequences
 
 The implementation of the new permission system and roles in Dependency Track is expected to have the following consequences:
@@ -26,3 +75,7 @@ The implementation of the new permission system and roles in Dependency Track is
 - Reduced Administrative Burden: The clarification of roles and responsibilities, particularly the distinction between team and system administration, will simplify the management of the platform, reducing the administrative workload and making it easier to maintain and evolve the system over time.
 - Better Scalability: The introduction of custom roles and the ability to link to external services will make it easier for Dependency Track to integrate with other tools and platforms, improving its scalability and adaptability to different use cases and environments.
 - Increased Complexity for Small Teams: For very small teams or individual users, the introduction of more granular permission controls might add complexity, potentially making it more challenging to manage permissions and access. Guidance and documentation will be crucial in mitigating this impact.
+
+```
+
+```
