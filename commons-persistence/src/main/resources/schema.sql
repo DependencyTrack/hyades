@@ -243,47 +243,7 @@ BEGIN
     + "v_policy_violations_security_audited";
   "v_policy_violations_unaudited" = "v_policy_violations_total" - "v_policy_violations_audited";
 
-  WITH "CTE_LATEST_METRICS" AS (
-    SELECT *
-      FROM "DEPENDENCYMETRICS"
-     WHERE "COMPONENT_ID" = "v_component"."ID"
-     ORDER BY "LAST_OCCURRENCE" DESC
-     LIMIT 1)
-  SELECT "ID"
-  FROM "CTE_LATEST_METRICS"
-  WHERE "VULNERABILITIES" = "v_vulnerabilities"
-    AND "CRITICAL" = "v_critical"
-    AND "HIGH" = "v_high"
-    AND "MEDIUM" = "v_medium"
-    AND "LOW" = "v_low"
-    AND "UNASSIGNED_SEVERITY" = "v_unassigned"
-    AND "RISKSCORE" = "v_risk_score"
-    AND "FINDINGS_TOTAL" = "v_findings_total"
-    AND "FINDINGS_AUDITED" = "v_findings_audited"
-    AND "FINDINGS_UNAUDITED" = "v_findings_unaudited"
-    AND "SUPPRESSED" = "v_findings_suppressed"
-    AND "POLICYVIOLATIONS_TOTAL" = "v_policy_violations_total"
-    AND "POLICYVIOLATIONS_FAIL" = "v_policy_violations_fail"
-    AND "POLICYVIOLATIONS_WARN" = "v_policy_violations_warn"
-    AND "POLICYVIOLATIONS_INFO" = "v_policy_violations_info"
-    AND "POLICYVIOLATIONS_AUDITED" = "v_policy_violations_audited"
-    AND "POLICYVIOLATIONS_UNAUDITED" = "v_policy_violations_unaudited"
-    AND "POLICYVIOLATIONS_LICENSE_TOTAL" = "v_policy_violations_license_total"
-    AND "POLICYVIOLATIONS_LICENSE_AUDITED" = "v_policy_violations_license_audited"
-    AND "POLICYVIOLATIONS_LICENSE_UNAUDITED" = "v_policy_violations_license_unaudited"
-    AND "POLICYVIOLATIONS_OPERATIONAL_TOTAL" = "v_policy_violations_operational_total"
-    AND "POLICYVIOLATIONS_OPERATIONAL_AUDITED" = "v_policy_violations_operational_audited"
-    AND "POLICYVIOLATIONS_OPERATIONAL_UNAUDITED" = "v_policy_violations_operational_unaudited"
-    AND "POLICYVIOLATIONS_SECURITY_TOTAL" = "v_policy_violations_security_total"
-    AND "POLICYVIOLATIONS_SECURITY_AUDITED" = "v_policy_violations_security_audited"
-    AND "POLICYVIOLATIONS_SECURITY_UNAUDITED" = "v_policy_violations_security_unaudited"
-  LIMIT 1
-  INTO "v_existing_id";
-
-  IF "v_existing_id" IS NOT NULL THEN
-    UPDATE "DEPENDENCYMETRICS" SET "LAST_OCCURRENCE" = NOW() WHERE "ID" = "v_existing_id";
-  ELSE
-    INSERT INTO "DEPENDENCYMETRICS" ("COMPONENT_ID",
+  INSERT INTO "DEPENDENCYMETRICS" ("COMPONENT_ID",
                                      "PROJECT_ID",
                                      "VULNERABILITIES",
                                      "CRITICAL",
@@ -344,8 +304,7 @@ BEGIN
             NOW(),
             NOW());
 
-    UPDATE "COMPONENT" SET "LAST_RISKSCORE" = "v_risk_score" WHERE "ID" = "v_component"."ID";
-  END IF;
+  UPDATE "COMPONENT" SET "LAST_RISKSCORE" = "v_risk_score" WHERE "ID" = "v_component"."ID";
 END;
 $$;
 
@@ -455,50 +414,7 @@ BEGIN
 
   "v_risk_score" = "CALC_RISK_SCORE"("v_critical", "v_high", "v_medium", "v_low", "v_unassigned");
 
-  WITH "CTE_LATEST_METRICS" AS (
-    SELECT *
-      FROM "PORTFOLIOMETRICS"
-     ORDER BY "LAST_OCCURRENCE" DESC
-     LIMIT 1)
-  SELECT "ID"
-  FROM "CTE_LATEST_METRICS"
-  WHERE "PROJECTS" = "v_projects"
-    AND "VULNERABLEPROJECTS" = "v_vulnerable_projects"
-    AND "COMPONENTS" = "v_components"
-    AND "VULNERABLECOMPONENTS" = "v_vulnerable_components"
-    AND "VULNERABILITIES" = "v_vulnerabilities"
-    AND "CRITICAL" = "v_critical"
-    AND "HIGH" = "v_high"
-    AND "MEDIUM" = "v_medium"
-    AND "LOW" = "v_low"
-    AND "UNASSIGNED_SEVERITY" = "v_unassigned"
-    AND "RISKSCORE" = "v_risk_score"
-    AND "FINDINGS_TOTAL" = "v_findings_total"
-    AND "FINDINGS_AUDITED" = "v_findings_audited"
-    AND "FINDINGS_UNAUDITED" = "v_findings_unaudited"
-    AND "SUPPRESSED" = "v_findings_suppressed"
-    AND "POLICYVIOLATIONS_TOTAL" = "v_policy_violations_total"
-    AND "POLICYVIOLATIONS_FAIL" = "v_policy_violations_fail"
-    AND "POLICYVIOLATIONS_WARN" = "v_policy_violations_warn"
-    AND "POLICYVIOLATIONS_INFO" = "v_policy_violations_info"
-    AND "POLICYVIOLATIONS_AUDITED" = "v_policy_violations_audited"
-    AND "POLICYVIOLATIONS_UNAUDITED" = "v_policy_violations_unaudited"
-    AND "POLICYVIOLATIONS_LICENSE_TOTAL" = "v_policy_violations_license_total"
-    AND "POLICYVIOLATIONS_LICENSE_AUDITED" = "v_policy_violations_license_audited"
-    AND "POLICYVIOLATIONS_LICENSE_UNAUDITED" = "v_policy_violations_license_unaudited"
-    AND "POLICYVIOLATIONS_OPERATIONAL_TOTAL" = "v_policy_violations_operational_total"
-    AND "POLICYVIOLATIONS_OPERATIONAL_AUDITED" = "v_policy_violations_operational_audited"
-    AND "POLICYVIOLATIONS_OPERATIONAL_UNAUDITED" = "v_policy_violations_operational_unaudited"
-    AND "POLICYVIOLATIONS_SECURITY_TOTAL" = "v_policy_violations_security_total"
-    AND "POLICYVIOLATIONS_SECURITY_AUDITED" = "v_policy_violations_security_audited"
-    AND "POLICYVIOLATIONS_SECURITY_UNAUDITED" = "v_policy_violations_security_unaudited"
-  LIMIT 1
-  INTO "v_existing_id";
-
-  IF "v_existing_id" IS NOT NULL THEN
-    UPDATE "PORTFOLIOMETRICS" SET "LAST_OCCURRENCE" = NOW() WHERE "ID" = "v_existing_id";
-  ELSE
-    INSERT INTO "PORTFOLIOMETRICS" ("PROJECTS",
+   INSERT INTO "PORTFOLIOMETRICS" ("PROJECTS",
                                     "VULNERABLEPROJECTS",
                                     "COMPONENTS",
                                     "VULNERABLECOMPONENTS",
@@ -530,7 +446,7 @@ BEGIN
                                     "POLICYVIOLATIONS_SECURITY_UNAUDITED",
                                     "FIRST_OCCURRENCE",
                                     "LAST_OCCURRENCE")
-    VALUES ("v_projects",
+   VALUES ("v_projects",
             "v_vulnerable_projects",
             "v_components",
             "v_vulnerable_components",
@@ -562,7 +478,6 @@ BEGIN
             "v_policy_violations_security_unaudited",
             NOW(),
             NOW());
-  END IF;
 END;
 $$;
 
@@ -677,49 +592,7 @@ BEGIN
 
   "v_risk_score" = "CALC_RISK_SCORE"("v_critical", "v_high", "v_medium", "v_low", "v_unassigned");
 
-  WITH "CTE_LATEST_METRICS" AS (
-    SELECT *
-      FROM "PROJECTMETRICS"
-     WHERE "PROJECT_ID" = "v_project_id"
-     ORDER BY "LAST_OCCURRENCE" DESC
-     LIMIT 1)
-  SELECT "ID"
-  FROM "CTE_LATEST_METRICS"
-  WHERE "COMPONENTS" = "v_components"
-    AND "VULNERABLECOMPONENTS" = "v_vulnerable_components"
-    AND "VULNERABILITIES" = "v_vulnerabilities"
-    AND "CRITICAL" = "v_critical"
-    AND "HIGH" = "v_high"
-    AND "MEDIUM" = "v_medium"
-    AND "LOW" = "v_low"
-    AND "UNASSIGNED_SEVERITY" = "v_unassigned"
-    AND "RISKSCORE" = "v_risk_score"
-    AND "FINDINGS_TOTAL" = "v_findings_total"
-    AND "FINDINGS_AUDITED" = "v_findings_audited"
-    AND "FINDINGS_UNAUDITED" = "v_findings_unaudited"
-    AND "SUPPRESSED" = "v_findings_suppressed"
-    AND "POLICYVIOLATIONS_TOTAL" = "v_policy_violations_total"
-    AND "POLICYVIOLATIONS_FAIL" = "v_policy_violations_fail"
-    AND "POLICYVIOLATIONS_WARN" = "v_policy_violations_warn"
-    AND "POLICYVIOLATIONS_INFO" = "v_policy_violations_info"
-    AND "POLICYVIOLATIONS_AUDITED" = "v_policy_violations_audited"
-    AND "POLICYVIOLATIONS_UNAUDITED" = "v_policy_violations_unaudited"
-    AND "POLICYVIOLATIONS_LICENSE_TOTAL" = "v_policy_violations_license_total"
-    AND "POLICYVIOLATIONS_LICENSE_AUDITED" = "v_policy_violations_license_audited"
-    AND "POLICYVIOLATIONS_LICENSE_UNAUDITED" = "v_policy_violations_license_unaudited"
-    AND "POLICYVIOLATIONS_OPERATIONAL_TOTAL" = "v_policy_violations_operational_total"
-    AND "POLICYVIOLATIONS_OPERATIONAL_AUDITED" = "v_policy_violations_operational_audited"
-    AND "POLICYVIOLATIONS_OPERATIONAL_UNAUDITED" = "v_policy_violations_operational_unaudited"
-    AND "POLICYVIOLATIONS_SECURITY_TOTAL" = "v_policy_violations_security_total"
-    AND "POLICYVIOLATIONS_SECURITY_AUDITED" = "v_policy_violations_security_audited"
-    AND "POLICYVIOLATIONS_SECURITY_UNAUDITED" = "v_policy_violations_security_unaudited"
-  LIMIT 1
-  INTO "v_existing_id";
-
-  IF "v_existing_id" IS NOT NULL THEN
-    UPDATE "PROJECTMETRICS" SET "LAST_OCCURRENCE" = NOW() WHERE "ID" = "v_existing_id";
-  ELSE
-    INSERT INTO "PROJECTMETRICS" ("PROJECT_ID",
+  INSERT INTO "PROJECTMETRICS" ("PROJECT_ID",
                                   "COMPONENTS",
                                   "VULNERABLECOMPONENTS",
                                   "VULNERABILITIES",
@@ -782,8 +655,7 @@ BEGIN
             NOW(),
             NOW());
 
-    UPDATE "PROJECT" SET "LAST_RISKSCORE" = "v_risk_score" WHERE "ID" = "v_project_id";
-  END IF;
+  UPDATE "PROJECT" SET "LAST_RISKSCORE" = "v_risk_score" WHERE "ID" = "v_project_id";
 end;
 $$;
 
@@ -1204,7 +1076,6 @@ ALTER TABLE public."CONFIGPROPERTY" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT A
 );
 
 CREATE TABLE public."DEPENDENCYMETRICS" (
-    "ID" bigint NOT NULL,
     "COMPONENT_ID" bigint NOT NULL,
     "CRITICAL" integer NOT NULL,
     "FINDINGS_AUDITED" integer,
@@ -1235,16 +1106,8 @@ CREATE TABLE public."DEPENDENCYMETRICS" (
     "SUPPRESSED" integer NOT NULL,
     "UNASSIGNED_SEVERITY" integer,
     "VULNERABILITIES" integer NOT NULL
-);
-
-ALTER TABLE public."DEPENDENCYMETRICS" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
-    SEQUENCE NAME public."DEPENDENCYMETRICS_ID_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
+)
+PARTITION BY RANGE ("LAST_OCCURRENCE");
 
 CREATE TABLE public."EPSS" (
     "ID" bigint NOT NULL,
@@ -1578,7 +1441,6 @@ CREATE TABLE public."POLICY_TAGS" (
 );
 
 CREATE TABLE public."PORTFOLIOMETRICS" (
-    "ID" bigint NOT NULL,
     "COMPONENTS" integer NOT NULL,
     "CRITICAL" integer NOT NULL,
     "FINDINGS_AUDITED" integer,
@@ -1611,16 +1473,8 @@ CREATE TABLE public."PORTFOLIOMETRICS" (
     "VULNERABILITIES" integer NOT NULL,
     "VULNERABLECOMPONENTS" integer NOT NULL,
     "VULNERABLEPROJECTS" integer NOT NULL
-);
-
-ALTER TABLE public."PORTFOLIOMETRICS" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
-    SEQUENCE NAME public."PORTFOLIOMETRICS_ID_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
+)
+PARTITION BY RANGE ("LAST_OCCURRENCE");
 
 CREATE TABLE public."PROJECT" (
     "ID" bigint NOT NULL,
@@ -1649,7 +1503,6 @@ CREATE TABLE public."PROJECT" (
 );
 
 CREATE TABLE public."PROJECTMETRICS" (
-    "ID" bigint NOT NULL,
     "COMPONENTS" integer NOT NULL,
     "CRITICAL" integer NOT NULL,
     "FINDINGS_AUDITED" integer,
@@ -1681,16 +1534,8 @@ CREATE TABLE public."PROJECTMETRICS" (
     "UNASSIGNED_SEVERITY" integer,
     "VULNERABILITIES" integer NOT NULL,
     "VULNERABLECOMPONENTS" integer NOT NULL
-);
-
-ALTER TABLE public."PROJECTMETRICS" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
-    SEQUENCE NAME public."PROJECTMETRICS_ID_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
+)
+PARTITION BY RANGE ("LAST_OCCURRENCE");
 
 CREATE TABLE public."PROJECTS_TAGS" (
     "TAG_ID" bigint NOT NULL,
@@ -2259,7 +2104,7 @@ ALTER TABLE ONLY public."CONFIGPROPERTY"
     ADD CONSTRAINT "CONFIGPROPERTY_U1" UNIQUE ("GROUPNAME", "PROPERTYNAME");
 
 ALTER TABLE ONLY public."DEPENDENCYMETRICS"
-    ADD CONSTRAINT "DEPENDENCYMETRICS_PK" PRIMARY KEY ("ID");
+    ADD CONSTRAINT "DEPENDENCYMETRICS_PK" PRIMARY KEY ("PROJECT_ID", "COMPONENT_ID", "LAST_OCCURRENCE");
 
 ALTER TABLE ONLY public."EPSS"
     ADD CONSTRAINT "EPSS_CVE_PK" PRIMARY KEY ("ID");
@@ -2358,10 +2203,10 @@ ALTER TABLE ONLY public."POLICY"
     ADD CONSTRAINT "POLICY_UUID_IDX" UNIQUE ("UUID");
 
 ALTER TABLE ONLY public."PORTFOLIOMETRICS"
-    ADD CONSTRAINT "PORTFOLIOMETRICS_PK" PRIMARY KEY ("ID");
+    ADD CONSTRAINT "PORTFOLIOMETRICS_PK" PRIMARY KEY ("LAST_OCCURRENCE");
 
 ALTER TABLE ONLY public."PROJECTMETRICS"
-    ADD CONSTRAINT "PROJECTMETRICS_PK" PRIMARY KEY ("ID");
+    ADD CONSTRAINT "PROJECTMETRICS_PK" PRIMARY KEY ("PROJECT_ID", "LAST_OCCURRENCE");
 
 ALTER TABLE ONLY public."PROJECT_ACCESS_TEAMS"
     ADD CONSTRAINT "PROJECT_ACCESS_TEAMS_PK" PRIMARY KEY ("PROJECT_ID", "TEAM_ID");
@@ -2557,14 +2402,6 @@ CREATE INDEX "COMPONENT_SHA_512_IDX" ON public."COMPONENT" USING btree ("SHA_512
 
 CREATE INDEX "COMPONENT_SWID_TAGID_IDX" ON public."COMPONENT" USING btree ("SWIDTAGID");
 
-CREATE INDEX "DEPENDENCYMETRICS_COMPONENT_ID_IDX" ON public."DEPENDENCYMETRICS" USING btree ("COMPONENT_ID");
-
-CREATE INDEX "DEPENDENCYMETRICS_COMPOSITE_IDX" ON public."DEPENDENCYMETRICS" USING btree ("PROJECT_ID", "COMPONENT_ID");
-
-CREATE INDEX "DEPENDENCYMETRICS_FIRST_OCCURRENCE_IDX" ON public."DEPENDENCYMETRICS" USING btree ("FIRST_OCCURRENCE");
-
-CREATE INDEX "DEPENDENCYMETRICS_LAST_OCCURRENCE_IDX" ON public."DEPENDENCYMETRICS" USING btree ("LAST_OCCURRENCE");
-
 CREATE UNIQUE INDEX "EPSS_CVE_IDX" ON public."EPSS" USING btree ("CVE");
 
 CREATE UNIQUE INDEX "FINDINGATTRIBUTION_COMPOUND_IDX" ON public."FINDINGATTRIBUTION" USING btree ("COMPONENT_ID", "VULNERABILITY_ID");
@@ -2620,16 +2457,6 @@ CREATE INDEX "POLICY_PROJECTS_PROJECT_ID_IDX" ON public."POLICY_PROJECTS" USING 
 CREATE INDEX "POLICY_TAGS_POLICY_ID_IDX" ON public."POLICY_TAGS" USING btree ("POLICY_ID");
 
 CREATE INDEX "POLICY_TAGS_TAG_ID_IDX" ON public."POLICY_TAGS" USING btree ("TAG_ID");
-
-CREATE INDEX "PORTFOLIOMETRICS_FIRST_OCCURRENCE_IDX" ON public."PORTFOLIOMETRICS" USING btree ("FIRST_OCCURRENCE");
-
-CREATE INDEX "PORTFOLIOMETRICS_LAST_OCCURRENCE_IDX" ON public."PORTFOLIOMETRICS" USING btree ("LAST_OCCURRENCE");
-
-CREATE INDEX "PROJECTMETRICS_FIRST_OCCURRENCE_IDX" ON public."PROJECTMETRICS" USING btree ("FIRST_OCCURRENCE");
-
-CREATE INDEX "PROJECTMETRICS_LAST_OCCURRENCE_IDX" ON public."PROJECTMETRICS" USING btree ("LAST_OCCURRENCE");
-
-CREATE INDEX "PROJECTMETRICS_PROJECT_ID_IDX" ON public."PROJECTMETRICS" USING btree ("PROJECT_ID");
 
 CREATE INDEX "PROJECTS_TAGS_PROJECT_ID_IDX" ON public."PROJECTS_TAGS" USING btree ("PROJECT_ID");
 
