@@ -4878,7 +4878,7 @@ Minimum duration in ISO 8601 format for which the LDAP synchronization task will
 
 ### task.metrics.maintenance.cron
 
-Cron expression of the metrics maintenance task.  <br/><br/>  The task deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  <li><code>PORTFOLIOMETRICS</code></li>  </ul>  
+Cron expression of the metrics maintenance task.  <br/><br/>  The task creates new partitions for the day for the following tables  And deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  <li><code>PORTFOLIOMETRICS</code></li>  </ul>  
 
 <table>
   <tbody style="border: 0">
@@ -4892,7 +4892,7 @@ Cron expression of the metrics maintenance task.  <br/><br/>  The task deletes r
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 */3 * * *</code></td>
+      <td style="border-width: 0"><code>1 * * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
