@@ -18,12 +18,8 @@
  */
 package org.dependencytrack.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -47,6 +43,7 @@ public class CsafDocumentEntity implements Serializable {
     private String url;
 
     @Column(name = "CONTENT", columnDefinition = "CLOB")
+    @Basic(fetch = FetchType.LAZY)
     private String content;
 
     @Column(name = "PUBLISHERNAMESPACE")
