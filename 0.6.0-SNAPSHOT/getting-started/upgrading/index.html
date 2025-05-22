@@ -1782,6 +1782,23 @@ Refer to the <a href="../../reference/configuration/api-server/#kafka">kafka con
 <p>The minimum supported PostgreSQL version has been raised from 11 to 13 (<a href="https://github.com/DependencyTrack/hyades/issues/1724">hyades/#1724</a>).
   Lower versions may still work, but are no longer tested against.</p>
 </li>
+<li>
+<p>User records in the database are consolidated from the separate <code>LDAPUSER</code>, <code>MANAGEDUSER</code>,
+and <code>OIDCUSER</code> tables, into a single <code>USER</code> table (<a href="https://github.com/DependencyTrack/hyades-apiserver/pull/1169">apiserver/#1169</a>). The new <code>USER</code> table
+enforces uniqueness of usernames. To prevent data loss, <code>LDAPUSER</code> and <code>OIDCUSER</code> records with
+conflicting usernames will have their username values suffixed with <code>-CONFLICT-LDAP</code> and
+<code>-CONFLICT-OIDC</code> respectively. Affected users will not be able to authenticate.
+Administrators are expected to resolve this by removing users or renaming them as desired.
+Note that this is an edge case and should not affect the vast majority of deployments.</p>
+</li>
+<li>
+<p>The metrics tables <code>DEPENDENCYMETRICS</code>, <code>PORTFOLIOMETRICS</code>, and <code>PROJECTMETRICS</code> are
+partitioned by date (<a href="https://github.com/DependencyTrack/hyades-apiserver/pull/1141">apiserver/#1141</a>). The migration procedure involves copying existing 
+metrics data, thus requiring up to double the amount of storage for the duration of the migration.
+To reduce the amount of data being copied, consider temporarily reducing the metrics
+retention timespan in the administration panel under <em>Configuration</em> → <em>Maintenance</em>.
+Only historic data falling within the configured retention duration will be migrated.</p>
+</li>
 </ul>
 
 
