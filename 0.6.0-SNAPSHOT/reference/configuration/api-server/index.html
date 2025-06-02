@@ -1740,6 +1740,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#devservicesportfrontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.port.frontend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devservicesportkafka" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.port.kafka
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devservicesportpostgres" class="md-nav__link">
+    <span class="md-ellipsis">
+      dev.services.port.postgres
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4333,6 +4360,78 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DEV_SERVICES_IMAGE_POSTGRES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="devservicesportfrontend">dev.services.port.frontend<a class="headerlink" href="#devservicesportfrontend" title="Permanent link">&para;</a></h3>
+<p>The port on which the frontend dev services container shall be exposed on the host.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>8081</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_FRONTEND</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="devservicesportkafka">dev.services.port.kafka<a class="headerlink" href="#devservicesportkafka" title="Permanent link">&para;</a></h3>
+<p>The port on which the Kafka dev services container shall be exposed on the host.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>9092</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_KAFKA</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="devservicesportpostgres">dev.services.port.postgres<a class="headerlink" href="#devservicesportpostgres" title="Permanent link">&para;</a></h3>
+<p>The port on which the PostgreSQL dev services container shall be exposed on the host.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5432</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_POSTGRES</code></td>
     </tr>
   </tbody>
 </table>
