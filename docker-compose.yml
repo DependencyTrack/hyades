@@ -212,7 +212,7 @@ services:
     restart: unless-stopped
 
   redpanda:
-    image: docker.redpanda.com/redpandadata/redpanda:v24.2.17
+    image: docker.redpanda.com/redpandadata/redpanda:v24.3.14
     container_name: dt-redpanda
     command:
       - redpanda
@@ -249,7 +249,7 @@ services:
     restart: unless-stopped
 
   redpanda-init:
-    image: docker.redpanda.com/redpandadata/redpanda:v24.2.17
+    image: docker.redpanda.com/redpandadata/redpanda:v24.3.14
     container_name: dt-redpanda-init
     depends_on:
       redpanda:
@@ -273,7 +273,7 @@ services:
     restart: on-failure
 
   redpanda-console:
-    image: docker.redpanda.com/redpandadata/console:v2.8.2
+    image: docker.redpanda.com/redpandadata/console:v2.8.6
     container_name: dt-redpanda-console
     entrypoint: "/bin/sh"
     command: "-c 'echo \"$$CONSOLE_CONFIG_FILE\" > \"$$CONFIG_FILEPATH\"; /app/console'"
