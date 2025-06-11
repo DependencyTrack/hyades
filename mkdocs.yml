@@ -95,6 +95,7 @@ nav:
     - "ADR-004: File Storage Plugin": architecture/decisions/004-file-storage-plugin.md
     - "ADR-005: Materialize Project Hierarchies": architecture/decisions/005-materialize-project-hierarchies.md
     - "ADR-006: Consolidate User Tables": architecture/decisions/006-consolidate-user-tables.md
+    - "ADR-007: Spec-First REST API v2": architecture/decisions/007-spec-first-rest-api-v2.md
   - Design:
     - Workflow State Tracking: architecture/design/workflow-state-tracking.md
 - Operations:
