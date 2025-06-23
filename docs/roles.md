@@ -1,12 +1,15 @@
-# Roles 
-Roles increase privacy and allow for better ease of use in large scale projects. Roles are synced to the user's Gitlab account with their LM SSO and they are automatically given access to the necessary projects. Custom roles are also included, allowing for the user to create unique permissions for specific use case.
+# Roles
 
-# Scoped Permissions
+## What are Roles?
 
-With the addition of `Roles`, we had to normalize the permssion model for more fine-grained access control. The current model was split into a global, shared, and teams/project based permission set. 
-This is done by seperating the current `NAME` text value into the distinct concepts of `RESOURCE` and `ACCESS_LEVEL`. The enforcement is implemented through a combination of annotations, query logic, and request filtering—particularly in the context of REST API endpoints that deal with projects and their related resources.
+Roles increase privacy and allow for better ease of use in large scale projects. Essentially, a role defines a set of permissions and responsibilities that a user or group of users can have within the project. By assigning specific roles, project administrators can control who has access to what resources, ensuring that sensitive information is only accessible to those who need it. Custom roles are also included, allowing for the user to create unique permissions for specific use case.
+
+## Scoped Permissions
+
+With the addition of `Roles`, a normilization of the permission model was done. The current model was split into a global, shared, and teams/project based permission set. For an example of how to utilize them, refer to `How To Use Them` section.
 
 Current `PERMISSION TABLE`:
+
 ```mermaid
 ---
 title: Current Model
@@ -18,8 +21,10 @@ erDiagram
         TEXT DESCRIPTION
     }
 ```
+
 ---
 Implemented `PERMISSION TABLE`:
+
 ```mermaid
 ---
 title: Implemented Model
@@ -33,7 +38,8 @@ erDiagram
     }
 ```
 
-# User, Role, Permission Relationship Diagram 
+## User, Role, Permission Relationship Diagram
+
 ```mermaid
 erDiagram
     %% Table Definitions
@@ -66,29 +72,34 @@ erDiagram
     ROLE ||--o{ ROLES_PERMISSIONS : "has"
     PERMISSION ||--o{ ROLES_PERMISSIONS : "assigned via"
 ```
+
 ---
 
-# How to Use Them?
+## How to Use Them?
 
-**Creating a New Role**
+## Creating a New Role
 
-As a user with `ADMIN` access: 
-- Navigate to the `Administration > Access Management > Roles` page. There you will see all four default Roles, with accompanied permissions.
+As a user with `ADMIN` access:
+
+- Navigate to the `Administration > Access Management > Roles` page. 
+  ![alt text](image-1.png)
 - Click the `+ Create Role` button.
-- Provide a `Role Name` and add `Permissions` 
+  ![alt text](image-2.png)
+- Provide a `Role Name` and add `Permissions`
 - click `Create`.
 
-**Assigning a Role, Project, and Permissions to a User**
+## Assigning a Role, Project, and Permissions to a User
+
 - Navigate to any of the three user pages: `LDAPUsers`, `Managed Users`, or `OpenID Connect Users`.
+  ![Managed User](image-3.png)
 - Click `+ Create User` button.
 - Complete the fields in the **Create User Modal** and click `Create`.
+  ![alt text](image-4.png)
 - Click `+` in the `Roles` modal.
-- Select your desired `Project` and `Role`. 
+- Select your desired `Project` and `Role`.
 - Click `Assign`.
+  ![alt text](image-5.png)
 - Click `+` button in the `Permissions` modal select desired permissions.
 - Click `Select`.
-
-
-
-
-
+  ![alt text](image-6.png)
+ 
