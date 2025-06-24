@@ -10,11 +10,12 @@ The Dependency Track system currently faces challenges with its permission struc
 
 We decide to implement a comprehensive overhaul of the Dependency Track permission system, incorporating the following key elements:
 
-- Refine and fix the existing permissions and introduce roles to improve access control, allowing for more granular and flexible management of user privileges.
-- Implement Query Manager changes to enforce permissions at the project level.
-- Split the current permission set into global and team/project-based permissions, adding any potentially missing ones to ensure comprehensive coverage of access scenarios.
-- Add custom roles to Dependency Track with a field to link to external services, enhancing integration capabilities and allowing for more seamless interactions with other tools and platforms.
+- Introducing "roles" means assigning groups of permissions to specific types of users (e.g., Admin, Auditor, etc). This allows for more granular control over what actions different types of users can perform within the system.
+- Implement Query Manager changes to enforce permissions at the project level. This will ensure that users can only view and modify projects they have access to.
+- Split the current permission set into global and team/project-based permission sets, adding any potentially missing ones to ensure comprehensive coverage of access scenarios. Global permissions are applied universally across the system and are not specific to any project or team. Team/Project-based permissions are specific to individual teams or projects, allowing for more customized access control within those contexts.
+- Add custom roles, the abilitiy to create tailored sets of permssions specifc to the type of user, to Dependency Track with a field to link to external services, enhancing integration capabilities and allowing for more seamless interactions with other tools and platforms.
 - Separate Team administration from system administration, clarifying roles and responsibilities to prevent confusion and minimize the risk of unintended system-wide changes.
+
 ## Data Model
 
 ```mermaid
