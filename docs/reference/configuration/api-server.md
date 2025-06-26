@@ -716,6 +716,90 @@ The image to use for the PostgreSQL dev services container.
 </table>
 
 
+---
+
+### dev.services.port.frontend
+
+The port on which the frontend dev services container shall be exposed on the host.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>8081</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_FRONTEND</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dev.services.port.kafka
+
+The port on which the Kafka dev services container shall be exposed on the host.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>9092</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_KAFKA</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dev.services.port.postgres
+
+The port on which the PostgreSQL dev services container shall be exposed on the host.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5432</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_POSTGRES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
 
 
 ## General
@@ -4878,7 +4962,7 @@ Minimum duration in ISO 8601 format for which the LDAP synchronization task will
 
 ### task.metrics.maintenance.cron
 
-Cron expression of the metrics maintenance task.  <br/><br/>  The task deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  <li><code>PORTFOLIOMETRICS</code></li>  </ul>  
+Cron expression of the metrics maintenance task.  <br/><br/>  The task creates new partitions for the day for the following tables  And deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  <li><code>PORTFOLIOMETRICS</code></li>  </ul>  
 
 <table>
   <tbody style="border: 0">
@@ -4892,7 +4976,7 @@ Cron expression of the metrics maintenance task.  <br/><br/>  The task deletes r
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 */3 * * *</code></td>
+      <td style="border-width: 0"><code>1 * * * *</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>

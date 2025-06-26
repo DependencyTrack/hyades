@@ -63,7 +63,7 @@
 
     <!-- Dependency Versions -->
     <lib.assertj.version>3.27.3</lib.assertj.version>
-    <lib.checkstyle.version>10.23.0</lib.checkstyle.version>
+    <lib.checkstyle.version>10.24.0</lib.checkstyle.version>
     <lib.cloud-sql-postgres-socket-factory.version>1.25.0</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>3.0.0</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.5.0</lib.commons-collections4.version>
@@ -83,11 +83,11 @@
     <lib.org-json.version>20250107</lib.org-json.version>
     <lib.pebble.version>3.2.4</lib.pebble.version>
     <lib.resilience4j.version>2.3.0</lib.resilience4j.version>
-    <lib.open.vulnerability.clients.version>7.3.2</lib.open.vulnerability.clients.version>
+    <lib.open.vulnerability.clients.version>8.0.0</lib.open.vulnerability.clients.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>4.30.2</lib.protobuf-java.version>
     <lib.quarkus-github-api.version>1.326.0</lib.quarkus-github-api.version>
-    <lib.quarkus-mailpit.version>1.6.2</lib.quarkus-mailpit.version>
+    <lib.quarkus-mailpit.version>1.6.4</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.7</lib.snappy-java.version>
     <lib.testcontainers-minio.version>1.21.0</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
