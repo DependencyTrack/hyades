@@ -100,8 +100,8 @@ nav:
 - Operations:
   - Database: operations/database.md
 - Development:
-  - Auth And Roles:
-    - Roles: usage/auth-and-roles/roles.md
+  - Roles:
+    - Overview: usage/auth-and-roles/overview.md
   - Overview: development/overview.md
   - Building: development/building.md
   - Testing: development/testing.md
