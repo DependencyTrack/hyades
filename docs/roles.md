@@ -23,6 +23,7 @@ erDiagram
 ```
 
 ---
+
 Implemented `PERMISSION TABLE`:
 
 ```mermaid
@@ -81,25 +82,25 @@ erDiagram
 
 As a user with `ADMIN` access:
 
-- Navigate to the `Administration > Access Management > Roles` page. 
-  ![alt text](image-1.png)
+- Navigate to the `Administration > Access Management > Roles` page.
+  ![Role](images/roles_page_view.png)
 - Click the `+ Create Role` button.
-  ![alt text](image-2.png)
+  ![Create Role](images/create_role.png)
 - Provide a `Role Name` and add `Permissions`
 - click `Create`.
 
 ## Assigning a Role, Project, and Permissions to a User
 
 - Navigate to any of the three user pages: `LDAPUsers`, `Managed Users`, or `OpenID Connect Users`.
-  ![Managed User](image-3.png)
+  ![Managed User](images/managed_users_page_view.png)
 - Click `+ Create User` button.
 - Complete the fields in the **Create User Modal** and click `Create`.
-  ![alt text](image-4.png)
+  ![Create Managed User](images/create_managed_user.png)
 - Click `+` in the `Roles` modal.
 - Select your desired `Project` and `Role`.
 - Click `Assign`.
-  ![alt text](image-5.png)
+  ![Assign Role](images/assign_role.png)
 - Click `+` button in the `Permissions` modal select desired permissions.
 - Click `Select`.
-  ![alt text](image-6.png)
+  ![Select Permissions](images/select_permissions.png)
  
