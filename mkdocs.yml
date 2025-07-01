@@ -100,11 +100,14 @@ nav:
 - Operations:
   - Database: operations/database.md
 - Development:
+  - Auth And Roles:
+    - Roles: usage/auth-and-roles/roles.md
   - Overview: development/overview.md
   - Building: development/building.md
   - Testing: development/testing.md
   - Database Migrations: development/database-migrations.md
   - Documentation: development/documentation.md
+
 - Reference:
   - Configuration:
     - Overview: reference/configuration/overview.md
