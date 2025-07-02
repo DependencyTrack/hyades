@@ -6,7 +6,7 @@ Roles increase privacy and allow for better ease of use in large scale projects.
 
 ## Scoped Permissions
 
-With the addition of `Roles`, a normilization of the permission model was done. The current model was split into a global, shared, and teams/project based permission set. For an example of how to utilize them, refer to `How To Use Them` section.
+With the addition of `Roles`, a normalization of the permission model was done. The current model was split into a global, shared, and teams/project based permission set. For an example of how to utilize them, refer to `How To Use Them` section.
 
 Current `PERMISSION TABLE`:
 
