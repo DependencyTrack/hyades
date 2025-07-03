@@ -8,13 +8,9 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/007-spec-first-rest-api-v2/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/Roles/overview/">
       
       
-        <link rel="prev" href="../006-consolidate-user-tables/">
-      
-      
-        <link rel="next" href="../../design/workflow-state-tracking/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +18,7 @@
     
     
       
-        <title>ADR-007: Spec-First REST API v2 - Hyades</title>
+        <title>Roles - Hyades</title>
       
     
     
@@ -57,11 +53,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="ADR-007: Spec-First REST API v2 - Hyades" >
+        <meta  property="og:title"  content="Roles - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/007-spec-first-rest-api-v2.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/development/Roles/overview.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +65,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/007-spec-first-rest-api-v2/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/development/Roles/overview/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="ADR-007: Spec-First REST API v2 - Hyades" >
+        <meta  name="twitter:title"  content="Roles - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/007-spec-first-rest-api-v2.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/development/Roles/overview.png" >
       
     
     
@@ -100,7 +96,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#context" class="md-skip">
+        <a href="#roles" class="md-skip">
           Skip to content
         </a>
       
@@ -140,7 +136,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ADR-007: Spec-First REST API v2
+              Roles
             
           </span>
         </div>
@@ -298,13 +294,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
           
   
   
@@ -736,29 +730,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -771,7 +760,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -785,7 +774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../architecture/" class="md-nav__link">
         
   
   
@@ -805,8 +794,6 @@
                 
   
   
-    
-  
   
   
     
@@ -817,11 +804,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
@@ -837,7 +824,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             Decisions
@@ -851,7 +838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../000-index/" class="md-nav__link">
+      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
         
   
   
@@ -874,7 +861,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -897,7 +884,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../002-workflow-orchestration/" class="md-nav__link">
+      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -920,7 +907,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../003-notification-publishing/" class="md-nav__link">
+      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -943,7 +930,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../004-file-storage-plugin/" class="md-nav__link">
+      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -966,7 +953,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../../../architecture/decisions/005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -989,7 +976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../../../architecture/decisions/006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1009,30 +996,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    ADR-007: Spec-First REST API v2
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1043,84 +1010,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      Context
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      Decision
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Decision">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#going-spec-first" class="md-nav__link">
-    <span class="md-ellipsis">
-      Going Spec-First
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#implementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Implementation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      Consequences
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1182,7 +1071,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/workflow-state-tracking/" class="md-nav__link">
+      <a href="../../../architecture/design/workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -1404,7 +1293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../development/overview/" class="md-nav__link">
+      <a href="../../overview/" class="md-nav__link">
         
   
   
@@ -1427,7 +1316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../development/building/" class="md-nav__link">
+      <a href="../../building/" class="md-nav__link">
         
   
   
@@ -1450,7 +1339,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../development/testing/" class="md-nav__link">
+      <a href="../../testing/" class="md-nav__link">
         
   
   
@@ -1473,7 +1362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../development/database-migrations/" class="md-nav__link">
+      <a href="../../database-migrations/" class="md-nav__link">
         
   
   
@@ -1496,7 +1385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../development/documentation/" class="md-nav__link">
+      <a href="../../documentation/" class="md-nav__link">
         
   
   
@@ -1842,7 +1731,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/007-spec-first-rest-api-v2.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/development/Roles/overview.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1850,89 +1739,90 @@
   
 
 
-  <h1>ADR-007: Spec-First REST API v2</h1>
-
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Status</th>
-<th style="text-align: left;">Date</th>
-<th style="text-align: left;">Author(s)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Proposed</td>
-<td style="text-align: left;">2025-06-11</td>
-<td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
-</tr>
-</tbody>
-</table>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
-<p>Version 1 of the REST API suffers from various inconsistencies and ambiguities.</p>
-<p>A few examples of related issues:</p>
+<h1 id="roles">Roles<a class="headerlink" href="#roles" title="Permanent link">&para;</a></h1>
+<h2 id="what-are-roles">What are Roles?<a class="headerlink" href="#what-are-roles" title="Permanent link">&para;</a></h2>
+<p>Roles increase privacy and allow for better ease of use in large scale projects. Essentially, a role defines a set of permissions and responsibilities that a user or group of users can have within the project. By assigning specific roles, project administrators can control who has access to what resources, ensuring that sensitive information is only accessible to those who need it. Custom roles are also included, allowing for the user to create unique permissions for specific use case.</p>
+<h2 id="scoped-permissions">Scoped Permissions<a class="headerlink" href="#scoped-permissions" title="Permanent link">&para;</a></h2>
+<p>With the addition of <code>Roles</code>, a normalization of the permission model was done. The current model was split into a global, shared, and teams/project based permission set. For an example of how to utilize them, refer to <code>How To Use Them</code> section.</p>
+<p>Current <code>PERMISSION TABLE</code>:</p>
+<pre class="mermaid"><code>---
+title: Current Model
+---
+erDiagram
+    PERMISSION {
+        BIGINT ID PK
+        TEXT NAME
+        TEXT DESCRIPTION
+    }</code></pre>
+<hr />
+<p>Implemented <code>PERMISSION TABLE</code>:</p>
+<pre class="mermaid"><code>---
+title: Implemented Model
+---
+erDiagram
+    PERMISSION {
+        BIGINT ID PK
+        TEXT RESOURCE
+        TEXT ACCESS_LEVEL
+        TEXT DESCRIPTION
+    }</code></pre>
+<h2 id="user-role-permission-relationship-diagram">User, Role, Permission Relationship Diagram<a class="headerlink" href="#user-role-permission-relationship-diagram" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>erDiagram
+    %% Table Definitions
+    ROLE {
+        bigint ID PK
+        text NAME
+        uuid UUID
+    }
+    USER {
+        bigint ID PK
+    }
+    PERMISSION {
+        bigint ID PK
+        text RESORUCE
+        text ACCESS_LEVEL
+        text DESCRIPTION
+    }
+    ROLES_PERMISSIONS {
+        bigint ROLE_ID FK "References ROLE(ID)"
+        bigint PERMISSION_ID FK "References PERMISSION(ID)"
+    }
+    USERS_ROLES {
+        bigint USER_ID FK "References USER(ID)"
+        bigint ROLE_ID FK "References ROLE(ID)"
+    }
+    %% Relationships for USERS_ROLES: This table associates a USER and a ROLE.
+    USER ||--o{ USERS_ROLES : "assigned"
+    ROLE ||--o{ USERS_ROLES : "applied to"
+    %% Relationships between ROLE and PERMISSION via ROLES_PERMISSIONS
+    ROLE ||--o{ ROLES_PERMISSIONS : "has"
+    PERMISSION ||--o{ ROLES_PERMISSIONS : "assigned via"</code></pre>
+<hr />
+<h2 id="how-to-use-them">How to Use Them?<a class="headerlink" href="#how-to-use-them" title="Permanent link">&para;</a></h2>
+<h2 id="creating-a-new-role">Creating a New Role<a class="headerlink" href="#creating-a-new-role" title="Permanent link">&para;</a></h2>
+<p>As a user with <code>ACCESS_MANAGEMENT</code> permission:</p>
 <ul>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4804">https://github.com/DependencyTrack/dependency-track/issues/4804</a></li>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4867">https://github.com/DependencyTrack/dependency-track/issues/4867</a></li>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4899">https://github.com/DependencyTrack/dependency-track/issues/4899</a></li>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4914">https://github.com/DependencyTrack/dependency-track/issues/4914</a></li>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4926">https://github.com/DependencyTrack/dependency-track/issues/4926</a></li>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4929">https://github.com/DependencyTrack/dependency-track/issues/4929</a></li>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4938">https://github.com/DependencyTrack/dependency-track/issues/4938</a></li>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4940">https://github.com/DependencyTrack/dependency-track/issues/4940</a></li>
-<li><a href="https://github.com/DependencyTrack/dependency-track/issues/4977">https://github.com/DependencyTrack/dependency-track/issues/4977</a></li>
+<li>Navigate to the <code>Administration &gt; Access Management &gt; Roles</code> page.
+  <img alt="Role" src="../../../images/roles_page_view.png" /></li>
+<li>Click the <code>+ Create Role</code> button.
+  <img alt="Create Role" src="../../../images/create_role.png" /></li>
+<li>Provide a <code>Role Name</code> and add <code>Permissions</code></li>
+<li>click <code>Create</code>.</li>
 </ul>
-<p>The primary causes of this are:</p>
+<h2 id="assigning-a-role-project-and-permissions-to-a-user">Assigning a Role, Project, and Permissions to a User<a class="headerlink" href="#assigning-a-role-project-and-permissions-to-a-user" title="Permanent link">&para;</a></h2>
 <ul>
-<li>The <a href="https://swagger.io/docs/specification/v3_0/about/">OpenAPI</a> spec is generated from code and annotations, which is inaccurate at times.</li>
-<li>There is no automated enforcement of conventions to ensure consistency regarding path naming,
-casing, parameter names and more.</li>
-<li>Because the spec is generated at runtime, maintainers and contributors won't see it during development
-or during PR reviews. It is invisible when it arguably matters most, i.e., when the API changes.</li>
-<li>Persistence model classes are used for API requests and responses. This provides wrong impressions
-as to what data is required in requests, and what data is returned in responses.</li>
-</ul>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<h3 id="going-spec-first">Going Spec-First<a class="headerlink" href="#going-spec-first" title="Permanent link">&para;</a></h3>
-<p>Instead of generating an <a href="https://swagger.io/docs/specification/v3_0/about/">OpenAPI</a> specification from code and annotations, generate code from an <a href="https://swagger.io/docs/specification/v3_0/about/">OpenAPI</a> spec.</p>
-<p>This will ensure that:</p>
-<ul>
-<li>The spec becomes the source of truth for the API contract.</li>
-<li>Contributors get a complete picture of the API surface more easily.</li>
-<li>Incorrect or partial implementations are caught early (would cause build failures).</li>
-<li>It becomes impossible to abuse persistence models for REST API interactions.</li>
-<li>Consistency can be enforced in CI using linting tools.</li>
-<li>Users have higher confidence in the correctness of the spec when generating client code from it.</li>
-</ul>
-<p>For the API server, code generation <strong>must</strong> involve:</p>
-<ul>
-<li>Interfaces for REST endpoints, which the API server then implements.</li>
-<li>Models for request and response objects.</li>
-</ul>
-<h3 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h3>
-<p>Implementing the proposed changes retroactively for API v1 is likely to cause breaking changes,
-or be a massive undertaking.</p>
-<p>Instead, the proposed procedure is to only implement them for v2. Going forward, this means:</p>
-<ul>
-<li>New endpoints <strong>must</strong> be added to v2.</li>
-<li>Existing v1 endpoints are <strong>not</strong> ported to v2.</li>
-<li>Existing v1 endpoints are deprecated and slowly phased out as v2 replacements become available.</li>
-</ul>
-<h3 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h3>
-<p>Leverage the <a href="https://openapi-generator.tech/">openapi-generator</a> project and its <a href="https://openapi-generator.tech/docs/generators/jaxrs-spec">jaxrs-spec generator</a>.
-A <a href="https://openapi-generator.tech/docs/plugins#maven">Maven plugin</a> is available.</p>
-<p>Isolate the spec and associated code generation in its own Maven module.</p>
-<p>To ensure API consistency, use an OpenAPI linter. The tool of choice is <a href="https://github.com/stoplightio/spectral">Spectral</a>, 
-which enjoys <a href="https://github.com/stoplightio/spectral#-real-world-rulesets">broad industry adoption</a>.
-Alternative Spectral-compatible tooling is available as well, an example being <a href="https://github.com/daveshanley/vacuum">vacuum</a>.</p>
-<p>Linting <strong>must</strong> be part of the CI pipeline, and <em>should</em> be part of local Maven builds.
-For the latter, it <strong>must</strong> be possible to skip linting when the <code>quick</code> profile is used.</p>
-<p>An initial implementation of this can be found here: <a href="https://github.com/DependencyTrack/hyades-apiserver/pull/1245">https://github.com/DependencyTrack/hyades-apiserver/pull/1245</a></p>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Due to their separation, API v1 and v2 will also produce separate OpenAPI specs.</li>
-<li>Contributors will need to make themselves familiar with <a href="https://swagger.io/docs/specification/v3_0/about/">OpenAPI</a>.</li>
-<li>Conventions etc. need to be defined and, preferably, encoded in <a href="https://github.com/stoplightio/spectral">Spectral</a> rulesets so they can be enforced.</li>
+<li>Navigate to any of the three user pages: <code>LDAP Users</code>, <code>Managed Users</code>, or <code>OpenID Connect Users</code>.
+  <img alt="Managed User" src="../../../images/managed_users_page_view.png" /></li>
+<li>Click <code>+ Create User</code> button.</li>
+<li>Complete the fields in the <strong>Create User Modal</strong> and click <code>Create</code>.
+  <img alt="Create Managed User" src="../../../images/create_managed_user.png" /></li>
+<li>Click <code>+</code> in the <code>Roles</code> modal.</li>
+<li>Select your desired <code>Project</code> and <code>Role</code>.</li>
+<li>Click <code>Assign</code>.
+  <img alt="Assign Role" src="../../../images/assign_role.png" /></li>
+<li>Click <code>+</code> button in the <code>Permissions</code> modal select desired permissions.</li>
+<li>Click <code>Select</code>.
+  <img alt="Select Permissions" src="../../../images/select_permissions.png" /></li>
 </ul>
 
 
