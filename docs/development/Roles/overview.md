@@ -80,27 +80,27 @@ erDiagram
 
 ## Creating a New Role
 
-As a user with `ADMIN` access:
+As a user with `ACCESS_MANAGEMENT` permission:
 
 - Navigate to the `Administration > Access Management > Roles` page.
-  ![Role](images/roles_page_view.png)
+  ![Role](../../images/roles_page_view.png)
 - Click the `+ Create Role` button.
-  ![Create Role](images/create_role.png)
+  ![Create Role](../../images/create_role.png)
 - Provide a `Role Name` and add `Permissions`
 - click `Create`.
 
 ## Assigning a Role, Project, and Permissions to a User
 
-- Navigate to any of the three user pages: `LDAPUsers`, `Managed Users`, or `OpenID Connect Users`.
-  ![Managed User](images/managed_users_page_view.png)
+- Navigate to any of the three user pages: `LDAP Users`, `Managed Users`, or `OpenID Connect Users`.
+  ![Managed User](../../images/managed_users_page_view.png)
 - Click `+ Create User` button.
 - Complete the fields in the **Create User Modal** and click `Create`.
-  ![Create Managed User](images/create_managed_user.png)
+  ![Create Managed User](../../images/create_managed_user.png)
 - Click `+` in the `Roles` modal.
 - Select your desired `Project` and `Role`.
 - Click `Assign`.
-  ![Assign Role](images/assign_role.png)
+  ![Assign Role](../../images/assign_role.png)
 - Click `+` button in the `Permissions` modal select desired permissions.
 - Click `Select`.
-  ![Select Permissions](images/select_permissions.png)
+  ![Select Permissions](../../images/select_permissions.png)
  
