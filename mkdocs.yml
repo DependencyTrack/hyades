@@ -101,11 +101,13 @@ nav:
 - Operations:
     - Database: operations/database.md
 - Development:
-    - Overview: development/overview.md
-    - Building: development/building.md
-    - Testing: development/testing.md
-    - Database Migrations: development/database-migrations.md
-    - Documentation: development/documentation.md
+  - Roles:
+    - Overview: usage/auth-and-roles/overview.md
+  - Overview: development/overview.md
+  - Building: development/building.md
+  - Testing: development/testing.md
+  - Database Migrations: development/database-migrations.md
+  - Documentation: development/documentation.md
 - Reference:
     - Configuration:
         - Overview: reference/configuration/overview.md

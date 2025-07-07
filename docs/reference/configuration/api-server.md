@@ -916,70 +916,6 @@ Defines the path to the data directory. This directory will hold logs,  keys, an
 
 ---
 
-### alpine.private.key.path
-
-Defines the paths to the public-private key pair to be used for signing and verifying digital signatures.  The keys will be generated upon first startup if they do not exist.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.data.directory}/keys/private.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>/var/run/secrets/private.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_PRIVATE_KEY_PATH</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.public.key.path
-
-Defines the paths to the public-private key pair to be used for signing and verifying digital signatures.  The keys will be generated upon first startup if they do not exist.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.data.directory}/keys/public.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>/var/run/secrets/public.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_PUBLIC_KEY_PATH</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### alpine.secret.key.path
 
 Defines the path to the secret key to be used for data encryption and decryption.  The key will be generated upon first startup if it does not exist.  
@@ -3936,7 +3872,7 @@ This option will ensure that team memberships for OpenID Connect users are dynam
 
 ### alpine.oidc.teams.claim
 
-Defines the name of the claim that contains group memberships or role assignments in the provider's userinfo endpoint.  The claim must be an array of strings. Most public identity providers do not support group or role management.  When using a customizable / on-demand hosted identity provider, name, content, and inclusion in the userinfo endpoint  will most likely need to be configured.  
+Defines the name of the claim that contains group memberships or role assignments in the provider's userinfo endpoint.  The claim must be an array of strings, or a comma-delimited string. Most public identity providers do not support group or role management.  When using a customizable / on-demand hosted identity provider, name, content, and inclusion in the userinfo endpoint  will most likely need to be configured.  
 
 <table>
   <tbody style="border: 0">
