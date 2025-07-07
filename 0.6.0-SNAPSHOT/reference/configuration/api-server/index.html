@@ -1924,24 +1924,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#alpineprivatekeypath" class="md-nav__link">
-    <span class="md-ellipsis">
-      alpine.private.key.path
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#alpinepublickeypath" class="md-nav__link">
-    <span class="md-ellipsis">
-      alpine.public.key.path
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#alpinesecretkeypath" class="md-nav__link">
     <span class="md-ellipsis">
       alpine.secret.key.path
@@ -4633,62 +4615,6 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_DATA_DIRECTORY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="alpineprivatekeypath">alpine.private.key.path<a class="headerlink" href="#alpineprivatekeypath" title="Permanent link">&para;</a></h3>
-<p>Defines the paths to the public-private key pair to be used for signing and verifying digital signatures.  The keys will be generated upon first startup if they do not exist.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.data.directory}/keys/private.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>/var/run/secrets/private.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_PRIVATE_KEY_PATH</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="alpinepublickeypath">alpine.public.key.path<a class="headerlink" href="#alpinepublickeypath" title="Permanent link">&para;</a></h3>
-<p>Defines the paths to the public-private key pair to be used for signing and verifying digital signatures.  The keys will be generated upon first startup if they do not exist.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.data.directory}/keys/public.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>/var/run/secrets/public.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_PUBLIC_KEY_PATH</code></td>
     </tr>
   </tbody>
 </table>
