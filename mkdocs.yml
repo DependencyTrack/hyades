@@ -63,9 +63,9 @@ markdown_extensions:
 - pymdownx.snippets
 - pymdownx.superfences:
     custom_fences:
-    - name: mermaid
-      class: mermaid
-      format: !!python/name:pymdownx.superfences.fence_code_format
+      - name: mermaid
+        class: mermaid
+        format: !!python/name:pymdownx.superfences.fence_code_format
 - tables
 - toc:
     permalink: true
@@ -77,29 +77,29 @@ plugins:
 
 nav:
 - Getting Started:
-  - Overview: index.md
-  - Changes over v4: getting-started/changes-over-v4.md
-  - Migrating from v4: getting-started/migrating-from-v4.md
-  - Upgrading: getting-started/upgrading.md
+    - Overview: index.md
+    - Changes over v4: getting-started/changes-over-v4.md
+    - Migrating from v4: getting-started/migrating-from-v4.md
+    - Upgrading: getting-started/upgrading.md
 - Usage:
-  - Policy Compliance:
-    - Overview: usage/policy-compliance/overview.md
-    - Expressions: usage/policy-compliance/expressions.md
+    - Policy Compliance:
+        - Overview: usage/policy-compliance/overview.md
+        - Expressions: usage/policy-compliance/expressions.md
 - Architecture:
-  - Overview: architecture/index.md
-  - Decisions:
-    - Overview: architecture/decisions/000-index.md
-    - "ADR-001: Drop Kafka Dependency": architecture/decisions/001-drop-kafka-dependency.md
-    - "ADR-002: Workflow Orchestration": architecture/decisions/002-workflow-orchestration.md
-    - "ADR-003: Notification Publishing": architecture/decisions/003-notification-publishing.md
-    - "ADR-004: File Storage Plugin": architecture/decisions/004-file-storage-plugin.md
-    - "ADR-005: Materialize Project Hierarchies": architecture/decisions/005-materialize-project-hierarchies.md
-    - "ADR-006: Consolidate User Tables": architecture/decisions/006-consolidate-user-tables.md
-    - "ADR-007: Spec-First REST API v2": architecture/decisions/007-spec-first-rest-api-v2.md
-  - Design:
-    - Workflow State Tracking: architecture/design/workflow-state-tracking.md
+    - Overview: architecture/index.md
+    - Decisions:
+        - Overview: architecture/decisions/000-index.md
+        - "ADR-001: Drop Kafka Dependency": architecture/decisions/001-drop-kafka-dependency.md
+        - "ADR-002: Workflow Orchestration": architecture/decisions/002-workflow-orchestration.md
+        - "ADR-003: Notification Publishing": architecture/decisions/003-notification-publishing.md
+        - "ADR-004: File Storage Plugin": architecture/decisions/004-file-storage-plugin.md
+        - "ADR-005: Materialize Project Hierarchies": architecture/decisions/005-materialize-project-hierarchies.md
+        - "ADR-006: Consolidate User Tables": architecture/decisions/006-consolidate-user-tables.md
+        - "ADR-009: Auth And Roles": architecture/decisions/009-auth-and-roles.md
+    - Design:
+        - Workflow State Tracking: architecture/design/workflow-state-tracking.md
 - Operations:
-  - Database: operations/database.md
+    - Database: operations/database.md
 - Development:
   - Roles:
     - Overview: usage/auth-and-roles/overview.md
@@ -108,14 +108,13 @@ nav:
   - Testing: development/testing.md
   - Database Migrations: development/database-migrations.md
   - Documentation: development/documentation.md
-
 - Reference:
-  - Configuration:
-    - Overview: reference/configuration/overview.md
-    - API Server: reference/configuration/api-server.md
-    - Mirror Service: reference/configuration/mirror-service.md
-    - Repository Metadata Analyzer: reference/configuration/repo-meta-analyzer.md
-  - Schemas:
-    - Notification: reference/schemas/notification.md
-    - Policy: reference/schemas/policy.md
-  - Topics: reference/topics.md
+    - Configuration:
+        - Overview: reference/configuration/overview.md
+        - API Server: reference/configuration/api-server.md
+        - Mirror Service: reference/configuration/mirror-service.md
+        - Repository Metadata Analyzer: reference/configuration/repo-meta-analyzer.md
+    - Schemas:
+        - Notification: reference/schemas/notification.md
+        - Policy: reference/schemas/policy.md
+    - Topics: reference/topics.md
