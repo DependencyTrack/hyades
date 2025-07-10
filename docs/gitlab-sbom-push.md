@@ -14,7 +14,7 @@ These are the steps needed to upload a BOM file from a GitLab job.
 
 ## Generate a GitLab Application ID
 
-1. Navigate to a profile in gitlab:
+1. Navigate to a profile in GitLab:
     * Select the profile image from the top banner
     * Select "Edit profile"
 2. Select "Applications" from the User settings column on the left side of the screen
@@ -24,11 +24,11 @@ These are the steps needed to upload a BOM file from a GitLab job.
 6. Ensure the Confidential button is unchecked
 7. Check the following buttons in the Scopes field: openid, profile, email
 8. Press the Save Application box
-9. Store the resuling Application ID for use in subsequent steps
+9. Store the resulting Application ID for use in subsequent steps
 
 ## Properties Settings
 
-Make the following chagnes to `application.properites`
+Make the following changes to `application.properites`
 
 * alpine.oidc.enabled=true
 * alpine.oidc.client.id=<APP_ID>
@@ -40,33 +40,32 @@ Make the following chagnes to `application.properites`
 
 ## Authenticate GitLab with Dependency-Track
 
-To make API calls from a GitLab job to Dependency-Track, first authenticate with the Dependency-Track endpoint `/user/oidc/login`, and then use the recieved access token to make subsequent API calls.
+An access token from the `/user/oidc/login` endpoint is needed to authenticate with Dependency-Track and make subsequent API calls. The access token provided has an immediate expiration time, so a nested curl command will be needed to call additional endpoints.
+
+On its own, the authentication request would look like the following:
 
 ```bash
-curl -X "POST" "http://dtrack.example.com/api/v1/user/oidc/login" \
-    -H 'Content-Type: application/x-www-form-urlencoded" \
-    -F "idToken=$ID_TOKEN" \
+curl -X POST "http://dtrack.example.com/api/v1/user/oidc/login" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "idToken=$ID_TOKEN"
 ```
 
-## Submit A BOM Upload Request
-
-To publish a BOM file from GitLab, use a valid access token and GitLab ID token.
+## How to Submit A BOM Upload Request
 
 The `/bom/gitlab` endpoint has the following form data parameters:
 
-* `idToken` (required) - Must be a valid
+* `idToken` (required) - Must be a valid JWT
 * `bom` (required) - Must be a base64 encoded bom file
 * `autoCreate` (optional) - Flag to create a project if it does not already exist
 * `isLatest` (optional) - Flag to denote if this is the latest upload version
 
-This is the curl request to make in the GitLab job.
+To publish a BOM file from GitLab, use the access token from the login endpoint and an ID token from a GitLab job.
 
 ```bash
-curl -X "POST" "http://dtrack.example.com/api/v1/bom/gitlab" \
-    -H "Authorization: Bearer <ACCESS_TOKEN>" \
-    -H 'Content-Type: multipart/form-data' \
-    -F "gitLab_token=$ID_TOKEN | base64" \
-    -F "bom=base64_encoded_file.txt"
-    -F "autoCreate=true" \
-    -F "isLatest=true" \
+curl -X POST "http://dtrack.example.com/api/v1/bom/gitlab" \
+-H "Authorization: Bearer $(curl -s -X POST "http://dtrack.example.com/api/v1/user/oidc/login" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "idToken=$ID_TOKEN")" \
+-F "gitLab_token=$ID_TOKEN" \
+-F "bom=/Documents/encodedBom.txt"
 ```
