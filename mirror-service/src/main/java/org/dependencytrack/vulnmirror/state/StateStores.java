@@ -24,6 +24,7 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
+import org.apache.kafka.streams.errors.StreamsNotStartedException;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.slf4j.Logger;
@@ -71,7 +72,7 @@ public final class StateStores {
 
         return Failsafe
                 .with(RetryPolicy.builder()
-                        .handle(InvalidStateStoreException.class)
+                        .handle(InvalidStateStoreException.class, StreamsNotStartedException.class)
                         .onRetry(event -> LOGGER.debug("State store {} is not ready yet; Retrying", name, event.getLastException()))
                         .onRetriesExceeded(event -> LOGGER.warn("Max retries exceeded while waiting for state store {} to become ready", name, event.getException()))
                         .onSuccess(event -> LOGGER.debug("State store {} is ready", name))
