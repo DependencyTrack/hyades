@@ -101,6 +101,8 @@ nav:
 - Operations:
   - Database: operations/database.md
 - Development:
+  - GitLab SBOM Integration:
+    - Overview: development/gitlab-sbom/overview.md
   - Roles:
     - Overview: usage/auth-and-roles/overview.md
   - Overview: development/overview.md
