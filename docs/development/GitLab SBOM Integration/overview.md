@@ -27,14 +27,14 @@ A GitLab application ID will be needed for authentication.
     * Select "Edit profile"
 2. Select "Applications" from the User settings column on the left side of the screen
 
-   ![Applications](images/integrations_gitlab_applications.png)
+   ![Applications](../../images/integrations_gitlab_applications.png)
 3. Select the Add new application button
 4. Specify a name in the Name field
 5. In the Redirect URI box, add the following: <http://dtrack.example.com/static/oidc-callback.html>
 6. Ensure the Confidential button is unchecked
 7. Check the following buttons in the Scopes field: openid, profile, email
-![New Application ID](images/integrations_gitlab_app_id.png)
-![New Application ID 2](images/integrations_gitlab_app_id2.png)
+![New Application ID](../../images/integrations_gitlab_app_id.png)
+![New Application ID 2](../../images/integrations_gitlab_app_id2.png)
 8. Select the Save application button
 9. Store the resulting Application ID for use in subsequent steps
 
@@ -50,7 +50,7 @@ Configurations to be set by admins in `Administration > Integrations > GitLab`:
 * Turn on `Allow users to create missing projects` (optional but won't work if projects are missing)
 * Set `GitLab JWKS Path` to **/oauth/discovery/keys**
 
-![GitLab Push Settings](images/integrations_gitlab_sbom_settings.png)
+![GitLab Push Settings](../../images/integrations_gitlab_sbom_settings.png)
 
 Make the following changes to the `application.properites` file
 
