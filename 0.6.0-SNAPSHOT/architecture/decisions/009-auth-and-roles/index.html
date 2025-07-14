@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/000-index/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/009-auth-and-roles/">
       
       
-        <link rel="prev" href="../../">
+        <link rel="prev" href="../006-consolidate-user-tables/">
       
       
-        <link rel="next" href="../001-drop-kafka-dependency/">
+        <link rel="next" href="../../design/workflow-state-tracking/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Overview - Hyades</title>
+        <title>ADR-009: Auth And Roles - Hyades</title>
       
     
     
@@ -57,11 +57,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="Overview - Hyades" >
+        <meta  property="og:title"  content="ADR-009: Auth And Roles - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/000-index.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/009-auth-and-roles.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +69,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/000-index/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/009-auth-and-roles/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="Overview - Hyades" >
+        <meta  name="twitter:title"  content="ADR-009: Auth And Roles - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/000-index.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/009-auth-and-roles.png" >
       
     
     
@@ -100,7 +100,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#template" class="md-skip">
+        <a href="#context" class="md-skip">
           Skip to content
         </a>
       
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              ADR-009: Auth And Roles
             
           </span>
         </div>
@@ -848,30 +848,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Overview
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000-index/" class="md-nav__link">
         
   
   
@@ -882,33 +862,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#template" class="md-nav__link">
-    <span class="md-ellipsis">
-      Template
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1056,10 +1009,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../009-auth-and-roles/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    ADR-009: Auth And Roles
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1070,6 +1043,60 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1791,7 +1818,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/000-index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/009-auth-and-roles.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1799,41 +1826,81 @@
   
 
 
-  <h1>Overview</h1>
+  <h1>ADR-009: Auth And Roles</h1>
 
-<p>Here is where we keep our architecture decision records (<a href="https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions">ADR</a>s).</p>
-<h2 id="template">Template<a class="headerlink" href="#template" title="Permanent link">&para;</a></h2>
-<p>Use the following template (<a href="https://github.com/joelparkerhenderson/architecture-decision-record/blob/7d759443a20e8bafc3e5d19631bd7eda475b25d3/locales/en/templates/decision-record-template-by-michael-nygard/index.md">source</a>) when adding a new <a href="https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions">ADR</a>:</p>
-<div class="language-markdown highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>| Status                                               | Date       | Author(s)                                        |
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>|:-----------------------------------------------------|:-----------|:-------------------------------------------------|
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>| Proposed, Accepted, Rejected, Deprecated, Superseded | yyyy-mm-dd | [<span class="nt">@githubHandle</span>](<span class="na">https://github.com/githubHandle</span>) |
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="gu">## Context</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>What is the issue that we&#39;re seeing that is motivating this decision or change?
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="gu">## Decision</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>What is the change that we&#39;re proposing and/or doing?
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="gu">## Consequences</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a>What becomes easier or more difficult to do because of this change?
-</span></code></pre></div></td></tr></table></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Author(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Proposed</td>
+<td style="text-align: left;">2025-05-14</td>
+<td style="text-align: left;"><a href="https://github.com/jmayer-lm">@jmayer-lm</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>The Dependency Track system currently faces challenges with its permission structure, lacking clear role definitions and appropriate access controls. To address these issues, a comprehensive overhaul of the permission system is proposed. This initiative aims to refine and fix the existing permissions, introduce roles, and enhance the overall access management within Dependency Track.</p>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>We decide to implement a comprehensive overhaul of the Dependency Track permission system, incorporating the following key elements:</p>
+<ul>
+<li>Introducing "roles" means assigning groups of permissions to specific types of users (e.g., Admin, Auditor, etc). This allows for more granular control over what actions different types of users can perform within the system.</li>
+<li>Implement Query Manager changes to enforce permissions at the project level. This will ensure that users can only view and modify projects they have access to.</li>
+<li>Split the current permission set into global and team/project-based permission sets, adding any potentially missing ones to ensure comprehensive coverage of access scenarios. Global permissions are applied universally across the system and are not specific to any project or team. Team/Project-based permissions are specific to individual teams or projects, allowing for more customized access control within those contexts.</li>
+<li>Add custom roles, the abilitiy to create tailored sets of permssions specifc to the type of user, to Dependency Track with a field to link to external services, enhancing integration capabilities and allowing for more seamless interactions with other tools and platforms.</li>
+<li>Separate Team administration from system administration, clarifying roles and responsibilities to prevent confusion and minimize the risk of unintended system-wide changes.</li>
+</ul>
+<h2 id="data-model">Data Model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>
+erDiagram
+    %% Table Definitions
+    ROLE {
+        bigint ID PK
+        text NAME
+        uuid UUID
+    }
+
+    USER {
+        bigint ID PK
+    }
+
+    PERMISSION {
+        bigint ID PK
+        text DESCRIPTION
+        text NAME
+    }
+
+    ROLES_PERMISSIONS {
+        bigint ROLE_ID FK "References ROLE(ID)"
+        bigint PERMISSION_ID FK "References PERMISSION(ID)"
+    }
+
+    USERS_ROLES {
+        bigint USER_ID FK "References USER(ID)"
+        bigint ROLE_ID FK "References ROLE(ID)"
+    }
+
+    %% Relationships for USERS_ROLES: This table associates a USER and a ROLE.
+    USER ||--o{ USERS_ROLES : "assigned"
+    ROLE ||--o{ USERS_ROLES : "applied to"
+
+    %% Relationships between ROLE and PERMISSION via ROLES_PERMISSIONS
+    ROLE ||--o{ ROLES_PERMISSIONS : "has"
+    PERMISSION ||--o{ ROLES_PERMISSIONS : "assigned via"</code></pre>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<p>The implementation of the new permission system and roles in Dependency Track is expected to have the following consequences:</p>
+<ul>
+<li>Improved Security: The introduction of more granular permission controls and the separation of team administration from system administration will reduce the risk of unauthorized access to sensitive features and data, enhancing the overall security posture of the platform.</li>
+<li>Enhanced Usability: By providing more tailored and flexible access controls, users will have a more streamlined experience, with access to the features and resources they need to perform their tasks, without being overwhelmed by unnecessary permissions or complexity.</li>
+<li>Reduced Administrative Burden: The clarification of roles and responsibilities, particularly the distinction between team and system administration, will simplify the management of the platform, reducing the administrative workload and making it easier to maintain and evolve the system over time.</li>
+<li>Better Scalability: The introduction of custom roles and the ability to link to external services will make it easier for Dependency Track to integrate with other tools and platforms, improving its scalability and adaptability to different use cases and environments.</li>
+<li>Increased Complexity for Small Teams: For very small teams or individual users, the introduction of more granular permission controls might add complexity, potentially making it more challenging to manage permissions and access. Guidance and documentation will be crucial in mitigating this impact.</li>
+</ul>
 
 
 

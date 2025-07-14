@@ -11,10 +11,6 @@
         <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/007-spec-first-rest-api-v2/">
       
       
-        <link rel="prev" href="../006-consolidate-user-tables/">
-      
-      
-        <link rel="next" href="../../design/workflow-state-tracking/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +18,7 @@
     
     
       
-        <title>ADR-007: Spec-First REST API v2 - Hyades</title>
+        <title>007 spec first rest api v2 - Hyades</title>
       
     
     
@@ -57,7 +53,7 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="ADR-007: Spec-First REST API v2 - Hyades" >
+        <meta  property="og:title"  content="007 spec first rest api v2 - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
@@ -73,7 +69,7 @@
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="ADR-007: Spec-First REST API v2 - Hyades" >
+        <meta  name="twitter:title"  content="007 spec first rest api v2 - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
@@ -140,7 +136,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ADR-007: Spec-First REST API v2
+              007 spec first rest api v2
             
           </span>
         </div>
@@ -298,12 +294,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../" class="md-tabs__link">
           
   
@@ -736,29 +730,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -771,7 +760,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -805,8 +794,6 @@
                 
   
   
-    
-  
   
   
     
@@ -817,11 +804,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
@@ -837,7 +824,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             Decisions
@@ -1009,118 +996,20 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    ADR-007: Spec-First REST API v2
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../009-auth-and-roles/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    ADR-007: Spec-First REST API v2
+    ADR-009: Auth And Roles
     
   </span>
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      Context
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      Decision
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Decision">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#going-spec-first" class="md-nav__link">
-    <span class="md-ellipsis">
-      Going Spec-First
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#implementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Implementation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      Consequences
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1850,7 +1739,7 @@
   
 
 
-  <h1>ADR-007: Spec-First REST API v2</h1>
+  <h1>007 spec first rest api v2</h1>
 
 <table>
 <thead>
