@@ -97,7 +97,7 @@ nav:
         - "ADR-006: Consolidate User Tables": architecture/decisions/006-consolidate-user-tables.md
         - "ADR-007: Spec-First REST API v2": architecture/decisions/007-spec-first-rest-api-v2.md
         - "ADR-009: Auth And Roles": architecture/decisions/009-auth-and-roles.md
-        - "ADR-007: Normalize Permission Model": architecture/decisions/007-normalize-permission-model.md
+        - "ADR-010: Normalize Permission Model": architecture/decisions/010-normalize-permission-model.md
     - Design:
         - Workflow State Tracking: architecture/design/workflow-state-tracking.md
 - Operations:

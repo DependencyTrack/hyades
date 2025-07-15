@@ -1,5 +1,5 @@
-| Status   | Date       | Author(s)                            |
-|:---------|:-----------|:-------------------------------------|
+| Status   | Date       | Author(s)                                    |
+| :------- | :--------- | :------------------------------------------- |
 | Proposed | 2025-05-14 | [@jhoward-lm](https://github.com/jhoward-lm) |
 
 ## Context
