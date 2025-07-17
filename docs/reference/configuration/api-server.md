@@ -678,7 +678,7 @@ The image to use for the Kafka dev services container.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>apache/kafka-native:3.9.0</code></td>
+      <td style="border-width: 0"><code>apache/kafka-native:3.9.1</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
