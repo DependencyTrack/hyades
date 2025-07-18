@@ -678,7 +678,7 @@ The image to use for the Kafka dev services container.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>apache/kafka-native:3.9.0</code></td>
+      <td style="border-width: 0"><code>apache/kafka-native:3.9.1</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -711,6 +711,90 @@ The image to use for the PostgreSQL dev services container.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DEV_SERVICES_IMAGE_POSTGRES</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dev.services.port.frontend
+
+The port on which the frontend dev services container shall be exposed on the host.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>8081</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_FRONTEND</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dev.services.port.kafka
+
+The port on which the Kafka dev services container shall be exposed on the host.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>9092</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_KAFKA</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dev.services.port.postgres
+
+The port on which the PostgreSQL dev services container shall be exposed on the host.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5432</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DEV_SERVICES_PORT_POSTGRES</code></td>
     </tr>
   </tbody>
 </table>
@@ -825,70 +909,6 @@ Defines the path to the data directory. This directory will hold logs,  keys, an
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_DATA_DIRECTORY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.private.key.path
-
-Defines the paths to the public-private key pair to be used for signing and verifying digital signatures.  The keys will be generated upon first startup if they do not exist.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.data.directory}/keys/private.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>/var/run/secrets/private.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_PRIVATE_KEY_PATH</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### alpine.public.key.path
-
-Defines the paths to the public-private key pair to be used for signing and verifying digital signatures.  The keys will be generated upon first startup if they do not exist.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.data.directory}/keys/public.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>/var/run/secrets/public.key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_PUBLIC_KEY_PATH</code></td>
     </tr>
   </tbody>
 </table>
@@ -3852,7 +3872,7 @@ This option will ensure that team memberships for OpenID Connect users are dynam
 
 ### alpine.oidc.teams.claim
 
-Defines the name of the claim that contains group memberships or role assignments in the provider's userinfo endpoint.  The claim must be an array of strings. Most public identity providers do not support group or role management.  When using a customizable / on-demand hosted identity provider, name, content, and inclusion in the userinfo endpoint  will most likely need to be configured.  
+Defines the name of the claim that contains group memberships or role assignments in the provider's userinfo endpoint.  The claim must be an array of strings, or a comma-delimited string. Most public identity providers do not support group or role management.  When using a customizable / on-demand hosted identity provider, name, content, and inclusion in the userinfo endpoint  will most likely need to be configured.  
 
 <table>
   <tbody style="border: 0">
@@ -4878,7 +4898,7 @@ Minimum duration in ISO 8601 format for which the LDAP synchronization task will
 
 ### task.metrics.maintenance.cron
 
-Cron expression of the metrics maintenance task.  <br/><br/>  The task creates new partitions for the day for the following tables  And deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  <li><code>PORTFOLIOMETRICS</code></li>  </ul>  
+Cron expression of the metrics maintenance task.  <br/><br/>  The task creates new partitions for the day for the following tables  And deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  </ul>  
 
 <table>
   <tbody style="border: 0">
