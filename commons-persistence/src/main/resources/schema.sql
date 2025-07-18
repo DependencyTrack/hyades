@@ -1102,6 +1102,7 @@ CREATE TABLE public."CSAFDOCUMENTENTITY" (
     "NAME" character varying(255) NOT NULL,
     "URL" character varying(255),
     "SEEN" boolean,
+    "MANUALLYADDED" boolean,
     "LASTFETCHED" timestamp with time zone,
     "CONTENT" text,
     "PUBLISHERNAMESPACE" character varying(1024) NOT NULL,

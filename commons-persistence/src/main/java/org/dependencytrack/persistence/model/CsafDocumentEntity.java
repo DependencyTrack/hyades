@@ -58,6 +58,9 @@ public class CsafDocumentEntity implements Serializable {
     @Column(name = "SEEN")
     private boolean seen;
 
+    @Column(name = "MANUALLYADDED")
+    private boolean manuallyAdded;
+
     @Column(name = "LASTFETCHED")
     private Instant lastFetched;
 
@@ -127,6 +130,10 @@ public class CsafDocumentEntity implements Serializable {
 
     public void setSeen(boolean seen) {
         this.seen = seen;
+    }
+
+    public boolean isManuallyAdded() {
+        return manuallyAdded;
     }
 
     public Instant getLastFetched() {

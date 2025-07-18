@@ -34,6 +34,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.cyclonedx.proto.v1_6.Bom;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.persistence.model.CsafSourceEntity;
+import org.dependencytrack.persistence.repository.CsafDocumentRepository;
 import org.dependencytrack.persistence.repository.CsafSourceRepository;
 import org.dependencytrack.proto.mirror.v1.CsafDocumentItem;
 import org.dependencytrack.vulnmirror.datasource.AbstractDatasourceMirror;
@@ -66,6 +67,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     private final CsafLoaderFactory csafLoaderFactory;
     private final ExecutorService executorService;
     private final CsafSourceRepository csafSourceRepository;
+    private final CsafDocumentRepository csafDocumentRepository;
     private final Timer durationTimer;
     private final Producer<String, byte[]> kafkaProducer;
 
@@ -73,6 +75,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
             final CsafConfig config,
             @ForCsafMirror final ExecutorService executorService,
             final CsafSourceRepository csafSourceRepository,
+            final CsafDocumentRepository csafDocumentRepository,
             final MirrorStateStore mirrorStateStore,
             final VulnerabilityDigestStore vulnDigestStore,
             final Producer<String, byte[]> kafkaProducer,
@@ -81,6 +84,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         this.config = config;
         this.executorService = executorService;
         this.csafSourceRepository = csafSourceRepository;
+        this.csafDocumentRepository = csafDocumentRepository;
         this.csafLoaderFactory = csafLoaderFactory;
         this.durationTimer = durationTimer;
         this.kafkaProducer = kafkaProducer;
@@ -116,7 +120,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
     }
 
     @Transactional
-    void mirrorInternal() throws Throwable, Exception {
+    void mirrorInternal() throws Throwable {
         var providers = csafSourceRepository.findEnabledProviders();
         var csafLoader = csafLoaderFactory.create();
 
@@ -129,8 +133,21 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
             mirrorProvider(provider, csafLoader);
         }
 
+        mirrorManualDocuments();
+
         final long durationNanos = durationSample.stop(durationTimer);
         LOGGER.info("Mirroring of CSAF vulnerabilities completed in {}", Duration.ofNanos(durationNanos));
+    }
+
+    private void mirrorManualDocuments() throws NoSuchAlgorithmException, ExecutionException, InterruptedException {
+        var documents = csafDocumentRepository.list("manuallyAdded", true);
+
+        LOGGER.info("Found {} manually added documents", documents.size());
+
+        for (var document : documents) {
+            var csaf = Json.Default.decodeFromString(Csaf.Companion.serializer(), document.getContent());
+            mirrorCsafVulnerabilities(csaf);
+        }
     }
 
     /**
@@ -225,28 +242,7 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
                 var raw = Json.Default.encodeToString(Csaf.Companion.serializer(), csaf);
 
                 try {
-                    // Build a new CSAF document item to send back to the API server
-                    var doc = CsafDocumentItem.newBuilder()
-                            .setUrl(providerEntity.getUrl())
-                            .setJsonContent(ByteString.copyFromUtf8(raw))
-                            .setLastFetched(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()))
-                            .setSeen(false)
-                            .setName(csaf.getDocument().getTitle())
-                            .setPublisherNamespace(csaf.getDocument().getPublisher().getNamespace().toString())
-                            .setTrackingId(csaf.getDocument().getTracking().getId())
-                            .setTrackingVersion(csaf.getDocument().getTracking().getVersion())
-                            .build();
-
-                    LOGGER.info("Processing CSAF document {} from provider {}", csaf.getDocument().getTracking().getId(), providerEntity.getUrl());
-                    publishCsafDocument(doc);
-
-                    var vulns = csaf.getVulnerabilities();
-                    for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
-                        var vuln = vulns.get(idx);
-                            LOGGER.info("Processing vulnerability {}{}", computeVulnerabilityId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
-                            final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
-                            publishIfChanged(bov);
-                    }
+                    mirrorDocument(providerEntity, raw, csaf);
                 } catch (ExecutionException | NoSuchAlgorithmException e) {
                     LOGGER.error("Error while processing document", e);
                 } catch (InterruptedException e) {
@@ -262,6 +258,41 @@ public class CsafMirror extends AbstractDatasourceMirror<CsafMirrorState> {
         providerEntity.setLastFetched(begin);
 
         LOGGER.info("Mirroring documents from CSAF provider {} completed", providerEntity.getUrl());
+    }
+
+    /**
+     * Mirrors a CSAF document from the given provider.
+     *
+     * @param provider the provider to mirror the document from
+     * @param raw the raw JSON content of the CSAF document
+     * @param csaf the parsed CSAF document
+     */
+    private void mirrorDocument(CsafSourceEntity provider, String raw, Csaf csaf) throws ExecutionException, InterruptedException, NoSuchAlgorithmException {
+        // Build a new CSAF document item to send back to the API server
+        var doc = CsafDocumentItem.newBuilder()
+                .setUrl(provider.getUrl())
+                .setJsonContent(ByteString.copyFromUtf8(raw))
+                .setLastFetched(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()))
+                .setSeen(false)
+                .setName(csaf.getDocument().getTitle())
+                .setPublisherNamespace(csaf.getDocument().getPublisher().getNamespace().toString())
+                .setTrackingId(csaf.getDocument().getTracking().getId())
+                .setTrackingVersion(csaf.getDocument().getTracking().getVersion())
+                .build();
+
+        LOGGER.info("Processing CSAF document {} from provider {}", csaf.getDocument().getTracking().getId(), provider.getUrl());
+        publishCsafDocument(doc);
+        mirrorCsafVulnerabilities(csaf);
+    }
+
+    private void mirrorCsafVulnerabilities(Csaf csaf) throws NoSuchAlgorithmException, ExecutionException, InterruptedException {
+        var vulns = csaf.getVulnerabilities();
+        for (int idx = 0; vulns != null && idx < vulns.size(); idx++) {
+            var vuln = vulns.get(idx);
+                LOGGER.info("Processing vulnerability {}{}", computeVulnerabilityId(vuln, csaf.getDocument(), idx), vuln.getTitle() != null ? " (" + vuln.getTitle() + ")" : "");
+                final Bom bov = CsafToCdxParser.parse(vuln, csaf.getDocument(), idx);
+                publishIfChanged(bov);
+        }
     }
 
     /**
