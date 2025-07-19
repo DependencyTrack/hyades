@@ -49,6 +49,8 @@ import java.util.stream.Collectors;
  */
 public class CsafToCdxParser {
     private static final String TITLE_PROPERTY_NAME = "dependency-track:vuln:title";
+    private static final String PUBLISHERNAMESPACE_PROPERTY_NAME = "dependency-track:vuln:csaf:publisher";
+    private static final String TRACKINGID_PROPERTY_NAME = "dependency-track:vuln:csaf:trackingId";
     private static final Source SOURCE = Source.newBuilder().setName(Datasource.CSAF.name()).build();
     private static final Logger LOGGER = LoggerFactory.getLogger(CsafToCdxParser.class);
 
@@ -59,13 +61,26 @@ public class CsafToCdxParser {
         out.setId(computeVulnerabilityId(csafVuln, csafDoc, vulnIndex));
         out.setSource(SOURCE);
 
-        // Set title
+        // Set some custom properties, we can use these to filter vulnerabilities later
         Optional.ofNullable(csafVuln.getTitle())
                 .ifPresent(title -> {
                     out.addProperties(
                             Property.newBuilder().setName(TITLE_PROPERTY_NAME).setValue(csafVuln.getTitle()).build()
                     );
                 });
+        out.addProperties(Property.newBuilder()
+                .setName(PUBLISHERNAMESPACE_PROPERTY_NAME)
+                .setValue(csafDoc
+                        .getPublisher()
+                        .getNamespace()
+                        .toString())
+                .build());
+        out.addProperties(Property.newBuilder()
+                .setName(TRACKINGID_PROPERTY_NAME)
+                .setValue(csafDoc
+                        .getTracking()
+                        .getId())
+                .build());
 
         // Set details. We will use the first note with category "description" as the description.
         // All other notes will be added to the details.
