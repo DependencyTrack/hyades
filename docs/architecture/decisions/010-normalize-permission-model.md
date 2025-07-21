@@ -45,63 +45,63 @@ erDiagram
 
 ### Proposed Scheme
 
-| RESOURCE               | ACCESS LEVELS      | SCOPE   |
-| ---------------------- | ------------------ | ------- |
-| `ACCESS_MANAGEMENT`    | ALL                | SYSTEM  |
-| `BADGES`               | READ               | PROJECT |
-| `BOM`                  | READ,CREATE        | PROJECT |
-| `FINDING`              | READ,UPDATE,CREATE | PROJECT |
-| `NOTIFICATION_RULE`    | ALL                | SYSTEM  |
-| `POLICY`               | ALL                | SYSTEM  |
-| `POLICY_VIOLATION`     | READ,UPDATE,CREATE | PROJECT |
-| `PORTFOLIO`            | ALL                | SYSTEM  |
-| `PROJECT`              | READ,UPDATE,DELETE | PROJECT |
-| `SYSTEM_CONFIGURATION` | ALL                | SYSTEM  |
-| `TAG`                  | ALL                | SYSTEM  |
-| `VULNERABILITY`        | ALL                | SYSTEM  |
+| RESOURCE                       | ACCESS LEVELS      | SCOPE   |
+| ------------------------------ | ------------------ | ------- |
+| `ACCESS_MANAGEMENT`            | ALL                | SYSTEM  |
+| `BADGES`                       | READ               | PROJECT |
+| `BOM`                          | READ,CREATE        | PROJECT |
+| `FINDING`                      | READ,UPDATE,CREATE | PROJECT |
+| `NOTIFICATION_RULE_MANAGEMENT` | ALL                | SYSTEM  |
+| `POLICY_MANAGEMENT`            | ALL                | SYSTEM  |
+| `POLICY_VIOLATION`             | READ,UPDATE,CREATE | PROJECT |
+| `PORTFOLIO_MANAGEMENT`         | ALL                | SYSTEM  |
+| `PROJECT`                      | READ,UPDATE,DELETE | PROJECT |
+| `SYSTEM_CONFIGURATION`         | ALL                | SYSTEM  |
+| `TAG_MANAGEMENT`               | ALL                | SYSTEM  |
+| `VULNERABILITY_MANAGEMENT`     | ALL                | SYSTEM  |
 
 ### Mapping of Current Scheme to Proposed
 
-| CURRENT                           | RESOURCE(S)            | ACCESS LEVEL |
-| --------------------------------- | ---------------------- | ------------ |
-| `ACCESS_MANAGEMENT`               | `ACCESS_MANAGEMENT`    | `SYSTEM`     |
-| `ACCESS_MANAGEMENT_CREATE`        | `ACCESS_MANAGEMENT`    | `SYSTEM`     |
-| `ACCESS_MANAGEMENT_DELETE`        | `ACCESS_MANAGEMENT`    | `SYSTEM`     |
-| `ACCESS_MANAGEMENT_READ`          | `ACCESS_MANAGEMENT`    | `SYSTEM`     |
-| `ACCESS_MANAGEMENT_UPDATE`        | `ACCESS_MANAGEMENT`    | `SYSTEM`     |
-| `BOM_UPLOAD`                      | `BOM`                  | `CREATE`     |
-| `POLICY_MANAGEMENT`               | `POLICY`               | `SYSTEM`     |
-| `POLICY_MANAGEMENT_CREATE`        | `POLICY`               | `SYSTEM`     |
-| `POLICY_MANAGEMENT_DELETE`        | `POLICY`               | `SYSTEM`     |
-| `POLICY_MANAGEMENT_READ`          | `POLICY`               | `SYSTEM`     |
-| `POLICY_MANAGEMENT_UPDATE`        | `POLICY`               | `SYSTEM`     |
-| `POLICY_VIOLATION_ANALYSIS`       | `POLICY_VIOLATION`     | `UPDATE`     |
-| `PORTFOLIO_MANAGEMENT`            | `PORTFOLIO`            | `SYSTEM`     |
-| `PORTFOLIO_MANAGEMENT_CREATE`     | `PORTFOLIO`            | `SYSTEM`     |
-| `PORTFOLIO_MANAGEMENT_DELETE`     | `PORTFOLIO`            | `SYSTEM`     |
-| `PORTFOLIO_MANAGEMENT_READ`       | `PORTFOLIO`            | `SYSTEM`     |
-| `PORTFOLIO_MANAGEMENT_UPDATE`     | `PORTFOLIO`            | `SYSTEM`     |
-| `PROJECT_CREATION_UPLOAD`         | `BOM`, `PORTFOLIO`     | `CREATE`     |
-| `SYSTEM_CONFIGURATION`            | `SYSTEM_CONFIGURATION` | `SYSTEM`     |
-| `SYSTEM_CONFIGURATION_CREATE`     | `SYSTEM_CONFIGURATION` | `SYSTEM`     |
-| `SYSTEM_CONFIGURATION_DELETE`     | `SYSTEM_CONFIGURATION` | `SYSTEM`     |
-| `SYSTEM_CONFIGURATION_READ`       | `SYSTEM_CONFIGURATION` | `SYSTEM`     |
-| `SYSTEM_CONFIGURATION_UPDATE`     | `SYSTEM_CONFIGURATION` | `SYSTEM`     |
-| `TAG_MANAGEMENT`                  | `TAG`                  | `SYSTEM`     |
-| `TAG_MANAGEMENT_DELETE`           | `TAG`                  | `SYSTEM`     |
-| `VIEW_BADGES`                     | `BADGES`               | `READ`       |
-| `VIEW_POLICY_VIOLATION`           | `POLICY_VIOLATION`     | `READ`       |
-| `VIEW_PORTFOLIO`                  | ---------------------- | ------------ |
-| `VIEW_VULNERABILITY`              | `PROJECT`              | `READ`       |
-| `VULNERABILITY_ANALYSIS`          | ---------------------- | ------------ |
-| `VULNERABILITY_ANALYSIS_CREATE`   | `PROJECT`, `FINDING`   | `CREATE`     |
-| `VULNERABILITY_ANALYSIS_READ`     | `PROJECT`, `FINDING`   | `READ`       |
-| `VULNERABILITY_ANALYSIS_UPDATE`   | `PROJECT`, `FINDING`   | `UPDATE`     |
-| `VULNERABILITY_MANAGEMENT`        | `VULNERABILITY`        | `SYSTEM`     |
-| `VULNERABILITY_MANAGEMENT_CREATE` | `VULNERABILITY`        | `SYSTEM`     |
-| `VULNERABILITY_MANAGEMENT_DELETE` | `VULNERABILITY`        | `SYSTEM`     |
-| `VULNERABILITY_MANAGEMENT_READ`   | `VULNERABILITY`        | `SYSTEM`     |
-| `VULNERABILITY_MANAGEMENT_UPDATE` | `VULNERABILITY`        | `SYSTEM`     |
+| CURRENT                           | RESOURCE(S)                   | ACCESS LEVEL |
+| --------------------------------- | ----------------------------- | ------------ |
+| `ACCESS_MANAGEMENT`               | `ACCESS_MANAGEMENT`           | `SYSTEM`     |
+| `ACCESS_MANAGEMENT_CREATE`        | `ACCESS_MANAGEMENT`           | `SYSTEM`     |
+| `ACCESS_MANAGEMENT_DELETE`        | `ACCESS_MANAGEMENT`           | `SYSTEM`     |
+| `ACCESS_MANAGEMENT_READ`          | `ACCESS_MANAGEMENT`           | `SYSTEM`     |
+| `ACCESS_MANAGEMENT_UPDATE`        | `ACCESS_MANAGEMENT`           | `SYSTEM`     |
+| `BOM_UPLOAD`                      | `BOM`                         | `CREATE`     |
+| `POLICY_MANAGEMENT`               | `POLICY_MANAGEMENT`           | `SYSTEM`     |
+| `POLICY_MANAGEMENT_CREATE`        | `POLICY_MANAGEMENT`           | `SYSTEM`     |
+| `POLICY_MANAGEMENT_DELETE`        | `POLICY_MANAGEMENT`           | `SYSTEM`     |
+| `POLICY_MANAGEMENT_READ`          | `POLICY_MANAGEMENT`           | `SYSTEM`     |
+| `POLICY_MANAGEMENT_UPDATE`        | `POLICY_MANAGEMENT`           | `SYSTEM`     |
+| `POLICY_VIOLATION_ANALYSIS`       | `POLICY_VIOLATION`            | `UPDATE`     |
+| `PORTFOLIO_MANAGEMENT`            | `PORTFOLIO_MANAGEMENT`        | `SYSTEM`     |
+| `PORTFOLIO_MANAGEMENT_CREATE`     | `PORTFOLIO_MANAGEMENT`        | `SYSTEM`     |
+| `PORTFOLIO_MANAGEMENT_DELETE`     | `PORTFOLIO_MANAGEMENT`        | `SYSTEM`     |
+| `PORTFOLIO_MANAGEMENT_READ`       | `PORTFOLIO_MANAGEMENT`        | `SYSTEM`     |
+| `PORTFOLIO_MANAGEMENT_UPDATE`     | `PORTFOLIO_MANAGEMENT`        | `SYSTEM`     |
+| `PROJECT_CREATION_UPLOAD`         | `BOM`, `PORTFOLIO_MANAGEMENT` | `CREATE`     |
+| `SYSTEM_CONFIGURATION`            | `SYSTEM_CONFIGURATION`        | `SYSTEM`     |
+| `SYSTEM_CONFIGURATION_CREATE`     | `SYSTEM_CONFIGURATION`        | `SYSTEM`     |
+| `SYSTEM_CONFIGURATION_DELETE`     | `SYSTEM_CONFIGURATION`        | `SYSTEM`     |
+| `SYSTEM_CONFIGURATION_READ`       | `SYSTEM_CONFIGURATION`        | `SYSTEM`     |
+| `SYSTEM_CONFIGURATION_UPDATE`     | `SYSTEM_CONFIGURATION`        | `SYSTEM`     |
+| `TAG_MANAGEMENT`                  | `TAG_MANAGEMENT`              | `SYSTEM`     |
+| `TAG_MANAGEMENT_DELETE`           | `TAG_MANAGEMENT`              | `SYSTEM`     |
+| `VIEW_BADGES`                     | `BADGES`                      | `READ`       |
+| `VIEW_POLICY_VIOLATION`           | `POLICY_VIOLATION`            | `READ`       |
+| `VIEW_PORTFOLIO`                  | ----------------------        | ------------ |
+| `VIEW_VULNERABILITY`              | `PROJECT`                     | `READ`       |
+| `VULNERABILITY_ANALYSIS`          | ----------------------        | ------------ |
+| `VULNERABILITY_ANALYSIS_CREATE`   | `PROJECT`, `FINDING`          | `CREATE`     |
+| `VULNERABILITY_ANALYSIS_READ`     | `PROJECT`, `FINDING`          | `READ`       |
+| `VULNERABILITY_ANALYSIS_UPDATE`   | `PROJECT`, `FINDING`          | `UPDATE`     |
+| `VULNERABILITY_MANAGEMENT`        | `VULNERABILITY_MANAGEMENT`    | `SYSTEM`     |
+| `VULNERABILITY_MANAGEMENT_CREATE` | `VULNERABILITY_MANAGEMENT`    | `SYSTEM`     |
+| `VULNERABILITY_MANAGEMENT_DELETE` | `VULNERABILITY_MANAGEMENT`    | `SYSTEM`     |
+| `VULNERABILITY_MANAGEMENT_READ`   | `VULNERABILITY_MANAGEMENT`    | `SYSTEM`     |
+| `VULNERABILITY_MANAGEMENT_UPDATE` | `VULNERABILITY_MANAGEMENT`    | `SYSTEM`     |
 
 ## Consequences
 
