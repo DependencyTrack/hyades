@@ -1773,45 +1773,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#databasemigrationpassword" class="md-nav__link">
+  <a href="#inittasksdatabasepassword" class="md-nav__link">
     <span class="md-ellipsis">
-      database.migration.password
+      init.tasks.database.password
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#databasemigrationurl" class="md-nav__link">
+  <a href="#inittasksdatabaseurl" class="md-nav__link">
     <span class="md-ellipsis">
-      database.migration.url
+      init.tasks.database.url
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#databasemigrationusername" class="md-nav__link">
+  <a href="#inittasksdatabaseusername" class="md-nav__link">
     <span class="md-ellipsis">
-      database.migration.username
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#databaserunmigrations" class="md-nav__link">
-    <span class="md-ellipsis">
-      database.run.migrations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#databaserunmigrationsonly" class="md-nav__link">
-    <span class="md-ellipsis">
-      database.run.migrations.only
+      init.tasks.database.username
     </span>
   </a>
   
@@ -1959,6 +1941,42 @@
   <a href="#initandexit" class="md-nav__link">
     <span class="md-ellipsis">
       init.and.exit
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inittaskdatabasemigrationenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.task.database.migration.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inittaskdatabasepartitionmaintenanceenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.task.database.partition.maintenance.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inittaskdatabaseseedingenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.task.database.seeding.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inittaskkeygenerationenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.task.key.generation.enabled
     </span>
   </a>
   
@@ -4259,8 +4277,8 @@
 </table>
 
 <hr />
-<h3 id="databasemigrationpassword">database.migration.password<a class="headerlink" href="#databasemigrationpassword" title="Permanent link">&para;</a></h3>
-<p>Defines the database password for executing migrations.  If not set, the value of <a href="#alpinedatabasepassword"><code>alpine.database.password</code></a> will be used.  </p>
+<h3 id="inittasksdatabasepassword">init.tasks.database.password<a class="headerlink" href="#inittasksdatabasepassword" title="Permanent link">&para;</a></h3>
+<p>Defines the database password for executing init tasks.  If not set, the value of <a href="#alpinedatabasepassword"><code>alpine.database.password</code></a> will be used.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4277,14 +4295,14 @@
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_MIGRATION_PASSWORD</code></td>
+      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_PASSWORD</code></td>
     </tr>
   </tbody>
 </table>
 
 <hr />
-<h3 id="databasemigrationurl">database.migration.url<a class="headerlink" href="#databasemigrationurl" title="Permanent link">&para;</a></h3>
-<p>Defines the database JDBC URL to use when executing migrations.  If not set, the value of <a href="#alpinedatabaseurl"><code>alpine.database.url</code></a> will be used.  Should generally not be set, unless TLS authentication is used,  and custom connection variables are required.  </p>
+<h3 id="inittasksdatabaseurl">init.tasks.database.url<a class="headerlink" href="#inittasksdatabaseurl" title="Permanent link">&para;</a></h3>
+<p>Defines the database JDBC URL to use when executing init tasks.  If not set, the value of <a href="#alpinedatabaseurl"><code>alpine.database.url</code></a> will be used.  Should generally not be set, unless TLS authentication is used,  and custom connection variables are required.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4301,14 +4319,14 @@
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_MIGRATION_URL</code></td>
+      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_URL</code></td>
     </tr>
   </tbody>
 </table>
 
 <hr />
-<h3 id="databasemigrationusername">database.migration.username<a class="headerlink" href="#databasemigrationusername" title="Permanent link">&para;</a></h3>
-<p>Defines the database user for executing migrations.  If not set, the value of <a href="#alpinedatabaseusername"><code>alpine.database.username</code></a> will be used.  </p>
+<h3 id="inittasksdatabaseusername">init.tasks.database.username<a class="headerlink" href="#inittasksdatabaseusername" title="Permanent link">&para;</a></h3>
+<p>Defines the database user for executing init tasks.  If not set, the value of <a href="#alpinedatabaseusername"><code>alpine.database.username</code></a> will be used.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4325,55 +4343,7 @@
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_MIGRATION_USERNAME</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="databaserunmigrations">database.run.migrations<a class="headerlink" href="#databaserunmigrations" title="Permanent link">&para;</a></h3>
-<p>Defines whether database migrations should be executed on startup.  <br/><br/>  From v5.6.0 onwards, migrations are considered part of the initialization tasks.  Setting <a href="#inittasksenabled"><code>init.tasks.enabled</code></a> to <code>false</code> will disable migrations,  even if <a href="#databaserunmigrations"><code>database.run.migrations</code></a> is enabled.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>true</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="databaserunmigrationsonly">database.run.migrations.only<a class="headerlink" href="#databaserunmigrationsonly" title="Permanent link">&para;</a></h3>
-<p>Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless <a href="#databaserunmigrations"><code>database.run.migrations</code></a> is <code>true</code>.  <br/><br/>  From v5.6.0 onwards, usage of <a href="#initandexit"><code>init.and.exit</code></a> should be preferred.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS_ONLY</code></td>
+      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_USERNAME</code></td>
     </tr>
   </tbody>
 </table>
@@ -4691,8 +4661,104 @@
 </table>
 
 <hr />
+<h3 id="inittaskdatabasemigrationenabled">init.task.database.migration.enabled<a class="headerlink" href="#inittaskdatabasemigrationenabled" title="Permanent link">&para;</a></h3>
+<p>Whether to enable the database migration init task.  Has no effect unless <a href="#inittasksenabled"><code>init.tasks.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_DATABASE_MIGRATION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="inittaskdatabasepartitionmaintenanceenabled">init.task.database.partition.maintenance.enabled<a class="headerlink" href="#inittaskdatabasepartitionmaintenanceenabled" title="Permanent link">&para;</a></h3>
+<p>Whether to enable the database partition maintenance init task.  Has no effect unless <a href="#inittasksenabled"><code>init.tasks.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_DATABASE_PARTITION_MAINTENANCE_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="inittaskdatabaseseedingenabled">init.task.database.seeding.enabled<a class="headerlink" href="#inittaskdatabaseseedingenabled" title="Permanent link">&para;</a></h3>
+<p>Whether to enable the database seeding init task.  Seeding involves populating the database with default objects,  such as permissions, users, licenses, etc.  Has no effect unless <a href="#inittasksenabled"><code>init.tasks.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_DATABASE_SEEDING_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="inittaskkeygenerationenabled">init.task.key.generation.enabled<a class="headerlink" href="#inittaskkeygenerationenabled" title="Permanent link">&para;</a></h3>
+<p>Whether to enable the key generation init task.  Has no effect unless <a href="#inittasksenabled"><code>init.tasks.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_KEY_GENERATION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="inittasksenabled">init.tasks.enabled<a class="headerlink" href="#inittasksenabled" title="Permanent link">&para;</a></h3>
-<p>Whether to execute initialization tasks on startup.  Initialization tasks include:  <ul>  <li>Execution of database migrations</li>  <li>Populating the database with default objects (permissions, users, licenses, etc.)</li>  </ul>  </p>
+<p>Whether to execute initialization tasks on startup.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
