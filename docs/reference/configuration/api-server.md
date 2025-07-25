@@ -464,9 +464,9 @@ Specifies the username to use when authenticating to the database.
 
 ---
 
-### database.migration.password
+### init.tasks.database.password
 
-Defines the database password for executing migrations.  If not set, the value of [`alpine.database.password`](#alpinedatabasepassword) will be used.  
+Defines the database password for executing init tasks.  If not set, the value of [`alpine.database.password`](#alpinedatabasepassword) will be used.  
 
 <table>
   <tbody style="border: 0">
@@ -484,7 +484,7 @@ Defines the database password for executing migrations.  If not set, the value o
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_MIGRATION_PASSWORD</code></td>
+      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_PASSWORD</code></td>
     </tr>
   </tbody>
 </table>
@@ -492,9 +492,9 @@ Defines the database password for executing migrations.  If not set, the value o
 
 ---
 
-### database.migration.url
+### init.tasks.database.url
 
-Defines the database JDBC URL to use when executing migrations.  If not set, the value of [`alpine.database.url`](#alpinedatabaseurl) will be used.  Should generally not be set, unless TLS authentication is used,  and custom connection variables are required.  
+Defines the database JDBC URL to use when executing init tasks.  If not set, the value of [`alpine.database.url`](#alpinedatabaseurl) will be used.  Should generally not be set, unless TLS authentication is used,  and custom connection variables are required.  
 
 <table>
   <tbody style="border: 0">
@@ -512,7 +512,7 @@ Defines the database JDBC URL to use when executing migrations.  If not set, the
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_MIGRATION_URL</code></td>
+      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_URL</code></td>
     </tr>
   </tbody>
 </table>
@@ -520,9 +520,9 @@ Defines the database JDBC URL to use when executing migrations.  If not set, the
 
 ---
 
-### database.migration.username
+### init.tasks.database.username
 
-Defines the database user for executing migrations.  If not set, the value of [`alpine.database.username`](#alpinedatabaseusername) will be used.  
+Defines the database user for executing init tasks.  If not set, the value of [`alpine.database.username`](#alpinedatabaseusername) will be used.  
 
 <table>
   <tbody style="border: 0">
@@ -540,63 +540,7 @@ Defines the database user for executing migrations.  If not set, the value of [`
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_MIGRATION_USERNAME</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### database.run.migrations
-
-Defines whether database migrations should be executed on startup.  <br/><br/>  From v5.6.0 onwards, migrations are considered part of the initialization tasks.  Setting [`init.tasks.enabled`](#inittasksenabled) to `false` will disable migrations,  even if [`database.run.migrations`](#databaserunmigrations) is enabled.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>true</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### database.run.migrations.only
-
-Defines whether the application should exit upon successful execution of database migrations.  Enabling this option makes the application suitable for running as k8s init container.  Has no effect unless [`database.run.migrations`](#databaserunmigrations) is `true`.  <br/><br/>  From v5.6.0 onwards, usage of [`init.and.exit`](#initandexit) should be preferred.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DATABASE_RUN_MIGRATIONS_ONLY</code></td>
+      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_USERNAME</code></td>
     </tr>
   </tbody>
 </table>
@@ -972,9 +916,121 @@ Whether to only execute initialization tasks and exit.
 
 ---
 
+### init.task.database.migration.enabled
+
+Whether to enable the database migration init task.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_DATABASE_MIGRATION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### init.task.database.partition.maintenance.enabled
+
+Whether to enable the database partition maintenance init task.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_DATABASE_PARTITION_MAINTENANCE_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### init.task.database.seeding.enabled
+
+Whether to enable the database seeding init task.  Seeding involves populating the database with default objects,  such as permissions, users, licenses, etc.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_DATABASE_SEEDING_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### init.task.key.generation.enabled
+
+Whether to enable the key generation init task.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_KEY_GENERATION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### init.tasks.enabled
 
-Whether to execute initialization tasks on startup.  Initialization tasks include:  <ul>  <li>Execution of database migrations</li>  <li>Populating the database with default objects (permissions, users, licenses, etc.)</li>  </ul>  
+Whether to execute initialization tasks on startup.  
 
 <table>
   <tbody style="border: 0">
