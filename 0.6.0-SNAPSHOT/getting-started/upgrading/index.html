@@ -1927,6 +1927,40 @@ To reduce the amount of data being copied, consider temporarily reducing the met
 retention timespan in the administration panel under <em>Configuration</em> → <em>Maintenance</em>.
 Only historic data falling within the configured retention duration will be migrated.</p>
 </li>
+<li>
+<p>Database migrations have been integrated into the broader concept of <em>initialization tasks</em>.<br />
+Consequently, the following configuration properties were renamed:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Before</th>
+<th style="text-align: left;">After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>database.run.migrations</code></td>
+<td style="text-align: left;"><code>init.tasks.enabled</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>database.run.migrations.only</code></td>
+<td style="text-align: left;"><code>init.and.exit</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>database.migration.url</code></td>
+<td style="text-align: left;"><code>init.tasks.database.url</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>database.migration.username</code></td>
+<td style="text-align: left;"><code>init.tasks.database.username</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>database.migration.password</code></td>
+<td style="text-align: left;"><code>init.tasks.database.password</code></td>
+</tr>
+</tbody>
+</table>
+</li>
 </ul>
 
 
