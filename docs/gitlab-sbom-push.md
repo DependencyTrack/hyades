@@ -26,6 +26,7 @@ A GitLab application ID will be needed for authentication.
     * Select the profile image from the top banner
     * Select "Edit profile"
 2. Select "Applications" from the User settings column on the left side of the screen
+
    ![Applications](images/integrations_gitlab_applications.png)
 3. Select the Add new application button
 4. Specify a name in the Name field
