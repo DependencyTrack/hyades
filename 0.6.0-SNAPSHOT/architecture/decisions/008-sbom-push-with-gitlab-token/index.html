@@ -8,28 +8,24 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/getting-started/migrating-from-v4/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/008-sbom-push-with-gitlab-token/">
       
       
-        <link rel="prev" href="../changes-over-v4/">
       
       
-        <link rel="next" href="../upgrading/">
-      
-      
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
     
     
       
-        <title>Migrating from v4 - Hyades</title>
+        <title>008 sbom push with gitlab token - Hyades</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.7e37652d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +44,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -57,11 +53,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="Migrating from v4 - Hyades" >
+        <meta  property="og:title"  content="008 sbom push with gitlab token - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/getting-started/migrating-from-v4.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/008-sbom-push-with-gitlab-token.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +65,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/getting-started/migrating-from-v4/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/architecture/decisions/008-sbom-push-with-gitlab-token/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="Migrating from v4 - Hyades" >
+        <meta  name="twitter:title"  content="008 sbom push with gitlab token - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/getting-started/migrating-from-v4.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.6.0-SNAPSHOT/assets/images/social/architecture/decisions/008-sbom-push-with-gitlab-token.png" >
       
     
     
@@ -100,7 +96,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#introduction" class="md-skip">
+        <a href="#context" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +116,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Hyades" class="md-header__button md-logo" aria-label="Hyades" data-md-component="logo">
+    <a href="../../.." title="Hyades" class="md-header__button md-logo" aria-label="Hyades" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -140,7 +136,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Migrating from v4
+              008 sbom push with gitlab token
             
           </span>
         </div>
@@ -248,13 +244,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../.." class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
           
   
   
@@ -281,7 +275,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../usage/policy-compliance/overview/" class="md-tabs__link">
+        <a href="../../../usage/policy-compliance/overview/" class="md-tabs__link">
           
   
   
@@ -304,7 +298,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../architecture/" class="md-tabs__link">
+        <a href="../../" class="md-tabs__link">
           
   
   
@@ -324,7 +318,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../operations/database/" class="md-tabs__link">
+        <a href="../../../operations/database/" class="md-tabs__link">
           
   
   
@@ -351,7 +345,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../development/Roles/overview/" class="md-tabs__link">
+        <a href="../../../development/Roles/overview/" class="md-tabs__link">
           
   
   
@@ -381,7 +375,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/configuration/overview/" class="md-tabs__link">
+        <a href="../../../reference/configuration/overview/" class="md-tabs__link">
           
   
   
@@ -426,7 +420,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Hyades" class="md-nav__button md-logo" aria-label="Hyades" data-md-component="logo">
+    <a href="../../.." title="Hyades" class="md-nav__button md-logo" aria-label="Hyades" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -453,29 +447,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
         
           
-          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
             
   
   
@@ -488,7 +477,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -502,7 +491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -525,7 +514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../changes-over-v4/" class="md-nav__link">
+      <a href="../../../getting-started/changes-over-v4/" class="md-nav__link">
         
   
   
@@ -545,30 +534,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Migrating from v4
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../getting-started/migrating-from-v4/" class="md-nav__link">
         
   
   
@@ -579,84 +548,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-v4-and-v5-in-parallel" class="md-nav__link">
-    <span class="md-ellipsis">
-      Running v4 and v5 in parallel
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Running v4 and v5 in parallel">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#creating-api-key" class="md-nav__link">
-    <span class="md-ellipsis">
-      Creating API Key
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#deploy-bento" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deploy Bento
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configure-notification" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configure Notification
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -669,7 +560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../upgrading/" class="md-nav__link">
+      <a href="../../../getting-started/upgrading/" class="md-nav__link">
         
   
   
@@ -781,7 +672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/policy-compliance/overview/" class="md-nav__link">
+      <a href="../../../usage/policy-compliance/overview/" class="md-nav__link">
         
   
   
@@ -804,7 +695,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/policy-compliance/expressions/" class="md-nav__link">
+      <a href="../../../usage/policy-compliance/expressions/" class="md-nav__link">
         
   
   
@@ -883,7 +774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   
@@ -947,7 +838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+      <a href="../000-index/" class="md-nav__link">
         
   
   
@@ -970,7 +861,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -993,7 +884,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+      <a href="../002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -1016,7 +907,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+      <a href="../003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -1039,7 +930,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+      <a href="../004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -1062,7 +953,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -1085,7 +976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1108,7 +999,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
+      <a href="../007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1131,7 +1022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/009-auth-and-roles/" class="md-nav__link">
+      <a href="../009-auth-and-roles/" class="md-nav__link">
         
   
   
@@ -1203,7 +1094,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/design/workflow-state-tracking/" class="md-nav__link">
+      <a href="../../design/workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -1282,7 +1173,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/database/" class="md-nav__link">
+      <a href="../../../operations/database/" class="md-nav__link">
         
   
   
@@ -1394,7 +1285,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/Roles/overview/" class="md-nav__link">
+      <a href="../../../development/Roles/overview/" class="md-nav__link">
         
   
   
@@ -1425,7 +1316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/overview/" class="md-nav__link">
+      <a href="../../../development/overview/" class="md-nav__link">
         
   
   
@@ -1448,7 +1339,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/building/" class="md-nav__link">
+      <a href="../../../development/building/" class="md-nav__link">
         
   
   
@@ -1471,7 +1362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/testing/" class="md-nav__link">
+      <a href="../../../development/testing/" class="md-nav__link">
         
   
   
@@ -1494,7 +1385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/database-migrations/" class="md-nav__link">
+      <a href="../../../development/database-migrations/" class="md-nav__link">
         
   
   
@@ -1517,7 +1408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/documentation/" class="md-nav__link">
+      <a href="../../../development/documentation/" class="md-nav__link">
         
   
   
@@ -1629,7 +1520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration/overview/" class="md-nav__link">
+      <a href="../../../reference/configuration/overview/" class="md-nav__link">
         
   
   
@@ -1652,7 +1543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration/api-server/" class="md-nav__link">
+      <a href="../../../reference/configuration/api-server/" class="md-nav__link">
         
   
   
@@ -1675,7 +1566,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration/mirror-service/" class="md-nav__link">
+      <a href="../../../reference/configuration/mirror-service/" class="md-nav__link">
         
   
   
@@ -1698,7 +1589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration/repo-meta-analyzer/" class="md-nav__link">
+      <a href="../../../reference/configuration/repo-meta-analyzer/" class="md-nav__link">
         
   
   
@@ -1770,7 +1661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/schemas/notification/" class="md-nav__link">
+      <a href="../../../reference/schemas/notification/" class="md-nav__link">
         
   
   
@@ -1793,7 +1684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/schemas/policy/" class="md-nav__link">
+      <a href="../../../reference/schemas/policy/" class="md-nav__link">
         
   
   
@@ -1824,7 +1715,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/topics/" class="md-nav__link">
+      <a href="../../../reference/topics/" class="md-nav__link">
         
   
   
@@ -1863,7 +1754,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/getting-started/migrating-from-v4.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/008-sbom-push-with-gitlab-token.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1871,162 +1762,41 @@
   
 
 
-  <h1>Migrating from v4</h1>
+  <h1>008 sbom push with gitlab token</h1>
 
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
-<p>If you're currently running a Dependency-Track v4 deployment, don't worry!</p>
-<p>We're aiming to provide tooling and guides on how to migrate to v5 once it reaches general availability.
-The goal is to offer tools that perform the migration automatically, with little to no manual effort
-(except the provisioning of infrastructure of course).</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Follow <a href="https://github.com/DependencyTrack/hyades/issues/881">https://github.com/DependencyTrack/hyades/issues/881</a> for updates on this topic.</p>
-</div>
-<h2 id="running-v4-and-v5-in-parallel">Running v4 and v5 in parallel<a class="headerlink" href="#running-v4-and-v5-in-parallel" title="Permanent link">&para;</a></h2>
-<p>Given an existing production deployment of v4, it can be helpful to run a v5 test deployment in parallel,
-to compare behavior and testing new features on <em>real</em> data.</p>
-<p>This can be achieved by leveraging notifications, in particular <code>BOM_PROCESSED</code> notifications.
-They are emitted by Dependency-Track <em>after</em> a BOM's contents are synchronized with the database.</p>
-<p>The subject of <code>BOM_PROCESSED</code> notifications contains the original BOM that way uploaded, encoded in Base64.
-It also contains the name and version of the project it was uploaded to. This information is sufficient to 
-construct a BOM upload request, that can be submitted to another Dependency-Track instance.</p>
-<p>All that's needed is an application that can:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Author(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Proposed</td>
+<td style="text-align: left;">2025-05-14</td>
+<td style="text-align: left;"><a href="https://github.com/lmphil">@lmphil</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>Adding GitLab integration to the Dependency Track/Hyades project is under consideration, with a key aspect being the use
+ of short-lived GitLab CI job ID tokens (in JWT format) for authentication, in addition to the existing API key-based
+ authentication. This new authentication method is needed to provide a more streamlined and secure experience for users
+ who are already authenticated with GitLab, reducing the need for additional credentials and minimizing the
+ administrative burden associated with managing multiple authentication tokens.</p>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>Implement GitLab job ID token authentication for Dependency Track, allowing users to publish Software Bill of Materials
+ (SBOMs) using a GitLab job ID token. The implementation will include the following key components:</p>
 <ul>
-<li>Receive Webhooks, and parse the JSON payload within them</li>
-<li>Perform a mapping from notification subject, to BOM upload request</li>
-<li>Forward the BOM upload request to another Dependency-Track instance</li>
+<li>Authenticate users using a short-lived GitLab CI job ID token in JWT format. This token will be sent in the payload of an HTTP POST request to a new endpoint (<code>/v1/bom/gitlab</code>). This new endpoint will accept <code>bom</code>, <code>autoCreate</code>, <code>isLatest</code> and <code>gitLab_token</code>. The project name and version will be sent inside the <code>gitLab_token</code> JWT claims as <code>project_path</code> and <code>ref_type</code> respectively.</li>
+<li>Authorize actions based on the user's role in GitLab.</li>
+<li>Automatically create projects in Dependency Track if they do not exist.</li>
 </ul>
-<p>This can, of course, be scripted. However, we recommend using <a href="https://github.com/warpstreamlabs/bento">Bento</a>, which reduces it all to a single config file.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>You can use the same approach outlined here to construct a pre-prod / staging environment.</p>
-</div>
-<p>Conceptually, this is what the setup will accomplish:</p>
-<pre class="mermaid"><code>sequenceDiagram
-    Client-&gt;&gt;DT v4: Upload BOM&lt;br/&gt;PUT /api/v1/bom
-    DT v4-&gt;&gt;DT v4: Validate and&lt;br/&gt;Process
-    DT v4-&gt;&gt;Bento: Notification&lt;br/&gt;BOM_PROCESSED
-    Bento-&gt;&gt;Bento: Map to BOM&lt;br/&gt;upload request
-    Bento-&gt;&gt;DT v5: Upload BOM&lt;br/&gt;PUT /api/v1/bom
-    DT v5-&gt;&gt;DT v5: Validate and&lt;br/&gt;Process</code></pre>
-<!-- TODO: Port instructions from https://github.com/DependencyTrack/hyades/blob/main/scripts/benthos/README.md -->
-
-<h3 id="creating-api-key">Creating API Key<a class="headerlink" href="#creating-api-key" title="Permanent link">&para;</a></h3>
-<p>In order to upload BOMs to the Dependency-Track v5 system, an API key with <code>BOM_UPLOAD</code> and <code>PROJECT_CREATION_UPLOAD</code>
-permissions is required. Log into your Dependency-Track v5 instance, navigate to <em>Administration</em> -&gt; <em>Access Management</em>
--&gt; <em>Teams</em>, and create a new team with accompanying API key:</p>
-<p><img alt="Creating an API key for Bento in Dependency-Track v5" src="../../images/getting-started/migrating-from-v4_bento-api-key.png" /></p>
-<h3 id="deploy-bento">Deploy Bento<a class="headerlink" href="#deploy-bento" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/warpstreamlabs/bento">Bento</a> works with the concept of pipelines, which are <a href="https://warpstreamlabs.github.io/bento/docs/configuration/about">configured via YAML</a>.<br />
-The following pipeline will achieve the desired outcome:</p>
-<div class="language-yaml highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span>
-<span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span>
-<span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span>
-<span class="normal"><a href="#__codelineno-0-21">21</a></span>
-<span class="normal"><a href="#__codelineno-0-22">22</a></span>
-<span class="normal"><a href="#__codelineno-0-23">23</a></span>
-<span class="normal"><a href="#__codelineno-0-24">24</a></span>
-<span class="normal"><a href="#__codelineno-0-25">25</a></span>
-<span class="normal"><a href="#__codelineno-0-26">26</a></span>
-<span class="normal"><a href="#__codelineno-0-27">27</a></span>
-<span class="normal"><a href="#__codelineno-0-28">28</a></span>
-<span class="normal"><a href="#__codelineno-0-29">29</a></span>
-<span class="normal"><a href="#__codelineno-0-30">30</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nn">---</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="nt">input</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nt">http_server</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/notification/bom-processed</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="nt">allowed_verbs</span><span class="p">:</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">POST</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5s</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">    </span><span class="nt">sync_response</span><span class="p">:</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">      </span><span class="nt">status</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;202&quot;</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="nt">pipeline</span><span class="p">:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">  </span><span class="nt">processors</span><span class="p">:</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">mapping</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">      </span><span class="no">root.projectName = this.notification.subject.project.name</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">      </span><span class="no">root.projectVersion = this.notification.subject.project.version</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">      </span><span class="no">root.projectTags = this.notification.subject.project.tags.split(&quot;,&quot;).catch([]).map_each(tag -&gt; {&quot;name&quot;: tag})</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">      </span><span class="no">root.bom = this.notification.subject.bom.content</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">      </span><span class="no">root.autoCreate = true</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="nt">output</span><span class="p">:</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">  </span><span class="nt">http_client</span><span class="p">:</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;${DTV5_API_URL}/api/v1/bom&quot;</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="nt">verb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PUT</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="nt">headers</span><span class="p">:</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">      </span><span class="nt">Content-Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">application/json</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">      </span><span class="nt">X-Api-Key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;${DTV5_API_KEY}&quot;</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">    </span><span class="nt">max_in_flight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">    </span><span class="c1"># tls:</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="c1">#  skip_cert_verify: true</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">    </span><span class="c1">#  ^-- Uncomment this if you&#39;re using self-signed certificates.</span>
-</span></code></pre></div></td></tr></table></div>
-<p>Refer to the respective pipeline component's documentation for more details:</p>
-<ul>
-<li><a href="https://warpstreamlabs.github.io/bento/docs/components/inputs/http_server"><code>http_server</code> input</a></li>
-<li><a href="https://warpstreamlabs.github.io/bento/docs/components/processors/mapping"><code>mapping</code> processor</a></li>
-<li><a href="https://warpstreamlabs.github.io/bento/docs/components/outputs/http_client"><code>http_client</code> output</a></li>
-</ul>
-<p><a href="https://github.com/warpstreamlabs/bento?tab=readme-ov-file#run">Run Bento</a> as container:</p>
-<div class="language-shell highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span>
-<span class="normal"><a href="#__codelineno-1-3">3</a></span>
-<span class="normal"><a href="#__codelineno-1-4">4</a></span>
-<span class="normal"><a href="#__codelineno-1-5">5</a></span>
-<span class="normal"><a href="#__codelineno-1-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>bento<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span>-p<span class="w"> </span><span class="s2">&quot;4195:4195&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yaml:/bento.yaml&quot;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span>-e<span class="w"> </span><span class="s1">&#39;DTV5_API_URL=https://dtv5.example.com&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">    </span>-e<span class="w"> </span><span class="s1">&#39;DTV5_API_KEY=odt_****************&#39;</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span>ghcr.io/warpstreamlabs/bento
-</span></code></pre></div></td></tr></table></div>
-<h3 id="configure-notification">Configure Notification<a class="headerlink" href="#configure-notification" title="Permanent link">&para;</a></h3>
-<p>Log into your Dependency-Track v4 instance, navigate to <em>Administration</em> -&gt; <em>Notifications</em> -&gt; <em>Alerts</em>,
-and create a new alert with the following settings:</p>
-<ul>
-<li>Scope: <em>Portfolio</em></li>
-<li>Notification level: <em>Informational</em></li>
-<li>Publisher: <em>Outbound Webhook</em></li>
-</ul>
-<p><img alt="Creating a new alert in Dependency-Track v4" src="../../images/getting-started/migrating-from-v4_create-alert.png" /></p>
-<p>Once created, enable <code>BOM_PROCESSED</code> under <em>Groups</em>, and configure the URL of your Bento endpoint as <em>Destination</em>:</p>
-<p><img alt="Configuring the alert in Dependency-Track v4" src="../../images/getting-started/migrating-from-v4_configure-alert.png" /></p>
-<h3 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Upload a BOM to a project in your Dependency-Track v4 instance.</li>
-<li>Head over to your Dependency-Track v5 instance and wait for the upload to replicate.</li>
-</ul>
-<p>If all goes well, you're done! Happy testing!</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>If the BOM upload does not replicate:</p>
-<ol>
-<li>Check the logs of your Dependency-Track v4 deployment for any errors during notification publishing.</li>
-<li>Check the logs of Bento for any errors or warnings.</li>
-<li>Check the logs of your Dependency-Track v5 deployment for any errors during BOM processing.</li>
-<li>Ensure that the API key you created has the correct permissions.</li>
-<li>Ensure that Bento is reachable from your Dependency-Track v4 deployment.</li>
-<li>Ensure that your Dependency-Track v5 deployment is reachable from Bento.</li>
-</ol>
-</div>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<p>The implementation of this feature will result in a more streamlined and secure experience for users, and will reduce or
+ eliminate the need to manage multiple authentication tokens.</p>
 
 
 
@@ -2132,10 +1902,10 @@ and create a new alert with the following settings:</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["content.action.edit", "content.code.copy", "content.code.select", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share", "toc.integrate"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.action.edit", "content.code.copy", "content.code.select", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.50899def.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.50899def.min.js"></script>
       
     
   </body>
