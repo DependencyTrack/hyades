@@ -16,12 +16,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.common.config;
+package org.dependencytrack.kstreams.statestore;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
-import org.dependencytrack.config.HttpClientConfig;
+import org.apache.kafka.streams.state.internals.RocksDBKeyValueBytesStoreSupplier;
 import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
@@ -30,29 +30,27 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-@TestProfile(QuarkusConfigUtilTest.TestProfile.class)
-class QuarkusConfigUtilTest {
+@TestProfile(StateStoreUtilWithQuarkusConfigTest.TestProfile.class)
+class StateStoreUtilWithQuarkusConfigTest {
 
-        public static class TestProfile implements QuarkusTestProfile {
+    public static class TestProfile implements QuarkusTestProfile {
 
-            @Override
-            public Map<String, String> getConfigOverrides() {
-                return Map.of(
-                        "client.http.config.max-total-connections", "666"
-                );
-            }
+        @Override
+        public Map<String, String> getConfigOverrides() {
+            return Map.of(
+                    "state-store.type", "rocks_db"
+            );
         }
+    }
 
-        @Inject // Force injection, otherwise Quarkus will not discover the config mapping.
-        @SuppressWarnings("unused")
-        HttpClientConfig httpClientConfig;
+    @Inject // Force injection, otherwise Quarkus will not discover the config mapping.
+    @SuppressWarnings("unused")
+    StateStoreConfig stateStoreConfig;
 
-        @Test
-        void test() {
-            assertThat(QuarkusConfigUtil.getConfigMapping(HttpClientConfig.class))
-                    .isPresent().get()
-                    .extracting(HttpClientConfig::maxTotalConnections)
-                    .isEqualTo(666);
-        }
+    @Test
+    void test() {
+        assertThat(StateStoreUtil.configurableKeyValueStore("storeName"))
+                .isInstanceOf(RocksDBKeyValueBytesStoreSupplier.class);
+    }
 
 }
