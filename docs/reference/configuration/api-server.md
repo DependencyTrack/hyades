@@ -832,6 +832,38 @@ Specifies the number of bcrypt rounds to use when hashing a user's password.  Th
 
 ---
 
+### alpine.config.profile
+
+Defines the configuration profile to use.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[prod, dev, test]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>prod</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_CONFIG_PROFILE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### alpine.data.directory
 
 Defines the path to the data directory. This directory will hold logs,  keys, and any database or index files along with application-specific  files or directories.  
