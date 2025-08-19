@@ -80,7 +80,7 @@
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.5.17</lib.minio.version>
     <lib.open-feign.version>13.6</lib.open-feign.version>
-    <lib.org-json.version>20250107</lib.org-json.version>
+    <lib.org-json.version>20250517</lib.org-json.version>
     <lib.pebble.version>3.2.4</lib.pebble.version>
     <lib.resilience4j.version>2.3.0</lib.resilience4j.version>
     <lib.open.vulnerability.clients.version>8.0.0</lib.open.vulnerability.clients.version>
