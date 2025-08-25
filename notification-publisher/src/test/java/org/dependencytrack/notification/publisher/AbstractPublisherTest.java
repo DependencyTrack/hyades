@@ -358,6 +358,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .setDescription("projectDescription")
                 .setPurl("pkg:maven/org.acme/projectName@projectVersion")
                 .addAllTags(List.of("tag1", "tag2"))
+                .setIsActive(true)
                 .build();
     }
 
