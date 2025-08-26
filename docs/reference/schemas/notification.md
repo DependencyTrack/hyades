@@ -521,6 +521,7 @@
 | `description` | `string` |  | - |
 | `purl` | `string` |  | - |
 | `tags` | `string[]` |  | - |
+| `is_active` | `bool` |  | - |
 
 
 
