@@ -77,6 +77,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                 "version": "projectVersion",
                                 "description": "projectDescription",
                                 "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "isActive" : true,
                                 "tags": [
                                   "tag1",
                                   "tag2"
@@ -117,6 +118,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                 "version": "projectVersion",
                                 "description": "projectDescription",
                                 "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "isActive" : true,
                                 "tags": [
                                   "tag1",
                                   "tag2"
@@ -158,6 +160,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                 "version": "projectVersion",
                                 "description": "projectDescription",
                                 "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "isActive" : true,
                                 "tags": [
                                   "tag1",
                                   "tag2"
@@ -198,6 +201,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                 "version" : "projectVersion",
                                 "description" : "projectDescription",
                                 "purl" : "pkg:maven/org.acme/projectName@projectVersion",
+                                "isActive" : true,
                                 "tags" : [
                                   "tag1",
                                   "tag2"
@@ -269,6 +273,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                 "version": "projectVersion",
                                 "description": "projectDescription",
                                 "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "isActive" : true,
                                 "tags": [ "tag1", "tag2" ]
                               },
                               "vulnerabilityAnalysisLevel": "BOM_UPLOAD_ANALYSIS",
@@ -310,6 +315,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                   "version": "projectVersion",
                                   "description": "projectDescription",
                                   "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                  "isActive" : true,
                                   "tags": [
                                     "tag1",
                                     "tag2"
@@ -355,6 +361,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                 "version" : "projectVersion",
                                 "description" : "projectDescription",
                                 "purl" : "pkg:maven/org.acme/projectName@projectVersion",
+                                "isActive" : true,
                                 "tags" : [ "tag1", "tag2" ]
                               },
                               "vulnerability": {
@@ -458,6 +465,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                                 "version": "projectVersion",
                                 "description": "projectDescription",
                                 "purl": "pkg:maven/org.acme/projectName@projectVersion",
+                                "isActive" : true,
                                 "tags" : [ "tag1", "tag2" ]
                               },
                               "vulnerabilities": [
