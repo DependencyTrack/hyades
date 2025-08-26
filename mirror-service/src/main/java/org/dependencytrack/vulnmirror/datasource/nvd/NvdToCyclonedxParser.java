@@ -131,12 +131,14 @@ public final class NvdToCyclonedxParser {
                 // We can't compute negation.
                 .filter(config -> config.getNegate() == null || !config.getNegate())
                 .map(Config::getNodes)
+                .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 // We can't compute negation.
                 .filter(node -> node.getNegate() == null || !node.getNegate())
                 .filter(node -> node.getCpeMatch() != null)
-                .map(node -> extractCpeMatchesFromNode(cveId, node))
+                .map(node -> Optional.ofNullable(extractCpeMatchesFromNode(cveId, node)).orElse(List.of()))
                 .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 // We currently have no interest in non-vulnerable versions.
                 .filter(cpeMatch -> cpeMatch.getVulnerable() == null || cpeMatch.getVulnerable())
                 .toList();
@@ -370,9 +372,11 @@ public final class NvdToCyclonedxParser {
 
     private static List<ExternalReference> parseReferences(List<Reference> references) {
         List<ExternalReference> externalReferences = new ArrayList<>();
-        references.forEach(reference -> externalReferences.add(ExternalReference.newBuilder()
-                .setUrl(reference.getUrl())
-                .build()));
+        if (references != null) {
+            references.forEach(reference -> externalReferences.add(ExternalReference.newBuilder()
+                    .setUrl(reference.getUrl())
+                    .build()));
+        }
         return externalReferences;
     }
 
