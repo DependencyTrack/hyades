@@ -138,12 +138,13 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      EXTRA_JAVA_OPTIONS: "-Xmx256m"
-      ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
-      ALPINE_DATABASE_USERNAME: "dtrack"
-      ALPINE_DATABASE_PASSWORD: "dtrack"
-      ALPINE_DATABASE_POOL_ENABLED: "false"
-      INIT_TASKS_ENABLED: "true"
+      # The default JVM options of the image are optimized for the API server,
+      # i.e. longer runtime and larger heaps. Provide JVM options that are more
+      # suitable for one-off executions with fewer available resources.
+      JAVA_OPTIONS: "-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
+      INIT_TASKS_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      INIT_TASKS_DATABASE_USERNAME: "dtrack"
+      INIT_TASKS_DATABASE_PASSWORD: "dtrack"
       INIT_AND_EXIT: "true"
     restart: on-failure
 

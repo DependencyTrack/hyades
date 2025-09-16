@@ -215,22 +215,105 @@ Schema migrations are performed automatically by the API server upon startup. It
 There is usually no manual action required when upgrading from an older Dependency-Track version, unless explicitly
 stated otherwise in the release notes.
 
-This behavior can be turned off by setting [`database.run.migrations`](../reference/configuration/api-server.md#databaserunmigrations) 
+This behavior can be turned off by setting [`init.tasks.enabled`](../reference/configuration/api-server.md#inittasksenabled) 
 on the API server container to `false`.
 
 It is possible to use different credentials for migrations than for the application itself.
 This can be achieved with the following options:
 
-* [`database.migration.url`](../reference/configuration/api-server.md#databasemigrationurl)
-* [`database.migration.username`](../reference/configuration/api-server.md#databasemigrationusername)
-* [`database.migration.password`](../reference/configuration/api-server.md#databasemigrationpassword)
+* [`init.tasks.database.url`](../reference/configuration/api-server.md#inittasksdatabaseurl)
+* [`init.tasks.database.username`](../reference/configuration/api-server.md#inittasksdatabaseusername)
+* [`init.tasks.database.password`](../reference/configuration/api-server.md#inittasksdatabasepassword)
 
-The above with default to the main database credentials if not provided explicitly.
+The above will default to the main database credentials if not provided explicitly.
 
+## Connection Pooling
+
+Per default, all services requiring database connectivity maintain their own local
+connection pools. This behavior can become undesirable as more service instances
+are deployed as part of horizontal scaling.
+
+Dependency-Track can be configured to use a centralized connection pooler, 
+such as [PgBouncer], to address this concern.
+
+### Constraints
+
+* Only `session` and `transaction` pooling modes are supported. `transaction` is recommended.
+* Initialization tasks, which include database migrations, *must* connect to the
+database directly, bypassing the connection pooler, when using pooling mode `transaction`.
+    * To prevent concurrent initialization, session-level Postgres advisory locks are used,
+      which are not supported with the `transaction` pooling mode.
+    * To facilitate this, initialization tasks can be executed in dedicated containers,
+      and / or with separate database connection details.
+* Local connection pooling in services *must* be disabled:
+    * For `hyades-apiserver`: `ALPINE_DATABASE_POOL_ENABLED=false`
+    * For others: `QUARKUS_DATASOURCE_JDBC_POOLING_ENABLED=false`
+
+### Example
+
+An example setup can be seen in the following `docker-compose.yml` file (abbreviated for brevity):
+
+```yaml linenums="1"
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: "dtrack"
+      POSTGRES_USER: "dtrack"
+      POSTGRES_PASSWORD: "dtrack"
+
+  pgbouncer:
+    image: bitnami/pgbouncer
+    environment:
+      POSTGRESQL_HOST: "postgres"
+      POSTGRESQL_PORT: "5432"
+      POSTGRESQL_USERNAME: "dtrack"
+      POSTGRESQL_PASSWORD: "dtrack"
+      POSTGRESQL_DATABASE: "dtrack"
+      PGBOUNCER_DATABASE: "dtrack"
+      PGBOUNCER_PORT: "6432"
+      PGBOUNCER_POOL_MODE: "transaction"
+      PGBOUNCER_DEFAULT_POOL_SIZE: "30"
+
+  initializer:
+    image: ghcr.io/dependencytrack/hyades-apiserver
+    environment:
+      INIT_TASKS_ENABLED: "true"
+      INIT_TASKS_DATABASE_URL: "jdbc:postgresql://postgres:5432/dtrack"
+      INIT_TASKS_DATABASE_USERNAME: "dtrack"
+      INIT_TASKS_DATABASE_PASSWORD: "dtrack"
+      INIT_AND_EXIT: "true"
+
+  apiserver:
+    image: ghcr.io/dependencytrack/hyades-apiserver
+    depends_on:
+      initializer:
+        condition: service_completed_successfully
+    environment:
+      ALPINE_DATABASE_URL: "jdbc:postgresql://pgbouncer:6432/dtrack"
+      ALPINE_DATABASE_USERNAME: "dtrack"
+      ALPINE_DATABASE_PASSWORD: "dtrack"
+      ALPINE_DATABASE_POOL_ENABLED: "false"
+      INIT_TASKS_ENABLED: "false"
+
+  notification-publisher:
+    image: ghcr.io/dependencytrack/hyades-notification-publisher
+    depends_on:
+      initializer:
+        condition: service_completed_successfully
+    environment:
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://pgbouncer:6432/dtrack"
+      QUARKUS_DATASOURCE_USERNAME: "dtrack"
+      QUARKUS_DATASOURCE_PASSWORD: "dtrack"
+      QUARKUS_DATASOURCE_JDBC_POOLING_ENABLED: "false"
+```
+
+[Autovacuum]: https://www.postgresql.org/docs/current/routine-vacuuming.html
 [CockroachDB]: https://www.cockroachlabs.com/
 [Liquibase]: https://www.liquibase.com/
 [Neon]: https://neon.tech/
 [PGTune]: https://pgtune.leopard.in.ua/
+[PgBouncer]: https://www.pgbouncer.org/
 [PostgreSQL]: https://www.postgresql.org/
 [Postgres Operator]: https://github.com/zalando/postgres-operator
 [Timescale]: https://www.timescale.com/
@@ -239,4 +322,3 @@ The above with default to the main database credentials if not provided explicit
 [list of well-known commercial hosting providers]: https://www.postgresql.org/support/professional_hosting/
 [newest available version]: https://www.postgresql.org/support/versioning/
 [official upgrading guide]: https://www.postgresql.org/docs/current/upgrading.html
-[Autovacuum]: https://www.postgresql.org/docs/current/routine-vacuuming.html

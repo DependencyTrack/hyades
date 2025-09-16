@@ -50,6 +50,17 @@ To reduce the amount of data being copied, consider temporarily reducing the met
 retention timespan in the administration panel under *Configuration* → *Maintenance*.
 Only historic data falling within the configured retention duration will be migrated.
 
+* Database migrations have been integrated into the broader concept of *initialization tasks*.  
+Consequently, the following configuration properties were renamed:
+
+    | Before                         | After                          |
+    |:-------------------------------|:-------------------------------|
+    | `database.run.migrations`      | `init.tasks.enabled`           |
+    | `database.run.migrations.only` | `init.and.exit`                |
+    | `database.migration.url`       | `init.tasks.database.url`      |
+    | `database.migration.username`  | `init.tasks.database.username` |
+    | `database.migration.password`  | `init.tasks.database.password` |
+
 [apiserver/#840]: https://github.com/DependencyTrack/hyades-apiserver/pull/840
 [apiserver/#888]: https://github.com/DependencyTrack/hyades-apiserver/pull/888
 [apiserver/#904]: https://github.com/DependencyTrack/hyades-apiserver/pull/904

@@ -159,6 +159,7 @@ message Project {
   optional string description = 4;
   optional string purl = 5;
   repeated string tags = 6;
+  optional bool is_active = 7;
 }
 
 message PolicyViolation {

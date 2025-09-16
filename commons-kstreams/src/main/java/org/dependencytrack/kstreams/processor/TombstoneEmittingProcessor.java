@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -51,6 +52,8 @@ import java.util.function.Function;
 public class TombstoneEmittingProcessor<K, V> extends ContextualFixedKeyProcessor<K, V, V> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TombstoneEmittingProcessor.class);
+    private static final int PUNCTUATE_LATENCY_MEASUREMENT_RECORD_THRESHOLD = 1000;
+    private static final long MAX_PUNCTUATE_LATENCY_MS = TimeUnit.SECONDS.toMillis(5);
 
     private final String storeName;
     private final Duration checkInterval;
@@ -94,8 +97,35 @@ public class TombstoneEmittingProcessor<K, V> extends ContextualFixedKeyProcesso
     private void punctuate(final long timestamp) {
         final Instant cutoffTimestamp = Instant.ofEpochMilli(timestamp).minus(maxLifetime);
 
+        long recordsProcessed = 0;
+        final long punctuateStartTimeMillis = System.currentTimeMillis();
+        long punctuateLatencyMillis;
+
         try (final KeyValueIterator<K, Long> all = store.all()) {
             while (all.hasNext()) {
+                // Only measure punctuation latency every N records to reduce the
+                // CPU overhead of time comparisons.
+                recordsProcessed++;
+                if (recordsProcessed % PUNCTUATE_LATENCY_MEASUREMENT_RECORD_THRESHOLD == 0) {
+                    // For large state stores, it could happen that iterating over, and deserializing,
+                    // all entries takes too long. Punctuation blocks record processing and thus also
+                    // consumer polling. Enforce a ceiling as to how long punctuation can reasonably
+                    // take to prevent the consumer from being considered dead by the broker.
+                    //
+                    // Punctuation may be invoked for every single record so eventually the
+                    // work will get done, although spread over a longer time frame.
+                    punctuateLatencyMillis = System.currentTimeMillis() - punctuateStartTimeMillis;
+                    if (punctuateLatencyMillis >= MAX_PUNCTUATE_LATENCY_MS) {
+                        LOGGER.warn("""
+                                        Punctuator took {}ms to iterate over state store records. \
+                                        The maximum punctuation latency is {}ms. Aborting iteration \
+                                        to not block stream task thread for too long.""",
+                                punctuateLatencyMillis,
+                                MAX_PUNCTUATE_LATENCY_MS);
+                        break;
+                    }
+                }
+
                 final KeyValue<K, Long> record = all.next();
                 if (record.value != null && Instant.ofEpochMilli(record.value).isBefore(cutoffTimestamp)) {
                     LOGGER.debug("Sending tombstone for key {}", record.key);
