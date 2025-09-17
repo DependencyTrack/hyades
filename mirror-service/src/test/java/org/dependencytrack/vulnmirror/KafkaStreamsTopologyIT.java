@@ -58,7 +58,6 @@ import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToIgnoreCase;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -71,117 +70,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Suite
 @SelectClasses(value = {
-        KafkaStreamsTopologyIT.NvdMirrorIT.class,
         KafkaStreamsTopologyIT.GitHubMirrorIT.class,
         KafkaStreamsTopologyIT.OsvMirrorIT.class,
         KafkaStreamsTopologyIT.OsvMirrorCommaSeparatedListOfEcoSystemsIT.class,
         KafkaStreamsTopologyIT.EpssMirrorIT.class
 })
 class KafkaStreamsTopologyIT {
-
-    @QuarkusIntegrationTest
-    @TestProfile(NvdMirrorIT.TestProfile.class)
-    @ConnectWireMock
-    static class NvdMirrorIT {
-
-        public static class TestProfile implements QuarkusTestProfile {
-
-            @Override
-            public Map<String, String> getConfigOverrides() {
-
-                return Map.ofEntries(
-                        Map.entry("dtrack.vuln-source.nvd.enabled", "true"),
-                        Map.entry("dtrack.vuln-source.nvd.api.url", "http://localhost:${quarkus.wiremock.devservices.port}")
-                );
-            }
-
-            @Override
-            public List<TestResourceEntry> testResources() {
-                return List.of(new TestResourceEntry(KafkaCompanionResource.class));
-            }
-        }
-
-        @InjectKafkaCompanion
-        KafkaCompanion kafkaCompanion;
-
-        WireMock wireMock;
-
-        @Test
-        void test() throws Exception {
-            // Simulate the first page of CVEs, containing 2 CVEs.
-            wireMock.register(get(urlPathEqualTo("/"))
-                    .withQueryParam("startIndex", equalTo("0"))
-                    .willReturn(aResponse()
-                            .withStatus(200)
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/nvd/cves-page-01.json")))));
-
-            // Simulate the second page of CVEs, containing only one item.
-            // NOTE: The nvd-lib library will request pages of 2000 items each,
-            // that's why we're expecting a startIndex=2000 parameter here.
-            wireMock.register(get(urlPathEqualTo("/"))
-                    .withQueryParam("startIndex", equalTo("2000"))
-                    .willReturn(aResponse()
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/nvd/cves-page-02.json")))));
-
-            // Trigger a NVD mirroring operation.
-            kafkaCompanion
-                    .produce(Serdes.String(), Serdes.String())
-                    .fromRecords(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName(), "NVD", null));
-
-            // Wait for all expected vulnerability records; There should be one for each CVE.
-            final List<ConsumerRecord<String, Bom>> results = kafkaCompanion
-                    .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
-                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                    .withAutoCommit()
-                    .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
-                    .awaitCompletion()
-                    .getRecords();
-
-            // Ensure the vulnerability details are correct.
-            assertThat(results).satisfiesExactlyInAnyOrder(
-                    record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-40489");
-                        assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
-
-                        final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-40489");
-                        assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
-                    },
-                    record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-40849");
-                        assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
-
-                        final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-40849");
-                        assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
-                    },
-                    record -> {
-                        assertThat(record.key()).isEqualTo("NVD/CVE-2022-44262");
-                        assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
-
-                        final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("CVE-2022-44262");
-                        assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("NVD");
-                    }
-            );
-
-            // Wait for the notification that reports the successful mirroring operation.
-            final List<ConsumerRecord<String, Notification>> notifications = kafkaCompanion
-                    .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
-                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                    .withAutoCommit()
-                    .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
-                    .awaitCompletion()
-                    .getRecords();
-            assertThat(notifications).hasSize(1);
-        }
-
-    }
 
     @QuarkusIntegrationTest
     @TestProfile(GitHubMirrorIT.TestProfile.class)

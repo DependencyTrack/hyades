@@ -44,19 +44,19 @@ class MirrorStateStoreTest {
 
     @Test
     void testPutAndWait() {
-        final ObjectNode nvdState = JsonNodeFactory.instance.objectNode();
-        nvdState.put("foo", "bar");
-        nvdState.put("baz", 12345);
+        final ObjectNode osvState = JsonNodeFactory.instance.objectNode();
+        osvState.put("foo", "bar");
+        osvState.put("baz", 12345);
 
         final String githubState = "foobarbaz";
 
-        stateStore.putAndWait(Datasource.NVD, nvdState);
+        stateStore.putAndWait(Datasource.OSV, osvState);
         stateStore.putAndWait(Datasource.GITHUB, githubState);
 
-        final ObjectNode savedNvdState = stateStore.get(Datasource.NVD, ObjectNode.class);
-        assertThat(savedNvdState).isNotNull();
-        assertThat(savedNvdState.get("foo").asText()).isEqualTo("bar");
-        assertThat(savedNvdState.get("baz").asInt()).isEqualTo(12345);
+        final ObjectNode savedOsvState = stateStore.get(Datasource.OSV, ObjectNode.class);
+        assertThat(savedOsvState).isNotNull();
+        assertThat(savedOsvState.get("foo").asText()).isEqualTo("bar");
+        assertThat(savedOsvState.get("baz").asInt()).isEqualTo(12345);
 
         final String savedGithubState = stateStore.get(Datasource.GITHUB, String.class);
         assertThat(savedGithubState).isEqualTo("foobarbaz");
@@ -64,7 +64,7 @@ class MirrorStateStoreTest {
 
     @Test
     void testGet() {
-        final ObjectNode savedState = stateStore.get(Datasource.NVD, ObjectNode.class);
+        final ObjectNode savedState = stateStore.get(Datasource.OSV, ObjectNode.class);
         assertThat(savedState).isNull();
     }
 
@@ -74,10 +74,10 @@ class MirrorStateStoreTest {
         state.put("foo", "bar");
         state.put("baz", 12345);
 
-        stateStore.putAndWait(Datasource.NVD, state);
+        stateStore.putAndWait(Datasource.OSV, state);
 
         assertThatExceptionOfType(SerializationException.class)
-                .isThrownBy(() -> stateStore.get(Datasource.NVD, ArrayNode.class));
+                .isThrownBy(() -> stateStore.get(Datasource.OSV, ArrayNode.class));
     }
 
 }
