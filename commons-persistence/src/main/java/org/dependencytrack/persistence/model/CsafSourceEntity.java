@@ -49,13 +49,13 @@ public class CsafSourceEntity implements Serializable {
     @Column(name = "URL")
     private String url;
 
-    @Column(name = "ENABLED")
+    @Column(name = "ENABLED", nullable = false)
     private boolean enabled;
 
     @Column(name = "CONTENT", columnDefinition = "CLOB")
     private String content;
 
-    @Column(name = "SEEN")
+    @Column(name = "SEEN", nullable = false)
     private boolean seen;
 
     @Column(name = "LASTFETCHED")
@@ -64,10 +64,10 @@ public class CsafSourceEntity implements Serializable {
     @Column(name = "AGGREGATOR")
     private boolean aggregator;
 
-    @Column(name = "DISCOVERY")
+    @Column(name = "DISCOVERY", nullable = false)
     private boolean discovery;
 
-    @Column(name = "DOMAIN")
+    @Column(name = "DOMAIN", nullable = false)
     private boolean domain;
 
     public CsafSourceEntity() {
