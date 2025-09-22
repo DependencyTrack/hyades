@@ -22,8 +22,6 @@ public enum Datasource {
 
     GITHUB,
 
-    NVD,
-
     OSV,
 
     EPSS
