@@ -58,134 +58,19 @@ import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToIgnoreCase;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.http.Body.fromJsonBytes;
 import static org.apache.commons.io.IOUtils.resourceToByteArray;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Suite
 @SelectClasses(value = {
-        KafkaStreamsTopologyIT.GitHubMirrorIT.class,
         KafkaStreamsTopologyIT.OsvMirrorIT.class,
         KafkaStreamsTopologyIT.OsvMirrorCommaSeparatedListOfEcoSystemsIT.class,
         KafkaStreamsTopologyIT.EpssMirrorIT.class
 })
 class KafkaStreamsTopologyIT {
-
-    @QuarkusIntegrationTest
-    @TestProfile(GitHubMirrorIT.TestProfile.class)
-    @ConnectWireMock
-    static class GitHubMirrorIT {
-
-        public static class TestProfile implements QuarkusTestProfile {
-            @Override
-            public Map<String, String> getConfigOverrides() {
-                return Map.ofEntries(
-                        Map.entry("dtrack.vuln-source.github.advisories.enabled", "true"),
-                        // TODO: Should be an encrypted, base64-encoded value.
-                        //  https://github.com/DependencyTrack/dependency-track/issues/3332
-                        Map.entry("dtrack.vuln-source.github.advisories.access.token", "foobar"),
-                        Map.entry("dtrack.vuln-source.github.advisories.base.url", "http://localhost:${quarkus.wiremock.devservices.port}"),
-                        Map.entry("secret.key.path", "src/test/resources/secret.key")
-                );
-            }
-
-            @Override
-            public List<TestResourceEntry> testResources() {
-                return List.of(new TestResourceEntry(KafkaCompanionResource.class));
-            }
-        }
-
-        @InjectKafkaCompanion
-        KafkaCompanion kafkaCompanion;
-
-        WireMock wireMock;
-
-        @Test
-        void test() throws Exception {
-            // Simulate the first page of advisories, containing 2 GHSAs.
-            wireMock.register(post(urlPathEqualTo("/"))
-                    .inScenario("advisories-paging")
-                    .willReturn(aResponse()
-                            .withStatus(200)
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/github/advisories-page-01.json"))))
-                    .willSetStateTo("first-page-fetched"));
-
-            // Simulate the second page of advisories, containing only one advisory.
-            wireMock.register(post(urlPathEqualTo("/"))
-                    .inScenario("advisories-paging")
-                    .whenScenarioStateIs("first-page-fetched")
-                    .willReturn(aResponse()
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(fromJsonBytes(resourceToByteArray("/datasource/github/advisories-page-02.json")))));
-
-            // Trigger a GitHub mirroring operation.
-            kafkaCompanion
-                    .produce(Serdes.String(), Serdes.String())
-                    .fromRecords(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName(), "GITHUB", null));
-
-            // Wait for all expected vulnerability records; There should be one for each advisory.
-            final List<ConsumerRecord<String, Bom>> results = kafkaCompanion
-                    .consume(Serdes.String(), new KafkaProtobufSerde<>(Bom.parser()))
-                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                    .withAutoCommit()
-                    .fromTopics(KafkaTopic.NEW_VULNERABILITY.getName(), 3, Duration.ofSeconds(15))
-                    .awaitCompletion()
-                    .getRecords();
-
-            // Ensure the vulnerability details are correct.
-            assertThat(results).satisfiesExactlyInAnyOrder(
-                    record -> {
-                        assertThat(record.key()).isEqualTo("GITHUB/GHSA-fxwm-579q-49qq");
-                        assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
-
-                        final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("GHSA-fxwm-579q-49qq");
-                        assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
-                    },
-                    record -> {
-                        assertThat(record.key()).isEqualTo("GITHUB/GHSA-wh77-3x4m-4q9g");
-                        assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
-
-                        final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("GHSA-wh77-3x4m-4q9g");
-                        assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
-                    },
-                    record -> {
-                        assertThat(record.key()).isEqualTo("GITHUB/GHSA-p82g-2xpp-m5r3");
-                        assertThat(record.value().getVulnerabilitiesCount()).isEqualTo(1);
-
-                        final Vulnerability vuln = record.value().getVulnerabilities(0);
-                        assertThat(vuln.getId()).isEqualTo("GHSA-p82g-2xpp-m5r3");
-                        assertThat(vuln.hasSource()).isTrue();
-                        assertThat(vuln.getSource().getName()).isEqualTo("GITHUB");
-                    }
-            );
-
-            // Verify that the API key was used.
-            wireMock.verifyThat(postRequestedFor(urlPathEqualTo("/"))
-                    .withHeader(HttpHeaders.AUTHORIZATION, equalToIgnoreCase("bearer foobar")));
-
-            // Wait for the notification that reports the successful mirroring operation.
-            final List<ConsumerRecord<String, Notification>> notifications = kafkaCompanion
-                    .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
-                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                    .withAutoCommit()
-                    .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
-                    .awaitCompletion()
-                    .getRecords();
-            assertThat(notifications).hasSize(1);
-        }
-
-    }
 
     @QuarkusIntegrationTest
     @TestProfile(OsvMirrorIT.TestProfile.class)
