@@ -4704,6 +4704,62 @@ Cron expression of the vulnerability GitHub Advisories mirroring task.
 
 ---
 
+### task.git.hub.advisory.mirror.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the GitHub mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_GIT_HUB_ADVISORY_MIRROR_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.git.hub.advisory.mirror.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the GitHub mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_GIT_HUB_ADVISORY_MIRROR_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### task.integrity.meta.initializer.cron
 
 Cron expression of the integrity metadata initializer task.  
