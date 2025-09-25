@@ -20,7 +20,6 @@ package org.dependencytrack.vulnmirror.datasource;
 
 public enum Datasource {
 
-    OSV,
-
-    EPSS
+    OSV
+    
 }

@@ -81,6 +81,5 @@ create_topic "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.command" "1"
 create_topic "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.vulnerability.mirror.state" "1" "cleanup.policy=compact segment.bytes=67108864 max.compaction.lag.ms=1"
 create_topic "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.vulnerability.digest" "1" "cleanup.policy=compact segment.bytes=134217728"
 create_topic "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
-create_topic "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.epss" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
 
 echo "All topics created successfully"
