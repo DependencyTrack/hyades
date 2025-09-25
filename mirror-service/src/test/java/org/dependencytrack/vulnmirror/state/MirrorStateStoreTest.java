@@ -48,17 +48,17 @@ class MirrorStateStoreTest {
         osvState.put("foo", "bar");
         osvState.put("baz", 12345);
 
-        final String githubState = "foobarbaz";
+        final String epssState = "foobarbaz";
 
         stateStore.putAndWait(Datasource.OSV, osvState);
-        stateStore.putAndWait(Datasource.GITHUB, githubState);
+        stateStore.putAndWait(Datasource.EPSS, epssState);
 
         final ObjectNode savedOsvState = stateStore.get(Datasource.OSV, ObjectNode.class);
         assertThat(savedOsvState).isNotNull();
         assertThat(savedOsvState.get("foo").asText()).isEqualTo("bar");
         assertThat(savedOsvState.get("baz").asInt()).isEqualTo(12345);
 
-        final String savedGithubState = stateStore.get(Datasource.GITHUB, String.class);
+        final String savedGithubState = stateStore.get(Datasource.EPSS, String.class);
         assertThat(savedGithubState).isEqualTo("foobarbaz");
     }
 
