@@ -1936,266 +1936,6 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 ---
 
-### kafka.processor.epss.mirror.consumer.auto.offset.reset
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.consumer.group.id
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.max.batch.size
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>500</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_MAX_BATCH_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.max.concurrency
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.processing.order
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.retry.initial.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.retry.max.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.retry.multiplier
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.retry.randomization.factor
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### kafka.processor.repo.meta.analysis.result.consumer.auto.offset.reset
 
 
@@ -4641,6 +4381,62 @@ Cron expression of the EPSS mirroring task.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_EPSS_MIRROR_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.epss.mirror.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the EPSS mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_EPSS_MIRROR_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.epss.mirror.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the EPSS mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_EPSS_MIRROR_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
