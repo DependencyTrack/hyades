@@ -29,9 +29,6 @@ import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import jakarta.ws.rs.core.MediaType;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.http.HttpHeaders;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -40,24 +37,16 @@ import org.cyclonedx.proto.v1_6.Bom;
 import org.cyclonedx.proto.v1_6.Vulnerability;
 import org.dependencytrack.common.KafkaTopic;
 import org.dependencytrack.proto.KafkaProtobufSerde;
-import org.dependencytrack.proto.mirror.v1.EpssItem;
 import org.dependencytrack.proto.notification.v1.Notification;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
@@ -68,7 +57,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SelectClasses(value = {
         KafkaStreamsTopologyIT.OsvMirrorIT.class,
         KafkaStreamsTopologyIT.OsvMirrorCommaSeparatedListOfEcoSystemsIT.class,
-        KafkaStreamsTopologyIT.EpssMirrorIT.class
 })
 class KafkaStreamsTopologyIT {
 
@@ -265,99 +253,4 @@ class KafkaStreamsTopologyIT {
 
     }
 
-    @QuarkusIntegrationTest
-    @TestProfile(EpssMirrorIT.TestProfile.class)
-    @ConnectWireMock
-    static class EpssMirrorIT {
-
-        public static class TestProfile implements QuarkusTestProfile {
-
-            @Override
-            public Map<String, String> getConfigOverrides() {
-                return Map.ofEntries(
-                        Map.entry("dtrack.vuln-source.epss.enabled", "true"),
-                        Map.entry("dtrack.vuln-source.epss.feeds.url", "http://localhost:${quarkus.wiremock.devservices.port}")
-                );
-            }
-
-            @Override
-            public List<TestResourceEntry> testResources() {
-                return List.of(new TestResourceEntry(KafkaCompanionResource.class));
-            }
-        }
-
-        @InjectKafkaCompanion
-        KafkaCompanion kafkaCompanion;
-
-        WireMock wireMock;
-
-        static Path epssTestFile;
-
-        @BeforeAll
-        public static void setUp() throws IOException {
-            epssTestFile = Files.createTempFile("epss-items",".tar.gz");
-            try (OutputStream fOut = Files.newOutputStream(epssTestFile);
-                 BufferedOutputStream buffOut = new BufferedOutputStream(fOut);
-                 GzipCompressorOutputStream gzOut = new GzipCompressorOutputStream(buffOut);
-                 TarArchiveOutputStream tOut = new TarArchiveOutputStream(gzOut)) {
-                    TarArchiveEntry tarEntry = new TarArchiveEntry(Path.of("src/test/resources/datasource/epss/epss-items.csv"), "epss-items.csv");
-                    tOut.putArchiveEntry(tarEntry);
-                    Files.copy(Path.of("src/test/resources/datasource/epss/epss-items.csv"), tOut);
-                    tOut.closeArchiveEntry();
-                    tOut.finish();
-            }
-        }
-
-        @Test
-        void test() throws IOException {
-            // Simulate list of eppsItems containing 2 records.
-            wireMock.register(get(anyUrl())
-                    .inScenario("epss-download")
-                    .willReturn(aResponse()
-                            .withStatus(200)
-                            .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                            .withResponseBody(Body.ofBinaryOrText(Files.readAllBytes(epssTestFile.toAbsolutePath()), new ContentTypeHeader(MediaType.APPLICATION_JSON))))
-                    .willSetStateTo("epss-fetched"));
-
-            // Trigger a EPSS mirroring operation.
-            kafkaCompanion
-                    .produce(Serdes.String(), Serdes.String())
-                    .fromRecords(new ProducerRecord<>(KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName(), "EPSS", null));
-
-            // Wait for all expected vulnerability records; There should be one for each advisory.
-            final List<ConsumerRecord<String, EpssItem>> results = kafkaCompanion
-                    .consume(Serdes.String(), new KafkaProtobufSerde<>(EpssItem.parser()))
-                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                    .withAutoCommit()
-                    .fromTopics(KafkaTopic.NEW_EPSS.getName(), 2, Duration.ofSeconds(15))
-                    .awaitCompletion()
-                    .getRecords();
-
-            // Ensure the EPSS details are correct.
-            assertThat(results).satisfiesExactlyInAnyOrder(
-                    record -> {
-                        assertThat(record.key()).isEqualTo("CVE-123");
-                        final EpssItem epssItem = record.value();
-                        assertThat(epssItem.getEpss()).isEqualTo(1.2);
-                        assertThat(epssItem.getPercentile()).isEqualTo(3.4);
-                    },
-                    record -> {
-                        assertThat(record.key()).isEqualTo("CVE-456");
-                        final EpssItem epssItem = record.value();
-                        assertThat(epssItem.getEpss()).isEqualTo(6.7);
-                        assertThat(epssItem.getPercentile()).isEqualTo(8.9);
-                    }
-            );
-
-            // Wait for the notification that reports the successful mirroring operation.
-            final List<ConsumerRecord<String, Notification>> notifications = kafkaCompanion
-                    .consume(Serdes.String(), new KafkaProtobufSerde<>(Notification.parser()))
-                    .withGroupId(TestConstants.CONSUMER_GROUP_ID)
-                    .withAutoCommit()
-                    .fromTopics(KafkaTopic.NOTIFICATION_DATASOURCE_MIRRORING.getName(), 1, Duration.ofSeconds(5))
-                    .awaitCompletion()
-                    .getRecords();
-            assertThat(notifications).hasSize(1);
-        }
-    }
 }
