@@ -42,8 +42,6 @@ public enum KafkaTopic {
     VULN_ANALYSIS_COMPONENT("dtrack.vuln-analysis.component"),
     VULN_ANALYSIS_RESULT("dtrack.vuln-analysis.result"),
     NEW_VULNERABILITY("dtrack.vulnerability"),
-    VULNERABILITY_MIRROR_COMMAND("dtrack.vulnerability.mirror.command"),
-    VULNERABILITY_MIRROR_STATE("dtrack.vulnerability.mirror.state"),
     VULNERABILITY_DIGEST("dtrack.vulnerability.digest"),
     NEW_EPSS("dtrack.epss");
 

@@ -51,7 +51,7 @@ Rough overview of the architecture:
 
 ![Architecture Overview](docs/architecture-overview.png)
 
-Except the mirror service (which is not actively involved in event processing), all services can be scaled up and down,
+All services can be scaled up and down,
 to and from multiple instances. Despite being written in Java, all services except the API server can optionally be
 deployed as self-contained native binaries, offering a lower resource footprint.
 
