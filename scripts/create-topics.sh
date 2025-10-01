@@ -45,7 +45,6 @@ notification_topics=(
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.datasource-mirroring"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.file-system"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.integration"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.new-vulnerability"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.new-vulnerable-dependency"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.policy-violation"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.project-audit-change"

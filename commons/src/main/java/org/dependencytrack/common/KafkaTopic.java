@@ -41,7 +41,6 @@ public enum KafkaTopic {
     VULN_ANALYSIS_SCANNER_RESULT("dtrack.vuln-analysis.scanner.result"),
     VULN_ANALYSIS_COMPONENT("dtrack.vuln-analysis.component"),
     VULN_ANALYSIS_RESULT("dtrack.vuln-analysis.result"),
-    NEW_VULNERABILITY("dtrack.vulnerability"),
     VULNERABILITY_DIGEST("dtrack.vulnerability.digest"),
     NEW_EPSS("dtrack.epss");
 
