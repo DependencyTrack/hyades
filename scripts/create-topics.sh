@@ -45,6 +45,7 @@ notification_topics=(
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.datasource-mirroring"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.file-system"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.integration"
+  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.new-vulnerability"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.new-vulnerable-dependency"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.policy-violation"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.project-audit-change"
@@ -75,8 +76,5 @@ vuln_analysis_topics=(
 for topic_name in "${vuln_analysis_topics[@]}"; do
   create_topic "$topic_name" "${VULN_ANALYSIS_TOPICS_PARTITIONS:-3}" "retention.ms=${VULN_ANALYSIS_TOPICS_RETENTION_MS:-43200000}"
 done
-
-create_topic "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.vulnerability.digest" "1" "cleanup.policy=compact segment.bytes=134217728"
-create_topic "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.vulnerability" "${VULN_MIRROR_TOPICS_PARTITIONS:-3}" "cleanup.policy=compact"
 
 echo "All topics created successfully"

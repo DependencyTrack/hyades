@@ -40,9 +40,7 @@ public enum KafkaTopic {
     REPO_META_ANALYSIS_RESULT("dtrack.repo-meta-analysis.result"),
     VULN_ANALYSIS_SCANNER_RESULT("dtrack.vuln-analysis.scanner.result"),
     VULN_ANALYSIS_COMPONENT("dtrack.vuln-analysis.component"),
-    VULN_ANALYSIS_RESULT("dtrack.vuln-analysis.result"),
-    VULNERABILITY_DIGEST("dtrack.vulnerability.digest"),
-    NEW_EPSS("dtrack.epss");
+    VULN_ANALYSIS_RESULT("dtrack.vuln-analysis.result");
 
     private final String name;
 
