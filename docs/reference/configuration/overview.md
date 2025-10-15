@@ -107,27 +107,4 @@ to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/mai
 to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/vulnerability-analyzer/src/main/resources/application.properties)
 > for a complete overview of available config options.
 
-### Mirror Service
-
-| Environment Variable                                          | Description                                                 | Default          | Required |
-|:--------------------------------------------------------------|:------------------------------------------------------------|:-----------------|:--------:|
-| `KAFKA_BOOTSTRAP_SERVERS`                                     | Comma-separated list of Kafka servers                       | `localhost:9092` |    ✅     |
-| `KAFKA_SSL_ENABLED`                                           | SSL enabled for using kafka broker                          | `false`          |    ❌     |
-| `KAFKA_STREAMS_NUM_STREAM_THREADS`                            | Number of Kafka Streams threads                             | `3`              |    ❌     |
-| `KAFKA_STREAMS_EXCEPTION_THRESHOLDS_DESERIALIZATION_COUNT`    | Threshold number of acceptable deserialization errors       | `5`              |    ❌     |
-| `KAFKA_STREAMS_EXCEPTION_THRESHOLDS_DESERIALIZATION_INTERVAL` | Interval for threshold of acceptable deserialization errors | `PT30M`          |    ❌     |
-| `KAFKA_STREAMS_EXCEPTION_THRESHOLDS_PROCESSING_COUNT`         | Threshold number of acceptable processing errors            | `50`             |    ❌     |
-| `KAFKA_STREAMS_EXCEPTION_THRESHOLDS_PROCESSING_INTERVAL`      | Interval for threshold of acceptable processing errors      | `PT30M`          |    ❌     |
-| `KAFKA_STREAMS_EXCEPTION_THRESHOLDS_PRODUCTION_COUNT`         | Threshold number of acceptable production errors            | `5`              |    ❌     |
-| `KAFKA_STREAMS_EXCEPTION_THRESHOLDS_PRODUCTION_INTERVAL`      | Interval for threshold of acceptable production errors      | `PT30M`          |    ❌     |
-| `MIRROR_DATASOURCE_GITHUB_ALIAS_SYNC_ENABLED`                 | Enable alias syncing for GitHub Advisories                  | `false`          |    ❌     |
-| `MIRROR_DATASOURCE_OSV_ALIAS_SYNC_ENABLED`                    | Enable alias syncing for OSV                                | `false`          |    ❌     |
-| `QUARKUS_LOG_CONSOLE_JSON`                                    | Enable logging in JSON format                               | `false`          |    ❌     |
-
-> **Note**  
-> Refer
->
-to [`application.properties`](https://github.com/DependencyTrack/hyades/blob/main/mirror-service/src/main/resources/application.properties)
-> for a complete overview of available config options.
-
 [Quarkus docs]: https://quarkus.io/guides/config-reference#configuration-sources

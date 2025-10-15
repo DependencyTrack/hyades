@@ -224,29 +224,6 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
     @Test
     @Override
     @TestTransaction
-    void testInformWithDataSourceMirroringNotification() throws Exception {
-        super.testInformWithDataSourceMirroringNotification();
-
-        wireMock.verifyThat(postRequestedFor(anyUrl())
-                .withHeader("Content-Type", equalTo("application/json"))
-                .withRequestBody(equalToJson("""
-                        {
-                          "notification": {
-                            "level": "LEVEL_ERROR",
-                            "scope": "SCOPE_SYSTEM",
-                            "group": "GROUP_DATASOURCE_MIRRORING",
-                            "timestamp": "1970-01-01T18:31:06.000Z",
-                            "title": "GitHub Advisory Mirroring",
-                            "content": "An error occurred mirroring the contents of GitHub Advisories. Check log for details.",
-                            "subject": null
-                          }
-                        }
-                        """)));
-    }
-
-    @Test
-    @Override
-    @TestTransaction
     void testInformWithNewVulnerabilityNotification() throws Exception {
         super.testInformWithNewVulnerabilityNotification();
 

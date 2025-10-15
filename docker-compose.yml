@@ -103,34 +103,6 @@ services:
       - demo
     restart: unless-stopped
 
-  mirror-service:
-    image: ghcr.io/dependencytrack/hyades-mirror-service:snapshot-native
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redpanda:
-        condition: service_healthy
-      initializer:
-        condition: service_completed_successfully
-      secret-init:
-        condition: service_completed_successfully
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "3"
-      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
-      QUARKUS_DATASOURCE_USERNAME: "dtrack"
-      QUARKUS_DATASOURCE_PASSWORD: "dtrack"
-      SECRET_KEY_PATH: "/var/run/secrets/secret.key"
-    ports:
-      # Dynamic host port binding to allow for scaling of the service.
-      # Scaling with Compose doesn't work when assigning static host ports.
-      - "8093"
-    profiles:
-      - demo
-    volumes:
-      - "secret-data:/var/run/secrets:ro"
-    restart: unless-stopped
-
   initializer:
     image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
     container_name: dt-initializer
@@ -267,7 +239,6 @@ services:
       # REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
       # VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
       # VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
-      # VULN_MIRROR_TOPICS_PARTITIONS: "3"
       # VULN_MIRROR_TOPICS_RETENTION_MS: "43200000" # 12h
     volumes:
       - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro"

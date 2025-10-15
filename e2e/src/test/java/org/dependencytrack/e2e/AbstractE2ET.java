@@ -58,8 +58,6 @@ public class AbstractE2ET {
     protected static DockerImageName REDPANDA_IMAGE = DockerImageName.parse("docker.redpanda.com/redpandadata/redpanda:v24.2.17");
     protected static DockerImageName API_SERVER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-apiserver")
             .withTag(Optional.ofNullable(System.getenv("APISERVER_VERSION")).orElse("snapshot"));
-    protected static DockerImageName MIRROR_SERVICE_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-mirror-service")
-            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
     protected static DockerImageName NOTIFICATION_PUBLISHER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-notification-publisher")
             .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
     protected static DockerImageName REPO_META_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-repository-meta-analyzer")
@@ -72,7 +70,6 @@ public class AbstractE2ET {
     protected PostgreSQLContainer<?> postgresContainer;
     protected GenericContainer<?> redpandaContainer;
     protected GenericContainer<?> apiServerContainer;
-    protected GenericContainer<?> mirrorServiceContainer;
     protected GenericContainer<?> notificationPublisherContainer;
     protected GenericContainer<?> repoMetaAnalyzerContainer;
     protected GenericContainer<?> vulnAnalyzerContainer;
@@ -90,13 +87,11 @@ public class AbstractE2ET {
         runInitializer();
 
         apiServerContainer = createApiServerContainer();
-        mirrorServiceContainer = createMirrorServiceContainer();
         notificationPublisherContainer = createNotificationPublisherContainer();
         repoMetaAnalyzerContainer = createRepoMetaAnalyzerContainer();
         vulnAnalyzerContainer = createVulnAnalyzerContainer();
         deepStart(
                 apiServerContainer,
-                mirrorServiceContainer,
                 notificationPublisherContainer,
                 repoMetaAnalyzerContainer,
                 vulnAnalyzerContainer
@@ -194,31 +189,6 @@ public class AbstractE2ET {
     }
 
     protected void customizeApiServerContainer(final GenericContainer<?> container) {
-    }
-
-    @SuppressWarnings("resource")
-    private GenericContainer<?> createMirrorServiceContainer() {
-        final var container = new GenericContainer<>(MIRROR_SERVICE_IMAGE)
-                .withImagePullPolicy("local".equals(MIRROR_SERVICE_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
-                .withEnv("JAVA_OPTS", "-Xmx256m")
-                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
-                .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
-                .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
-                .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
-                .withEnv("SECRET_KEY_PATH", "/var/run/secrets/secret.key")
-                .withCopyFileToContainer(
-                        MountableFile.forHostPath(secretKeyPath, 444),
-                        "/var/run/secrets/secret.key"
-                )
-                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("mirror-service")))
-                .withNetworkAliases("mirror-service")
-                .withNetwork(internalNetwork)
-                .withStartupAttempts(3);
-        customizeMirrorServiceContainer(container);
-        return container;
-    }
-
-    protected void customizeMirrorServiceContainer(final GenericContainer<?> container) {
     }
 
     @SuppressWarnings("resource")
@@ -340,7 +310,6 @@ public class AbstractE2ET {
         Optional.ofNullable(vulnAnalyzerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(repoMetaAnalyzerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(notificationPublisherContainer).ifPresent(GenericContainer::stop);
-        Optional.ofNullable(mirrorServiceContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(apiServerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(redpandaContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(postgresContainer).ifPresent(GenericContainer::stop);
