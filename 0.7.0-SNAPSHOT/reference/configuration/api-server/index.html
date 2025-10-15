@@ -3377,6 +3377,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#taskosvmirrorlockmaxduration" class="md-nav__link">
+    <span class="md-ellipsis">
+      task.osv.mirror.lock.max.duration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#taskosvmirrorlockminduration" class="md-nav__link">
+    <span class="md-ellipsis">
+      task.osv.mirror.lock.min.duration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#taskportfoliometricsupdatecron" class="md-nav__link">
     <span class="md-ellipsis">
       task.portfolio.metrics.update.cron
@@ -8112,6 +8130,54 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_OSV_MIRROR_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="taskosvmirrorlockmaxduration">task.osv.mirror.lock.max.duration<a class="headerlink" href="#taskosvmirrorlockmaxduration" title="Permanent link">&para;</a></h3>
+<p>Maximum duration in ISO 8601 format for which the OSV mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_OSV_MIRROR_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="taskosvmirrorlockminduration">task.osv.mirror.lock.min.duration<a class="headerlink" href="#taskosvmirrorlockminduration" title="Permanent link">&para;</a></h3>
+<p>Minimum duration in ISO 8601 format for which the OSV mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_OSV_MIRROR_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
