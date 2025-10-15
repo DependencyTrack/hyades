@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # tag=v5.0.0
     - name: Setup buf
       uses: bufbuild/buf-setup-action@9672cee01808979ea1249f81d6d321217b9a10f6 # tag=v1.47.2
       with:
