@@ -2969,15 +2969,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#filestorageextensionlocalcompressionthresholdbytes" class="md-nav__link">
-    <span class="md-ellipsis">
-      file.storage.extension.local.compression.threshold.bytes
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#filestorageextensionlocaldirectory" class="md-nav__link">
     <span class="md-ellipsis">
       file.storage.extension.local.directory
@@ -3026,15 +3017,6 @@
   <a href="#filestorageextensions3compressionlevel" class="md-nav__link">
     <span class="md-ellipsis">
       file.storage.extension.s3.compression.level
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#filestorageextensions3compressionthresholdbytes" class="md-nav__link">
-    <span class="md-ellipsis">
-      file.storage.extension.s3.compression.threshold.bytes
     </span>
   </a>
   
@@ -7123,30 +7105,6 @@
 </table>
 
 <hr />
-<h3 id="filestorageextensionlocalcompressionthresholdbytes">file.storage.extension.local.compression.threshold.bytes<a class="headerlink" href="#filestorageextensionlocalcompressionthresholdbytes" title="Permanent link">&para;</a></h3>
-<p>Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless <a href="#filestorageextensionlocalenabled"><code>file.storage.extension.local.enabled</code></a> is <code>true</code>.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>4096</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_COMPRESSION_THRESHOLD_BYTES</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
 <h3 id="filestorageextensionlocaldirectory">file.storage.extension.local.directory<a class="headerlink" href="#filestorageextensionlocaldirectory" title="Permanent link">&para;</a></h3>
 <p>Defines the local directory where files shall be stored.  Has no effect unless <a href="#filestorageextensionlocalenabled"><code>file.storage.extension.local.enabled</code></a> is <code>true</code>.  </p>
 <table>
@@ -7290,30 +7248,6 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_LEVEL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="filestorageextensions3compressionthresholdbytes">file.storage.extension.s3.compression.threshold.bytes<a class="headerlink" href="#filestorageextensions3compressionthresholdbytes" title="Permanent link">&para;</a></h3>
-<p>Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless <a href="#filestorageextensions3enabled"><code>file.storage.extension.s3.enabled</code></a> is <code>true</code>.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>4096</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_THRESHOLD_BYTES</code></td>
     </tr>
   </tbody>
 </table>
