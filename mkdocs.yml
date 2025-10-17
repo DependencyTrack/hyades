@@ -102,6 +102,8 @@ nav:
         - Workflow State Tracking: architecture/design/workflow-state-tracking.md
 - Operations:
     - Database: operations/database.md
+- Integration:
+    - Overview: integration/GitLab.md
 - Development:
   - Roles:
     - Overview: development/Roles/overview.md
