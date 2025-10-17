@@ -3848,34 +3848,6 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
 
 ---
 
-### file.storage.extension.local.compression.threshold.bytes
-
-Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>4096</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_COMPRESSION_THRESHOLD_BYTES</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### file.storage.extension.local.directory
 
 Defines the local directory where files shall be stored.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
@@ -4041,34 +4013,6 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_LEVEL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### file.storage.extension.s3.compression.threshold.bytes
-
-Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>4096</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_THRESHOLD_BYTES</code></td>
     </tr>
   </tbody>
 </table>
