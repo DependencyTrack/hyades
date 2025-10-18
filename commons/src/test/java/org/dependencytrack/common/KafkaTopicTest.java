@@ -41,12 +41,12 @@ class KafkaTopicTest {
         @Test
         void testKafkaTopicConfigWithPrefix() {
             System.setProperty("dt.kafka.topic.prefix", "customPrefix.");
-            assertEquals("customPrefix.dtrack.vulnerability.mirror.command", KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName());
+            assertEquals("customPrefix.dtrack.vuln-analysis.component", KafkaTopic.VULN_ANALYSIS_COMPONENT.getName());
         }
     }
 
     @Test
     void testKafkaTopicConfig() {
-        assertEquals("dtrack.vulnerability.mirror.command", KafkaTopic.VULNERABILITY_MIRROR_COMMAND.getName());
+        assertEquals("dtrack.vuln-analysis.component", KafkaTopic.VULN_ANALYSIS_COMPONENT.getName());
     }
 }

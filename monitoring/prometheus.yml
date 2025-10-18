@@ -51,14 +51,6 @@ scrape_configs:
   - names: [ "vuln-analyzer" ]
     type: A
     port: 8092
-- job_name: mirror-service
-  scrape_interval: 15s
-  scheme: http
-  metrics_path: /q/metrics
-  dns_sd_configs:
-    - names: [ "mirror-service" ]
-      type: A
-      port: 8092
 # static config to be used when running services locally and prometheus in a container
 #  static_configs:
 #    - targets: [ "host.docker.internal:8093" ]

@@ -23,12 +23,6 @@
 | `dtrack.vuln-analysis.result`                                                                     | 3          |                                                                                     |
 | `dtrack.vuln-analysis.result.processed`                                                           | 3          |                                                                                     |
 | `dtrack.vuln-analysis.scanner.result`<sup>1B</sup>                                                | 3          |                                                                                     |
-| `dtrack.vulnerability`                                                                            | 3          | `cleanup.policy=compact`                                                            |
-| `dtrack.epss`                                                                                     | 3          | `cleanup.policy=compact`                                                            |
-| `dtrack.csaf.document`                                                                            | 3          | `cleanup.policy=compact`                                                            |
-| `dtrack.vulnerability.digest`<sup>2</sup>                                                         | 1          | `cleanup.policy=compact`                                                            |
-| `dtrack.vulnerability.mirror.command`<sup>2</sup>                                                 | 1          |                                                                                     |
-| `dtrack.vulnerability.mirror.state`<sup>2</sup>                                                   | 1          | `cleanup.policy=compact`                                                            |
 | `hyades-repository-meta-analyzer-command-by-purl-coordinates-repartition`<sup>1A</sup>            | 3          |                                                                                     |
 | `hyades-vulnerability-analyzer-completed-scans-table-changelog`<sup>1B</sup>                      | 3          | `cleanup.policy=compact`<br/>`segment.bytes=67108864`<br/>`max.compaction.lag.ms=1` |
 | `hyades-vulnerability-analyzer-expected-scanner-results-last-update-store-changelog`<sup>1B</sup> | 3          | `cleanup.policy=compact`<br/>`segment.bytes=67108864`<br/>`max.compaction.lag.ms=1` |

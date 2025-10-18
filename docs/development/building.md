@@ -20,7 +20,7 @@ For application modules, this will produce a [Quarkus fast-jar] in their respect
 To only build JARs for specific modules, use Maven's `-pl` flag:
 
 ```shell
-mvn -pl mirror-service,vulnerability-analyzer clean package -DskipTests
+mvn -pl vulnerability-analyzer clean package -DskipTests
 ```
 
 !!! note

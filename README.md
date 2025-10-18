@@ -5,6 +5,14 @@
 [![Codacy Code Quality Badge](https://app.codacy.com/project/badge/Grade/64c349c2b92340ffb83f7dba1d6b03e5)](https://app.codacy.com/gh/DependencyTrack/hyades/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Codacy Coverage Badge](https://app.codacy.com/project/badge/Coverage/64c349c2b92340ffb83f7dba1d6b03e5)](https://app.codacy.com/gh/DependencyTrack/hyades/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 
+> [!WARNING]
+> The description below is **severely outdated** and will be refreshed soon.
+> 
+> Most notably, we decided to *move away from Kafka* and focus on *covering all our needs with PostgreSQL* instead.  
+> For the time being, please refer to our [architecture decision records](https://github.com/DependencyTrack/hyades/tree/main/docs/architecture/decisions) for more details.
+>
+> We hope to update and overhaul the documentation soon, but at the moment there is higher priority work to be done. :)
+
 ## What is this? 🤔
 
 Hyades, named after [the star cluster closest to earth](https://en.wikipedia.org/wiki/Hyades_(star_cluster)), 
@@ -43,7 +51,7 @@ Rough overview of the architecture:
 
 ![Architecture Overview](docs/architecture-overview.png)
 
-Except the mirror service (which is not actively involved in event processing), all services can be scaled up and down,
+All services can be scaled up and down,
 to and from multiple instances. Despite being written in Java, all services except the API server can optionally be
 deployed as self-contained native binaries, offering a lower resource footprint.
 

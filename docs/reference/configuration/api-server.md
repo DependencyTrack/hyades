@@ -1936,266 +1936,6 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 ---
 
-### kafka.processor.epss.mirror.consumer.auto.offset.reset
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.consumer.group.id
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.max.batch.size
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>500</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_MAX_BATCH_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.max.concurrency
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.processing.order
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.retry.initial.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.retry.max.delay.ms
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.retry.multiplier
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.epss.mirror.retry.randomization.factor
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_EPSS_MIRROR_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### kafka.processor.repo.meta.analysis.result.consumer.auto.offset.reset
 
 
@@ -4108,34 +3848,6 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
 
 ---
 
-### file.storage.extension.local.compression.threshold.bytes
-
-Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>4096</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_COMPRESSION_THRESHOLD_BYTES</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### file.storage.extension.local.directory
 
 Defines the local directory where files shall be stored.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
@@ -4301,34 +4013,6 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_LEVEL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### file.storage.extension.s3.compression.threshold.bytes
-
-Defines the size threshold for files after which they will be compressed.  Compression is performed using the zstd algorithm.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>4096</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_THRESHOLD_BYTES</code></td>
     </tr>
   </tbody>
 </table>
@@ -4648,6 +4332,62 @@ Cron expression of the EPSS mirroring task.
 
 ---
 
+### task.epss.mirror.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the EPSS mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_EPSS_MIRROR_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.epss.mirror.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the EPSS mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_EPSS_MIRROR_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### task.fortify.ssc.upload.cron
 
 Cron expression of the Fortify SSC upload task.  
@@ -4697,6 +4437,62 @@ Cron expression of the vulnerability GitHub Advisories mirroring task.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_GIT_HUB_ADVISORY_MIRROR_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.git.hub.advisory.mirror.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the GitHub mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_GIT_HUB_ADVISORY_MIRROR_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.git.hub.advisory.mirror.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the GitHub mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_GIT_HUB_ADVISORY_MIRROR_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -5096,6 +4892,62 @@ Cron expression of the NIST / NVD mirroring task.
 
 ---
 
+### task.nist.mirror.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the NIST mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_NIST_MIRROR_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.nist.mirror.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the NIST mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_NIST_MIRROR_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### task.osv.mirror.cron
 
 Cron expression of the OSV mirroring task.  
@@ -5117,6 +4969,62 @@ Cron expression of the OSV mirroring task.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_OSV_MIRROR_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.osv.mirror.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the OSV mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_OSV_MIRROR_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.osv.mirror.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the OSV mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_OSV_MIRROR_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>

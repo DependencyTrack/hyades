@@ -30,7 +30,6 @@
     <module>commons</module>
     <module>commons-kstreams</module>
     <module>commons-persistence</module>
-    <module>mirror-service</module>
     <module>notification-publisher</module>
     <module>repository-meta-analyzer</module>
     <module>proto</module>

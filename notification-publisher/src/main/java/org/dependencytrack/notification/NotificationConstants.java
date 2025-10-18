@@ -24,7 +24,6 @@ public class NotificationConstants {
         public static final String NOTIFICATION_TEST = "Notification Test";
         public static final String NVD_MIRROR = "NVD Mirroring";
         public static final String GITHUB_ADVISORY_MIRROR = "GitHub Advisory Mirroring";
-        public static final String EPSS_MIRROR = "EPSS Mirroring";
         public static final String NPM_ADVISORY_MIRROR = "NPM Advisory Mirroring";
         public static final String VULNDB_MIRROR = "VulnDB Mirroring";
         public static final String FILE_SYSTEM_ERROR = "File System Error";
