@@ -31,47 +31,74 @@ import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * Model for configured CSAF document entities.
+ * Model for security advisories (CSAF documents).
  */
 @Entity
-@Table(name = "CSAFDOCUMENTENTITY")
-public class CsafDocumentEntity implements Serializable {
+@Table(name = "ADVISORY")
+public class Advisory implements Serializable {
 
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    /**
+     * A machine-readable name of the CSAF document. This is typically the "document.tracking.id" field.
+     */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * The version of the CSAF document. This is typically the "document.tracking.version" field.
+     */
+    @Column(name = "VERSION")
+    private String version;
+
+    /**
+     * The publisher (namespace) of the CSAF document. This is typically the "document.publisher.namespace" field.
+     */
+    @Column(name = "PUBLISHER")
+    private String publisher;
+
+    /**
+     * A human-readable title for the CSAF document.
+     */
+    @Column(name = "TITLE")
+    private String title;
+
+    /**
+     * The URL where the CSAF document can be found externally.
+     */
     @Column(name = "URL")
     private String url;
 
+    /**
+     * The format of the document, e.g., "CSAF".
+     */
+    @Column(name = "FORMAT")
+    private String format;
+
+    /**
+     * The raw content of the CSAF document, typically in JSON format.
+     */
     @Column(name = "CONTENT", columnDefinition = "CLOB")
     @Basic(fetch = FetchType.LAZY)
     private String content;
 
-    @Column(name = "PUBLISHERNAMESPACE")
-    private String publisherNamespace;
-
-    @Column(name = "TRACKINGID")
-    private String trackingID;
-
-    @Column(name = "TRACKINGVERSION")
-    private String trackingVersion;
-
+    /**
+     * Whether the document has been marked as "seen" in the UI.
+     */
     @Column(name = "SEEN")
     private boolean seen;
 
-    @Column(name = "MANUALLYADDED")
-    private boolean manuallyAdded;
-
+    /**
+     * The time when the document was last fetched from the external source.
+     */
     @Column(name = "LASTFETCHED")
     private Instant lastFetched;
 
-    public CsafDocumentEntity() {
-        // no args for jdo
+    public Advisory() {
+        // no args for JPA
     }
 
     public long getId() {
@@ -90,12 +117,44 @@ public class CsafDocumentEntity implements Serializable {
         this.name = name;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public String getContent() {
@@ -106,40 +165,12 @@ public class CsafDocumentEntity implements Serializable {
         this.content = content;
     }
 
-    public String getPublisherNamespace() {
-        return publisherNamespace;
-    }
-
-    public void setPublisherNamespace(String publisherNamespace) {
-        this.publisherNamespace = publisherNamespace;
-    }
-
-    public String getTrackingID() {
-        return trackingID;
-    }
-
-    public void setTrackingID(String trackingID) {
-        this.trackingID = trackingID;
-    }
-
-    public String getTrackingVersion() {
-        return trackingVersion;
-    }
-
-    public void setTrackingVersion(String trackingVersion) {
-        this.trackingVersion = trackingVersion;
-    }
-
     public boolean isSeen() {
         return seen;
     }
 
     public void setSeen(boolean seen) {
         this.seen = seen;
-    }
-
-    public boolean isManuallyAdded() {
-        return manuallyAdded;
     }
 
     public Instant getLastFetched() {
