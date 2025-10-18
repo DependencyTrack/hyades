@@ -33,6 +33,7 @@ enum Scanner {
   SCANNER_INTERNAL = 2;
   SCANNER_OSSINDEX = 3;
   SCANNER_SNYK = 4;
+  SCANNER_CSAF = 5;
 }
 
 message ScanCommand {
@@ -66,6 +67,9 @@ message ScannerResult {
 
   // Bov identified in the scan.
   org.cyclonedx.v1_6.Bom bom = 5;
+
+  // Confidence of the match per vulnerability ID.
+  map<string, float> matching_confidence = 6;
 }
 
 message ScanResult {
