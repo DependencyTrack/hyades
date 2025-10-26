@@ -16,6 +16,9 @@ message Notification {
   string content = 5;
   google.protobuf.Timestamp timestamp = 6;
   google.protobuf.Any subject = 7;
+
+  // Unique identifier of the notification in UUIDv7 format.
+  string id = 8;
 }
 
 enum Level {

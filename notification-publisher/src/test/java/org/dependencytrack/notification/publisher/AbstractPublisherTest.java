@@ -90,6 +90,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .build();
 
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_PORTFOLIO)
                 .setGroup(GROUP_BOM_CONSUMED)
                 .setTitle(NotificationConstants.Title.BOM_CONSUMED)
@@ -114,6 +115,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .build();
 
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_PORTFOLIO)
                 .setGroup(GROUP_BOM_PROCESSING_FAILED)
                 .setTitle(NotificationConstants.Title.BOM_PROCESSING_FAILED)
@@ -139,6 +141,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .build();
 
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_PORTFOLIO)
                 .setGroup(GROUP_BOM_PROCESSING_FAILED)
                 .setTitle(NotificationConstants.Title.BOM_PROCESSING_FAILED)
@@ -163,6 +166,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .build();
 
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_PORTFOLIO)
                 .setGroup(GROUP_BOM_VALIDATION_FAILED)
                 .setTitle(NotificationConstants.Title.BOM_VALIDATION_FAILED)
@@ -178,6 +182,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     void testInformWithDataSourceMirroringNotification() throws Exception {
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_SYSTEM)
                 .setGroup(GROUP_DATASOURCE_MIRRORING)
                 .setTitle(NotificationConstants.Title.GITHUB_ADVISORY_MIRROR)
@@ -207,6 +212,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .build();
 
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_PORTFOLIO)
                 .setGroup(GROUP_NEW_VULNERABILITY)
                 .setTitle(NotificationConstants.Title.NEW_VULNERABILITY)
@@ -231,6 +237,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .addVulnerabilities(vuln).build();
 
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_PORTFOLIO)
                 .setGroup(GROUP_NEW_VULNERABLE_DEPENDENCY)
                 .setTitle(NotificationConstants.Title.NEW_VULNERABLE_DEPENDENCY)
@@ -258,6 +265,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
                 .build();
 
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_PORTFOLIO)
                 .setGroup(GROUP_PROJECT_AUDIT_CHANGE)
                 .setTitle(NotificationConstants.Title.ANALYSIS_DECISION_SUPPRESSED)
@@ -273,6 +281,7 @@ abstract class AbstractPublisherTest<T extends Publisher> {
 
     void testInformWithTemplateInclude() throws Exception {
         final var notification = Notification.newBuilder()
+                .setId("019a224d-5b71-778d-953f-594edb4a44e8")
                 .setScope(SCOPE_SYSTEM)
                 .setGroup(GROUP_ANALYZER)
                 .setTitle(NotificationConstants.Title.NOTIFICATION_TEST)

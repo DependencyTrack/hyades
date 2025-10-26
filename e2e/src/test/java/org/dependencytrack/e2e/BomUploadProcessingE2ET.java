@@ -216,11 +216,12 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .withRequestBody(equalToJson("""
                         {
                           "notification": {
+                            "id" : "${json-unit.any-string}",
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_NEW_VULNERABILITY",
                             "timestamp": "${json-unit.regex}(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\\\.[0-9]{3}Z$)",
-                            "title": "New Vulnerability Identified on Project: [pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war]",
+                            "title": "New Vulnerability Identified on Project: [foo : bar]",
                             "content": "INT-123",
                             "subject": {
                               "component": {
@@ -238,7 +239,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                 "uuid": "${json-unit.any-string}",
                                 "name": "foo",
                                 "version": "bar",
-                                "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war"
+                                "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war",
+                                "isActive": true
                               },
                               "vulnerability": {
                                 "uuid": "${json-unit.any-string}",
@@ -258,7 +260,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                   "uuid": "${json-unit.any-string}",
                                   "name": "foo",
                                   "version": "bar",
-                                  "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war"
+                                  "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war",
+                                  "isActive": true
                                 }
                               ]
                             }
@@ -274,6 +277,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .withRequestBody(equalToJson("""
                         {
                            "notification" : {
+                             "id" : "${json-unit.any-string}",
                              "level" : "LEVEL_INFORMATIONAL",
                              "scope" : "SCOPE_PORTFOLIO",
                              "group" : "GROUP_PROJECT_VULN_ANALYSIS_COMPLETE",
@@ -286,7 +290,8 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                  "uuid": "${json-unit.any-string}",
                                  "name" : "foo",
                                  "version" : "bar",
-                                 "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war"
+                                 "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war",
+                                 "isActive": true
                                },
                                "findings" : [ {
                                  "component" : {

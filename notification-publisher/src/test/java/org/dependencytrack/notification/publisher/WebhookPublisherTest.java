@@ -64,6 +64,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                 .withRequestBody(equalToJson("""
                         {
                           "notification": {
+                            "id" : "019a224d-5b71-778d-953f-594edb4a44e8",
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_BOM_CONSUMED",
@@ -105,6 +106,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                 .withRequestBody(equalToJson("""
                         {
                           "notification" : {
+                            "id" : "019a224d-5b71-778d-953f-594edb4a44e8",
                             "level": "LEVEL_ERROR",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_BOM_PROCESSING_FAILED",
@@ -147,6 +149,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                 .withRequestBody(equalToJson("""
                         {
                           "notification" : {
+                            "id" : "019a224d-5b71-778d-953f-594edb4a44e8",
                             "level": "LEVEL_ERROR",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_BOM_PROCESSING_FAILED",
@@ -188,6 +191,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                 .withRequestBody(equalToJson("""
                         {
                           "notification" : {
+                            "id" : "019a224d-5b71-778d-953f-594edb4a44e8",
                             "level": "LEVEL_ERROR",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_BOM_VALIDATION_FAILED",
@@ -232,6 +236,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                 .withRequestBody(equalToJson("""
                         {
                           "notification": {
+                            "id" : "019a224d-5b71-778d-953f-594edb4a44e8",
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_NEW_VULNERABILITY",
@@ -320,6 +325,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                 .withRequestBody(equalToJson("""
                         {
                           "notification": {
+                            "id" : "019a224d-5b71-778d-953f-594edb4a44e8",
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_PROJECT_AUDIT_CHANGE",
@@ -424,6 +430,7 @@ class WebhookPublisherTest extends AbstractWebhookPublisherTest<WebhookPublisher
                 .withRequestBody(equalToJson("""
                         {
                           "notification": {
+                            "id" : "019a224d-5b71-778d-953f-594edb4a44e8",
                             "level": "LEVEL_INFORMATIONAL",
                             "scope": "SCOPE_PORTFOLIO",
                             "group": "GROUP_NEW_VULNERABLE_DEPENDENCY",

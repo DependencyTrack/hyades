@@ -1,5 +1,6 @@
 {
   "notification": {
+    "id": "{{ notification.id | escape(strategy="json") }}",
     "level": "{{ notification.level | escape(strategy="json") }}",
     "scope": "{{ notification.scope | escape(strategy="json") }}",
     "group": "{{ notification.group | escape(strategy="json") }}",
