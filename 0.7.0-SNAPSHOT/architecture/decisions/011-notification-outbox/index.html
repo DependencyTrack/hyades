@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/003-notification-publishing/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/011-notification-outbox/">
       
       
-        <link rel="prev" href="../002-workflow-orchestration/">
+        <link rel="prev" href="../010-vulnerability-datasource-extension-point/">
       
       
-        <link rel="next" href="../004-file-storage-plugin/">
+        <link rel="next" href="../../design/workflow-state-tracking/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>ADR-003: Notification Publishing - Hyades</title>
+        <title>ADR-011: Notification Outbox - Hyades</title>
       
     
     
@@ -57,11 +57,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="ADR-003: Notification Publishing - Hyades" >
+        <meta  property="og:title"  content="ADR-011: Notification Outbox - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/003-notification-publishing.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/011-notification-outbox.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +69,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/003-notification-publishing/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/011-notification-outbox/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="ADR-003: Notification Publishing - Hyades" >
+        <meta  name="twitter:title"  content="ADR-011: Notification Outbox - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/003-notification-publishing.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/011-notification-outbox.png" >
       
     
     
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ADR-003: Notification Publishing
+              ADR-011: Notification Outbox
             
           </span>
         </div>
@@ -917,30 +917,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    ADR-003: Notification Publishing
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -951,93 +931,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      Context
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Context">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#background" class="md-nav__link">
-    <span class="md-ellipsis">
-      Background
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Requirements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#constraints" class="md-nav__link">
-    <span class="md-ellipsis">
-      Constraints
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#possible-solutions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Possible Solutions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      Decision
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      Consequences
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1185,10 +1078,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../011-notification-outbox/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    ADR-011: Notification Outbox
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1199,6 +1112,84 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#emission" class="md-nav__link">
+    <span class="md-ellipsis">
+      Emission
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dispatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dispatch
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1897,7 +1888,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/003-notification-publishing.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/011-notification-outbox.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1905,7 +1896,7 @@
   
 
 
-  <h1>ADR-003: Notification Publishing</h1>
+  <h1>ADR-011: Notification Outbox</h1>
 
 <table>
 <thead>
@@ -1918,302 +1909,98 @@
 <tbody>
 <tr>
 <td style="text-align: left;">Proposed</td>
-<td style="text-align: left;">2025-01-19</td>
+<td style="text-align: left;">2025-10-26</td>
 <td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
 </tr>
 </tbody>
 </table>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
-<p>By dropping the Kafka dependency (<a href="../001-drop-kafka-dependency/">ADR-001</a>), we are now missing a means to reliably dispatch
-notifications. Users are building processes around the notifications we send, so we must ensure
-that whatever we replace Kafka with offers the same or better delivery guarantees.</p>
-<h3 id="background">Background<a class="headerlink" href="#background" title="Permanent link">&para;</a></h3>
-<p>Users can configure multiple notification rules (known as <em>Alerts</em> in the UI). A rule semantically acts like a consumer,
-which subscribes to one or more subjects (aka <em>Notification Groups</em>, e.g. <code>BOM_PROCESSED</code>, <code>NEW_VULNERABILITY</code>),
-and publishes those notification to a destination (e.g. email, Slack, Webhook).</p>
-<p>Rules can further be limited to specific projects or tags, which acts like an additional filter.</p>
-<p>This means that a notification emitted by Dependency-Track "fans-out" to zero or more rules:</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Process
----
-flowchart LR
-    A@{ shape: circle, label: "Start" }
-    B["Emit Notification"]
-    C["Route Notification"]
-    D["Send email to foo\@example.com"]
-    E["Send email to bar\@example.com"]
-    F["Send Slack message to channel X"]
-    G["Send Webhook to example.com"]
-    I@{ shape: dbl-circ, label: "Stop" }
-    A --&gt; B
-    B --&gt; C
-    C --&gt; D
-    C --&gt; E
-    C --&gt; F
-    C --&gt; G
-    D --&gt; I
-    E --&gt; I
-    F --&gt; I
-    G --&gt; I</code></pre>
-<p>Because each rule has a separate destination, the publishing process for them can fail independently.
-For example, the email server could be down, the Jira credentials could have expired, or Slack could enforce rate limiting.</p>
-<p>In Dependency-Track v4, the routing of notifications according to the configured rules, as well as the
-publishing according to those rules, are performed as a single unit of work. There are no retries.</p>
-<p>So far in Hyades, we emit notifications to Kafka instead. The routing and publishing still happens in a single
-unit of work, but in the separate <code>notification-publisher</code> service. The service uses <a href="https://github.com/confluentinc/parallel-consumer">Confluent Parallel Consumer</a>
-to implement retries. However, these retries can cause duplicates, as documented in <a href="https://github.com/DependencyTrack/hyades/issues/771">hyades/#771</a>.</p>
-<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h3>
-<h4 id="atomicity">Atomicity<a class="headerlink" href="#atomicity" title="Permanent link">&para;</a></h4>
-<p>A limitation of the in-memory, as well as the Kafka-based notification mechanism, is that emission of notifications
-can't happen atomically with the state change they inform about. Both approaches suffer from the <a href="https://www.confluent.io/blog/dual-write-problem/">dual write problem</a>.
-Although not technically a hard requirement, we want atomic notification emission to be <em>possible</em>.</p>
-<p>Note that notification <em>delivery</em> to external systems <strong>can't</strong> be atomic.
-Exactly-once delivery is <a href="https://bravenewgeek.com/you-cannot-have-exactly-once-delivery/">impossible</a>.</p>
-<h4 id="at-least-once-delivery">At-least-once delivery<a class="headerlink" href="#at-least-once-delivery" title="Permanent link">&para;</a></h4>
-<p>Notifications must be delivered to destination systems <em>at least once</em>. Duplicate deliveries are acceptable,
-loss of notifications is not.</p>
-<h4 id="isolation-of-deliveries">Isolation of deliveries<a class="headerlink" href="#isolation-of-deliveries" title="Permanent link">&para;</a></h4>
-<p>Notification deliveries must be processed in isolation, and separate from the routing itself.
-Only then can deliveries be retried without causing the issue described in <a href="https://github.com/DependencyTrack/hyades/issues/771">hyades/#771</a>.
-More specifically, each delivery must be a separate unit of work in a queue.</p>
-<h3 id="constraints">Constraints<a class="headerlink" href="#constraints" title="Permanent link">&para;</a></h3>
-<h4 id="notification-format">Notification format<a class="headerlink" href="#notification-format" title="Permanent link">&para;</a></h4>
-<p>All solutions should treat notification contents as binary blobs. During our initial move to Kafka,
-we adopted <a href="https://protobuf.dev/">Protobuf</a> to serialize notifications over-the-wire. We intend to keep it this way,
-since <a href="https://protobuf.dev/">Protobuf</a> makes it easy to perform backward-compatible changes over time. It is also faster
-to serialize, and more compact than JSON.</p>
-<p>The current <a href="https://protobuf.dev/">Protobuf</a> model is defined
-<a href="https://github.com/DependencyTrack/hyades/blob/589b58042c096865c48939c8db79ef950fd94d20/proto/src/main/proto/org/dependencytrack/notification/v1/notification.proto">here</a>.</p>
-<h4 id="no-new-infrastructure">No new infrastructure<a class="headerlink" href="#no-new-infrastructure" title="Permanent link">&para;</a></h4>
-<p>No new infrastructure must be introduced. The solution should leverage the workflow orchestration capabilities
-described in <a href="../002-workflow-orchestration/">ADR-002</a>. This will take care of queueing, observability, and resiliency needs.</p>
-<h4 id="payload-size">Payload size<a class="headerlink" href="#payload-size" title="Permanent link">&para;</a></h4>
-<p>As noted in <a href="../001-drop-kafka-dependency/">ADR-001</a>, notifications can be large: <code>BOM_CONSUMED</code> and <code>BOM_PROCESSED</code> notifications include the entire
-BOM in Base64-encoded format. <code>PROJECT_VULN_ANALYSIS_COMPLETE</code> notifications include all vulnerabilities of a project.
-While Postgres <em>can</em> store large columns (see <a href="https://www.postgresql.org/docs/current/storage-toast.html">TOAST</a>), it comes with penalties affecting performance, maintenance,
-and backups. Potent compression (e.g. using <code>zstd</code>) will most definitely be necessary for all solutions.
-Postgres itself will compress large values, too, but using a less effective algorithm (<code>pglz</code>).</p>
-<blockquote>
-<p>Starting with Postgres v14, the default compression algorithm for <a href="https://www.postgresql.org/docs/current/storage-toast.html">TOAST</a>-ed tables can be changed to <code>lz4</code>.
-This should be added to our <a href="../../../operations/database/">database operations guide</a>.
-<code>lz4</code> <a href="https://www.timescale.com/blog/optimizing-postgresql-performance-compression-pglz-vs-lz4">performs noticeably better</a>
-than <code>pglz</code>.</p>
-</blockquote>
-<h3 id="possible-solutions">Possible Solutions<a class="headerlink" href="#possible-solutions" title="Permanent link">&para;</a></h3>
-<h4 id="a-use-transactional-outbox-pattern">A: Use transactional outbox pattern<a class="headerlink" href="#a-use-transactional-outbox-pattern" title="Permanent link">&para;</a></h4>
-<p>The <a href="https://microservices.io/patterns/data/transactional-outbox.html">transactional outbox</a> pattern involves a separate <em>outbox</em> table, where to-be-dispatched notifications
-are inserted into as part of a database transaction. A simple outbox table might look like this:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Column Name</th>
-<th style="text-align: left;">Column Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>ID</code></td>
-<td style="text-align: left;"><code>BIGINT</code></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>TIMESTAMP</code></td>
-<td style="text-align: left;"><code>TIMESTAMPTZ</code></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>CONTENT</code></td>
-<td style="text-align: left;"><code>BYTEA</code></td>
-</tr>
-</tbody>
-</table>
-<p>The pattern is mostly meant to deal with the <a href="https://www.confluent.io/blog/dual-write-problem/">dual write problem</a>, but it could also act as a work queue:
-A pool of workers polls the table in regular intervals, and either deletes polled records, or marks them as delivered:</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Process with Outbox Table
----
-sequenceDiagram
-    participant D as Domain
-    participant P as Postgres
-    participant N as Notification Router
-    participant W as "Publish Notification"&lt;br/&gt;Workflow
-
-    activate D
-    D-&gt;&gt;P: Begin TX
-    D-&gt;&gt;P: ...
-    D-&gt;&gt;P: INSERT INTO "OUTBOX"&lt;br/&gt;(NOW(), &lt;content&gt;)
-    D-&gt;&gt;-P: Commit TX
-    loop continuously
-       activate N
-       N-&gt;&gt;P: Begin TX
-       N-&gt;&gt;P: SELECT * FROM "OUTBOX" ...&lt;br/&gt;FOR UPDATE SKIP LOCKED&lt;br/&gt;LIMIT 1
-       N-&gt;&gt;N: Evaluate&lt;br/&gt;notification rules
-       opt At least one rule matched
-           N-&gt;&gt;W: Schedule "Publish Notification" workflow&lt;br/&gt;Args: Rule names, notification
-       end 
-       N-&gt;&gt;P: DELETE FROM "OUTBOX"&lt;br/&gt;WHERE "ID" = ANY(...)
-       N-&gt;&gt;-P: Commit TX
-    end</code></pre>
-<p>Outbox items are dequeued, processed, and marked as completed in a single database transaction,
-using the <code>FOR UPDATE SKIP LOCKED</code> clause to allow for multiple concurrent pollers.</p>
-<p>If workflow scheduling fails, the transaction is rolled back, and the respective record will be retried
-during the next poll.</p>
-<blockquote>
-<p>The workflow engine may reside on a separate database, so scheduling of workflows 
-can't happen atomically with the polling of outbox records. It is possible that a
-workflow gets scheduled, but committing of the transaction fails. In worst case,
-multiple workflows get scheduled for the same notification. This should be rare,
-but it would still satisfy our at-least-once delivery goal.</p>
-</blockquote>
-<p>The actual delivery is then taken care of by a workflow:</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Workflow
----
-sequenceDiagram
-    participant W as "Publish Notification"&lt;br/&gt;Workflow
-    participant A as "Publish Notification"&lt;br/&gt;Activity
-    participant P as Postgres
-    participant D as Destination
-
-    activate W
-    loop for each matched rule
-        W-&gt;&gt;+A: Invoke&lt;br/&gt;Args: Rule name, notification
-        deactivate W
-        A-&gt;&gt;P: Retrieve publisher config
-        P--&gt;&gt;A: Destination URL,&lt;br/&gt;credentials, template
-        A-&gt;&gt;-D: Publish
-    end</code></pre>
-<p><strong>Pro</strong>:</p>
-<ol>
-<li>Allows for atomic emission of notifications.</li>
-<li>When marking outbox records as processed instead of deleting them, enables (targeted) replay of past notifications.</li>
-<li>When partitioning the outbox table by timestamp, cheap retention enforcement via <code>DROP TABLE</code>.</li>
-<li>Allows for multiple concurrent routers. </li>
-</ol>
-<p><strong>Con</strong>:</p>
-<ol>
-<li>More database overhead: <code>INSERT</code>s, <code>UPDATE</code>s / <code>DELETE</code>s, polling, vacuuming, retention, storage.</li>
-<li>Overhead can't be delegated to separate database without losing transactional guarantees.</li>
-<li>Duplicates queueing logic we already have in the workflow orchestration system.</li>
-<li>Partitioning by timestamp requires partition management, either manually or via <code>pg_partman</code>.</li>
-<li>Multiple concurrent routers increase the chance of delivering notifications out-of-order.</li>
-<li>When not using partitioning, requires a separate retention enforcement mechanism.</li>
-</ol>
-<h4 id="b-use-postgres-logical-replication-messages">B: Use Postgres logical replication messages<a class="headerlink" href="#b-use-postgres-logical-replication-messages" title="Permanent link">&para;</a></h4>
-<p>A way to sidestep the drawbacks of maintaining an outbox table is to emit and consume logical replication messages.
-Here, notifications are written to Postgres' write-ahead-log (WAL), but never materialized into an actual table.
-This still provides transactional guarantees, but completely avoids the overhead of table maintenance.</p>
-<p>The procedure is inspired by Gunnar Morling's 
-<a href="https://www.infoq.com/articles/wonders-of-postgres-logical-decoding-messages/"><em>The Wonders of Postgres Logical Decoding Messages</em></a>
-article.</p>
-<p>Conceptually, the process of publishing notification remains mostly identical to
-<a href="#a-use-transactional-outbox-pattern">option A</a>:</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Process with Logical Replication Messages
----
-sequenceDiagram
-    participant D as Domain
-    participant P as Postgres
-    participant N as Notification Router
-    participant W as "Publish Notification"&lt;br/&gt;Workflow
-
-    activate D
-    D-&gt;&gt;P: Begin TX
-    D-&gt;&gt;P: ...
-    D-&gt;&gt;P: pg_logical_emit_message&lt;br/&gt;(?, 'notification', &lt;content&gt;)
-    D-&gt;&gt;-P: Commit TX
-    loop continuously
-        activate N
-        N-&gt;&gt;P: Consume logical&lt;br/&gt;replication message
-        N-&gt;&gt;N: Evaluate&lt;br/&gt;notification rules
-        opt At least one rule matched
-            N-&gt;&gt;W: Schedule "Publish Notification" workflow&lt;br/&gt;Args: Rule names, notification
-        end
-        N-&gt;&gt;-P: Mark message LSN as&lt;br/&gt;applied / flushed
-    end</code></pre>
-<p>Instead of polling a table, the router reads a stream of messages from a logical replication slot.
-Each message has an associated log sequence number (LSN), which represents its position in the WAL.
-In order for Postgres to know that a message was delivered successfully, the router acknowledges
-the LSN of processed messages. This is similar to how Kafka uses offset commits to track progress
-within a topic partition.</p>
-<p>The <em>Publish Notification</em> workflow being scheduled remains identical to <a href="#a-use-transactional-outbox-pattern">option A</a>.</p>
-<p><strong>Pro</strong>:</p>
-<ol>
-<li>Allows for atomic emission of notifications.</li>
-<li>Less pressure on the WAL. <a href="#a-use-transactional-outbox-pattern">Option A</a> involves <em>at least</em> one <code>INSERT</code>,
-   and one <code>UPDATE</code> or <code>DELETE</code> per notification, each of which writes to the WAL, too.</li>
-<li>No increase in storage requirements.</li>
-<li>No retention logic necessary.</li>
-<li>No additional overhead for autovacuum.</li>
-</ol>
-<p><strong>Con</strong>:</p>
-<ol>
-<li>Only a single instance can consume from a replication slot at a time.</li>
-<li>Logical replication requires a special kind of connection, thus can't go through a connection pooler.</li>
-<li>Requires Postgres v14 or later. This is when the default <code>pgoutput</code> decoding plugin started to support
-   consumption of replication messages.</li>
-</ol>
-<h4 id="c-schedule-workflows-directly">C: Schedule workflows directly<a class="headerlink" href="#c-schedule-workflows-directly" title="Permanent link">&para;</a></h4>
-<p>This option is similar to <a href="#a-use-transactional-outbox-pattern">A</a> and
-<a href="#b-use-postgres-logical-replication-messages">B</a>, but skips the respective intermediary step.</p>
-<p>Notifications are no longer emitted atomically with the domain's persistence operations, 
-but instead <em>after</em> the database transaction committed successfully, effectively re-introducing the <a href="https://www.confluent.io/blog/dual-write-problem/">dual write problem</a>:</p>
-<pre class="mermaid"><code>sequenceDiagram
-    participant D as Domain
-    participant P as Postgres
-    participant W as "Publish Notification"&lt;br/&gt;Workflow
-
-    activate D
-    D-&gt;&gt;P: Begin TX
-    D-&gt;&gt;P: ...
-    D-&gt;&gt;P: Commit TX
-    D-&gt;&gt;-W: Schedule&lt;br/&gt;Args: Notification</code></pre>
-<p>The routing based on configured notification rules is performed as part of the <em>Publish Notification</em> workflow.</p>
-<pre class="mermaid"><code>---
-title: Notification Publishing Workflow with Routing
----
-sequenceDiagram
-   participant W as "Publish Notification"&lt;br/&gt;Workflow
-   participant A1 as "Route Notification"&lt;br/&gt;Activity
-   participant A2 as "Publish Notification"&lt;br/&gt;Activity
-   participant P as Postgres
-   participant D as Destination
-
-   activate W
-   W-&gt;&gt;A1: Invoke&lt;br/&gt;Args: Notification
-   A1--&gt;&gt;W: Matched rule names
-   loop for each matched rule
-      W-&gt;&gt;+A2: Invoke&lt;br/&gt;Args: Rule name, notification
-      deactivate W
-      A2-&gt;&gt;P: Retrieve publisher config
-      P--&gt;&gt;A2: Destination URL,&lt;br/&gt;credentials, template
-      A2-&gt;&gt;-D: Publish
-   end</code></pre>
-<p><strong>Pro</strong>:</p>
-<ol>
-<li>Fewer moving parts than options <a href="#a-use-transactional-outbox-pattern">A</a> and
-   <a href="#b-use-postgres-logical-replication-messages">B</a>.</li>
-<li>All concerns related to publishing are neatly encapsulated in a workflow.</li>
-<li>Rule resolution benefits from the same reliability guarantees as the publishing itself.</li>
-</ol>
-<p><strong>Con</strong>:</p>
-<ol>
-<li>Atomic emission of notifications is impossible.</li>
-<li>Workflows are scheduled even if no rule may be configured for the notification at hand,
-   increasing pressure on the workflow system.</li>
-</ol>
+<p>As per <a href="../003-notification-publishing/">ADR-003</a> we originally decided to leverage PostgreSQL's
+logical replication to support atomic notification emission. The main benefit was that tailing the
+WAL would bypass the need to maintain and poll an outbox table, which is overhead we'd have loved to avoid.</p>
+<p>After further consideration however, we decided against the logical replication approach, for the following reasons:</p>
+<ul>
+<li>Requires a special connection that users would need to configure. The connection must bypass any connection poolers.</li>
+<li>Requires elevated privileges via the <code>REPLICATION</code> attribute. Users with this attribute are able to read all changes
+  across all tables in a database. In hindsight, we feel this could be a security footgun.</li>
+<li>Requires constant monitoring. Postgres only deletes WAL segments that have been read by all replication slots.
+  Should a replication consumer be slow, or otherwise fail to advance its slot, the Postgres server could run out
+  of disk space.</li>
+</ul>
+<p>We might revisit logical replication later, but for the time being the cons outweigh the pros.</p>
 <h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<p>We propose to follow option <a href="#b-use-postgres-logical-replication-messages">B</a>, because:</p>
-<ol>
-<li>Maintaining an outbox table as detailed in option <a href="#a-use-transactional-outbox-pattern">A</a> comes with a lot of
-overhead that we prefer to not deal with.</li>
-<li>Option <a href="#c-schedule-workflows-directly">C</a> does not provide transactional guarantees.</li>
-</ol>
-<p>TODO: Update with final decision.</p>
+<p>We will follow a classic transactional outbox table design instead.</p>
+<h3 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h3>
+<p>A new <code>NOTIFICATION_OUTBOX</code> table is created with the following schema:</p>
+<pre class="mermaid"><code>erDiagram
+    NOTIFICATION_OUTBOX {
+        UUID ID PK
+        TIMESTAMPTZ TIMESTAMP
+        TEXT SCOPE
+        TEXT GROUP
+        TEXT LEVEL
+        BYTEA PAYLOAD
+    }</code></pre>
+<ul>
+<li><code>ID</code> is a <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_7_(timestamp_and_random)">UUIDv7</a>, ensuring both global uniqueness and sortability. The latter also makes it index-friendly.</li>
+<li><code>PAYLOAD</code> is the serialized notification in Protobuf format.</li>
+</ul>
+<p>The columns <code>TIMESTAMP</code>, <code>SCOPE</code>, <code>GROUP</code>, and <code>LEVEL</code> are included for debugging and monitoring purposes.
+They are also part of the notification itself, but since <code>PAYLOAD</code> is not human-readable, that doesn't help much.</p>
+<p>The notification Protobuf schema is extended to also include the UUIDv7 ID.</p>
+<h3 id="emission">Emission<a class="headerlink" href="#emission" title="Permanent link">&para;</a></h3>
+<p>To emit notifications, records are inserted into the <code>NOTIFICATION_OUTBOX</code> table.
+This can be done as part of the database transactions that also perform the "business logic",
+thus preventing the dual write problem.</p>
+<h3 id="dispatch">Dispatch<a class="headerlink" href="#dispatch" title="Permanent link">&para;</a></h3>
+<p>A new <em>notification dispatcher</em> component is added to the API server.
+The dispatcher continuously polls the <code>NOTIFICATION_OUTBOX</code> table for records
+and sends them to Kafka.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sending to Kafka is an intermediary step that allows us to make this change
+without touching too many parts of the system at once.</p>
+</div>
+<pre class="mermaid"><code>sequenceDiagram
+    actor P as PostgreSQL
+    actor D as Dispatcher
+    actor K as Kafka
+
+    activate D
+    D -&gt;&gt; P: Begin Trx
+    D -&gt;&gt; P: Acquire advisory lock
+    P --&gt;&gt; D: Lock acquired
+    D -&gt;&gt; P: Poll NOTIFICATION_OUTBOX
+    P --&gt;&gt; D: Notifications
+    D -&gt;&gt; D: Convert to Kafka records
+    D -&gt;&gt; K: Produce records
+    K --&gt;&gt; D: Records acked
+    D --&gt;&gt; P: Delete notifications
+    D -&gt;&gt; P: Commit Trx
+    deactivate D</code></pre>
+<p>Per default, the dispatcher polls every 1 second for up to 100 notifications.
+Interval and batch size are configurable. </p>
+<p>It is possible to disable the dispatcher entirely, which might be useful for users
+who operate multi-node clusters, and want more granular control over which nodes
+dispatch notifications.</p>
+<p>Noteworthy details:</p>
+<ul>
+<li>Transaction-level <a href="https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS">advisory locks</a> are used to prevent concurrent execution.
+  We ideally want notifications to be dispatched in the order in which they were
+  emitted. If we were to do concurrent dispatches, we would lose this property.
+  Limiting concurrency further reduces load on the database.</li>
+<li>Notifications are <em>deleted</em> from the <code>NOTIFICATION_OUTBOX</code> table upon successful dispatch.
+  We don't have use-cases that would require keeping them around for longer. Should that requirement
+  arise, we should look into partitioning of the <code>NOTIFICATION_OUTBOX</code> table.</li>
+<li>The database transaction is committed <em>after</em> Kafka has acknowledged reception of records.
+  This is necessary to achieve at-least-once semantics, but can lead to duplicate dispatches
+  should the commit fail after Kafka has successfully acked records. Notification consumers
+  can use the new <code>id</code> field to de-duplicate on their end.</li>
+</ul>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
 <ul>
-<li>The minimum required Postgres version becomes 14. This version is over three years old and well-supported
-  across all managed offerings. We don't anticipate it to be a problem.</li>
-<li>It must be possible to configure separate database connection details for the notification router,
-  in case a pooler like PgBouncer is used. Logical replication requires a direct connection.</li>
+<li>Notifications can atomically be emitted as part of database transactions</li>
+<li>Kafka and the notification-publisher service remain unchanged for now</li>
 </ul>
 
 
