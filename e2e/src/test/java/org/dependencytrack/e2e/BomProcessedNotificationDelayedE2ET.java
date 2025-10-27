@@ -130,6 +130,7 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
                 .withRequestBody(equalToJson("""
                         {
                           "notification" : {
+                            "id" : "${json-unit.any-string}",
                             "level" : "LEVEL_INFORMATIONAL",
                             "scope" : "SCOPE_PORTFOLIO",
                             "group" : "GROUP_BOM_PROCESSED",
@@ -142,7 +143,8 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
                                 "uuid" : "${json-unit.any-string}",
                                 "name" : "foo",
                                 "version" : "bar",
-                                "purl" : "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war"
+                                "purl" : "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war",
+                                "isActive" : true
                               },
                               "bom" : {
                                 "content" : "(Omitted)",
@@ -160,6 +162,7 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
                 .withRequestBody(equalToJson("""
                         {
                            "notification" : {
+                             "id" : "${json-unit.any-string}",
                              "level" : "LEVEL_INFORMATIONAL",
                              "scope" : "SCOPE_PORTFOLIO",
                              "group" : "GROUP_PROJECT_VULN_ANALYSIS_COMPLETE",
@@ -172,7 +175,8 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
                                  "uuid": "${json-unit.any-string}",
                                  "name" : "foo",
                                  "version" : "bar",
-                                 "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war"
+                                 "purl": "pkg:maven/org.dependencytrack/dependency-track@4.5.0?type=war",
+                                 "isActive" : true
                                },
                                "findings" : [ {
                                  "component" : {

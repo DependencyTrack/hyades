@@ -77,7 +77,6 @@ DECLARE
   "v_policy_violations_security_total"        INT     := 0; -- Total number of policy violations of type security
   "v_policy_violations_security_audited"      INT     := 0; -- Number of audited policy violations of type security
   "v_policy_violations_security_unaudited"    INT     := 0; -- Number of unaudited policy violations of type security
-  "v_existing_id"                             BIGINT; -- ID of the existing row that matches the data point calculated in this procedure
 BEGIN
   SELECT "ID", "PROJECT_ID" INTO "v_component" FROM "COMPONENT" WHERE "UUID" = "component_uuid";
   IF "v_component" IS NULL THEN
@@ -308,179 +307,6 @@ BEGIN
 END;
 $$;
 
-CREATE PROCEDURE public."UPDATE_PORTFOLIO_METRICS"()
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-  "v_projects"                                INT; -- Total number of projects in the portfolio
-  "v_vulnerable_projects"                     INT; -- Number of vulnerable projects in the portfolio
-  "v_components"                              INT; -- Total number of components in the portfolio
-  "v_vulnerable_components"                   INT; -- Number of vulnerable components in the portfolio
-  "v_vulnerabilities"                         INT; -- Total number of vulnerabilities
-  "v_critical"                                INT; -- Number of vulnerabilities with critical severity
-  "v_high"                                    INT; -- Number of vulnerabilities with high severity
-  "v_medium"                                  INT; -- Number of vulnerabilities with medium severity
-  "v_low"                                     INT; -- Number of vulnerabilities with low severity
-  "v_unassigned"                              INT; -- Number of vulnerabilities with unassigned severity
-  "v_risk_score"                              NUMERIC; -- Inherited risk score
-  "v_findings_total"                          INT; -- Total number of findings
-  "v_findings_audited"                        INT; -- Number of audited findings
-  "v_findings_unaudited"                      INT; -- Number of unaudited findings
-  "v_findings_suppressed"                     INT; -- Number of suppressed findings
-  "v_policy_violations_total"                 INT; -- Total number of policy violations
-  "v_policy_violations_fail"                  INT; -- Number of policy violations with level fail
-  "v_policy_violations_warn"                  INT; -- Number of policy violations with level warn
-  "v_policy_violations_info"                  INT; -- Number of policy violations with level info
-  "v_policy_violations_audited"               INT; -- Number of audited policy violations
-  "v_policy_violations_unaudited"             INT; -- Number of unaudited policy violations
-  "v_policy_violations_license_total"         INT; -- Total number of policy violations of type license
-  "v_policy_violations_license_audited"       INT; -- Number of audited policy violations of type license
-  "v_policy_violations_license_unaudited"     INT; -- Number of unaudited policy violations of type license
-  "v_policy_violations_operational_total"     INT; -- Total number of policy violations of type operational
-  "v_policy_violations_operational_audited"   INT; -- Number of audited policy violations of type operational
-  "v_policy_violations_operational_unaudited" INT; -- Number of unaudited policy violations of type operational
-  "v_policy_violations_security_total"        INT; -- Total number of policy violations of type security
-  "v_policy_violations_security_audited"      INT; -- Number of audited policy violations of type security
-  "v_policy_violations_security_unaudited"    INT; -- Number of unaudited policy violations of type security
-  "v_existing_id"                             BIGINT; -- ID of the existing row that matches the data point calculated in this procedure
-BEGIN
-  -- Aggregate over all most recent DEPENDENCYMETRICS.
-  -- NOTE: SUM returns NULL when no rows match the query, but COUNT returns 0.
-  -- For nullable result columns, use COALESCE(..., 0) to have a default value.
-  SELECT COUNT(*)::INT,
-    COALESCE(SUM(CASE WHEN "VULNERABILITIES" > 0 THEN 1 ELSE 0 END)::INT, 0),
-    COALESCE(SUM("COMPONENTS")::INT, 0),
-    COALESCE(SUM("VULNERABLECOMPONENTS")::INT, 0),
-    COALESCE(SUM("VULNERABILITIES")::INT, 0),
-    COALESCE(SUM("CRITICAL")::INT, 0),
-    COALESCE(SUM("HIGH")::INT, 0),
-    COALESCE(SUM("MEDIUM")::INT, 0),
-    COALESCE(SUM("LOW")::INT, 0),
-    COALESCE(SUM("UNASSIGNED_SEVERITY")::INT, 0),
-    COALESCE(SUM("FINDINGS_TOTAL")::INT, 0),
-    COALESCE(SUM("FINDINGS_AUDITED")::INT, 0),
-    COALESCE(SUM("FINDINGS_UNAUDITED")::INT, 0),
-    COALESCE(SUM("SUPPRESSED")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_TOTAL")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_FAIL")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_WARN")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_INFO")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_AUDITED")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_UNAUDITED")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_LICENSE_TOTAL")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_LICENSE_AUDITED")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_LICENSE_UNAUDITED")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_OPERATIONAL_TOTAL")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_OPERATIONAL_AUDITED")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_OPERATIONAL_UNAUDITED")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_SECURITY_TOTAL")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_SECURITY_AUDITED")::INT, 0),
-    COALESCE(SUM("POLICYVIOLATIONS_SECURITY_UNAUDITED")::INT, 0)
-  FROM (SELECT DISTINCT ON ("PM"."PROJECT_ID") *
-        FROM "PROJECTMETRICS" AS "PM"
-               INNER JOIN "PROJECT" AS "P" ON "P"."ID" = "PM"."PROJECT_ID"
-        WHERE "P"."INACTIVE_SINCE" IS NULL  -- Only consider active projects
-        ORDER BY "PM"."PROJECT_ID", "PM"."LAST_OCCURRENCE" DESC) AS "LATEST_PROJECT_METRICS"
-  INTO
-    "v_projects",
-    "v_vulnerable_projects",
-    "v_components",
-    "v_vulnerable_components",
-    "v_vulnerabilities",
-    "v_critical",
-    "v_high",
-    "v_medium",
-    "v_low",
-    "v_unassigned",
-    "v_findings_total",
-    "v_findings_audited",
-    "v_findings_unaudited",
-    "v_findings_suppressed",
-    "v_policy_violations_total",
-    "v_policy_violations_fail",
-    "v_policy_violations_warn",
-    "v_policy_violations_info",
-    "v_policy_violations_audited",
-    "v_policy_violations_unaudited",
-    "v_policy_violations_license_total",
-    "v_policy_violations_license_audited",
-    "v_policy_violations_license_unaudited",
-    "v_policy_violations_operational_total",
-    "v_policy_violations_operational_audited",
-    "v_policy_violations_operational_unaudited",
-    "v_policy_violations_security_total",
-    "v_policy_violations_security_audited",
-    "v_policy_violations_security_unaudited";
-
-  "v_risk_score" = "CALC_RISK_SCORE"("v_critical", "v_high", "v_medium", "v_low", "v_unassigned");
-
-   INSERT INTO "PORTFOLIOMETRICS" ("PROJECTS",
-                                    "VULNERABLEPROJECTS",
-                                    "COMPONENTS",
-                                    "VULNERABLECOMPONENTS",
-                                    "VULNERABILITIES",
-                                    "CRITICAL",
-                                    "HIGH",
-                                    "MEDIUM",
-                                    "LOW",
-                                    "UNASSIGNED_SEVERITY",
-                                    "RISKSCORE",
-                                    "FINDINGS_TOTAL",
-                                    "FINDINGS_AUDITED",
-                                    "FINDINGS_UNAUDITED",
-                                    "SUPPRESSED",
-                                    "POLICYVIOLATIONS_TOTAL",
-                                    "POLICYVIOLATIONS_FAIL",
-                                    "POLICYVIOLATIONS_WARN",
-                                    "POLICYVIOLATIONS_INFO",
-                                    "POLICYVIOLATIONS_AUDITED",
-                                    "POLICYVIOLATIONS_UNAUDITED",
-                                    "POLICYVIOLATIONS_LICENSE_TOTAL",
-                                    "POLICYVIOLATIONS_LICENSE_AUDITED",
-                                    "POLICYVIOLATIONS_LICENSE_UNAUDITED",
-                                    "POLICYVIOLATIONS_OPERATIONAL_TOTAL",
-                                    "POLICYVIOLATIONS_OPERATIONAL_AUDITED",
-                                    "POLICYVIOLATIONS_OPERATIONAL_UNAUDITED",
-                                    "POLICYVIOLATIONS_SECURITY_TOTAL",
-                                    "POLICYVIOLATIONS_SECURITY_AUDITED",
-                                    "POLICYVIOLATIONS_SECURITY_UNAUDITED",
-                                    "FIRST_OCCURRENCE",
-                                    "LAST_OCCURRENCE")
-   VALUES ("v_projects",
-            "v_vulnerable_projects",
-            "v_components",
-            "v_vulnerable_components",
-            "v_vulnerabilities",
-            "v_critical",
-            "v_high",
-            "v_medium",
-            "v_low",
-            "v_unassigned",
-            "v_risk_score",
-            "v_findings_total",
-            "v_findings_audited",
-            "v_findings_unaudited",
-            "v_findings_suppressed",
-            "v_policy_violations_total",
-            "v_policy_violations_fail",
-            "v_policy_violations_warn",
-            "v_policy_violations_info",
-            "v_policy_violations_audited",
-            "v_policy_violations_unaudited",
-            "v_policy_violations_license_total",
-            "v_policy_violations_license_audited",
-            "v_policy_violations_license_unaudited",
-            "v_policy_violations_operational_total",
-            "v_policy_violations_operational_audited",
-            "v_policy_violations_operational_unaudited",
-            "v_policy_violations_security_total",
-            "v_policy_violations_security_audited",
-            "v_policy_violations_security_unaudited",
-            NOW(),
-            NOW());
-END;
-$$;
-
 CREATE PROCEDURE public."UPDATE_PROJECT_METRICS"(project_uuid uuid)
     LANGUAGE plpgsql
     AS $$
@@ -515,7 +341,6 @@ DECLARE
   "v_policy_violations_security_total"        INT; -- Total number of policy violations of type security
   "v_policy_violations_security_audited"      INT; -- Number of audited policy violations of type security
   "v_policy_violations_security_unaudited"    INT; -- Number of unaudited policy violations of type security
-  "v_existing_id"                             BIGINT; -- ID of the existing row that matches the data point calculated in this procedure
 BEGIN
   SELECT "ID" FROM "PROJECT" WHERE "UUID" = "project_uuid" INTO "v_project_id";
   IF "v_project_id" IS NULL THEN
@@ -557,10 +382,18 @@ BEGIN
     COALESCE(SUM("POLICYVIOLATIONS_SECURITY_TOTAL")::INT, 0),
     COALESCE(SUM("POLICYVIOLATIONS_SECURITY_AUDITED")::INT, 0),
     COALESCE(SUM("POLICYVIOLATIONS_SECURITY_UNAUDITED")::INT, 0)
-  FROM (SELECT DISTINCT ON ("DM"."COMPONENT_ID") *
-        FROM "DEPENDENCYMETRICS" AS "DM"
-        WHERE "PROJECT_ID" = "v_project_id"
-        ORDER BY "DM"."COMPONENT_ID", "DM"."LAST_OCCURRENCE" DESC) AS "LATEST_COMPONENT_METRICS"
+  FROM (
+    SELECT metrics.*
+      FROM "COMPONENT"
+     INNER JOIN LATERAL (
+       SELECT *
+         FROM "DEPENDENCYMETRICS"
+        WHERE "COMPONENT_ID" = "COMPONENT"."ID"
+        ORDER BY "LAST_OCCURRENCE" DESC
+        LIMIT 1
+     ) AS metrics ON TRUE
+     WHERE "COMPONENT"."PROJECT_ID" = "v_project_id"
+  ) AS "LATEST_COMPONENT_METRICS"
   INTO
     "v_components",
     "v_vulnerable_components",
@@ -659,6 +492,661 @@ BEGIN
 end;
 $$;
 
+CREATE FUNCTION public.clone_project(source_project_uuid uuid, target_project_version text, target_project_version_is_latest boolean DEFAULT false, include_acl boolean DEFAULT true, include_components boolean DEFAULT true, include_findings boolean DEFAULT true, include_findings_audit_history boolean DEFAULT true, include_policy_violations boolean DEFAULT true, include_policy_violations_audit_history boolean DEFAULT true, include_properties boolean DEFAULT true, include_services boolean DEFAULT true, include_tags boolean DEFAULT true) RETURNS uuid
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  source_project RECORD;
+  target_project RECORD;
+BEGIN
+  -- Determine details of the project to be cloned.
+  SELECT "ID" AS id
+       , "UUID" AS uuid
+       , "NAME" AS name
+    FROM "PROJECT"
+   WHERE "UUID" = source_project_uuid
+    INTO source_project;
+
+  IF source_project IS NULL THEN
+    RAISE EXCEPTION 'Source project does not exist: %', source_project_uuid;
+  END IF;
+
+  IF EXISTS(SELECT 1 FROM "PROJECT" WHERE "NAME" = source_project.name AND "VERSION" = target_project_version) THEN
+    RAISE EXCEPTION 'Target project version already exists: %', target_project_version;
+  END IF;
+
+  -- When the target project is supposed to be the latest version,
+  -- ensure the previous latest version is no longer marked as such.
+  IF target_project_version_is_latest THEN
+    UPDATE "PROJECT"
+       SET "IS_LATEST" = FALSE
+     WHERE "NAME" = source_project.name
+       AND "IS_LATEST";
+  END IF;
+
+  -- Clone the project itself.
+  WITH created_project AS (
+    INSERT INTO "PROJECT" (
+      "AUTHORS"
+    , "MANUFACTURER"
+    , "SUPPLIER"
+    , "PUBLISHER"
+    , "GROUP"
+    , "NAME"
+    , "VERSION"
+    , "IS_LATEST"
+    , "DESCRIPTION"
+    , "CLASSIFIER"
+    , "INACTIVE_SINCE"
+    , "CPE"
+    , "PURL"
+    , "SWIDTAGID"
+    , "DIRECT_DEPENDENCIES"
+    , "PARENT_PROJECT_ID"
+    , "UUID"
+    )
+    SELECT "AUTHORS"
+         , "MANUFACTURER"
+         , "SUPPLIER"
+         , "PUBLISHER"
+         , "GROUP"
+         , "NAME"
+         , target_project_version
+         , target_project_version_is_latest
+         , "DESCRIPTION"
+         , "CLASSIFIER"
+         , "INACTIVE_SINCE"
+         , "CPE"
+         , "PURL"
+         , "SWIDTAGID"
+         , "DIRECT_DEPENDENCIES"
+         , "PARENT_PROJECT_ID"
+         , gen_random_uuid()
+      FROM "PROJECT"
+     WHERE "UUID" = source_project_uuid
+    RETURNING "ID", "UUID"
+  )
+  SELECT "ID" AS id
+       , "UUID" AS uuid
+    FROM created_project
+    INTO target_project;
+
+  -- Clone project metadata.
+  INSERT INTO "PROJECT_METADATA" (
+    "PROJECT_ID"
+  , "AUTHORS"
+  , "SUPPLIER"
+  , "TOOLS"
+  )
+  SELECT target_project.id
+       , "AUTHORS"
+       , "SUPPLIER"
+       , "TOOLS"
+    FROM "PROJECT_METADATA"
+   WHERE "PROJECT_ID" = source_project.id;
+
+  -- Clone project properties.
+  IF include_properties THEN
+    INSERT INTO "PROJECT_PROPERTY" (
+      "PROJECT_ID"
+    , "GROUPNAME"
+    , "PROPERTYNAME"
+    , "PROPERTYTYPE"
+    , "PROPERTYVALUE"
+    , "DESCRIPTION"
+    )
+    SELECT target_project.id
+         , "GROUPNAME"
+         , "PROPERTYNAME"
+         , "PROPERTYTYPE"
+         , "PROPERTYVALUE"
+         , "DESCRIPTION"
+      FROM "PROJECT_PROPERTY"
+     WHERE "PROJECT_ID" = source_project.id
+     ORDER BY "GROUPNAME"
+            , "PROPERTYNAME";
+  END IF;
+
+  -- Clone tag relationships.
+  IF include_tags THEN
+    INSERT INTO "PROJECTS_TAGS" ("PROJECT_ID", "TAG_ID")
+    SELECT target_project.id
+         , "TAG_ID"
+      FROM "PROJECTS_TAGS"
+     WHERE "PROJECT_ID" = source_project.id
+     ORDER BY "TAG_ID";
+  END IF;
+
+  -- Clone portfolio ACL definitions.
+  IF include_acl THEN
+    INSERT INTO "PROJECT_ACCESS_TEAMS" ("PROJECT_ID", "TEAM_ID")
+    SELECT target_project.id
+         , "TEAM_ID"
+      FROM "PROJECT_ACCESS_TEAMS"
+     WHERE "PROJECT_ID" = source_project.id
+     ORDER BY "TEAM_ID";
+  END IF;
+
+  -- Clone components.
+  IF include_components THEN
+    -- Maintain a mapping of IDs between source and target components
+    -- in order to be able to clone their relationships.
+    CREATE TEMP TABLE tmp_component_mapping (
+      source_id BIGINT
+    , source_uuid UUID
+    , target_id BIGINT
+    , target_uuid UUID
+    ) ON COMMIT DROP;
+
+    WITH
+    source_component AS (
+      SELECT *
+           , ROW_NUMBER() OVER(ORDER BY "ID") AS rn
+        FROM "COMPONENT"
+       WHERE "PROJECT_ID" = source_project.id
+    ),
+    target_component AS (
+      INSERT INTO "COMPONENT" (
+        "PROJECT_ID"
+      , "GROUP"
+      , "NAME"
+      , "VERSION"
+      , "CLASSIFIER"
+      , "FILENAME"
+      , "EXTENSION"
+      , "MD5"
+      , "SHA1"
+      , "SHA_256"
+      , "SHA_384"
+      , "SHA_512"
+      , "SHA3_256"
+      , "SHA3_384"
+      , "SHA3_512"
+      , "BLAKE2B_256"
+      , "BLAKE2B_384"
+      , "BLAKE2B_512"
+      , "BLAKE3"
+      , "CPE"
+      , "PURL"
+      , "PURLCOORDINATES"
+      , "SWIDTAGID"
+      , "INTERNAL"
+      , "DESCRIPTION"
+      , "COPYRIGHT"
+      , "LICENSE"
+      , "LICENSE_ID"
+      , "LICENSE_EXPRESSION"
+      , "LICENSE_URL"
+      , "AUTHORS"
+      , "SUPPLIER"
+      , "DIRECT_DEPENDENCIES"
+      , "PARENT_COMPONENT_ID"
+      , "UUID"
+      )
+      SELECT target_project.id
+           , "GROUP"
+           , "NAME"
+           , "VERSION"
+           , "CLASSIFIER"
+           , "FILENAME"
+           , "EXTENSION"
+           , "MD5"
+           , "SHA1"
+           , "SHA_256"
+           , "SHA_384"
+           , "SHA_512"
+           , "SHA3_256"
+           , "SHA3_384"
+           , "SHA3_512"
+           , "BLAKE2B_256"
+           , "BLAKE2B_384"
+           , "BLAKE2B_512"
+           , "BLAKE3"
+           , "CPE"
+           , "PURL"
+           , "PURLCOORDINATES"
+           , "SWIDTAGID"
+           , "INTERNAL"
+           , "DESCRIPTION"
+           , "COPYRIGHT"
+           , "LICENSE"
+           , "LICENSE_ID"
+           , "LICENSE_EXPRESSION"
+           , "LICENSE_URL"
+           , "AUTHORS"
+           , "SUPPLIER"
+           , "DIRECT_DEPENDENCIES"
+           , "PARENT_COMPONENT_ID"
+           , gen_random_uuid()
+        FROM source_component
+       ORDER BY rn
+      RETURNING "ID", "UUID"
+    ),
+    target_component_ranked AS (
+      SELECT *
+           , ROW_NUMBER() OVER() AS rn
+        FROM target_component
+    )
+    INSERT INTO tmp_component_mapping (
+      source_id
+    , source_uuid
+    , target_id
+    , target_uuid
+    )
+    SELECT source_component."ID"
+         , source_component."UUID"
+         , target_component_ranked."ID"
+         , target_component_ranked."UUID"
+      FROM source_component
+     INNER JOIN target_component_ranked
+        ON target_component_ranked.rn = source_component.rn;
+
+    -- Update parent component references.
+    UPDATE "COMPONENT"
+       SET "PARENT_COMPONENT_ID" = tmp_component_mapping.target_id
+      FROM tmp_component_mapping
+     WHERE "PROJECT_ID" = target_project.id
+       AND "PARENT_COMPONENT_ID" = tmp_component_mapping.source_id;
+
+    -- Clone component occurrences.
+    INSERT INTO "COMPONENT_OCCURRENCE" (
+      "COMPONENT_ID"
+    , "ID"
+    , "LOCATION"
+    , "LINE"
+    , "OFFSET"
+    , "SYMBOL"
+    , "CREATED_AT"
+    )
+    SELECT tmp_component_mapping.target_id
+         , odt_uuidv7()
+         , co."LOCATION"
+         , co."LINE"
+         , co."OFFSET"
+         , co."SYMBOL"
+         , co."CREATED_AT"
+      FROM tmp_component_mapping
+     INNER JOIN "COMPONENT_OCCURRENCE" AS co
+        ON co."COMPONENT_ID" = tmp_component_mapping.source_id
+     ORDER BY tmp_component_mapping.target_id;
+
+    -- Clone component properties.
+    INSERT INTO "COMPONENT_PROPERTY" (
+      "COMPONENT_ID"
+    , "GROUPNAME"
+    , "PROPERTYNAME"
+    , "PROPERTYTYPE"
+    , "PROPERTYVALUE"
+    , "DESCRIPTION"
+    , "UUID"
+    )
+    SELECT tmp_component_mapping.target_id
+         , "GROUPNAME"
+         , "PROPERTYNAME"
+         , "PROPERTYTYPE"
+         , "PROPERTYVALUE"
+         , "DESCRIPTION"
+         , gen_random_uuid()
+      FROM tmp_component_mapping
+     INNER JOIN "COMPONENT_PROPERTY"
+        ON "COMPONENT_ID" = tmp_component_mapping.source_id
+     ORDER BY tmp_component_mapping.target_id
+            , "GROUPNAME"
+            , "PROPERTYNAME";
+
+    -- Clone component findings.
+    IF include_findings THEN
+      INSERT INTO "COMPONENTS_VULNERABILITIES" ("COMPONENT_ID", "VULNERABILITY_ID")
+      SELECT tmp_component_mapping.target_id
+           , "VULNERABILITY_ID"
+        FROM "COMPONENTS_VULNERABILITIES"
+       INNER JOIN tmp_component_mapping
+          ON tmp_component_mapping.source_id = "COMPONENT_ID"
+       ORDER BY tmp_component_mapping.target_id
+              , "VULNERABILITY_ID";
+
+      INSERT INTO "FINDINGATTRIBUTION" (
+        "PROJECT_ID"
+      , "COMPONENT_ID"
+      , "VULNERABILITY_ID"
+      , "ALT_ID"
+      , "ANALYZERIDENTITY"
+      , "ATTRIBUTED_ON"
+      , "REFERENCE_URL"
+      , "UUID"
+      )
+      SELECT target_project.id
+           , tmp_component_mapping.target_id
+           , "VULNERABILITY_ID"
+           , "ALT_ID"
+           , "ANALYZERIDENTITY"
+           , "ATTRIBUTED_ON"
+           , "REFERENCE_URL"
+           , gen_random_uuid()
+        FROM "FINDINGATTRIBUTION"
+       INNER JOIN tmp_component_mapping
+          ON tmp_component_mapping.source_id = "COMPONENT_ID"
+       WHERE "PROJECT_ID" = source_project.id
+       ORDER BY tmp_component_mapping.target_id
+              , "VULNERABILITY_ID";
+
+      IF include_findings_audit_history THEN
+        WITH
+        source_analysis AS (
+          SELECT *
+               , ROW_NUMBER() OVER(ORDER BY "ID") AS rn
+            FROM "ANALYSIS"
+           WHERE "PROJECT_ID" = source_project.id
+        ),
+        target_analysis AS (
+          INSERT INTO "ANALYSIS" (
+            "COMPONENT_ID"
+          , "PROJECT_ID"
+          , "VULNERABILITY_ID"
+          , "VULNERABILITY_POLICY_ID"
+          , "DETAILS"
+          , "JUSTIFICATION"
+          , "RESPONSE"
+          , "STATE"
+          , "SUPPRESSED"
+          , "CVSSV2VECTOR"
+          , "CVSSV3SCORE"
+          , "OWASPSCORE"
+          , "CVSSV2SCORE"
+          , "OWASPVECTOR"
+          , "CVSSV3VECTOR"
+          , "SEVERITY"
+          )
+          SELECT tmp_component_mapping.target_id
+               , target_project.id
+               , "VULNERABILITY_ID"
+               , "VULNERABILITY_POLICY_ID"
+               , "DETAILS"
+               , "JUSTIFICATION"
+               , "RESPONSE"
+               , "STATE"
+               , "SUPPRESSED"
+               , "CVSSV2VECTOR"
+               , "CVSSV3SCORE"
+               , "OWASPSCORE"
+               , "CVSSV2SCORE"
+               , "OWASPVECTOR"
+               , "CVSSV3VECTOR"
+               , "SEVERITY"
+            FROM source_analysis
+           INNER JOIN tmp_component_mapping
+              ON tmp_component_mapping.source_id = "COMPONENT_ID"
+           ORDER BY rn
+          RETURNING "ID"
+        ),
+        target_analysis_ranked AS (
+          SELECT *
+               , ROW_NUMBER() OVER() AS rn
+            FROM target_analysis
+        ),
+        analysis_mapping AS (
+          SELECT source_analysis."ID" AS source_id
+               , target_analysis_ranked."ID" AS target_id
+            FROM source_analysis
+           INNER JOIN target_analysis_ranked
+              ON target_analysis_ranked.rn = source_analysis.rn
+        )
+        INSERT INTO "ANALYSISCOMMENT" ("ANALYSIS_ID", "COMMENT", "COMMENTER", "TIMESTAMP")
+        SELECT analysis_mapping.target_id
+             , "COMMENT"
+             , "COMMENTER"
+             , "TIMESTAMP"
+          FROM "ANALYSISCOMMENT"
+         INNER JOIN analysis_mapping
+            ON analysis_mapping.source_id = "ANALYSIS_ID";
+      END IF; -- include_findings_audit_history
+    END IF; -- include_findings
+
+    IF include_policy_violations THEN
+      CREATE TEMP TABLE tmp_violation_mapping (
+        source_id BIGINT
+      , target_id BIGINT
+      ) ON COMMIT DROP;
+
+      WITH
+      source_violation AS (
+        SELECT *
+             , ROW_NUMBER() OVER(ORDER BY "ID") AS rn
+          FROM "POLICYVIOLATION"
+         WHERE "PROJECT_ID" = source_project.id
+      ),
+      target_violation AS (
+        INSERT INTO "POLICYVIOLATION" (
+          "COMPONENT_ID"
+        , "PROJECT_ID"
+        , "POLICYCONDITION_ID"
+        , "TEXT"
+        , "TIMESTAMP"
+        , "TYPE"
+        , "UUID"
+        )
+        SELECT tmp_component_mapping.target_id
+             , target_project.id
+             , "POLICYCONDITION_ID"
+             , "TEXT"
+             , "TIMESTAMP"
+             , "TYPE"
+             , gen_random_uuid()
+          FROM source_violation
+         INNER JOIN tmp_component_mapping
+            ON tmp_component_mapping.source_id = "COMPONENT_ID"
+         ORDER BY rn
+        RETURNING "ID"
+      ),
+      target_violation_ranked AS (
+        SELECT *
+             , ROW_NUMBER() OVER() AS rn
+          FROM target_violation
+      )
+      INSERT INTO tmp_violation_mapping (source_id, target_id)
+      SELECT source_violation."ID" AS source_id
+           , target_violation_ranked."ID" AS target_id
+        FROM source_violation
+       INNER JOIN target_violation_ranked
+          ON target_violation_ranked.rn = source_violation.rn;
+
+      IF include_policy_violations_audit_history THEN
+        WITH
+        source_violation_analysis AS (
+          SELECT *
+               , ROW_NUMBER() OVER(ORDER BY "ID") AS rn
+            FROM "VIOLATIONANALYSIS"
+           WHERE "PROJECT_ID" = source_project.id
+        ),
+        target_violation_analysis AS (
+          INSERT INTO "VIOLATIONANALYSIS" (
+            "COMPONENT_ID"
+          , "PROJECT_ID"
+          , "POLICYVIOLATION_ID"
+          , "STATE"
+          , "SUPPRESSED"
+          )
+          SELECT tmp_component_mapping.target_id
+               , target_project.id
+               , tmp_violation_mapping.target_id
+               , "STATE"
+               , "SUPPRESSED"
+            FROM source_violation_analysis
+           INNER JOIN tmp_component_mapping
+              ON tmp_component_mapping.source_id = "COMPONENT_ID"
+           INNER JOIN tmp_violation_mapping
+              ON tmp_violation_mapping.source_id = "POLICYVIOLATION_ID"
+           ORDER BY source_violation_analysis.rn
+          RETURNING "ID"
+        ),
+        target_violation_analysis_ranked AS (
+          SELECT *
+               , ROW_NUMBER() OVER() AS rn
+            FROM target_violation_analysis
+        ),
+        violation_analysis_mapping AS (
+          SELECT source_violation_analysis."ID" AS source_id
+               , target_violation_analysis_ranked."ID" AS target_id
+            FROM source_violation_analysis
+           INNER JOIN target_violation_analysis_ranked
+              ON target_violation_analysis_ranked.rn = source_violation_analysis.rn
+        )
+        INSERT INTO "VIOLATIONANALYSISCOMMENT" ("VIOLATIONANALYSIS_ID", "COMMENT", "COMMENTER", "TIMESTAMP")
+        SELECT violation_analysis_mapping.target_id
+             , "COMMENT"
+             , "COMMENTER"
+             , "TIMESTAMP"
+          FROM "VIOLATIONANALYSISCOMMENT"
+         INNER JOIN violation_analysis_mapping
+            ON violation_analysis_mapping.source_id = "VIOLATIONANALYSIS_ID";
+      END IF; -- include_policy_violations_audit_history
+
+      DROP TABLE tmp_violation_mapping;
+    END IF; -- include_policy_violations
+
+    -- Rewire project dependencies.
+    --
+    -- Flatten the DIRECT_DEPENDENCIES array into a temporary table
+    -- to make it more efficient to modify.
+    CREATE TEMP TABLE tmp_project_direct_deps ON COMMIT DROP AS
+    SELECT JSONB_ARRAY_ELEMENTS("DIRECT_DEPENDENCIES") AS dep
+      FROM "PROJECT"
+     WHERE "ID" = target_project.id
+       AND "DIRECT_DEPENDENCIES" IS NOT NULL;
+
+    UPDATE tmp_project_direct_deps
+       SET dep = JSONB_SET(dep, '{uuid}', TO_JSONB(tmp_component_mapping.target_uuid::TEXT))
+      FROM tmp_component_mapping
+     WHERE dep->>'uuid' = tmp_component_mapping.source_uuid::TEXT;
+
+    UPDATE "PROJECT"
+       SET "DIRECT_DEPENDENCIES" = (
+             SELECT JSONB_AGG(dep)
+               FROM tmp_project_direct_deps
+           )
+     WHERE "ID" = target_project.id
+       AND EXISTS(SELECT 1 FROM tmp_project_direct_deps);
+
+    DROP TABLE tmp_project_direct_deps;
+
+    -- Rewire component dependencies.
+    --
+    -- Flatten the DIRECT_DEPENDENCIES array into a temporary table
+    -- to make it more efficient to modify.
+    CREATE TEMP TABLE tmp_component_direct_deps ON COMMIT DROP AS
+    SELECT "ID" AS component_id
+         , JSONB_ARRAY_ELEMENTS("DIRECT_DEPENDENCIES") AS dep
+      FROM "COMPONENT"
+     WHERE "PROJECT_ID" = target_project.id
+       AND "DIRECT_DEPENDENCIES" IS NOT NULL;
+
+    UPDATE tmp_component_direct_deps
+       SET dep = JSONB_SET(dep, '{uuid}', TO_JSONB(tmp_component_mapping.target_uuid::TEXT))
+      FROM tmp_component_mapping
+     WHERE dep->>'uuid' = tmp_component_mapping.source_uuid::TEXT;
+
+    UPDATE "COMPONENT"
+       SET "DIRECT_DEPENDENCIES" = (
+             SELECT JSONB_AGG(dep)
+               FROM tmp_component_direct_deps
+              WHERE component_id = "COMPONENT"."ID"
+           )
+     WHERE "PROJECT_ID" = target_project.id
+       AND EXISTS(SELECT 1 FROM tmp_component_direct_deps WHERE component_id = "COMPONENT"."ID");
+
+    DROP TABLE tmp_component_direct_deps;
+    DROP TABLE tmp_component_mapping;
+  END IF;
+
+  -- Clone services.
+  IF include_services THEN
+    CREATE TEMP TABLE tmp_service_mapping (
+      source_id BIGINT
+    , target_id BIGINT
+    ) ON COMMIT DROP;
+
+    WITH
+    source_service AS (
+      SELECT *
+           , ROW_NUMBER() OVER(ORDER BY "ID") AS rn
+        FROM "SERVICECOMPONENT"
+       WHERE "PROJECT_ID" = source_project.id
+    ),
+    target_service AS (
+      INSERT INTO "SERVICECOMPONENT" (
+        "PROJECT_ID"
+      , "GROUP"
+      , "NAME"
+      , "VERSION"
+      , "DESCRIPTION"
+      , "PROVIDER_ID"
+      , "ENDPOINTS"
+      , "AUTHENTICATED"
+      , "X_TRUST_BOUNDARY"
+      , "DATA"
+      , "EXTERNAL_REFERENCES"
+      , "LAST_RISKSCORE"
+      , "TEXT"
+      , "PARENT_SERVICECOMPONENT_ID"
+      , "UUID"
+      )
+      SELECT target_project.id
+           , "GROUP"
+           , "NAME"
+           , "VERSION"
+           , "DESCRIPTION"
+           , "PROVIDER_ID"
+           , "ENDPOINTS"
+           , "AUTHENTICATED"
+           , "X_TRUST_BOUNDARY"
+           , "DATA"
+           , "EXTERNAL_REFERENCES"
+           , "LAST_RISKSCORE"
+           , "TEXT"
+           , "PARENT_SERVICECOMPONENT_ID"
+           , gen_random_uuid()
+          FROM source_service
+       ORDER BY rn
+      RETURNING "ID"
+    ),
+    target_service_ranked AS (
+      SELECT *
+           , ROW_NUMBER() OVER() AS rn
+        FROM target_service
+    )
+    INSERT INTO tmp_service_mapping (source_id, target_id)
+    SELECT source_service."ID"
+         , target_service_ranked."ID"
+      FROM source_service
+     INNER JOIN target_service_ranked
+        ON target_service_ranked.rn = source_service.rn;
+
+    -- Update parent service references.
+    UPDATE "SERVICECOMPONENT"
+       SET "PARENT_SERVICECOMPONENT_ID" = tmp_service_mapping.target_id
+      FROM tmp_service_mapping
+     WHERE "PROJECT_ID" = target_project.id
+       AND tmp_service_mapping.source_id = "PARENT_SERVICECOMPONENT_ID";
+
+    -- Clone service findings.
+    IF include_findings THEN
+      INSERT INTO "SERVICECOMPONENTS_VULNERABILITIES" ("SERVICECOMPONENT_ID", "VULNERABILITY_ID")
+      SELECT tmp_service_mapping.target_id
+           , "VULNERABILITY_ID"
+        FROM "SERVICECOMPONENTS_VULNERABILITIES"
+       INNER JOIN tmp_service_mapping
+          ON tmp_service_mapping.source_id = "SERVICECOMPONENT_ID"
+      ORDER BY tmp_service_mapping.target_id
+              , "VULNERABILITY_ID";
+    END IF; -- include_findings
+
+    DROP TABLE tmp_service_mapping;
+  END IF; -- include_services
+
+  RETURN target_project.uuid;
+END;
+$$;
+
 CREATE FUNCTION public.effective_permissions_mx_on_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -739,11 +1227,25 @@ CREATE FUNCTION public.has_project_access(project_id bigint, team_ids bigint[]) 
     AS $$
 SELECT EXISTS(
   SELECT 1
-    FROM "PROJECT_ACCESS_TEAMS"
-   INNER JOIN "PROJECT_HIERARCHY"
-      ON "PROJECT_HIERARCHY"."PARENT_PROJECT_ID" = "PROJECT_ACCESS_TEAMS"."PROJECT_ID"
-   WHERE "PROJECT_ACCESS_TEAMS"."TEAM_ID" = ANY(team_ids)
-     AND "PROJECT_HIERARCHY"."CHILD_PROJECT_ID" = project_id
+    FROM "PROJECT_ACCESS_TEAMS" AS pat
+   INNER JOIN "PROJECT_HIERARCHY" AS ph
+      ON ph."PARENT_PROJECT_ID" = pat."PROJECT_ID"
+   WHERE pat."TEAM_ID" = ANY(team_ids)
+     AND ph."CHILD_PROJECT_ID" = project_id
+)
+$$;
+
+CREATE FUNCTION public.has_user_project_access(project_id bigint, user_id bigint) RETURNS boolean
+    LANGUAGE sql STABLE PARALLEL SAFE
+    AS $$
+SELECT EXISTS(
+  SELECT 1
+    FROM "USER_PROJECT_EFFECTIVE_PERMISSIONS" AS upep
+   INNER JOIN "PROJECT_HIERARCHY" AS ph
+      ON ph."PARENT_PROJECT_ID" = upep."PROJECT_ID"
+   WHERE ph."CHILD_PROJECT_ID" = project_id
+     AND upep."USER_ID" = user_id
+     AND upep."PERMISSION_NAME" = 'VIEW_PORTFOLIO'
 )
 $$;
 
@@ -770,6 +1272,22 @@ SELECT JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
     OR ("vuln_source" = 'SNYK' AND "VA"."SNYK_ID" = "vuln_id")
     OR ("vuln_source" = 'VULNDB' AND "VA"."VULNDB_ID" = "vuln_id")
 $$;
+
+CREATE FUNCTION public.odt_uuidv7(timestamp with time zone DEFAULT clock_timestamp()) RETURNS uuid
+    LANGUAGE sql PARALLEL SAFE
+    AS $_$
+  -- Replace the first 48 bits of a uuidv4 with the current
+  -- number of milliseconds since 1970-01-01 UTC
+  -- and set the "ver" field to 7 by setting additional bits
+  select encode(
+    set_bit(
+      set_bit(
+        overlay(uuid_send(gen_random_uuid()) placing
+	  substring(int8send((extract(epoch from $1)*1000)::bigint) from 3)
+	  from 1 for 6),
+	52, 1),
+      53, 1), 'hex')::uuid;
+$_$;
 
 CREATE FUNCTION public.prevent_direct_effective_permissions_writes() RETURNS trigger
     LANGUAGE plpgsql
@@ -842,7 +1360,7 @@ CREATE FUNCTION public.recalc_user_project_effective_permissions(project_ids big
               -- Rebuild effective permissions for users
               INSERT INTO "USER_PROJECT_EFFECTIVE_PERMISSIONS"
                 ("USER_ID", "PROJECT_ID", "PERMISSION_ID", "PERMISSION_NAME")
-              SELECT DISTINCT ut."USER_ID", pat."PROJECT_ID", tp."PERMISSION_ID", p."NAME"
+              SELECT ut."USER_ID", pat."PROJECT_ID", tp."PERMISSION_ID", p."NAME"
                 FROM "PROJECT_ACCESS_TEAMS" pat
                INNER JOIN "TEAMS_PERMISSIONS" tp
                   ON tp."TEAM_ID" = pat."TEAM_ID"
@@ -850,7 +1368,117 @@ CREATE FUNCTION public.recalc_user_project_effective_permissions(project_ids big
                   ON p."ID" = tp."PERMISSION_ID"
                INNER JOIN "USERS_TEAMS" ut
                   ON ut."TEAM_ID" = pat."TEAM_ID"
-               WHERE pat."PROJECT_ID" = ANY(project_ids);
+               WHERE pat."PROJECT_ID" = ANY(project_ids)
+               UNION
+              SELECT upr."USER_ID", upr."PROJECT_ID", rp."PERMISSION_ID", p."NAME"
+                FROM "USER_PROJECT_ROLES" upr
+               INNER JOIN "ROLES_PERMISSIONS" rp
+                  ON rp."ROLE_ID" = upr."ROLE_ID"
+               INNER JOIN "PERMISSION" p
+                  ON p."ID" = rp."PERMISSION_ID"
+               WHERE upr."PROJECT_ID" = ANY(project_ids);
+            END;
+            $$;
+
+CREATE FUNCTION public.role_effective_permissions_mx_on_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+            DECLARE
+              project_ids BIGINT[];
+              role_ids    BIGINT[];
+            BEGIN
+              SELECT ARRAY_AGG(DISTINCT "ROLE_ID")
+                INTO role_ids
+                FROM old_table;
+
+              IF TG_TABLE_NAME = 'ROLES_PERMISSIONS' THEN
+                SELECT ARRAY_AGG(sub."PROJECT_ID")
+                  INTO project_ids
+                  FROM (
+                    SELECT upr."PROJECT_ID"
+                      FROM "USER_PROJECT_ROLES" upr
+                     INNER JOIN old_table
+                        ON old_table."ROLE_ID" = upr."ROLE_ID"
+                  ) sub;
+              ELSE
+                SELECT ARRAY_AGG(DISTINCT "PROJECT_ID")
+                  INTO project_ids
+                  FROM "USER_PROJECT_ROLES"
+                 WHERE "ROLE_ID" = ANY(role_ids);
+              END IF;
+
+              PERFORM recalc_user_project_effective_permissions(project_ids);
+              RETURN NULL;
+            END;
+            $$;
+
+CREATE FUNCTION public.role_effective_permissions_mx_on_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+            DECLARE
+              project_ids BIGINT[];
+              role_ids    BIGINT[];
+            BEGIN
+              SELECT ARRAY_AGG(DISTINCT "ROLE_ID")
+                INTO role_ids
+                FROM new_table;
+
+              IF TG_TABLE_NAME = 'ROLES_PERMISSIONS' THEN
+                SELECT ARRAY_AGG(sub."PROJECT_ID")
+                  INTO project_ids
+                  FROM (
+                    SELECT upr."PROJECT_ID"
+                      FROM "USER_PROJECT_ROLES" upr
+                     INNER JOIN new_table
+                        ON new_table."ROLE_ID" = upr."ROLE_ID"
+                  ) sub;
+              ELSE
+                SELECT ARRAY_AGG(DISTINCT "PROJECT_ID")
+                  INTO project_ids
+                  FROM "USER_PROJECT_ROLES"
+                 WHERE "ROLE_ID" = ANY(role_ids);
+              END IF;
+
+              PERFORM recalc_user_project_effective_permissions(project_ids);
+              RETURN NULL;
+            END;
+            $$;
+
+CREATE FUNCTION public.role_effective_permissions_mx_on_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+            DECLARE
+              project_ids BIGINT[];
+              role_ids    BIGINT[];
+            BEGIN
+              SELECT ARRAY_AGG("ROLE_ID")
+                INTO role_ids
+                FROM (
+                  SELECT "ROLE_ID" FROM old_table
+                   UNION
+                  SELECT "ROLE_ID" FROM new_table
+                ) roles;
+
+              IF TG_TABLE_NAME = 'ROLES_PERMISSIONS' THEN
+                SELECT ARRAY_AGG(sub."PROJECT_ID")
+                  INTO project_ids
+                  FROM (
+                    SELECT upr."PROJECT_ID"
+                      FROM "USER_PROJECT_ROLES" upr
+                     INNER JOIN new_table
+                        ON new_table."ROLE_ID" = upr."ROLE_ID"
+                      FULL OUTER JOIN old_table
+                        ON new_table."ROLE_ID" = old_table."ROLE_ID"
+                  ) sub;
+              ELSE
+                SELECT ARRAY_AGG(DISTINCT "PROJECT_ID")
+                  INTO project_ids
+                  FROM "USER_PROJECT_ROLES"
+                 WHERE "ROLE_ID" = ANY(role_ids);
+              END IF;
+
+              PERFORM recalc_user_project_effective_permissions(project_ids);
+              RETURN NULL;
             END;
             $$;
 
@@ -995,7 +1623,7 @@ CREATE TABLE public."COMPONENT" (
     "PROJECT_ID" bigint NOT NULL,
     "PUBLISHER" character varying(255),
     "PURL" character varying(1024),
-    "PURLCOORDINATES" character varying(255),
+    "PURLCOORDINATES" character varying(1024),
     "LICENSE_ID" bigint,
     "SHA1" character varying(40),
     "SHA_256" character varying(64),
@@ -1009,7 +1637,7 @@ CREATE TABLE public."COMPONENT" (
     "VERSION" character varying(255),
     "SUPPLIER" text,
     "AUTHORS" text,
-    CONSTRAINT "COMPONENT_CLASSIFIER_check" CHECK ((("CLASSIFIER" IS NULL) OR (("CLASSIFIER")::text = ANY (ARRAY['APPLICATION'::text, 'CONTAINER'::text, 'DEVICE'::text, 'FILE'::text, 'FIRMWARE'::text, 'FRAMEWORK'::text, 'LIBRARY'::text, 'OPERATING_SYSTEM'::text]))))
+    CONSTRAINT "COMPONENT_CLASSIFIER_check" CHECK ((("CLASSIFIER" IS NULL) OR (("CLASSIFIER")::text = ANY (ARRAY['APPLICATION'::text, 'CONTAINER'::text, 'DATA'::text, 'DEVICE'::text, 'DEVICE_DRIVER'::text, 'FILE'::text, 'FIRMWARE'::text, 'FRAMEWORK'::text, 'LIBRARY'::text, 'MACHINE_LEARNING_MODEL'::text, 'OPERATING_SYSTEM'::text, 'PLATFORM'::text]))))
 );
 
 CREATE TABLE public."COMPONENTS_VULNERABILITIES" (
@@ -1063,7 +1691,7 @@ CREATE TABLE public."CONFIGPROPERTY" (
     "GROUPNAME" character varying(255) NOT NULL,
     "PROPERTYNAME" character varying(255) NOT NULL,
     "PROPERTYTYPE" character varying(255) NOT NULL,
-    "PROPERTYVALUE" character varying(1024)
+    "PROPERTYVALUE" text
 );
 
 ALTER TABLE public."CONFIGPROPERTY" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
@@ -1108,6 +1736,40 @@ CREATE TABLE public."DEPENDENCYMETRICS" (
     "VULNERABILITIES" integer NOT NULL
 )
 PARTITION BY RANGE ("LAST_OCCURRENCE");
+
+CREATE TABLE public."DEPENDENCYMETRICS_20251027" (
+    "COMPONENT_ID" bigint NOT NULL,
+    "CRITICAL" integer NOT NULL,
+    "FINDINGS_AUDITED" integer,
+    "FINDINGS_TOTAL" integer,
+    "FINDINGS_UNAUDITED" integer,
+    "FIRST_OCCURRENCE" timestamp with time zone NOT NULL,
+    "HIGH" integer NOT NULL,
+    "RISKSCORE" double precision NOT NULL,
+    "LAST_OCCURRENCE" timestamp with time zone NOT NULL,
+    "LOW" integer NOT NULL,
+    "MEDIUM" integer NOT NULL,
+    "POLICYVIOLATIONS_AUDITED" integer,
+    "POLICYVIOLATIONS_FAIL" integer,
+    "POLICYVIOLATIONS_INFO" integer,
+    "POLICYVIOLATIONS_LICENSE_AUDITED" integer,
+    "POLICYVIOLATIONS_LICENSE_TOTAL" integer,
+    "POLICYVIOLATIONS_LICENSE_UNAUDITED" integer,
+    "POLICYVIOLATIONS_OPERATIONAL_AUDITED" integer,
+    "POLICYVIOLATIONS_OPERATIONAL_TOTAL" integer,
+    "POLICYVIOLATIONS_OPERATIONAL_UNAUDITED" integer,
+    "POLICYVIOLATIONS_SECURITY_AUDITED" integer,
+    "POLICYVIOLATIONS_SECURITY_TOTAL" integer,
+    "POLICYVIOLATIONS_SECURITY_UNAUDITED" integer,
+    "POLICYVIOLATIONS_TOTAL" integer,
+    "POLICYVIOLATIONS_UNAUDITED" integer,
+    "POLICYVIOLATIONS_WARN" integer,
+    "PROJECT_ID" bigint NOT NULL,
+    "SUPPRESSED" integer NOT NULL,
+    "UNASSIGNED_SEVERITY" integer,
+    "VULNERABILITIES" integer NOT NULL
+);
+ALTER TABLE ONLY public."DEPENDENCYMETRICS" ATTACH PARTITION public."DEPENDENCYMETRICS_20251027" FOR VALUES FROM ('2025-10-26 23:00:00+00') TO ('2025-10-27 23:00:00+00');
 
 CREATE TABLE public."EPSS" (
     "ID" bigint NOT NULL,
@@ -1334,13 +1996,23 @@ CREATE TABLE public."NOTIFICATIONRULE_PROJECTS" (
 
 CREATE TABLE public."NOTIFICATIONRULE_TAGS" (
     "NOTIFICATIONRULE_ID" bigint NOT NULL,
-    "TAG_ID" bigint
+    "TAG_ID" bigint NOT NULL
 );
 
 CREATE TABLE public."NOTIFICATIONRULE_TEAMS" (
     "NOTIFICATIONRULE_ID" bigint NOT NULL,
     "TEAM_ID" bigint NOT NULL
 );
+
+CREATE TABLE public."NOTIFICATION_OUTBOX" (
+    "ID" uuid NOT NULL,
+    "TIMESTAMP" timestamp(3) with time zone NOT NULL,
+    "SCOPE" text NOT NULL,
+    "GROUP" text NOT NULL,
+    "LEVEL" text NOT NULL,
+    "PAYLOAD" bytea NOT NULL
+)
+WITH (autovacuum_vacuum_scale_factor='0.1');
 
 CREATE TABLE public."OIDCGROUP" (
     "ID" bigint NOT NULL,
@@ -1437,44 +2109,8 @@ CREATE TABLE public."POLICY_PROJECTS" (
 
 CREATE TABLE public."POLICY_TAGS" (
     "POLICY_ID" bigint NOT NULL,
-    "TAG_ID" bigint
+    "TAG_ID" bigint NOT NULL
 );
-
-CREATE TABLE public."PORTFOLIOMETRICS" (
-    "COMPONENTS" integer NOT NULL,
-    "CRITICAL" integer NOT NULL,
-    "FINDINGS_AUDITED" integer,
-    "FINDINGS_TOTAL" integer,
-    "FINDINGS_UNAUDITED" integer,
-    "FIRST_OCCURRENCE" timestamp with time zone NOT NULL,
-    "HIGH" integer NOT NULL,
-    "RISKSCORE" double precision NOT NULL,
-    "LAST_OCCURRENCE" timestamp with time zone NOT NULL,
-    "LOW" integer NOT NULL,
-    "MEDIUM" integer NOT NULL,
-    "POLICYVIOLATIONS_AUDITED" integer,
-    "POLICYVIOLATIONS_FAIL" integer,
-    "POLICYVIOLATIONS_INFO" integer,
-    "POLICYVIOLATIONS_LICENSE_AUDITED" integer,
-    "POLICYVIOLATIONS_LICENSE_TOTAL" integer,
-    "POLICYVIOLATIONS_LICENSE_UNAUDITED" integer,
-    "POLICYVIOLATIONS_OPERATIONAL_AUDITED" integer,
-    "POLICYVIOLATIONS_OPERATIONAL_TOTAL" integer,
-    "POLICYVIOLATIONS_OPERATIONAL_UNAUDITED" integer,
-    "POLICYVIOLATIONS_SECURITY_AUDITED" integer,
-    "POLICYVIOLATIONS_SECURITY_TOTAL" integer,
-    "POLICYVIOLATIONS_SECURITY_UNAUDITED" integer,
-    "POLICYVIOLATIONS_TOTAL" integer,
-    "POLICYVIOLATIONS_UNAUDITED" integer,
-    "POLICYVIOLATIONS_WARN" integer,
-    "PROJECTS" integer NOT NULL,
-    "SUPPRESSED" integer NOT NULL,
-    "UNASSIGNED_SEVERITY" integer,
-    "VULNERABILITIES" integer NOT NULL,
-    "VULNERABLECOMPONENTS" integer NOT NULL,
-    "VULNERABLEPROJECTS" integer NOT NULL
-)
-PARTITION BY RANGE ("LAST_OCCURRENCE");
 
 CREATE TABLE public."PROJECT" (
     "ID" bigint NOT NULL,
@@ -1490,7 +2126,7 @@ CREATE TABLE public."PROJECT" (
     "NAME" character varying(255) NOT NULL,
     "PARENT_PROJECT_ID" bigint,
     "PUBLISHER" character varying(255),
-    "PURL" character varying(255),
+    "PURL" character varying(1024),
     "SWIDTAGID" character varying(255),
     "UUID" uuid NOT NULL,
     "VERSION" character varying(255),
@@ -1499,7 +2135,7 @@ CREATE TABLE public."PROJECT" (
     "AUTHORS" text,
     "IS_LATEST" boolean DEFAULT false NOT NULL,
     "INACTIVE_SINCE" timestamp with time zone,
-    CONSTRAINT "PROJECT_CLASSIFIER_check" CHECK ((("CLASSIFIER" IS NULL) OR (("CLASSIFIER")::text = ANY (ARRAY['APPLICATION'::text, 'CONTAINER'::text, 'DEVICE'::text, 'FILE'::text, 'FIRMWARE'::text, 'FRAMEWORK'::text, 'LIBRARY'::text, 'OPERATING_SYSTEM'::text]))))
+    CONSTRAINT "PROJECT_CLASSIFIER_check" CHECK ((("CLASSIFIER" IS NULL) OR (("CLASSIFIER")::text = ANY (ARRAY['APPLICATION'::text, 'CONTAINER'::text, 'DATA'::text, 'DEVICE'::text, 'DEVICE_DRIVER'::text, 'FILE'::text, 'FIRMWARE'::text, 'FRAMEWORK'::text, 'LIBRARY'::text, 'MACHINE_LEARNING_MODEL'::text, 'OPERATING_SYSTEM'::text, 'PLATFORM'::text]))))
 );
 
 CREATE TABLE public."PROJECTMETRICS" (
@@ -1536,6 +2172,194 @@ CREATE TABLE public."PROJECTMETRICS" (
     "VULNERABLECOMPONENTS" integer NOT NULL
 )
 PARTITION BY RANGE ("LAST_OCCURRENCE");
+
+CREATE MATERIALIZED VIEW public."PORTFOLIOMETRICS_GLOBAL" AS
+ WITH retention AS (
+         SELECT COALESCE(( SELECT ("CONFIGPROPERTY"."PROPERTYVALUE")::integer AS "PROPERTYVALUE"
+                   FROM public."CONFIGPROPERTY"
+                  WHERE ((("CONFIGPROPERTY"."GROUPNAME")::text = 'maintenance'::text) AND (("CONFIGPROPERTY"."PROPERTYNAME")::text = 'metrics.retention.days'::text))), 90) AS days
+        ), date_range AS (
+         SELECT date_trunc('day'::text, (CURRENT_DATE - ('1 day'::interval * (day.day)::double precision))) AS metrics_date
+           FROM generate_series(0, GREATEST((( SELECT retention.days
+                   FROM retention) - 1), 0)) day(day)
+        ), latest_daily_project_metrics AS (
+         SELECT date_range_1.metrics_date,
+            latest_metrics."COMPONENTS",
+            latest_metrics."CRITICAL",
+            latest_metrics."FINDINGS_AUDITED",
+            latest_metrics."FINDINGS_TOTAL",
+            latest_metrics."FINDINGS_UNAUDITED",
+            latest_metrics."FIRST_OCCURRENCE",
+            latest_metrics."HIGH",
+            latest_metrics."RISKSCORE",
+            latest_metrics."LAST_OCCURRENCE",
+            latest_metrics."LOW",
+            latest_metrics."MEDIUM",
+            latest_metrics."POLICYVIOLATIONS_AUDITED",
+            latest_metrics."POLICYVIOLATIONS_FAIL",
+            latest_metrics."POLICYVIOLATIONS_INFO",
+            latest_metrics."POLICYVIOLATIONS_LICENSE_AUDITED",
+            latest_metrics."POLICYVIOLATIONS_LICENSE_TOTAL",
+            latest_metrics."POLICYVIOLATIONS_LICENSE_UNAUDITED",
+            latest_metrics."POLICYVIOLATIONS_OPERATIONAL_AUDITED",
+            latest_metrics."POLICYVIOLATIONS_OPERATIONAL_TOTAL",
+            latest_metrics."POLICYVIOLATIONS_OPERATIONAL_UNAUDITED",
+            latest_metrics."POLICYVIOLATIONS_SECURITY_AUDITED",
+            latest_metrics."POLICYVIOLATIONS_SECURITY_TOTAL",
+            latest_metrics."POLICYVIOLATIONS_SECURITY_UNAUDITED",
+            latest_metrics."POLICYVIOLATIONS_TOTAL",
+            latest_metrics."POLICYVIOLATIONS_UNAUDITED",
+            latest_metrics."POLICYVIOLATIONS_WARN",
+            latest_metrics."PROJECT_ID",
+            latest_metrics."SUPPRESSED",
+            latest_metrics."UNASSIGNED_SEVERITY",
+            latest_metrics."VULNERABILITIES",
+            latest_metrics."VULNERABLECOMPONENTS"
+           FROM (date_range date_range_1
+             LEFT JOIN LATERAL ( SELECT DISTINCT ON (pm."PROJECT_ID") pm."COMPONENTS",
+                    pm."CRITICAL",
+                    pm."FINDINGS_AUDITED",
+                    pm."FINDINGS_TOTAL",
+                    pm."FINDINGS_UNAUDITED",
+                    pm."FIRST_OCCURRENCE",
+                    pm."HIGH",
+                    pm."RISKSCORE",
+                    pm."LAST_OCCURRENCE",
+                    pm."LOW",
+                    pm."MEDIUM",
+                    pm."POLICYVIOLATIONS_AUDITED",
+                    pm."POLICYVIOLATIONS_FAIL",
+                    pm."POLICYVIOLATIONS_INFO",
+                    pm."POLICYVIOLATIONS_LICENSE_AUDITED",
+                    pm."POLICYVIOLATIONS_LICENSE_TOTAL",
+                    pm."POLICYVIOLATIONS_LICENSE_UNAUDITED",
+                    pm."POLICYVIOLATIONS_OPERATIONAL_AUDITED",
+                    pm."POLICYVIOLATIONS_OPERATIONAL_TOTAL",
+                    pm."POLICYVIOLATIONS_OPERATIONAL_UNAUDITED",
+                    pm."POLICYVIOLATIONS_SECURITY_AUDITED",
+                    pm."POLICYVIOLATIONS_SECURITY_TOTAL",
+                    pm."POLICYVIOLATIONS_SECURITY_UNAUDITED",
+                    pm."POLICYVIOLATIONS_TOTAL",
+                    pm."POLICYVIOLATIONS_UNAUDITED",
+                    pm."POLICYVIOLATIONS_WARN",
+                    pm."PROJECT_ID",
+                    pm."SUPPRESSED",
+                    pm."UNASSIGNED_SEVERITY",
+                    pm."VULNERABILITIES",
+                    pm."VULNERABLECOMPONENTS"
+                   FROM (public."PROJECT" p
+                     JOIN public."PROJECTMETRICS" pm ON (((pm."PROJECT_ID" = p."ID") AND (p."INACTIVE_SINCE" IS NULL))))
+                  WHERE ((pm."LAST_OCCURRENCE" < (date_range_1.metrics_date + '1 day'::interval)) AND (pm."LAST_OCCURRENCE" >= (date_range_1.metrics_date - '1 day'::interval)))
+                  ORDER BY pm."PROJECT_ID", pm."LAST_OCCURRENCE" DESC) latest_metrics ON (true))
+        ), daily_metrics AS (
+         SELECT count(DISTINCT latest_daily_project_metrics."PROJECT_ID") AS projects,
+            sum(latest_daily_project_metrics."COMPONENTS") AS components,
+            sum(latest_daily_project_metrics."CRITICAL") AS critical,
+            latest_daily_project_metrics.metrics_date,
+            sum(latest_daily_project_metrics."FINDINGS_AUDITED") AS findings_audited,
+            sum(latest_daily_project_metrics."FINDINGS_TOTAL") AS findings_total,
+            sum(latest_daily_project_metrics."FINDINGS_UNAUDITED") AS findings_unaudited,
+            sum(latest_daily_project_metrics."HIGH") AS high,
+            sum(latest_daily_project_metrics."RISKSCORE") AS inherited_risk_score,
+            sum(latest_daily_project_metrics."LOW") AS low,
+            sum(latest_daily_project_metrics."MEDIUM") AS medium,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_AUDITED") AS policy_violations_audited,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_FAIL") AS policy_violations_fail,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_INFO") AS policy_violations_info,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_LICENSE_AUDITED") AS policy_violations_license_audited,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_LICENSE_TOTAL") AS policy_violations_license_total,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_LICENSE_UNAUDITED") AS policy_violations_license_unaudited,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_OPERATIONAL_AUDITED") AS policy_violations_operational_audited,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_OPERATIONAL_TOTAL") AS policy_violations_operational_total,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_OPERATIONAL_UNAUDITED") AS policy_violations_operational_unaudited,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_SECURITY_AUDITED") AS policy_violations_security_audited,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_SECURITY_TOTAL") AS policy_violations_security_total,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_SECURITY_UNAUDITED") AS policy_violations_security_unaudited,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_TOTAL") AS policy_violations_total,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_UNAUDITED") AS policy_violations_unaudited,
+            sum(latest_daily_project_metrics."POLICYVIOLATIONS_WARN") AS policy_violations_warn,
+            sum(latest_daily_project_metrics."SUPPRESSED") AS suppressed,
+            sum(latest_daily_project_metrics."UNASSIGNED_SEVERITY") AS unassigned,
+            sum(latest_daily_project_metrics."VULNERABILITIES") AS vulnerabilities,
+            sum(latest_daily_project_metrics."VULNERABLECOMPONENTS") AS vulnerable_components,
+            sum(
+                CASE
+                    WHEN (latest_daily_project_metrics."VULNERABLECOMPONENTS" > 0) THEN 1
+                    ELSE 0
+                END) AS vulnerable_projects
+           FROM latest_daily_project_metrics
+          GROUP BY latest_daily_project_metrics.metrics_date
+        )
+ SELECT COALESCE(dm.components, (0)::bigint) AS "COMPONENTS",
+    COALESCE(dm.critical, (0)::bigint) AS "CRITICAL",
+    COALESCE(dm.findings_audited, (0)::bigint) AS "FINDINGS_AUDITED",
+    COALESCE(dm.findings_total, (0)::bigint) AS "FINDINGS_TOTAL",
+    COALESCE(dm.findings_unaudited, (0)::bigint) AS "FINDINGS_UNAUDITED",
+    date_range.metrics_date AS "FIRST_OCCURRENCE",
+    COALESCE(dm.high, (0)::bigint) AS "HIGH",
+    COALESCE(dm.inherited_risk_score, (0)::double precision) AS "INHERITED_RISK_SCORE",
+    date_range.metrics_date AS "LAST_OCCURRENCE",
+    COALESCE(dm.low, (0)::bigint) AS "LOW",
+    COALESCE(dm.medium, (0)::bigint) AS "MEDIUM",
+    COALESCE(dm.policy_violations_audited, (0)::bigint) AS "POLICY_VIOLATIONS_AUDITED",
+    COALESCE(dm.policy_violations_fail, (0)::bigint) AS "POLICY_VIOLATIONS_FAIL",
+    COALESCE(dm.policy_violations_info, (0)::bigint) AS "POLICY_VIOLATIONS_INFO",
+    COALESCE(dm.policy_violations_license_audited, (0)::bigint) AS "POLICY_VIOLATIONS_LICENSE_AUDITED",
+    COALESCE(dm.policy_violations_license_total, (0)::bigint) AS "POLICY_VIOLATIONS_LICENSE_TOTAL",
+    COALESCE(dm.policy_violations_license_unaudited, (0)::bigint) AS "POLICY_VIOLATIONS_LICENSE_UNAUDITED",
+    COALESCE(dm.policy_violations_operational_audited, (0)::bigint) AS "POLICY_VIOLATIONS_OPERATIONAL_AUDITED",
+    COALESCE(dm.policy_violations_operational_total, (0)::bigint) AS "POLICY_VIOLATIONS_OPERATIONAL_TOTAL",
+    COALESCE(dm.policy_violations_operational_unaudited, (0)::bigint) AS "POLICY_VIOLATIONS_OPERATIONAL_UNAUDITED",
+    COALESCE(dm.policy_violations_security_audited, (0)::bigint) AS "POLICY_VIOLATIONS_SECURITY_AUDITED",
+    COALESCE(dm.policy_violations_security_total, (0)::bigint) AS "POLICY_VIOLATIONS_SECURITY_TOTAL",
+    COALESCE(dm.policy_violations_security_unaudited, (0)::bigint) AS "POLICY_VIOLATIONS_SECURITY_UNAUDITED",
+    COALESCE(dm.policy_violations_total, (0)::bigint) AS "POLICY_VIOLATIONS_TOTAL",
+    COALESCE(dm.policy_violations_unaudited, (0)::bigint) AS "POLICY_VIOLATIONS_UNAUDITED",
+    COALESCE(dm.policy_violations_warn, (0)::bigint) AS "POLICY_VIOLATIONS_WARN",
+    COALESCE(dm.projects, (0)::bigint) AS "PROJECTS",
+    COALESCE(dm.suppressed, (0)::bigint) AS "SUPPRESSED",
+    COALESCE(dm.unassigned, (0)::bigint) AS "UNASSIGNED",
+    COALESCE(dm.vulnerabilities, (0)::bigint) AS "VULNERABILITIES",
+    COALESCE(dm.vulnerable_components, (0)::bigint) AS "VULNERABLE_COMPONENTS",
+    COALESCE(dm.vulnerable_projects, (0)::bigint) AS "VULNERABLE_PROJECTS"
+   FROM (date_range
+     LEFT JOIN daily_metrics dm ON ((date_range.metrics_date = dm.metrics_date)))
+  WITH NO DATA;
+
+CREATE TABLE public."PROJECTMETRICS_20251027" (
+    "COMPONENTS" integer NOT NULL,
+    "CRITICAL" integer NOT NULL,
+    "FINDINGS_AUDITED" integer,
+    "FINDINGS_TOTAL" integer,
+    "FINDINGS_UNAUDITED" integer,
+    "FIRST_OCCURRENCE" timestamp with time zone NOT NULL,
+    "HIGH" integer NOT NULL,
+    "RISKSCORE" double precision NOT NULL,
+    "LAST_OCCURRENCE" timestamp with time zone NOT NULL,
+    "LOW" integer NOT NULL,
+    "MEDIUM" integer NOT NULL,
+    "POLICYVIOLATIONS_AUDITED" integer,
+    "POLICYVIOLATIONS_FAIL" integer,
+    "POLICYVIOLATIONS_INFO" integer,
+    "POLICYVIOLATIONS_LICENSE_AUDITED" integer,
+    "POLICYVIOLATIONS_LICENSE_TOTAL" integer,
+    "POLICYVIOLATIONS_LICENSE_UNAUDITED" integer,
+    "POLICYVIOLATIONS_OPERATIONAL_AUDITED" integer,
+    "POLICYVIOLATIONS_OPERATIONAL_TOTAL" integer,
+    "POLICYVIOLATIONS_OPERATIONAL_UNAUDITED" integer,
+    "POLICYVIOLATIONS_SECURITY_AUDITED" integer,
+    "POLICYVIOLATIONS_SECURITY_TOTAL" integer,
+    "POLICYVIOLATIONS_SECURITY_UNAUDITED" integer,
+    "POLICYVIOLATIONS_TOTAL" integer,
+    "POLICYVIOLATIONS_UNAUDITED" integer,
+    "POLICYVIOLATIONS_WARN" integer,
+    "PROJECT_ID" bigint NOT NULL,
+    "SUPPRESSED" integer NOT NULL,
+    "UNASSIGNED_SEVERITY" integer,
+    "VULNERABILITIES" integer NOT NULL,
+    "VULNERABLECOMPONENTS" integer NOT NULL
+);
+ALTER TABLE ONLY public."PROJECTMETRICS" ATTACH PARTITION public."PROJECTMETRICS_20251027" FOR VALUES FROM ('2025-10-26 23:00:00+00') TO ('2025-10-27 23:00:00+00');
 
 CREATE TABLE public."PROJECTS_TAGS" (
     "TAG_ID" bigint NOT NULL,
@@ -1633,6 +2457,26 @@ CREATE TABLE public."REPOSITORY_META_COMPONENT" (
 
 ALTER TABLE public."REPOSITORY_META_COMPONENT" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
     SEQUENCE NAME public."REPOSITORY_META_COMPONENT_ID_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE public."ROLE" (
+    "ID" bigint NOT NULL,
+    "NAME" character varying(255) NOT NULL,
+    "UUID" uuid NOT NULL
+);
+
+CREATE TABLE public."ROLES_PERMISSIONS" (
+    "ROLE_ID" bigint NOT NULL,
+    "PERMISSION_ID" bigint NOT NULL
+);
+
+ALTER TABLE public."ROLE" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public."ROLE_ID_seq"
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1750,6 +2594,22 @@ CREATE TABLE public."USER_PROJECT_EFFECTIVE_PERMISSIONS" (
     "USER_ID" bigint NOT NULL,
     "PERMISSION_ID" bigint NOT NULL,
     "PERMISSION_NAME" character varying(255) NOT NULL
+);
+
+CREATE TABLE public."USER_PROJECT_ROLES" (
+    "ID" bigint NOT NULL,
+    "USER_ID" bigint NOT NULL,
+    "PROJECT_ID" bigint NOT NULL,
+    "ROLE_ID" bigint NOT NULL
+);
+
+ALTER TABLE public."USER_PROJECT_ROLES" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public."USER_PROJECT_ROLES_ID_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
 );
 
 CREATE TABLE public."VEX" (
@@ -1970,7 +2830,7 @@ CREATE TABLE public."VULNERABLESOFTWARE" (
     "OTHER" character varying(255),
     "PART" character varying(255),
     "PRODUCT" character varying(255),
-    "PURL" character varying(255),
+    "PURL" character varying(1024),
     "PURL_NAME" character varying(255),
     "PURL_NAMESPACE" character varying(255),
     "PURL_QUALIFIERS" character varying(255),
@@ -2104,7 +2964,10 @@ ALTER TABLE ONLY public."CONFIGPROPERTY"
     ADD CONSTRAINT "CONFIGPROPERTY_U1" UNIQUE ("GROUPNAME", "PROPERTYNAME");
 
 ALTER TABLE ONLY public."DEPENDENCYMETRICS"
-    ADD CONSTRAINT "DEPENDENCYMETRICS_PK" PRIMARY KEY ("PROJECT_ID", "COMPONENT_ID", "LAST_OCCURRENCE");
+    ADD CONSTRAINT "DEPENDENCYMETRICS_PK" PRIMARY KEY ("COMPONENT_ID", "LAST_OCCURRENCE");
+
+ALTER TABLE ONLY public."DEPENDENCYMETRICS_20251027"
+    ADD CONSTRAINT "DEPENDENCYMETRICS_20251027_pkey" PRIMARY KEY ("COMPONENT_ID", "LAST_OCCURRENCE");
 
 ALTER TABLE ONLY public."EPSS"
     ADD CONSTRAINT "EPSS_CVE_PK" PRIMARY KEY ("ID");
@@ -2166,11 +3029,17 @@ ALTER TABLE ONLY public."NOTIFICATIONPUBLISHER"
 ALTER TABLE ONLY public."NOTIFICATIONRULE"
     ADD CONSTRAINT "NOTIFICATIONRULE_PK" PRIMARY KEY ("ID");
 
+ALTER TABLE ONLY public."NOTIFICATIONRULE_TAGS"
+    ADD CONSTRAINT "NOTIFICATIONRULE_TAGS_PK" PRIMARY KEY ("NOTIFICATIONRULE_ID", "TAG_ID");
+
 ALTER TABLE ONLY public."NOTIFICATIONRULE_TEAMS"
     ADD CONSTRAINT "NOTIFICATIONRULE_TEAMS_PK" PRIMARY KEY ("NOTIFICATIONRULE_ID", "TEAM_ID");
 
 ALTER TABLE ONLY public."NOTIFICATIONRULE"
     ADD CONSTRAINT "NOTIFICATIONRULE_UUID_IDX" UNIQUE ("UUID");
+
+ALTER TABLE ONLY public."NOTIFICATION_OUTBOX"
+    ADD CONSTRAINT "NOTIFICATION_OUTBOX_PK" PRIMARY KEY ("ID");
 
 ALTER TABLE ONLY public."OIDCGROUP"
     ADD CONSTRAINT "OIDCGROUP_PK" PRIMARY KEY ("ID");
@@ -2199,14 +3068,20 @@ ALTER TABLE ONLY public."POLICYVIOLATION"
 ALTER TABLE ONLY public."POLICY"
     ADD CONSTRAINT "POLICY_PK" PRIMARY KEY ("ID");
 
+ALTER TABLE ONLY public."POLICY_TAGS"
+    ADD CONSTRAINT "POLICY_TAGS_PK" PRIMARY KEY ("POLICY_ID", "TAG_ID");
+
 ALTER TABLE ONLY public."POLICY"
     ADD CONSTRAINT "POLICY_UUID_IDX" UNIQUE ("UUID");
 
-ALTER TABLE ONLY public."PORTFOLIOMETRICS"
-    ADD CONSTRAINT "PORTFOLIOMETRICS_PK" PRIMARY KEY ("LAST_OCCURRENCE");
-
 ALTER TABLE ONLY public."PROJECTMETRICS"
     ADD CONSTRAINT "PROJECTMETRICS_PK" PRIMARY KEY ("PROJECT_ID", "LAST_OCCURRENCE");
+
+ALTER TABLE ONLY public."PROJECTMETRICS_20251027"
+    ADD CONSTRAINT "PROJECTMETRICS_20251027_pkey" PRIMARY KEY ("PROJECT_ID", "LAST_OCCURRENCE");
+
+ALTER TABLE ONLY public."PROJECTS_TAGS"
+    ADD CONSTRAINT "PROJECTS_TAGS_PK" PRIMARY KEY ("PROJECT_ID", "TAG_ID");
 
 ALTER TABLE ONLY public."PROJECT_ACCESS_TEAMS"
     ADD CONSTRAINT "PROJECT_ACCESS_TEAMS_PK" PRIMARY KEY ("PROJECT_ID", "TEAM_ID");
@@ -2237,6 +3112,18 @@ ALTER TABLE ONLY public."REPOSITORY_META_COMPONENT"
 
 ALTER TABLE ONLY public."REPOSITORY"
     ADD CONSTRAINT "REPOSITORY_PK" PRIMARY KEY ("ID");
+
+ALTER TABLE ONLY public."ROLES_PERMISSIONS"
+    ADD CONSTRAINT "ROLES_PERMISSIONS_PK" PRIMARY KEY ("ROLE_ID", "PERMISSION_ID") DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."ROLE"
+    ADD CONSTRAINT "ROLE_NAME_IDX" UNIQUE ("NAME");
+
+ALTER TABLE ONLY public."ROLE"
+    ADD CONSTRAINT "ROLE_PK" PRIMARY KEY ("ID");
+
+ALTER TABLE ONLY public."ROLE"
+    ADD CONSTRAINT "ROLE_UUID_IDX" UNIQUE ("UUID");
 
 ALTER TABLE ONLY public."SERVICECOMPONENT"
     ADD CONSTRAINT "SERVICECOMPONENT_PK" PRIMARY KEY ("ID");
@@ -2271,6 +3158,9 @@ ALTER TABLE ONLY public."USER"
 ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
     ADD CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_PK" PRIMARY KEY ("PROJECT_ID", "USER_ID", "PERMISSION_ID") DEFERRABLE INITIALLY DEFERRED;
 
+ALTER TABLE ONLY public."USER_PROJECT_ROLES"
+    ADD CONSTRAINT "USER_PROJECT_ROLES_PK" PRIMARY KEY ("ID");
+
 ALTER TABLE ONLY public."VEX"
     ADD CONSTRAINT "VEX_PK" PRIMARY KEY ("ID");
 
@@ -2285,6 +3175,9 @@ ALTER TABLE ONLY public."VIOLATIONANALYSIS"
 
 ALTER TABLE ONLY public."VIOLATIONANALYSIS"
     ADD CONSTRAINT "VIOLATIONANALYSIS_PK" PRIMARY KEY ("ID");
+
+ALTER TABLE ONLY public."VULNERABILITIES_TAGS"
+    ADD CONSTRAINT "VULNERABILITIES_TAGS_PK" PRIMARY KEY ("VULNERABILITY_ID", "TAG_ID");
 
 ALTER TABLE ONLY public."VULNERABILITYALIAS"
     ADD CONSTRAINT "VULNERABILITYALIAS_PK" PRIMARY KEY ("ID");
@@ -2360,6 +3253,8 @@ CREATE INDEX "COMPONENT_BLAKE3_IDX" ON public."COMPONENT" USING btree ("BLAKE3")
 
 CREATE INDEX "COMPONENT_CLASSIFIER_IDX" ON public."COMPONENT" USING btree ("CLASSIFIER");
 
+CREATE INDEX "COMPONENT_COORDINATES_SEARCH_IDX" ON public."COMPONENT" USING gin (lower(("NAME")::text) public.gin_trgm_ops, lower(("VERSION")::text) public.gin_trgm_ops, lower(("GROUP")::text) public.gin_trgm_ops);
+
 CREATE INDEX "COMPONENT_CPE_IDX" ON public."COMPONENT" USING btree ("CPE");
 
 CREATE INDEX "COMPONENT_DIRECT_DEPENDENCIES_JSONB_IDX" ON public."COMPONENT" USING gin ("DIRECT_DEPENDENCIES" jsonb_path_ops);
@@ -2374,6 +3269,8 @@ CREATE INDEX "COMPONENT_MD5_IDX" ON public."COMPONENT" USING btree ("MD5") WHERE
 
 CREATE INDEX "COMPONENT_NAME_IDX" ON public."COMPONENT" USING btree ("NAME");
 
+CREATE UNIQUE INDEX "COMPONENT_NAME_VERSION_ID_IDX" ON public."COMPONENT" USING btree ("NAME", "VERSION" DESC, "ID");
+
 CREATE INDEX "COMPONENT_OCCURRENCE_COMPONENT_ID_IDX" ON public."COMPONENT_OCCURRENCE" USING btree ("COMPONENT_ID");
 
 CREATE INDEX "COMPONENT_PARENT_COMPONENT_ID_IDX" ON public."COMPONENT" USING btree ("PARENT_COMPONENT_ID");
@@ -2385,6 +3282,8 @@ CREATE INDEX "COMPONENT_PROPERTY_COMPONENT_ID_IDX" ON public."COMPONENT_PROPERTY
 CREATE INDEX "COMPONENT_PURL_COORDINATES_IDX" ON public."COMPONENT" USING btree ("PURLCOORDINATES");
 
 CREATE INDEX "COMPONENT_PURL_IDX" ON public."COMPONENT" USING btree ("PURL");
+
+CREATE INDEX "COMPONENT_PURL_SEARCH_IDX" ON public."COMPONENT" USING btree (lower(("PURL")::text) text_pattern_ops) WHERE ("PURL" IS NOT NULL);
 
 CREATE INDEX "COMPONENT_SHA1_IDX" ON public."COMPONENT" USING btree ("SHA1") WHERE ("SHA1" IS NOT NULL);
 
@@ -2401,6 +3300,10 @@ CREATE INDEX "COMPONENT_SHA_384_IDX" ON public."COMPONENT" USING btree ("SHA_384
 CREATE INDEX "COMPONENT_SHA_512_IDX" ON public."COMPONENT" USING btree ("SHA_512") WHERE ("SHA_512" IS NOT NULL);
 
 CREATE INDEX "COMPONENT_SWID_TAGID_IDX" ON public."COMPONENT" USING btree ("SWIDTAGID");
+
+CREATE INDEX "DEPENDENCYMETRICS_PROJECT_ID_IDX" ON ONLY public."DEPENDENCYMETRICS" USING btree ("PROJECT_ID");
+
+CREATE INDEX "DEPENDENCYMETRICS_20251027_PROJECT_ID_idx" ON public."DEPENDENCYMETRICS_20251027" USING btree ("PROJECT_ID");
 
 CREATE UNIQUE INDEX "EPSS_CVE_IDX" ON public."EPSS" USING btree ("CVE");
 
@@ -2428,15 +3331,13 @@ CREATE INDEX "LICENSE_NAME_IDX" ON public."LICENSE" USING btree ("NAME");
 
 CREATE INDEX "MAPPEDOIDCGROUP_GROUP_ID_IDX" ON public."MAPPEDOIDCGROUP" USING btree ("GROUP_ID");
 
+CREATE UNIQUE INDEX "NOTIFICATIONPUBLISHER_NAME_IDX" ON public."NOTIFICATIONPUBLISHER" USING btree ("NAME");
+
 CREATE INDEX "NOTIFICATIONRULE_PROJECTS_NOTIFICATIONRULE_ID_IDX" ON public."NOTIFICATIONRULE_PROJECTS" USING btree ("NOTIFICATIONRULE_ID");
 
 CREATE INDEX "NOTIFICATIONRULE_PROJECTS_PROJECT_ID_IDX" ON public."NOTIFICATIONRULE_PROJECTS" USING btree ("PROJECT_ID");
 
 CREATE INDEX "NOTIFICATIONRULE_PUBLISHER_IDX" ON public."NOTIFICATIONRULE" USING btree ("PUBLISHER");
-
-CREATE INDEX "NOTIFICATIONRULE_TAGS_NOTIFICATIONRULE_ID_IDX" ON public."NOTIFICATIONRULE_TAGS" USING btree ("NOTIFICATIONRULE_ID");
-
-CREATE INDEX "NOTIFICATIONRULE_TAGS_TAG_ID_IDX" ON public."NOTIFICATIONRULE_TAGS" USING btree ("TAG_ID");
 
 CREATE UNIQUE INDEX "OIDCGROUP_NAME_IDX" ON public."OIDCGROUP" USING btree ("NAME");
 
@@ -2454,13 +3355,11 @@ CREATE INDEX "POLICY_PROJECTS_POLICY_ID_IDX" ON public."POLICY_PROJECTS" USING b
 
 CREATE INDEX "POLICY_PROJECTS_PROJECT_ID_IDX" ON public."POLICY_PROJECTS" USING btree ("PROJECT_ID");
 
-CREATE INDEX "POLICY_TAGS_POLICY_ID_IDX" ON public."POLICY_TAGS" USING btree ("POLICY_ID");
+CREATE UNIQUE INDEX "PORTFOLIOMETRICS_GLOBAL_LAST_OCCURRENCE_IDX" ON public."PORTFOLIOMETRICS_GLOBAL" USING btree ("LAST_OCCURRENCE");
 
-CREATE INDEX "POLICY_TAGS_TAG_ID_IDX" ON public."POLICY_TAGS" USING btree ("TAG_ID");
+CREATE INDEX "PROJECTMETRICS_PROJECT_ID_LAST_OCCURRENCE_DESC_IDX" ON ONLY public."PROJECTMETRICS" USING btree ("PROJECT_ID", "LAST_OCCURRENCE" DESC);
 
-CREATE INDEX "PROJECTS_TAGS_PROJECT_ID_IDX" ON public."PROJECTS_TAGS" USING btree ("PROJECT_ID");
-
-CREATE INDEX "PROJECTS_TAGS_TAG_ID_IDX" ON public."PROJECTS_TAGS" USING btree ("TAG_ID");
+CREATE INDEX "PROJECTMETRICS_20251027_PROJECT_ID_LAST_OCCURRENCE_idx" ON public."PROJECTMETRICS_20251027" USING btree ("PROJECT_ID", "LAST_OCCURRENCE" DESC);
 
 CREATE INDEX "PROJECT_CLASSIFIER_IDX" ON public."PROJECT" USING btree ("CLASSIFIER");
 
@@ -2468,7 +3367,9 @@ CREATE INDEX "PROJECT_CPE_IDX" ON public."PROJECT" USING btree ("CPE");
 
 CREATE INDEX "PROJECT_GROUP_IDX" ON public."PROJECT" USING btree ("GROUP");
 
-CREATE INDEX "PROJECT_IS_LATEST_IDX" ON public."PROJECT" USING btree ("IS_LATEST");
+CREATE INDEX "PROJECT_INACTIVE_SINCE_IDX" ON public."PROJECT" USING btree ("INACTIVE_SINCE");
+
+CREATE UNIQUE INDEX "PROJECT_IS_LATEST_IDX" ON public."PROJECT" USING btree ("NAME", "IS_LATEST") WHERE "IS_LATEST";
 
 CREATE INDEX "PROJECT_LASTBOMIMPORT_FORMAT_IDX" ON public."PROJECT" USING btree ("LAST_BOM_IMPORTED_FORMAT");
 
@@ -2510,6 +3411,10 @@ CREATE INDEX "SERVICECOMPONENT_PROJECT_ID_IDX" ON public."SERVICECOMPONENT" USIN
 
 CREATE INDEX "SUBSCRIBERCLASS_IDX" ON public."EVENTSERVICELOG" USING btree ("SUBSCRIBERCLASS");
 
+CREATE UNIQUE INDEX "TAG_NAME_IDX" ON public."TAG" USING btree ("NAME");
+
+CREATE UNIQUE INDEX "USER_PROJECT_ROLES_IDX" ON public."USER_PROJECT_ROLES" USING btree ("USER_ID", "PROJECT_ID");
+
 CREATE UNIQUE INDEX "USER_USERNAME_IDX" ON public."USER" USING btree ("USERNAME");
 
 CREATE INDEX "VEX_PROJECT_ID_IDX" ON public."VEX" USING btree ("PROJECT_ID");
@@ -2519,10 +3424,6 @@ CREATE INDEX "VIOLATIONANALYSISCOMMENT_VIOLATIONANALYSIS_ID_IDX" ON public."VIOL
 CREATE INDEX "VIOLATIONANALYSIS_COMPONENT_ID_IDX" ON public."VIOLATIONANALYSIS" USING btree ("COMPONENT_ID");
 
 CREATE INDEX "VIOLATIONANALYSIS_POLICYVIOLATION_ID_IDX" ON public."VIOLATIONANALYSIS" USING btree ("POLICYVIOLATION_ID");
-
-CREATE INDEX "VULNERABILITIES_TAGS_TAG_ID_IDX" ON public."VULNERABILITIES_TAGS" USING btree ("TAG_ID");
-
-CREATE INDEX "VULNERABILITIES_TAGS_VULNERABILITY_ID_IDX" ON public."VULNERABILITIES_TAGS" USING btree ("VULNERABILITY_ID");
 
 CREATE INDEX "VULNERABILITYALIAS_CVE_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("CVE_ID");
 
@@ -2562,17 +3463,37 @@ CREATE INDEX "VULNERABLESOFTWARE_VULNERABILITIES_VULNERABLESOFTWARE_ID_IDX" ON p
 
 CREATE INDEX "WORKFLOW_STATE_PARENT_STEP_ID_IDX" ON public."WORKFLOW_STATE" USING btree ("PARENT_STEP_ID");
 
+ALTER INDEX public."DEPENDENCYMETRICS_PROJECT_ID_IDX" ATTACH PARTITION public."DEPENDENCYMETRICS_20251027_PROJECT_ID_idx";
+
+ALTER INDEX public."DEPENDENCYMETRICS_PK" ATTACH PARTITION public."DEPENDENCYMETRICS_20251027_pkey";
+
+ALTER INDEX public."PROJECTMETRICS_PROJECT_ID_LAST_OCCURRENCE_DESC_IDX" ATTACH PARTITION public."PROJECTMETRICS_20251027_PROJECT_ID_LAST_OCCURRENCE_idx";
+
+ALTER INDEX public."PROJECTMETRICS_PK" ATTACH PARTITION public."PROJECTMETRICS_20251027_pkey";
+
 CREATE TRIGGER trigger_effective_permissions_mx_on_project_access_teams_delete AFTER DELETE ON public."PROJECT_ACCESS_TEAMS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
 
 CREATE TRIGGER trigger_effective_permissions_mx_on_project_access_teams_insert AFTER INSERT ON public."PROJECT_ACCESS_TEAMS" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_insert();
 
 CREATE TRIGGER trigger_effective_permissions_mx_on_project_access_teams_update AFTER UPDATE ON public."PROJECT_ACCESS_TEAMS" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_update();
 
+CREATE TRIGGER trigger_effective_permissions_mx_on_roles_permissions_delete AFTER DELETE ON public."ROLES_PERMISSIONS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.role_effective_permissions_mx_on_delete();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_roles_permissions_insert AFTER INSERT ON public."ROLES_PERMISSIONS" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.role_effective_permissions_mx_on_insert();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_roles_permissions_update AFTER UPDATE ON public."ROLES_PERMISSIONS" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.role_effective_permissions_mx_on_update();
+
 CREATE TRIGGER trigger_effective_permissions_mx_on_teams_permissions_delete AFTER DELETE ON public."TEAMS_PERMISSIONS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
 
 CREATE TRIGGER trigger_effective_permissions_mx_on_teams_permissions_insert AFTER INSERT ON public."TEAMS_PERMISSIONS" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_insert();
 
 CREATE TRIGGER trigger_effective_permissions_mx_on_teams_permissions_update AFTER UPDATE ON public."TEAMS_PERMISSIONS" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_update();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_user_project_roles_delete AFTER DELETE ON public."USER_PROJECT_ROLES" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.role_effective_permissions_mx_on_delete();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_user_project_roles_insert AFTER INSERT ON public."USER_PROJECT_ROLES" REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.role_effective_permissions_mx_on_insert();
+
+CREATE TRIGGER trigger_effective_permissions_mx_on_user_project_roles_update AFTER UPDATE ON public."USER_PROJECT_ROLES" REFERENCING OLD TABLE AS old_table NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION public.role_effective_permissions_mx_on_update();
 
 CREATE TRIGGER trigger_effective_permissions_mx_on_users_teams_delete AFTER DELETE ON public."USERS_TEAMS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
 
@@ -2747,6 +3668,12 @@ ALTER TABLE ONLY public."PROJECT"
 ALTER TABLE ONLY public."PROJECT_PROPERTY"
     ADD CONSTRAINT "PROJECT_PROPERTY_PROJECT_FK" FOREIGN KEY ("PROJECT_ID") REFERENCES public."PROJECT"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
+ALTER TABLE ONLY public."ROLES_PERMISSIONS"
+    ADD CONSTRAINT "ROLES_PERMISSIONS_PERMISSION_FK" FOREIGN KEY ("PERMISSION_ID") REFERENCES public."PERMISSION"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."ROLES_PERMISSIONS"
+    ADD CONSTRAINT "ROLES_PERMISSIONS_ROLE_FK" FOREIGN KEY ("ROLE_ID") REFERENCES public."ROLE"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
 ALTER TABLE ONLY public."SERVICECOMPONENTS_VULNERABILITIES"
     ADD CONSTRAINT "SERVICECOMPONENTS_VULNERABILITIES_SERVICECOMPONENT_FK" FOREIGN KEY ("SERVICECOMPONENT_ID") REFERENCES public."SERVICECOMPONENT"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
@@ -2788,6 +3715,15 @@ ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
 
 ALTER TABLE ONLY public."USER_PROJECT_EFFECTIVE_PERMISSIONS"
     ADD CONSTRAINT "USER_PROJECT_EFFECTIVE_PERMISSIONS_USER_FK" FOREIGN KEY ("USER_ID") REFERENCES public."USER"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_ROLES"
+    ADD CONSTRAINT "USER_PROJECT_ROLES_PROJECT_FK" FOREIGN KEY ("PROJECT_ID") REFERENCES public."PROJECT"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_ROLES"
+    ADD CONSTRAINT "USER_PROJECT_ROLES_ROLE_FK" FOREIGN KEY ("ROLE_ID") REFERENCES public."ROLE"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."USER_PROJECT_ROLES"
+    ADD CONSTRAINT "USER_PROJECT_ROLES_USER_FK" FOREIGN KEY ("USER_ID") REFERENCES public."USER"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE ONLY public."VEX"
     ADD CONSTRAINT "VEX_PROJECT_FK" FOREIGN KEY ("PROJECT_ID") REFERENCES public."PROJECT"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
