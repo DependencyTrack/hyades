@@ -36,6 +36,7 @@
 | `content` | `string` |  | - |
 | `timestamp` | `google.protobuf.Timestamp` |  | - |
 | `subject` | `google.protobuf.Any` |  | - |
+| `id` | `string` | Unique identifier of the notification in UUIDv7 format. | - |
 
 
 
