@@ -21,7 +21,7 @@ We might revisit logical replication later, but for the time being the cons outw
 
 ## Decision
 
-We will follow a classic transactional outbox table design instead.
+We will follow a classic [transactional outbox] design instead.
 
 ### Schema
 
@@ -53,10 +53,10 @@ To emit notifications, records are inserted into the `NOTIFICATION_OUTBOX` table
 This can be done as part of the database transactions that also perform the "business logic",
 thus preventing the dual write problem.
 
-### Dispatch
+### Relay
 
-A new *notification dispatcher* component is added to the API server.
-The dispatcher continuously polls the `NOTIFICATION_OUTBOX` table for records
+A new *notification outbox relay* component is added to the API server.
+The relay continuously polls the `NOTIFICATION_OUTBOX` table for records
 and sends them to Kafka.
 
 !!! note
@@ -66,41 +66,41 @@ and sends them to Kafka.
 ```mermaid
 sequenceDiagram
     actor P as PostgreSQL
-    actor D as Dispatcher
+    actor R as Relay
     actor K as Kafka
 
-    activate D
-    D ->> P: Begin Trx
-    D ->> P: Acquire advisory lock
-    P -->> D: Lock acquired
-    D ->> P: Poll NOTIFICATION_OUTBOX
-    P -->> D: Notifications
-    D ->> D: Convert to Kafka records
-    D ->> K: Produce records
-    K -->> D: Records acked
-    D -->> P: Delete notifications
-    D ->> P: Commit Trx
-    deactivate D
+    activate R
+    R ->> P: Begin Trx
+    R ->> P: Acquire advisory lock
+    P -->> R: Lock acquired
+    R ->> P: Poll NOTIFICATION_OUTBOX
+    P -->> R: Notifications
+    R ->> R: Convert to Kafka records
+    R ->> K: Produce records
+    K -->> R: Records acked
+    R -->> P: Delete notifications
+    R ->> P: Commit Trx
+    deactivate R
 ```
 
-Per default, the dispatcher polls every 1 second for up to 100 notifications.
+Per default, the relay polls every 1 second for up to 100 notifications.
 Interval and batch size are configurable. 
 
-It is possible to disable the dispatcher entirely, which might be useful for users
+It is possible to disable the relay entirely, which might be useful for users
 who operate multi-node clusters, and want more granular control over which nodes
-dispatch notifications.
+relay notifications.
 
 Noteworthy details:
 
 * Transaction-level [advisory locks] are used to prevent concurrent execution.
-  We ideally want notifications to be dispatched in the order in which they were
-  emitted. If we were to do concurrent dispatches, we would lose this property.
+  We ideally want notifications to be relayed in the order in which they were
+  emitted. If we were to do concurrent relays, we would lose this property.
   Limiting concurrency further reduces load on the database.
-* Notifications are *deleted* from the `NOTIFICATION_OUTBOX` table upon successful dispatch.
+* Notifications are *deleted* from the `NOTIFICATION_OUTBOX` table upon successful relay.
   We don't have use-cases that would require keeping them around for longer. Should that requirement
   arise, we should look into partitioning of the `NOTIFICATION_OUTBOX` table.
 * The database transaction is committed *after* Kafka has acknowledged reception of records.
-  This is necessary to achieve at-least-once semantics, but can lead to duplicate dispatches
+  This is necessary to achieve at-least-once semantics, but can lead to duplicate messages
   should the commit fail after Kafka has successfully acked records. Notification consumers
   can use the new `id` field to de-duplicate on their end.
 
@@ -111,3 +111,4 @@ Noteworthy details:
 
 [UUIDv7]: https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_7_(timestamp_and_random)
 [advisory locks]: https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS
+[transactional outbox]: https://microservices.io/patterns/data/transactional-outbox.html
