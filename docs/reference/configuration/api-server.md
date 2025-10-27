@@ -3498,6 +3498,92 @@ Specifies the LDAP search filter used to search for users by their name.  The <c
 
 
 
+## Notification
+
+### notification.outbox-relay.batch-size
+
+Defines the number of notifications that the outbox relay will process in a batch.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>NOTIFICATION_OUTBOX_RELAY_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### notification.outbox-relay.enabled
+
+Defines whether the notification outbox relay should be enabled.  When disabled, notifications will still be emitted to the outbox  table, but not be delivered. Should generally stay enabled, unless:  <ul>  <li>The relay has a critical issue that impacts the rest of the system</li>  <li>You run a multi-node cluster and want more granular control over which nodes run the relay</li>  </ul>  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>NOTIFICATION_OUTBOX_RELAY_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### notification.outbox-relay.poll-interval-ms
+
+Defines the interval in milliseconds in which the notification outbox relay will poll  for records in the notification outbox table. Increasing this value will cause higher  notification latencies, but incurs a lesser load on the database.  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>NOTIFICATION_OUTBOX_RELAY_POLL_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
 ## Observability
 
 ### alpine.metrics.auth.password
