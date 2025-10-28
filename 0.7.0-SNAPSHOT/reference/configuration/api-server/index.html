@@ -2844,6 +2844,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notification
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Notification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notificationoutbox-relaybatch-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      notification.outbox-relay.batch-size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notificationoutbox-relayenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      notification.outbox-relay.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notificationoutbox-relaypoll-interval-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      notification.outbox-relay.poll-interval-ms
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#observability" class="md-nav__link">
     <span class="md-ellipsis">
       Observability
@@ -6827,6 +6869,78 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_LDAP_USERS_SEARCH_FILTER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="notification">Notification<a class="headerlink" href="#notification" title="Permanent link">&para;</a></h2>
+<h3 id="notificationoutbox-relaybatch-size">notification.outbox-relay.batch-size<a class="headerlink" href="#notificationoutbox-relaybatch-size" title="Permanent link">&para;</a></h3>
+<p>Defines the number of notifications that the outbox relay will process in a batch.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>NOTIFICATION_OUTBOX_RELAY_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="notificationoutbox-relayenabled">notification.outbox-relay.enabled<a class="headerlink" href="#notificationoutbox-relayenabled" title="Permanent link">&para;</a></h3>
+<p>Defines whether the notification outbox relay should be enabled.  When disabled, notifications will still be emitted to the outbox  table, but not be delivered. Should generally stay enabled, unless:  <ul>  <li>The relay has a critical issue that impacts the rest of the system</li>  <li>You run a multi-node cluster and want more granular control over which nodes run the relay</li>  </ul>  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>NOTIFICATION_OUTBOX_RELAY_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="notificationoutbox-relaypoll-interval-ms">notification.outbox-relay.poll-interval-ms<a class="headerlink" href="#notificationoutbox-relaypoll-interval-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the interval in milliseconds in which the notification outbox relay will poll  for records in the notification outbox table. Increasing this value will cause higher  notification latencies, but incurs a lesser load on the database.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>NOTIFICATION_OUTBOX_RELAY_POLL_INTERVAL_MS</code></td>
     </tr>
   </tbody>
 </table>
