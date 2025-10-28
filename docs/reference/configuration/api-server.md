@@ -3582,6 +3582,34 @@ Defines the interval in milliseconds in which the notification outbox relay will
 </table>
 
 
+---
+
+### notification.router.enabled
+
+Defines whether the notification router should be enabled.  The router currently only evaluates rules against emitted notifications,  but does not influence which notifications are sent to Kafka.  Enabling it is only useful to monitor if and how much it impacts relay performance.  For that purpose, the following Prometheus metrics may be used:  <ul>  <li><code>dtrack_notification_router_rule_query_latency</code></li>  <li><code>dtrack_notification_router_rule_filter_latency</code></li>  <li><code>dtrack_notification_router_rules_matched</code></li>  </ul>  
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>NOTIFICATION_ROUTER_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
 
 
 ## Observability
