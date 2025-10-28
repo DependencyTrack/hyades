@@ -935,8 +935,27 @@ class NotificationRouterTest {
     private Long createRule(final String name, final NotificationScope scope, final NotificationLevel level,
                             final NotificationGroup group, final Long publisherId) {
         return (Long) entityManager.createNativeQuery("""            
-                        INSERT INTO "NOTIFICATIONRULE" ("ENABLED", "NAME", "PUBLISHER", "NOTIFY_ON", "NOTIFY_CHILDREN", "LOG_SUCCESSFUL_PUBLISH", "NOTIFICATION_LEVEL", "SCOPE", "UUID") VALUES
-                            (true, :name, :publisherId, :notifyOn, false, true, :level, :scope, :uuid)
+                        INSERT INTO "NOTIFICATIONRULE" (
+                          "ENABLED"
+                        , "NAME"
+                        , "PUBLISHER"
+                        , "NOTIFY_ON"
+                        , "NOTIFY_CHILDREN"
+                        , "LOG_SUCCESSFUL_PUBLISH"
+                        , "NOTIFICATION_LEVEL"
+                        , "SCOPE"
+                        , "UUID"
+                        ) VALUES (
+                          true
+                        , :name
+                        , :publisherId
+                        , :notifyOn
+                        , false
+                        , true
+                        , CAST(:level AS notification_level)
+                        , :scope
+                        , :uuid
+                        )
                         RETURNING "ID";
                         """)
                 .setParameter("name", name)
