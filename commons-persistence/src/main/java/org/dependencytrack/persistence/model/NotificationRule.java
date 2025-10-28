@@ -30,9 +30,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import org.dependencytrack.persistence.converter.NotificationLevelConverter;
 import org.dependencytrack.persistence.converter.NotificationScopeConverter;
 import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
 
 import java.util.ArrayList;
@@ -60,8 +61,8 @@ public class NotificationRule extends PanacheEntityBase {
     @Convert(converter = NotificationScopeConverter.class)
     private NotificationScope scope;
 
-    @Column(name = "NOTIFICATION_LEVEL", columnDefinition = "varchar")
-    @Convert(converter = NotificationLevelConverter.class)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "NOTIFICATION_LEVEL", columnDefinition = "notification_level")
     private NotificationLevel notificationLevel;
 
     @OneToMany
