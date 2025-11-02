@@ -99,6 +99,7 @@ nav:
         - "ADR-009: Auth And Roles": architecture/decisions/009-auth-and-roles.md
         - "ADR-010: Vulnerability Datasource Extension Point": architecture/decisions/010-vulnerability-datasource-extension-point.md
         - "ADR-011: Notification Outbox": architecture/decisions/011-notification-outbox.md
+        - "ADR-012: Extension KV Store": architecture/decisions/012-extension-kv-store.md
     - Design:
         - Workflow State Tracking: architecture/design/workflow-state-tracking.md
 - Operations:
