@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/011-notification-outbox/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/012-extension-kv-store/">
       
       
-        <link rel="prev" href="../010-vulnerability-datasource-extension-point/">
+        <link rel="prev" href="../011-notification-outbox/">
       
       
-        <link rel="next" href="../012-extension-kv-store/">
+        <link rel="next" href="../../design/workflow-state-tracking/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>ADR-011: Notification Outbox - Hyades</title>
+        <title>ADR-012: Extension KV Store - Hyades</title>
       
     
     
@@ -57,11 +57,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="ADR-011: Notification Outbox - Hyades" >
+        <meta  property="og:title"  content="ADR-012: Extension KV Store - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/011-notification-outbox.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/012-extension-kv-store.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +69,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/011-notification-outbox/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/012-extension-kv-store/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="ADR-011: Notification Outbox - Hyades" >
+        <meta  name="twitter:title"  content="ADR-012: Extension KV Store - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/011-notification-outbox.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/012-extension-kv-store.png" >
       
     
     
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ADR-011: Notification Outbox
+              ADR-012: Extension KV Store
             
           </span>
         </div>
@@ -1078,6 +1078,29 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../011-notification-outbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ADR-011: Notification Outbox
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1093,7 +1116,7 @@
   
   
   <span class="md-ellipsis">
-    ADR-011: Notification Outbox
+    ADR-012: Extension KV Store
     
   </span>
   
@@ -1106,7 +1129,7 @@
   
   
   <span class="md-ellipsis">
-    ADR-011: Notification Outbox
+    ADR-012: Extension KV Store
     
   </span>
   
@@ -1146,6 +1169,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#api-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Contract
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#schema" class="md-nav__link">
     <span class="md-ellipsis">
       Schema
@@ -1155,18 +1187,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#emission" class="md-nav__link">
+  <a href="#in-memory-implementation" class="md-nav__link">
     <span class="md-ellipsis">
-      Emission
+      In-Memory Implementation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#relay" class="md-nav__link">
+  <a href="#possible-future-enhancements" class="md-nav__link">
     <span class="md-ellipsis">
-      Relay
+      Possible Future Enhancements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#considered-alternatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considered Alternatives
     </span>
   </a>
   
@@ -1190,29 +1231,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../012-extension-kv-store/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    ADR-012: Extension KV Store
-    
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1911,7 +1929,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/011-notification-outbox.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/012-extension-kv-store.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1919,7 +1937,7 @@
   
 
 
-  <h1>ADR-011: Notification Outbox</h1>
+  <h1>ADR-012: Extension KV Store</h1>
 
 <table>
 <thead>
@@ -1932,98 +1950,188 @@
 <tbody>
 <tr>
 <td style="text-align: left;">Accepted</td>
-<td style="text-align: left;">2025-10-26</td>
+<td style="text-align: left;">2025-11-02</td>
 <td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
 </tr>
 </tbody>
 </table>
 <h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
-<p>As per <a href="../003-notification-publishing/">ADR-003</a> we originally decided to leverage PostgreSQL's
-logical replication to support atomic notification emission. The main benefit was that tailing the
-WAL would bypass the need to maintain and poll an outbox table, which is overhead we'd have loved to avoid.</p>
-<p>After further consideration however, we decided against the logical replication approach, for the following reasons:</p>
+<p>Extensions need to occasionally persist some sort of state.
+An example of this is the checkpointing / watermarking mechanism used by vulnerability data sources (see <a href="../010-vulnerability-datasource-extension-point/#checkpointing">ADR-010</a>).</p>
+<p>As briefly touched on in <a href="../010-vulnerability-datasource-extension-point/#checkpointing">ADR-010</a>, we originally planned to leverage the existing <code>ConfigRegistry</code>
+abstraction for this. However, this turned out to not be a good idea, for the following reasons:</p>
 <ul>
-<li>Requires a special connection that users would need to configure. The connection must bypass any connection poolers.</li>
-<li>Requires elevated privileges via the <code>REPLICATION</code> attribute. Users with this attribute are able to read all changes
-  across all tables in a database. In hindsight, we feel this could be a security footgun.</li>
-<li>Requires constant monitoring. Postgres only deletes WAL segments that have been read by all replication slots.
-  Should a replication consumer be slow, or otherwise fail to advance its slot, the Postgres server could run out
-  of disk space.</li>
+<li>It mixes two concerns that should be separate: configuration and storage.</li>
+<li>It encourages extensions to modify their own configuration at runtime.</li>
+<li><code>ConfigRegistry</code> is lacking concurrency control mechanisms, making it prone to <a href="https://en.wikipedia.org/wiki/Write%E2%80%93write_conflict">lost updates</a>.</li>
+<li>Configuration is intended to be modifiable by clients, making <a href="https://en.wikipedia.org/wiki/Write%E2%80%93write_conflict">lost updates</a> all the more likely.</li>
 </ul>
-<p>We might revisit logical replication later, but for the time being the cons outweigh the pros.</p>
 <h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<p>We will follow a classic <a href="https://microservices.io/patterns/data/transactional-outbox.html">transactional outbox</a> design instead.</p>
-<h3 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h3>
-<p>A new <code>NOTIFICATION_OUTBOX</code> table is created with the following schema:</p>
-<pre class="mermaid"><code>erDiagram
-    NOTIFICATION_OUTBOX {
-        UUID ID PK
-        TIMESTAMPTZ TIMESTAMP
-        TEXT SCOPE
-        TEXT GROUP
-        TEXT LEVEL
-        BYTEA PAYLOAD
-    }</code></pre>
+<p>Provide a simple key-value store to extensions. Key-value stores are easy to implement and easy to secure.</p>
+<p>A store instance is scoped to a single extension. Accessing values of other extensions is not possible.</p>
+<h3 id="api-contract">API Contract<a class="headerlink" href="#api-contract" title="Permanent link">&para;</a></h3>
+<p>The key-value store API provides the following high-level mechanisms:</p>
 <ul>
-<li><code>ID</code> is a <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_7_(timestamp_and_random)">UUIDv7</a>, ensuring both global uniqueness and sortability. The latter also makes it index-friendly.</li>
-<li><code>PAYLOAD</code> is the serialized notification in Protobuf format.</li>
+<li>Simple operations: <code>put</code>, <code>get</code>, <code>delete</code>.<ul>
+<li>Write operations are not concurrency-safe.</li>
 </ul>
-<p>The columns <code>TIMESTAMP</code>, <code>SCOPE</code>, <code>GROUP</code>, and <code>LEVEL</code> are included for debugging and monitoring purposes.
-They are also part of the notification itself, but since <code>PAYLOAD</code> is not human-readable, that doesn't help much.</p>
-<p>The notification Protobuf schema is extended to also include the UUIDv7 ID.</p>
-<h3 id="emission">Emission<a class="headerlink" href="#emission" title="Permanent link">&para;</a></h3>
-<p>To emit notifications, records are inserted into the <code>NOTIFICATION_OUTBOX</code> table.
-This can be done as part of the database transactions that also perform the "business logic",
-thus preventing the dual write problem.</p>
-<h3 id="relay">Relay<a class="headerlink" href="#relay" title="Permanent link">&para;</a></h3>
-<p>A new <em>notification outbox relay</em> component is added to the API server.
-The relay continuously polls the <code>NOTIFICATION_OUTBOX</code> table for records
-and sends them to Kafka.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Sending to Kafka is an intermediary step that allows us to make this change
-without touching too many parts of the system at once.</p>
-</div>
-<pre class="mermaid"><code>sequenceDiagram
-    actor P as PostgreSQL
-    actor R as Relay
-    actor K as Kafka
-
-    activate R
-    R -&gt;&gt; P: Begin Trx
-    R -&gt;&gt; P: Acquire advisory lock
-    P --&gt;&gt; R: Lock acquired
-    R -&gt;&gt; P: Poll NOTIFICATION_OUTBOX
-    P --&gt;&gt; R: Notifications
-    R -&gt;&gt; R: Convert to Kafka records
-    R -&gt;&gt; K: Produce records
-    K --&gt;&gt; R: Records acked
-    R --&gt;&gt; P: Delete notifications
-    R -&gt;&gt; P: Commit Trx
-    deactivate R</code></pre>
-<p>Per default, the relay polls every 1 second for up to 100 notifications.
-Interval and batch size are configurable. </p>
-<p>It is possible to disable the relay entirely, which might be useful for users
-who operate multi-node clusters, and want more granular control over which nodes
-relay notifications.</p>
-<p>Noteworthy details:</p>
+</li>
+<li>Bulk operations: <code>putMany</code>, <code>getAll</code>, <code>getMany</code>, <code>deleteMany</code>.<ul>
+<li>Most efficient due to reduced I/O overhead.</li>
+<li>Write operations are not concurrency-safe.</li>
+</ul>
+</li>
+<li>Concurrency-safe operations: <code>compareAndPut</code>, <code>compareAndDelete</code>.<ul>
+<li>Offer <a href="https://en.wikipedia.org/wiki/Optimistic_concurrency_control">optimistic concurrency control</a> via version numbers.</li>
+</ul>
+</li>
+</ul>
+<p>Both keys and values of a stores are strings. Extensions may choose to use
+any other data types in their logic, as long as they can be serialized to strings (e.g., JSON).</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">interface</span> <span class="nc">ExtensionKVStore</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">putMany</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">kvPairs</span><span class="p">);</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">put</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="n">CompareAndPutResult</span><span class="w"> </span><span class="nf">compareAndPut</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="w"> </span><span class="n">expectedVersion</span><span class="p">);</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Entry</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getAll</span><span class="p">();</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Entry</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">getMany</span><span class="p">(</span><span class="n">Collection</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">keys</span><span class="p">);</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="n">Entry</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">deleteMany</span><span class="p">(</span><span class="n">Collection</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">keys</span><span class="p">);</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">);</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="n">CompareAndDeleteResult</span><span class="w"> </span><span class="nf">compareAndDelete</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">expectedVersion</span><span class="p">);</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>In addition to the key and value, a store entry holds the following information:</p>
 <ul>
-<li>Transaction-level <a href="https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS">advisory locks</a> are used to prevent concurrent execution.
-  We ideally want notifications to be relayed in the order in which they were
-  emitted. If we were to do concurrent relays, we would lose this property.
-  Limiting concurrency further reduces load on the database.</li>
-<li>Notifications are <em>deleted</em> from the <code>NOTIFICATION_OUTBOX</code> table upon successful relay.
-  We don't have use-cases that would require keeping them around for longer. Should that requirement
-  arise, we should look into partitioning of the <code>NOTIFICATION_OUTBOX</code> table.</li>
-<li>The database transaction is committed <em>after</em> Kafka has acknowledged reception of records.
-  This is necessary to achieve at-least-once semantics, but can lead to duplicate messages
-  should the commit fail after Kafka has successfully acked records. Notification consumers
-  can use the new <code>id</code> field to de-duplicate on their end.</li>
+<li><code>createdAt</code>: When the entry was first created.</li>
+<li><code>updatedAt</code>: When the entry was last modified.</li>
+<li><code>version</code>: Version of the entry for <a href="https://en.wikipedia.org/wiki/Optimistic_concurrency_control">optimistic concurrency control</a>.</li>
+</ul>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">record</span> <span class="nc">Entry</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">Instant</span><span class="w"> </span><span class="n">createdAt</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">Instant</span><span class="w"> </span><span class="n">updatedAt</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">version</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The <code>compareAndPut</code> and <code>compareAndDelete</code> operations have special return types,
+which are defined as follows:</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">sealed</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">CompareAndPutResult</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="kd">record</span> <span class="nc">Failure</span><span class="p">(</span><span class="n">Reason</span><span class="w"> </span><span class="n">reason</span><span class="p">)</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CompareAndPutResult</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="kd">enum</span><span class="w"> </span><span class="n">Reason</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">            </span><span class="n">ALREADY_EXISTS</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">            </span><span class="n">VERSION_MISMATCH</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="kd">record</span> <span class="nc">Success</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">newVersion</span><span class="p">)</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CompareAndPutResult</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="p">}</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="kd">sealed</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">CompareAndDeleteResult</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">    </span><span class="kd">record</span> <span class="nc">Failure</span><span class="p">(</span><span class="n">Reason</span><span class="w"> </span><span class="n">reason</span><span class="p">)</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CompareAndDeleteResult</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">        </span><span class="kd">enum</span><span class="w"> </span><span class="n">Reason</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">            </span><span class="n">VERSION_MISMATCH</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">    </span><span class="kd">record</span> <span class="nc">Success</span><span class="p">()</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CompareAndDeleteResult</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Since optimistic concurrency failures are <em>expected</em>, they are not modeled as exceptions.
+They leverage <a href="https://docs.oracle.com/en/java/javase/25/language/sealed-classes-and-interfaces.html">sealed interfaces</a> to communicate the possible outcomes in a type-safe manner.</p>
+<p>This allows handling of operation outcomes with <a href="https://docs.oracle.com/en/java/javase/25/language/pattern-matching.html">pattern matching</a>:</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">CompareAndPutResult</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kvStore</span><span class="p">.</span><span class="na">compareAndPut</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bar&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="n">Success</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="n">newVersion</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* do something with newVersion */</span><span class="p">;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="n">Failure</span><span class="p">(</span><span class="n">Failure</span><span class="p">.</span><span class="na">Reason</span><span class="w"> </span><span class="n">reason</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="cm">/* do something with reason */</span><span class="p">;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">};</span>
+</span></code></pre></div>
+<h3 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h3>
+<p>Store entries are persisted to a new <code>EXTENSION_KV_STORE</code> database table.</p>
+<pre class="mermaid"><code>erDiagram
+    EXTENSION_KV_STORE {
+        TEXT EXTENSION_POINT PK
+        TEXT EXTENSION PK
+        TEXT KEY PK
+        TEXT VALUE
+        TIMESTAMPTZ CREATED_AT
+        TIMESTAMPTZ UPDATED_AT
+        BIGINT VERSION
+    }</code></pre>
+<p>Each entry is scoped to a combination of <em>extension point</em> and <em>extension</em>,
+e.g. <code>vuln.datasource</code> and <code>github</code>. Whenever an extension accesses its store,
+the underlying SQL query will ensure that it cannot see entries of other extensions:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="ss">&quot;KEY&quot;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VALUE&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;CREATED_AT&quot;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;UPDATED_AT&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VERSION&quot;</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;EXTENSION_KV_STORE&quot;</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="ss">&quot;EXTENSION_POINT&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;vuln.datasource&#39;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;EXTENSION&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;github&#39;</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="ss">&quot;KEY&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foo&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p>A composite primary key is created on the <code>EXTENSION_POINT</code>, <code>EXTENSION</code>, and <code>KEY</code> columns.
+This serves two purposes in one:</p>
+<ul>
+<li>It prevents duplicate keys within the namespace of an extension.</li>
+<li>It acts as index for lookups by key.</li>
+</ul>
+<p>We don't anticipate individual extensions maintaining large sets of keys for now.
+This means that, for the time being, no further indexes are required.</p>
+<h3 id="in-memory-implementation">In-Memory Implementation<a class="headerlink" href="#in-memory-implementation" title="Permanent link">&para;</a></h3>
+<p><code>ExtensionKVStore</code> will be part of the plugin API. The plugin API should be as lightweight
+as possible and not contain any implementation details of the core platform.</p>
+<p>However, plugin authors still need to be able to test their extensions.
+For this purpose, we ship a simple in-memory implementation of <code>ExtensionKVStore</code>
+as part of the plugin API.</p>
+<p>The implementation is backed by a <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a>.</p>
+<h3 id="possible-future-enhancements">Possible Future Enhancements<a class="headerlink" href="#possible-future-enhancements" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Stores could be extended to support prefix scans. Given proper key structure,
+  it would allow extensions to more efficiently sift through a large number of keys.</li>
+<li>Quotas could be implemented that control how many keys a given extension may
+  have. This would prevent excessive usage or abuse of the feature.</li>
+</ul>
+<h3 id="considered-alternatives">Considered Alternatives<a class="headerlink" href="#considered-alternatives" title="Permanent link">&para;</a></h3>
+<p>It was considered to grant extensions direct access to the underlying SQL database.
+This would allow extensions to leverage the full power of PostgreSQL, enabling more complex use-cases.</p>
+<p>Isolation from the main application's data would be achieved using <a href="https://www.postgresql.org/docs/current/ddl-schemas.html">PostgreSQL schemas</a>.
+Each extension would get its own schema, coupled with a database user that only
+has access to the extension's schema.</p>
+<p>Dependency-Track would then need to maintain separate connection pools for every extension,
+since connections are bound to specific users.</p>
+<p>This design was discarded <em>for now</em> for the following reasons:</p>
+<ul>
+<li>The complexity is not justifiable at the moment.</li>
+<li>There's increased overhead of maintaining multiple DB connection pools.</li>
+<li>Full database access results in greater chances of extensions negatively impacting database load.</li>
+<li>Since the design shares commonality with how tenant isolation is achieved in multi-tenant systems,
+  it could cause headaches if we decide to implement multi-tenancy later down the line.</li>
 </ul>
 <h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Notifications can atomically be emitted as part of database transactions</li>
-<li>Kafka and the notification-publisher service remain unchanged for now</li>
+<li>A clean separation between configuration and storage concerns is achieved.</li>
+<li>Concurrency-safe storage operations are available to extensions. </li>
+<li>Extensions that currently use the <code>ConfigRegistry</code> for storage will need to be refactored
+  to use the new key-value store instead.</li>
 </ul>
 
 
