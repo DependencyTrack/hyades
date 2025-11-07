@@ -167,7 +167,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     container_name: dt-postgres
     environment:
       POSTGRES_DB: "dtrack"

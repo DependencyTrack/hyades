@@ -1,6 +1,6 @@
 Dependency-Track requires a [PostgreSQL], or PostgreSQL-compatible database to operate.
 
-The lowest supported version is 13. You are encouraged to use the [newest available version].
+The lowest supported version is 14. You are encouraged to use the [newest available version].
 
 Depending on available resources, individual preferences, or organizational policies,
 you will have to choose between a [managed](#managed-solutions), or [self-hosted](#self-hosting) solution.
@@ -113,42 +113,6 @@ applied for certain tables.
 !!! note
     Got more tips to configure or tune PostgreSQL, that may be helpful to others?  
     We'd love to include it in the docs, please do raise a PR!
-
-##### checkpoint_completion_target
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0">
-        <ul>
-          <li><code>0.5</code> (PostgreSQL <= 13)</li>
-          <li><code>0.9</code> (PostgreSQL >= 14)</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Recommendation</th>
-      <td style="border-width: 0"><code>0.9</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Tables</th>
-      <td style="border-width: 0"><code>*</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">References</th>
-      <td style="border-width: 0"><a href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-CHECKPOINT-COMPLETION-TARGET">Documentation</a></td>
-    </tr>
-  </tbody>
-</table>
-
-Spreads the WAL checkpoint creation across a longer period of time,
-resulting in a more evenly distributed I/O load. A lower value has been observed
-to cause undesirable spikes in I/O usage on the database server.
-
-```sql
-ALTER SYSTEM SET CHECKPOINT_COMPLETION_TARGET = 0.9;
-```
 
 ##### autovacuum_vacuum_scale_factor
 

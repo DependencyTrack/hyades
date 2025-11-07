@@ -1,3 +1,7 @@
+### Upgrading to 0.7.0
+
+* The minimum supported PostgreSQL version has been raised from 13 to 14 ([hyades/#1910]).
+
 ### Upgrading to 0.6.0
 
 * The `kafka.topic.prefix` configuration was renamed to `dt.kafka.topic.prefix` to prevent
@@ -69,6 +73,7 @@ Consequently, the following configuration properties were renamed:
 [apiserver/#1169]: https://github.com/DependencyTrack/hyades-apiserver/pull/1169
 [hyades/#1392]: https://github.com/DependencyTrack/hyades/issues/1392
 [hyades/#1724]: https://github.com/DependencyTrack/hyades/issues/1724
+[hyades/#1910]: https://github.com/DependencyTrack/hyades/issues/1910
 
 [kafka configuration reference]: ../reference/configuration/api-server.md#kafka
 [task scheduling configuration reference]: ../reference/configuration/api-server.md#task-scheduling
