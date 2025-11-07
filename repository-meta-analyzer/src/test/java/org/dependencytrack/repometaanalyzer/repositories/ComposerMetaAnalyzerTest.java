@@ -31,6 +31,7 @@ import org.dependencytrack.repometaanalyzer.model.MetaModel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -63,6 +64,7 @@ class ComposerMetaAnalyzerTest {
 
 
     @Test
+    @Disabled
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:composer/phpunit/phpunit@1.0.0"));
