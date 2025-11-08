@@ -1880,6 +1880,68 @@
 <h3 id="upgrading-to-070">Upgrading to 0.7.0<a class="headerlink" href="#upgrading-to-070" title="Permanent link">&para;</a></h3>
 <ul>
 <li>The minimum supported PostgreSQL version has been raised from 13 to 14 (<a href="https://github.com/DependencyTrack/hyades/issues/1910">hyades/#1910</a>).</li>
+<li>
+<p>Various database configurations in the API server have been deprecated:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Before</th>
+<th style="text-align: left;">After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>alpine.database.url</code></td>
+<td style="text-align: left;"><code>dt.datasource.url</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpine.database.username</code></td>
+<td style="text-align: left;"><code>dt.datasource.username</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpine.database.password</code></td>
+<td style="text-align: left;"><code>dt.datasource.password</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpine.database.password.file</code></td>
+<td style="text-align: left;"><code>dt.datasource.password-file</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpine.database.pool.enabled</code></td>
+<td style="text-align: left;"><code>dt.datasource.pool.enabled</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpine.database.pool.max.size</code></td>
+<td style="text-align: left;"><code>dt.datasource.pool.max-size</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpine.database.pool.min.idle</code></td>
+<td style="text-align: left;"><code>dt.datasource.pool.min-idle</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpine.database.pool.idle.timeout</code></td>
+<td style="text-align: left;"><code>dt.datasource.pool.idle-timeout-ms</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alpine.database.pool.max.lifetime</code></td>
+<td style="text-align: left;"><code>dt.datasource.pool.max-lifetime-ms</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>For this version, the <code>dt.datasource.*</code> configurations default to their <code>alpine.database.*</code>
+  counterparts. Existing deployments should continue to function without changes.
+  However, support for <code>alpine.database.*</code> configs will be removed prior to the GA release.</p>
+</li>
+<li>The following init task configurations have been removed and replaced with <code>init.tasks.datasource.name</code>:<ul>
+<li><code>init.tasks.database.url</code></li>
+<li><code>init.tasks.database.username</code></li>
+<li><code>init.tasks.database.password</code></li>
+</ul>
+</li>
+<li>Refer to the <a href="../../operations/database/#schema-migrations">schema migrations</a> documentation
+  for an example of how to run init tasks with separate database credentials. </li>
 </ul>
 <h3 id="upgrading-to-060">Upgrading to 0.6.0<a class="headerlink" href="#upgrading-to-060" title="Permanent link">&para;</a></h3>
 <ul>
