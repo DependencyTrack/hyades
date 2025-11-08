@@ -183,13 +183,21 @@ This behavior can be turned off by setting [`init.tasks.enabled`](../reference/c
 on the API server container to `false`.
 
 It is possible to use different credentials for migrations than for the application itself.
-This can be achieved with the following options:
+This can be achieved by configuring a separate data source, and instructing the init tasks to use it:
 
-* [`init.tasks.database.url`](../reference/configuration/api-server.md#inittasksdatabaseurl)
-* [`init.tasks.database.username`](../reference/configuration/api-server.md#inittasksdatabaseusername)
-* [`init.tasks.database.password`](../reference/configuration/api-server.md#inittasksdatabasepassword)
+```ini linenums="1"
+# Configure a data source named "init-tasks".
+dt.datasource.init-tasks.url=jdbc:postgresql://localhost:5432/dtrack
+dt.datasource.init-tasks.username=my-init-task-user
+dt.datasource.init-tasks.password=my-init-task-pass
 
-The above will default to the main database credentials if not provided explicitly.
+# Configure init tasks to use the data source.
+init.tasks.datasource.name=init-tasks
+
+# If the data source is only meant for init tasks, there is no need to
+# keep it around after the tasks completed.
+init.tasks.datasource.close-after-use=true
+```
 
 ## Connection Pooling
 
@@ -210,7 +218,7 @@ database directly, bypassing the connection pooler, when using pooling mode `tra
     * To facilitate this, initialization tasks can be executed in dedicated containers,
       and / or with separate database connection details.
 * Local connection pooling in services *must* be disabled:
-    * For `hyades-apiserver`: `ALPINE_DATABASE_POOL_ENABLED=false`
+    * For `hyades-apiserver`: `DT_DATASOURCE_POOL_ENABLED=false`
     * For others: `QUARKUS_DATASOURCE_JDBC_POOLING_ENABLED=false`
 
 ### Example
@@ -243,9 +251,10 @@ services:
     image: ghcr.io/dependencytrack/hyades-apiserver
     environment:
       INIT_TASKS_ENABLED: "true"
-      INIT_TASKS_DATABASE_URL: "jdbc:postgresql://postgres:5432/dtrack"
-      INIT_TASKS_DATABASE_USERNAME: "dtrack"
-      INIT_TASKS_DATABASE_PASSWORD: "dtrack"
+      DT_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/dtrack"
+      DT_DATASOURCE_USERNAME: "dtrack"
+      DT_DATASOURCE_PASSWORD: "dtrack"
+      DT_DATASOURCE_POOL_ENABLED: "false"
       INIT_AND_EXIT: "true"
 
   apiserver:
@@ -254,10 +263,10 @@ services:
       initializer:
         condition: service_completed_successfully
     environment:
-      ALPINE_DATABASE_URL: "jdbc:postgresql://pgbouncer:6432/dtrack"
-      ALPINE_DATABASE_USERNAME: "dtrack"
-      ALPINE_DATABASE_PASSWORD: "dtrack"
-      ALPINE_DATABASE_POOL_ENABLED: "false"
+      DT_DATASOURCE_URL: "jdbc:postgresql://pgbouncer:6432/dtrack"
+      DT_DATASOURCE_USERNAME: "dtrack"
+      DT_DATASOURCE_PASSWORD: "dtrack"
+      DT_DATASOURCE_POOL_ENABLED: "false"
       INIT_TASKS_ENABLED: "false"
 
   notification-publisher:
