@@ -10,6 +10,8 @@
 
 Defines the time-to-live of cache entries.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -38,6 +40,8 @@ Defines the time-to-live of cache entries.
 
 Defines the initial capacity of the cache.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -65,6 +69,8 @@ Defines the initial capacity of the cache.
 ### quarkus.cache.enabled
 
 Defines whether caching of analysis results shall be enabled.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -96,6 +102,8 @@ Defines whether caching of analysis results shall be enabled.
 
 Specifies the JDBC URL to use when connecting to the database.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -124,6 +132,8 @@ Specifies the JDBC URL to use when connecting to the database.
 
 Specifies the password to use when authenticating to the database.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -151,6 +161,8 @@ Specifies the password to use when authenticating to the database.
 ### quarkus.datasource.username
 
 Specifies the username to use when authenticating to the database.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -182,6 +194,8 @@ Specifies the username to use when authenticating to the database.
 
 Defines the path to the secret key to be used for data encryption and decryption.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -212,6 +226,8 @@ Defines the path to the secret key to be used for data encryption and decryption
 
 HTTP port to listen on. Application metrics will be available via this port.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -241,6 +257,8 @@ HTTP port to listen on. Application metrics will be available via this port.
 ### dt.kafka.topic.prefix
 
 Defines an optional prefix to assume for all Kafka topics the application  consumes from, or produces to. The prefix will also be prepended to the  application's consumer group ID.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -274,6 +292,8 @@ Defines an optional prefix to assume for all Kafka topics the application  consu
 
 Refer to <https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.reset> for details.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -306,6 +326,8 @@ Refer to <https://kafka.apache.org/documentation/#consumerconfigs_auto.offset.re
 
 Defines the interval in milliseconds at which consumer offsets are committed to the Kafka brokers.  The Kafka default of `30s` has been modified to `5s`.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#streamsconfigs_commit.interval.ms> for details.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -333,6 +355,8 @@ Defines the interval in milliseconds at which consumer offsets are committed to 
 ### kafka-streams.exception.thresholds.deserialization.count
 
 Defines the threshold for records failing to be deserialized within [`kafka-streams.exception.thresholds.deserialization.interval`](#kafka-streamsexceptionthresholdsdeserializationinterval).  Deserialization failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -362,6 +386,8 @@ Defines the threshold for records failing to be deserialized within [`kafka-stre
 
 Defines the interval within which up to [`kafka-streams.exception.thresholds.deserialization.count`](#kafka-streamsexceptionthresholdsdeserializationcount) records are  allowed to fail deserialization. Deserialization failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -389,6 +415,8 @@ Defines the interval within which up to [`kafka-streams.exception.thresholds.des
 ### kafka-streams.exception.thresholds.processing.count
 
 Defines the threshold for records failing to be processed within [`kafka-streams.exception.thresholds.processing.interval`](#kafka-streamsexceptionthresholdsprocessinginterval).  Processing failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -418,6 +446,8 @@ Defines the threshold for records failing to be processed within [`kafka-streams
 
 Defines the interval within which up to [`kafka-streams.exception.thresholds.processing.count`](#kafka-streamsexceptionthresholdsprocessingcount) records are  allowed to fail processing. Processing failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -445,6 +475,8 @@ Defines the interval within which up to [`kafka-streams.exception.thresholds.pro
 ### kafka-streams.exception.thresholds.production.count
 
 Defines the threshold for records failing to be produced within [`kafka-streams.exception.thresholds.production.interval`](#kafka-streamsexceptionthresholdsproductioninterval).  Production failures within the threshold will be logged, failures exceeding the threshold cause the application  to stop processing further records, and shutting down.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -474,6 +506,8 @@ Defines the threshold for records failing to be produced within [`kafka-streams.
 
 Defines the interval within which up to [`kafka-streams.exception.thresholds.production.count`](#kafka-streamsexceptionthresholdsproductioncount) records are  allowed to fail producing. Production failures within the threshold will be logged,  failures exceeding the threshold cause the application to stop processing further records, and shutting down.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -501,6 +535,8 @@ Defines the interval within which up to [`kafka-streams.exception.thresholds.pro
 ### kafka-streams.metrics.recording.level
 
 Refer to <https://kafka.apache.org/documentation/#adminclientconfigs_metrics.recording.level> for details.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -534,6 +570,8 @@ Refer to <https://kafka.apache.org/documentation/#adminclientconfigs_metrics.rec
 
 Refer to <https://kafka.apache.org/documentation/#streamsconfigs_num.stream.threads> for details.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -561,6 +599,8 @@ Refer to <https://kafka.apache.org/documentation/#streamsconfigs_num.stream.thre
 ### kafka.bootstrap.servers
 
 Comma-separated list of brokers to use for establishing the initial connection to the Kafka cluster.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#consumerconfigs_bootstrap.servers> for details.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -594,6 +634,8 @@ Comma-separated list of brokers to use for establishing the initial connection t
 
 Defines the ID to uniquely identify this application in the Kafka cluster.  <br/><br/>  Refer to <https://kafka.apache.org/documentation/#streamsconfigs_application.id> for details.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -623,6 +665,8 @@ Defines the ID to uniquely identify this application in the Kafka cluster.  <br/
 ### quarkus.log.console.json
 
 Defines whether logs should be written in JSON format.  
+
+
 
 <table>
   <tbody style="border: 0">

@@ -10,6 +10,8 @@
 
 Controls the content of the `Access-Control-Allow-Credentials` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -37,6 +39,8 @@ Controls the content of the `Access-Control-Allow-Credentials` response header. 
 ### alpine.cors.allow.headers
 
 Controls the content of the `Access-Control-Allow-Headers` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -66,6 +70,8 @@ Controls the content of the `Access-Control-Allow-Headers` response header.  <br
 
 Controls the content of the `Access-Control-Allow-Methods` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -93,6 +99,8 @@ Controls the content of the `Access-Control-Allow-Methods` response header.  <br
 ### alpine.cors.allow.origin
 
 Controls the content of the `Access-Control-Allow-Origin` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -122,6 +130,8 @@ Controls the content of the `Access-Control-Allow-Origin` response header.  <br/
 
 Defines whether [Cross Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)  (CORS) headers shall be included in REST API responses.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -150,6 +160,8 @@ Defines whether [Cross Origin Resource Sharing](https://developer.mozilla.org/en
 
 Controls the content of the `Access-Control-Expose-Headers` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -177,6 +189,8 @@ Controls the content of the `Access-Control-Expose-Headers` response header.  <b
 ### alpine.cors.max.age
 
 Controls the content of the `Access-Control-Max-Age` response header.  <br/>  Has no effect when [`alpine.cors.enabled`](#alpinecorsenabled) is `false`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -208,6 +222,10 @@ Controls the content of the `Access-Control-Max-Age` response header.  <br/>  Ha
 
 Specifies the password to use when authenticating to the database.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.password`](#dtdatasourcepassword) instead.
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -235,6 +253,10 @@ Specifies the password to use when authenticating to the database.
 ### alpine.database.password.file
 
 Specifies the file to load the database password from.  If set, takes precedence over [`alpine.database.password`](#alpinedatabasepassword).  
+
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.password`](#dtdatasourcepassword)-file instead.
+
 
 <table>
   <tbody style="border: 0">
@@ -268,6 +290,10 @@ Specifies the file to load the database password from.  If set, takes precedence
 
 Specifies if the database connection pool is enabled.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.pool.enabled`](#dtdatasourcepoolenabled) instead.
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -295,6 +321,10 @@ Specifies if the database connection pool is enabled.
 ### alpine.database.pool.idle.timeout
 
 This property controls the maximum amount of time that a connection is  allowed to sit idle in the pool.  
+
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.pool.idle-timeout-ms`](#dtdatasourcepoolidle-timeout-ms) instead.
+
 
 <table>
   <tbody style="border: 0">
@@ -324,6 +354,10 @@ This property controls the maximum amount of time that a connection is  allowed 
 
 This property controls the maximum lifetime of a connection in the pool.  An in-use connection will never be retired, only when it is closed will  it then be removed.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.pool.max-lifetime-ms`](#dtdatasourcepoolmax-lifetime-ms) instead.
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -351,6 +385,10 @@ This property controls the maximum lifetime of a connection in the pool.  An in-
 ### alpine.database.pool.max.size
 
 This property controls the maximum size that the pool is allowed to reach,  including both idle and in-use connections.  
+
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.pool.max-size`](#dtdatasourcepoolmax-size) instead.
+
 
 <table>
   <tbody style="border: 0">
@@ -380,6 +418,10 @@ This property controls the maximum size that the pool is allowed to reach,  incl
 
 This property controls the minimum number of idle connections in the pool.  This value should be equal to or less than [`alpine.database.pool.max.size`](#alpinedatabasepoolmaxsize).  Warning: If the value is less than [`alpine.database.pool.max.size`](#alpinedatabasepoolmaxsize),  [`alpine.database.pool.idle.timeout`](#alpinedatabasepoolidletimeout) will have no effect.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.pool.min-idle`](#dtdatasourcepoolmin-idle) instead.
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -408,11 +450,15 @@ This property controls the minimum number of idle connections in the pool.  This
 
 Specifies the JDBC URL to use when connecting to the database.  For best performance, set the `reWriteBatchedInserts` query parameter to `true`.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.url`](#dtdatasourceurl) instead.
+
+
 <table>
   <tbody style="border: 0">
     <tr>
       <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
+      <td style="border-width: 0">false</td>
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
@@ -440,6 +486,10 @@ Specifies the JDBC URL to use when connecting to the database.  For best perform
 
 Specifies the username to use when authenticating to the database.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.datasource.username`](#dtdatasourceusername) instead.
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -464,9 +514,11 @@ Specifies the username to use when authenticating to the database.
 
 ---
 
-### init.tasks.database.password
+### dt.datasource.password
 
-Defines the database password for executing init tasks.  If not set, the value of [`alpine.database.password`](#alpinedatabasepassword) will be used.  
+Defines the password to use for the default data source.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -484,7 +536,7 @@ Defines the database password for executing init tasks.  If not set, the value o
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_PASSWORD</code></td>
+      <td style="border-width: 0"><code>DT_DATASOURCE_PASSWORD</code></td>
     </tr>
   </tbody>
 </table>
@@ -492,9 +544,11 @@ Defines the database password for executing init tasks.  If not set, the value o
 
 ---
 
-### init.tasks.database.url
+### dt.datasource.password-file
 
-Defines the database JDBC URL to use when executing init tasks.  If not set, the value of [`alpine.database.url`](#alpinedatabaseurl) will be used.  Should generally not be set, unless TLS authentication is used,  and custom connection variables are required.  
+Defines the location of the file to load the password for the default data source from.  If set, takes precedence over [`dt.datasource.password`](#dtdatasourcepassword).  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -508,11 +562,11 @@ Defines the database JDBC URL to use when executing init tasks.  If not set, the
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.url}</code></td>
+      <td style="border-width: 0"><code>${alpine.database.password.file}</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_URL</code></td>
+      <td style="border-width: 0"><code>DT_DATASOURCE_PASSWORD_FILE</code></td>
     </tr>
   </tbody>
 </table>
@@ -520,9 +574,195 @@ Defines the database JDBC URL to use when executing init tasks.  If not set, the
 
 ---
 
-### init.tasks.database.username
+### dt.datasource.pool.enabled
 
-Defines the database user for executing init tasks.  If not set, the value of [`alpine.database.username`](#alpinedatabaseusername) will be used.  
+Defines whether connection pooling is enabled for the default data source.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.enabled}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.datasource.pool.idle-timeout-ms
+
+Defines the maximum time in milliseconds that a connection is allowed to sit idle in the pool.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.idle.timeout}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_IDLE_TIMEOUT_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.datasource.pool.max-lifetime-ms
+
+Defines the maximum time in milliseconds for which connections should be kept in the pool for the default data source.  Required when [`dt.datasource.pool.enabled`](#dtdatasourcepoolenabled) is `true`.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.max.lifetime}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_MAX_LIFETIME_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.datasource.pool.max-size
+
+Defines the maximum size of the connection pool for the default data source.  Required when [`dt.datasource.pool.enabled`](#dtdatasourcepoolenabled) is `true`.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.max.size}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_MAX_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.datasource.pool.min-idle
+
+Defines the minimum number of idle connections in the pool for the default data source.  Required when [`dt.datasource.pool.enabled`](#dtdatasourcepoolenabled) is `true`.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.min.idle}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_MIN_IDLE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.datasource.url
+
+Defines the JDBC URL to use for the default data source.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.url}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>jdbc:postgresql://localhost:5432/dtrack?reWriteBatchedInserts=true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_URL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.datasource.username
+
+Defines the username to use for the default data source.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -540,7 +780,67 @@ Defines the database user for executing init tasks.  If not set, the value of [`
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_USERNAME</code></td>
+      <td style="border-width: 0"><code>DT_DATASOURCE_USERNAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### init.tasks.datasource.close-after-use
+
+Defines whether the data source used by init tasks should be closed  after all tasks completed. This is useful when a non-default data source  was configured, that is not used anywhere else.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASKS_DATASOURCE_CLOSE_AFTER_USE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### init.tasks.datasource.name
+
+Defines the name of the data source to be used by init tasks.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>default</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASKS_DATASOURCE_NAME</code></td>
     </tr>
   </tbody>
 </table>
@@ -553,6 +853,8 @@ Defines the database user for executing init tasks.  If not set, the value of [`
 ### dev.services.enabled
 
 Whether dev services shall be enabled.  <br/><br/>  When enabled, Dependency-Track will automatically launch containers for:  <ul>  <li>Frontend</li>  <li>Kafka</li>  <li>PostgreSQL</li>  </ul>  at startup, and configures itself to use them. They are disposed when  Dependency-Track stops. The containers are exposed on randomized ports,  which will be logged during startup.  <br/><br/>  Trying to enable dev services in a production build will prevent  the application from starting.  <br/><br/>  Note that the containers launched by the API server can not currently  be discovered and re-used by other Hyades services. This is a future  enhancement tracked in <https://github.com/DependencyTrack/hyades/issues/1188>.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -582,6 +884,8 @@ Whether dev services shall be enabled.  <br/><br/>  When enabled, Dependency-Tra
 
 The image to use for the frontend dev services container.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -609,6 +913,8 @@ The image to use for the frontend dev services container.
 ### dev.services.image.kafka
 
 The image to use for the Kafka dev services container.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -638,6 +944,8 @@ The image to use for the Kafka dev services container.
 
 The image to use for the PostgreSQL dev services container.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -665,6 +973,8 @@ The image to use for the PostgreSQL dev services container.
 ### dev.services.port.frontend
 
 The port on which the frontend dev services container shall be exposed on the host.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -694,6 +1004,8 @@ The port on which the frontend dev services container shall be exposed on the ho
 
 The port on which the Kafka dev services container shall be exposed on the host.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -716,34 +1028,6 @@ The port on which the Kafka dev services container shall be exposed on the host.
 </table>
 
 
----
-
-### dev.services.port.postgres
-
-The port on which the PostgreSQL dev services container shall be exposed on the host.  
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5432</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DEV_SERVICES_PORT_POSTGRES</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
 
 
 ## General
@@ -751,6 +1035,8 @@ The port on which the PostgreSQL dev services container shall be exposed on the 
 ### alpine.api.key.prefix
 
 Defines the prefix to be used for API keys. A maximum prefix length of 251  characters is supported. The prefix may also be left empty.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -780,6 +1066,8 @@ Defines the prefix to be used for API keys. A maximum prefix length of 251  char
 
 Defines the number of seconds for which JWTs issued by Dependency-Track will be valid for.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -808,6 +1096,8 @@ Defines the number of seconds for which JWTs issued by Dependency-Track will be 
 
 Specifies the number of bcrypt rounds to use when hashing a user's password.  The higher the number the more secure the password, at the expense of  hardware resources and additional time to generate the hash.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -835,6 +1125,8 @@ Specifies the number of bcrypt rounds to use when hashing a user's password.  Th
 ### alpine.config.profile
 
 Defines the configuration profile to use.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -868,6 +1160,8 @@ Defines the configuration profile to use.
 
 Defines the path to the data directory. This directory will hold logs,  keys, and any database or index files along with application-specific  files or directories.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -895,6 +1189,8 @@ Defines the path to the data directory. This directory will hold logs,  keys, an
 ### alpine.secret.key.path
 
 Defines the path to the secret key to be used for data encryption and decryption.  The key will be generated upon first startup if it does not exist.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -924,6 +1220,8 @@ Defines the path to the secret key to be used for data encryption and decryption
 
 Whether to only execute initialization tasks and exit.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -951,6 +1249,8 @@ Whether to only execute initialization tasks and exit.
 ### init.task.database.migration.enabled
 
 Whether to enable the database migration init task.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -980,6 +1280,8 @@ Whether to enable the database migration init task.  Has no effect unless [`init
 
 Whether to enable the database partition maintenance init task.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1007,6 +1309,8 @@ Whether to enable the database partition maintenance init task.  Has no effect u
 ### init.task.database.seeding.enabled
 
 Whether to enable the database seeding init task.  Seeding involves populating the database with default objects,  such as permissions, users, licenses, etc.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -1036,6 +1340,8 @@ Whether to enable the database seeding init task.  Seeding involves populating t
 
 Whether to enable the key generation init task.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1064,6 +1370,8 @@ Whether to enable the key generation init task.  Has no effect unless [`init.tas
 
 Whether to execute initialization tasks on startup.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1089,6 +1397,8 @@ Whether to execute initialization tasks on startup.
 ---
 
 ### integrity.check.enabled
+
+
 
 
 
@@ -1120,6 +1430,8 @@ Whether to execute initialization tasks on startup.
 
 Specifies whether the Integrity Initializer shall be enabled.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1147,6 +1459,8 @@ Specifies whether the Integrity Initializer shall be enabled.
 ### tmp.delay.bom.processed.notification
 
 Delays the BOM_PROCESSED notification until the vulnerability analysis associated with a given BOM upload  is completed. The intention being that it is then "safe" to query the API for any identified vulnerabilities.  This is specifically for cases where polling the /api/v1/bom/token/<TOKEN> endpoint is not feasible.  THIS IS A TEMPORARY FUNCTIONALITY AND MAY BE REMOVED IN FUTURE RELEASES WITHOUT FURTHER NOTICE.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -1176,6 +1490,8 @@ Delays the BOM_PROCESSED notification until the vulnerability analysis associate
 
 Defines whether vulnerability policy analysis is enabled.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1203,6 +1519,8 @@ Defines whether vulnerability policy analysis is enabled.
 ### vulnerability.policy.bundle.auth.password
 
 For nginx server, if username and bearer token both are provided, basic auth will be used,  else the auth header will be added based on the not null values  Defines the password to be used for basic authentication against the service hosting the policy bundle.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -1232,6 +1550,8 @@ For nginx server, if username and bearer token both are provided, basic auth wil
 
 Defines the username to be used for basic authentication against the service hosting the policy bundle.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1260,6 +1580,8 @@ Defines the username to be used for basic authentication against the service hos
 
 Defines the token to be used as bearerAuth against the service hosting the policy bundle.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1287,6 +1609,8 @@ Defines the token to be used as bearerAuth against the service hosting the polic
 ### vulnerability.policy.bundle.source.type
 
 Defines the type of source from which policy bundles are being fetched from.  Required when [`vulnerability.policy.bundle.url`](#vulnerabilitypolicybundleurl) is set.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -1320,6 +1644,8 @@ Defines the type of source from which policy bundles are being fetched from.  Re
 
 Defines where to fetch the policy bundle from.For S3, just the base url needs to be provided with port  For nginx, the whole url with bundle name needs to be given  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1352,6 +1678,8 @@ Defines where to fetch the policy bundle from.For S3, just the base url needs to
 
 S3 related details. Access key, secret key, bucket name and bundle names are mandatory if S3 is chosen. Region is optional  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1377,6 +1705,8 @@ S3 related details. Access key, secret key, bucket name and bundle names are man
 ---
 
 ### vulnerability.policy.s3.bucket.name
+
+
 
 
 
@@ -1408,6 +1738,8 @@ S3 related details. Access key, secret key, bucket name and bundle names are man
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1436,6 +1768,8 @@ S3 related details. Access key, secret key, bucket name and bundle names are man
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1461,6 +1795,8 @@ S3 related details. Access key, secret key, bucket name and bundle names are man
 ---
 
 ### vulnerability.policy.s3.secret.key
+
+
 
 
 
@@ -1494,6 +1830,8 @@ S3 related details. Access key, secret key, bucket name and bundle names are man
 
 HTTP proxy address. If set, then [`alpine.http.proxy.port`](#alpinehttpproxyport) must be set too.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1526,6 +1864,8 @@ HTTP proxy address. If set, then [`alpine.http.proxy.port`](#alpinehttpproxyport
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1553,6 +1893,8 @@ HTTP proxy address. If set, then [`alpine.http.proxy.port`](#alpinehttpproxyport
 ### alpine.http.proxy.password.file
 
 Specifies the file to load the HTTP proxy password from.  If set, takes precedence over [`alpine.http.proxy.password`](#alpinehttpproxypassword).  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -1583,6 +1925,8 @@ Specifies the file to load the HTTP proxy password from.  If set, takes preceden
 ---
 
 ### alpine.http.proxy.port
+
+
 
 
 
@@ -1618,6 +1962,8 @@ Specifies the file to load the HTTP proxy password from.  If set, takes preceden
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1645,6 +1991,8 @@ Specifies the file to load the HTTP proxy password from.  If set, takes preceden
 ### alpine.http.timeout.connection
 
 Defines the connection timeout in seconds for outbound HTTP connections.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -1674,6 +2022,8 @@ Defines the connection timeout in seconds for outbound HTTP connections.
 
 Defines the request timeout in seconds for outbound HTTP connections.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1702,6 +2052,8 @@ Defines the request timeout in seconds for outbound HTTP connections.
 
 Defines the socket / read timeout in seconds for outbound HTTP connections.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1727,6 +2079,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### alpine.no.proxy
+
+
 
 
 
@@ -1764,6 +2118,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1789,6 +2145,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.auto.offset.reset
+
+
 
 
 
@@ -1824,6 +2182,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1856,6 +2216,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1881,6 +2243,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.keystore.path
+
+
 
 
 
@@ -1912,6 +2276,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -1937,6 +2303,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.repo.meta.analysis.result.consumer.auto.offset.reset
+
+
 
 
 
@@ -1972,6 +2340,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2000,6 +2370,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2025,6 +2397,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.repo.meta.analysis.result.processing.order
+
+
 
 
 
@@ -2060,6 +2434,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2085,6 +2461,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.repo.meta.analysis.result.retry.max.delay.ms
+
+
 
 
 
@@ -2116,6 +2494,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2144,6 +2524,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2169,6 +2551,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.mirror.consumer.auto.offset.reset
+
+
 
 
 
@@ -2204,6 +2588,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2232,6 +2618,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2257,6 +2645,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.mirror.processing.order
+
+
 
 
 
@@ -2292,6 +2682,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2317,6 +2709,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.mirror.retry.max.delay.ms
+
+
 
 
 
@@ -2348,6 +2742,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2376,6 +2772,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2401,6 +2799,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.scan.result.consumer.auto.offset.reset
+
+
 
 
 
@@ -2436,6 +2836,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2464,6 +2866,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2489,6 +2893,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.scan.result.processed.consumer.auto.offset.reset
+
+
 
 
 
@@ -2524,6 +2930,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2549,6 +2957,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.scan.result.processed.consumer.group.id
+
+
 
 
 
@@ -2580,6 +2990,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2605,6 +3017,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.scan.result.processed.max.batch.size
+
+
 
 
 
@@ -2636,6 +3050,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2661,6 +3077,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.scan.result.processed.processing.order
+
+
 
 
 
@@ -2696,6 +3114,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2721,6 +3141,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.scan.result.processed.retry.max.delay.ms
+
+
 
 
 
@@ -2752,6 +3174,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2780,6 +3204,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2805,6 +3231,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.scan.result.processing.order
+
+
 
 
 
@@ -2840,6 +3268,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2865,6 +3295,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.processor.vuln.scan.result.retry.max.delay.ms
+
+
 
 
 
@@ -2896,6 +3328,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2924,6 +3358,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2949,6 +3385,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.security.protocol
+
+
 
 
 
@@ -2984,6 +3422,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3012,6 +3452,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3037,6 +3479,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 ---
 
 ### kafka.truststore.path
+
+
 
 
 
@@ -3070,6 +3514,8 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 Specifies the LDAP attribute used to store a users email address  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3098,6 +3544,8 @@ Specifies the LDAP attribute used to store a users email address
 
 Specifies the Attribute that identifies a users ID.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>userPrincipalName</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>uid</code></li></ul>  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3125,6 +3573,8 @@ Specifies the Attribute that identifies a users ID.  <br/><br/>  Example (Micros
 ### alpine.ldap.auth.username.format
 
 Specifies if the username entered during login needs to be formatted prior  to asserting credentials against the directory. For Active Directory, the  userPrincipal attribute typically ends with the domain, whereas the  samAccountName attribute and other directory server implementations do not.  The %s variable will be substituted with the username asserted during login.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>%s@example.com</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>%s</code></li></ul>  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3158,6 +3608,8 @@ Specifies if the username entered during login needs to be formatted prior  to a
 
 Specifies the base DN that all queries should search from  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3190,6 +3642,8 @@ Specifies the base DN that all queries should search from
 
 If anonymous access is not permitted, specify a password for the username  used to bind.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3217,6 +3671,8 @@ If anonymous access is not permitted, specify a password for the username  used 
 ### alpine.ldap.bind.username
 
 If anonymous access is not permitted, specify a username with limited access  to the directory, just enough to perform searches. This should be the fully  qualified DN of the user.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3246,6 +3702,8 @@ If anonymous access is not permitted, specify a username with limited access  to
 
 Defines if LDAP will be used for user authentication. If enabled,  `alpine.ldap.*` properties should be set accordingly.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3273,6 +3731,8 @@ Defines if LDAP will be used for user authentication. If enabled,  `alpine.ldap.
 ### alpine.ldap.groups.filter
 
 Specifies the LDAP search filter used to retrieve all groups from the directory.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&(objectClass=group)(objectCategory=Group))</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&(objectClass=groupOfUniqueNames))</code></li></ul>  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3302,6 +3762,8 @@ Specifies the LDAP search filter used to retrieve all groups from the directory.
 
 Specifies the LDAP search filter used to search for groups by their name.  The `{SEARCH_TERM}` variable will be substituted at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&(objectClass=group)(objectCategory=Group)(cn=*{SEARCH_TERM}*))</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&(objectClass=groupOfUniqueNames)(cn=*{SEARCH_TERM}*))</code></li></ul>  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3329,6 +3791,8 @@ Specifies the LDAP search filter used to search for groups by their name.  The `
 ### alpine.ldap.security.auth
 
 Specifies the LDAP security authentication level to use. Its value is one of  the following strings: "none", "simple", "strong". If this property is empty  or unspecified, the behaviour is determined by the service provider.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3362,6 +3826,8 @@ Specifies the LDAP security authentication level to use. Its value is one of  th
 
 Specifies the LDAP server URL.  <br/><br/>  Examples (Microsoft Active Directory):  <ul>  <li><code>ldap://ldap.example.com:3268</code></li>  <li><code>ldaps://ldap.example.com:3269</code></li>  </ul>  Examples (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul>  <li><code>ldap://ldap.example.com:389</code></li>  <li><code>ldaps://ldap.example.com:636</code></li>  </ul>  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3389,6 +3855,8 @@ Specifies the LDAP server URL.  <br/><br/>  Examples (Microsoft Active Directory
 ### alpine.ldap.team.synchronization
 
 This option will ensure that team memberships for LDAP users are dynamic and  synchronized with membership of LDAP groups. When a team is mapped to an LDAP  group, all local LDAP users will automatically be assigned to the team if  they are a member of the group the team is mapped to. If the user is later  removed from the LDAP group, they will also be removed from the team. This  option provides the ability to dynamically control user permissions via an  external directory.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3418,6 +3886,8 @@ This option will ensure that team memberships for LDAP users are dynamic and  sy
 
 Specifies the LDAP search filter to use to query a user and retrieve a list  of groups the user is a member of. The `{USER_DN}` variable will be substituted  with the actual value of the users DN at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&(objectClass=group)(objectCategory=Group)(member={USER_DN}))</code></li></ul>  Example (Microsoft Active Directory - with nested group support):  <ul><li><code>(member:1.2.840.113556.1.4.1941:={USER_DN})</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&(objectClass=groupOfUniqueNames)(uniqueMember={USER_DN}))</code></li></ul>  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3446,6 +3916,8 @@ Specifies the LDAP search filter to use to query a user and retrieve a list  of 
 
 Specifies if mapped LDAP accounts are automatically created upon successful  authentication. When a user logs in with valid credentials but an account has  not been previously provisioned, an authentication failure will be returned.  This allows admins to control specifically which ldap users can access the  system and which users cannot. When this value is set to true, a local ldap  user will be created and mapped to the ldap account automatically. This  automatic provisioning only affects authentication, not authorization.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3473,6 +3945,8 @@ Specifies if mapped LDAP accounts are automatically created upon successful  aut
 ### alpine.ldap.users.search.filter
 
 Specifies the LDAP search filter used to search for users by their name.  The <code>{SEARCH_TERM}</code> variable will be substituted at runtime.  <br/><br/>  Example (Microsoft Active Directory):  <ul><li><code>(&(objectClass=group)(objectCategory=Group)(cn=*{SEARCH_TERM}*))</code></li></ul>  Example (ApacheDS, Fedora 389 Directory, NetIQ/Novell eDirectory, etc):  <ul><li><code>(&(objectClass=inetOrgPerson)(cn=*{SEARCH_TERM}*))</code></li></ul>  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3504,6 +3978,8 @@ Specifies the LDAP search filter used to search for users by their name.  The <c
 
 Defines the number of notifications that the outbox relay will process in a batch.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3531,6 +4007,8 @@ Defines the number of notifications that the outbox relay will process in a batc
 ### notification.outbox-relay.enabled
 
 Defines whether the notification outbox relay should be enabled.  When disabled, notifications will still be emitted to the outbox  table, but not be delivered. Should generally stay enabled, unless:  <ul>  <li>The relay has a critical issue that impacts the rest of the system</li>  <li>You run a multi-node cluster and want more granular control over which nodes run the relay</li>  </ul>  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3560,6 +4038,8 @@ Defines whether the notification outbox relay should be enabled.  When disabled,
 
 Defines the interval in milliseconds in which the notification outbox relay will poll  for records in the notification outbox table. Increasing this value will cause higher  notification latencies, but incurs a lesser load on the database.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3587,6 +4067,8 @@ Defines the interval in milliseconds in which the notification outbox relay will
 ### notification.router.enabled
 
 Defines whether the notification router should be enabled.  The router currently only evaluates rules against emitted notifications,  but does not influence which notifications are sent to Kafka.  Enabling it is only useful to monitor if and how much it impacts relay performance.  For that purpose, the following Prometheus metrics may be used:  <ul>  <li><code>dtrack_notification_router_rule_query_latency</code></li>  <li><code>dtrack_notification_router_rule_filter_latency</code></li>  <li><code>dtrack_notification_router_rules_matched</code></li>  </ul>  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3618,6 +4100,8 @@ Defines whether the notification router should be enabled.  The router currently
 
 Defines the password required to access metrics.  Has no effect when [`alpine.metrics.auth.username`](#alpinemetricsauthusername) is not set.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3646,6 +4130,8 @@ Defines the password required to access metrics.  Has no effect when [`alpine.me
 
 Defines the username required to access metrics.  Has no effect when [`alpine.metrics.auth.password`](#alpinemetricsauthpassword) is not set.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3673,6 +4159,8 @@ Defines the username required to access metrics.  Has no effect when [`alpine.me
 ### alpine.metrics.enabled
 
 Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be available via the /metrics endpoint.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3704,6 +4192,8 @@ Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be
 
 Defines the client ID to be used for OpenID Connect.  The client ID should be the same as the one configured for the frontend,  and will only be used to validate ID tokens.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3731,6 +4221,8 @@ Defines the client ID to be used for OpenID Connect.  The client ID should be th
 ### alpine.oidc.enabled
 
 Defines if OpenID Connect will be used for user authentication.  If enabled, `alpine.oidc.*` properties should be set accordingly.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3760,6 +4252,8 @@ Defines if OpenID Connect will be used for user authentication.  If enabled, `al
 
 Defines the issuer URL to be used for OpenID Connect.  This issuer MUST support provider configuration via the `/.well-known/openid-configuration` endpoint.  See also:  <ul>  <li>https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata</li>  <li>https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig</li>  </ul>  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3787,6 +4281,8 @@ Defines the issuer URL to be used for OpenID Connect.  This issuer MUST support 
 ### alpine.oidc.team.synchronization
 
 This option will ensure that team memberships for OpenID Connect users are dynamic and  synchronized with membership of OpenID Connect groups or assigned roles. When a team is  mapped to an OpenID Connect group, all local OpenID Connect users will automatically be  assigned to the team if they are a member of the group the team is mapped to. If the user  is later removed from the OpenID Connect group, they will also be removed from the team. This  option provides the ability to dynamically control user permissions via the identity provider.  Note that team synchronization is only performed during user provisioning and after successful  authentication.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3816,6 +4312,8 @@ This option will ensure that team memberships for OpenID Connect users are dynam
 
 Defines the name of the claim that contains group memberships or role assignments in the provider's userinfo endpoint.  The claim must be an array of strings, or a comma-delimited string. Most public identity providers do not support group or role management.  When using a customizable / on-demand hosted identity provider, name, content, and inclusion in the userinfo endpoint  will most likely need to be configured.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3844,6 +4342,8 @@ Defines the name of the claim that contains group memberships or role assignment
 
 Specifies if mapped OpenID Connect accounts are automatically created upon successful  authentication. When a user logs in with a valid access token but an account has  not been previously provisioned, an authentication failure will be returned.  This allows admins to control specifically which OpenID Connect users can access the  system and which users cannot. When this value is set to true, a local OpenID Connect  user will be created and mapped to the OpenID Connect account automatically. This  automatic provisioning only affects authentication, not authorization.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3871,6 +4371,8 @@ Specifies if mapped OpenID Connect accounts are automatically created upon succe
 ### alpine.oidc.username.claim
 
 Defines the name of the claim that contains the username in the provider's userinfo endpoint.  Common claims are `name`, `username`, `preferred_username` or `nickname`.  See also:  <ul>  <li>https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse</li>  </ul>  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3901,6 +4403,8 @@ Defines the name of the claim that contains the username in the provider's useri
 ### file.storage.default.extension
 
 Defines the file storage extension to use.  When not set, an enabled extension will be chosen based on its priority.  It is recommended to explicitly configure an extension for predictable behavior.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -3934,6 +4438,8 @@ Defines the file storage extension to use.  When not set, an enabled extension w
 
 Defines the zstd compression level to use.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3966,6 +4472,8 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
 
 Defines the local directory where files shall be stored.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -3993,6 +4501,8 @@ Defines the local directory where files shall be stored.  Has no effect unless [
 ### file.storage.extension.local.enabled
 
 Whether the local file storage extension shall be enabled.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4022,6 +4532,8 @@ Whether the local file storage extension shall be enabled.
 
 Whether the in-memory file storage extension shall be enabled.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4049,6 +4561,8 @@ Whether the in-memory file storage extension shall be enabled.
 ### file.storage.extension.s3.access.key
 
 Defines the S3 access key / username.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4078,6 +4592,8 @@ Defines the S3 access key / username.  Has no effect unless [`file.storage.exten
 
 Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup,  even when S3 is not configured as default extension.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4105,6 +4621,8 @@ Defines the name of the S3 bucket.  The existence of the bucket will be verified
 ### file.storage.extension.s3.compression.level
 
 Defines the zstd compression level to use.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4138,6 +4656,8 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
 
 Whether the s3 file storage extension shall be enabled.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4165,6 +4685,8 @@ Whether the s3 file storage extension shall be enabled.
 ### file.storage.extension.s3.endpoint
 
 Defines the S3 endpoint URL.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4194,6 +4716,8 @@ Defines the S3 endpoint URL.  Has no effect unless [`file.storage.extension.s3.e
 
 Defines the region of the S3 bucket.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4221,6 +4745,8 @@ Defines the region of the S3 bucket.  Has no effect unless [`file.storage.extens
 ### file.storage.extension.s3.secret.key
 
 Defines the S3 secret key / password.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4252,6 +4778,8 @@ Defines the S3 secret key / password.  Has no effect unless [`file.storage.exten
 
 Defines a multiplier that is used to calculate the number of threads used  by the event subsystem. This property is only used when [`alpine.worker.threads`](#alpineworkerthreads)  is set to 0. A machine with 4 cores and a multiplier of 4, will use (at most)  16 worker threads.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4279,6 +4807,8 @@ Defines a multiplier that is used to calculate the number of threads used  by th
 ### alpine.worker.threads
 
 Defines the number of worker threads that the event subsystem will consume.  Events occur asynchronously and are processed by the Event subsystem. This  value should be large enough to handle most production situations without  introducing much delay, yet small enough not to pose additional load on an  already resource-constrained server.  A value of 0 will instruct Alpine to allocate 1 thread per CPU core. This  can further be tweaked using the [`alpine.worker.thread.multiplier`](#alpineworkerthreadmultiplier) property.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4310,6 +4840,8 @@ Defines the number of worker threads that the event subsystem will consume.  Eve
 
 Cron expression of the component metadata maintenance task.  <br/><br/>  The task deletes orphaned records from the `INTEGRITY_META_COMPONENT` and  `REPOSITORY_META_COMPONENT` tables.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4337,6 +4869,8 @@ Cron expression of the component metadata maintenance task.  <br/><br/>  The tas
 ### task.component.metadata.maintenance.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the component metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4366,6 +4900,8 @@ Maximum duration in ISO 8601 format for which the component metadata maintenance
 
 Minimum duration in ISO 8601 format for which the component metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4393,6 +4929,8 @@ Minimum duration in ISO 8601 format for which the component metadata maintenance
 ### task.defect.dojo.upload.cron
 
 Cron expression of the DefectDojo upload task.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4422,6 +4960,8 @@ Cron expression of the DefectDojo upload task.
 
 Cron expression of the EPSS mirroring task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4449,6 +4989,8 @@ Cron expression of the EPSS mirroring task.
 ### task.epss.mirror.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the EPSS mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4478,6 +5020,8 @@ Maximum duration in ISO 8601 format for which the EPSS mirror task will hold a l
 
 Minimum duration in ISO 8601 format for which the EPSS mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4505,6 +5049,8 @@ Minimum duration in ISO 8601 format for which the EPSS mirror task will hold a l
 ### task.fortify.ssc.upload.cron
 
 Cron expression of the Fortify SSC upload task.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4534,6 +5080,8 @@ Cron expression of the Fortify SSC upload task.
 
 Cron expression of the vulnerability GitHub Advisories mirroring task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4561,6 +5109,8 @@ Cron expression of the vulnerability GitHub Advisories mirroring task.
 ### task.git.hub.advisory.mirror.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the GitHub mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4590,6 +5140,8 @@ Maximum duration in ISO 8601 format for which the GitHub mirror task will hold a
 
 Minimum duration in ISO 8601 format for which the GitHub mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4617,6 +5169,8 @@ Minimum duration in ISO 8601 format for which the GitHub mirror task will hold a
 ### task.integrity.meta.initializer.cron
 
 Cron expression of the integrity metadata initializer task.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4646,6 +5200,8 @@ Cron expression of the integrity metadata initializer task.
 
 Maximum duration in ISO 8601 format for which the integrity metadata initializer task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4673,6 +5229,8 @@ Maximum duration in ISO 8601 format for which the integrity metadata initializer
 ### task.integrity.meta.initializer.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the integrity metadata initializer task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4702,6 +5260,8 @@ Minimum duration in ISO 8601 format for which the integrity metadata initializer
 
 Cron expression of the internal component identification task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4729,6 +5289,8 @@ Cron expression of the internal component identification task.
 ### task.internal.component.identification.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the internal component identification task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4758,6 +5320,8 @@ Maximum duration in ISO 8601 format for which the internal component identificat
 
 Minimum duration in ISO 8601 format for which the internal component identification task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4785,6 +5349,8 @@ Minimum duration in ISO 8601 format for which the internal component identificat
 ### task.kenna.security.upload.cron
 
 Cron expression of the Kenna Security upload task.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4814,6 +5380,8 @@ Cron expression of the Kenna Security upload task.
 
 Cron expression of the LDAP synchronization task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4841,6 +5409,8 @@ Cron expression of the LDAP synchronization task.
 ### task.ldap.sync.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the LDAP synchronization task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4870,6 +5440,8 @@ Maximum duration in ISO 8601 format for which the LDAP synchronization task will
 
 Minimum duration in ISO 8601 format for which the LDAP synchronization task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4897,6 +5469,8 @@ Minimum duration in ISO 8601 format for which the LDAP synchronization task will
 ### task.metrics.maintenance.cron
 
 Cron expression of the metrics maintenance task.  <br/><br/>  The task creates new partitions for the day for the following tables  And deletes records older than the configured metrics retention duration from the following tables:  <ul>  <li><code>DEPENDENCYMETRICS</code></li>  <li><code>PROJECTMETRICS</code></li>  </ul>  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4926,6 +5500,8 @@ Cron expression of the metrics maintenance task.  <br/><br/>  The task creates n
 
 Maximum duration in ISO 8601 format for which the metrics maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4953,6 +5529,8 @@ Maximum duration in ISO 8601 format for which the metrics maintenance task will 
 ### task.metrics.maintenance.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the metrics maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -4982,6 +5560,8 @@ Minimum duration in ISO 8601 format for which the metrics maintenance task will 
 
 Cron expression of the NIST / NVD mirroring task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5009,6 +5589,8 @@ Cron expression of the NIST / NVD mirroring task.
 ### task.nist.mirror.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the NIST mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5038,6 +5620,8 @@ Maximum duration in ISO 8601 format for which the NIST mirror task will hold a l
 
 Minimum duration in ISO 8601 format for which the NIST mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5065,6 +5649,8 @@ Minimum duration in ISO 8601 format for which the NIST mirror task will hold a l
 ### task.osv.mirror.cron
 
 Cron expression of the OSV mirroring task.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5094,6 +5680,8 @@ Cron expression of the OSV mirroring task.
 
 Maximum duration in ISO 8601 format for which the OSV mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5121,6 +5709,8 @@ Maximum duration in ISO 8601 format for which the OSV mirror task will hold a lo
 ### task.osv.mirror.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the OSV mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5150,6 +5740,8 @@ Minimum duration in ISO 8601 format for which the OSV mirror task will hold a lo
 
 Cron expression of the portfolio metrics update task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5177,6 +5769,8 @@ Cron expression of the portfolio metrics update task.
 ### task.portfolio.metrics.update.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the portfolio metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5206,6 +5800,8 @@ Maximum duration in ISO 8601 format for which the portfolio metrics update task 
 
 Minimum duration in ISO 8601 format for which the portfolio metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5233,6 +5829,8 @@ Minimum duration in ISO 8601 format for which the portfolio metrics update task 
 ### task.project.maintenance.cron
 
 Cron expression of the project maintenance task.  <br/><br/>  The task deletes inactive projects based on retention policy.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5262,6 +5860,8 @@ Cron expression of the project maintenance task.  <br/><br/>  The task deletes i
 
 Maximum duration in ISO 8601 format for which the project maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5289,6 +5889,8 @@ Maximum duration in ISO 8601 format for which the project maintenance task will 
 ### task.project.maintenance.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the project maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5318,6 +5920,8 @@ Minimum duration in ISO 8601 format for which the project maintenance task will 
 
 Cron expression of the portfolio repository metadata analysis task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5345,6 +5949,8 @@ Cron expression of the portfolio repository metadata analysis task.
 ### task.repository.meta.analysis.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the portfolio repository metadata analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5374,6 +5980,8 @@ Maximum duration in ISO 8601 format for which the portfolio repository metadata 
 
 Minimum duration in ISO 8601 format for which the portfolio repository metadata analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5401,6 +6009,8 @@ Minimum duration in ISO 8601 format for which the portfolio repository metadata 
 ### task.scheduler.initial.delay
 
 Scheduling tasks after 3 minutes (3*60*1000) of starting application  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5430,6 +6040,8 @@ Scheduling tasks after 3 minutes (3*60*1000) of starting application
 
 Cron expressions for tasks have the precision of minutes so polling every minute  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5457,6 +6069,8 @@ Cron expressions for tasks have the precision of minutes so polling every minute
 ### task.tag.maintenance.cron
 
 Cron expression of the tag maintenance task.  <br/><br/>  The task deletes orphaned tags that are not used anymore.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5486,6 +6100,8 @@ Cron expression of the tag maintenance task.  <br/><br/>  The task deletes orpha
 
 Maximum duration in ISO 8601 format for which the tag maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5513,6 +6129,8 @@ Maximum duration in ISO 8601 format for which the tag maintenance task will hold
 ### task.tag.maintenance.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the tag maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5542,6 +6160,8 @@ Minimum duration in ISO 8601 format for which the tag maintenance task will hold
 
 Cron expression of the portfolio vulnerability analysis task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5569,6 +6189,8 @@ Cron expression of the portfolio vulnerability analysis task.
 ### task.vulnerability.analysis.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the portfolio vulnerability analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5598,6 +6220,8 @@ Maximum duration in ISO 8601 format for which the portfolio vulnerability analys
 
 Minimum duration in ISO 8601 format for which the portfolio vulnerability analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5625,6 +6249,8 @@ Minimum duration in ISO 8601 format for which the portfolio vulnerability analys
 ### task.vulnerability.database.maintenance.cron
 
 Cron expression of the vulnerability database maintenance task.  <br/><br/>  The task deletes orphaned records from the `VULNERABLESOFTWARE` table.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5654,6 +6280,8 @@ Cron expression of the vulnerability database maintenance task.  <br/><br/>  The
 
 Maximum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5681,6 +6309,8 @@ Maximum duration in ISO 8601 format for which the vulnerability database mainten
 ### task.vulnerability.database.maintenance.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5710,6 +6340,8 @@ Minimum duration in ISO 8601 format for which the vulnerability database mainten
 
 Cron expression of the vulnerability metrics update task.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5737,6 +6369,8 @@ Cron expression of the vulnerability metrics update task.
 ### task.vulnerability.metrics.update.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the vulnerability metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5766,6 +6400,8 @@ Maximum duration in ISO 8601 format for which the vulnerability metrics update t
 
 Minimum duration in ISO 8601 format for which the vulnerability metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5793,6 +6429,8 @@ Minimum duration in ISO 8601 format for which the vulnerability metrics update t
 ### task.vulnerability.policy.fetch.cron
 
 Cron expression of the vulnerability policy bundle fetch task.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5822,6 +6460,8 @@ Cron expression of the vulnerability policy bundle fetch task.
 
 Maximum duration in ISO 8601 format for which the vulnerability policy bundle fetch task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5849,6 +6489,8 @@ Maximum duration in ISO 8601 format for which the vulnerability policy bundle fe
 ### task.vulnerability.policy.fetch.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the vulnerability policy bundle fetch task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5878,6 +6520,8 @@ Minimum duration in ISO 8601 format for which the vulnerability policy bundle fe
 
 Cron expression of the vulnerability scan maintenance task.  <br/><br/>  The task deletes records older than the configured retention duration from the `VULNERABILITYSCAN` table.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5905,6 +6549,8 @@ Cron expression of the vulnerability scan maintenance task.  <br/><br/>  The tas
 ### task.vulnerability.scan.maintenance.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5934,6 +6580,8 @@ Maximum duration in ISO 8601 format for which the vulnerability database mainten
 
 Minimum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -5961,6 +6609,8 @@ Minimum duration in ISO 8601 format for which the vulnerability database mainten
 ### task.workflow.maintenance.cron
 
 Cron expression of the workflow maintenance task.  <br/><br/>  The task:  <ul>  <li>Transitions workflow steps from <code>PENDING</code> to <code>TIMED_OUT</code> state</li>  <li>Transitions workflow steps from <code>TIMED_OUT</code> to <code>FAILED</code> state</li>  <li>Transitions children of <code>FAILED</code> steps to <code>CANCELLED</code> state</li>  <li>Deletes finished workflows according to the configured retention duration</li>  </ul>  
+
+
 
 <table>
   <tbody style="border: 0">
@@ -5990,6 +6640,8 @@ Cron expression of the workflow maintenance task.  <br/><br/>  The task:  <ul>  
 
 Maximum duration in ISO 8601 format for which the workflow maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
+
+
 <table>
   <tbody style="border: 0">
     <tr>
@@ -6017,6 +6669,8 @@ Maximum duration in ISO 8601 format for which the workflow maintenance task will
 ### task.workflow.maintenance.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the workflow maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
 
 <table>
   <tbody style="border: 0">
