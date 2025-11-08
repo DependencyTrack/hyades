@@ -114,9 +114,10 @@ services:
       # i.e. longer runtime and larger heaps. Provide JVM options that are more
       # suitable for one-off executions with fewer available resources.
       JAVA_OPTIONS: "-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
-      INIT_TASKS_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
-      INIT_TASKS_DATABASE_USERNAME: "dtrack"
-      INIT_TASKS_DATABASE_PASSWORD: "dtrack"
+      DT_DATASOURCE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
+      DT_DATASOURCE_USERNAME: "dtrack"
+      DT_DATASOURCE_PASSWORD: "dtrack"
+      DT_DATASOURCE_POOL_ENABLED: "false"
       INIT_AND_EXIT: "true"
     restart: on-failure
 
@@ -138,9 +139,9 @@ services:
       # which can cause problems on some workstations.
       # For production deployments, the default should be used.
       EXTRA_JAVA_OPTIONS: "-Xmx2g"
-      ALPINE_DATABASE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack?reWriteBatchedInserts=true"
-      ALPINE_DATABASE_USERNAME: "dtrack"
-      ALPINE_DATABASE_PASSWORD: "dtrack"
+      DT_DATASOURCE_URL: "jdbc:postgresql://dt-postgres:5432/dtrack?reWriteBatchedInserts=true"
+      DT_DATASOURCE_USERNAME: "dtrack"
+      DT_DATASOURCE_PASSWORD: "dtrack"
       ALPINE_METRICS_ENABLED: "true"
       ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
       KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"

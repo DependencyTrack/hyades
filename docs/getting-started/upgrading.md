@@ -1,6 +1,29 @@
 ### Upgrading to 0.7.0
 
 * The minimum supported PostgreSQL version has been raised from 13 to 14 ([hyades/#1910]).
+* Various database configurations in the API server have been deprecated:
+
+    | Before                              | After                                |
+    |:------------------------------------|:-------------------------------------|
+    | `alpine.database.url`               | `dt.datasource.url`                  |
+    | `alpine.database.username`          | `dt.datasource.username`             |
+    | `alpine.database.password`          | `dt.datasource.password`             |
+    | `alpine.database.password.file`     | `dt.datasource.password-file`        |
+    | `alpine.database.pool.enabled`      | `dt.datasource.pool.enabled`         |
+    | `alpine.database.pool.max.size`     | `dt.datasource.pool.max-size`        |
+    | `alpine.database.pool.min.idle`     | `dt.datasource.pool.min-idle`        |
+    | `alpine.database.pool.idle.timeout` | `dt.datasource.pool.idle-timeout-ms` |
+    | `alpine.database.pool.max.lifetime` | `dt.datasource.pool.max-lifetime-ms` |
+
+* For this version, the `dt.datasource.*` configurations default to their `alpine.database.*`
+  counterparts. Existing deployments should continue to function without changes.
+  However, support for `alpine.database.*` configs will be removed prior to the GA release.
+* The following init task configurations have been removed and replaced with `init.tasks.datasource.name`:
+    * `init.tasks.database.url`
+    * `init.tasks.database.username`
+    * `init.tasks.database.password`
+* Refer to the [schema migrations](../operations/database.md#schema-migrations) documentation
+  for an example of how to run init tasks with separate database credentials. 
 
 ### Upgrading to 0.6.0
 

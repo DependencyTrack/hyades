@@ -11,6 +11,11 @@
 
 {{ property.description }}
 
+{% if property.deprecated -%}
+!!! warning "Deprecated"
+    {{ property.deprecated }}
+{% endif %}
+
 <table>
   <tbody style="border: 0">
     <tr>
