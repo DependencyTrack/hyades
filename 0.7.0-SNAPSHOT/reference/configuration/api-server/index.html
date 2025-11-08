@@ -1842,27 +1842,99 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#inittasksdatabasepassword" class="md-nav__link">
+  <a href="#dtdatasourcepassword" class="md-nav__link">
     <span class="md-ellipsis">
-      init.tasks.database.password
+      dt.datasource.password
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#inittasksdatabaseurl" class="md-nav__link">
+  <a href="#dtdatasourcepassword-file" class="md-nav__link">
     <span class="md-ellipsis">
-      init.tasks.database.url
+      dt.datasource.password-file
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#inittasksdatabaseusername" class="md-nav__link">
+  <a href="#dtdatasourcepoolenabled" class="md-nav__link">
     <span class="md-ellipsis">
-      init.tasks.database.username
+      dt.datasource.pool.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdatasourcepoolidle-timeout-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.datasource.pool.idle-timeout-ms
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdatasourcepoolmax-lifetime-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.datasource.pool.max-lifetime-ms
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdatasourcepoolmax-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.datasource.pool.max-size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdatasourcepoolmin-idle" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.datasource.pool.min-idle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdatasourceurl" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.datasource.url
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdatasourceusername" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.datasource.username
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inittasksdatasourceclose-after-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.tasks.datasource.close-after-use
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inittasksdatasourcename" class="md-nav__link">
+    <span class="md-ellipsis">
+      init.tasks.datasource.name
     </span>
   </a>
   
@@ -1932,15 +2004,6 @@
   <a href="#devservicesportkafka" class="md-nav__link">
     <span class="md-ellipsis">
       dev.services.port.kafka
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#devservicesportpostgres" class="md-nav__link">
-    <span class="md-ellipsis">
-      dev.services.port.postgres
     </span>
   </a>
   
@@ -4134,6 +4197,10 @@
 <h2 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h2>
 <h3 id="alpinedatabasepassword">alpine.database.password<a class="headerlink" href="#alpinedatabasepassword" title="Permanent link">&para;</a></h3>
 <p>Specifies the password to use when authenticating to the database.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourcepassword"><code>dt.datasource.password</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4158,6 +4225,10 @@
 <hr />
 <h3 id="alpinedatabasepasswordfile">alpine.database.password.file<a class="headerlink" href="#alpinedatabasepasswordfile" title="Permanent link">&para;</a></h3>
 <p>Specifies the file to load the database password from.  If set, takes precedence over <a href="#alpinedatabasepassword"><code>alpine.database.password</code></a>.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourcepassword"><code>dt.datasource.password</code></a>-file instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4186,6 +4257,10 @@
 <hr />
 <h3 id="alpinedatabasepoolenabled">alpine.database.pool.enabled<a class="headerlink" href="#alpinedatabasepoolenabled" title="Permanent link">&para;</a></h3>
 <p>Specifies if the database connection pool is enabled.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourcepoolenabled"><code>dt.datasource.pool.enabled</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4210,6 +4285,10 @@
 <hr />
 <h3 id="alpinedatabasepoolidletimeout">alpine.database.pool.idle.timeout<a class="headerlink" href="#alpinedatabasepoolidletimeout" title="Permanent link">&para;</a></h3>
 <p>This property controls the maximum amount of time that a connection is  allowed to sit idle in the pool.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourcepoolidle-timeout-ms"><code>dt.datasource.pool.idle-timeout-ms</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4234,6 +4313,10 @@
 <hr />
 <h3 id="alpinedatabasepoolmaxlifetime">alpine.database.pool.max.lifetime<a class="headerlink" href="#alpinedatabasepoolmaxlifetime" title="Permanent link">&para;</a></h3>
 <p>This property controls the maximum lifetime of a connection in the pool.  An in-use connection will never be retired, only when it is closed will  it then be removed.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourcepoolmax-lifetime-ms"><code>dt.datasource.pool.max-lifetime-ms</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4258,6 +4341,10 @@
 <hr />
 <h3 id="alpinedatabasepoolmaxsize">alpine.database.pool.max.size<a class="headerlink" href="#alpinedatabasepoolmaxsize" title="Permanent link">&para;</a></h3>
 <p>This property controls the maximum size that the pool is allowed to reach,  including both idle and in-use connections.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourcepoolmax-size"><code>dt.datasource.pool.max-size</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4282,6 +4369,10 @@
 <hr />
 <h3 id="alpinedatabasepoolminidle">alpine.database.pool.min.idle<a class="headerlink" href="#alpinedatabasepoolminidle" title="Permanent link">&para;</a></h3>
 <p>This property controls the minimum number of idle connections in the pool.  This value should be equal to or less than <a href="#alpinedatabasepoolmaxsize"><code>alpine.database.pool.max.size</code></a>.  Warning: If the value is less than <a href="#alpinedatabasepoolmaxsize"><code>alpine.database.pool.max.size</code></a>,  <a href="#alpinedatabasepoolidletimeout"><code>alpine.database.pool.idle.timeout</code></a> will have no effect.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourcepoolmin-idle"><code>dt.datasource.pool.min-idle</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4306,11 +4397,15 @@
 <hr />
 <h3 id="alpinedatabaseurl">alpine.database.url<a class="headerlink" href="#alpinedatabaseurl" title="Permanent link">&para;</a></h3>
 <p>Specifies the JDBC URL to use when connecting to the database.  For best performance, set the <code>reWriteBatchedInserts</code> query parameter to <code>true</code>.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourceurl"><code>dt.datasource.url</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
       <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
+      <td style="border-width: 0">false</td>
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
@@ -4334,6 +4429,10 @@
 <hr />
 <h3 id="alpinedatabaseusername">alpine.database.username<a class="headerlink" href="#alpinedatabaseusername" title="Permanent link">&para;</a></h3>
 <p>Specifies the username to use when authenticating to the database.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtdatasourceusername"><code>dt.datasource.username</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4356,8 +4455,8 @@
 </table>
 
 <hr />
-<h3 id="inittasksdatabasepassword">init.tasks.database.password<a class="headerlink" href="#inittasksdatabasepassword" title="Permanent link">&para;</a></h3>
-<p>Defines the database password for executing init tasks.  If not set, the value of <a href="#alpinedatabasepassword"><code>alpine.database.password</code></a> will be used.  </p>
+<h3 id="dtdatasourcepassword">dt.datasource.password<a class="headerlink" href="#dtdatasourcepassword" title="Permanent link">&para;</a></h3>
+<p>Defines the password to use for the default data source.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4374,14 +4473,14 @@
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_PASSWORD</code></td>
+      <td style="border-width: 0"><code>DT_DATASOURCE_PASSWORD</code></td>
     </tr>
   </tbody>
 </table>
 
 <hr />
-<h3 id="inittasksdatabaseurl">init.tasks.database.url<a class="headerlink" href="#inittasksdatabaseurl" title="Permanent link">&para;</a></h3>
-<p>Defines the database JDBC URL to use when executing init tasks.  If not set, the value of <a href="#alpinedatabaseurl"><code>alpine.database.url</code></a> will be used.  Should generally not be set, unless TLS authentication is used,  and custom connection variables are required.  </p>
+<h3 id="dtdatasourcepassword-file">dt.datasource.password-file<a class="headerlink" href="#dtdatasourcepassword-file" title="Permanent link">&para;</a></h3>
+<p>Defines the location of the file to load the password for the default data source from.  If set, takes precedence over <a href="#dtdatasourcepassword"><code>dt.datasource.password</code></a>.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4394,18 +4493,166 @@
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>${alpine.database.url}</code></td>
+      <td style="border-width: 0"><code>${alpine.database.password.file}</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_URL</code></td>
+      <td style="border-width: 0"><code>DT_DATASOURCE_PASSWORD_FILE</code></td>
     </tr>
   </tbody>
 </table>
 
 <hr />
-<h3 id="inittasksdatabaseusername">init.tasks.database.username<a class="headerlink" href="#inittasksdatabaseusername" title="Permanent link">&para;</a></h3>
-<p>Defines the database user for executing init tasks.  If not set, the value of <a href="#alpinedatabaseusername"><code>alpine.database.username</code></a> will be used.  </p>
+<h3 id="dtdatasourcepoolenabled">dt.datasource.pool.enabled<a class="headerlink" href="#dtdatasourcepoolenabled" title="Permanent link">&para;</a></h3>
+<p>Defines whether connection pooling is enabled for the default data source.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.enabled}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdatasourcepoolidle-timeout-ms">dt.datasource.pool.idle-timeout-ms<a class="headerlink" href="#dtdatasourcepoolidle-timeout-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the maximum time in milliseconds that a connection is allowed to sit idle in the pool.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.idle.timeout}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_IDLE_TIMEOUT_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdatasourcepoolmax-lifetime-ms">dt.datasource.pool.max-lifetime-ms<a class="headerlink" href="#dtdatasourcepoolmax-lifetime-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the maximum time in milliseconds for which connections should be kept in the pool for the default data source.  Required when <a href="#dtdatasourcepoolenabled"><code>dt.datasource.pool.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.max.lifetime}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_MAX_LIFETIME_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdatasourcepoolmax-size">dt.datasource.pool.max-size<a class="headerlink" href="#dtdatasourcepoolmax-size" title="Permanent link">&para;</a></h3>
+<p>Defines the maximum size of the connection pool for the default data source.  Required when <a href="#dtdatasourcepoolenabled"><code>dt.datasource.pool.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.max.size}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_MAX_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdatasourcepoolmin-idle">dt.datasource.pool.min-idle<a class="headerlink" href="#dtdatasourcepoolmin-idle" title="Permanent link">&para;</a></h3>
+<p>Defines the minimum number of idle connections in the pool for the default data source.  Required when <a href="#dtdatasourcepoolenabled"><code>dt.datasource.pool.enabled</code></a> is <code>true</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.pool.min.idle}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_POOL_MIN_IDLE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdatasourceurl">dt.datasource.url<a class="headerlink" href="#dtdatasourceurl" title="Permanent link">&para;</a></h3>
+<p>Defines the JDBC URL to use for the default data source.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.database.url}</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Example</th>
+      <td style="border-width: 0"><code>jdbc:postgresql://localhost:5432/dtrack?reWriteBatchedInserts=true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DATASOURCE_URL</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdatasourceusername">dt.datasource.username<a class="headerlink" href="#dtdatasourceusername" title="Permanent link">&para;</a></h3>
+<p>Defines the username to use for the default data source.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -4422,7 +4669,55 @@
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INIT_TASKS_DATABASE_USERNAME</code></td>
+      <td style="border-width: 0"><code>DT_DATASOURCE_USERNAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="inittasksdatasourceclose-after-use">init.tasks.datasource.close-after-use<a class="headerlink" href="#inittasksdatasourceclose-after-use" title="Permanent link">&para;</a></h3>
+<p>Defines whether the data source used by init tasks should be closed  after all tasks completed. This is useful when a non-default data source  was configured, that is not used anywhere else.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASKS_DATASOURCE_CLOSE_AFTER_USE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="inittasksdatasourcename">init.tasks.datasource.name<a class="headerlink" href="#inittasksdatasourcename" title="Permanent link">&para;</a></h3>
+<p>Defines the name of the data source to be used by init tasks.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>default</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASKS_DATASOURCE_NAME</code></td>
     </tr>
   </tbody>
 </table>
@@ -4567,30 +4862,6 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DEV_SERVICES_PORT_KAFKA</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="devservicesportpostgres">dev.services.port.postgres<a class="headerlink" href="#devservicesportpostgres" title="Permanent link">&para;</a></h3>
-<p>The port on which the PostgreSQL dev services container shall be exposed on the host.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>5432</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DEV_SERVICES_PORT_POSTGRES</code></td>
     </tr>
   </tbody>
 </table>
