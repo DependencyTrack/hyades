@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/001-drop-kafka-dependency/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/usage/secret-management/overview/">
       
       
-        <link rel="prev" href="../000-index/">
+        <link rel="prev" href="../../policy-compliance/expressions/">
       
       
-        <link rel="next" href="../002-workflow-orchestration/">
+        <link rel="next" href="../providers/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>ADR-001: Drop Kafka Dependency - Hyades</title>
+        <title>Overview - Hyades</title>
       
     
     
@@ -57,11 +57,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="ADR-001: Drop Kafka Dependency - Hyades" >
+        <meta  property="og:title"  content="Overview - Hyades" >
       
         <meta  property="og:description"  content="None" >
       
-        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/001-drop-kafka-dependency.png" >
+        <meta  property="og:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/usage/secret-management/overview.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -69,15 +69,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/architecture/decisions/001-drop-kafka-dependency/" >
+        <meta  property="og:url"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/usage/secret-management/overview/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="ADR-001: Drop Kafka Dependency - Hyades" >
+        <meta  name="twitter:title"  content="Overview - Hyades" >
       
         <meta  name="twitter:description"  content="None" >
       
-        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/architecture/decisions/001-drop-kafka-dependency.png" >
+        <meta  name="twitter:image"  content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/usage/secret-management/overview.png" >
       
     
     
@@ -100,7 +100,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#context" class="md-skip">
+        <a href="#creating-secrets" class="md-skip">
           Skip to content
         </a>
       
@@ -140,7 +140,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ADR-001: Drop Kafka Dependency
+              Overview
             
           </span>
         </div>
@@ -268,6 +268,8 @@
   
   
   
+    
+  
   
     
     
@@ -275,11 +277,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../usage/policy-compliance/overview/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../policy-compliance/overview/" class="md-tabs__link">
           
   
   
@@ -298,13 +302,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
           
   
   
@@ -593,24 +595,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -623,7 +630,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Usage
@@ -678,7 +685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/policy-compliance/overview/" class="md-nav__link">
+      <a href="../../policy-compliance/overview/" class="md-nav__link">
         
   
   
@@ -701,7 +708,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/policy-compliance/expressions/" class="md-nav__link">
+      <a href="../../policy-compliance/expressions/" class="md-nav__link">
         
   
   
@@ -729,6 +736,8 @@
                 
   
   
+    
+  
   
   
     
@@ -739,11 +748,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
@@ -759,7 +768,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             Secret Management
@@ -770,10 +779,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../usage/secret-management/overview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -784,6 +813,60 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Secrets
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#updating-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Updating Secrets
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deleting-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deleting Secrets
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Secrets
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -796,7 +879,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/secret-management/providers/" class="md-nav__link">
+      <a href="../providers/" class="md-nav__link">
         
   
   
@@ -831,29 +914,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -866,7 +944,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Architecture
@@ -880,7 +958,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../architecture/" class="md-nav__link">
         
   
   
@@ -900,8 +978,6 @@
                 
   
   
-    
-  
   
   
     
@@ -912,11 +988,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
@@ -932,7 +1008,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             Decisions
@@ -946,7 +1022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../000-index/" class="md-nav__link">
+      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
         
   
   
@@ -966,30 +1042,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    ADR-001: Drop Kafka Dependency
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -1000,84 +1056,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      Context
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Context">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#how-kafka-is-currently-used" class="md-nav__link">
-    <span class="md-ellipsis">
-      How Kafka is currently used
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#issues-and-limitations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Issues and limitations
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#possible-solutions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Possible Solutions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      Decision
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      Consequences
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1090,7 +1068,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../002-workflow-orchestration/" class="md-nav__link">
+      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -1113,7 +1091,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../003-notification-publishing/" class="md-nav__link">
+      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -1136,7 +1114,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../004-file-storage-plugin/" class="md-nav__link">
+      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -1159,7 +1137,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../../../architecture/decisions/005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -1182,7 +1160,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../../../architecture/decisions/006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1205,7 +1183,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../007-spec-first-rest-api-v2/" class="md-nav__link">
+      <a href="../../../architecture/decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1228,7 +1206,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../009-auth-and-roles/" class="md-nav__link">
+      <a href="../../../architecture/decisions/009-auth-and-roles/" class="md-nav__link">
         
   
   
@@ -1251,7 +1229,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../010-vulnerability-datasource-extension-point/" class="md-nav__link">
+      <a href="../../../architecture/decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
         
   
   
@@ -1274,7 +1252,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../011-notification-outbox/" class="md-nav__link">
+      <a href="../../../architecture/decisions/011-notification-outbox/" class="md-nav__link">
         
   
   
@@ -1297,7 +1275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../012-extension-kv-store/" class="md-nav__link">
+      <a href="../../../architecture/decisions/012-extension-kv-store/" class="md-nav__link">
         
   
   
@@ -1369,7 +1347,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/workflow-state-tracking/" class="md-nav__link">
+      <a href="../../../architecture/design/workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -2006,7 +1984,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/001-drop-kafka-dependency.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/usage/secret-management/overview.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2014,175 +1992,71 @@
   
 
 
-  <h1>ADR-001: Drop Kafka Dependency</h1>
+  <h1>Overview</h1>
 
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Status</th>
-<th style="text-align: left;">Date</th>
-<th style="text-align: left;">Author(s)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Proposed</td>
-<td style="text-align: left;">2025-01-07</td>
-<td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
-</tr>
-</tbody>
-</table>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
-<h3 id="how-kafka-is-currently-used">How Kafka is currently used<a class="headerlink" href="#how-kafka-is-currently-used" title="Permanent link">&para;</a></h3>
-<p>As of hyades version 0.6.0, Kafka is used for the following purposes:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This feature is still being developed. While you can already <em>manage</em> secrets,
+you cannot <em>use</em> them anywhere yet.</p>
+</div>
+<p>Dependency-Track integrates with various 3rd party systems,
+most of which require some sort of credential to authenticate
+with them: API keys, passwords, or access tokens. Such secrets
+must be stored securely to prevent leakage.</p>
+<p>While injecting secrets via environment variables or files is possible
+and very common, it has a significant downside: it requires applications
+to be restarted, leading to undesirable downtime.</p>
+<p>To address this issue, Dependency-Track offers a mechanism for centralized
+secret management. Changes made here become immediately available to all
+nodes in a cluster, without the need to restart them.</p>
+<p>Depending on the capabilities of the configured <a href="../providers/">provider</a>,
+secrets can be <a href="#creating-secrets">created</a>, <a href="#updating-secrets">updated</a>,
+and <a href="#deleting-secrets">deleted</a>.</p>
+<p><img alt="Secret management overview" src="../images/secret-management-overview.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>It is not possible to <em>view</em> the value of secrets after they have been created.
+Secrets are decrypted by the platform as needed, but never disclosed via
+REST API or user interface.</p>
+</div>
+<h2 id="creating-secrets">Creating Secrets<a class="headerlink" href="#creating-secrets" title="Permanent link">&para;</a></h2>
+<p>Users with the <code>SECRET_MANAGEMENT</code> or <code>SECRET_MANAGEMENT_CREATE</code> permission
+can create new secrets by clicking the <em>Create</em> button. This will open a
+dialogue asking for the following information:</p>
 <ul>
-<li><strong>Notification dispatching</strong>. Each notification type has its own Kafka topic. The <code>notification-publisher</code> service
-  is responsible for consuming from those topics, and publishing notifications based on the configured rules,
-  i.e. sending Slack messages or Webhooks. Because Kafka does not delete messages after consumption, notifications
-  can be consumed by multiple clients, and replayed if necessary. Given a consistent message key, Kafka can further
-  guarantee message ordering.</li>
-<li><strong>Vulnerability mirroring</strong>. Vulnerability records downloaded from the NVD and other sources are not immediately
-  written to the database. Instead, they are sent to a <a href="https://docs.confluent.io/kafka/design/log_compaction.html">compacted Kafka topic</a>, from where they are consumed and ingested.
-  Kafka acts as a firehose that allows ingestion to be performed at a steady rate, without overloading the database.</li>
-<li><strong>Vulnerability analysis</strong>. The API server publishes a record for each to-be-analyzed component to Kafka.
-  The <code>vulnerability-analyzer</code> service consumes from this topic, scans each component with all configured scanners,
-  and publishes the results to a separate Kafka topic. The results topic is consumed by the API server,
-  which is responsible for ingesting them into the database. Analysis makes heavy use of stream processing techniques
-  to improve performance. The full process is documented <a href="https://github.com/DependencyTrack/hyades/blob/8f1dd4cb4e02c8b4b646217ddd006ef81490cdec/vulnerability-analyzer/README.md#how-it-works">here</a>.</li>
-<li><strong>Repository metadata analysis</strong>. Similar to vulnerability analysis, but for component metadata such as latest
-  available versions, publish timestamps, and hashes. The process is documented <a href="https://github.com/DependencyTrack/hyades/tree/8f1dd4cb4e02c8b4b646217ddd006ef81490cdec/repository-meta-analyzer#how-it-works">here</a>.</li>
+<li>A unique name for the secret</li>
+<li>The value of the secret</li>
+<li>An optional description</li>
 </ul>
-<p>The Kafka ecosystem is huge, and there exist many managed offerings for it. Over the recent years, many more
-projects and products were released that implement the Kafka protocol, giving users more choice.
-Operating Kafka has gotten easier, both due to the many new implementations, and because Kafka has dropped
-the previously mandatory ZooKeeper dependency.</p>
-<p>Message throughput is fantastic. Durability and ordering guarantees are great.</p>
-<h3 id="issues-and-limitations">Issues and limitations<a class="headerlink" href="#issues-and-limitations" title="Permanent link">&para;</a></h3>
+<p><img alt="Create secret dialogue" src="../images/create-secret.png" /></p>
+<h2 id="updating-secrets">Updating Secrets<a class="headerlink" href="#updating-secrets" title="Permanent link">&para;</a></h2>
+<p>Users with the <code>SECRET_MANAGEMENT</code> or <code>SECRET_MANAGEMENT_UPDATE</code> permission
+can update existing secrets by clicking the <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M352.9 21.2 308 66.1 445.9 204l44.9-44.9c13.6-13.5 21.2-31.9 21.2-51.1s-7.6-37.6-21.2-51.1l-35.7-35.7C441.6 7.6 423.2 0 404 0s-37.6 7.6-51.1 21.2M274.1 100 58.9 315.1c-10.7 10.7-18.5 24.1-22.6 38.7L.9 481.6c-2.3 8.3 0 17.3 6.2 23.4s15.1 8.5 23.4 6.2l127.8-35.5c14.6-4.1 27.9-11.8 38.7-22.6l215-215.2z"/></svg></span> button
+in the <em>Actions</em> column of the secret. This will open a dialogue asking for
+the following information:</p>
 <ul>
-<li><strong>Retries</strong>. Kafka does not yet support ACKs or NACKs of individual messages. It works with log offsets,
-  making it difficult to implement fine-grained retry mechanisms for individual failed messages,
-  without complex client-side solutions. Hyades implements retries using <a href="https://kafka.apache.org/39/documentation/streams/core-concepts#streams_state">Kafka Streams state stores</a>,
-  or by leveraging <a href="https://github.com/confluentinc/parallel-consumer">Confluent Parallel Consumer</a>. With <a href="https://cwiki.apache.org/confluence/display/KAFKA/KIP-932%3A+Queues+for+Kafka">KIP-932</a>, native ACKs of individual messages are on the horizon.</li>
-<li><strong>Prioritization</strong>. Kafka is an append-only log, and as such does not support prioritization of messages.
-  Prioritization is required to ensure that actions triggered by users or clients take precedence over scheduled ones.
-  <a href="https://www.confluent.io/blog/prioritize-messages-in-kafka/">Implementing prioritization on top of Kafka primitives</a>
-  is complex and inflexible. <a href="https://cwiki.apache.org/confluence/display/KAFKA/KIP-932%3A+Queues+for+Kafka">KIP-932</a> does not cover priorities. The lack of prioritization can <em>partly</em> be compensated
-  by ensuring high throughput of the system, which Kafka <em>does</em> support. But it's not a sustainable solution.</li>
-<li><strong>Message sizes</strong>. Kafka has a default message size limit of <code>1 MiB</code>. We observed notifications and vulnerability
-  analysis results growing larger than <code>1 MiB</code>, even when compressed. The size limit can be increased on a per-topic basis,
-  but it comes with a performance penalty. We further found that some organizations disallow increasing size limits
-  entirely to limit impact on other teams sharing the same brokers.</li>
-<li><strong>End-to-end observability</strong>. Tracking message flow and workflow progress across multiple topics and services
-  requires dedicated monitoring for logs, metrics, and traces. This raises the barrier to entry for operating
-  Dependency-Track clusters, and complicates debugging of issues and development. Relying solely on a PubSub broker like
-  Kafka or DT v4's internal message bus promotes <a href="https://microservices.io/patterns/data/saga.html#example-choreography-based-saga">choreography</a> over <a href="https://microservices.io/patterns/data/saga.html#example-orchestration-based-saga">orchestration</a>. Choreography makes processes
-  increasingly hard to understand and follow. The initial <a href="../../design/workflow-state-tracking/">workflow state tracking</a> implementation attempted to lessen
-  the pain, but the logic being scattered across all choreography participants is not helpful.</li>
-<li><strong>Spotty support for advanced Kafka features</strong>. Kafka comes with advanced features like transactions, compacted topics,
-  and more. We found that support for these is very spotty across alternative implementations (in particular transactions).
-  Further, we received feedback that organizations that operate shared Kafka clusters may prohibit usage of compacted
-  topics. With only bare-bones features left available, the argument for Kafka becomes a lot less compelling.</li>
-<li><strong>Topic management</strong>. Partitions are what enables parallelism for Kafka consumers. The number of partitions must
-  be decided before topics are created. Increasing partitions later is possible, decreasing is not. Adding partitions
-  impacts ordering guarantees and can be tricky to coordinate. In order to leverage stream processing techniques,
-  some topics must be <a href="https://www.confluent.io/blog/co-partitioning-in-kafka-streams/">co-partitioned</a>. 
-  Generic tooling around topic management, comparable to database migration tooling, is severely lacking,
-  making it hard to maintain for a diverse user base. Vendor-specific tooling is available,
-  such as <a href="https://strimzi.io/docs/operators/latest/overview#overview-concepts-topic-operator-str">Strimzi's topic operator</a>.</li>
-<li><strong>Community support</strong>. Running an additional piece of infrastructure ourselves is one thing. Supporting a whole
-  community in doing that correctly and efficiently is another. Unfortunately there is no single deployment
-  or configuration that works for everyone. We don't have dedicated support staff and need to be pragmatic about
-  what we can realistically support. Requiring Kafka doesn't help.</li>
+<li>The new secret value</li>
+<li>An optional description</li>
 </ul>
-<p>In summary, <em>Kafka on its own provides not enough benefit for us to justify its usage</em>.</p>
-<p>We hoped it would help in more areas, but ended up realizing that working around these issues required even more
-additional overhead and infrastructure to address. Which is not sustainable, given we already spent <a href="https://boringtechnology.club/#17">innovation tokens</a>
-on Kafka itself, and have limited team capacities.</p>
-<h3 id="possible-solutions">Possible Solutions<a class="headerlink" href="#possible-solutions" title="Permanent link">&para;</a></h3>
-<h4 id="a-replace-kafka-for-another-message-broker">A: Replace Kafka for another message broker<a class="headerlink" href="#a-replace-kafka-for-another-message-broker" title="Permanent link">&para;</a></h4>
-<p>We could replace Kafka with another, more lightweight broker, like <a href="https://activemq.apache.org/">ActiveMQ</a>, <a href="https://www.rabbitmq.com/">RabbitMQ</a>, <a href="https://nats.io/">NATS</a>, or <a href="https://redis.io/">Redis</a>.</p>
-<p><a href="https://activemq.apache.org/">ActiveMQ</a> and <a href="https://www.rabbitmq.com/">RabbitMQ</a> support <a href="https://www.amqp.org/">AMQP</a> and <a href="https://en.wikipedia.org/wiki/Jakarta_Messaging">JMS</a> as common messaging protocols.
-Managed offerings are widely available, both for these specific brokers, and alternative <a href="https://www.amqp.org/">AMQP</a> implementations.</p>
-<p><a href="https://nats.io/">NATS</a> is capable to cater to the widest range of use cases, but managed offerings are mainly limited to
-one vendor (<a href="https://www.synadia.com/">Synadia</a>). Realistically, users would need to maintain their own clusters.
-<a href="https://docs.nats.io/nats-concepts/jetstream">NATS JetStream</a> can provide Kafka-like semantics, but also work queues, key-value and object stores.
-While its protocols are public and well-documented, there are currently no alternative server implementations. </p>
-<p><a href="https://redis.io/">Redis</a> provides data structures for classic queues (i.e. lists) and priority queues (i.e. sorted sets).
-It can act as publish-subscribe broker, although it only provides at-most-once delivery guarantees there.</p>
-<p><em>Pro</em>:</p>
-<ol>
-<li><a href="https://www.amqp.org/">AMQP</a>-compatible brokers come with support for retries and prioritization built-in.</li>
-<li><a href="https://nats.io/">NATS</a> could also be used as blob storage.</li>
-<li><a href="https://redis.io/">Redis</a> could also be used for caching.</li>
-</ol>
-<p><em>Con</em>:</p>
-<ol>
-<li>Still requires an additional dependency.</li>
-<li>Still inherits many of the issues we have with Kafka (i.e. topic / queue management, e2e observability).</li>
-<li>We don't have expertise in configuring and operating any of these.</li>
-<li>Fully managed offerings are more scarce, especially <a href="https://nats.io/">NATS</a>.</li>
-<li>Following a license change in 2024, the <a href="https://redis.io/">Redis</a> ecosystem has become fragmented. <a href="https://redis.io/">Redis</a> itself is no longer
-   permissively licensed. Forks like <a href="https://valkey.io/">ValKey</a> exist, but the whole situation is concerning.</li>
-</ol>
-<h4 id="b-use-an-in-memory-data-grid">B: Use an in-memory data grid<a class="headerlink" href="#b-use-an-in-memory-data-grid" title="Permanent link">&para;</a></h4>
-<p>In-memory data grids (IMDGs) are a popular option for various use cases in the JVM ecosystem,
-including messaging. Prominent solutions in this space include <a href="https://hazelcast.com/">Hazelcast</a>, <a href="https://ignite.apache.org/use-cases/in-memory-data-grid.html">Ignite</a>, and <a href="https://infinispan.org/">Infinispan</a>.</p>
-<p>IMDGs could further be combined with frameworks such as Eclipse <a href="https://vertx.io/">Vert.x</a>, which use them for clustering.</p>
-<p><em>Pro</em>:</p>
-<ol>
-<li>Could also be used for caching.</li>
-</ol>
-<p><em>Con</em>:</p>
-<ol>
-<li>Most IMDGs still require a central server and are thus not necessarily simpler than a normal message broker.</li>
-<li>No managed offering in any major cloud(?).</li>
-<li>We only have very limited experience in configuring and operating any of these.</li>
-<li>Except Hazelcast, only very limited support for advanced data structures like priority queues.</li>
-<li>Upgrades are tricky to coordinate and require downtime. Rolling upgrades are a paid feature in Hazelcast.</li>
-</ol>
-<h4 id="c-just-use-postgres">C: Just use Postgres<a class="headerlink" href="#c-just-use-postgres" title="Permanent link">&para;</a></h4>
-<p>We already decided to focus entirely on Postgres for our database. We dropped support for H2, MSSQL, and MySQL
-as a result. This decision opens up a lot more possibilities when it comes to other parts of the stack.</p>
-<p>Solutions like <a href="https://www.jobrunr.io/en/">JobRunr</a>, <a href="https://hatchet.run/">Hatchet</a>, <a href="https://getoban.pro/">Oban</a>, <a href="https://github.com/tembo-io/pgmq">pgmq</a>, <a href="https://riverqueue.com/">River</a>, and <a href="https://github.com/rails/solid_queue">Solid Queue</a> demonstrate that building
-queues or queue-like systems on a RDBMSes <em>and Postgres specifically</em> is viable.</p>
-<p>Running such workloads on a database does not necessarily mean that the database must be shared
-with the core application. It <em>can</em> be done for smaller deployments to keep complexity low,
-but larger deployments can simply leverage a separate database.</p>
-<p>Both architecture and operations are simpler, even if more database servers were to be involved.</p>
-<p>Database migrations are well understood, easy to test and to automate. With Liquibase, we already have
-great tooling in our stack.</p>
-<p>Organizations that are able to provision and support a Postgres database for the core application will
-also have an easier time to provision more instances if needed, versus having to procure another technology altogether.</p>
-<p>Postgres is also a lot more common than any of the message brokers or IMDGs.</p>
-<p>Performance-wise, messaging and queueing is not our main bottleneck. Since all asynchronous operations involve
-access to a database or external service anyway, raw message throughput is not a primary performance driver for us.</p>
-<p>Impact on database performance can be reduced by sizing units of work a little bigger. For example, processing
-all components of a project in a single task, rather than each component individually. Fewer writes and fewer
-transactions lead to more headroom.</p>
-<p><em>Pro</em>:</p>
-<ol>
-<li>Drastically simplified tech stack. Easier to develop with and to support.</li>
-<li>We already have expertise in configuration and operation.</li>
-<li>Abundance of managed offerings across wide range of vendors.</li>
-<li>Retries, priorities, observability are easier to implement with a strongly consistent SQL database.</li>
-<li>Migrations are simpler, we already have tooling for it.</li>
-<li>More flexible: If we have special needs for queueing, we can just build it ourselves,
-   rather than adopting yet another technology, or implementing more workarounds.</li>
-</ol>
-<p><em>Con</em>:</p>
-<ol>
-<li>Will not scale as far as Kafka or other dedicated brokers could.</li>
-<li>We're binding ourselves more to one specific technology.</li>
-</ol>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<p>We propose to follow solution <strong>C</strong>. Go all-in on Postgres.</p>
-<p>TODO: Update with final decision.</p>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Functionalities that currently rely on Kafka will need to be re-architected for Postgres.</li>
-<li>Since we already have a few adopters of hyades, the transition will need to be gradual.</li>
-<li>We need a Kafka <a href="https://github.com/DependencyTrack/hyades/blob/main/notification-publisher/src/main/java/org/dependencytrack/notification/publisher/Publisher.java">notification publisher</a> to ensure that users relying on this functionality are not cut off.</li>
-</ul>
+<p><img alt="Update secret dialogue" src="../images/update-secret.png" /></p>
+<p>Leaving the <em>value</em> input empty will cause the existing value to remain
+unchanged. If a new value is provided, the old value is unrecoverably
+overwritten.</p>
+<h2 id="deleting-secrets">Deleting Secrets<a class="headerlink" href="#deleting-secrets" title="Permanent link">&para;</a></h2>
+<p>Users with the <code>SECRET_MANAGEMENT</code> or <code>SECRET_MANAGEMENT_DELETE</code> permission
+can delete existing secrets by clicking the <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M136.7 5.9C141.1-7.2 153.3-16 167.1-16H281c13.8 0 26 8.8 30.4 21.9L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64s14.3-32 32-32h96zM32 144h384v304c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64zm88 64c-13.3 0-24 10.7-24 24v192c0 13.3 10.7 24 24 24s24-10.7 24-24V232c0-13.3-10.7-24-24-24m104 0c-13.3 0-24 10.7-24 24v192c0 13.3 10.7 24 24 24s24-10.7 24-24V232c0-13.3-10.7-24-24-24m104 0c-13.3 0-24 10.7-24 24v192c0 13.3 10.7 24 24 24s24-10.7 24-24V232c0-13.3-10.7-24-24-24"/></svg></span> button
+in the <em>Actions</em> column of the secret. This will open a dialogue asking for
+confirmation.</p>
+<p><img alt="Delete secret dialogue" src="../images/delete-secret.png" /></p>
+<p>Deleted secrets cannot be restored. Proceed with caution.</p>
+<h2 id="using-secrets">Using Secrets<a class="headerlink" href="#using-secrets" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is not yet implemented.</p>
+</div>
+<p>It will be possible to securely reference secrets in configuration using expressions, e.g.:</p>
+<div class="language-jinja highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">{{</span> <span class="nv">secret</span><span class="o">(</span><span class="s1">&#39;OSSINDEX_API_KEY&#39;</span><span class="o">)</span> <span class="cp">}}</span>
+</span></code></pre></div></td></tr></table></div>
 
 
 
