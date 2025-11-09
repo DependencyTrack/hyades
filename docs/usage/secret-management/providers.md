@@ -49,9 +49,11 @@ on startup. Alternatively, a [manually created keyset](#creating-kek-keysets)
 may be provided.
 
 The KEK keyset uses [Google Tink]'s JSON serialization,
-and is not encrypted itself. For production deployments, it is thus strongly
-recommended to mount the KEK at runtime using [Kubernetes secrets] or
-similar mechanisms.
+and is not encrypted itself. For production deployments,
+it is thus **critical** to mount the KEK keyset at runtime using
+[Kubernetes secrets] or similar mechanisms, and ensure that
+the keyset file is only readable by the application user.
+Refer to [Creating KEK Keysets](#creating-kek-keysets) for an example.
 
 !!! note
     [Google Tink] [supports](https://developers.google.com/tink/key-management-overview#create_kek)
