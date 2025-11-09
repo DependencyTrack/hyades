@@ -1174,7 +1174,7 @@ Defines the path to the data directory. This directory will hold logs,  keys, an
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>~/.dependency-track</code></td>
+      <td style="border-width: 0"><code>${user.home}/.dependency-track</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -4391,6 +4391,222 @@ Defines the name of the claim that contains the username in the provider's useri
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_OIDC_USERNAME_CLAIM</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+## Secrets
+
+### dt.secret-management.cache.enabled
+
+Defines whether secret caching should be enabled.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_CACHE_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.secret-management.cache.expire-after-write-ms
+
+Defines the duration in milliseconds for which secrets should be cached.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>60000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_CACHE_EXPIRE_AFTER_WRITE_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.secret-management.cache.max-size
+
+Defines the maximum number of secrets to keep in the cache.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_CACHE_MAX_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.secret-management.database.datasource.name
+
+Defines the name of the data source to be used by the database secret manager.  <br/><br/>  Required when [`dt.secret-management.provider`](#dtsecret-managementprovider) is `database`.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>default</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_DATABASE_DATASOURCE_NAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.secret-management.database.kek-keyset.create-if-missing
+
+Defines whether a key encryption keyset should be created if it doesn't already exist.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_DATABASE_KEK_KEYSET_CREATE_IF_MISSING</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.secret-management.database.kek-keyset.path
+
+Defines the path to the key encryption keyset to use for the database secret manager.  <br/><br/>  Required when [`dt.secret-management.provider`](#dtsecret-managementprovider) is `database`.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.data.directory}/keys/secret-management-kek.json</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_DATABASE_KEK_KEYSET_PATH</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.secret-management.provider
+
+Defines the secret management type to use.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[database]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>database</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_PROVIDER</code></td>
     </tr>
   </tbody>
 </table>
