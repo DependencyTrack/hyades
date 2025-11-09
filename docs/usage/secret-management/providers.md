@@ -10,7 +10,7 @@ need any of them.
 
 The default provider, which stores secrets in the `SECRET` database table.
 
-Secrets are encrypted using [AES-GCM-128]. 
+Secrets are encrypted using [AES-GCM-128].
 The provider implements [envelope encryption] to enable [key rotation](#kek-rotation).
 All crypto operations are facilitated by [Google Tink].
 
