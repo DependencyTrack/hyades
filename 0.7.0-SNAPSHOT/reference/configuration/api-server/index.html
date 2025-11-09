@@ -3196,6 +3196,84 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secrets
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Secrets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dtsecret-managementcacheenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.secret-management.cache.enabled
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtsecret-managementcacheexpire-after-write-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.secret-management.cache.expire-after-write-ms
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtsecret-managementcachemax-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.secret-management.cache.max-size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtsecret-managementdatabasedatasourcename" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.secret-management.database.datasource.name
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtsecret-managementdatabasekek-keysetcreate-if-missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.secret-management.database.kek-keyset.create-if-missing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtsecret-managementdatabasekek-keysetpath" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.secret-management.database.kek-keyset.path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtsecret-managementprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      dt.secret-management.provider
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#storage" class="md-nav__link">
     <span class="md-ellipsis">
       Storage
@@ -5076,7 +5154,7 @@
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>~/.dependency-track</code></td>
+      <td style="border-width: 0"><code>${user.home}/.dependency-track</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -7603,6 +7681,178 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_OIDC_USERNAME_CLAIM</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="secrets">Secrets<a class="headerlink" href="#secrets" title="Permanent link">&para;</a></h2>
+<h3 id="dtsecret-managementcacheenabled">dt.secret-management.cache.enabled<a class="headerlink" href="#dtsecret-managementcacheenabled" title="Permanent link">&para;</a></h3>
+<p>Defines whether secret caching should be enabled.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_CACHE_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtsecret-managementcacheexpire-after-write-ms">dt.secret-management.cache.expire-after-write-ms<a class="headerlink" href="#dtsecret-managementcacheexpire-after-write-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the duration in milliseconds for which secrets should be cached.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>60000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_CACHE_EXPIRE_AFTER_WRITE_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtsecret-managementcachemax-size">dt.secret-management.cache.max-size<a class="headerlink" href="#dtsecret-managementcachemax-size" title="Permanent link">&para;</a></h3>
+<p>Defines the maximum number of secrets to keep in the cache.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_CACHE_MAX_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtsecret-managementdatabasedatasourcename">dt.secret-management.database.datasource.name<a class="headerlink" href="#dtsecret-managementdatabasedatasourcename" title="Permanent link">&para;</a></h3>
+<p>Defines the name of the data source to be used by the database secret manager.  <br/><br/>  Required when <a href="#dtsecret-managementprovider"><code>dt.secret-management.provider</code></a> is <code>database</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>default</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_DATABASE_DATASOURCE_NAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtsecret-managementdatabasekek-keysetcreate-if-missing">dt.secret-management.database.kek-keyset.create-if-missing<a class="headerlink" href="#dtsecret-managementdatabasekek-keysetcreate-if-missing" title="Permanent link">&para;</a></h3>
+<p>Defines whether a key encryption keyset should be created if it doesn't already exist.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_DATABASE_KEK_KEYSET_CREATE_IF_MISSING</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtsecret-managementdatabasekek-keysetpath">dt.secret-management.database.kek-keyset.path<a class="headerlink" href="#dtsecret-managementdatabasekek-keysetpath" title="Permanent link">&para;</a></h3>
+<p>Defines the path to the key encryption keyset to use for the database secret manager.  <br/><br/>  Required when <a href="#dtsecret-managementprovider"><code>dt.secret-management.provider</code></a> is <code>database</code>.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>${alpine.data.directory}/keys/secret-management-kek.json</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_DATABASE_KEK_KEYSET_PATH</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtsecret-managementprovider">dt.secret-management.provider<a class="headerlink" href="#dtsecret-managementprovider" title="Permanent link">&para;</a></h3>
+<p>Defines the secret management type to use.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[database]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>database</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_SECRET_MANAGEMENT_PROVIDER</code></td>
     </tr>
   </tbody>
 </table>
