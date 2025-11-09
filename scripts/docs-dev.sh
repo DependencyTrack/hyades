@@ -25,4 +25,4 @@ ROOT_DIR="$(cd -P -- "${SCRIPT_DIR}/.." && pwd -P)"
 docker run --rm -it -u "$(id -u):$(id -g)" --name hyades-docs \
   -p "127.0.0.1:8000:8000" \
   -v "${ROOT_DIR}:/docs" \
-  squidfunk/mkdocs-material
+  squidfunk/mkdocs-material serve --livereload -a '0.0.0.0:8000'

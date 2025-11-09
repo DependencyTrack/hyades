@@ -85,6 +85,9 @@ nav:
     - Policy Compliance:
         - Overview: usage/policy-compliance/overview.md
         - Expressions: usage/policy-compliance/expressions.md
+    - Secret Management:
+        - Overview: usage/secret-management/overview.md
+        - Providers: usage/secret-management/providers.md
 - Architecture:
     - Overview: architecture/index.md
     - Decisions:
