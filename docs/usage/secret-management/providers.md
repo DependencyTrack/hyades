@@ -54,7 +54,7 @@ recommended to mount the KEK at runtime using [Kubernetes secrets] or
 similar mechanisms.
 
 !!! note
-    [Google Tink] [supports](https://developers.google.com/tink/key-management-overview#create_kek) 
+    [Google Tink] [supports](https://developers.google.com/tink/key-management-overview#create_kek)
     a small selection of key management systems (KMS), which may be used to manage the KEK keyset.
     Dependency-Track does not yet leverage this capability. If this is important to you,
     please raise an enhancement request.
