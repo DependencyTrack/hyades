@@ -5142,6 +5142,96 @@ Minimum duration in ISO 8601 format for which the component metadata maintenance
 
 ---
 
+### task.csaf.mirror.cron
+
+Cron expression of the CSAF mirroring task.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0 5 * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_CSAF_MIRROR_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.csaf.mirror.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the CSAF mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_CSAF_MIRROR_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.csaf.mirror.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the CSAF mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_CSAF_MIRROR_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### task.defect.dojo.upload.cron
 
 Cron expression of the DefectDojo upload task.  
