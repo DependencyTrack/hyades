@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout project source
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # tag=v5.0.1
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # tag=v6.0.0
 
       # Scan code using project's configuration on https://semgrep.dev/manage
       - uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d # tag=v1
