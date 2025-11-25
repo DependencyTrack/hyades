@@ -46,7 +46,7 @@ jobs:
         repository: DependencyTrack/hyades-apiserver
         path: hyades-apiserver
     - name: Generate API Server Documentation
-      uses: jbangdev/jbang-action@b924849ade11dbfc3aace8da1c598a84fb3ddfbc # tag=v0.132.1
+      uses: jbangdev/jbang-action@2a297a02a2c41a95d0322daa7552d92697a040cb # tag=v0.134.2
       with:
         trust: https://github.com/DependencyTrack/jbang-catalog
         script: gen-config-docs@DependencyTrack
@@ -55,7 +55,7 @@ jobs:
           --output ./docs/reference/configuration/api-server.md
           ./hyades-apiserver/apiserver/src/main/resources/application.properties
     - name: Generate Repository Metadata Analyzer Documentation
-      uses: jbangdev/jbang-action@b924849ade11dbfc3aace8da1c598a84fb3ddfbc # tag=v0.132.1
+      uses: jbangdev/jbang-action@2a297a02a2c41a95d0322daa7552d92697a040cb # tag=v0.134.2
       with:
         trust: https://github.com/DependencyTrack/jbang-catalog
         script: gen-config-docs@DependencyTrack
