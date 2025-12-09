@@ -39,14 +39,14 @@ jobs:
     if: "${{ github.repository_owner == 'DependencyTrack' }}"
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # tag=v5.0.1
+      uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # tag=v6.0.0
     - name: Checkout API Server Repository
-      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # tag=v5.0.1
+      uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # tag=v6.0.0
       with:
         repository: DependencyTrack/hyades-apiserver
         path: hyades-apiserver
     - name: Generate API Server Documentation
-      uses: jbangdev/jbang-action@b924849ade11dbfc3aace8da1c598a84fb3ddfbc # tag=v0.132.1
+      uses: jbangdev/jbang-action@2a297a02a2c41a95d0322daa7552d92697a040cb # tag=v0.134.2
       with:
         trust: https://github.com/DependencyTrack/jbang-catalog
         script: gen-config-docs@DependencyTrack
@@ -55,7 +55,7 @@ jobs:
           --output ./docs/reference/configuration/api-server.md
           ./hyades-apiserver/apiserver/src/main/resources/application.properties
     - name: Generate Repository Metadata Analyzer Documentation
-      uses: jbangdev/jbang-action@b924849ade11dbfc3aace8da1c598a84fb3ddfbc # tag=v0.132.1
+      uses: jbangdev/jbang-action@2a297a02a2c41a95d0322daa7552d92697a040cb # tag=v0.134.2
       with:
         trust: https://github.com/DependencyTrack/jbang-catalog
         script: gen-config-docs@DependencyTrack
@@ -65,7 +65,7 @@ jobs:
           ./repository-meta-analyzer/src/main/resources/application.properties
     # TODO: Add script invocations for the other services here!
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # tag=v7.0.8
+      uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # tag=v7.0.9
       with:
         add-paths: "docs/reference/configuration/*.md"
         branch: update-config-docs
