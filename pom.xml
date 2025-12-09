@@ -74,7 +74,7 @@
     <lib.httpclient5.version>5.5</lib.httpclient5.version>
     <lib.java-uuid-generator.version>5.1.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>4.1.1</lib.json-unit.version>
-    <lib.kafka.version>3.9.0</lib.kafka.version>
+    <lib.kafka.version>4.0.0</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-rc-4</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.5.17</lib.minio.version>
@@ -86,11 +86,11 @@
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>4.32.0</lib.protobuf-java.version>
     <lib.quarkus-github-api.version>1.326.0</lib.quarkus-github-api.version>
-    <lib.quarkus-mailpit.version>1.8.0</lib.quarkus-mailpit.version>
+    <lib.quarkus-mailpit.version>2.0.0</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.8</lib.snappy-java.version>
     <lib.testcontainers-minio.version>1.21.3</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
-    <quarkus.platform.version>3.26.4</quarkus.platform.version>
+    <quarkus.platform.version>3.28.5</quarkus.platform.version>
     <quarkus.wiremock.version>1.5.2</quarkus.wiremock.version>
     <lib.brotli.version>0.1.2</lib.brotli.version>
     <lib.versatile.version>0.7.0</lib.versatile.version>
