@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+// Public API for DependencyTrack mirroring data.
+package org.dependencytrack.mirror.v1;
+
+option java_multiple_files = true;
+option java_package = "org.dependencytrack.proto.mirror.v1";
+
+message CsafDocumentItem {
+  string publisher_namespace = 1;
+  string tracking_id = 2;
+  string tracking_version = 3;
+  string name = 4;
+  optional string url = 5;
+  optional google.protobuf.Timestamp last_fetched = 6;
+  bytes json_content = 7;
+  bool seen = 8;
+}
