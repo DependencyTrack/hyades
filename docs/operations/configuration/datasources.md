@@ -71,10 +71,10 @@ its own pool of database connections. This works well for small to medium deploy
 Connection pooling can be configured using the following properties:
 
 * [`dt.datasource.<name>.pool.enabled`](../../reference/configuration/api-server.md#dtdatasourcepoolenabled)
-* [`dt.datasource.<name>.pool.url`](../../reference/configuration/api-server.md#dtdatasourceurl)
-* [`dt.datasource.<name>.pool.username`](../../reference/configuration/api-server.md#dtdatasourceusername)
-* [`dt.datasource.<name>.pool.password`](../../reference/configuration/api-server.md#dtdatasourcepassword)
-* [`dt.datasource.<name>.pool.password-file`](../../reference/configuration/api-server.md#dtdatasourcepassword-file)
+* [`dt.datasource.<name>.url`](../../reference/configuration/api-server.md#dtdatasourceurl)
+* [`dt.datasource.<name>.username`](../../reference/configuration/api-server.md#dtdatasourceusername)
+* [`dt.datasource.<name>.password`](../../reference/configuration/api-server.md#dtdatasourcepassword)
+* [`dt.datasource.<name>.password-file`](../../reference/configuration/api-server.md#dtdatasourcepassword-file)
 * [`dt.datasource.<name>.pool.max-size`](../../reference/configuration/api-server.md#dtdatasourcepoolmax-size)
 * [`dt.datasource.<name>.pool.min-idle`](../../reference/configuration/api-server.md#dtdatasourcepoolmin-idle)
 * [`dt.datasource.<name>.pool.max-lifetime-ms`](../../reference/configuration/api-server.md#dtdatasourcepoolmax-lifetime-ms)
