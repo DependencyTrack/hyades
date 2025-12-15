@@ -202,7 +202,7 @@ ALTER TABLE "COMPONENT" SET (AUTOVACUUM_VACUUM_SCALE_FACTOR = 0.02);
 at the expense of slightly worse compression ratios.
 
 Consider switching to lz4 if you're more likely to be limited
-by CPU utilisation that storage space.
+by CPU utilisation than storage space.
 
 ```sql
 ALTER SYSTEM SET (DEFAULT_TOAST_COMPRESSION = 'lz4');
