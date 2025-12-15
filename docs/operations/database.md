@@ -224,7 +224,7 @@ ALTER SYSTEM SET (DEFAULT_TOAST_COMPRESSION = 'lz4');
       <th style="text-align: right">References</th>
       <td style="border-width: 0">
         <ul>
-          <li><a href="https://postgresqlco.nf/doc/en/param/default_toast_compression/">Documentation</a></li>
+          <li><a href="https://postgresqlco.nf/doc/en/param/wal_compression/">Documentation</a></li>
           <li><a href="https://www.enterprisedb.com/blog/you-can-now-pick-your-favorite-compression-algorithm-your-wals">Comparison by EnterpriseDB</a></li>
           <li><a href="https://www.percona.com/blog/wal-compression-in-postgresql-and-recent-improvements-in-version-15/">Explanation by Percona</a></li>
         </ul>
