@@ -50,7 +50,7 @@ dt.datasource.secretmgt.password=secrets
 dt.datasource.secretmgt.pool.enabled=true
 dt.datasource.secretmgt.pool.max-size=5
 
-# Configure secret managment to use separate data source
+# Configure secret management to use separate data source
 dt.secret-management.provider=database
 dt.secret-management.database.datasource.name=secretmgt
 ```
