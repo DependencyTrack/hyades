@@ -1732,6 +1732,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#schema-migrations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2466,7 +2505,21 @@ See for example:</p>
 than the application containers. You want PostgreSQL to be able to leverage the entire machine's resources,
 without being impacted by other applications.</p>
 <p>For smaller and non-critical deployments, it is totally fine to run everything on a single machine.</p>
-<h4 id="basic-configuration">Basic Configuration<a class="headerlink" href="#basic-configuration" title="Permanent link">&para;</a></h4>
+<h4 id="upgrades">Upgrades<a class="headerlink" href="#upgrades" title="Permanent link">&para;</a></h4>
+<p>Follow the <a href="https://www.postgresql.org/docs/current/upgrading.html">official upgrading guide</a>. Be sure to select the version of the documentation that corresponds to the
+PostgreSQL version you are running.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Pay attention to the fact that <strong>major version upgrades usually require a backup-and-restore cycle</strong>, due to potentially
+breaking changes in the underlying data storage format. Minor version upgrades are usually safe to perform in a
+rolling manner.</p>
+</div>
+<h3 id="kubernetes">Kubernetes<a class="headerlink" href="#kubernetes" title="Permanent link">&para;</a></h3>
+<p>We generally advise <strong>against</strong> running PostgreSQL on Kubernetes, unless you <em>really</em> know what you're doing.
+Wielding heavy machinery such as <a href="https://github.com/zalando/postgres-operator">Postgres Operator</a> is not something you should do lightheartedly.</p>
+<p>If you know what you're doing, you definitely don't need advice from us. Smooth sailing! ⚓️</p>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<h3 id="basic">Basic<a class="headerlink" href="#basic" title="Permanent link">&para;</a></h3>
 <p>You should be aware that the default PostgreSQL configuration is <em>extremely</em> conservative.
 It is intended to make PostgreSQL usable on minimal hardware, which is great for testing,
 but can seriously cripple performance in production environments.
@@ -2487,7 +2540,7 @@ For example:</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="no">-c &#39;shared_buffers=2GB&#39;</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="no">-c &#39;effective_cache_size=6GB&#39;</span>
 </span></code></pre></div>
-<h4 id="advanced-configuration">Advanced Configuration<a class="headerlink" href="#advanced-configuration" title="Permanent link">&para;</a></h4>
+<h3 id="advanced">Advanced<a class="headerlink" href="#advanced" title="Permanent link">&para;</a></h3>
 <p>For larger deployments, you may eventually run into situations where database performance degrades
 with just the basic configuration applied. Oftentimes, tweaking advanced settings can resolve
 such problems. But knowing which knobs to turn is a challenge in itself.</p>
@@ -2501,7 +2554,7 @@ applied for certain tables.</p>
 <p>Got more tips to configure or tune PostgreSQL, that may be helpful to others?<br />
 We'd love to include it in the docs, please do raise a PR!</p>
 </div>
-<h5 id="autovacuum_vacuum_scale_factor">autovacuum_vacuum_scale_factor<a class="headerlink" href="#autovacuum_vacuum_scale_factor" title="Permanent link">&para;</a></h5>
+<h4 id="autovacuum_vacuum_scale_factor">autovacuum_vacuum_scale_factor<a class="headerlink" href="#autovacuum_vacuum_scale_factor" title="Permanent link">&para;</a></h4>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -2517,13 +2570,12 @@ We'd love to include it in the docs, please do raise a PR!</p>
       <td style="border-width: 0">
         <ul>
           <li><code>COMPONENT</code></li>
-          <li><code>DEPENDENCYMETRICS</code></li>
         </ul>
       </td>
     </tr>
     <tr>
       <th style="text-align: right">References</th>
-      <td style="border-width: 0"><a href="https://www.postgresql.org/docs/current/runtime-config-autovacuum.html#GUC-AUTOVACUUM-VACUUM-SCALE-FACTOR">Documentation</a></td>
+      <td style="border-width: 0"><a href="https://postgresqlco.nf/doc/en/param/autovacuum_vacuum_scale_factor/">Documentation</a></td>
     </tr>
   </tbody>
 </table>
@@ -2531,26 +2583,73 @@ We'd love to include it in the docs, please do raise a PR!</p>
 <p>The default causes <a href="https://www.postgresql.org/docs/current/routine-vacuuming.html">Autovacuum</a> to start way too late on large tables with lots of churn,
 yielding long execution times. Reduction in scale factor causes autovacuum to happen more often,
 making each execution less time-intensive.</p>
-<p>The <code>COMPONENT</code> and <code>DEPENDENCYMETRICS</code> table are very frequently inserted into, updated, and deleted from.
+<p>The <code>COMPONENT</code> table is very frequently inserted into, updated, and deleted from.
 This causes lots of dead tuples that PostgreSQL needs to clean up. Because autovacuum also performs
 <a href="https://www.postgresql.org/docs/current/sql-analyze.html"><code>ANALYZE</code></a>, slow vacuuming can cause the
 query planner to choose inefficient execution plans.</p>
 <div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="ss">&quot;COMPONENT&quot;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="p">(</span><span class="n">AUTOVACUUM_VACUUM_SCALE_FACTOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">02</span><span class="p">);</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="ss">&quot;DEPENDENCYMETRICS&quot;</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="p">(</span><span class="n">AUTOVACUUM_VACUUM_SCALE_FACTOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">02</span><span class="p">);</span>
 </span></code></pre></div>
-<h4 id="upgrades">Upgrades<a class="headerlink" href="#upgrades" title="Permanent link">&para;</a></h4>
-<p>Follow the <a href="https://www.postgresql.org/docs/current/upgrading.html">official upgrading guide</a>. Be sure to select the version of the documentation that corresponds to the
-PostgreSQL version you are running.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Pay attention to the fact that <strong>major version upgrades usually require a backup-and-restore cycle</strong>, due to potentially
-breaking changes in the underlying data storage format. Minor version upgrades are usually safe to perform in a
-rolling manor.</p>
-</div>
-<h3 id="kubernetes">Kubernetes<a class="headerlink" href="#kubernetes" title="Permanent link">&para;</a></h3>
-<p>We generally advise <strong>against</strong> running PostgreSQL on Kubernetes, unless you <em>really</em> know what you're doing.
-Wielding heavy machinery such as <a href="https://github.com/zalando/postgres-operator">Postgres Operator</a> is not something you should do lightheartedly.</p>
-<p>If you know what you're doing, you definitely don't need advice from us. Smooth sailing! ⚓️</p>
+<h4 id="default_toast_compression">default_toast_compression<a class="headerlink" href="#default_toast_compression" title="Permanent link">&para;</a></h4>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>pglz</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Recommendation</th>
+      <td style="border-width: 0"><code>lz4</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">References</th>
+      <td style="border-width: 0">
+        <ul>
+          <li><a href="https://postgresqlco.nf/doc/en/param/default_toast_compression/">Documentation</a></li>
+          <li><a href="https://www.postgresql.fastware.com/blog/what-is-the-new-lz4-toast-compression-in-postgresql-14">Comparison by Fujitsu</a></li>
+          <li><a href="https://www.tigerdata.com/blog/optimizing-postgresql-performance-compression-pglz-vs-lz4">Comparison by Tiger Data</a></li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code>lz4</code> compression is faster and more efficient than <code>pglz</code>,
+at the expense of slightly worse compression ratios.</p>
+<p>Consider switching to lz4 if you're more likely to be limited
+by CPU utilisation than storage space.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="p">(</span><span class="n">DEFAULT_TOAST_COMPRESSION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;lz4&#39;</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="wal_compression">wal_compression<a class="headerlink" href="#wal_compression" title="Permanent link">&para;</a></h4>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>off</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Recommendation</th>
+      <td style="border-width: 0"><code>lz4</code> or <code>zstd</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">References</th>
+      <td style="border-width: 0">
+        <ul>
+          <li><a href="https://postgresqlco.nf/doc/en/param/wal_compression/">Documentation</a></li>
+          <li><a href="https://www.enterprisedb.com/blog/you-can-now-pick-your-favorite-compression-algorithm-your-wals">Comparison by EnterpriseDB</a></li>
+          <li><a href="https://www.percona.com/blog/wal-compression-in-postgresql-and-recent-improvements-in-version-15/">Explanation by Percona</a></li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Enabling WAL compression significantly reduces I/O on write-heavy systems.
+The cost of slightly increased CPU utilisation is more than worth it.</p>
+<p>If your instance is importing BOMs in large volumes and / or high frequency,
+the WAL will fill up fast, and you'll find yourself limited by I/O.
+This is particularly true when using HDDs instead of SSDs or NVME storage.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">SYSTEM</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="p">(</span><span class="n">WAL_COMPRESSION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;zstd&#39;</span><span class="p">);</span>
+</span></code></pre></div>
 <h2 id="schema-migrations">Schema Migrations<a class="headerlink" href="#schema-migrations" title="Permanent link">&para;</a></h2>
 <p>Schema migrations are performed automatically by the API server upon startup. It leverages <a href="https://www.liquibase.com/">Liquibase</a> for doing so.
 There is usually no manual action required when upgrading from an older Dependency-Track version, unless explicitly
@@ -2559,27 +2658,27 @@ stated otherwise in the release notes.</p>
 on the API server container to <code>false</code>.</p>
 <p>It is possible to use different credentials for migrations than for the application itself.
 This can be achieved by configuring a separate data source, and instructing the init tasks to use it:</p>
-<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-2-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-2-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-2-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-2-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-2-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-2-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-2-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-2-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-2-10">10</a></span>
-<span class="normal"><a href="#__codelineno-2-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Configure a data source named &quot;init-tasks&quot;.</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="na">dt.datasource.init-tasks.url</span><span class="o">=</span><span class="s">jdbc:postgresql://localhost:5432/dtrack</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="na">dt.datasource.init-tasks.username</span><span class="o">=</span><span class="s">my-init-task-user</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="na">dt.datasource.init-tasks.password</span><span class="o">=</span><span class="s">my-init-task-pass</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="c1"># Configure init tasks to use the data source.</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="na">init.tasks.datasource.name</span><span class="o">=</span><span class="s">init-tasks</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8"></a>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="c1"># If the data source is only meant for init tasks, there is no need to</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1"># keep it around after the tasks completed.</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11"></a><span class="na">init.tasks.datasource.close-after-use</span><span class="o">=</span><span class="s">true</span>
+<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Configure a data source named &quot;init-tasks&quot;.</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="na">dt.datasource.init-tasks.url</span><span class="o">=</span><span class="s">jdbc:postgresql://localhost:5432/dtrack</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="na">dt.datasource.init-tasks.username</span><span class="o">=</span><span class="s">my-init-task-user</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="na">dt.datasource.init-tasks.password</span><span class="o">=</span><span class="s">my-init-task-pass</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="c1"># Configure init tasks to use the data source.</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="na">init.tasks.datasource.name</span><span class="o">=</span><span class="s">init-tasks</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="c1"># If the data source is only meant for init tasks, there is no need to</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="c1"># keep it around after the tasks completed.</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="na">init.tasks.datasource.close-after-use</span><span class="o">=</span><span class="s">true</span>
 </span></code></pre></div></td></tr></table></div>
 
 
