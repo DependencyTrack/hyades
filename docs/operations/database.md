@@ -75,7 +75,7 @@ PostgreSQL version you are running.
 !!! warning
     Pay attention to the fact that **major version upgrades usually require a backup-and-restore cycle**, due to potentially
     breaking changes in the underlying data storage format. Minor version upgrades are usually safe to perform in a
-    rolling manor.
+    rolling manner.
 
 ### Kubernetes
 
