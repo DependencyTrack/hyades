@@ -76,7 +76,7 @@
     <lib.kafka.version>4.1.1</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-rc-5</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
-    <lib.minio.version>8.5.17</lib.minio.version>
+    <lib.minio.version>8.6.0</lib.minio.version>
     <lib.open-feign.version>13.6</lib.open-feign.version>
     <lib.org-json.version>20250517</lib.org-json.version>
     <lib.pebble.version>4.0.0</lib.pebble.version>
