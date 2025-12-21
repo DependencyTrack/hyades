@@ -5142,7 +5142,7 @@ Minimum duration in ISO 8601 format for which the component metadata maintenance
 
 ---
 
-### task.csaf.mirror.cron
+### task.csaf.document.import.cron
 
 Cron expression of the CSAF mirroring task.  
 
@@ -5164,7 +5164,7 @@ Cron expression of the CSAF mirroring task.
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CSAF_MIRROR_CRON</code></td>
+      <td style="border-width: 0"><code>TASK_CSAF_DOCUMENT_IMPORT_CRON</code></td>
     </tr>
   </tbody>
 </table>
@@ -5172,7 +5172,7 @@ Cron expression of the CSAF mirroring task.
 
 ---
 
-### task.csaf.mirror.lock.max.duration
+### task.csaf.document.import.lock.max.duration
 
 Maximum duration in ISO 8601 format for which the CSAF mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
 
@@ -5194,7 +5194,7 @@ Maximum duration in ISO 8601 format for which the CSAF mirror task will hold a l
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CSAF_MIRROR_LOCK_MAX_DURATION</code></td>
+      <td style="border-width: 0"><code>TASK_CSAF_DOCUMENT_IMPORT_LOCK_MAX_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -5202,7 +5202,7 @@ Maximum duration in ISO 8601 format for which the CSAF mirror task will hold a l
 
 ---
 
-### task.csaf.mirror.lock.min.duration
+### task.csaf.document.import.lock.min.duration
 
 Minimum duration in ISO 8601 format for which the CSAF mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
 
@@ -5224,7 +5224,7 @@ Minimum duration in ISO 8601 format for which the CSAF mirror task will hold a l
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CSAF_MIRROR_LOCK_MIN_DURATION</code></td>
+      <td style="border-width: 0"><code>TASK_CSAF_DOCUMENT_IMPORT_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
