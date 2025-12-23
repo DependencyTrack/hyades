@@ -4598,7 +4598,7 @@ Defines the secret management type to use.
     </tr>
     <tr>
       <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[database]</code></td>
+      <td style="border-width: 0"><code>[database, env]</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
