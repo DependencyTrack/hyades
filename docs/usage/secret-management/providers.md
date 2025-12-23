@@ -304,7 +304,7 @@ DT_SECRET_GITHUB_TOKEN=foo
 # Picked up as secret "github_token":
 dt_secret_github_token=foo
 
-# NOT recoginized as secret due to missing prefix:
+# NOT recognized as secret due to missing prefix:
 GITHUB_TOKEN=foo
 ```
 
