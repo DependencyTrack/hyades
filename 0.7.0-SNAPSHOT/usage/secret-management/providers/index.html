@@ -968,6 +968,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Environment Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#caching" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2390,11 +2418,11 @@
   <h1>Providers</h1>
 
 <p>The secret management mechanism is designed to support different providers.</p>
-<p>While currently only the <a href="#database">database</a> provider is available,
-it is planned to also support external services, such as <a href="https://aws.amazon.com/secrets-manager/">AWS secrets manager</a>,
-<a href="https://azure.microsoft.com/en-us/products/key-vault">Azure Key Vault</a>, and <a href="https://www.hashicorp.com/en/products/vault">HashiCorp Vault</a> / <a href="https://openbao.org/">OpenBao</a>. Implementation of
-these options is driven by user demand, so please do let us know if you
-need any of them.</p>
+<p>While currently only the <a href="#database">database</a> and <a href="#environment-variables">environment variable</a>
+providers are available, it is planned to also support external services, such as <a href="https://aws.amazon.com/secrets-manager/">AWS secrets manager</a>,
+<a href="https://azure.microsoft.com/en-us/products/key-vault">Azure Key Vault</a>, and <a href="https://www.hashicorp.com/en/products/vault">HashiCorp Vault</a> / <a href="https://openbao.org/">OpenBao</a>. 
+Implementation of these options is driven by user demand, 
+so please do let us know if you need any of them.</p>
 <h2 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h2>
 <p>The default provider, which stores secrets in the <code>SECRET</code> database table.</p>
 <p>Secrets are encrypted using <a href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">AES-GCM-128</a>.
@@ -2408,6 +2436,10 @@ All crypto operations are facilitated by <a href="https://developers.google.com/
 <li><a href="../../../reference/configuration/api-server/#dtsecret-managementdatabasekek-keysetpath"><code>dt.secret-management.database.kek-keyset.path</code></a></li>
 <li><a href="../../../reference/configuration/api-server/#dtsecret-managementdatabasekek-keysetcreate-if-missing"><code>dt.secret-management.database.kek-keyset.create-if-missing</code></a></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Also refer to the <a href="../../../operations/configuration/datasources/">data source configuration</a> documentation.</p>
+</div>
 <h3 id="key-management">Key Management<a class="headerlink" href="#key-management" title="Permanent link">&para;</a></h3>
 <p>Encryption of secrets involves two types of keys:</p>
 <ul>
@@ -2704,6 +2736,48 @@ encrypted secrets in the database from being decrypted.
 Dependency-Track does not currently offer a mechanism to re-crypt existing
 secrets. If this is important to you, please raise an enhancement request.</p>
 </div>
+<h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
+<p>A simple provider that reads secrets from environment variables.
+This can be convenient for test deployments, when secrets rarely change,
+or when service availability is not critical.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This provider is <strong>read-only</strong>. Secrets are sourced from the environment
+<strong>once</strong> on startup. It is <strong>not</strong> possible to <em>add</em>, <em>update</em>, 
+or <em>remove</em> secrets at runtime. Changing secret values requires a restart
+of the Dependency-Track instance.</p>
+</div>
+<p>Environment variables must be prefixed with <code>DT_SECRET_</code> to be picked up by the
+provider. Casing of the prefix does not matter, however the casing <em>after</em> this
+prefix is taken as-is. For example:</p>
+<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1">1</a></span>
+<span class="normal"><a href="#__codelineno-12-2">2</a></span>
+<span class="normal"><a href="#__codelineno-12-3">3</a></span>
+<span class="normal"><a href="#__codelineno-12-4">4</a></span>
+<span class="normal"><a href="#__codelineno-12-5">5</a></span>
+<span class="normal"><a href="#__codelineno-12-6">6</a></span>
+<span class="normal"><a href="#__codelineno-12-7">7</a></span>
+<span class="normal"><a href="#__codelineno-12-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># Picked up as secret &quot;GITHUB_TOKEN&quot;:</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="na">DT_SECRET_GITHUB_TOKEN</span><span class="o">=</span><span class="s">foo</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="c1"># Picked up as secret &quot;github_token&quot;:</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="na">dt_secret_github_token</span><span class="o">=</span><span class="s">foo</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="c1"># NOT recognized as secret due to missing prefix:</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="na">GITHUB_TOKEN</span><span class="o">=</span><span class="s">foo</span>
+</span></code></pre></div></td></tr></table></div>
+<p>The provider logs the name of secrets it discovered on startup.
+It also emits a warning log message when it found no secrets at all.</p>
+<h3 id="configuration_1">Configuration<a class="headerlink" href="#configuration_1" title="Permanent link">&para;</a></h3>
+<p>The provider may be configured using the following properties:</p>
+<ul>
+<li><a href="../../../reference/configuration/api-server/#dtsecret-managementprovider"><code>dt.secret-management.provider</code></a></li>
+</ul>
+<details class="info">
+<summary>Example Configuration</summary>
+<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="na">dt.secret-management.provider</span><span class="o">=</span><span class="s">env</span>
+</span></code></pre></div></td></tr></table></div>
+</details>
 <h2 id="caching">Caching<a class="headerlink" href="#caching" title="Permanent link">&para;</a></h2>
 <p>To reduce provider load and improve performance, secret values can be cached
 in memory. This is configured via:</p>
