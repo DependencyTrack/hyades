@@ -1,10 +1,10 @@
 The secret management mechanism is designed to support different providers.
 
-While currently only the [database](#database) provider is available,
-it is planned to also support external services, such as [AWS secrets manager],
-[Azure Key Vault], and [HashiCorp Vault] / [OpenBao]. Implementation of
-these options is driven by user demand, so please do let us know if you
-need any of them.
+While currently only the [database](#database) and [environment variable](#environment-variables)
+providers are available, it is planned to also support external services, such as [AWS secrets manager],
+[Azure Key Vault], and [HashiCorp Vault] / [OpenBao]. 
+Implementation of these options is driven by user demand, 
+so please do let us know if you need any of them.
 
 ## Database
 
@@ -22,6 +22,9 @@ The provider may be configured using the following properties:
 * [`dt.secret-management.database.datasource.name`](../../reference/configuration/api-server.md#dtsecret-managementdatabasedatasourcename)
 * [`dt.secret-management.database.kek-keyset.path`](../../reference/configuration/api-server.md#dtsecret-managementdatabasekek-keysetpath)
 * [`dt.secret-management.database.kek-keyset.create-if-missing`](../../reference/configuration/api-server.md#dtsecret-managementdatabasekek-keysetcreate-if-missing)
+
+!!! note
+    Also refer to the [data source configuration](../../operations/configuration/datasources.md) documentation.
 
 ### Key Management
 
@@ -277,6 +280,47 @@ their DEKs will be encrypted with the new KEK.
     encrypted secrets in the database from being decrypted.
     Dependency-Track does not currently offer a mechanism to re-crypt existing
     secrets. If this is important to you, please raise an enhancement request.
+
+## Environment Variables
+
+A simple provider that reads secrets from environment variables.
+This can be convenient for test deployments, when secrets rarely change,
+or when service availability is not critical.
+
+!!! warning
+    This provider is **read-only**. Secrets are sourced from the environment
+    **once** on startup. It is **not** possible to *add*, *update*, 
+    or *remove* secrets at runtime. Changing secret values requires a restart
+    of the Dependency-Track instance.
+
+Environment variables must be prefixed with `DT_SECRET_` to be picked up by the
+provider. Casing of the prefix does not matter, however the casing *after* this
+prefix is taken as-is. For example:
+
+```ini linenums="1"
+# Picked up as secret "GITHUB_TOKEN":
+DT_SECRET_GITHUB_TOKEN=foo
+
+# Picked up as secret "github_token":
+dt_secret_github_token=foo
+
+# NOT recognized as secret due to missing prefix:
+GITHUB_TOKEN=foo
+```
+
+The provider logs the name of secrets it discovered on startup.
+It also emits a warning log message when it found no secrets at all.
+
+### Configuration
+
+The provider may be configured using the following properties:
+
+* [`dt.secret-management.provider`](../../reference/configuration/api-server.md#dtsecret-managementprovider)
+
+??? info "Example Configuration"
+    ```ini linenums="1"
+    dt.secret-management.provider=env
+    ```
 
 ## Caching
 
