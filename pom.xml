@@ -82,7 +82,7 @@
     <lib.pebble.version>4.0.0</lib.pebble.version>
     <lib.resilience4j.version>2.3.0</lib.resilience4j.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
-    <lib.protobuf-java.version>4.32.0</lib.protobuf-java.version>
+    <lib.protobuf-java.version>4.33.2</lib.protobuf-java.version>
     <lib.quarkus-github-api.version>1.330.0</lib.quarkus-github-api.version>
     <lib.quarkus-mailpit.version>2.0.0</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.8</lib.snappy-java.version>
