@@ -788,6 +788,66 @@ Defines the username to use for the default data source.
 
 ---
 
+### dt.dex-engine.datasource.name
+
+Defines the name of the data source to be used by the durable execution engine.  For larger deployments, it is recommended to use a separate,  non-default data source.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>default</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_DATASOURCE_NAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.migration.datasource.name
+
+Defines the name of the data source to use for executing database  migrations of the durable execution engine.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_MIGRATION_DATASOURCE_NAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### init.tasks.datasource.close-after-use
 
 Defines whether the data source used by init tasks should be closed  after all tasks completed. This is useful when a non-default data source  was configured, that is not used anywhere else.  
@@ -1023,6 +1083,488 @@ The port on which the Kafka dev services container shall be exposed on the host.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DEV_SERVICES_PORT_KAFKA</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+## Durable Execution
+
+### dt.dex-engine.activity-task-heartbeat-buffer.flush-interval-ms
+
+Defines the time in milliseconds between flushes of the activity task heartbeat buffer.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_TASK_HEARTBEAT_BUFFER_FLUSH_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-task-heartbeat-buffer.max-batch-size
+
+Defines the maximum number of items of the activity task heartbeat buffer.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_TASK_HEARTBEAT_BUFFER_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-task-scheduler.poll-interval-ms
+
+Defines the interval in milliseconds in which the activity task scheduler polls  for tasks to enqueue for execution.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_TASK_SCHEDULER_POLL_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.external-event-buffer.flush-interval-ms
+
+Defines the time in milliseconds between flushes of the external event buffer.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_EXTERNAL_EVENT_BUFFER_FLUSH_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.external-event-buffer.max-batch-size
+
+Defines the maximum number of items of the external event buffer.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_EXTERNAL_EVENT_BUFFER_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.leader-election.lease-check-interval-ms
+
+Defines the interval in milliseconds in which leadership lease acquisition or extension is attempted.  <br/><br/>  Must be smaller than [`dt.dex-engine.leader-election.lease-duration-ms`](#dtdex-engineleader-electionlease-duration-ms) to avoid  frequent leadership changes.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code></code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>15000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_LEADER_ELECTION_LEASE_CHECK_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.leader-election.lease-duration-ms
+
+Defines the duration in milliseconds for which leadership leases are acquired.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code></code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>30000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_LEADER_ELECTION_LEASE_DURATION_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.maintenance.run-deletion-batch-size
+
+Defines the maximum number of completed workflow runs to delete during a single execution  of the maintenance worker. Deletion of large volumes of runs in one pass can lead to I/O  spikes and increased table bloat.  <br/><br/>  If retention is not able to keep up with the volumes of  runs, consider increasing the interval of the maintenance worker first.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_MAINTENANCE_RUN_DELETION_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.maintenance.run-retention-duration
+
+Defines the duration in ISO 8601 format after which completed workflow runs become  eligible for deletion.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>P1D</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_MAINTENANCE_RUN_RETENTION_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.maintenance.worker.initial-delay-ms
+
+Defines the initial delay in milliseconds after which the maintenance worker will execute for the first time.  <br/><br/>  Note that only the leader node in the cluster will actually perform maintenance work.  For nodes that are not leaders, maintenance is a no-op.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>60000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_MAINTENANCE_WORKER_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.maintenance.worker.interval-ms
+
+Defines the interval in milliseconds at which the maintenance worker will execute.  <br/><br/>  Note that only the leader node in the cluster will actually perform maintenance work.  For nodes that are not leaders, maintenance is a no-op.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1800000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_MAINTENANCE_WORKER_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.run-history-cache.evict-after-access-ms
+
+Defines the time in milliseconds for which workflow run event histories are cached.  <br/><br/>  Histories are only cached for non-terminal runs, to improve performance of replay.  Cached histories are automatically evicted when the corresponding run terminates.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>300000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_RUN_HISTORY_CACHE_EVICT_AFTER_ACCESS_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.run-history-cache.max-size
+
+Defines the maximum number of workflow runs for which histories may be cached.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>1000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_RUN_HISTORY_CACHE_MAX_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.task-event-buffer.flush-interval-ms
+
+Defines the time in milliseconds between flushes of the task event buffer.  <br/><br/>  Increasing this interval may yield better throughput while reducing the  database load, but also increases end-to-end latency of workflow and  activity executions.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_TASK_EVENT_BUFFER_FLUSH_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.task-event-buffer.max-batch-size
+
+Defines the maximum number of items that will be flushed at once.  <br/><br/>  Increasing this value may yield better throughput,  at the expense of higher latency and potentially larger  blast radius in case a task event causes failures during the flush.  <br/><br/>  Since flushes are atomic, a single event failing to be flushed impacts  the entire batch.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_TASK_EVENT_BUFFER_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.workflow-task-scheduler.poll-interval-ms
+
+Defines the interval in milliseconds in which the workflow task scheduler polls  for tasks to enqueue for execution.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>100</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_WORKFLOW_TASK_SCHEDULER_POLL_INTERVAL_MS</code></td>
     </tr>
   </tbody>
 </table>
@@ -1329,6 +1871,36 @@ Whether to enable the database seeding init task.  Seeding involves populating t
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>INIT_TASK_DATABASE_SEEDING_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### init.task.dex.engine.database.migration.enabled
+
+Whether to enable the durable execution engine database migration init task.  Has no effect unless [`init.tasks.enabled`](#inittasksenabled) is `true`.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>INIT_TASK_DEX_ENGINE_DATABASE_MIGRATION_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
