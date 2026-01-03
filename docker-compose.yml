@@ -186,7 +186,7 @@ services:
     restart: unless-stopped
 
   redpanda:
-    image: docker.redpanda.com/redpandadata/redpanda:v24.2.17
+    image: docker.redpanda.com/redpandadata/redpanda:v25.3.4
     container_name: dt-redpanda
     command:
       - redpanda
@@ -223,7 +223,7 @@ services:
     restart: unless-stopped
 
   redpanda-init:
-    image: docker.redpanda.com/redpandadata/redpanda:v24.2.17
+    image: docker.redpanda.com/redpandadata/redpanda:v25.3.4
     container_name: dt-redpanda-init
     depends_on:
       redpanda:
@@ -246,7 +246,7 @@ services:
     restart: on-failure
 
   redpanda-console:
-    image: docker.redpanda.com/redpandadata/console:v2.8.2
+    image: docker.redpanda.com/redpandadata/console:v3.3.2
     container_name: dt-redpanda-console
     entrypoint: "/bin/sh"
     command: "-c 'echo \"$$CONSOLE_CONFIG_FILE\" > \"$$CONFIG_FILEPATH\"; /app/console'"
@@ -258,6 +258,7 @@ services:
       CONSOLE_CONFIG_FILE: |
         kafka:
           brokers: ["redpanda:29092"]
+        serde:
           protobuf:
             enabled: true
             mappings:
