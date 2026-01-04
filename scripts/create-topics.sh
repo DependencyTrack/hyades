@@ -38,27 +38,6 @@ function create_topic() {
 rpk cluster health --watch --exit-when-healthy \
   --api-urls "$(echo "$REDPANDA_BROKERS" | sed -E 's/:[[:digit:]]+/:9644/g')"
 
-notification_topics=(
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.analyzer"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.bom"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.configuration"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.datasource-mirroring"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.file-system"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.integration"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.new-vulnerability"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.new-vulnerable-dependency"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.policy-violation"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.project-audit-change"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.project-created"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.project-vuln-analysis-complete"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.repository"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.vex"
-  "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.notification.user"
-)
-for topic_name in "${notification_topics[@]}"; do
-  create_topic "$topic_name" "${NOTIFICATION_TOPICS_PARTITIONS:-1}" "retention.ms=${NOTIFICATION_TOPICS_RETENTION_MS:-43200000}"
-done
-
 repo_meta_analysis_topics=(
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.repo-meta-analysis.component"
   "${DT_KAFKA_TOPIC_PREFIX:-}dtrack.repo-meta-analysis.result"

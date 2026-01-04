@@ -21,18 +21,19 @@ package org.dependencytrack.e2e;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetup;
+import jakarta.mail.internet.MimeMessage;
 import org.apache.commons.io.IOUtils;
-import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
-import org.dependencytrack.apiserver.model.ConfigProperty;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest.Publisher;
 import org.dependencytrack.apiserver.model.CreateVulnerabilityRequest;
 import org.dependencytrack.apiserver.model.CreateVulnerabilityRequest.AffectedComponent;
+import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.Finding;
 import org.dependencytrack.apiserver.model.NotificationPublisher;
 import org.dependencytrack.apiserver.model.NotificationRule;
 import org.dependencytrack.apiserver.model.Project;
+import org.dependencytrack.apiserver.model.UpdateExtensionConfigRequest;
 import org.dependencytrack.apiserver.model.UpdateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,10 +42,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
 
-import jakarta.mail.internet.MimeMessage;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -81,6 +82,14 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
     }
 
     @Override
+    protected void customizeApiServerContainer(GenericContainer<?> container) {
+        container
+                .withEnv("DT_NOTIFICATION_PUBLISHER_EMAIL_ALLOW_LOCAL_CONNECTIONS", "true")
+                .withEnv("DT_SECRET_MANAGEMENT_PROVIDER", "env")
+                .withEnv("DT_SECRET_EMAIL_PASSWORD", "fromPass");
+    }
+
+    @Override
     protected void customizeVulnAnalyzerContainer(final GenericContainer<?> container) {
         // Disable all scanners except the internal one.
         container
@@ -91,6 +100,18 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
 
     @Test
     void test() throws Exception {
+        apiServerClient.updateExtensionConfig(
+                "notification-publisher",
+                "email",
+                new UpdateExtensionConfigRequest(
+                        Map.ofEntries(
+                                Map.entry("enabled", true),
+                                Map.entry("host", "host.testcontainers.internal"),
+                                Map.entry("port", greenMail.getSmtp().getPort()),
+                                Map.entry("username", "from"),
+                                Map.entry("password", "EMAIL_PASSWORD"),
+                                Map.entry("senderAddress", "from@localhost"))));
+
         final List<NotificationPublisher> publishers = apiServerClient.getAllNotificationPublishers();
 
         // Find the email notification publisher.
@@ -101,7 +122,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
 
         // Find the webhook notification publisher.
         final NotificationPublisher webhookPublisher = publishers.stream()
-                .filter(publisher -> publisher.name().equals("Outbound Webhook"))
+                .filter(publisher -> publisher.name().equals("Webhook"))
                 .findAny()
                 .orElseThrow(() -> new AssertionError("Unable to find webhook notification publisher"));
 
@@ -109,29 +130,21 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
         final NotificationRule emailRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "email", "PORTFOLIO", "INFORMATIONAL", new Publisher(emailPublisher.uuid())));
         apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(emailRule.uuid(), emailRule.name(), true,
-                "INFORMATIONAL", Set.of("NEW_VULNERABILITY"), """
+                "INFORMATIONAL", Set.of("NEW_VULNERABILITY"), /* language=JSON */ """
                 {
-                  "destination": "to@localhost"
+                  "recipientAddresses": [
+                    "to@localhost"
+                  ]
                 }
                 """));
-
-        // Configure email.
-        apiServerClient.updateConfigProperties(List.of(
-                new ConfigProperty("email", "smtp.enabled", "true"),
-                new ConfigProperty("email", "smtp.from.address", "from@localhost"),
-                new ConfigProperty("email", "smtp.server.hostname", "host.testcontainers.internal"),
-                new ConfigProperty("email", "smtp.server.port", Integer.toString(greenMail.getSmtp().getPort())),
-                new ConfigProperty("email", "smtp.username", "from"),
-                new ConfigProperty("email", "smtp.password", "fromPass")
-        ));
 
         // Create a webhook alert for NEW_VULNERABILITY notifications and point it to WireMock.
         final NotificationRule webhookRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "foo", "PORTFOLIO", "INFORMATIONAL", new Publisher(webhookPublisher.uuid())));
         apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(webhookRule.uuid(), webhookRule.name(), true,
-                "INFORMATIONAL", Set.of("NEW_VULNERABILITY"), """
+                "INFORMATIONAL", Set.of("NEW_VULNERABILITY"), /* language=JSON */ """
                 {
-                  "destination": "http://host.testcontainers.internal:%d/notification"
+                  "destinationUrl": "http://host.testcontainers.internal:%d/notification"
                 }
                 """.formatted(wireMock.getPort())));
 
@@ -139,9 +152,9 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
         final NotificationRule projectVulnAnalysisCompleteWebhookRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "projectVulnAnalysisCompleteWebhookRule", "PORTFOLIO", "INFORMATIONAL", new Publisher(webhookPublisher.uuid())));
         apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(projectVulnAnalysisCompleteWebhookRule.uuid(), projectVulnAnalysisCompleteWebhookRule.name(), true,
-                "INFORMATIONAL", Set.of("PROJECT_VULN_ANALYSIS_COMPLETE"), """
+                "INFORMATIONAL", Set.of("PROJECT_VULN_ANALYSIS_COMPLETE"), /* language=JSON */ """
                 {
-                  "destination": "http://host.testcontainers.internal:%d/notification"
+                  "destinationUrl": "http://host.testcontainers.internal:%d/notification"
                 }
                 """.formatted(wireMock.getPort())));
         wireMock.stubFor(post(urlPathEqualTo("/notification"))

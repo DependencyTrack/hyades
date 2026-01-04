@@ -30,7 +30,6 @@
     <module>commons</module>
     <module>commons-kstreams</module>
     <module>commons-persistence</module>
-    <module>notification-publisher</module>
     <module>repository-meta-analyzer</module>
     <module>proto</module>
     <module>vulnerability-analyzer</module>
@@ -66,7 +65,6 @@
     <lib.cloud-sql-postgres-socket-factory.version>1.28.0</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>3.0.1</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.5.0</lib.commons-collections4.version>
-    <lib.confluent-parallel-consumer.version>0.5.3.3</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
     <lib.cvss-calculator.version>1.5.1</lib.cvss-calculator.version>
     <lib.greenmail.version>2.1.8</lib.greenmail.version>
@@ -79,12 +77,10 @@
     <lib.minio.version>8.6.0</lib.minio.version>
     <lib.open-feign.version>13.6</lib.open-feign.version>
     <lib.org-json.version>20251224</lib.org-json.version>
-    <lib.pebble.version>4.1.0</lib.pebble.version>
     <lib.resilience4j.version>2.3.0</lib.resilience4j.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>4.33.4</lib.protobuf-java.version>
     <lib.quarkus-github-api.version>1.330.0</lib.quarkus-github-api.version>
-    <lib.quarkus-mailpit.version>2.0.0</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.8</lib.snappy-java.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <quarkus.platform.version>3.31.0</quarkus.platform.version>
@@ -154,12 +150,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
         <version>${lib.commons-collections4.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.confluent.parallelconsumer</groupId>
-        <artifactId>parallel-consumer-core</artifactId>
-        <version>${lib.confluent-parallel-consumer.version}</version>
       </dependency>
 
       <dependency>
@@ -245,12 +235,6 @@
       </dependency>
 
       <dependency>
-        <groupId>io.pebbletemplates</groupId>
-        <artifactId>pebble</artifactId>
-        <version>${lib.pebble.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.dependencytrack</groupId>
         <artifactId>quarkus-config-dependencytrack</artifactId>
         <version>${project.version}</version>
@@ -271,16 +255,6 @@
         <groupId>io.quarkiverse.wiremock</groupId>
         <artifactId>quarkus-wiremock-test</artifactId>
         <version>${quarkus.wiremock.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.quarkiverse.mailpit</groupId>
-        <artifactId>quarkus-mailpit</artifactId>
-        <version>${lib.quarkus-mailpit.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.quarkiverse.mailpit</groupId>
-        <artifactId>quarkus-mailpit-testing</artifactId>
-        <version>${lib.quarkus-mailpit.version}</version>
       </dependency>
 
       <dependency>
@@ -396,7 +370,11 @@
           <version>${surefire-plugin.version}</version>
           <configuration>
             <argLine>
-              @{argLine} --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -Xmx2g -Dquarkus.log.level=WARN
+              @{argLine}
+              --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+              -Dquarkus.log.level=WARN
+              -Dquarkus.log.category.\"org.dependencytrack\".level=INFO
+              -Xmx2g
             </argLine>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -415,7 +393,11 @@
               </goals>
               <configuration>
                 <argLine>
-                  @{argLine} --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -Xmx2g -Dquarkus.log.level=WARN
+                  @{argLine}
+                  --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
+                  -Dquarkus.log.level=WARN
+                  -Dquarkus.log.category.\"org.dependencytrack\".level=INFO
+                  -Xmx2g
                 </argLine>
                 <includes>
                   <include>**/*IT.java</include>

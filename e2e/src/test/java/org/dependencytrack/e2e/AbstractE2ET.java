@@ -58,8 +58,6 @@ public class AbstractE2ET {
     protected static DockerImageName REDPANDA_IMAGE = DockerImageName.parse("docker.redpanda.com/redpandadata/redpanda:v25.3.4");
     protected static DockerImageName API_SERVER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-apiserver")
             .withTag(Optional.ofNullable(System.getenv("APISERVER_VERSION")).orElse("snapshot"));
-    protected static DockerImageName NOTIFICATION_PUBLISHER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-notification-publisher")
-            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
     protected static DockerImageName REPO_META_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-repository-meta-analyzer")
             .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
     protected static DockerImageName VULN_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-vulnerability-analyzer")
@@ -70,7 +68,6 @@ public class AbstractE2ET {
     protected PostgreSQLContainer<?> postgresContainer;
     protected GenericContainer<?> redpandaContainer;
     protected GenericContainer<?> apiServerContainer;
-    protected GenericContainer<?> notificationPublisherContainer;
     protected GenericContainer<?> repoMetaAnalyzerContainer;
     protected GenericContainer<?> vulnAnalyzerContainer;
     protected ApiServerClient apiServerClient;
@@ -87,12 +84,10 @@ public class AbstractE2ET {
         runInitializer();
 
         apiServerContainer = createApiServerContainer();
-        notificationPublisherContainer = createNotificationPublisherContainer();
         repoMetaAnalyzerContainer = createRepoMetaAnalyzerContainer();
         vulnAnalyzerContainer = createVulnAnalyzerContainer();
         deepStart(
                 apiServerContainer,
-                notificationPublisherContainer,
                 repoMetaAnalyzerContainer,
                 vulnAnalyzerContainer
         ).join();
@@ -158,6 +153,7 @@ public class AbstractE2ET {
                 .withEnv("DT_DATASOURCE_PASSWORD", "dtrack")
                 .withEnv("INIT_TASKS_ENABLED", "true")
                 .withEnv("INIT_AND_EXIT", "true")
+                .withEnv("ALPINE_BCRYPT_ROUNDS", "4")
                 .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("initializer")))
                 .withStartupCheckStrategy(new OneShotStartupCheckStrategy())
                 .withNetwork(internalNetwork)
@@ -174,6 +170,7 @@ public class AbstractE2ET {
                 .withEnv("DT_DATASOURCE_PASSWORD", "dtrack")
                 .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
                 .withEnv("INIT_TASKS_ENABLED", "false")
+                .withEnv("ALPINE_BCRYPT_ROUNDS", "4")
                 .withEnv("ALPINE_SECRET_KEY_PATH", "/var/run/secrets/secret.key")
                 .withCopyFileToContainer(
                         MountableFile.forHostPath(secretKeyPath, 444),
@@ -189,31 +186,6 @@ public class AbstractE2ET {
     }
 
     protected void customizeApiServerContainer(final GenericContainer<?> container) {
-    }
-
-    @SuppressWarnings("resource")
-    private GenericContainer<?> createNotificationPublisherContainer() {
-        final var container = new GenericContainer<>(NOTIFICATION_PUBLISHER_IMAGE)
-                .withImagePullPolicy("local".equals(NOTIFICATION_PUBLISHER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
-                .withEnv("JAVA_OPTS", "-Xmx256m")
-                .withEnv("KAFKA_BOOTSTRAP_SERVERS", "redpanda:29092")
-                .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
-                .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
-                .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
-                .withEnv("SECRET_KEY_PATH", "/var/run/secrets/secret.key")
-                .withCopyFileToContainer(
-                        MountableFile.forHostPath(secretKeyPath, 444),
-                        "/var/run/secrets/secret.key"
-                )
-                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("notification-publisher")))
-                .withNetworkAliases("notification-publisher")
-                .withNetwork(internalNetwork)
-                .withStartupAttempts(3);
-        customizeNotificationPublisherContainer(container);
-        return container;
-    }
-
-    protected void customizeNotificationPublisherContainer(final GenericContainer<?> container) {
     }
 
     @SuppressWarnings("resource")
@@ -289,9 +261,11 @@ public class AbstractE2ET {
                 "POLICY_MANAGEMENT",
                 "PORTFOLIO_MANAGEMENT",
                 "PROJECT_CREATION_UPLOAD",
+                "SECRET_MANAGEMENT_CREATE",
                 "SYSTEM_CONFIGURATION",
                 "VIEW_PORTFOLIO",
                 "VIEW_VULNERABILITY",
+                "VULNERABILITY_ANALYSIS",
                 "VULNERABILITY_MANAGEMENT"
         )) {
             client.addPermissionToTeam(team.uuid(), permission);
@@ -309,7 +283,6 @@ public class AbstractE2ET {
 
         Optional.ofNullable(vulnAnalyzerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(repoMetaAnalyzerContainer).ifPresent(GenericContainer::stop);
-        Optional.ofNullable(notificationPublisherContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(apiServerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(redpandaContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(postgresContainer).ifPresent(GenericContainer::stop);

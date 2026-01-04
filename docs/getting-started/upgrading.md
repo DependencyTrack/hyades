@@ -1,6 +1,21 @@
 ### Upgrading to 0.7.0
 
 * The minimum supported PostgreSQL version has been raised from 13 to 14 ([hyades/#1910]).
+* **The notification-publisher service has been removed**. Publishing of notifications
+  is now performed by the apiserver.
+* The way notification publishers and alerts are configured behind the scenes has changed.
+    * Existing configuration is migrated during the upgrade on a best-effort basis.
+    * To prevent partially migrated alert configurations from taking effect,
+      **all alerts are disabled during the upgrade**.
+    * You must manually review and re-enable them after the upgrade.
+    * Refer to the [notification publishers documentation](../usage/notifications/publishers.md) for guidance.
+* **Notifications are no longer published to Kafka by default**. Going forward, you must configure
+  alerts explicitly, and use the new [Kafka publisher](../usage/notifications/publishers.md#kafka)
+  if you want to receive notifications via Kafka.
+* Email server configuration in the UI has moved from `Administration → General → Email` to
+  `Administration → Notifications → Publishers → Email`. **Previously configured email settings
+  are discarded** during the upgrade, and you'll need to reconfigure it if you rely on notifications
+  being sent via email.
 * Various database configurations in the API server have been deprecated:
 
     | Before                              | After                                |
@@ -15,9 +30,11 @@
     | `alpine.database.pool.idle.timeout` | `dt.datasource.pool.idle-timeout-ms` |
     | `alpine.database.pool.max.lifetime` | `dt.datasource.pool.max-lifetime-ms` |
 
-* For this version, the `dt.datasource.*` configurations default to their `alpine.database.*`
-  counterparts. Existing deployments should continue to function without changes.
-  However, support for `alpine.database.*` configs will be removed prior to the GA release.
+    * For this version, the `dt.datasource.*` configurations default to their `alpine.database.*`
+      counterparts. Existing deployments should continue to function without changes.
+      However, support for `alpine.database.*` configs will be removed prior to the GA release.
+    * The new datasource configuration mechanism is documented [here](../operations/configuration/datasources.md).  
+
 * The following init task configurations have been removed and replaced with `init.tasks.datasource.name`:
     * `init.tasks.database.url`
     * `init.tasks.database.username`

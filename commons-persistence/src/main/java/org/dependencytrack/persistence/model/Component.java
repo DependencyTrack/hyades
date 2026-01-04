@@ -25,8 +25,6 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.JdbcType;
@@ -78,10 +76,6 @@ public class Component extends PanacheEntityBase {
 
     @Column(name = "LICENSE", columnDefinition = "VARCHAR")
     private String license;
-
-    @ManyToOne
-    @JoinColumn(name = "PROJECT_ID", nullable = false)
-    private Project project;
 
     @Column(name = "UUID", nullable = false)
     @JdbcType(UUIDJdbcType.class)
@@ -266,14 +260,6 @@ public class Component extends PanacheEntityBase {
 
     public void setLicense(String license) {
         this.license = StringUtils.abbreviate(license, 255);
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 
     public UUID getUuid() {
