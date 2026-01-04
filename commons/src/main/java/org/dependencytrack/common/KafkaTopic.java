@@ -23,19 +23,6 @@ import org.eclipse.microprofile.config.ConfigProvider;
 
 public enum KafkaTopic {
 
-    NOTIFICATION_ANALYZER("dtrack.notification.analyzer"),
-    NOTIFICATION_BOM("dtrack.notification.bom"),
-    NOTIFICATION_CONFIGURATION("dtrack.notification.configuration"),
-    NOTIFICATION_DATASOURCE_MIRRORING("dtrack.notification.datasource-mirroring"),
-    NOTIFICATION_FILE_SYSTEM("dtrack.notification.file-system"),
-    NOTIFICATION_INTEGRATION("dtrack.notification.integration"),
-    NOTIFICATION_NEW_VULNERABILITY("dtrack.notification.new-vulnerability"),
-    NOTIFICATION_NEW_VULNERABLE_DEPENDENCY("dtrack.notification.new-vulnerable-dependency"),
-    NOTIFICATION_POLICY_VIOLATION("dtrack.notification.policy-violation"),
-    NOTIFICATION_PROJECT_AUDIT_CHANGE("dtrack.notification.project-audit-change"),
-    NOTIFICATION_REPOSITORY("dtrack.notification.repository"),
-    NOTIFICATION_VEX("dtrack.notification.vex"),
-    NOTIFICATION_USER("dtrack.notification.user"),
     REPO_META_ANALYSIS_COMMAND("dtrack.repo-meta-analysis.component"),
     REPO_META_ANALYSIS_RESULT("dtrack.repo-meta-analysis.result"),
     VULN_ANALYSIS_SCANNER_RESULT("dtrack.vuln-analysis.scanner.result"),

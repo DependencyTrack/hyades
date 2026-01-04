@@ -23,7 +23,6 @@ on:
     - "feature-**"
     paths:
     - ".github/workflows/_build-native-meta.yml"
-    - ".github/workflows/build-native-notification-publisher.yml"
     - "commons/**"
     - "commons-kstreams/**"
     - "commons-persistence/**"

@@ -16,38 +16,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.persistence.model;
+package org.dependencytrack.apiserver.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.Map;
 
-@Entity
-@Table(name = "TEAM")
-public class Team {
-
-    @Id
-    @Column(name = "ID")
-    private long id;
-
-    @Column(name = "NAME")
-    private String name;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(final long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
+public record UpdateExtensionConfigRequest(Map<String, Object> config) {
 }

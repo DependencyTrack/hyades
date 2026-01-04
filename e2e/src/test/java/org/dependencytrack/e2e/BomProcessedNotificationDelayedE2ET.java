@@ -84,7 +84,7 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
 
         // Find the webhook notification publisher.
         final NotificationPublisher webhookPublisher = publishers.stream()
-                .filter(publisher -> publisher.name().equals("Outbound Webhook"))
+                .filter(publisher -> publisher.name().equals("Webhook"))
                 .findAny()
                 .orElseThrow(() -> new AssertionError("Unable to find webhook notification publisher"));
 
@@ -92,9 +92,9 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
         final NotificationRule webhookRule = apiServerClient.createNotificationRule(new CreateNotificationRuleRequest(
                 "foo", "PORTFOLIO", "INFORMATIONAL", new CreateNotificationRuleRequest.Publisher(webhookPublisher.uuid())));
         apiServerClient.updateNotificationRule(new UpdateNotificationRuleRequest(webhookRule.uuid(), webhookRule.name(), true,
-                "INFORMATIONAL", Set.of("BOM_PROCESSED", "PROJECT_VULN_ANALYSIS_COMPLETE"), """
+                "INFORMATIONAL", Set.of("BOM_PROCESSED", "PROJECT_VULN_ANALYSIS_COMPLETE"), /* language=JSON */ """
                 {
-                  "destination": "http://host.testcontainers.internal:%d/notification"
+                  "destinationUrl": "http://host.testcontainers.internal:%d/notification"
                 }
                 """.formatted(wireMock.getPort())));
 
