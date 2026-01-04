@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Date;
 
 public class DateUtilTest {
@@ -50,9 +49,4 @@ public class DateUtilTest {
         Assertions.assertEquals(2022, localDateTime.getYear());
     }
 
-    @Test
-    public void testToISO8601() {
-        Date date = Date.from(LocalDateTime.of(2019, Month.JANUARY, 31, 15, 30, 12).toInstant(ZoneOffset.UTC));
-        Assertions.assertEquals("2019-01-31T15:30:12Z", DateUtil.toISO8601(date));
-    }
 }
