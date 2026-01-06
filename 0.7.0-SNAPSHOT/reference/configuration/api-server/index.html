@@ -3977,6 +3977,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#dtmetricsauthpassword" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.metrics.auth.password
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtmetricsauthusername" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.metrics.auth.username
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtmetricsenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.metrics.enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -9000,6 +9033,10 @@
 <h2 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h2>
 <h3 id="alpinemetricsauthpassword">alpine.metrics.auth.password<a class="headerlink" href="#alpinemetricsauthpassword" title="Permanent link">&para;</a></h3>
 <p>Defines the password required to access metrics.  Has no effect when <a href="#alpinemetricsauthusername"><code>alpine.metrics.auth.username</code></a> is not set.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtmetricsauthpassword"><code>dt.metrics.auth.password</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -9024,6 +9061,10 @@
 <hr />
 <h3 id="alpinemetricsauthusername">alpine.metrics.auth.username<a class="headerlink" href="#alpinemetricsauthusername" title="Permanent link">&para;</a></h3>
 <p>Defines the username required to access metrics.  Has no effect when <a href="#alpinemetricsauthpassword"><code>alpine.metrics.auth.password</code></a> is not set.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtmetricsauthusername"><code>dt.metrics.auth.username</code></a> instead.</p>
+</div>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -9048,6 +9089,82 @@
 <hr />
 <h3 id="alpinemetricsenabled">alpine.metrics.enabled<a class="headerlink" href="#alpinemetricsenabled" title="Permanent link">&para;</a></h3>
 <p>Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be available via the /metrics endpoint.  </p>
+<div class="admonition warning">
+<p class="admonition-title">Deprecated</p>
+<p>Since 5.7.0. Use <a href="#dtmetricsenabled"><code>dt.metrics.enabled</code></a> instead.</p>
+</div>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_METRICS_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtmetricsauthpassword">dt.metrics.auth.password<a class="headerlink" href="#dtmetricsauthpassword" title="Permanent link">&para;</a></h3>
+<p>Defines the password required to access metrics.  Has no effect when <a href="#dtmetricsauthusername"><code>dt.metrics.auth.username</code></a> is not set.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_METRICS_AUTH_PASSWORD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtmetricsauthusername">dt.metrics.auth.username<a class="headerlink" href="#dtmetricsauthusername" title="Permanent link">&para;</a></h3>
+<p>Defines the username required to access metrics.  Has no effect when <a href="#dtmetricsauthpassword"><code>dt.metrics.auth.password</code></a> is not set.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_METRICS_AUTH_USERNAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtmetricsenabled">dt.metrics.enabled<a class="headerlink" href="#dtmetricsenabled" title="Permanent link">&para;</a></h3>
+<p>Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be available via the /metrics endpoint.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -9064,7 +9181,7 @@
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_METRICS_ENABLED</code></td>
+      <td style="border-width: 0"><code>DT_METRICS_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
