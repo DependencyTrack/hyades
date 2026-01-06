@@ -4672,6 +4672,8 @@ Defines whether the notification router should be enabled.  The router currently
 
 Defines the password required to access metrics.  Has no effect when [`alpine.metrics.auth.username`](#alpinemetricsauthusername) is not set.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.metrics.auth.password`](#dtmetricsauthpassword) instead.
 
 
 <table>
@@ -4702,6 +4704,8 @@ Defines the password required to access metrics.  Has no effect when [`alpine.me
 
 Defines the username required to access metrics.  Has no effect when [`alpine.metrics.auth.password`](#alpinemetricsauthpassword) is not set.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.metrics.auth.username`](#dtmetricsauthusername) instead.
 
 
 <table>
@@ -4732,6 +4736,98 @@ Defines the username required to access metrics.  Has no effect when [`alpine.me
 
 Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be available via the /metrics endpoint.  
 
+!!! warning "Deprecated"
+    Since 5.7.0. Use [`dt.metrics.enabled`](#dtmetricsenabled) instead.
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>ALPINE_METRICS_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.metrics.auth.password
+
+Defines the password required to access metrics.  Has no effect when [`dt.metrics.auth.username`](#dtmetricsauthusername) is not set.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_METRICS_AUTH_PASSWORD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.metrics.auth.username
+
+Defines the username required to access metrics.  Has no effect when [`dt.metrics.auth.password`](#dtmetricsauthpassword) is not set.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_METRICS_AUTH_USERNAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.metrics.enabled
+
+Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be available via the /metrics endpoint.  
+
 
 
 <table>
@@ -4750,7 +4846,7 @@ Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>ALPINE_METRICS_ENABLED</code></td>
+      <td style="border-width: 0"><code>DT_METRICS_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
