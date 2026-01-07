@@ -54,7 +54,7 @@ Controls the content of the `Access-Control-Allow-Headers` response header.  <br
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>Origin, Content-Type, Authorization, X-Requested-With, Content-Length, Accept, Origin, X-Api-Key, X-Total-Count, *</code></td>
+      <td style="border-width: 0"><code>Origin,Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin,X-Api-Key,X-Total-Count,*</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -84,7 +84,7 @@ Controls the content of the `Access-Control-Allow-Methods` response header.  <br
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>GET POST PUT DELETE OPTIONS</code></td>
+      <td style="border-width: 0"><code>GET,POST,PUT,PATCH,DELETE,OPTIONS</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -174,7 +174,7 @@ Controls the content of the `Access-Control-Expose-Headers` response header.  <b
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>Origin, Content-Type, Authorization, X-Requested-With, Content-Length, Accept, Origin, X-Api-Key, X-Total-Count</code></td>
+      <td style="border-width: 0"><code>Origin,Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin,X-Api-Key,X-Total-Count</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
