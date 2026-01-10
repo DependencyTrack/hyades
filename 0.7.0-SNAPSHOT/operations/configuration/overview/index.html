@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/usage/secret-management/overview/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/operations/configuration/overview/">
       
       
-        <link rel="prev" href="../../policy-compliance/expressions/">
+        <link rel="prev" href="../../../architecture/design/workflow-state-tracking/">
       
       
-        <link rel="next" href="../providers/">
+        <link rel="next" href="../datasources/">
       
       
         
@@ -60,14 +60,14 @@
   
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Overview - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/usage/secret-management/overview.png" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/operations/configuration/overview.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/usage/secret-management/overview/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/operations/configuration/overview/" />
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:title" content="Overview - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/usage/secret-management/overview.png" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-SNAPSHOT/assets/images/social/operations/configuration/overview.png" />
 </head>
   
   
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#creating-secrets" class="md-skip">
+        <a href="#sources" class="md-skip">
           Skip to content
         </a>
       
@@ -255,8 +255,6 @@
   
   
   
-    
-  
   
     
     
@@ -264,13 +262,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../policy-compliance/overview/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../usage/policy-compliance/overview/" class="md-tabs__link">
           
   
   
@@ -309,6 +305,8 @@
   
   
   
+    
+  
   
     
     
@@ -316,11 +314,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../operations/configuration/overview/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -621,29 +621,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -661,7 +656,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -729,7 +724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../policy-compliance/overview/" class="md-nav__link">
+      <a href="../../../usage/policy-compliance/overview/" class="md-nav__link">
         
   
   
@@ -757,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../policy-compliance/expressions/" class="md-nav__link">
+      <a href="../../../usage/policy-compliance/expressions/" class="md-nav__link">
         
   
   
@@ -790,8 +785,6 @@
                 
   
   
-    
-  
   
   
     
@@ -802,11 +795,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
         
           
           <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
@@ -827,7 +820,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -842,35 +835,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../usage/secret-management/overview/" class="md-nav__link">
         
   
   
@@ -886,68 +854,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#creating-secrets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Creating Secrets
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#updating-secrets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Updating Secrets
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deleting-secrets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Deleting Secrets
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-secrets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using Secrets
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -960,7 +866,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../providers/" class="md-nav__link">
+      <a href="../../../usage/secret-management/providers/" class="md-nav__link">
         
   
   
@@ -1565,24 +1471,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -1600,7 +1511,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1615,6 +1526,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1625,11 +1538,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
         
           
           <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
@@ -1650,7 +1563,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1665,10 +1578,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../operations/configuration/overview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1684,6 +1622,57 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expressions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expressions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variable-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variable Mapping
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1696,7 +1685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../operations/configuration/datasources/" class="md-nav__link">
+      <a href="../datasources/" class="md-nav__link">
         
   
   
@@ -1732,7 +1721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../operations/database/" class="md-nav__link">
+      <a href="../../database/" class="md-nav__link">
         
   
   
@@ -2401,7 +2390,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/usage/secret-management/overview.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/operations/configuration/overview.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2411,69 +2400,58 @@
 
   <h1>Overview</h1>
 
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This feature is still being developed. While you can already <em>manage</em> secrets,
-you cannot <em>use</em> them anywhere yet.</p>
+<p>Dependency-Track's configuration system is based on <a href="https://microprofile.io/specifications/config/">MicroProfile Config</a>,
+enabling it to support multiple <a href="#sources">sources</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>A comprehensive list of supported config properties can be found in
+the <a href="../../../reference/configuration/api-server/">configuration reference</a>.</p>
 </div>
-<p>Dependency-Track integrates with various 3rd party systems,
-most of which require some sort of credential to authenticate
-with them: API keys, passwords, or access tokens. Such secrets
-must be stored securely to prevent leakage.</p>
-<p>While injecting secrets via environment variables or files is possible
-and very common, it has a significant downside: it requires applications
-to be restarted, leading to undesirable downtime.</p>
-<p>To address this issue, Dependency-Track offers a mechanism for centralized
-secret management. Changes made here become immediately available to all
-nodes in a cluster, without the need to restart them.</p>
-<p>Depending on the capabilities of the configured <a href="../providers/">provider</a>,
-secrets can be <a href="#creating-secrets">created</a>, <a href="#updating-secrets">updated</a>,
-and <a href="#deleting-secrets">deleted</a>.</p>
-<p><img alt="Secret management overview" src="../images/secret-management-overview.png" /></p>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>It is not possible to <em>view</em> the value of secrets after they have been created.
-Secrets are decrypted by the platform as needed, but never disclosed via
-REST API or user interface.</p>
+<h2 id="sources">Sources<a class="headerlink" href="#sources" title="Permanent link">&para;</a></h2>
+<p>Config properties are loaded, <em>in order</em>, from the following sources:</p>
+<ol>
+<li>JVM system properties</li>
+<li>Environment variables</li>
+<li><code>${cwd}/.env</code> file</li>
+<li><code>${cwd}/config/application.properties</code> file</li>
+<li><code>application.properties</code> embedded in the application</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><code>${cwd}</code> refers to the <strong>c</strong>urrent <strong>w</strong>orking <strong>d</strong>irectory.
+When running an official container image, it is <code>/opt/owasp/dependency-track</code>.</p>
 </div>
-<h2 id="creating-secrets">Creating Secrets<a class="headerlink" href="#creating-secrets" title="Permanent link">&para;</a></h2>
-<p>Users with the <code>SECRET_MANAGEMENT</code> or <code>SECRET_MANAGEMENT_CREATE</code> permission
-can create new secrets by clicking the <em>Create</em> button. This will open a
-dialogue asking for the following information:</p>
-<ul>
-<li>A unique name for the secret</li>
-<li>The value of the secret</li>
-<li>An optional description</li>
-</ul>
-<p><img alt="Create secret dialogue" src="../images/create-secret.png" /></p>
-<h2 id="updating-secrets">Updating Secrets<a class="headerlink" href="#updating-secrets" title="Permanent link">&para;</a></h2>
-<p>Users with the <code>SECRET_MANAGEMENT</code> or <code>SECRET_MANAGEMENT_UPDATE</code> permission
-can update existing secrets by clicking the <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M352.9 21.2 308 66.1 445.9 204l44.9-44.9c13.6-13.5 21.2-31.9 21.2-51.1s-7.6-37.6-21.2-51.1l-35.7-35.7C441.6 7.6 423.2 0 404 0s-37.6 7.6-51.1 21.2M274.1 100 58.9 315.1c-10.7 10.7-18.5 24.1-22.6 38.7L.9 481.6c-2.3 8.3 0 17.3 6.2 23.4s15.1 8.5 23.4 6.2l127.8-35.5c14.6-4.1 27.9-11.8 38.7-22.6l215-215.2z"/></svg></span> button
-in the <em>Actions</em> column of the secret. This will open a dialogue asking for
-the following information:</p>
-<ul>
-<li>The new secret value</li>
-<li>An optional description</li>
-</ul>
-<p><img alt="Update secret dialogue" src="../images/update-secret.png" /></p>
-<p>Leaving the <em>value</em> input empty will cause the existing value to remain
-unchanged. If a new value is provided, the old value is unrecoverably
-overwritten.</p>
-<h2 id="deleting-secrets">Deleting Secrets<a class="headerlink" href="#deleting-secrets" title="Permanent link">&para;</a></h2>
-<p>Users with the <code>SECRET_MANAGEMENT</code> or <code>SECRET_MANAGEMENT_DELETE</code> permission
-can delete existing secrets by clicking the <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M136.7 5.9C141.1-7.2 153.3-16 167.1-16H281c13.8 0 26 8.8 30.4 21.9L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64s14.3-32 32-32h96zM32 144h384v304c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64zm88 64c-13.3 0-24 10.7-24 24v192c0 13.3 10.7 24 24 24s24-10.7 24-24V232c0-13.3-10.7-24-24-24m104 0c-13.3 0-24 10.7-24 24v192c0 13.3 10.7 24 24 24s24-10.7 24-24V232c0-13.3-10.7-24-24-24m104 0c-13.3 0-24 10.7-24 24v192c0 13.3 10.7 24 24 24s24-10.7 24-24V232c0-13.3-10.7-24-24-24"/></svg></span> button
-in the <em>Actions</em> column of the secret. This will open a dialogue asking for
-confirmation.</p>
-<p><img alt="Delete secret dialogue" src="../images/delete-secret.png" /></p>
-<p>Deleted secrets cannot be restored. Proceed with caution.</p>
-<h2 id="using-secrets">Using Secrets<a class="headerlink" href="#using-secrets" title="Permanent link">&para;</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This is not yet implemented.</p>
-</div>
-<p>It will be possible to securely reference secrets in configuration using expressions, e.g.:</p>
-<div class="language-jinja highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="cp">{{</span> <span class="nv">secret</span><span class="o">(</span><span class="s1">&#39;OSSINDEX_API_KEY&#39;</span><span class="o">)</span> <span class="cp">}}</span>
+<p>Once a value is found, later sources will not be checked. For example, when Dependency-Track
+attempts to look up the config property <code>foo.bar</code>, the environment variable <code>FOO_BAR=123</code> is
+ignored if the JVM was launched with <code>-Dfoo.bar=321</code>.</p>
+<h2 id="expressions">Expressions<a class="headerlink" href="#expressions" title="Permanent link">&para;</a></h2>
+<p>Configuration values may use expressions, indicated by <code>${...}</code>, to reference each other:</p>
+<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">dt.datasource.foo.url</span><span class="o">=</span><span class="s">jdbc:postgresql://localhost:5432/dtrack</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="na">dt.datasource.bar.url</span><span class="o">=</span><span class="s">${dt.datasource.foo.url}</span>
 </span></code></pre></div></td></tr></table></div>
+<p>This is useful to avoid redundant definition of identical values.</p>
+<h2 id="environment-variable-mapping">Environment Variable Mapping<a class="headerlink" href="#environment-variable-mapping" title="Permanent link">&para;</a></h2>
+<p>The canonical representation of properties uses alphanumeric characters,
+separated by hyphens (<code>-</code>) and periods (<code>.</code>). For example:</p>
+<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="na">foo.BAR-baz</span><span class="o">=</span><span class="s">123</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Environment variables commonly only support alphanumeric characters and underscores (<code>_</code>).
+To bridge this gap, Dependency-Track will use the following matching strategies,
+as <a href="https://download.eclipse.org/microprofile/microprofile-config-3.1/microprofile-config-spec-3.1.html#default_configsources.env.mapping">defined</a>
+by <a href="https://microprofile.io/specifications/config/">MicroProfile Config</a>:</p>
+<blockquote>
+<ol>
+<li>Exact match (i.e. <code>foo.BAR-baz</code>)</li>
+<li>Replace each character that is neither alphanumeric nor <code>_</code> with <code>_</code> (i.e. <code>foo_BAR_baz</code>)</li>
+<li>Replace each character that is neither alphanumeric nor <code>_</code> with <code>_</code>; then convert the name to upper case (i.e. <code>FOO_BAR_BAZ</code>)</li>
+</ol>
+</blockquote>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <a href="../../../reference/configuration/api-server/">configuration reference</a> includes the correct
+environment variable names for each listed config property.</p>
+</div>
 
 
 
