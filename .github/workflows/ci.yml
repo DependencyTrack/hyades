@@ -83,7 +83,6 @@ jobs:
     strategy:
       matrix:
         module:
-        - notification-publisher
         - repository-meta-analyzer
         - vulnerability-analyzer
       fail-fast: true
