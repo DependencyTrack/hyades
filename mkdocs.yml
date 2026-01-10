@@ -107,6 +107,7 @@ nav:
         - Workflow State Tracking: architecture/design/workflow-state-tracking.md
 - Operations:
     - Configuration:
+        - Overview: operations/configuration/overview.md
         - Data Sources: operations/configuration/datasources.md
     - Database: operations/database.md
 - Development:
