@@ -110,6 +110,8 @@ nav:
         - Overview: operations/configuration/overview.md
         - Data Sources: operations/configuration/datasources.md
     - Database: operations/database.md
+- Integration:
+    - Overview: integration/GitLab.md
 - Development:
   - Roles:
     - Overview: development/Roles/overview.md
