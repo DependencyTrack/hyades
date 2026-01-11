@@ -93,7 +93,7 @@
     <lib.brotli.version>0.1.2</lib.brotli.version>
 
     <!-- Plugin Versions -->
-    <plugin.jacoco.version>0.8.13</plugin.jacoco.version>
+    <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
     <!-- Tool Versions -->
