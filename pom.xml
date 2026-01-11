@@ -68,7 +68,7 @@
     <lib.commons-collections4.version>4.5.0</lib.commons-collections4.version>
     <lib.confluent-parallel-consumer.version>0.5.3.3</lib.confluent-parallel-consumer.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
-    <lib.cvss-calculator.version>1.4.3</lib.cvss-calculator.version>
+    <lib.cvss-calculator.version>1.5.1</lib.cvss-calculator.version>
     <lib.greenmail.version>2.1.8</lib.greenmail.version>
     <lib.httpclient5.version>5.6</lib.httpclient5.version>
     <lib.java-uuid-generator.version>5.2.0</lib.java-uuid-generator.version>
