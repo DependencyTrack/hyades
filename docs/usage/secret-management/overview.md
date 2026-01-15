@@ -1,7 +1,3 @@
-!!! note
-    This feature is still being developed. While you can already *manage* secrets,
-    you cannot *use* them anywhere yet.
-
 Dependency-Track integrates with various 3rd party systems,
 most of which require some sort of credential to authenticate
 with them: API keys, passwords, or access tokens. Such secrets
@@ -67,11 +63,9 @@ Deleted secrets cannot be restored. Proceed with caution.
 
 ## Using Secrets
 
-!!! warning
-    This is not yet implemented.
+Secrets can be used in configuration fields marked with :key:.
 
-It will be possible to securely reference secrets in configuration using expressions, e.g.:
+![Secret input field in a configuration form](./images/use-secret.png)
 
-```jinja linenums="1"
-{{ secret('OSSINDEX_API_KEY') }}
-```
+These fields offer dropdown and search capabilities,
+making it easy to discover available secrets.
