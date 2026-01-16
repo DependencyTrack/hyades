@@ -18,17 +18,6 @@ scrape_configs:
   - names: [ "apiserver" ]
     type: A
     port: 8080
-- job_name: notification-publisher
-  scrape_interval: 15s
-  scheme: http
-  metrics_path: /q/metrics
-# static config to be used when running services locally and prometheus in a container
-#  static_configs:
-#    - targets: [ "host.docker.internal:8090" ]
-  dns_sd_configs:
-  - names: [ "notification-publisher" ]
-    type: A
-    port: 8090
 - job_name: repo-meta-analyzer
   scrape_interval: 15s
   scheme: http
