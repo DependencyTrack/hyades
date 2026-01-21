@@ -16,7 +16,7 @@
 # Copyright (c) OWASP Foundation. All Rights Reserved.
 services:
   notification-publisher:
-    image: ghcr.io/dependencytrack/hyades-notification-publisher:snapshot-native
+    image: ghcr.io/dependencytrack/hyades-notification-publisher:snapshot
     depends_on:
       postgres:
         condition: service_healthy
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   repo-meta-analyzer:
-    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot-native
+    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot
     depends_on:
       postgres:
         condition: service_healthy
@@ -71,7 +71,7 @@ services:
     restart: unless-stopped
 
   vuln-analyzer:
-    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot-native
+    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot
     depends_on:
       postgres:
         condition: service_healthy

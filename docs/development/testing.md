@@ -31,7 +31,7 @@ There are currently no unit tests for the frontend.
 ### `hyades`
 
 Integration tests in the `hyades` repository are implemented as [@QuarkusIntegrationTest]. 
-As such, they are executed against an actual build artifact (JAR, container, or native executable).
+As such, they are executed against an actual build artifact (JAR or container).
 
 Class names of integration tests are suffixed with `IT` instead of `Test`.
 
