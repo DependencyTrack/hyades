@@ -56,36 +56,6 @@ For example:
 ghcr.io/dependencytrack/hyades-vulnerability-analyzer:local
 ```
 
-### Native Executables
-
-!!! tip
-    IntelliJ users can simply execute the `Build Native` run configuration.
-
-Application modules in the `hyades` repository can be compiled to [native executables], by leveraging [GraalVM Native Image].
-
-!!! warning
-    Building native executables is resource intensive and can take a few minutes to complete.
-
-!!! note
-    Building native executables requires *GraalVM for JDK 21* or newer.  
-    You can install GraalVM with `sdkman`: <https://sdkman.io/jdks#graalce>
-
-To build native executables for all modules:
-
-```shell
-export GRAALVM_HOME="$(sdk home java 21.0.2-graalce)"
-mvn clean package -Dnative -DskipTests
-```
-
-As demonstrated before, you can use Maven's `-pl` flag to limit the build to specific modules.
-
-If installing GraalVM is not possible, or you want to use the native executables in a container,
-but your host system is *not* Linux, you can leverage a GraalVM container to perform the build:
-
-```shell
-mvn clean package -Dnative -DskipTests -Dquarkus.native.container-build=true
-```
-
 ## `hyades-apiserver`
 
 This segment provides build instructions for the `DependencyTrack/hyades-apiserver` repository.
@@ -145,6 +115,4 @@ To build the frontend image:
 docker build -f docker/Dockerfile.alpine -t ghcr.io/dependencytrack/hyades-frontend:local .
 ```
 
-[GraalVM Native Image]: https://www.graalvm.org/latest/reference-manual/native-image/
 [Quarkus fast-jar]: https://quarkus.io/guides/maven-tooling#fast-jar
-[native executables]: https://quarkus.io/guides/native-reference

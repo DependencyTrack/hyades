@@ -52,10 +52,9 @@ Rough overview of the architecture:
 ![Architecture Overview](docs/architecture-overview.png)
 
 All services can be scaled up and down,
-to and from multiple instances. Despite being written in Java, all services except the API server can optionally be
-deployed as self-contained native binaries, offering a lower resource footprint.
+to and from multiple instances.
 
-To read more about the individual services, refer to their respective `REAMDE.md`:
+To read more about the individual services, refer to their respective `README.md`:
 
 * [Repository Metadata Analyzer](repository-meta-analyzer/README.md)
 * [Vulnerability Analyzer](vulnerability-analyzer/README.md)

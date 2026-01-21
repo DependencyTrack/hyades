@@ -25,8 +25,6 @@ and vulnerability analysis is performed by services separately from the API serv
     * The services can be scaled up and down as needed.
     * Some services (i.e. `notification-publisher`) can be omitted entirely from a deployment,
       if publishing of notification via e.g. Webhook is not needed.
-* All services **except the API server** can optionally be deployed as native executables
-(thanks to [GraalVM]), offering a lower resource footprint than their JVM-based counterparts.
 * [Database migrations] are performed through a more reliable, changelog-based approach.
 
 ## Breaking Changes
