@@ -525,6 +525,15 @@
 
   <profiles>
     <profile>
+      <id>quick</id>
+      <properties>
+        <checkstyle.skip>true</checkstyle.skip>
+        <jacoco.skip>true</jacoco.skip>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+    </profile>
+
+    <profile>
       <!--
         When running in GitHub Actions, the SCM connection must be via HTTPS
         so that the GITHUB_TOKEN injected by Actions can be used to authenticate.
