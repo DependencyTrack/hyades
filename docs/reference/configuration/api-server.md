@@ -5284,7 +5284,7 @@ Defines the secret management type to use.
 
 ## Storage
 
-### file.storage.default.extension
+### dt.file-storage.default-extension
 
 Defines the file storage extension to use.  When not set, an enabled extension will be chosen based on its priority.  It is recommended to explicitly configure an extension for predictable behavior.  
 
@@ -5310,7 +5310,7 @@ Defines the file storage extension to use.  When not set, an enabled extension w
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_DEFAULT_EXTENSION</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_DEFAULT_EXTENSION</code></td>
     </tr>
   </tbody>
 </table>
@@ -5318,9 +5318,9 @@ Defines the file storage extension to use.  When not set, an enabled extension w
 
 ---
 
-### file.storage.extension.local.compression.level
+### dt.file-storage.local.compression.level
 
-Defines the zstd compression level to use.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
+Defines the zstd compression level to use.  Has no effect unless [`dt.file-storage.local.enabled`](#dtfile-storagelocalenabled) is `true`.  
 
 
 
@@ -5344,7 +5344,7 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_COMPRESSION_LEVEL</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_LOCAL_COMPRESSION_LEVEL</code></td>
     </tr>
   </tbody>
 </table>
@@ -5352,9 +5352,9 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
 
 ---
 
-### file.storage.extension.local.directory
+### dt.file-storage.local.directory
 
-Defines the local directory where files shall be stored.  Has no effect unless [`file.storage.extension.local.enabled`](#filestorageextensionlocalenabled) is `true`.  
+Defines the local directory where files shall be stored.  Has no effect unless [`dt.file-storage.local.enabled`](#dtfile-storagelocalenabled) is `true`.  
 
 
 
@@ -5374,7 +5374,7 @@ Defines the local directory where files shall be stored.  Has no effect unless [
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_DIRECTORY</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_LOCAL_DIRECTORY</code></td>
     </tr>
   </tbody>
 </table>
@@ -5382,7 +5382,7 @@ Defines the local directory where files shall be stored.  Has no effect unless [
 
 ---
 
-### file.storage.extension.local.enabled
+### dt.file-storage.local.enabled
 
 Whether the local file storage extension shall be enabled.  
 
@@ -5404,7 +5404,7 @@ Whether the local file storage extension shall be enabled.
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_LOCAL_ENABLED</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_LOCAL_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
@@ -5412,7 +5412,7 @@ Whether the local file storage extension shall be enabled.
 
 ---
 
-### file.storage.extension.memory.enabled
+### dt.file-storage.memory.enabled
 
 Whether the in-memory file storage extension shall be enabled.  
 
@@ -5434,7 +5434,7 @@ Whether the in-memory file storage extension shall be enabled.
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_MEMORY_ENABLED</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_MEMORY_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
@@ -5442,9 +5442,9 @@ Whether the in-memory file storage extension shall be enabled.
 
 ---
 
-### file.storage.extension.s3.access.key
+### dt.file-storage.s3.access.key
 
-Defines the S3 access key / username.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+Defines the S3 access key / username.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
 
 
 
@@ -5464,7 +5464,7 @@ Defines the S3 access key / username.  Has no effect unless [`file.storage.exten
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ACCESS_KEY</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_ACCESS_KEY</code></td>
     </tr>
   </tbody>
 </table>
@@ -5472,9 +5472,9 @@ Defines the S3 access key / username.  Has no effect unless [`file.storage.exten
 
 ---
 
-### file.storage.extension.s3.bucket
+### dt.file-storage.s3.bucket
 
-Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup,  even when S3 is not configured as default extension.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup,  even when S3 is not configured as default extension.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
 
 
 
@@ -5494,7 +5494,7 @@ Defines the name of the S3 bucket.  The existence of the bucket will be verified
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_BUCKET</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_BUCKET</code></td>
     </tr>
   </tbody>
 </table>
@@ -5502,9 +5502,9 @@ Defines the name of the S3 bucket.  The existence of the bucket will be verified
 
 ---
 
-### file.storage.extension.s3.compression.level
+### dt.file-storage.s3.compression.level
 
-Defines the zstd compression level to use.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+Defines the zstd compression level to use.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
 
 
 
@@ -5528,7 +5528,7 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_COMPRESSION_LEVEL</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_COMPRESSION_LEVEL</code></td>
     </tr>
   </tbody>
 </table>
@@ -5536,7 +5536,7 @@ Defines the zstd compression level to use.  Has no effect unless [`file.storage.
 
 ---
 
-### file.storage.extension.s3.enabled
+### dt.file-storage.s3.enabled
 
 Whether the s3 file storage extension shall be enabled.  
 
@@ -5558,7 +5558,7 @@ Whether the s3 file storage extension shall be enabled.
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ENABLED</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
@@ -5566,9 +5566,9 @@ Whether the s3 file storage extension shall be enabled.
 
 ---
 
-### file.storage.extension.s3.endpoint
+### dt.file-storage.s3.endpoint
 
-Defines the S3 endpoint URL.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+Defines the S3 endpoint URL.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
 
 
 
@@ -5588,7 +5588,7 @@ Defines the S3 endpoint URL.  Has no effect unless [`file.storage.extension.s3.e
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_ENDPOINT</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_ENDPOINT</code></td>
     </tr>
   </tbody>
 </table>
@@ -5596,9 +5596,9 @@ Defines the S3 endpoint URL.  Has no effect unless [`file.storage.extension.s3.e
 
 ---
 
-### file.storage.extension.s3.region
+### dt.file-storage.s3.region
 
-Defines the region of the S3 bucket.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+Defines the region of the S3 bucket.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
 
 
 
@@ -5618,7 +5618,7 @@ Defines the region of the S3 bucket.  Has no effect unless [`file.storage.extens
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_REGION</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_REGION</code></td>
     </tr>
   </tbody>
 </table>
@@ -5626,9 +5626,9 @@ Defines the region of the S3 bucket.  Has no effect unless [`file.storage.extens
 
 ---
 
-### file.storage.extension.s3.secret.key
+### dt.file-storage.s3.secret.key
 
-Defines the S3 secret key / password.  Has no effect unless [`file.storage.extension.s3.enabled`](#filestorageextensions3enabled) is `true`.  
+Defines the S3 secret key / password.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
 
 
 
@@ -5648,7 +5648,7 @@ Defines the S3 secret key / password.  Has no effect unless [`file.storage.exten
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>FILE_STORAGE_EXTENSION_S3_SECRET_KEY</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_SECRET_KEY</code></td>
     </tr>
   </tbody>
 </table>
