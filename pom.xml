@@ -86,7 +86,6 @@
     <lib.quarkus-github-api.version>1.330.0</lib.quarkus-github-api.version>
     <lib.quarkus-mailpit.version>2.0.0</lib.quarkus-mailpit.version>
     <lib.snappy-java.version>1.1.10.8</lib.snappy-java.version>
-    <lib.testcontainers-minio.version>1.21.4</lib.testcontainers-minio.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <quarkus.platform.version>3.31.0</quarkus.platform.version>
     <quarkus.wiremock.version>1.5.3</quarkus.wiremock.version>
@@ -292,12 +291,6 @@
         <groupId>org.xerial.snappy</groupId>
         <artifactId>snappy-java</artifactId>
         <version>${lib.snappy-java.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.testcontainers</groupId>
-        <artifactId>minio</artifactId>
-        <version>${lib.testcontainers-minio.version}</version>
       </dependency>
 
       <dependency>
