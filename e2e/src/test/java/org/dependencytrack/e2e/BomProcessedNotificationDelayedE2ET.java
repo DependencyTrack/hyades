@@ -19,6 +19,7 @@
 package org.dependencytrack.e2e;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import org.apache.commons.io.IOUtils;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.CreateVulnerabilityRequest;
@@ -31,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
 import java.time.Duration;
 import java.util.Base64;
