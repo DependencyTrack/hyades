@@ -395,7 +395,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefire-plugin.version}</version>
           <configuration>
-            <argLine>@{argLine} -Xmx256m</argLine>
+            <argLine>@{argLine} -Xmx1g</argLine>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             </systemPropertyVariables>
@@ -412,7 +412,7 @@
                 <goal>verify</goal>
               </goals>
               <configuration>
-                <argLine>@{argLine} -Xmx256m</argLine>
+                <argLine>@{argLine} -Xmx1g</argLine>
                 <includes>
                   <include>**/*IT.java</include>
                   <include>**/*E2ET.java</include>
