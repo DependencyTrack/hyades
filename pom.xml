@@ -395,7 +395,9 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefire-plugin.version}</version>
           <configuration>
-            <argLine>@{argLine} -Xmx1g -Dquarkus.log.level=WARN</argLine>
+            <argLine>
+              @{argLine} --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -Xmx1g -Dquarkus.log.level=WARN
+            </argLine>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             </systemPropertyVariables>
@@ -412,7 +414,9 @@
                 <goal>verify</goal>
               </goals>
               <configuration>
-                <argLine>@{argLine} -Xmx1g -Dquarkus.log.level=WARN</argLine>
+                <argLine>
+                  @{argLine} --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -Xmx1g -Dquarkus.log.level=WARN
+                </argLine>
                 <includes>
                   <include>**/*IT.java</include>
                   <include>**/*E2ET.java</include>
