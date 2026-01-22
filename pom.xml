@@ -396,7 +396,7 @@
           <version>${surefire-plugin.version}</version>
           <configuration>
             <argLine>
-              @{argLine} --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -Xmx1g -Dquarkus.log.level=WARN
+              @{argLine} --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -Xmx2g -Dquarkus.log.level=WARN
             </argLine>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -415,7 +415,7 @@
               </goals>
               <configuration>
                 <argLine>
-                  @{argLine} --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -Xmx1g -Dquarkus.log.level=WARN
+                  @{argLine} --add-opens=java.base/java.lang.invoke=ALL-UNNAMED -Xmx2g -Dquarkus.log.level=WARN
                 </argLine>
                 <includes>
                   <include>**/*IT.java</include>
