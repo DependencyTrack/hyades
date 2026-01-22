@@ -53,7 +53,7 @@ public class Project implements Serializable {
     @Column(name = "\"GROUP\"", columnDefinition = "VARCHAR")
     private String group;
 
-    @Column(name = "NAME", columnDefinition = "VARCHAR")
+    @Column(name = "NAME", columnDefinition = "VARCHAR", nullable = false)
     private String name;
 
     @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR")
@@ -91,7 +91,7 @@ public class Project implements Serializable {
     @OrderBy("name ASC")
     private List<Tag> tags;
 
-    @Column(name = "UUID")
+    @Column(name = "UUID", nullable = false)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 

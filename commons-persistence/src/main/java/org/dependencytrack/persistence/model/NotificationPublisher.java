@@ -38,25 +38,25 @@ public class NotificationPublisher extends PanacheEntityBase {
     @Column(name = "ID")
     private long id;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false)
     private String name;
 
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "PUBLISHER_CLASS")
+    @Column(name = "PUBLISHER_CLASS", nullable = false)
     private String publisherClass;
 
     @Column(name = "TEMPLATE")
     private String template;
 
-    @Column(name = "TEMPLATE_MIME_TYPE")
+    @Column(name = "TEMPLATE_MIME_TYPE", nullable = false)
     private String templateMimeType;
 
-    @Column(name = "DEFAULT_PUBLISHER")
+    @Column(name = "DEFAULT_PUBLISHER", nullable = false)
     private boolean defaultPublisher;
 
-    @Column(name = "UUID")
+    @Column(name = "UUID", nullable = false)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 

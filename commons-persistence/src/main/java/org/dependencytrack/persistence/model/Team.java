@@ -31,7 +31,7 @@ public class Team {
     @Column(name = "ID")
     private long id;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false)
     private String name;
 
     public long getId() {
