@@ -23,8 +23,8 @@ import com.github.packageurl.PackageURL;
 import org.dependencytrack.persistence.model.Component;
 import org.dependencytrack.persistence.model.RepositoryType;
 import org.dependencytrack.repometaanalyzer.model.MetaModel;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CargoMetaAnalyzerTest {
     @Test
@@ -33,10 +33,10 @@ public class CargoMetaAnalyzerTest {
         component.setPurl(new PackageURL("pkg:cargo/rand@0.7.2"));
 
         CargoMetaAnalyzer analyzer = new CargoMetaAnalyzer();
-        Assert.assertTrue(analyzer.isApplicable(component));
-        Assert.assertEquals(RepositoryType.CARGO, analyzer.supportedRepositoryType());
+        Assertions.assertTrue(analyzer.isApplicable(component));
+        Assertions.assertEquals(RepositoryType.CARGO, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);
-        Assert.assertNotNull(metaModel.getLatestVersion());
-        Assert.assertNotNull(metaModel.getPublishedTimestamp());
+        Assertions.assertNotNull(metaModel.getLatestVersion());
+        Assertions.assertNotNull(metaModel.getPublishedTimestamp());
     }    
 }
