@@ -83,7 +83,7 @@ public class Component extends PanacheEntityBase {
     @JoinColumn(name = "PROJECT_ID", nullable = false)
     private Project project;
 
-    @Column(name = "UUID")
+    @Column(name = "UUID", nullable = false)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 

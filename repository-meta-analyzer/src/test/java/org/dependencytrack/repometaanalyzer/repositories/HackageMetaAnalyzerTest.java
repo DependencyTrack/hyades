@@ -23,7 +23,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.dependencytrack.persistence.model.Component;
 import org.dependencytrack.persistence.model.RepositoryType;
 import org.dependencytrack.repometaanalyzer.model.MetaModel;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,9 +41,9 @@ class HackageMetaAnalyzerTest {
     void testAnalyzer() throws Exception {
         Component component = new Component();
         component.setPurl(new PackageURL("pkg:hackage/singletons-th@3.1"));
-        Assert.assertTrue(analyzer.isApplicable(component));
-        Assert.assertEquals(RepositoryType.HACKAGE, analyzer.supportedRepositoryType());
+        Assertions.assertTrue(analyzer.isApplicable(component));
+        Assertions.assertEquals(RepositoryType.HACKAGE, analyzer.supportedRepositoryType());
         MetaModel metaModel = analyzer.analyze(component);
-        Assert.assertNotNull(metaModel.getLatestVersion());
+        Assertions.assertNotNull(metaModel.getLatestVersion());
     }
 }

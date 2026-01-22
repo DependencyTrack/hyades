@@ -18,6 +18,7 @@
  */
 package org.dependencytrack.e2e;
 
+import org.apache.commons.io.IOUtils;
 import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
 import org.dependencytrack.apiserver.model.Finding;
@@ -26,7 +27,6 @@ import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
 import java.time.Duration;
 import java.util.Base64;

@@ -51,10 +51,10 @@ public class NotificationRule extends PanacheEntityBase {
     @Column(name = "ID")
     private long id;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "ENABLED")
+    @Column(name = "ENABLED", nullable = false)
     private boolean enabled;
 
     @Column(name = "SCOPE", nullable = false, columnDefinition = "varchar")
@@ -62,7 +62,7 @@ public class NotificationRule extends PanacheEntityBase {
     private NotificationScope scope;
 
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(name = "NOTIFICATION_LEVEL", columnDefinition = "notification_level")
+    @Column(name = "NOTIFICATION_LEVEL", columnDefinition = "notification_level", nullable = false)
     private NotificationLevel notificationLevel;
 
     @OneToMany
@@ -107,7 +107,7 @@ public class NotificationRule extends PanacheEntityBase {
     @Column(name = "PUBLISHER_CONFIG")
     private String publisherConfig;
 
-    @Column(name = "UUID")
+    @Column(name = "UUID", nullable = false)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 

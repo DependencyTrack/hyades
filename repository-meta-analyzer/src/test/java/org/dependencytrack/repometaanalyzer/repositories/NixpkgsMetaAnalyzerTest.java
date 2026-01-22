@@ -27,8 +27,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.HttpClients;
 import org.dependencytrack.persistence.model.Component;
 import org.dependencytrack.persistence.model.RepositoryType;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -74,10 +74,10 @@ public class NixpkgsMetaAnalyzerTest {
                                 }
                                 """.getBytes(),
                                 new ContentTypeHeader("application/json"))).withStatus(HttpStatus.SC_OK)));
-        Assert.assertTrue(analyzer.isApplicable(component));
-        Assert.assertEquals(RepositoryType.NIXPKGS, analyzer.supportedRepositoryType());
+        Assertions.assertTrue(analyzer.isApplicable(component));
+        Assertions.assertEquals(RepositoryType.NIXPKGS, analyzer.supportedRepositoryType());
         var metaModel = analyzer.analyze(component);
-        Assert.assertNotNull(metaModel.getComponent());
-        Assert.assertEquals("1.0.5", metaModel.getLatestVersion());
+        Assertions.assertNotNull(metaModel.getComponent());
+        Assertions.assertEquals("1.0.5", metaModel.getLatestVersion());
     }
 }

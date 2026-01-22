@@ -123,7 +123,7 @@ public class VulnerableSoftware extends PanacheEntityBase implements ICpe {
     @Column(name = "VERSIONSTARTINCLUDING")
     private String versionStartIncluding;
 
-    @Column(name = "VULNERABLE")
+    @Column(name = "VULNERABLE", nullable = false)
     private boolean vulnerable;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -135,7 +135,7 @@ public class VulnerableSoftware extends PanacheEntityBase implements ICpe {
     @OrderBy("id ASC")
     private List<Vulnerability> vulnerabilities;
 
-    @Column(name = "UUID")
+    @Column(name = "UUID", nullable = false)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 

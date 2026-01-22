@@ -38,20 +38,20 @@ public class Repository {
     @Column(name = "ID")
     private long id;
 
-    @Column(name = "TYPE", columnDefinition = "VARCHAR")
+    @Column(name = "TYPE", columnDefinition = "VARCHAR", nullable = false)
     @Convert(converter = RepositoryTypeConverter.class)
     private RepositoryType type;
 
-    @Column(name = "IDENTIFIER")
+    @Column(name = "IDENTIFIER", nullable = false)
     private String identifier;
 
     @Column(name = "URL")
     private String url;
 
-    @Column(name = "RESOLUTION_ORDER")
+    @Column(name = "RESOLUTION_ORDER", nullable = false)
     private int resolutionOrder;
 
-    @Column(name = "ENABLED")
+    @Column(name = "ENABLED", nullable = false)
     private boolean enabled;
 
     @Column(name = "INTERNAL")
@@ -67,7 +67,7 @@ public class Repository {
     @Column(name = "PASSWORD")
     private String password;
 
-    @Column(name = "UUID")
+    @Column(name = "UUID", nullable = false)
     @JdbcType(UUIDJdbcType.class)
     private UUID uuid;
 
