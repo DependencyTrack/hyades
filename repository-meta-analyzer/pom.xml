@@ -26,6 +26,7 @@
     <version>0.7.0-SNAPSHOT</version>
   </parent>
   <artifactId>repository-meta-analyzer</artifactId>
+  <packaging>quarkus</packaging>
 
   <properties>
     <project.parentBaseDir>${project.basedir}/..</project.parentBaseDir>
