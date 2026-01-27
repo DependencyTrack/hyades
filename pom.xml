@@ -471,9 +471,14 @@
           <artifactId>maven-release-plugin</artifactId>
           <version>3.3.1</version>
           <configuration>
+            <tagNameFormat>@{project.version}</tagNameFormat>
             <autoVersionSubmodules>true</autoVersionSubmodules>
-            <projectVersionPolicyId>SemVerVersionPolicy</projectVersionPolicyId>
-            <tagNameFormat>v@{project.version}</tagNameFormat>
+            <pushChanges>true</pushChanges>
+            <localCheckout>true</localCheckout>
+            <releaseProfiles>quick</releaseProfiles>
+            <preparationGoals>clean verify -Pquick</preparationGoals>
+            <completionGoals>clean</completionGoals>
+            <signTag>false</signTag>
           </configuration>
         </plugin>
       </plugins>
