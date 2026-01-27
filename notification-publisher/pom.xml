@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.dependencytrack</groupId>
     <artifactId>hyades</artifactId>
-    <version>0.7.0-alpha.0</version>
+    <version>0.7.1-alpha.0-SNAPSHOT</version>
   </parent>
   <artifactId>notification-publisher</artifactId>
   <packaging>quarkus</packaging>
