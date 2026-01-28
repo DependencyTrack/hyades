@@ -18,11 +18,9 @@
  */
 package org.dependencytrack.commonutil;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 public final class DateUtil {
 
@@ -43,19 +41,6 @@ public final class DateUtil {
         } catch (ParseException e) {
             return null;
         }
-    }
-
-    /**
-     * Formats a Date object into ISO 8601 format.
-     * @param date the Date object to convert
-     * @return a String representation of an ISO 8601 date
-     * @since 3.4.0
-     */
-    public static String toISO8601(final Date date) {
-        final TimeZone tz = TimeZone.getTimeZone("UTC");
-        final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
-        df.setTimeZone(tz);
-        return df.format(date);
     }
 
     public static Date fromISO8601(final String dateString) {

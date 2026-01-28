@@ -16,27 +16,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright (c) OWASP Foundation. All Rights Reserved.
  */
-package org.dependencytrack.commonutil;
+package org.dependencytrack.apiserver.model;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeParseException;
+import java.util.Map;
 
-public final class JsonUtil {
-
-    /**
-     * Private constructor.
-     */
-    private JsonUtil() { }
-
-    public static ZonedDateTime jsonStringToTimestamp(final String s) {
-        if (s == null) {
-            return null;
-        }
-        try {
-            return ZonedDateTime.parse(s);
-        } catch (DateTimeParseException e) {
-            return null;
-        }
-    }
-
+public record UpdateExtensionConfigRequest(Map<String, Object> config) {
 }

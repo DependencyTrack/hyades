@@ -30,151 +30,156 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import org.dependencytrack.apiserver.model.Analysis;
 import org.dependencytrack.apiserver.model.ApiKey;
-import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
-import org.dependencytrack.apiserver.model.ConfigProperty;
 import org.dependencytrack.apiserver.model.CreateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.CreateTeamRequest;
 import org.dependencytrack.apiserver.model.CreateVulnerabilityRequest;
+import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.Finding;
 import org.dependencytrack.apiserver.model.NotificationPublisher;
 import org.dependencytrack.apiserver.model.NotificationRule;
 import org.dependencytrack.apiserver.model.Project;
 import org.dependencytrack.apiserver.model.Team;
+import org.dependencytrack.apiserver.model.UpdateExtensionConfigRequest;
 import org.dependencytrack.apiserver.model.UpdateNotificationRuleRequest;
 import org.dependencytrack.apiserver.model.VulnerabilityPolicy;
 import org.dependencytrack.apiserver.model.WorkflowState;
 import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Path("/api/v1")
+@Path("/api")
 public interface ApiServerClient {
 
     @POST
-    @Path("/user/forceChangePassword")
+    @Path("/v1/user/forceChangePassword")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    void forcePasswordChange(@FormParam("username") final String username,
-                             @FormParam("password") final String password,
-                             @FormParam("newPassword") final String newPassword,
-                             @FormParam("confirmPassword") final String confirmPassword);
+    void forcePasswordChange(
+            @FormParam("username") String username,
+            @FormParam("password") String password,
+            @FormParam("newPassword") String newPassword,
+            @FormParam("confirmPassword") String confirmPassword);
 
     @POST
-    @Path("/user/login")
+    @Path("/v1/user/login")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    String login(@FormParam("username") final String username,
-                 @FormParam("password") final String password);
+    String login(
+            @FormParam("username") String username,
+            @FormParam("password") String password);
 
     @PUT
-    @Path("/team")
+    @Path("/v1/team")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Team createTeam(final CreateTeamRequest request);
+    Team createTeam(CreateTeamRequest request);
 
     @PUT
-    @Path("/team/{uuid}/key")
+    @Path("/v1/team/{uuid}/key")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.WILDCARD)
-    ApiKey createApiKey(@PathParam("uuid") final UUID teamUuid);
+    ApiKey createApiKey(@PathParam("uuid") UUID teamUuid);
 
     @POST
-    @Path("/permission/{permission}/team/{uuid}")
+    @Path("/v1/permission/{permission}/team/{uuid}")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
-    Team addPermissionToTeam(@PathParam("uuid") final UUID teamUuid,
-                             @PathParam("permission") final String permission);
+    Team addPermissionToTeam(
+            @PathParam("uuid") UUID teamUuid,
+            @PathParam("permission") String permission);
 
     @PUT
-    @Path("/bom")
+    @Path("/v1/bom")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    WorkflowTokenResponse uploadBom(final BomUploadRequest request);
+    WorkflowTokenResponse uploadBom(BomUploadRequest request);
 
     @GET
-    @Path("/event/token/{token}")
+    @Path("/v1/event/token/{token}")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.WILDCARD)
-    EventProcessingResponse isEventBeingProcessed(@PathParam("token") final String token);
+    EventProcessingResponse isEventBeingProcessed(@PathParam("token") String token);
 
     @PUT
-    @Path("/vulnerability")
+    @Path("/v1/vulnerability")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    void createVulnerability(final CreateVulnerabilityRequest request);
+    void createVulnerability(CreateVulnerabilityRequest request);
 
     @GET
-    @Path("/finding/project/{uuid}")
+    @Path("/v1/finding/project/{uuid}")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
-    List<Finding> getFindings(@PathParam("uuid") final UUID projectUuid, @QueryParam("suppressed") final boolean includeSuppressed);
+    List<Finding> getFindings(
+            @PathParam("uuid") UUID projectUuid,
+            @QueryParam("suppressed") boolean includeSuppressed);
 
     @GET
-    @Path("/project/lookup")
+    @Path("/v1/project/lookup")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
-    Project lookupProject(@QueryParam("name") final String name, @QueryParam("version") final String version);
+    Project lookupProject(
+            @QueryParam("name") String name,
+            @QueryParam("version") String version);
 
     @GET
-    @Path("/notification/publisher")
+    @Path("/v1/notification/publisher")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
     List<NotificationPublisher> getAllNotificationPublishers();
 
     @PUT
-    @Path("/notification/rule")
+    @Path("/v1/notification/rule")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    NotificationRule createNotificationRule(final CreateNotificationRuleRequest request);
+    NotificationRule createNotificationRule(CreateNotificationRuleRequest request);
 
     @POST
-    @Path("/notification/rule")
+    @Path("/v1/notification/rule")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    NotificationRule updateNotificationRule(final UpdateNotificationRuleRequest request);
-
-    @POST
-    @Path("/configProperty")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    ConfigProperty updateConfigProperty(final ConfigProperty configProperty);
-
-    @POST
-    @Path("/configProperty/aggregate")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    List<ConfigProperty> updateConfigProperties(final Collection<ConfigProperty> configProperties);
+    NotificationRule updateNotificationRule(UpdateNotificationRuleRequest request);
 
     @GET
-    @Path("/policy/vulnerability")
+    @Path("/v1/policy/vulnerability")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
     List<VulnerabilityPolicy> getAllVulnerabilityPolicies();
 
     @POST
-    @Path("/policy/vulnerability/bundle/sync")
+    @Path("/v1/policy/vulnerability/bundle/sync")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
     WorkflowTokenResponse triggerVulnerabilityPolicyBundleSync();
 
     @GET
-    @Path("/analysis")
+    @Path("/v1/analysis")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
-    Analysis getAnalysis(@QueryParam("project") final UUID projectUuid, @QueryParam("component") final UUID componentUuid,
-                         @QueryParam("vulnerability") final UUID vulnUuid);
+    Analysis getAnalysis(
+            @QueryParam("project") UUID projectUuid,
+            @QueryParam("component") UUID componentUuid,
+            @QueryParam("vulnerability") UUID vulnUuid);
 
     @POST
-    @Path("/finding/project/{uuid}/analyze")
+    @Path("/v1/finding/project/{uuid}/analyze")
     @Produces(MediaType.WILDCARD)
     @Consumes(MediaType.APPLICATION_JSON)
-    WorkflowTokenResponse analyzeProject(@PathParam("uuid") final UUID projectUuid);
+    WorkflowTokenResponse analyzeProject(@PathParam("uuid") UUID projectUuid);
 
     @GET
-    @Path("/workflow/token/{token}/status")
-    List<WorkflowState> getWorkflowStatus(@PathParam("token") final String token);
+    @Path("/v1/workflow/token/{token}/status")
+    List<WorkflowState> getWorkflowStatus(@PathParam("token") String token);
+
+    @PUT
+    @Path("/v2/extension-points/{extensionPoint}/extensions/{extension}/config")
+    @Produces(MediaType.WILDCARD)
+    @Consumes(MediaType.APPLICATION_JSON)
+    void updateExtensionConfig(
+            @PathParam("extensionPoint") String extensionPoint,
+            @PathParam("extension") String extension,
+            UpdateExtensionConfigRequest request);
 
 }

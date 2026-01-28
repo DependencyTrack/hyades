@@ -21,7 +21,3 @@ TBD
 ### Repository Metadata Analyzer
 
 TBD
-
-### Notification Publisher
-
-TBD
