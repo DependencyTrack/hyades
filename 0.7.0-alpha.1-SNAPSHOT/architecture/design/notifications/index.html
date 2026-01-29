@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/operations/configuration/overview/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/architecture/design/notifications/">
       
       
-        <link rel="prev" href="../../../architecture/design/workflow-state-tracking/">
+        <link rel="prev" href="../../decisions/012-extension-kv-store/">
       
       
-        <link rel="next" href="../datasources/">
+        <link rel="next" href="../workflow-state-tracking/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Overview - Hyades</title>
+        <title>Notifications - Hyades</title>
       
     
     
@@ -59,15 +59,15 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Overview - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/operations/configuration/overview.png" />
+<meta property="og:title" content="Notifications - Hyades" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/architecture/design/notifications.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/operations/configuration/overview/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/architecture/design/notifications/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Overview - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/operations/configuration/overview.png" />
+<meta property="twitter:title" content="Notifications - Hyades" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/architecture/design/notifications.png" />
 </head>
   
   
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sources" class="md-skip">
+        <a href="#overview" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              Notifications
             
           </span>
         </div>
@@ -285,11 +285,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../architecture/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   
@@ -305,8 +307,6 @@
   
   
   
-    
-  
   
     
     
@@ -314,13 +314,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../operations/configuration/overview/" class="md-tabs__link">
           
   
   
@@ -1048,24 +1046,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -1083,7 +1086,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1101,7 +1104,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   
@@ -1179,7 +1182,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
+      <a href="../../decisions/000-index/" class="md-nav__link">
         
   
   
@@ -1207,7 +1210,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../../decisions/001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -1235,7 +1238,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+      <a href="../../decisions/002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -1263,7 +1266,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+      <a href="../../decisions/003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -1291,7 +1294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+      <a href="../../decisions/004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -1319,7 +1322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../../decisions/005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -1347,7 +1350,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../../decisions/006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1375,7 +1378,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
+      <a href="../../decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1403,7 +1406,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/009-auth-and-roles/" class="md-nav__link">
+      <a href="../../decisions/009-auth-and-roles/" class="md-nav__link">
         
   
   
@@ -1431,7 +1434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
+      <a href="../../decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
         
   
   
@@ -1459,7 +1462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/011-notification-outbox/" class="md-nav__link">
+      <a href="../../decisions/011-notification-outbox/" class="md-nav__link">
         
   
   
@@ -1487,7 +1490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/012-extension-kv-store/" class="md-nav__link">
+      <a href="../../decisions/012-extension-kv-store/" class="md-nav__link">
         
   
   
@@ -1520,6 +1523,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1530,11 +1535,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
@@ -1555,7 +1560,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1570,10 +1575,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../architecture/design/notifications/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1589,6 +1619,152 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#emission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Emission
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Emission">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preliminary-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preliminary filtering
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relay
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Relay">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#concurrency-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#large-notification-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Large notification handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Publishing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#publishers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1601,7 +1777,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/design/workflow-state-tracking/" class="md-nav__link">
+      <a href="../workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -1641,29 +1817,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -1681,7 +1852,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1696,8 +1867,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1708,11 +1877,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
         
           
           <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
@@ -1733,7 +1902,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1748,35 +1917,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../operations/configuration/overview/" class="md-nav__link">
         
   
   
@@ -1792,57 +1936,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#sources" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sources
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#expressions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Expressions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#environment-variable-mapping" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Environment Variable Mapping
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1855,7 +1948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../datasources/" class="md-nav__link">
+      <a href="../../../operations/configuration/datasources/" class="md-nav__link">
         
   
   
@@ -1891,7 +1984,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/" class="md-nav__link">
+      <a href="../../../operations/database/" class="md-nav__link">
         
   
   
@@ -2560,7 +2653,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/operations/configuration/overview.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/design/notifications.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2568,60 +2661,156 @@
   
 
 
-  <h1>Overview</h1>
+  <h1>Notifications</h1>
 
-<p>Dependency-Track's configuration system is based on <a href="https://microprofile.io/specifications/config/">MicroProfile Config</a>,
-enabling it to support multiple <a href="#sources">sources</a>.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>A comprehensive list of supported config properties can be found in
-the <a href="../../../reference/configuration/api-server/">configuration reference</a>.</p>
-</div>
-<h2 id="sources">Sources<a class="headerlink" href="#sources" title="Permanent link">&para;</a></h2>
-<p>Config properties are loaded, <em>in order</em>, from the following sources:</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The notification system is responsible for informing users and external systems about events
+occurring in the platform. It consists of three phases:</p>
 <ol>
-<li>JVM system properties</li>
-<li>Environment variables</li>
-<li><code>${cwd}/.env</code> file</li>
-<li><code>${cwd}/config/application.properties</code> file</li>
-<li><code>application.properties</code> embedded in the application</li>
+<li><strong>Emission</strong>: Writing notifications to an outbox table</li>
+<li><strong>Relay</strong>: Polling the outbox, routing notifications to matching rules, and scheduling workflows</li>
+<li><strong>Publishing</strong>: Delivering notifications to destination systems via durable workflows</li>
 </ol>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p><code>${cwd}</code> refers to the <strong>c</strong>urrent <strong>w</strong>orking <strong>d</strong>irectory.
-When running an official container image, it is <code>/opt/owasp/dependency-track</code>.</p>
-</div>
-<p>Once a value is found, later sources will not be checked. For example, when Dependency-Track
-attempts to look up the config property <code>foo.bar</code>, the environment variable <code>FOO_BAR=123</code> is
-ignored if the JVM was launched with <code>-Dfoo.bar=321</code>.</p>
-<h2 id="expressions">Expressions<a class="headerlink" href="#expressions" title="Permanent link">&para;</a></h2>
-<p>Configuration values may use expressions, indicated by <code>${...}</code>, to reference each other:</p>
-<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
-<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="na">dt.datasource.foo.url</span><span class="o">=</span><span class="s">jdbc:postgresql://localhost:5432/dtrack</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="na">dt.datasource.bar.url</span><span class="o">=</span><span class="s">${dt.datasource.foo.url}</span>
-</span></code></pre></div></td></tr></table></div>
-<p>This is useful to avoid redundant definition of identical values.</p>
-<h2 id="environment-variable-mapping">Environment Variable Mapping<a class="headerlink" href="#environment-variable-mapping" title="Permanent link">&para;</a></h2>
-<p>The canonical representation of properties uses alphanumeric characters,
-separated by hyphens (<code>-</code>) and periods (<code>.</code>). For example:</p>
-<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="na">foo.BAR-baz</span><span class="o">=</span><span class="s">123</span>
-</span></code></pre></div></td></tr></table></div>
-<p>Environment variables commonly only support alphanumeric characters and underscores (<code>_</code>).
-To bridge this gap, Dependency-Track will use the following matching strategies,
-as <a href="https://download.eclipse.org/microprofile/microprofile-config-3.1/microprofile-config-spec-3.1.html#default_configsources.env.mapping">defined</a>
-by <a href="https://microprofile.io/specifications/config/">MicroProfile Config</a>:</p>
-<blockquote>
-<ol>
-<li>Exact match (i.e. <code>foo.BAR-baz</code>)</li>
-<li>Replace each character that is neither alphanumeric nor <code>_</code> with <code>_</code> (i.e. <code>foo_BAR_baz</code>)</li>
-<li>Replace each character that is neither alphanumeric nor <code>_</code> with <code>_</code>; then convert the name to upper case (i.e. <code>FOO_BAR_BAZ</code>)</li>
-</ol>
-</blockquote>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>The <a href="../../../reference/configuration/api-server/">configuration reference</a> includes the correct
-environment variable names for each listed config property.</p>
-</div>
+<pre class="mermaid"><code>---
+title: Notification system overview
+---
+flowchart LR
+    subgraph Emission
+        D["Domain logic"]
+        O[("NOTIFICATION_OUTBOX")]
+    end
+    subgraph Relay
+        R["Outbox relay"]
+        RT["Router"]
+    end
+    subgraph Publishing
+        W["dex engine"]
+        P["Publishers"]
+        E["External systems"]
+    end
+
+    D --&gt;|"INSERT"| O
+    R --&gt;|"DELETE RETURNING"| O
+    R --&gt; RT
+    RT --&gt;|"Schedule workflow"| W
+    W --&gt; P
+    P --&gt; E</code></pre>
+<p>This design follows the <a href="https://microservices.io/patterns/data/transactional-outbox.html">transactional outbox</a> pattern, as described in <a href="../../decisions/011-notification-outbox/">ADR-011</a>.
+It enables atomic emission of notifications, removing the need for external message brokers
+in the critical path.</p>
+<h2 id="emission">Emission<a class="headerlink" href="#emission" title="Permanent link">&para;</a></h2>
+<p>Notifications are emitted by inserting records into the <code>NOTIFICATION_OUTBOX</code> table.
+This can happen within the same database transaction that performs the business logic
+triggering the notification, thus avoiding the <a href="https://www.confluent.io/blog/dual-write-problem/">dual write problem</a>.</p>
+<pre class="mermaid"><code>erDiagram
+    NOTIFICATION_OUTBOX {
+        UUID ID PK
+        TIMESTAMPTZ TIMESTAMP
+        TEXT SCOPE
+        TEXT GROUP
+        TEXT LEVEL
+        BYTEA PAYLOAD
+    }</code></pre>
+<p>The <code>ID</code> column uses <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_7_(timestamp_and_random)">UUIDv7</a>, which combines global uniqueness with sortability.
+The <code>PAYLOAD</code> column contains the serialized notification in <a href="https://protobuf.dev/">Protobuf</a> format.
+Its schema is documented <a href="../../../reference/schemas/notification/">here</a>.</p>
+<h3 id="preliminary-filtering">Preliminary filtering<a class="headerlink" href="#preliminary-filtering" title="Permanent link">&para;</a></h3>
+<p>To reduce load on the outbox table, notifications are only inserted if <em>at least one</em>
+enabled notification rule could <em>potentially</em> match them. This check is performed during
+the <code>INSERT</code> operation using an <code>EXISTS</code> subquery against the <code>NOTIFICATIONRULE</code> table.</p>
+<p>Notifications that have no matching rules are discarded immediately.</p>
+<h2 id="relay">Relay<a class="headerlink" href="#relay" title="Permanent link">&para;</a></h2>
+<p>The outbox relay is a background process that continuously polls the <code>NOTIFICATION_OUTBOX</code> table,
+routes notifications to matching rules, and schedules publishing workflows.
+The polling interval is configurable via <a href="../../../reference/configuration/api-server/#notificationoutbox-relaypoll-interval-ms"><code>notification.outbox-relay.poll-interval-ms</code></a>,
+and defaults to 1 second.</p>
+<pre class="mermaid"><code>---
+title: Relay cycle
+---
+sequenceDiagram
+    participant D as Database
+    participant R as Relay
+    participant RT as Router
+    participant DE as dex engine
+
+    activate R
+    R -&gt;&gt; D: Begin TX
+    R -&gt;&gt; D: Acquire advisory lock
+    D --&gt;&gt; R: Lock acquired
+    R -&gt;&gt; D: DELETE FROM NOTIFICATION_OUTBOX&lt;br/&gt;RETURNING PAYLOAD
+    D --&gt;&gt; R: Notifications
+    R -&gt;&gt; RT: Route notifications
+    RT --&gt;&gt; R: Matched rules per notification
+    R -&gt;&gt; DE: Schedule workflows (atomic)
+    R -&gt;&gt; D: Commit TX
+    deactivate R</code></pre>
+<h3 id="concurrency-control">Concurrency control<a class="headerlink" href="#concurrency-control" title="Permanent link">&para;</a></h3>
+<p>Transaction-level <a href="https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS">advisory locks</a> prevent concurrent relay cycles across multiple API server instances.
+This ensures notifications are relayed in approximately the order they were emitted.
+The lack of concurrency is offset by batch processing. The batch size is configurable
+via <a href="../../../reference/configuration/api-server/#notificationoutbox-relaybatch-size"><code>notification.outbox-relay.batch-size</code></a>
+and defaults to 100.</p>
+<h3 id="routing">Routing<a class="headerlink" href="#routing" title="Permanent link">&para;</a></h3>
+<p>The router evaluates each notification against all enabled notification rules
+(a.k.a. <a href="../../../usage/notifications/overview/#alerts">alerts</a>).
+A rule matches if:</p>
+<ul>
+<li>Its scope matches the notification's scope</li>
+<li>Its level is equal to or less verbose than the notification's level</li>
+<li>The notification's group is in the rule's configured groups</li>
+<li>If the rule is limited to specific projects or tags, the notification's subject matches</li>
+</ul>
+<p>Routing is performed in batches, using a single SQL query with <code>UNNEST</code>,
+reducing database round trips.</p>
+<h3 id="large-notification-handling">Large notification handling<a class="headerlink" href="#large-notification-handling" title="Permanent link">&para;</a></h3>
+<p>Notifications exceeding a configurable size threshold (default: 64KiB) are offloaded to
+file storage, rather than being passed directly to the dex engine. This prevents large payloads
+(e.g. <code>PROJECT_VULN_ANALYSIS_COMPLETED</code>) from bloating the workflow history. 
+The publishing workflow retrieves the notification from file storage
+and deletes the file upon completion.</p>
+<h2 id="publishing">Publishing<a class="headerlink" href="#publishing" title="Permanent link">&para;</a></h2>
+<p>For each notification with <em>at least one</em> matched rule, a <em>Publish Notification</em> workflow
+is scheduled. The workflow coordinates delivery for all matched rules.</p>
+<pre class="mermaid"><code>---
+title: Publish notification workflow
+---
+sequenceDiagram
+    participant W as Workflow
+    participant A as Activity
+    participant D as Database
+    participant DE as Destination
+
+    activate W
+    par for each matched rule
+        W -&gt;&gt; A: Invoke activity
+        activate A
+        A -&gt;&gt; D: Get rule config
+        D --&gt;&gt; A: Publisher, template, config
+        A -&gt;&gt; DE: Publish notification
+        DE --&gt;&gt; A: Response
+        A --&gt;&gt; W: Result
+        deactivate A
+    end
+    deactivate W</code></pre>
+<p>Publishing for each rule is performed by a separate activity concurrently,
+allowing independent retries per rule. If delivery to one destination fails,
+it does not affect delivery to others.</p>
+<p>A workflow is considered successful if <em>at least one</em> rule's publishing succeeded.
+Conversely, if publishing for <em>all</em> rules failed, the entire workflow is marked as failed.</p>
+<h3 id="publishers">Publishers<a class="headerlink" href="#publishers" title="Permanent link">&para;</a></h3>
+<p>Publishers are implementations that deliver notifications to specific destination types.
+Built-in publishers include email, Kafka, Slack, Microsoft Teams, Jira, Webhook, and more.
+Refer to the <a href="../../../usage/notifications/publishers/">publishers</a> documentation for details.</p>
+<p>Publishers receive:</p>
+<ul>
+<li>The notification payload</li>
+<li>Rule-specific configuration (e.g. destination URL, credentials)</li>
+<li>A template renderer for formatting the notification</li>
+</ul>
+<h3 id="retries">Retries<a class="headerlink" href="#retries" title="Permanent link">&para;</a></h3>
+<p>Activities can signal retryable failures (e.g. rate limiting, temporary unavailability).
+The dex engine transparently handles retries with backoff. Non-retryable failures are terminal
+for a specific rule but do not affect other rules.</p>
 
 
 
