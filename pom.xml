@@ -83,7 +83,7 @@
     <lib.quarkus-github-api.version>1.330.0</lib.quarkus-github-api.version>
     <lib.snappy-java.version>1.1.10.8</lib.snappy-java.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
-    <quarkus.platform.version>3.31.0</quarkus.platform.version>
+    <quarkus.platform.version>3.31.1</quarkus.platform.version>
     <quarkus.wiremock.version>1.5.3</quarkus.wiremock.version>
     <lib.brotli.version>0.1.2</lib.brotli.version>
 
