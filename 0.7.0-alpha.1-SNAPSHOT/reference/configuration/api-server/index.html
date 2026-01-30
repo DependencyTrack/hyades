@@ -4822,28 +4822,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#taskcsafdocumentimportlockmaxduration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        task.csaf.document.import.lock.max.duration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#taskcsafdocumentimportlockminduration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        task.csaf.document.import.lock.min.duration
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#taskdefectdojouploadcron" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -10720,54 +10698,6 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_CSAF_DOCUMENT_IMPORT_CRON</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="taskcsafdocumentimportlockmaxduration">task.csaf.document.import.lock.max.duration<a class="headerlink" href="#taskcsafdocumentimportlockmaxduration" title="Permanent link">&para;</a></h3>
-<p>Maximum duration in ISO 8601 format for which the CSAF mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT15M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CSAF_DOCUMENT_IMPORT_LOCK_MAX_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="taskcsafdocumentimportlockminduration">task.csaf.document.import.lock.min.duration<a class="headerlink" href="#taskcsafdocumentimportlockminduration" title="Permanent link">&para;</a></h3>
-<p>Minimum duration in ISO 8601 format for which the CSAF mirror task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT1M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_CSAF_DOCUMENT_IMPORT_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
