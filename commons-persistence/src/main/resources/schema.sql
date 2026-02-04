@@ -89,7 +89,7 @@ BEGIN
     RAISE EXCEPTION 'Component with UUID % does not exist', "component_uuid";
   END IF;
 
-  FOR "v_vulnerability" IN SELECT "VULNID", "SOURCE", "V"."SEVERITY", "A"."SEVERITY" AS "SEVERITY_OVERRIDE", "CVSSV2BASESCORE", "CVSSV3BASESCORE"
+  FOR "v_vulnerability" IN SELECT "VULNID", "SOURCE", "V"."SEVERITY", "A"."SEVERITY" AS "SEVERITY_OVERRIDE", "CVSSV2BASESCORE", "CVSSV3BASESCORE", "V"."CVSSV4SCORE"
                            FROM "VULNERABILITY" AS "V"
                                   INNER JOIN "COMPONENTS_VULNERABILITIES" AS "CV"
                                              ON "CV"."COMPONENT_ID" = "v_component"."ID"
@@ -861,6 +861,8 @@ BEGIN
           , "CVSSV2SCORE"
           , "OWASPVECTOR"
           , "CVSSV3VECTOR"
+          , "CVSSV4SCORE"
+          , "CVSSV4VECTOR"
           , "SEVERITY"
           )
           SELECT tmp_component_mapping.target_id
@@ -878,6 +880,8 @@ BEGIN
                , "CVSSV2SCORE"
                , "OWASPVECTOR"
                , "CVSSV3VECTOR"
+               , "CVSSV4SCORE"
+               , "CVSSV4VECTOR"
                , "SEVERITY"
             FROM source_analysis
            INNER JOIN tmp_component_mapping
@@ -1527,6 +1531,8 @@ CREATE TABLE public."ANALYSIS" (
     "CVSSV2SCORE" numeric,
     "OWASPVECTOR" character varying(255),
     "CVSSV3VECTOR" character varying(255),
+    "CVSSV4SCORE" numeric,
+    "CVSSV4VECTOR" character varying(255),
     "SEVERITY" public.severity,
     "VULNERABILITY_POLICY_ID" bigint
 );
@@ -2690,6 +2696,8 @@ CREATE TABLE public."VULNERABILITY" (
     "CVSSV3EXPLOITSCORE" numeric,
     "CVSSV3IMPACTSCORE" numeric,
     "CVSSV3VECTOR" character varying(255),
+    "CVSSV4SCORE" numeric,
+    "CVSSV4VECTOR" character varying(255),
     "CWES" character varying(255),
     "DESCRIPTION" text,
     "DETAIL" text,
