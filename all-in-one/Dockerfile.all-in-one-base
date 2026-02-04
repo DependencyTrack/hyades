@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1
+
+FROM docker.io/library/eclipse-temurin:21-jre
+
+ARG S6_OVERLAY_VERSION=3.1.6.2
+ARG KAFKA_VERSION=4.1.1
+ARG KAFKA_TGZ=kafka_2.13-${KAFKA_VERSION}.tgz
+
+# Install system dependencies and redirect Nginx logs to standard output for Docker logging
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql \
+    nginx \
+    curl \
+    xz-utils \
+    netcat-openbsd \
+    gosu \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Download and extract S6-Overlay for process supervision
+RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz | tar -Jxpf - -C / \
+    && curl -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz | tar -Jxpf - -C /
+
+# Download and install Apache Kafka
+RUN curl -f -sL https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/${KAFKA_TGZ} | tar -xz -C /opt \
+    && mv /opt/kafka_* /opt/kafka
+
+# Configure environment variables for database path, Kafka home, and S6 initialization
+ENV PGDATA=/var/lib/postgresql/data \
+    KAFKA_HOME=/opt/kafka \
+    S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0 \
+    S6_VERBOSITY=1
+
+EXPOSE 80 9092

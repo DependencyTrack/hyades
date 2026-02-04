@@ -1,0 +1,53 @@
+# syntax=docker/dockerfile:1
+
+# Stage 1: Artifact Collection from Source Images
+FROM ghcr.io/dependencytrack/hyades-apiserver:snapshot AS source-apiserver
+FROM ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot AS source-repo-meta
+FROM ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot AS source-vuln-analyzer
+FROM ghcr.io/dependencytrack/hyades-frontend:snapshot AS source-frontend
+
+# Stage 2: Runtime Image Construction
+# Derived from local base image containing system-level dependencies
+FROM localhost/hyades-all-in-one-base:v1
+
+# 1. Copy backend application service binaries
+COPY --from=source-apiserver /opt/owasp/dependency-track/ /opt/hyades/apiserver/
+COPY --from=source-repo-meta /deployments/ /opt/hyades/repo-meta-analyzer/
+COPY --from=source-vuln-analyzer /deployments/ /opt/hyades/vuln-analyzer/
+
+# 2. Deploy frontend Single Page Application to web server root
+RUN rm -rf /var/www/html/*
+COPY --from=source-frontend /opt/owasp/dependency-track-frontend/ /var/www/html
+
+# 3. Define Nginx configuration for static hosting and API reverse proxying
+RUN cat <<'EOF' > /etc/nginx/nginx.conf
+events { worker_connections 1024; }
+
+http {
+    include /etc/nginx/mime.types;
+    sendfile on;
+
+    server {
+        listen 80;
+        root /var/www/html;
+
+        location / {
+            try_files $uri /index.html;
+        }
+
+        location /api {
+            proxy_pass http://127.0.0.1:8080;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    }
+}
+EOF
+
+# 4. Copy S6-Overlay configuration
+COPY s6-config /etc/s6-overlay/s6-rc.d
+RUN find /etc/s6-overlay/s6-rc.d -type f -exec chmod +x {} \; && \
+    find /etc/s6-overlay/s6-rc.d -type f -exec sed -i 's/\r$//' {} \;
+
+# Launch S6 initialization system to manage multi-process lifecycle
+ENTRYPOINT ["/init"]
