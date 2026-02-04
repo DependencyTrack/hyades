@@ -182,31 +182,33 @@
 
 
 
-| Field | Type | Description |
-| :---- | :--- | :---------- |
-| `uuid` | `string` |  | - |
-| `id` | `string` |  | - |
-| `source` | `string` |  | - |
-| `aliases` | [`Vulnerability.Alias[]`](#org-dependencytrack-policy-v1-Vulnerability-Alias) |  | - |
-| `cwes` | `int32[]` |  | - |
-| `created` | `google.protobuf.Timestamp` |  | - |
-| `published` | `google.protobuf.Timestamp` |  | - |
-| `updated` | `google.protobuf.Timestamp` |  | - |
-| `severity` | `string` |  | - |
-| `cvssv2_base_score` | `double` |  | - |
-| `cvssv2_impact_subscore` | `double` |  | - |
-| `cvssv2_exploitability_subscore` | `double` |  | - |
-| `cvssv2_vector` | `string` |  | - |
-| `cvssv3_base_score` | `double` |  | - |
-| `cvssv3_impact_subscore` | `double` |  | - |
-| `cvssv3_exploitability_subscore` | `double` |  | - |
-| `cvssv3_vector` | `string` |  | - |
-| `owasp_rr_likelihood_score` | `double` |  | - |
+| Field                             | Type | Description |
+|:----------------------------------| :--- | :---------- |
+| `uuid`                            | `string` |  | - |
+| `id`                              | `string` |  | - |
+| `source`                          | `string` |  | - |
+| `aliases`                         | [`Vulnerability.Alias[]`](#org-dependencytrack-policy-v1-Vulnerability-Alias) |  | - |
+| `cwes`                            | `int32[]` |  | - |
+| `created`                         | `google.protobuf.Timestamp` |  | - |
+| `published`                       | `google.protobuf.Timestamp` |  | - |
+| `updated`                         | `google.protobuf.Timestamp` |  | - |
+| `severity`                        | `string` |  | - |
+| `cvssv2_base_score`               | `double` |  | - |
+| `cvssv2_impact_subscore`          | `double` |  | - |
+| `cvssv2_exploitability_subscore`  | `double` |  | - |
+| `cvssv2_vector`                   | `string` |  | - |
+| `cvssv3_base_score`               | `double` |  | - |
+| `cvssv3_impact_subscore`          | `double` |  | - |
+| `cvssv3_exploitability_subscore`  | `double` |  | - |
+| `cvssv3_vector`                   | `string` |  | - |
+| `cvssv4_score`                    | `double` |  | - |
+| `cvssv4_vector`                   | `string` |  | - |
+| `owasp_rr_likelihood_score`       | `double` |  | - |
 | `owasp_rr_technical_impact_score` | `double` |  | - |
-| `owasp_rr_business_impact_score` | `double` |  | - |
-| `owasp_rr_vector` | `string` |  | - |
-| `epss_score` | `double` |  | - |
-| `epss_percentile` | `double` |  | - |
+| `owasp_rr_business_impact_score`  | `double` |  | - |
+| `owasp_rr_vector`                 | `string` |  | - |
+| `epss_score`                      | `double` |  | - |
+| `epss_percentile`                 | `double` |  | - |
 
 
 

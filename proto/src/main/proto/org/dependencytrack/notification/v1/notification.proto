@@ -205,6 +205,8 @@ message Vulnerability {
   optional string cvss_v2_vector = 16 [json_name = "cvssV2Vector"];
   optional string cvss_v3_vector = 17 [json_name = "cvssV3Vector"];
   optional string owasp_rr_vector = 18 [json_name = "owaspRRVector"];
+  optional double cvss_v4 = 19 [json_name = "cvssv4"];
+  optional string cvss_v4_vector = 20 [json_name = "cvssV4Vector"];
 
   message Alias {
     string id = 1 [json_name = "vulnId"];
