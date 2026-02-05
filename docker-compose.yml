@@ -213,7 +213,7 @@ services:
       # VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
       # VULN_MIRROR_TOPICS_RETENTION_MS: "43200000" # 12h
     volumes:
-      - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro"
+      - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro,Z"
     restart: on-failure
 
   redpanda-console:
@@ -255,7 +255,7 @@ services:
     ports:
       - "127.0.0.1:28080:8080"
     volumes:
-      - "./proto/src/main/proto:/etc/protos:ro"
+      - "./proto/src/main/proto:/etc/protos:ro,Z"
     restart: unless-stopped
 
   secret-init:
@@ -273,7 +273,7 @@ services:
     ports:
       - "127.0.0.1:9090:9090"
     volumes:
-      - "./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - "./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro,Z"
       - "prometheus-data:/prometheus"
     profiles:
       - monitoring
@@ -291,8 +291,8 @@ services:
       - "127.0.0.1:3000:3000"
     volumes:
       - "grafana-data:/var/lib/grafana"
-      - "./monitoring/grafana/dashboards:/etc/dashboards:ro"
-      - "./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro"
+      - "./monitoring/grafana/dashboards:/etc/dashboards:ro,Z"
+      - "./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro,Z"
     profiles:
       - monitoring
     restart: unless-stopped
