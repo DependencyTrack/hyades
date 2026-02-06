@@ -10,7 +10,7 @@ Docker container. It combines **Frontend**, **API Server**, **Repository & Vulne
 Linux / Windows (WSL2) & Docker / Podman
 
 ### 1. Build
-Use the `build-all-in-one.sh` script to create the images. It sequentially builds the base layer (system dependencies) and the final layer (application).
+Use the `build-all-in-one.sh` script to create the image. It executes a single multi-stage Docker build process.
 
 ```bash
 chmod +x build-all-in-one.sh
@@ -31,25 +31,26 @@ chmod +x run-all-in-one.sh
 
 ## 🛠 Part 2: Technical Solutions
 
-The project uses a two-stage build architecture and a declarative **S6-Overlay** configuration to ensure reliability, clarity, and ease of maintenance.
+The solution relies on **S6-Overlay** to manage multiple services within a single container. It acts as a lightweight 
+init system, ensuring the correct startup order and stability.
 
 ### 1. Dockerfile Architecture
-The build is split into two files to optimize caching and speed up CI/CD processes:
+The project uses a single **Multi-Stage Dockerfile** (`Dockerfile.all-in-one`). The build process is divided into three stages:
 
-* **`Dockerfile.all-in-one-base` (System Dependencies)**
-    * Contains "heavy" and rarely changing dependencies.
-    * Installs S6-Overlay binaries.
-    * Built rarely, only when infrastructure component versions are updated.
-* **`Dockerfile.all-in-one` (Application)**
-    * Inherits from `Dockerfile.all-in-one-base`.
-    * Copies application artifacts (JARs, Frontend) from official upstream images.
-    * Configures Nginx and Copies the static S6 service definitions from s6-config/. 
-    * Sanitizes scripts by automatically converting Windows line endings 
-      (CRLF) to UNIX format (LF) during the build.
-    * Built frequently, on every code change.
+* **Global ARGs**: Define versions for the API Server, Frontend, and Analyzers, allowing specific releases to be built via build arguments (default is `snapshot`).
+* **Stage 1: Base System Setup (`base-system`)**:
+  * Based on `eclipse-temurin:25-jre`
+  * Installs system dependencies, **Kafka**, and **S6-Overlay** binaries.
+  * Configures environment variables for PostgreSQL and Kafka.
+* **Stage 2: Artifact Collection**:
+  * Fetches compiled artifacts (JARs) and frontend static files from the official upstream Docker images.
+* **Stage 3: Final Image Construction**:
+  * Combines the **Base System** with the collected **Artifacts**.
+  * Configures **Nginx** to listen on port **9090** (allowing non-root execution).
+  * Copies and sanitizes the `s6-config/` service definitions (CRLF to LF).
 
 ### 2. Process Management (S6-Overlay)
-Since the container runs multiple services simultaneously, **S6-Overlay** is used as the init system (PID 1).
+Operating as the container's root process (PID 1), **S6-Overlay** actively supervises the entire service stack. 
 
 It ensures:
 * **Dependencies:** Strict startup order (Postgres/Kafka -> API -> Analyzers -> Nginx).

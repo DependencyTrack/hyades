@@ -1,14 +1,51 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: Artifact Collection from Source Images
-FROM ghcr.io/dependencytrack/hyades-apiserver:snapshot AS source-apiserver
-FROM ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot AS source-repo-meta
-FROM ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot AS source-vuln-analyzer
-FROM ghcr.io/dependencytrack/hyades-frontend:snapshot AS source-frontend
+ARG API_SERVER_TAG=snapshot
+ARG FRONTEND_TAG=snapshot
+ARG REPO_META_ANALYZER_TAG=snapshot
+ARG VULN_ANALYZER_TAG=snapshot
 
-# Stage 2: Runtime Image Construction
+# Stage 1: Base System Setup
+FROM docker.io/library/eclipse-temurin:25-jre as base-system
+
+ARG S6_OVERLAY_VERSION=3.1.6.2
+ARG KAFKA_VERSION=4.1.1
+
+# Install system dependencies and redirect Nginx logs to standard output for Docker logging
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql \
+    nginx \
+    curl \
+    xz-utils \
+    netcat-openbsd \
+    gosu \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Download and extract S6-Overlay for process supervision
+RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz | tar -Jxpf - -C / \
+    && curl -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz | tar -Jxpf - -C /
+
+# Download and install Apache Kafka
+RUN curl -f -sL https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_2.13-${KAFKA_VERSION}.tgz | tar -xz -C /opt \
+    && mv /opt/kafka_* /opt/kafka
+
+# Configure environment variables for database path, Kafka home, and S6 initialization
+ENV PGDATA=/var/lib/postgresql/data \
+    KAFKA_HOME=/opt/kafka \
+    S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0 \
+    S6_VERBOSITY=1
+
+# Stage 2: Artifact Collection from Source Images
+FROM ghcr.io/dependencytrack/hyades-apiserver:${API_SERVER_TAG} AS source-apiserver
+FROM ghcr.io/dependencytrack/hyades-repository-meta-analyzer:${REPO_META_ANALYZER_TAG} AS source-repo-meta
+FROM ghcr.io/dependencytrack/hyades-vulnerability-analyzer:${VULN_ANALYZER_TAG} AS source-vuln-analyzer
+FROM ghcr.io/dependencytrack/hyades-frontend:${FRONTEND_TAG} AS source-frontend
+
+# Stage 3: Runtime Image Construction
 # Derived from local base image containing system-level dependencies
-FROM localhost/hyades-all-in-one-base:v1
+FROM base-system
 
 # 1. Copy backend application service binaries
 COPY --from=source-apiserver /opt/owasp/dependency-track/ /opt/hyades/apiserver/
@@ -28,7 +65,7 @@ http {
     sendfile on;
 
     server {
-        listen 80;
+        listen 9090;
         root /var/www/html;
 
         location / {
@@ -48,6 +85,8 @@ EOF
 COPY s6-config /etc/s6-overlay/s6-rc.d
 RUN find /etc/s6-overlay/s6-rc.d -type f -exec chmod +x {} \; && \
     find /etc/s6-overlay/s6-rc.d -type f -exec sed -i 's/\r$//' {} \;
+
+EXPOSE 9090 9092
 
 # Launch S6 initialization system to manage multi-process lifecycle
 ENTRYPOINT ["/init"]
