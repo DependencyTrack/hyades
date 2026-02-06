@@ -22,26 +22,5 @@ if [ -z "$JAR_FILE" ]; then
   exit 1
 fi
 until nc -z localhost 5432; do sleep 1; done
-until nc -z localhost 9092; do sleep 1; done
-sleep 10
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.repo-meta-analysis.component --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.repo-meta-analysis.result --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.vuln-analysis.component --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.vuln-analysis.result --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.vuln-analysis.result.processed --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.vuln-analysis.scanner.result --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.new-vulnerability --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.new-vulnerable-dependency --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.analyzer --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.bom --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.configuration --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.datasource-mirroring --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.file-system --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.indexing-service --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.integration --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.project-audit-change --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.repository --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.user --partitions 1 --replication-factor 1 || true
-$KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --if-not-exists --topic dtrack.notification.vex --partitions 1 --replication-factor 1 || true
 exec java  -jar "$JAR_FILE"
 
