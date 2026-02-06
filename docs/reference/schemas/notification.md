@@ -563,6 +563,8 @@
 | `cvss_v2_vector` | `string` |  | - |
 | `cvss_v3_vector` | `string` |  | - |
 | `owasp_rr_vector` | `string` |  | - |
+| `cvss_v4` | `double` |  | - |
+| `cvss_v4_vector` | `string` |  | - |
 
 
 
