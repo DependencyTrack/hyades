@@ -1542,6 +1542,96 @@ Defines the interval in milliseconds at which the maintenance worker will execut
 
 ---
 
+### dt.dex-engine.metrics.collector.enabled
+
+Defines whether the metrics collector should be enabled.  <br/><br/>  The collector is responsible for collecting metrics from  the database, such as the distribution of workflow run statuses,  task queue capacities and depths, and more.  <br/><br/>  It is recommended to keep it enabled for monitoring purposes,  but may be disabled in case it generates undesired load.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_METRICS_COLLECTOR_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.metrics.collector.initial-delay-ms
+
+Defines the initial delay in milliseconds after which the metrics collector will first run.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>15000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_METRICS_COLLECTOR_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.metrics.collector.interval-ms
+
+Defines the interval in milliseconds in which the metrics collector runs.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>30000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_METRICS_COLLECTOR_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### dt.dex-engine.run-history-cache.evict-after-access-ms
 
 Defines the time in milliseconds for which workflow run event histories are cached.  <br/><br/>  Histories are only cached for non-terminal runs, to improve performance of replay.  Cached histories are automatically evicted when the corresponding run terminates.  
