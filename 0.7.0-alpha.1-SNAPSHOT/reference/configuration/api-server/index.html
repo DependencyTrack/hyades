@@ -2930,6 +2930,39 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dtdex-enginemetricscollectorenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.metrics.collector.enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-enginemetricscollectorinitial-delay-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.metrics.collector.initial-delay-ms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-enginemetricscollectorinterval-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.metrics.collector.interval-ms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dtdex-enginerun-history-cacheevict-after-access-ms" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6924,6 +6957,78 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_MAINTENANCE_WORKER_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-enginemetricscollectorenabled">dt.dex-engine.metrics.collector.enabled<a class="headerlink" href="#dtdex-enginemetricscollectorenabled" title="Permanent link">&para;</a></h3>
+<p>Defines whether the metrics collector should be enabled.  <br/><br/>  The collector is responsible for collecting metrics from  the database, such as the distribution of workflow run statuses,  task queue capacities and depths, and more.  <br/><br/>  It is recommended to keep it enabled for monitoring purposes,  but may be disabled in case it generates undesired load.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_METRICS_COLLECTOR_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-enginemetricscollectorinitial-delay-ms">dt.dex-engine.metrics.collector.initial-delay-ms<a class="headerlink" href="#dtdex-enginemetricscollectorinitial-delay-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the initial delay in milliseconds after which the metrics collector will first run.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>15000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_METRICS_COLLECTOR_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-enginemetricscollectorinterval-ms">dt.dex-engine.metrics.collector.interval-ms<a class="headerlink" href="#dtdex-enginemetricscollectorinterval-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the interval in milliseconds in which the metrics collector runs.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>30000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_METRICS_COLLECTOR_INTERVAL_MS</code></td>
     </tr>
   </tbody>
 </table>
