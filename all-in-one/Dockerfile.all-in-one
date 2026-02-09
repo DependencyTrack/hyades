@@ -5,13 +5,21 @@ ARG FRONTEND_TAG=snapshot
 ARG REPO_META_ANALYZER_TAG=snapshot
 ARG VULN_ANALYZER_TAG=snapshot
 
-# Stage 1: Base System Setup
-FROM docker.io/library/eclipse-temurin:25-jre as base-system
+FROM ghcr.io/dependencytrack/hyades-apiserver:${API_SERVER_TAG} AS source-apiserver
+FROM ghcr.io/dependencytrack/hyades-repository-meta-analyzer:${REPO_META_ANALYZER_TAG} AS source-repo-meta
+FROM ghcr.io/dependencytrack/hyades-vulnerability-analyzer:${VULN_ANALYZER_TAG} AS source-vuln-analyzer
+FROM ghcr.io/dependencytrack/hyades-frontend:${FRONTEND_TAG} AS source-frontend
+
+FROM docker.io/library/eclipse-temurin:25-jre
 
 ARG S6_OVERLAY_VERSION=3.1.6.2
 ARG KAFKA_VERSION=4.1.1
 
-# Install system dependencies and redirect Nginx logs to standard output for Docker logging
+ENV PGDATA=/var/lib/postgresql/data \
+    KAFKA_HOME=/opt/kafka \
+    S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0 \
+    S6_VERBOSITY=1
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql \
     nginx \
@@ -23,40 +31,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-# Download and extract S6-Overlay for process supervision
+# Install process supervisor for multi-service management
 RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz | tar -Jxpf - -C / \
     && curl -L https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz | tar -Jxpf - -C /
 
-# Download and install Apache Kafka
+# Install Apache Kafka
 RUN curl -f -sL https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_2.13-${KAFKA_VERSION}.tgz | tar -xz -C /opt \
-    && mv /opt/kafka_* /opt/kafka
-RUN sed -i 's|log.dirs=.*|log.dirs=/var/lib/kafka/data|' /opt/kafka/config/server.properties
+    && mv /opt/kafka_* /opt/kafka \
+    && sed -i 's|log.dirs=.*|log.dirs=/var/lib/kafka/data|' /opt/kafka/config/server.properties
 
-# Configure environment variables for database path, Kafka home, and S6 initialization
-ENV PGDATA=/var/lib/postgresql/data \
-    KAFKA_HOME=/opt/kafka \
-    S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0 \
-    S6_VERBOSITY=1
+RUN mkdir -p /var/lib/postgresql/data /var/lib/kafka/data && \
+    chown -R postgres:postgres /var/lib/postgresql/data && \
+    chmod 700 /var/lib/postgresql/data
 
-# Stage 2: Artifact Collection from Source Images
-FROM ghcr.io/dependencytrack/hyades-apiserver:${API_SERVER_TAG} AS source-apiserver
-FROM ghcr.io/dependencytrack/hyades-repository-meta-analyzer:${REPO_META_ANALYZER_TAG} AS source-repo-meta
-FROM ghcr.io/dependencytrack/hyades-vulnerability-analyzer:${VULN_ANALYZER_TAG} AS source-vuln-analyzer
-FROM ghcr.io/dependencytrack/hyades-frontend:${FRONTEND_TAG} AS source-frontend
-
-# Stage 3: Runtime Image Construction
-FROM base-system
-
-# 1. Copy backend application service binaries
-COPY --from=source-apiserver /opt/owasp/dependency-track/ /opt/hyades/apiserver/
-COPY --from=source-repo-meta /deployments/ /opt/hyades/repo-meta-analyzer/
-COPY --from=source-vuln-analyzer /deployments/ /opt/hyades/vuln-analyzer/
-
-# 2. Deploy frontend Single Page Application to web server root
-RUN rm -rf /var/www/html/*
-COPY --from=source-frontend /opt/owasp/dependency-track-frontend/ /var/www/html
-
-# 3. Define Nginx configuration for static hosting and API reverse proxying
+# Establish routing for static assets and backend communication
 RUN cat <<'EOF' > /etc/nginx/nginx.conf
 events { worker_connections 1024; }
 
@@ -81,18 +69,21 @@ http {
 }
 EOF
 
-# 4. Copy S6-Overlay configuration
+# Integrate service definitions and normalize line endings for scripts
 COPY s6-config /etc/s6-overlay/s6-rc.d
 RUN find /etc/s6-overlay/s6-rc.d -type f -exec chmod +x {} \; && \
     find /etc/s6-overlay/s6-rc.d -type f -exec sed -i 's/\r$//' {} \;
 
-RUN mkdir -p /var/lib/postgresql/data /var/lib/kafka/data && \
-    chown -R postgres:postgres /var/lib/postgresql/data && \
-    chmod 700 /var/lib/postgresql/data
+COPY --from=source-apiserver /opt/owasp/dependency-track/ /opt/hyades/apiserver/
+COPY --from=source-repo-meta /deployments/ /opt/hyades/repo-meta-analyzer/
+COPY --from=source-vuln-analyzer /deployments/ /opt/hyades/vuln-analyzer/
+
+RUN rm -rf /var/www/html/*
+COPY --from=source-frontend /opt/owasp/dependency-track-frontend/ /var/www/html
 
 VOLUME ["/var/lib/postgresql/data", "/var/lib/kafka/data"]
 
 EXPOSE 9090
 
-# Launch S6 initialization system to manage multi-process lifecycle
+# Utilize init system to ensure correct service startup order and signal handling
 ENTRYPOINT ["/init"]
