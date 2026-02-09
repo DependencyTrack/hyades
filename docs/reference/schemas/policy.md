@@ -207,6 +207,8 @@
 | `owasp_rr_vector` | `string` |  | - |
 | `epss_score` | `double` |  | - |
 | `epss_percentile` | `double` |  | - |
+| `cvssv4_score` | `double` |  | - |
+| `cvssv4_vector` | `string` |  | - |
 
 
 

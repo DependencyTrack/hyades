@@ -275,6 +275,8 @@ or `CRITICAL`
 | `cvssv3_impact_subscore`          | `double`                                 | [CVSSv3] impact sub score                  |
 | `cvssv3_exploitability_subscore`  | `double`                                 | [CVSSv3] exploitability sub score          |
 | `cvssv3_vector`                   | `string`                                 | [CVSSv3] vector                            |
+| `cvssv4_score`                    | `double`                                 | [CVSSv4] score                             |
+| `cvssv4_vector`                   | `string`                                 | [CVSSv4] vector                            |
 | `owasp_rr_likelihood_score`       | `double`                                 | [OWASP Risk Rating] likelihood score       |
 | `owasp_rr_technical_impact_score` | `double`                                 | [OWASP Risk Rating] technical impact score |
 | `owasp_rr_business_impact_score`  | `double`                                 | [OWASP Risk Rating] business impact score  |
@@ -305,6 +307,7 @@ to unlock even more use cases:
 [C-style languages]: https://en.wikipedia.org/wiki/List_of_C-family_programming_languages
 [CVSSv2]: https://www.first.org/cvss/v2/guide
 [CVSSv3]: https://www.first.org/cvss/v3.0/specification-document
+[CVSSv4]: https://www.first.org/cvss/v4.0/specification-document
 [CPE]: https://csrc.nist.gov/projects/security-content-automation-protocol/specifications/cpe
 [CWE]: https://cwe.mitre.org/
 [Common Expression Language]: https://cel.dev/

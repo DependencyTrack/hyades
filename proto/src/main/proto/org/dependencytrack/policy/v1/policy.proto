@@ -143,6 +143,8 @@ message Vulnerability {
   optional string owasp_rr_vector = 32;
   optional double epss_score = 33;
   optional double epss_percentile = 34;
+  optional double cvssv4_score = 36;
+  optional string cvssv4_vector = 37;
 
   message Alias {
     string id = 1;
