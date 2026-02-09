@@ -1,9 +1,9 @@
 #!/bin/bash
 export PGDATA=/var/lib/postgresql/data
-export KAFKA_HOME=/opt/kafka
 export PG_BIN_DIR=$(ls -d /usr/lib/postgresql/*/bin | head -n 1)
 
 set -e
+echo "[init-postgres] Initializing database storage..."
 if [ -z "$(ls -A "$PGDATA" 2>/dev/null)" ]; then
     mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA"
     gosu postgres "$PG_BIN_DIR/initdb" -D "$PGDATA"

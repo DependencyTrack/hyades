@@ -1,18 +1,20 @@
 #!/bin/bash
-export KAFKA_HOME=/opt/kafka
+set -e
 
-if [ -f "$KAFKA_HOME/config/kraft/server.properties" ]; then
-    KRAFT_CONFIG="$KAFKA_HOME/config/kraft/server.properties"
+export KAFKA_HOME="/opt/kafka"
+KAFKA_CONFIG="$KAFKA_HOME/config/server.properties"
+KAFKA_LOG_DIR="/var/lib/kafka/data"
+
+# Check for existing metadata to avoid formatting the storage more than once.
+if [ ! -f "$KAFKA_LOG_DIR/meta.properties" ]; then
+    echo "[init-kafka] Storage at $KAFKA_LOG_DIR is not formatted. Formatting now..."
+
+    CLUSTER_ID=$("$KAFKA_HOME/bin/kafka-storage.sh" random-uuid)
+    "$KAFKA_HOME/bin/kafka-storage.sh" format -t "$CLUSTER_ID" -c "$KAFKA_CONFIG" --standalone
+
+    echo "[init-kafka] Formatting complete with Cluster ID: $CLUSTER_ID"
 else
-    KRAFT_CONFIG="$KAFKA_HOME/config/server.properties"
+    echo "[init-kafka] Storage already formatted. Metadata found in $KAFKA_LOG_DIR"
 fi
 
-if [ ! -f "/tmp/kafka-logs/meta.properties" ]; then
-    echo "[init-kafka] Formatting Kafka storage..."
-    CLUSTER_ID=$($KAFKA_HOME/bin/kafka-storage.sh random-uuid)
-
-    $KAFKA_HOME/bin/kafka-storage.sh format -t $CLUSTER_ID -c $KRAFT_CONFIG --standalone || exit 1
-fi
-
-echo "[init-kafka] Storage formatted successfully."
 exit 0

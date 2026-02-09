@@ -1,21 +1,23 @@
 #!/bin/bash
-export PGDATA=/var/lib/postgresql/data
-export KAFKA_HOME=/opt/kafka
-export PG_BIN_DIR=$(ls -d /usr/lib/postgresql/*/bin | head -n 1)
-
 export QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:5432/dtrack
 export QUARKUS_DATASOURCE_USERNAME=dtrack
 export QUARKUS_DATASOURCE_PASSWORD=dtrack
 export KAFKA_BOOTSTRAP_SERVERS=localhost:9092
 export SCANNER_INTERNAL_ENABLED=true
 export SCANNER_OSSINDEX_ENABLED=true
+export DTRACK_INTERNAL_CLUSTER_ID=hyades-default-cluster
+
+echo "[vuln-analyzer] Waiting for Postgres..."
+until pg_isready -h localhost -p 5432 -U postgres; do
+  sleep 1
+done
+
+echo "[vuln-analyzer] Waiting for database schema ..."
+until gosu postgres psql -d dtrack -t -c "SELECT 1 FROM pg_tables WHERE tablename='CONFIGPROPERTY';" | grep -q 1; do
+  sleep 5
+done
+echo "[vuln-analyzer] Schema is ready!"
 
 echo "[vuln-analyzer] Starting..."
-JAR_FILE=$(find /opt/hyades/vuln-analyzer -maxdepth 1 -name "*.jar" | head -n 1)
-if [ -z "$JAR_FILE" ]; then
-  echo "ERROR: No JAR found in /opt/hyades/vuln-analyzer"
-  exit 1
-fi
-until nc -z localhost 5432; do sleep 1; done
-exec java  -jar "$JAR_FILE"
+exec java  -jar "/opt/hyades/vuln-analyzer/quarkus-run.jar"
 

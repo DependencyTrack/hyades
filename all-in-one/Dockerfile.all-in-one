@@ -30,6 +30,7 @@ RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v${S
 # Download and install Apache Kafka
 RUN curl -f -sL https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_2.13-${KAFKA_VERSION}.tgz | tar -xz -C /opt \
     && mv /opt/kafka_* /opt/kafka
+RUN sed -i 's|log.dirs=.*|log.dirs=/var/lib/kafka/data|' /opt/kafka/config/server.properties
 
 # Configure environment variables for database path, Kafka home, and S6 initialization
 ENV PGDATA=/var/lib/postgresql/data \
@@ -44,7 +45,6 @@ FROM ghcr.io/dependencytrack/hyades-vulnerability-analyzer:${VULN_ANALYZER_TAG} 
 FROM ghcr.io/dependencytrack/hyades-frontend:${FRONTEND_TAG} AS source-frontend
 
 # Stage 3: Runtime Image Construction
-# Derived from local base image containing system-level dependencies
 FROM base-system
 
 # 1. Copy backend application service binaries
@@ -86,7 +86,13 @@ COPY s6-config /etc/s6-overlay/s6-rc.d
 RUN find /etc/s6-overlay/s6-rc.d -type f -exec chmod +x {} \; && \
     find /etc/s6-overlay/s6-rc.d -type f -exec sed -i 's/\r$//' {} \;
 
-EXPOSE 9090 9092
+RUN mkdir -p /var/lib/postgresql/data /var/lib/kafka/data && \
+    chown -R postgres:postgres /var/lib/postgresql/data && \
+    chmod 700 /var/lib/postgresql/data
+
+VOLUME ["/var/lib/postgresql/data", "/var/lib/kafka/data"]
+
+EXPOSE 9090
 
 # Launch S6 initialization system to manage multi-process lifecycle
 ENTRYPOINT ["/init"]
