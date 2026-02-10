@@ -92,6 +92,8 @@ nav:
     - Secret Management:
         - Overview: usage/secret-management/overview.md
         - Providers: usage/secret-management/providers.md
+    - Access Control:
+        - Roles: usage/access-control/roles.md
 - Architecture:
     - Overview: architecture/index.md
     - Decisions:
@@ -108,6 +110,7 @@ nav:
         - "ADR-011: Notification Outbox": architecture/decisions/011-notification-outbox.md
         - "ADR-012: Extension KV Store": architecture/decisions/012-extension-kv-store.md
     - Design:
+        - Durable Execution: architecture/design/durable-execution.md
         - Notifications: architecture/design/notifications.md
         - Workflow State Tracking: architecture/design/workflow-state-tracking.md
 - Operations:
@@ -116,12 +119,11 @@ nav:
         - Data Sources: operations/configuration/datasources.md
     - Database: operations/database.md
 - Development:
-  - Roles:
-    - Overview: development/Roles/overview.md
   - Overview: development/overview.md
   - Building: development/building.md
   - Testing: development/testing.md
   - Database Migrations: development/database-migrations.md
+  - Durable Execution: development/durable-execution.md
   - Documentation: development/documentation.md
 - Reference:
     - Configuration:
