@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/architecture/decisions/011-notification-outbox/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/architecture/design/durable-execution/">
       
       
-        <link rel="prev" href="../010-vulnerability-datasource-extension-point/">
+        <link rel="prev" href="../../decisions/012-extension-kv-store/">
       
       
-        <link rel="next" href="../012-extension-kv-store/">
+        <link rel="next" href="../notifications/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>ADR-011: Notification Outbox - Hyades</title>
+        <title>Durable Execution - Hyades</title>
       
     
     
@@ -59,15 +59,15 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="ADR-011: Notification Outbox - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/architecture/decisions/011-notification-outbox.png" />
+<meta property="og:title" content="Durable Execution - Hyades" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/architecture/design/durable-execution.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/architecture/decisions/011-notification-outbox/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/architecture/design/durable-execution/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="ADR-011: Notification Outbox - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/architecture/decisions/011-notification-outbox.png" />
+<meta property="twitter:title" content="Durable Execution - Hyades" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/architecture/design/durable-execution.png" />
 </head>
   
   
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#context" class="md-skip">
+        <a href="#overview" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ADR-011: Notification Outbox
+              Durable Execution
             
           </span>
         </div>
@@ -1205,8 +1205,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1217,11 +1215,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
@@ -1242,7 +1240,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1260,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../000-index/" class="md-nav__link">
+      <a href="../../decisions/000-index/" class="md-nav__link">
         
   
   
@@ -1288,7 +1286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../../decisions/001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -1316,7 +1314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../002-workflow-orchestration/" class="md-nav__link">
+      <a href="../../decisions/002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -1344,7 +1342,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../003-notification-publishing/" class="md-nav__link">
+      <a href="../../decisions/003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -1372,7 +1370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../004-file-storage-plugin/" class="md-nav__link">
+      <a href="../../decisions/004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -1400,7 +1398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../../decisions/005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -1428,7 +1426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../../decisions/006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1456,7 +1454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../007-spec-first-rest-api-v2/" class="md-nav__link">
+      <a href="../../decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1484,7 +1482,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../009-auth-and-roles/" class="md-nav__link">
+      <a href="../../decisions/009-auth-and-roles/" class="md-nav__link">
         
   
   
@@ -1512,7 +1510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../010-vulnerability-datasource-extension-point/" class="md-nav__link">
+      <a href="../../decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
         
   
   
@@ -1537,35 +1535,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ADR-011: Notification Outbox
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../decisions/011-notification-outbox/" class="md-nav__link">
         
   
   
@@ -1581,96 +1554,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Context
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Decision
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Decision">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#schema" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Schema
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#emission" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Emission
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#relay" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Relay
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Consequences
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1683,7 +1566,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../012-extension-kv-store/" class="md-nav__link">
+      <a href="../../decisions/012-extension-kv-store/" class="md-nav__link">
         
   
   
@@ -1716,6 +1599,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1726,11 +1611,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
@@ -1751,7 +1636,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1766,10 +1651,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../design/durable-execution/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Durable Execution
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1785,6 +1695,345 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#durable-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Durable Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow Instance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow Instance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#activity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow run
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#external-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External Event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task queue
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task worker
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#engine-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Engine architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Engine architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overview_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#leader-election" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Leader election
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-scheduling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task scheduling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concurrency-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buffering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buffering
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retry-and-failure-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retry and Failure Handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noteworthy-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Noteworthy design decisions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Noteworthy design decisions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#embedded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postgresql-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostgreSQL Only
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-listen-notify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No LISTEN / NOTIFY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#protobuf-serialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protobuf Serialization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1797,7 +2046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/notifications/" class="md-nav__link">
+      <a href="../notifications/" class="md-nav__link">
         
   
   
@@ -1825,7 +2074,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/workflow-state-tracking/" class="md-nav__link">
+      <a href="../workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -2643,7 +2892,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/011-notification-outbox.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/design/durable-execution.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2651,111 +2900,496 @@
   
 
 
-  <h1>ADR-011: Notification Outbox</h1>
+  <h1>Durable Execution</h1>
 
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>dex is an embedded <a href="#durable-execution"><strong>d</strong>urable <strong>ex</strong>ecution</a> engine that provides reliable,
+scalable execution of potentially long-running processes.</p>
+<p>The engine is influenced by <a href="https://temporal.io/">Temporal</a> and Microsoft's <a href="https://github.com/Azure/durabletask">Durable Task Framework</a>.
+It is purpose-built for Dependency-Track's requirements, and optimized for PostgreSQL.</p>
+<h2 id="core-concepts">Core concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
+<h3 id="durable-execution">Durable Execution<a class="headerlink" href="#durable-execution" title="Permanent link">&para;</a></h3>
+<p>Durable execution is a programming model where the state and progress of (potentially long-running)
+processes is automatically persisted, enabling them to survive failures and restarts.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Because dex is heavily influenced by <a href="https://temporal.io/">Temporal</a>, it has adopted most of its concepts and wording.
+Some concepts may have different names in other engines, e.g. Durable Task uses <em>orchestration</em>
+instead of <em>workflow</em>.</p>
+</div>
+<p>Like <a href="https://temporal.io/">Temporal</a>, dex records every completed step of a <a href="#workflow">workflow</a> as an event in the database.
+If a process crashes or is restarted, the workflow automatically resumes from where it left off
+by replaying its event history. This makes workflows resilient without requiring manual
+work to implement state management or retry logic.</p>
+<p>Durable execution ensures that once a workflow is started, it will run to completion,
+even when experiencing repeated transient failures.</p>
+<h3 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h3>
+<p>A workflow is the formal description of a sequence of steps to execute.
+Workflows are defined as normal Java code, but must be <em>deterministic and free of side effects</em>
+to enable reliable history replay. Their sole purpose is orchestration: sequencing and
+coordinating work, not performing it directly.</p>
+<p>Workflows can invoke <a href="#activity">activities</a>, create <a href="#timer">timers</a>, spawn child workflows,
+and wait for <a href="#external-event">external events</a>.</p>
+<h2 id="workflow-instance">Workflow Instance<a class="headerlink" href="#workflow-instance" title="Permanent link">&para;</a></h2>
+<p>A workflow instance is a specific instantiation of a <a href="#workflow">workflow</a>.</p>
+<p>Instances can be executed multiple times, but only a single execution
+in non-terminal state can exist at any given point in time.</p>
+<p>In dex, instances are identified by an <em>instance ID</em>, which is defined by clients when starting a workflow.</p>
+<h3 id="activity">Activity<a class="headerlink" href="#activity" title="Permanent link">&para;</a></h3>
+<p>An activity is the formal description of a non-deterministic operation. It is where interactions with
+external systems, and more generally I/O, is intended to happen.</p>
+<p>Execution of activities happens asynchronously from their "owning" workflow's execution, making it non-blocking.</p>
+<p>In practice, activity invocations behave similar to conventional background jobs.</p>
+<p>Activities are anticipated to fail, and will be transparently retried. Retry behaviour is
+customizable using retry policies, on a per-invocation basis. Because activities may be executed
+multiple times as part of the retry mechanism, they should be <a href="https://en.wikipedia.org/wiki/Idempotence#Computer_science_meaning">idempotent</a>.</p>
+<h3 id="workflow-run">Workflow run<a class="headerlink" href="#workflow-run" title="Permanent link">&para;</a></h3>
+<p>A workflow run is a single execution of a workflow. Each run has a unique identifier
+and maintains a complete event history. The history enables replay for recovery
+and ensures deterministic behaviour.</p>
+<p>Runs can carry the following additional metadata:</p>
+<ul>
+<li><strong>Concurrency Key</strong>: Serializes execution of runs sharing the same key.</li>
+<li><strong>Priority</strong>: Influences execution order (higher priority runs execute first).</li>
+<li><strong>Labels</strong>: Custom key-value metadata.</li>
+</ul>
+<h3 id="timer">Timer<a class="headerlink" href="#timer" title="Permanent link">&para;</a></h3>
+<p>A timer provides durable delays within a workflow execution.</p>
+<p>Unlike regular sleeps, timers are recorded in the workflow run's event history,
+making them deterministic and replay-safe.</p>
+<h3 id="external-event">External Event<a class="headerlink" href="#external-event" title="Permanent link">&para;</a></h3>
+<p>An external event is a message sent to a workflow run from outside the dex engine.</p>
+<p>External events enable workflows to pause and wait for signals from external systems or users,
+such as approval notifications, webhook callbacks, or status updates. Each event has a unique
+identifier and can carry optional payload data.</p>
+<h3 id="task">Task<a class="headerlink" href="#task" title="Permanent link">&para;</a></h3>
+<p>A task is a unit of work generated by the dex engine to drive progress of either
+a <a href="#workflow-run">workflow run</a> or an <a href="#activity">activity</a>.</p>
+<p>Tasks are scheduled for execution on <a href="#task-queue">task queues</a>,
+from where they're picked up by <a href="#task-worker">task workers</a>.</p>
+<h3 id="task-queue">Task queue<a class="headerlink" href="#task-queue" title="Permanent link">&para;</a></h3>
+<p>A task queue is a named queue where <a href="#task">tasks</a> are scheduled for execution.</p>
+<p>Task queues organize and distribute work to <a href="#task-worker">workers</a>. Each queue has a type (<em>workflow</em> or <em>activity</em>)
+and tracks its capacity and current depth (i.e. number of pending tasks). Workflows and activities
+specify which queue their tasks should be routed to.</p>
+<p>Queues enable separation of concerns, allowing different workers to specialize in different
+types of work and providing resource isolation between workloads.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In dex, queues further act as a means to scale, as each task queue
+is stored in a separate physical table <a href="https://www.postgresql.org/docs/current/ddl-partitioning.html#DDL-PARTITIONING-OVERVIEW">partition</a>.</p>
+</div>
+<p>The capacity of a queue is modifiable at runtime, allowing administrators to throttle
+task execution globally for an entire cluster. It is further possible to <em>pause</em> queues entirely.</p>
+<h3 id="task-worker">Task worker<a class="headerlink" href="#task-worker" title="Permanent link">&para;</a></h3>
+<p>A task worker polls tasks from a queue and executes them. Workers process either
+workflow tasks or activity tasks, but not both. Each worker polls from <em>exactly one</em> queue.</p>
+<h2 id="execution-model">Execution model<a class="headerlink" href="#execution-model" title="Permanent link">&para;</a></h2>
+<p>dex uses event sourcing to provide durability. When a workflow executes,
+the engine records events for each completed step. If execution is interrupted,
+the workflow resumes by replaying the recorded history.</p>
+<pre class="mermaid"><code>---
+title: Example workflow execution
+---
+sequenceDiagram
+    participant W as Workflow worker
+    participant C as Workflow code
+    participant H as Event history
+    participant A as Activity worker
+
+    W -&gt;&gt; H: Load history
+    H --&gt;&gt; W: Events
+    W -&gt;&gt; C: Execute
+    Note over C: Reconstruct state&lt;br/&gt;from history
+    C -&gt;&gt; C: activity(Foo).call()
+    Note over C: Event exists,&lt;br/&gt;return cached result
+    C -&gt;&gt; C: activity(Bar).call()
+    Note over C: No event,&lt;br/&gt;schedule activity
+    C --&gt;&gt; W: Blocked on activity
+    W -&gt;&gt; H: Record ActivityTaskCreated event
+
+    A -&gt;&gt; A: Execute Bar activity
+    A -&gt;&gt; H: Record ActivityTaskCompleted event
+
+    W -&gt;&gt; H: Load history
+    W -&gt;&gt; C: Execute
+    Note over C: Replay Foo and Bar&lt;br/&gt;from history
+    C --&gt;&gt; W: Workflow complete
+    W -&gt;&gt; H: Record RunCompleted event</code></pre>
+<p>During replay, the workflow code re-executes, but side effects are skipped.
+Results of previously completed steps are retrieved from the history instead.
+This requires workflow code to be deterministic. Given the same history,
+it must make the same decisions.</p>
+<p>This model also enables high degrees of concurrency. When a workflow blocks waiting for an
+activity, timer, or external event, it yields control back to the engine. The
+engine can then progress other workflows while the blocked one waits. This allows
+a single worker to manage many concurrent workflow runs without dedicating a
+thread to each one.</p>
+<h2 id="engine-architecture">Engine architecture<a class="headerlink" href="#engine-architecture" title="Permanent link">&para;</a></h2>
+<h3 id="overview_1">Overview<a class="headerlink" href="#overview_1" title="Permanent link">&para;</a></h3>
+<p>dex consists of the following components:</p>
+<ul>
+<li><strong>Workflow task scheduler</strong>: Creates workflow tasks from eligible workflow runs.</li>
+<li><strong>Activity task scheduler</strong>: Transitions activity tasks to queued status.</li>
+<li><strong>Workflow task worker</strong>: Executes workflow code with history replay.</li>
+<li><strong>Activity task worker</strong>: Executes activity code.</li>
+<li><strong>Maintenance worker</strong>: Enforces retention by deleting old completed runs.</li>
+<li><strong>Leader election</strong>: Coordinates single-instance operations in a cluster.</li>
+</ul>
+<pre class="mermaid"><code>---
+title: Architecture overview
+---
+flowchart TB
+    subgraph Dependency-Track
+      subgraph Application
+          W["Workflow code"]
+          A["Activity code"]
+      end
+
+      subgraph dex
+          subgraph Schedulers["Schedulers (leader only)"]
+              WS["Workflow task scheduler"]
+              AS["Activity task scheduler"]
+          end
+
+          LE["Leader election"]
+
+          subgraph Workers
+              WW["Workflow worker"]
+              AW["Activity worker"]
+          end
+      end
+    end
+
+    subgraph Database
+        L[("Leases")]
+        R[("Workflow Runs")]
+        H[("Workflow Run History")]
+        WT[("Workflow tasks")]
+        AT[("Activity tasks")]
+    end
+
+    W --&gt; WW
+    A --&gt; AW
+    LE --&gt; L
+    WS --&gt; R
+    WS --&gt; WT
+    AS --&gt; AT
+    WW --&gt; WT
+    WW --&gt; R
+    WW --&gt; H
+    AW --&gt; AT
+    AW --&gt; H</code></pre>
+<p>By default, dex uses the same database as the main Dependency-Track application for simplicity.
+For larger deployments, it can be configured to use a separate database instance
+to isolate engine load from application concerns.</p>
+<h3 id="leader-election">Leader election<a class="headerlink" href="#leader-election" title="Permanent link">&para;</a></h3>
+<p>Certain operations are intended to only be performed by a single node in a cluster. For example:</p>
+<ul>
+<li>Maintenance</li>
+<li>Task scheduling</li>
+</ul>
+<p>dex utilises a simple lease-based leader election mechanism that is backed
+by the <code>dex_lease</code> table with the following schema:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Status</th>
-<th style="text-align: left;">Date</th>
-<th style="text-align: left;">Author(s)</th>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Constraints</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">Accepted</td>
-<td style="text-align: left;">2025-10-26</td>
-<td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
+<td style="text-align: left;">name</td>
+<td style="text-align: left;">text</td>
+<td style="text-align: left;">pk</td>
+</tr>
+<tr>
+<td style="text-align: left;">acquired_by</td>
+<td style="text-align: left;">text</td>
+<td style="text-align: left;">not null</td>
+</tr>
+<tr>
+<td style="text-align: left;">acquired_at</td>
+<td style="text-align: left;">timestamptz(3)</td>
+<td style="text-align: left;">not null</td>
+</tr>
+<tr>
+<td style="text-align: left;">expires_at</td>
+<td style="text-align: left;">timestamptz(3)</td>
+<td style="text-align: left;">not null</td>
 </tr>
 </tbody>
 </table>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
-<p>As per <a href="../003-notification-publishing/">ADR-003</a> we originally decided to leverage PostgreSQL's
-logical replication to support atomic notification emission. The main benefit was that tailing the
-WAL would bypass the need to maintain and poll an outbox table, which is overhead we'd have loved to avoid.</p>
-<p>After further consideration however, we decided against the logical replication approach, for the following reasons:</p>
+<p>Every node in the cluster will regularly (default: 15s) try to acquire the leadership lease
+for a given period of time (default: 30s). This design is inspired by Kubernetes controllers.</p>
+<p>A lease is acquired by inserting into the <code>dex_lease</code> table. Concurrency-safe conflict
+resolution is performed using PostgreSQL's
+<a href="https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFLICT"><code>on conflict</code></a> mechanism:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">dex_lease</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">acquired_by</span><span class="p">,</span><span class="w"> </span><span class="n">acquired_at</span><span class="p">,</span><span class="w"> </span><span class="n">expires_at</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">values</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;leadership&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;instanceA&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">now</span><span class="p">(),</span><span class="w"> </span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">interval</span><span class="w"> </span><span class="s1">&#39;30 seconds&#39;</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">on</span><span class="w"> </span><span class="n">conflict</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="k">update</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">set</span><span class="w"> </span><span class="n">acquired_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">excluded</span><span class="p">.</span><span class="n">acquired_by</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">acquired_at</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">excluded</span><span class="p">.</span><span class="n">acquired_at</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="n">expires_at</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">excluded</span><span class="p">.</span><span class="n">expires_at</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">where</span><span class="w"> </span><span class="n">dex_lease</span><span class="p">.</span><span class="n">acquired_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">excluded</span><span class="p">.</span><span class="n">acquired_by</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">   </span><span class="k">or</span><span class="w"> </span><span class="n">dex_lease</span><span class="p">.</span><span class="n">expires_at</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+</span></code></pre></div>
+<p>The above query atomically creates or extends the lease for <code>instanceA</code>,
+depending on whether the lease is still held by it, or the previous lease
+has expired.</p>
+<p>Nodes that fail to attempt lease acquisition, e.g. due to timeouts,
+will assume their lease to be <em>lost</em>. This is to prevent the likelihood
+of <a href="https://en.wikipedia.org/wiki/Split-brain_(computing)">split-brain</a>.
+It should be noted though that the worst symptom of split-brain for dex
+is an increase is potentially expensive operations. Correctness is not affected.</p>
+<p>During graceful shutdown, nodes simply release their leadership lease:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">delete</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="k">from</span><span class="w"> </span><span class="n">dex_lease</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;leadership&#39;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">   </span><span class="k">and</span><span class="w"> </span><span class="n">acquired_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;instanceA&#39;</span>
+</span></code></pre></div>
+<p>The <code>dex_lease</code> table is <a href="https://www.postgresql.org/docs/current/sql-createtable.html#SQL-CREATETABLE-UNLOGGED"><code>unlogged</code></a>
+and thus does not cause WAL writes. This is possible because leases are ephemeral by design.</p>
+<h3 id="task-scheduling">Task scheduling<a class="headerlink" href="#task-scheduling" title="Permanent link">&para;</a></h3>
+<p>dex has two separate schedulers, both running on the leader node:</p>
+<h4 id="workflow-task-scheduler">Workflow task scheduler<a class="headerlink" href="#workflow-task-scheduler" title="Permanent link">&para;</a></h4>
+<p>Creates tasks from workflow runs.
+It polls the <code>dex_workflow_run</code> table for workflow runs that:</p>
 <ul>
-<li>Requires a special connection that users would need to configure. The connection must bypass any connection poolers.</li>
-<li>Requires elevated privileges via the <code>REPLICATION</code> attribute. Users with this attribute are able to read all changes
-  across all tables in a database. In hindsight, we feel this could be a security footgun.</li>
-<li>Requires constant monitoring. Postgres only deletes WAL segments that have been read by all replication slots.
-  Should a replication consumer be slow, or otherwise fail to advance its slot, the Postgres server could run out
-  of disk space.</li>
+<li>Are in a non-terminal state (<code>CREATED</code>, <code>RUNNING</code>, or <code>SUSPENDED</code>)</li>
+<li>Have visible messages in their inbox (events waiting to be processed)</li>
+<li>Don't already have a queued task</li>
 </ul>
-<p>We might revisit logical replication later, but for the time being the cons outweigh the pros.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<p>We will follow a classic <a href="https://microservices.io/patterns/data/transactional-outbox.html">transactional outbox</a> design instead.</p>
-<h3 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h3>
-<p>A new <code>NOTIFICATION_OUTBOX</code> table is created with the following schema:</p>
-<pre class="mermaid"><code>erDiagram
-    NOTIFICATION_OUTBOX {
-        UUID ID PK
-        TIMESTAMPTZ TIMESTAMP
-        TEXT SCOPE
-        TEXT GROUP
-        TEXT LEVEL
-        BYTEA PAYLOAD
-    }</code></pre>
+<p>For each eligible run, a task is inserted into the <code>dex_workflow_task</code> table.</p>
+<h4 id="activity-task-scheduler">Activity task scheduler<a class="headerlink" href="#activity-task-scheduler" title="Permanent link">&para;</a></h4>
+<p>Activity task scheduling works differently. Activity tasks are created by
+workflow execution (when an activity is invoked), not by the scheduler.
+The scheduler's role is to transition tasks from <code>CREATED</code> to <code>QUEUED</code> status,
+making them visible to workers.</p>
+<p>This two-phase approach exists because activity tasks have a <code>visible_from</code> timestamp
+used for retry delays. A task in <code>CREATED</code> status with a future <code>visible_from</code> is
+not yet eligible for execution. The scheduler polls for tasks where <code>visible_from &lt;= now()</code>
+and transitions them to <code>QUEUED</code>.</p>
+<h4 id="queue">Queue<a class="headerlink" href="#queue" title="Permanent link">&para;</a></h4>
+<p>Each task queue is stored in a separate PostgreSQL table partition, created dynamically
+when a new queue is registered. This provides isolation between workloads and allows
+the database to manage each queue's data independently.</p>
+<p>Queues have two properties that can be modified at runtime:</p>
 <ul>
-<li><code>ID</code> is a <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_7_(timestamp_and_random)">UUIDv7</a>, ensuring both global uniqueness and sortability. The latter also makes it index-friendly.</li>
-<li><code>PAYLOAD</code> is the serialized notification in Protobuf format.</li>
+<li><strong>Capacity</strong>: The maximum number of pending tasks. The scheduler stops creating tasks
+  when a queue reaches capacity, providing backpressure.</li>
+<li><strong>Status</strong>: Queues can be paused, preventing any new tasks from being scheduled.</li>
 </ul>
-<p>The columns <code>TIMESTAMP</code>, <code>SCOPE</code>, <code>GROUP</code>, and <code>LEVEL</code> are included for debugging and monitoring purposes.
-They are also part of the notification itself, but since <code>PAYLOAD</code> is not human-readable, that doesn't help much.</p>
-<p>The notification Protobuf schema is extended to also include the UUIDv7 ID.</p>
-<h3 id="emission">Emission<a class="headerlink" href="#emission" title="Permanent link">&para;</a></h3>
-<p>To emit notifications, records are inserted into the <code>NOTIFICATION_OUTBOX</code> table.
-This can be done as part of the database transactions that also perform the "business logic",
-thus preventing the dual write problem.</p>
-<h3 id="relay">Relay<a class="headerlink" href="#relay" title="Permanent link">&para;</a></h3>
-<p>A new <em>notification outbox relay</em> component is added to the API server.
-The relay continuously polls the <code>NOTIFICATION_OUTBOX</code> table for records
-and sends them to Kafka.</p>
+<p>Tasks are scheduled with a priority (0-100), inherited from their workflow run.
+Higher priority tasks are processed first. Within the same priority, tasks are
+processed in creation order.</p>
+<h3 id="task-processing">Task processing<a class="headerlink" href="#task-processing" title="Permanent link">&para;</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Sending to Kafka is an intermediary step that allows us to make this change
-without touching too many parts of the system at once.</p>
+<p>dex leverages Java's <a href="https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html">virtual threads</a> for task execution, enabling high degrees
+of concurrency while maintaining a slim resource footprint.</p>
 </div>
-<pre class="mermaid"><code>sequenceDiagram
-    actor P as PostgreSQL
-    actor R as Relay
-    actor K as Kafka
+<h4 id="workflow-tasks">Workflow tasks<a class="headerlink" href="#workflow-tasks" title="Permanent link">&para;</a></h4>
+<p>The scheduler polls for eligible workflow runs and inserts tasks into the <code>dex_workflow_task</code> table.
+Workers poll from this table, execute the workflow, and update run state and history.</p>
+<pre class="mermaid"><code>---
+title: Workflow task processing
+---
+sequenceDiagram
+    participant S as Scheduler
+    participant R as Runs
+    participant T as Workflow tasks
+    participant W as Worker
+    participant H as History
 
-    activate R
-    R -&gt;&gt; P: Begin Trx
-    R -&gt;&gt; P: Acquire advisory lock
-    P --&gt;&gt; R: Lock acquired
-    R -&gt;&gt; P: Poll NOTIFICATION_OUTBOX
-    P --&gt;&gt; R: Notifications
-    R -&gt;&gt; R: Convert to Kafka records
-    R -&gt;&gt; K: Produce records
-    K --&gt;&gt; R: Records acked
-    R --&gt;&gt; P: Delete notifications
-    R -&gt;&gt; P: Commit Trx
-    deactivate R</code></pre>
-<p>Per default, the relay polls every 1 second for up to 100 notifications.
-Interval and batch size are configurable. </p>
-<p>It is possible to disable the relay entirely, which might be useful for users
-who operate multi-node clusters, and want more granular control over which nodes
-relay notifications.</p>
-<p>Noteworthy details:</p>
+    Note over S: Leader node only
+    activate S
+    S -&gt;&gt; R: Poll eligible runs
+    R --&gt;&gt; S: Runs with pending events
+    S -&gt;&gt; T: INSERT task
+    deactivate S
+
+    Note over W: All nodes
+    activate W
+    W -&gt;&gt; T: SELECT ... FOR UPDATE SKIP LOCKED
+    T --&gt;&gt; W: Task
+    W -&gt;&gt; W: Execute workflow (with replay)
+    W -&gt;&gt; H: Append events
+    W -&gt;&gt; R: Update run status
+    W -&gt;&gt; T: DELETE task
+    deactivate W</code></pre>
+<h4 id="activity-tasks">Activity tasks<a class="headerlink" href="#activity-tasks" title="Permanent link">&para;</a></h4>
+<p>Activity tasks are created by workflow execution, not the scheduler.
+The scheduler transitions tasks from <code>CREATED</code> to <code>QUEUED</code> when their
+<code>visible_from</code> timestamp has passed, making them visible to workers.</p>
+<pre class="mermaid"><code>---
+title: Activity task processing
+---
+sequenceDiagram
+    participant S as Scheduler
+    participant T as Activity tasks
+    participant W as Worker
+    participant H as History
+
+    Note over S: Leader node only
+    activate S
+    S -&gt;&gt; T: Poll CREATED tasks where visible_from &lt;= now()
+    S -&gt;&gt; T: UPDATE status → QUEUED
+    deactivate S
+
+    Note over W: All nodes
+    activate W
+    W -&gt;&gt; T: SELECT ... FOR UPDATE SKIP LOCKED
+    T --&gt;&gt; W: Task
+    W -&gt;&gt; W: Execute activity
+    W -&gt;&gt; H: Record result
+    W -&gt;&gt; T: DELETE task
+    deactivate W</code></pre>
+<p>Because the scheduler and workers poll the same table, the scheduler uses
+<code>FOR NO KEY UPDATE SKIP LOCKED</code> when transitioning tasks to avoid deadlocks.</p>
+<h3 id="concurrency-control">Concurrency Control<a class="headerlink" href="#concurrency-control" title="Permanent link">&para;</a></h3>
+<p>Task execution concurrency can be controlled at two levels:</p>
+<h4 id="local">Local<a class="headerlink" href="#local" title="Permanent link">&para;</a></h4>
+<p>Each worker limits how many tasks it executes concurrently using a <a href="https://docs.oracle.com/en/java/javase/25/docs/api//java.base/java/util/concurrent/Semaphore.html">Semaphore</a>.
+The worker only polls for as many tasks as it has available permits, preventing
+it from claiming more work than it can handle.</p>
+<p>This controls the parallelism of task execution on a single node. Setting a lower
+value reduces resource consumption but may increase latency. Setting a higher value
+allows more throughput but increases memory and CPU usage.</p>
+<h4 id="global">Global<a class="headerlink" href="#global" title="Permanent link">&para;</a></h4>
+<p>Task queue capacity limits how many tasks can be pending across the entire cluster.
+When a queue reaches capacity, the scheduler stops creating new tasks for that queue,
+providing backpressure to the system.</p>
+<p>This prevents unbounded queue growth during load spikes. Workflow runs remain in
+their current state until capacity becomes available, at which point the scheduler
+resumes creating tasks for them.</p>
+<p>Local and global concurrency control complement each other.
+Queue capacity controls how much work is queued,
+while worker concurrency controls how fast that work is processed.</p>
+<h3 id="buffering">Buffering<a class="headerlink" href="#buffering" title="Permanent link">&para;</a></h3>
+<p>In contrast to most other durable execution and workflow engines, dex buffers certain write
+operations, and flushes them to the database in batches. This is done to reduce network round-trips
+between dex and its database, and amortize transaction overhead.</p>
+<p>A property that all durable execution engines share, is that there is always a time window
+between an action (e.g. issuing a HTTP request) having been <em>performed</em>, and its outcome having
+been <em>recorded</em> (e.g. by writing it to a database). If recording the outcome fails,
+the engine has to assume that the action itself has never happened. There is no way to make this atomic.
+This is one reason why actions should be <a href="https://en.wikipedia.org/wiki/Idempotence#Computer_science_meaning">idempotent</a>, making them safe to execute multiple times.
+dex takes advantage of this inherent risk, and utilises buffering in exactly that time window.</p>
+<p>When flushing buffers, dex leverages
+<a href="https://www.tigerdata.com/blog/boosting-postgres-insert-performance">Postgres-specific optimizations</a>
+to further reduce the amount of time spent <em>in the database</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a trade-off that values throughput over latency, and efficiency over correctness:</p>
 <ul>
-<li>Transaction-level <a href="https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS">advisory locks</a> are used to prevent concurrent execution.
-  We ideally want notifications to be relayed in the order in which they were
-  emitted. If we were to do concurrent relays, we would lose this property.
-  Limiting concurrency further reduces load on the database.</li>
-<li>Notifications are <em>deleted</em> from the <code>NOTIFICATION_OUTBOX</code> table upon successful relay.
-  We don't have use-cases that would require keeping them around for longer. Should that requirement
-  arise, we should look into partitioning of the <code>NOTIFICATION_OUTBOX</code> table.</li>
-<li>The database transaction is committed <em>after</em> Kafka has acknowledged reception of records.
-  This is necessary to achieve at-least-once semantics, but can lead to duplicate messages
-  should the commit fail after Kafka has successfully acked records. Notification consumers
-  can use the new <code>id</code> field to de-duplicate on their end.</li>
+<li>While throughput is improved, buffering <em>does</em> negatively impact end-to-end latency.</li>
+<li>Flushing writes in batches comes with the risk of an increased blast radius in case of failures.</li>
 </ul>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+</div>
+<p>Dependency-Track is not a latency-sensitive system. It is generally acceptable to wait
+a few seconds for a workflow to complete. It is much more important that the database is
+not hammered with many tiny transactions that spike CPU and I/O utilization.</p>
+<p>PostgreSQL is not infinitely scalable, but by designing a system optimized for throughput
+and efficiency, our scaling ceiling is much higher.</p>
+<p>Three operations are buffered independently:</p>
 <ul>
-<li>Notifications can atomically be emitted as part of database transactions</li>
-<li>Kafka and the notification-publisher service remain unchanged for now</li>
+<li><strong>Activity task heartbeats</strong>: Heartbeats from long-running activity tasks.</li>
+<li><strong>External events</strong>: Messages sent to workflow runs from outside the engine.</li>
+<li><strong>Task events</strong>: Results of workflow and activity task execution.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Flush intervals and batch sizes of buffers are configurable:</p>
+<ul>
+<li><a href="../../../reference/configuration/api-server/#dtdex-engineactivity-task-heartbeat-bufferflush-interval-ms"><code>dt.dex-engine.activity-task-heartbeat-buffer.flush-interval-ms</code></a></li>
+<li><a href="../../../reference/configuration/api-server/#dtdex-engineactivity-task-heartbeat-buffermax-batch-size"><code>dt.dex-engine.activity-task-heartbeat-buffer.max-batch-size</code></a></li>
+<li><a href="../../../reference/configuration/api-server/#dtdex-engineexternal-event-bufferflush-interval-ms"><code>dt.dex-engine.external-event-buffer.flush-interval-ms</code></a></li>
+<li><a href="../../../reference/configuration/api-server/#dtdex-engineexternal-event-buffermax-batch-size"><code>dt.dex-engine.external-event-buffer.max-batch-size</code></a></li>
+<li><a href="../../../reference/configuration/api-server/#dtdex-enginetask-event-bufferflush-interval-ms"><code>dt.dex-engine.task-event-buffer.flush-interval-ms</code></a></li>
+<li><a href="../../../reference/configuration/api-server/#dtdex-enginetask-event-buffermax-batch-size"><code>dt.dex-engine.task-event-buffer.max-batch-size</code></a></li>
+</ul>
+<p>Users who care more about latency are free to decrease intervals, at the cost of higher database utilization.</p>
+</div>
+<h2 id="retry-and-failure-handling">Retry and Failure Handling<a class="headerlink" href="#retry-and-failure-handling" title="Permanent link">&para;</a></h2>
+<p>As noted in <a href="#activity">Activity</a>, activities are automatically retried on failure.
+The retry behavior is controlled by a configurable policy:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Initial Delay</td>
+<td style="text-align: left;">Delay before first retry</td>
+</tr>
+<tr>
+<td style="text-align: left;">Delay Multiplier</td>
+<td style="text-align: left;">Exponential backoff factor</td>
+</tr>
+<tr>
+<td style="text-align: left;">Randomization Factor</td>
+<td style="text-align: left;">Jitter to prevent thundering herd</td>
+</tr>
+<tr>
+<td style="text-align: left;">Max Delay</td>
+<td style="text-align: left;">Upper bound on retry delay</td>
+</tr>
+<tr>
+<td style="text-align: left;">Max Attempts</td>
+<td style="text-align: left;">Maximum number of attempts</td>
+</tr>
+</tbody>
+</table>
+<p>Retries are scheduled by updating the task's <code>visible_from</code> timestamp,
+making it invisible to workers until the retry delay has elapsed.</p>
+<p>Failures are classified as either terminal or retryable:</p>
+<ul>
+<li><strong>Terminal failures</strong> stop retries immediately.</li>
+<li><strong>Retryable failures</strong> trigger the retry mechanism.</li>
+</ul>
+<h2 id="noteworthy-design-decisions">Noteworthy design decisions<a class="headerlink" href="#noteworthy-design-decisions" title="Permanent link">&para;</a></h2>
+<h3 id="embedded">Embedded<a class="headerlink" href="#embedded" title="Permanent link">&para;</a></h3>
+<p>Not requiring an external service simplifies operations due to fewer moving parts.
+Testing and debugging becomes easier for the same reason.</p>
+<p>Embedding the engine in the application further avoids network and serialization
+overhead during task distribution, since workers can poll the database directly.</p>
+<h3 id="postgresql-only">PostgreSQL Only<a class="headerlink" href="#postgresql-only" title="Permanent link">&para;</a></h3>
+<p>Following the direction of the main Dependency-Track application, dex only supports PostgreSQL.
+This allows for more optimization techniques, easier testing / debugging, and less operational
+overhead for users.</p>
+<h3 id="no-listen-notify">No <code>LISTEN</code> / <code>NOTIFY</code><a class="headerlink" href="#no-listen-notify" title="Permanent link">&para;</a></h3>
+<p>Many queueing systems based on PostgreSQL utilize the <a href="https://www.postgresql.org/docs/current/sql-notify.html"><code>LISTEN</code> / <code>NOTIFY</code></a>
+feature to reduce latencies, e.g. by emitting a notification whenever a new task has been scheduled for execution.</p>
+<p>This was explored for dex as well, but ultimately discarded, because:</p>
+<ul>
+<li><code>LISTEN</code> requires a persistent, direct connection to the database, which does not play well with connection poolers.</li>
+<li>
+<blockquote>
+<p>When a NOTIFY query is issued during a transaction, it acquires a global lock on the entire database
+[...] during the commit phase of the transaction, effectively serializing all commits.
+(<a href="https://www.recall.ai/blog/postgres-listen-notify-does-not-scale">Source</a>)</p>
+</blockquote>
+</li>
+</ul>
+<p>Instead, dex entirely relies on polling.</p>
+<h3 id="protobuf-serialization">Protobuf Serialization<a class="headerlink" href="#protobuf-serialization" title="Permanent link">&para;</a></h3>
+<p>Workflow events, as well as workflow and activity arguments and results, leverage Protobuf for serialization.
+Protobuf is fast and efficient, and serialized messages are smaller than their JSON counterparts.</p>
+<p>The tooling around Protobuf is excellent. With <a href="https://buf.build/"><code>buf</code></a>, we have linting and breaking
+change detection covered.</p>
+<p>This decision comes with the drawback of events and payloads not being human-readable when
+manually inspecting database tables.</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../decisions/002-workflow-orchestration/">ADR-002: Workflow Orchestration</a></li>
+<li><a href="https://temporal.io/">Temporal</a></li>
+<li><a href="https://github.com/Azure/durabletask">Durable Task Framework</a></li>
 </ul>
 
 

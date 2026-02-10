@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/development/database-migrations/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/development/durable-execution/">
       
       
-        <link rel="prev" href="../testing/">
+        <link rel="prev" href="../database-migrations/">
       
       
-        <link rel="next" href="../durable-execution/">
+        <link rel="next" href="../documentation/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Database Migrations - Hyades</title>
+        <title>Durable Execution - Hyades</title>
       
     
     
@@ -59,15 +59,15 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Database Migrations - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/development/database-migrations.png" />
+<meta property="og:title" content="Durable Execution - Hyades" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/development/durable-execution.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/development/database-migrations/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/development/durable-execution/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Database Migrations - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/development/database-migrations.png" />
+<meta property="twitter:title" content="Durable Execution - Hyades" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.1-SNAPSHOT/assets/images/social/development/durable-execution.png" />
 </head>
   
   
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#database-migrations" class="md-skip">
+        <a href="#common-patterns" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Database Migrations
+              Durable Execution
             
           </span>
         </div>
@@ -2081,6 +2081,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../database-migrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database Migrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -2090,8 +2118,6 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -2100,7 +2126,7 @@
   <span class="md-ellipsis">
     
   
-    Database Migrations
+    Durable Execution
   
 
     
@@ -2118,7 +2144,7 @@
   <span class="md-ellipsis">
     
   
-    Database Migrations
+    Durable Execution
   
 
     
@@ -2134,8 +2160,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2144,35 +2168,63 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
+  <a href="#common-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Introduction
+        Common Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chaining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chaining
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-migrations" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#scatter-gather" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Adding Migrations
+        Scatter-Gather
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#making-schema-changes-available-to-hyades-services" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#singletons" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Making Schema Changes Available to Hyades Services
+        Singletons
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concurrency-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2180,34 +2232,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../durable-execution/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Durable Execution
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -2606,7 +2630,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/development/database-migrations.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/development/durable-execution.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2614,70 +2638,134 @@
   
 
 
-<h1 id="database-migrations">Database Migrations<a class="headerlink" href="#database-migrations" title="Permanent link">&para;</a></h1>
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
-<p>In contrast to Dependency-Track v4 and earlier, Dependency-Track v5 manages database migrations with <a href="https://www.liquibase.com/">Liquibase</a>.
-The database schema is still <em>owned</em> by the API server though. It will execute migrations upon startup,
-unless explicitly disabled via <a href="../../reference/configuration/api-server/#databaserunmigrations"><code>database.run.migrations</code></a>.</p>
-<p><a href="https://www.liquibase.com/">Liquibase</a> operates with the concept of <a href="https://docs.liquibase.com/concepts/changelogs/home.html">changelogs</a>.
-For the sake of better visibility, Dependency-Track uses separate changelogs for each release version.
-Individual changelogs are referenced by <a href="https://github.com/DependencyTrack/hyades-apiserver/blob/main/src/main/resources/migration/changelog-main.xml"><code>changelog-main.xml</code></a>.</p>
-<p>Stored procedures and custom SQL functions are treated differently: They are re-created whenever their
-content changes. Their sources are located in the <a href="https://github.com/DependencyTrack/hyades-apiserver/tree/main/src/main/resources/migration/procedures"><code>procedures</code></a> directory.</p>
-<h2 id="adding-migrations">Adding Migrations<a class="headerlink" href="#adding-migrations" title="Permanent link">&para;</a></h2>
-<ol>
-<li>If it doesn't exist already, create a <code>changelog-vX.Y.Z.xml</code> file<ul>
-<li><code>X</code>, <code>Y</code>, and <code>Z</code> must correspond to the current release version</li>
-</ul>
-</li>
-<li>Ensure the <code>changelog-vX.Y.Z.xml</code> file is referenced via <code>include</code> in <code>changelog-main.xml</code></li>
-<li>Add your <a href="https://docs.liquibase.com/concepts/changelogs/changeset.html">changeset</a> to <code>changelog-vX.Y.Z.xml</code></li>
-</ol>
-<p>When adding a new <code>changeset</code>, consider the following guidelines:</p>
-<ul>
-<li>The changeset ID <strong>must</strong> follow the <code>vX.Y.Z-&lt;NUM&gt;</code> format, where:<ul>
-<li><code>X</code>, <code>Y</code>, and <code>Z</code> match the changelog's version</li>
-<li><code>NUM</code> is an incrementing number, starting at <code>1</code> for the first <code>changeset</code> of the release</li>
-</ul>
-</li>
-<li>The <code>author</code> <strong>must</strong> correspond to your GitHub username</li>
-<li>Prefer <a href="https://docs.liquibase.com/change-types/home.html">built-in change types</a><ul>
-<li>Use the <a href="https://docs.liquibase.com/change-types/sql.html"><code>sql</code> change type</a> if no fitting built-in exists</li>
-<li>Use a <a href="https://docs.liquibase.com/change-types/custom-change.html">custom change</a> <em>in edge cases</em>, when additional computation is required</li>
-</ul>
-</li>
-<li>When using custom changes:<ul>
-<li>Use the <a href="https://github.com/DependencyTrack/hyades-apiserver/tree/main/src/main/java/org/dependencytrack/persistence/migration/change"><code>org.dependencytrack.persistence.migration.change</code></a> package</li>
-<li>Changes <strong>must not</strong> depend on domain logic</li>
-</ul>
-</li>
-<li>You <strong>must not</strong> modify <code>changeset</code>s that were already committed to <code>main</code></li>
-</ul>
-<h2 id="making-schema-changes-available-to-hyades-services">Making Schema Changes Available to Hyades Services<a class="headerlink" href="#making-schema-changes-available-to-hyades-services" title="Permanent link">&para;</a></h2>
-<p>Because the schema is owned by the API server, and the API server is also responsible for executing migrations,
-other services that access the database must replicate the current schema, in order to run tests against it.</p>
-<p>Currently, this is achieved by:</p>
-<ol>
-<li>Having <a href="https://www.liquibase.com/">Liquibase</a> generate the schema SQL based on the changelog</li>
-<li>Adding the <code>schema.sql</code> file as resource to the <a href="https://github.com/DependencyTrack/hyades/blob/c1463a80c8ad45e0ef401292cf29dbd37a7de308/commons-persistence/src/main/resources/schema.sql"><code>commons-persistence</code></a> module</li>
-<li>Having all services that require database access depend on <code>commons-persistence</code></li>
-<li>Configuring <a href="https://quarkus.io/guides/databases-dev-services">Quarkus Dev Services</a> to initialize new database containers with <code>schema.sql</code><ul>
-<li>Using <a href="https://quarkus.io/guides/datasource#quarkus-datasource_quarkus-datasource-devservices-init-script-path"><code>quarkus.datasource.devservices.init-script-path</code></a></li>
-</ul>
-</li>
-</ol>
-<p>The schema can be generated using the <a href="https://github.com/DependencyTrack/hyades-apiserver/blob/794e9eaa2991f961223653b293c46ce64bc7e0ce/dev/scripts/dbschema-generate.sh"><code>dbschema-generate.sh</code></a>
-script in the <code>hyades-apiserver</code> repository:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./dev/scripts/dbschema-generate.sh
+  <h1>Durable Execution</h1>
+
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Refer to the <a href="../../architecture/design/durable-execution/">design document</a>
+for information on the inner workings of Dependency-Track's durable execution
+implementation.</p>
+</div>
+<h2 id="common-patterns">Common Patterns<a class="headerlink" href="#common-patterns" title="Permanent link">&para;</a></h2>
+<h3 id="chaining">Chaining<a class="headerlink" href="#chaining" title="Permanent link">&para;</a></h3>
+<p>Most workflows require the execution of steps to happen in sequence:</p>
+<pre class="mermaid"><code>flowchart LR
+    A@{ shape: circle, label: Start }
+    B["Foo"]
+    C["Bar"]
+    D["Baz"]
+    E@{ shape: dbl-circ, label: Stop }
+    A --&gt; B
+    B --&gt; C
+    C --&gt; D
+    D --&gt; E</code></pre>
+<p>With dex, this can be achieved by <code>await</code>ing step results for initiating the next step:</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nd">@Workflow</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;example&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">class</span> <span class="nc">ExampleWorkflow</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">WorkflowExecutor</span><span class="o">&lt;</span><span class="n">Void</span><span class="p">,</span><span class="w"> </span><span class="n">Void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Void</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="n">WorkflowContext</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">Void</span><span class="w"> </span><span class="n">argument</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">fooResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="na">activity</span><span class="p">(</span><span class="n">FooActivity</span><span class="p">.</span><span class="na">class</span><span class="p">).</span><span class="na">call</span><span class="p">().</span><span class="na">await</span><span class="p">();</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">barResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="na">activity</span><span class="p">(</span><span class="n">BarActivity</span><span class="p">.</span><span class="na">class</span><span class="p">).</span><span class="na">call</span><span class="p">(</span><span class="n">fooResult</span><span class="p">).</span><span class="na">await</span><span class="p">();</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">bazResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="na">activity</span><span class="p">(</span><span class="n">BazActivity</span><span class="p">.</span><span class="na">class</span><span class="p">).</span><span class="na">call</span><span class="p">(</span><span class="n">barResult</span><span class="p">).</span><span class="na">await</span><span class="p">();</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="n">ctx</span><span class="p">.</span><span class="na">logger</span><span class="p">().</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;Baz result: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bazResult</span><span class="p">);</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">}</span>
 </span></code></pre></div>
+<p>In the above example, activity calls are scheduled one-by-one, with successive
+calls even depending on the result of preceding calls.</p>
+<p>The same approach can be used for child workflows and timers.</p>
+<h3 id="scatter-gather">Scatter-Gather<a class="headerlink" href="#scatter-gather" title="Permanent link">&para;</a></h3>
+<p>Often it is desirable to perform multiple workflow steps concurrently:</p>
+<pre class="mermaid"><code>flowchart LR
+    A@{ shape: circle, label: Start }
+    B["Foo"]
+    C["Bar"]
+    D["Baz"]
+    E@{ shape: dbl-circ, label: Stop }
+    A --&gt; B
+    A --&gt; C
+    A --&gt; D
+    B --&gt; E
+    C --&gt; E
+    D --&gt; E</code></pre>
+<p>With dex, this can be achieved by collecting <code>Awaitable</code>s into a collection first,
+and then awaiting all of them:</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@Workflow</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;example&quot;</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">class</span> <span class="nc">ExampleWorkflow</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">WorkflowExecutor</span><span class="o">&lt;</span><span class="n">Void</span><span class="p">,</span><span class="w"> </span><span class="n">Void</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Void</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="n">WorkflowContext</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">Void</span><span class="w"> </span><span class="n">argument</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">awaitables</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">List</span><span class="p">.</span><span class="o">&lt;</span><span class="n">Awaitable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="n">of</span><span class="p">(</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">            </span><span class="n">ctx</span><span class="p">.</span><span class="na">activity</span><span class="p">(</span><span class="n">FooActivity</span><span class="p">.</span><span class="na">class</span><span class="p">).</span><span class="na">call</span><span class="p">(),</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">            </span><span class="n">ctx</span><span class="p">.</span><span class="na">activity</span><span class="p">(</span><span class="n">BarActivity</span><span class="p">.</span><span class="na">class</span><span class="p">).</span><span class="na">call</span><span class="p">(),</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">            </span><span class="n">ctx</span><span class="p">.</span><span class="na">activity</span><span class="p">(</span><span class="n">BazActivity</span><span class="p">.</span><span class="na">class</span><span class="p">).</span><span class="na">call</span><span class="p">()</span><span class="w">    </span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="p">);</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="n">awaitable</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">awaitables</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">awaitable</span><span class="p">.</span><span class="na">await</span><span class="p">();</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">            </span><span class="n">results</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">        </span><span class="n">ctx</span><span class="p">.</span><span class="na">logger</span><span class="p">().</span><span class="na">info</span><span class="p">(</span><span class="s">&quot;Results: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p">);</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>In the above example, all activity calls are scheduled at once when the workflow first
+becomes blocked (i.e., the first time <code>await</code> is called).</p>
+<p>The same approach can be used for child workflows and timers.</p>
+<h3 id="singletons">Singletons<a class="headerlink" href="#singletons" title="Permanent link">&para;</a></h3>
+<p>Some workflows are intended to exist <em>at most once</em>. This is usually true for workflows that:</p>
+<ul>
+<li>are resource-intensive, or</li>
+<li>take a long time to complete, or</li>
+<li>modify some state (be it local or in external systems) in a way that is not concurrency-safe</li>
+</ul>
+<p>In dex, this can be achieved using workflow instance IDs.</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">UUID</span><span class="w"> </span><span class="n">runId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dexEngine</span><span class="p">.</span><span class="na">createRun</span><span class="p">(</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">CreateWorkflowRunRequest</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">ExampleWorkflow</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">                </span><span class="p">.</span><span class="na">withInstanceId</span><span class="p">(</span><span class="s">&quot;only-exists-once&quot;</span><span class="p">));</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">runId</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="c1">// Another run with the same instance ID already exists in non-terminal state.</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="c1">// Run created successfully!</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Multiple workflow runs can have the same instance ID,
+but only a single run in non-terminal state can exist
+for a given instance ID at any point in time.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<p>Uniqueness of instance IDs is enforced across workflow types.
+Avoid overly generic instance IDs.</p>
+</div>
+<h3 id="concurrency-control">Concurrency Control<a class="headerlink" href="#concurrency-control" title="Permanent link">&para;</a></h3>
+<p>When workflows access shared resources, there needs to be a way to serialize
+their execution to prevent race conditions.</p>
+<p>Holding a distributed lock for the entire duration of a workflow run is not feasible,
+as a single run can potentially take hours to complete.</p>
+<p>With dex, a <em>concurrency key</em> can be defined when creating a new workflow run:</p>
+<div class="language-java highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="n">dexEngine</span><span class="p">.</span><span class="na">createRun</span><span class="p">(</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">CreateWorkflowRunRequest</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">ExampleWorkflow</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">                    </span><span class="p">.</span><span class="na">withConcurrencyKey</span><span class="p">(</span><span class="s">&quot;example:projectId&quot;</span><span class="p">));</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Instead of preventing creation of new runs, as done for <a href="#singletons">singletons</a>,
+dex effectively allows runs to queue up, and will process them in order.</p>
+<p>Each run will be executed until completion before the next run is started.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The order in which the runs will execute is determined by:</p>
 <ul>
-<li>You may need to <a href="../building/">build</a> the API server project once before running the script</li>
-<li>Because Liquibase requires database to run against, the script will launch a temporary PostgreSQL container</li>
+<li>Their priority</li>
+<li>Their creation timestamp</li>
 </ul>
 </div>
-<p>The output is written to <code>target/liquibase/migrate.sql</code>.</p>
 
 
 
