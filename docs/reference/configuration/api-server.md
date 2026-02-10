@@ -216,6 +216,132 @@ Controls the content of the `Access-Control-Max-Age` response header.  <br/>  Ha
 
 
 
+## Cache
+
+### dt.cache.provider
+
+Defines the cache provider to use.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[database]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>database</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE_PROVIDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache.provider.database.datasource.name
+
+Defines the name of the data source to be used by the database cache provider.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>default</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE_PROVIDER_DATABASE_DATASOURCE_NAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache.provider.database.maintenance.initial-delay-ms
+
+Defines the initial delay in milliseconds after which the  database cache provider first performs its maintenance activities,  e.g. entry expiration.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>60000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE_PROVIDER_DATABASE_MAINTENANCE_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache.provider.database.maintenance.interval-ms
+
+Defines the interval in milliseconds in which the database  cache provider performs its maintenance activities,  e.g. entry expiration.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>300000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE_PROVIDER_DATABASE_MAINTENANCE_INTERVAL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
 ## Database
 
 ### alpine.database.password
