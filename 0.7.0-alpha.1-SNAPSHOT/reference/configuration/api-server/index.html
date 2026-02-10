@@ -2457,6 +2457,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cache">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dtcacheprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.cache.provider
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtcacheproviderdatabasedatasourcename" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.cache.provider.database.datasource.name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtcacheproviderdatabasemaintenanceinitial-delay-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.cache.provider.database.maintenance.initial-delay-ms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtcacheproviderdatabasemaintenanceinterval-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.cache.provider.database.maintenance.interval-ms
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#database" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5923,6 +5984,106 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_CORS_MAX_AGE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="cache">Cache<a class="headerlink" href="#cache" title="Permanent link">&para;</a></h2>
+<h3 id="dtcacheprovider">dt.cache.provider<a class="headerlink" href="#dtcacheprovider" title="Permanent link">&para;</a></h3>
+<p>Defines the cache provider to use.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[database]</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>database</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE_PROVIDER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtcacheproviderdatabasedatasourcename">dt.cache.provider.database.datasource.name<a class="headerlink" href="#dtcacheproviderdatabasedatasourcename" title="Permanent link">&para;</a></h3>
+<p>Defines the name of the data source to be used by the database cache provider.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>default</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE_PROVIDER_DATABASE_DATASOURCE_NAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtcacheproviderdatabasemaintenanceinitial-delay-ms">dt.cache.provider.database.maintenance.initial-delay-ms<a class="headerlink" href="#dtcacheproviderdatabasemaintenanceinitial-delay-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the initial delay in milliseconds after which the  database cache provider first performs its maintenance activities,  e.g. entry expiration.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>60000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE_PROVIDER_DATABASE_MAINTENANCE_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtcacheproviderdatabasemaintenanceinterval-ms">dt.cache.provider.database.maintenance.interval-ms<a class="headerlink" href="#dtcacheproviderdatabasemaintenanceinterval-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the interval in milliseconds in which the database  cache provider performs its maintenance activities,  e.g. entry expiration.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>300000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE_PROVIDER_DATABASE_MAINTENANCE_INTERVAL_MS</code></td>
     </tr>
   </tbody>
 </table>
