@@ -109,6 +109,7 @@ nav:
         - "ADR-010: Vulnerability Datasource Extension Point": architecture/decisions/010-vulnerability-datasource-extension-point.md
         - "ADR-011: Notification Outbox": architecture/decisions/011-notification-outbox.md
         - "ADR-012: Extension KV Store": architecture/decisions/012-extension-kv-store.md
+        - "ADR-013: Finding Status": architecture/decisions/013-finding-status.md
     - Design:
         - Durable Execution: architecture/design/durable-execution.md
         - Notifications: architecture/design/notifications.md
