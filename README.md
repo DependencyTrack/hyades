@@ -57,7 +57,6 @@ to and from multiple instances.
 To read more about the individual services, refer to their respective `README.md`:
 
 * [Repository Metadata Analyzer](repository-meta-analyzer/README.md)
-* [Vulnerability Analyzer](vulnerability-analyzer/README.md)
 
 ## Great, can I try it? 🙌
 
@@ -205,7 +204,7 @@ docker compose up -d
 To launch individual services execute the `quarkus:dev` Maven goal for the respective module:
 
 ```shell
-mvn -pl vulnerability-analyzer quarkus:dev
+mvn -pl repository-meta-analyzer quarkus:dev
 ```
 
 Make sure you've [built](#building) the project at least once, otherwise the above command will fail.

@@ -41,12 +41,12 @@ class KafkaTopicTest {
         @Test
         void testKafkaTopicConfigWithPrefix() {
             System.setProperty("dt.kafka.topic.prefix", "customPrefix.");
-            assertEquals("customPrefix.dtrack.vuln-analysis.component", KafkaTopic.VULN_ANALYSIS_COMPONENT.getName());
+            assertEquals("customPrefix.dtrack.repo-meta-analysis.component", KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName());
         }
     }
 
     @Test
     void testKafkaTopicConfig() {
-        assertEquals("dtrack.vuln-analysis.component", KafkaTopic.VULN_ANALYSIS_COMPONENT.getName());
+        assertEquals("dtrack.repo-meta-analysis.component", KafkaTopic.REPO_META_ANALYSIS_COMMAND.getName());
     }
 }
