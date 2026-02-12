@@ -32,7 +32,6 @@
     <module>commons-persistence</module>
     <module>repository-meta-analyzer</module>
     <module>proto</module>
-    <module>vulnerability-analyzer</module>
     <module>e2e</module>
   </modules>
 
