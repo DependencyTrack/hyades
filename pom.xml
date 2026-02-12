@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dependencytrack</groupId>
   <artifactId>hyades</artifactId>
-  <version>0.7.0-alpha.1</version>
+  <version>0.7.0-alpha.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -48,7 +48,7 @@
     <connection>${scm.connection}</connection>
     <developerConnection>${scm.developer.connection}</developerConnection>
     <url>${scm.url}</url>
-    <tag>0.7.0-alpha.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
