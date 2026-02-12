@@ -1,0 +1,2 @@
+#!/bin/bash
+exec /etc/s6-overlay/s6-rc.d/nginx/script.sh
