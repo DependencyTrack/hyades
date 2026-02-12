@@ -24,10 +24,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 public enum KafkaTopic {
 
     REPO_META_ANALYSIS_COMMAND("dtrack.repo-meta-analysis.component"),
-    REPO_META_ANALYSIS_RESULT("dtrack.repo-meta-analysis.result"),
-    VULN_ANALYSIS_SCANNER_RESULT("dtrack.vuln-analysis.scanner.result"),
-    VULN_ANALYSIS_COMPONENT("dtrack.vuln-analysis.component"),
-    VULN_ANALYSIS_RESULT("dtrack.vuln-analysis.result");
+    REPO_META_ANALYSIS_RESULT("dtrack.repo-meta-analysis.result");
 
     private final String name;
 

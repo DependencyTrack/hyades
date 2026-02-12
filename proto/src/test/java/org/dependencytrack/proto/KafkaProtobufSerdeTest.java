@@ -20,7 +20,7 @@ package org.dependencytrack.proto;
 
 import com.google.protobuf.AbstractMessageLite;
 import org.apache.kafka.common.errors.SerializationException;
-import org.dependencytrack.proto.vulnanalysis.v1.Component;
+import org.dependencytrack.proto.repometaanalysis.v1.Component;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -39,7 +39,6 @@ class KafkaProtobufSerdeTest {
 
         final byte[] componentBytes = serde.serializer().serialize("topic", Component.newBuilder()
                 .setUuid("786b9343-9b98-477d-82b5-4b12ac5f5cec")
-                .setCpe("cpe:/a:acme:application:9.1.1")
                 .setPurl("pkg:maven/acme/a@9.1.1")
                 .setInternal(true)
                 .build());
@@ -48,9 +47,7 @@ class KafkaProtobufSerdeTest {
         final Component component = serde.deserializer().deserialize("topic", componentBytes);
         assertThat(component).isNotNull();
         assertThat(component.getUuid()).isEqualTo("786b9343-9b98-477d-82b5-4b12ac5f5cec");
-        assertThat(component.getCpe()).isEqualTo("cpe:/a:acme:application:9.1.1");
         assertThat(component.getPurl()).isEqualTo("pkg:maven/acme/a@9.1.1");
-        assertThat(component.hasSwidTagId()).isFalse();
         assertThat(component.getInternal()).isTrue();
     }
 
