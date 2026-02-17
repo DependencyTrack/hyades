@@ -1852,8 +1852,58 @@
   
   
   
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3_3" id="__nav_3_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../design/workflow-state-tracking/" class="md-nav__link">
+      <a href="../../design/archive/workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -1869,6 +1919,14 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2741,7 +2799,7 @@ the previously mandatory ZooKeeper dependency.</p>
   requires dedicated monitoring for logs, metrics, and traces. This raises the barrier to entry for operating
   Dependency-Track clusters, and complicates debugging of issues and development. Relying solely on a PubSub broker like
   Kafka or DT v4's internal message bus promotes <a href="https://microservices.io/patterns/data/saga.html#example-choreography-based-saga">choreography</a> over <a href="https://microservices.io/patterns/data/saga.html#example-orchestration-based-saga">orchestration</a>. Choreography makes processes
-  increasingly hard to understand and follow. The initial <a href="../../design/workflow-state-tracking/">workflow state tracking</a> implementation attempted to lessen
+  increasingly hard to understand and follow. The initial <a href="../design/workflow-state-tracking.md">workflow state tracking</a> implementation attempted to lessen
   the pain, but the logic being scattered across all choreography participants is not helpful.</li>
 <li><strong>Spotty support for advanced Kafka features</strong>. Kafka comes with advanced features like transactions, compacted topics,
   and more. We found that support for these is very spotty across alternative implementations (in particular transactions).
