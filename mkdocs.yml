@@ -113,7 +113,8 @@ nav:
     - Design:
         - Durable Execution: architecture/design/durable-execution.md
         - Notifications: architecture/design/notifications.md
-        - Workflow State Tracking: architecture/design/workflow-state-tracking.md
+        - Archive:
+            - Workflow State Tracking: architecture/design/archive/workflow-state-tracking.md
 - Operations:
     - Configuration:
         - Overview: operations/configuration/overview.md
