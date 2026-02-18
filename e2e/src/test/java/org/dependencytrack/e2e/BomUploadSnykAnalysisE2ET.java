@@ -19,10 +19,11 @@
 package org.dependencytrack.e2e;
 
 import org.apache.commons.io.IOUtils;
-import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
+import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.Finding;
 import org.dependencytrack.apiserver.model.Project;
+import org.dependencytrack.apiserver.model.UpdateExtensionConfigRequest;
 import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import org.testcontainers.containers.GenericContainer;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -39,35 +41,47 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 class BomUploadSnykAnalysisE2ET extends AbstractE2ET {
 
     private String snykOrgId;
-    private String snykToken;
+    private String snykApiToken;
 
     @Override
     @BeforeEach
     void beforeEach() throws Exception {
         snykOrgId = System.getenv("SNYK_ORG_ID");
-        snykToken = System.getenv("SNYK_TOKEN");
+        snykApiToken = System.getenv("SNYK_TOKEN");
 
         // Snyk does not allow unauthenticated usage; No point in running the test without credentials.
         assumeTrue(snykOrgId != null, "No Snyk organization ID provided");
-        assumeTrue(snykToken != null, "No Snyk token provided");
+        assumeTrue(snykApiToken != null, "No Snyk token provided");
 
         super.beforeEach();
     }
 
     @Override
-    protected void customizeVulnAnalyzerContainer(GenericContainer<?> container) {
+    protected void customizeApiServerContainer(GenericContainer<?> container) {
         container
-                // Enable Snyk
-                .withEnv("SCANNER_SNYK_ENABLED", "true")
-                .withEnv("SCANNER_SNYK_API_ORG_ID", snykOrgId)
-                .withEnv("SCANNER_SNYK_API_TOKENS", snykToken)
-                // Disable all other scanners
-                .withEnv("SCANNER_INTERNAL_ENABLED", "false")
-                .withEnv("SCANNER_OSSINDEX_ENABLED", "false");
+                .withEnv("DT_SECRET_MANAGEMENT_PROVIDER", "env")
+                .withEnv("DT_SECRET_SNYK_API_TOKEN", snykApiToken);
     }
 
     @Test
     void test() throws Exception {
+        logger.info("Disabling internal vuln analyzer");
+        apiServerClient.updateExtensionConfig(
+                "vuln-analyzer",
+                "internal",
+                new UpdateExtensionConfigRequest(Map.of("enabled", false)));
+
+        logger.info("Configuring Snyk vuln analyzer");
+        apiServerClient.updateExtensionConfig(
+                "vuln-analyzer",
+                "snyk",
+                new UpdateExtensionConfigRequest(
+                        Map.ofEntries(
+                                Map.entry("enabled", true),
+                                Map.entry("apiUrl", "https://api.snyk.io"),
+                                Map.entry("orgId", snykOrgId),
+                                Map.entry("apiToken", "SNYK_API_TOKEN"))));
+
         // Parse and base64 encode a BOM.
         final byte[] bomBytes = IOUtils.resourceToByteArray("/dtrack-apiserver-4.5.0.bom.json");
         final String bomBase64 = Base64.getEncoder().encodeToString(bomBytes);
@@ -96,7 +110,7 @@ class BomUploadSnykAnalysisE2ET extends AbstractE2ET {
                         finding -> {
                             assertThat(finding.vulnerability().vulnId()).startsWith("SNYK-");
                             assertThat(finding.vulnerability().source()).isEqualTo("SNYK");
-                            assertThat(finding.attribution().analyzerIdentity()).isEqualTo("SNYK_ANALYZER");
+                            assertThat(finding.attribution().analyzerIdentity()).isEqualTo("snyk");
                             assertThat(finding.attribution().attributedOn()).isNotBlank();
                         }
                 );

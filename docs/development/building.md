@@ -20,7 +20,7 @@ For application modules, this will produce a [Quarkus fast-jar] in their respect
 To only build JARs for specific modules, use Maven's `-pl` flag:
 
 ```shell
-mvn -pl vulnerability-analyzer clean package -DskipTests
+mvn -pl repository-meta-analyzer clean package -DskipTests
 ```
 
 !!! note
@@ -53,7 +53,7 @@ ghcr.io/dependencytrack/hyades-${moduleName}:local
 For example:
 
 ```
-ghcr.io/dependencytrack/hyades-vulnerability-analyzer:local
+ghcr.io/dependencytrack/hyades-repository-metaanalyzer:local
 ```
 
 ## `hyades-apiserver`

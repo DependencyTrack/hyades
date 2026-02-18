@@ -19,42 +19,69 @@
 package org.dependencytrack.e2e;
 
 import org.apache.commons.io.IOUtils;
-import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.BomUploadRequest;
+import org.dependencytrack.apiserver.model.EventProcessingResponse;
 import org.dependencytrack.apiserver.model.Finding;
 import org.dependencytrack.apiserver.model.Project;
+import org.dependencytrack.apiserver.model.UpdateExtensionConfigRequest;
 import org.dependencytrack.apiserver.model.WorkflowTokenResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class BomUploadOssIndexAnalysisE2ET extends AbstractE2ET {
 
-    @Override
-    protected void customizeVulnAnalyzerContainer(GenericContainer<?> container) {
-        // Username and token are optional, OSS Index can be used without authentication.
-        final String ossIndexUsername = Optional.ofNullable(System.getenv("OSSINDEX_USERNAME")).orElse("");
-        final String ossIndexToken = Optional.ofNullable(System.getenv("OSSINDEX_TOKEN")).orElse("");
+    private String ossIndexUsername;
+    private String ossIndexApiToken;
 
+    @Override
+    @BeforeEach
+    void beforeEach() throws Exception {
+        ossIndexUsername = System.getenv("OSSINDEX_USERNAME");
+        ossIndexApiToken = System.getenv("OSSINDEX_TOKEN");
+
+        // OSS Index does not allow unauthenticated usage; No point in running the test without credentials.
+        assumeTrue(ossIndexUsername != null, "No OSS Index username provided");
+        assumeTrue(ossIndexApiToken != null, "No OSS Index API token provided");
+
+        super.beforeEach();
+    }
+
+    @Override
+    protected void customizeApiServerContainer(GenericContainer<?> container) {
         container
-                // Enable OSS Index
-                .withEnv("SCANNER_OSSINDEX_ENABLED", "true")
-                .withEnv("SCANNER_OSSINDEX_API_USERNAME", ossIndexUsername)
-                .withEnv("SCANNER_OSSINDEX_API_TOKEN", ossIndexToken)
-                // Disable all other scanners
-                .withEnv("SCANNER_INTERNAL_ENABLED", "false")
-                .withEnv("SCANNER_SNYK_ENABLED", "false");
+                .withEnv("DT_SECRET_MANAGEMENT_PROVIDER", "env")
+                .withEnv("DT_SECRET_OSSINDEX_API_TOKEN", ossIndexApiToken);
     }
 
     @Test
     void test() throws Exception {
+        logger.info("Disabling internal vuln analyzer");
+        apiServerClient.updateExtensionConfig(
+                "vuln-analyzer",
+                "internal",
+                new UpdateExtensionConfigRequest(Map.of("enabled", false)));
+
+        logger.info("Configuring OSS Index vuln analyzer");
+        apiServerClient.updateExtensionConfig(
+                "vuln-analyzer",
+                "oss-index",
+                new UpdateExtensionConfigRequest(
+                        Map.ofEntries(
+                                Map.entry("enabled", true),
+                                Map.entry("apiUrl", "https://ossindex.sonatype.org"),
+                                Map.entry("username", ossIndexUsername),
+                                Map.entry("apiToken", "OSSINDEX_API_TOKEN"))));
+
         // Parse and base64 encode a BOM.
         final byte[] bomBytes = IOUtils.resourceToByteArray("/dtrack-apiserver-4.5.0.bom.json");
         final String bomBase64 = Base64.getEncoder().encodeToString(bomBytes);
@@ -91,7 +118,7 @@ class BomUploadOssIndexAnalysisE2ET extends AbstractE2ET {
                                         assertThat(vuln.source()).isEqualTo("OSSINDEX");
                                     }
                             );
-                            assertThat(finding.attribution().analyzerIdentity()).isEqualTo("OSSINDEX_ANALYZER");
+                            assertThat(finding.attribution().analyzerIdentity()).isEqualTo("oss-index");
                             assertThat(finding.attribution().attributedOn()).isNotBlank();
                         }
                 );
