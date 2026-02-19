@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
     
     
       
@@ -4816,17 +4816,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#dtfile-storagedefault-extension" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        dt.file-storage.default-extension
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#dtfile-storagelocalcompressionlevel" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4849,21 +4838,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#dtfile-storagelocalenabled" class="md-nav__link">
+  <a href="#dtfile-storageprovider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        dt.file-storage.local.enabled
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dtfile-storagememoryenabled" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        dt.file-storage.memory.enabled
+        dt.file-storage.provider
       
     </span>
   </a>
@@ -4897,17 +4875,6 @@
     <span class="md-ellipsis">
       
         dt.file-storage.s3.compression.level
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dtfile-storages3enabled" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        dt.file-storage.s3.enabled
       
     </span>
   </a>
@@ -10657,36 +10624,8 @@
 </table>
 
 <h2 id="storage">Storage<a class="headerlink" href="#storage" title="Permanent link">&para;</a></h2>
-<h3 id="dtfile-storagedefault-extension">dt.file-storage.default-extension<a class="headerlink" href="#dtfile-storagedefault-extension" title="Permanent link">&para;</a></h3>
-<p>Defines the file storage extension to use.  When not set, an enabled extension will be chosen based on its priority.  It is recommended to explicitly configure an extension for predictable behavior.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[local, memory, s3]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_FILE_STORAGE_DEFAULT_EXTENSION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
 <h3 id="dtfile-storagelocalcompressionlevel">dt.file-storage.local.compression.level<a class="headerlink" href="#dtfile-storagelocalcompressionlevel" title="Permanent link">&para;</a></h3>
-<p>Defines the zstd compression level to use.  Has no effect unless <a href="#dtfile-storagelocalenabled"><code>dt.file-storage.local.enabled</code></a> is <code>true</code>.  </p>
+<p>Defines the zstd compression level to use for local file storage.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -10714,7 +10653,7 @@
 
 <hr />
 <h3 id="dtfile-storagelocaldirectory">dt.file-storage.local.directory<a class="headerlink" href="#dtfile-storagelocaldirectory" title="Permanent link">&para;</a></h3>
-<p>Defines the local directory where files shall be stored.  Has no effect unless <a href="#dtfile-storagelocalenabled"><code>dt.file-storage.local.enabled</code></a> is <code>true</code>.  </p>
+<p>Defines the local directory where files shall be stored.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -10737,8 +10676,8 @@
 </table>
 
 <hr />
-<h3 id="dtfile-storagelocalenabled">dt.file-storage.local.enabled<a class="headerlink" href="#dtfile-storagelocalenabled" title="Permanent link">&para;</a></h3>
-<p>Whether the local file storage extension shall be enabled.  </p>
+<h3 id="dtfile-storageprovider">dt.file-storage.provider<a class="headerlink" href="#dtfile-storageprovider" title="Permanent link">&para;</a></h3>
+<p>Defines the file storage provider to use.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -10747,46 +10686,26 @@
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[local, memory, s3]</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>true</code></td>
+      <td style="border-width: 0"><code>local</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_FILE_STORAGE_LOCAL_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
-<h3 id="dtfile-storagememoryenabled">dt.file-storage.memory.enabled<a class="headerlink" href="#dtfile-storagememoryenabled" title="Permanent link">&para;</a></h3>
-<p>Whether the in-memory file storage extension shall be enabled.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_FILE_STORAGE_MEMORY_ENABLED</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_PROVIDER</code></td>
     </tr>
   </tbody>
 </table>
 
 <hr />
 <h3 id="dtfile-storages3accesskey">dt.file-storage.s3.access.key<a class="headerlink" href="#dtfile-storages3accesskey" title="Permanent link">&para;</a></h3>
-<p>Defines the S3 access key / username.  Has no effect unless <a href="#dtfile-storages3enabled"><code>dt.file-storage.s3.enabled</code></a> is <code>true</code>.  </p>
+<p>Defines the S3 access key / username.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -10810,7 +10729,7 @@
 
 <hr />
 <h3 id="dtfile-storages3bucket">dt.file-storage.s3.bucket<a class="headerlink" href="#dtfile-storages3bucket" title="Permanent link">&para;</a></h3>
-<p>Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup,  even when S3 is not configured as default extension.  Has no effect unless <a href="#dtfile-storages3enabled"><code>dt.file-storage.s3.enabled</code></a> is <code>true</code>.  </p>
+<p>Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -10834,7 +10753,7 @@
 
 <hr />
 <h3 id="dtfile-storages3compressionlevel">dt.file-storage.s3.compression.level<a class="headerlink" href="#dtfile-storages3compressionlevel" title="Permanent link">&para;</a></h3>
-<p>Defines the zstd compression level to use.  Has no effect unless <a href="#dtfile-storages3enabled"><code>dt.file-storage.s3.enabled</code></a> is <code>true</code>.  </p>
+<p>Defines the zstd compression level to use for S3 file storage.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -10861,32 +10780,8 @@
 </table>
 
 <hr />
-<h3 id="dtfile-storages3enabled">dt.file-storage.s3.enabled<a class="headerlink" href="#dtfile-storages3enabled" title="Permanent link">&para;</a></h3>
-<p>Whether the s3 file storage extension shall be enabled.  </p>
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<hr />
 <h3 id="dtfile-storages3endpoint">dt.file-storage.s3.endpoint<a class="headerlink" href="#dtfile-storages3endpoint" title="Permanent link">&para;</a></h3>
-<p>Defines the S3 endpoint URL.  Has no effect unless <a href="#dtfile-storages3enabled"><code>dt.file-storage.s3.enabled</code></a> is <code>true</code>.  </p>
+<p>Defines the S3 endpoint URL.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -10910,7 +10805,7 @@
 
 <hr />
 <h3 id="dtfile-storages3region">dt.file-storage.s3.region<a class="headerlink" href="#dtfile-storages3region" title="Permanent link">&para;</a></h3>
-<p>Defines the region of the S3 bucket.  Has no effect unless <a href="#dtfile-storages3enabled"><code>dt.file-storage.s3.enabled</code></a> is <code>true</code>.  </p>
+<p>Defines the region of the S3 bucket.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
@@ -10934,7 +10829,7 @@
 
 <hr />
 <h3 id="dtfile-storages3secretkey">dt.file-storage.s3.secret.key<a class="headerlink" href="#dtfile-storages3secretkey" title="Permanent link">&para;</a></h3>
-<p>Defines the S3 secret key / password.  Has no effect unless <a href="#dtfile-storages3enabled"><code>dt.file-storage.s3.enabled</code></a> is <code>true</code>.  </p>
+<p>Defines the S3 secret key / password.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
