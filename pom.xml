@@ -62,7 +62,7 @@
     <!-- Dependency Versions -->
     <lib.assertj.version>3.27.7</lib.assertj.version>
     <lib.checkstyle.version>13.2.0</lib.checkstyle.version>
-    <lib.cloud-sql-postgres-socket-factory.version>1.28.0</lib.cloud-sql-postgres-socket-factory.version>
+    <lib.cloud-sql-postgres-socket-factory.version>1.28.1</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>3.0.1</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.5.0</lib.commons-collections4.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
