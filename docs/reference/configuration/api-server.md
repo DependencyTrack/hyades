@@ -5976,43 +5976,9 @@ Defines the secret management type to use.
 
 ## Storage
 
-### dt.file-storage.default-extension
-
-Defines the file storage extension to use.  When not set, an enabled extension will be chosen based on its priority.  It is recommended to explicitly configure an extension for predictable behavior.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[local, memory, s3]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_FILE_STORAGE_DEFAULT_EXTENSION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### dt.file-storage.local.compression.level
 
-Defines the zstd compression level to use.  Has no effect unless [`dt.file-storage.local.enabled`](#dtfile-storagelocalenabled) is `true`.  
+Defines the zstd compression level to use for local file storage.  
 
 
 
@@ -6046,7 +6012,7 @@ Defines the zstd compression level to use.  Has no effect unless [`dt.file-stora
 
 ### dt.file-storage.local.directory
 
-Defines the local directory where files shall be stored.  Has no effect unless [`dt.file-storage.local.enabled`](#dtfile-storagelocalenabled) is `true`.  
+Defines the local directory where files shall be stored.  
 
 
 
@@ -6074,39 +6040,9 @@ Defines the local directory where files shall be stored.  Has no effect unless [
 
 ---
 
-### dt.file-storage.local.enabled
+### dt.file-storage.provider
 
-Whether the local file storage extension shall be enabled.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>true</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_FILE_STORAGE_LOCAL_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### dt.file-storage.memory.enabled
-
-Whether the in-memory file storage extension shall be enabled.  
+Defines the file storage provider to use.  
 
 
 
@@ -6118,15 +6054,19 @@ Whether the in-memory file storage extension shall be enabled.
     </tr>
     <tr>
       <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
+      <td style="border-width: 0"><code>enum</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Valid Values</th>
+      <td style="border-width: 0"><code>[local, memory, s3]</code></td>
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
+      <td style="border-width: 0"><code>local</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_FILE_STORAGE_MEMORY_ENABLED</code></td>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_PROVIDER</code></td>
     </tr>
   </tbody>
 </table>
@@ -6136,7 +6076,7 @@ Whether the in-memory file storage extension shall be enabled.
 
 ### dt.file-storage.s3.access.key
 
-Defines the S3 access key / username.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
+Defines the S3 access key / username.  
 
 
 
@@ -6166,7 +6106,7 @@ Defines the S3 access key / username.  Has no effect unless [`dt.file-storage.s3
 
 ### dt.file-storage.s3.bucket
 
-Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup,  even when S3 is not configured as default extension.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
+Defines the name of the S3 bucket.  The existence of the bucket will be verified during startup.  
 
 
 
@@ -6196,7 +6136,7 @@ Defines the name of the S3 bucket.  The existence of the bucket will be verified
 
 ### dt.file-storage.s3.compression.level
 
-Defines the zstd compression level to use.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
+Defines the zstd compression level to use for S3 file storage.  
 
 
 
@@ -6228,39 +6168,9 @@ Defines the zstd compression level to use.  Has no effect unless [`dt.file-stora
 
 ---
 
-### dt.file-storage.s3.enabled
-
-Whether the s3 file storage extension shall be enabled.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### dt.file-storage.s3.endpoint
 
-Defines the S3 endpoint URL.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
+Defines the S3 endpoint URL.  
 
 
 
@@ -6290,7 +6200,7 @@ Defines the S3 endpoint URL.  Has no effect unless [`dt.file-storage.s3.enabled`
 
 ### dt.file-storage.s3.region
 
-Defines the region of the S3 bucket.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
+Defines the region of the S3 bucket.  
 
 
 
@@ -6320,7 +6230,7 @@ Defines the region of the S3 bucket.  Has no effect unless [`dt.file-storage.s3.
 
 ### dt.file-storage.s3.secret.key
 
-Defines the S3 secret key / password.  Has no effect unless [`dt.file-storage.s3.enabled`](#dtfile-storages3enabled) is `true`.  
+Defines the S3 secret key / password.  
 
 
 
