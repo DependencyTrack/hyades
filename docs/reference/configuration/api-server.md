@@ -6168,6 +6168,36 @@ Defines the zstd compression level to use for S3 file storage.
 
 ---
 
+### dt.file-storage.s3.connect-timeout-ms
+
+Defines the HTTP connect timeout for S3 requests in milliseconds.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_CONNECT_TIMEOUT_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### dt.file-storage.s3.endpoint
 
 Defines the S3 endpoint URL.  
@@ -6191,6 +6221,36 @@ Defines the S3 endpoint URL.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_ENDPOINT</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.file-storage.s3.read-timeout-ms
+
+Defines the HTTP read timeout for S3 requests in milliseconds.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_READ_TIMEOUT_MS</code></td>
     </tr>
   </tbody>
 </table>
@@ -6251,6 +6311,36 @@ Defines the S3 secret key / password.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_SECRET_KEY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.file-storage.s3.write-timeout-ms
+
+Defines the HTTP write timeout for S3 requests in milliseconds.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_WRITE_TIMEOUT_MS</code></td>
     </tr>
   </tbody>
 </table>
