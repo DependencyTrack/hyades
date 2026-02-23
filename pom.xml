@@ -100,7 +100,7 @@
     <scm.url>https://github.com/DependencyTrack/hyades.git</scm.url>
 
     <skipITs>true</skipITs>
-    <surefire-plugin.version>3.5.4</surefire-plugin.version>
+    <surefire-plugin.version>3.5.5</surefire-plugin.version>
   </properties>
 
   <dependencyManagement>
