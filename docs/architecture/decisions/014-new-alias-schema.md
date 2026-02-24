@@ -1,6 +1,6 @@
-| Status                                               | Date       | Author(s)                            |
-|:-----------------------------------------------------|:-----------|:-------------------------------------|
-| Accepted                                             | 2026-02-23 | [@nscuro](https://github.com/nscuro) |
+| Status   | Date       | Author(s)                            |
+|:---------|:-----------|:-------------------------------------|
+| Accepted | 2026-02-23 | [@nscuro](https://github.com/nscuro) |
 
 ## Context
 
@@ -26,6 +26,8 @@ This design poses a few challenges:
 * Due to the combination of the points above, batching operations on this table is not possible.
 * Vulnerability sources are hardcoded as columns, making it unnecessarily challenging to add new sources.
 * Querying the table is unnecessarily hard, as it requires the caller to know what column to query on.
+* The lack of provenance for alias relationships prevents safe removal of relationships,
+  e.g. when upstream sources correct their data.
 
 The [logic to create or modify alias records](https://github.com/DependencyTrack/hyades-apiserver/blob/f969a32387c03b45eff186e2fcc4ba900a7059f9/apiserver/src/main/java/org/dependencytrack/persistence/VulnerabilityQueryManager.java#L474-L591)
 is brittle and non-deterministic. Making it concurrency-safe would require acquisition of coarse advisory locks.
@@ -37,7 +39,9 @@ while effectively shielding us against data races.
 
 ## Decision
 
-Normalize the data into the following schema:
+### Schema
+
+Normalize the data into a new `VULNERABILITY_ALIAS` table with the following schema:
 
 | Column   | Type | Constraints |
 |:---------|:-----|:------------|
@@ -49,18 +53,11 @@ Normalize the data into the following schema:
 * `SOURCE` and `VULN_ID` form the natural (primary) key, effectively preventing duplicates.
 * Alias relationships are identified via matching `GROUP_ID`.
 
-A secondary index on `GROUP_ID` supports the group lookup pattern used by all alias queries:
-
-| Index                        | Column(s) |
-|:-----------------------------|:----------|
-| `VULNERABILITY_ALIAS_PK`    | `SOURCE`, `VULN_ID` |
-| `VULNERABILITY_ALIAS_GROUP_IDX` | `GROUP_ID` |
-
 ### Querying
 
 To query all aliases of a vulnerability identified by `source` and `vulnId`, *excluding the input pair itself*:
 
-```sql
+```sql linenums="1"
 SELECT va.*
   FROM "VULNERABILITY_ALIAS" AS va
  WHERE va."GROUP_ID" IN (
@@ -72,98 +69,121 @@ SELECT va.*
    AND (va."SOURCE", va."VULN_ID") != (:source, :vulnId)
 ```
 
+### Alias Assertions
+
+To track provenance of alias relationships, a separate `VULNERABILITY_ALIAS_ASSERTION` table records
+which entity asserted that two vulnerabilities are aliases:
+
+| Column       | Type           | Constraints             |
+|:-------------|:---------------|:------------------------|
+| ASSERTER     | TEXT           | PK                      |
+| VULN_SOURCE  | TEXT           | PK                      |
+| VULN_ID      | TEXT           | PK                      |
+| ALIAS_SOURCE | TEXT           | PK                      |
+| ALIAS_ID     | TEXT           | PK                      |
+| CREATED_AT   | TIMESTAMPTZ(3) | NOT NULL, DEFAULT NOW() |
+
+Each row records that `ASSERTER` claimed (`VULN_SOURCE`, `VULN_ID`) and (`ALIAS_SOURCE`, `ALIAS_ID`)
+are aliases. Assertions are directional: (`VULN_SOURCE`, `VULN_ID`) is the declaring vulnerability,
+(`ALIAS_SOURCE`, `ALIAS_ID`) is the alias attributed to it. This enables efficient reconciliation
+by querying existing assertions for a given vulnerability.
+
+Alias groups in the `VULNERABILITY_ALIAS` table are derived from assertions and serve as a
+materialized view for efficient read queries. They are recomputed whenever assertions change.
+Assertions provide an audit trail and enable workflows such as revoking assertions from
+a specific source, without affecting others.
+
 ### Synchronization Algorithm
 
-Given a set of vulnerability aliases to synchronize:
+Given an asserter (e.g. `NVD`) and a map of declaring vulnerabilities to their asserted aliases:
 
-```js
-[
-  {cveId: 'CVE-1', ghsaId: 'GHSA-1'},
-  {cveId: 'CVE-1', snykId: 'SNYK-1'}
-]
+```js linenums="1"
+{
+  {source: 'NVD', vulnId: 'CVE-1'}: [
+    {source: 'GITHUB', vulnId: 'GHSA-1'},
+    {source: 'SNYK', vulnId: 'SNYK-1'}
+  ]
+}
 ```
 
 1. Begin transaction.
-2. Compute unique source ↔ vuln ID pairs:
-   ```js
-   [
-     {source: 'NVD', vulnId: 'CVE-1'},
-     {source: 'GITHUB', vulnId: 'GHSA-1'},
-     {source: 'SNYK', vulnId: 'SNYK-1'}
-   ]
-   ```
-3. Compute edges between pairs, using their indices as nodes:
-   ```js
-   [
-     {from: 0, to: 1},
-     {from: 0, to: 2}
-   ]
-   ```
-4. Acquire PostgreSQL advisory locks for all unique source ↔ vuln ID pairs,
+2. Acquire PostgreSQL advisory locks for all declaring vulnerabilities,
    ordered by key to prevent deadlocks between concurrent transactions:
-   ```sql
+   ```sql linenums="1"
    SELECT PG_ADVISORY_XACT_LOCK(HASHTEXT(key))
      FROM (
-       SELECT DISTINCT UNNEST(ARRAY['NVD|CVE-1', 'GITHUB|GHSA-1', 'SNYK|SNYK-1']) AS key
-       ORDER BY 1
+       SELECT DISTINCT UNNEST(ARRAY['vuln-alias-sync|NVD|CVE-1']) AS key
+        ORDER BY 1
      ) AS t
    ```
-   `HASHTEXT` returns `int4`, so hash collisions are expected. Collisions do not affect
-   correctness — they only cause unrelated syncs to serialize, which is acceptable.
-5. Query existing alias records for all unique source ↔ vuln ID pairs:
-   ```sql
-   SELECT "SOURCE"
+3. Fetch existing assertions for the declaring vulnerabilities:
+   ```sql linenums="1"
+   SELECT "ASSERTER"
+        , "VULN_SOURCE"
         , "VULN_ID"
-        , "GROUP_ID"
-     FROM "VULNERABILITY_ALIAS"
-    WHERE ("SOURCE", "VULN_ID") IN (
-      ('NVD', 'CVE-1')
-    , ('GITHUB', 'GHSA-1')
-    , ('SNYK', 'SNYK-1')
-    )
+        , "ALIAS_SOURCE"
+        , "ALIAS_ID"
+     FROM "VULNERABILITY_ALIAS_ASSERTION"
+    WHERE ("VULN_SOURCE", "VULN_ID") IN (SELECT * FROM UNNEST(:sources, :vulnIds))
    ```
-6. Leverage the [union-find] data structure to identify alias groups.
-    * Values are the indices of source ↔ vuln ID pairs.
-    * Sets are merged using the edges computed earlier.
-    * Result: [connected components] representing alias groups.
-    * Implementation instructions can be found [here](https://cp-algorithms.com/data_structures/disjoint_set_union.html).
-7. For each identified alias group:
-    1. Identify existing alias groups that source ↔ vuln ID pairs are already part of.
-        1. If at least one existing group: Pick the lowest existing group UUID (deterministic).
-        2. If no existing group: Generate new group ID.
-    2. If more than one existing group, merge them:
-       ```sql
-       UPDATE "VULNERABILITY_ALIAS"
-          SET "GROUP_ID" = :toGroup
-        WHERE "GROUP_ID" = ANY(:fromGroups)
-          AND "GROUP_ID" != :toGroup
-       ```
-8. Batch-insert alias records:
-   ```sql
-   INSERT INTO "VULNERABILITY_ALIAS" ("GROUP_ID", "SOURCE", "VULN_ID")
+4. Reconcile incoming aliases against existing assertions, scoped to the current asserter:
+    * Assertions to create: incoming alias keys minus existing alias keys for this asserter.
+    * Assertions to delete: existing alias keys for this asserter minus incoming alias keys.
+    * `UNKNOWN` cleanup: if the asserter is not `UNKNOWN` and `UNKNOWN` assertions
+      exist for the same declaring vulnerability, mark it for removal.
+5. Delete stale assertions:
+   ```sql linenums="1"
+   DELETE
+     FROM "VULNERABILITY_ALIAS_ASSERTION"
+    WHERE ("ASSERTER", "VULN_SOURCE", "VULN_ID", "ALIAS_SOURCE", "ALIAS_ID")
+       IN (SELECT * FROM UNNEST(:asserters, :vulnSources, :vulnIds, :aliasSources, :aliasIds))
+   ```
+6. Create new assertions:
+   ```sql linenums="1"
+   INSERT INTO "VULNERABILITY_ALIAS_ASSERTION" (
+     "ASSERTER"
+   , "VULN_SOURCE"
+   , "VULN_ID"
+   , "ALIAS_SOURCE"
+   , "ALIAS_ID"
+   )
    SELECT *
-     FROM (
-       VALUES ('91f5876f-01cb-4ebe-b1f3-a0e46cd16fbd'::UUID, 'NVD', 'CVE-1')
-            , ('91f5876f-01cb-4ebe-b1f3-a0e46cd16fbd'::UUID, 'GITHUB', 'GHSA-1')
-            , ('91f5876f-01cb-4ebe-b1f3-a0e46cd16fbd'::UUID, 'SNYK', 'SNYK-1')
-     ) AS t
-   ON CONFLICT DO NOTHING
+     FROM UNNEST(:asserters, :vulnSources, :vulnIds, :aliasSources, :aliasIds)
    ```
+7. Delete `UNKNOWN` assertions for declaring vulnerabilities where a real asserter now provides claims:
+   ```sql linenums="1"
+   DELETE
+     FROM "VULNERABILITY_ALIAS_ASSERTION"
+    WHERE "ASSERTER" = 'UNKNOWN'
+      AND ("VULN_SOURCE", "VULN_ID") IN (SELECT * FROM UNNEST(:sources, :vulnIds))
+   ```
+8. Recompute alias groups for all modified vulnerabilities:
+    1. Expand transitively: iteratively query both `VULNERABILITY_ALIAS` and
+       `VULNERABILITY_ALIAS_ASSERTION` to discover all transitively related keys.
+       For example, if `CVE-1` is being linked to `GHSA-1`, but `GHSA-1` already
+       has an assertion linking it to `GHSA-2`, expansion ensures `GHSA-2` is included.
+    2. Build a [union-find] from the expanded assertions to compute [connected components].
+    3. For each component, pick the lowest existing group UUID (deterministic via sorted set),
+       or generate a new one if the component has no prior group.
+    4. Upsert alias records, only writing when the group ID actually changed:
+       ```sql linenums="1"
+       INSERT INTO "VULNERABILITY_ALIAS" AS va ("GROUP_ID", "SOURCE", "VULN_ID")
+       SELECT * FROM UNNEST(:groupIds, :sources, :vulnIds)
+       ON CONFLICT ("SOURCE", "VULN_ID") DO UPDATE
+       SET "GROUP_ID" = EXCLUDED."GROUP_ID"
+       WHERE va."GROUP_ID" IS DISTINCT FROM EXCLUDED."GROUP_ID"
+       ```
+    5. Delete orphaned aliases no longer backed by any assertion.
 9. Commit transaction and release locks (implicit).
 
 !!! note
-    The SQL snippets above use `FROM ... VALUES` for brevity. The actual implementation
-    uses `FROM UNNEST`, which is both more idiomatic and has better performance characteristics.
+    Advisory locks are scoped to *declaring* vulnerability only. This is sufficient because
+    assertions are directional: a given asserter always writes assertions under the declaring
+    vulnerability it owns (e.g. NVD writes assertions under `NVD|CVE-*`).
 
-While this still relies on advisory locks to prevent data races, it only acquires locks
-for source ↔ vuln ID pairs that it is actually processing.
-
-Its ability to batch `SELECT`, `UPDATE`, and `INSERT` operations means it can complete
-faster and with less overhead than the previous implementation. It also allows us to
-process aliases of multiple vulnerabilities at once, without sacrificing performance
-or correctness.
-
-The `INSERT`'s `ON CONFLICT DO NOTHING` clause avoids unnecessary database writes.
+All `SELECT`, `DELETE`, and `INSERT` operations are batched via `UNNEST`, allowing multiple
+vulnerabilities to be processed in a single transaction with minimal round trips.
+The upsert's `WHERE ... IS DISTINCT FROM` clause avoids unnecessary writes.
 
 ### Data Migration
 
@@ -172,8 +192,13 @@ The migration replicates the [synchronization algorithm](#synchronization-algori
 
 The old `VULNERABILITYALIAS` table is dropped afterwards.
 
+Assertions are seeded from the migrated alias groups. For each group, one assertion per unordered
+pair of members is inserted with `ASSERTER = 'UNKNOWN'`, since the original data does not carry
+provenance information.
+
 An integration test verifies that the migration works as expected,
-including the handling of potential duplicates in the existing data set.
+including the handling of potential duplicates in the existing data set,
+and the correctness of seeded assertions.
 
 ## Consequences
 
@@ -184,10 +209,14 @@ including the handling of potential duplicates in the existing data set.
 * The old `UUID` column is dropped. Any external references to alias records by UUID will break.
   No known external consumers depend on this identifier.
 * Advisory locks add contention under concurrent writes to overlapping alias sets.
-  This is bounded by the lock granularity (per source ↔ vuln ID pair), and acceptable
+  This is bounded by the lock granularity (per declaring vulnerability key), and acceptable
   given the correctness guarantees it provides.
-* Group merges (`UPDATE ... SET "GROUP_ID"`) touch all rows in the groups being unified.
+* Alias group recomputation requires transitive expansion, which issues additional queries.
   In practice, alias groups are small (< 5 members), so this is negligible.
+* Alias assertions provide provenance but grow linearly with the number of aliases per
+  declaring vulnerability. Given the small expected group sizes, this is acceptable.
+* `UNKNOWN` assertions seeded during migration are automatically superseded when a real
+  asserter (e.g. NVD, GitHub) provides claims for the same declaring vulnerability.
 
 [connected components]: https://en.wikipedia.org/wiki/Component_(graph_theory)
 [union-find]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
