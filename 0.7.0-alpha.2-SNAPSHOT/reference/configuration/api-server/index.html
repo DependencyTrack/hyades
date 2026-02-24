@@ -4910,10 +4910,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dtfile-storages3connect-timeout-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.file-storage.s3.connect-timeout-ms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dtfile-storages3endpoint" class="md-nav__link">
     <span class="md-ellipsis">
       
         dt.file-storage.s3.endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtfile-storages3read-timeout-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.file-storage.s3.read-timeout-ms
       
     </span>
   </a>
@@ -4936,6 +4958,17 @@
     <span class="md-ellipsis">
       
         dt.file-storage.s3.secret.key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtfile-storages3write-timeout-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.file-storage.s3.write-timeout-ms
       
     </span>
   </a>
@@ -10808,6 +10841,30 @@
 </table>
 
 <hr />
+<h3 id="dtfile-storages3connect-timeout-ms">dt.file-storage.s3.connect-timeout-ms<a class="headerlink" href="#dtfile-storages3connect-timeout-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the HTTP connect timeout for S3 requests in milliseconds.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_CONNECT_TIMEOUT_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="dtfile-storages3endpoint">dt.file-storage.s3.endpoint<a class="headerlink" href="#dtfile-storages3endpoint" title="Permanent link">&para;</a></h3>
 <p>Defines the S3 endpoint URL.  </p>
 <table>
@@ -10827,6 +10884,30 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_ENDPOINT</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtfile-storages3read-timeout-ms">dt.file-storage.s3.read-timeout-ms<a class="headerlink" href="#dtfile-storages3read-timeout-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the HTTP read timeout for S3 requests in milliseconds.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_READ_TIMEOUT_MS</code></td>
     </tr>
   </tbody>
 </table>
@@ -10875,6 +10956,30 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_SECRET_KEY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtfile-storages3write-timeout-ms">dt.file-storage.s3.write-timeout-ms<a class="headerlink" href="#dtfile-storages3write-timeout-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the HTTP write timeout for S3 requests in milliseconds.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>null</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_FILE_STORAGE_S3_WRITE_TIMEOUT_MS</code></td>
     </tr>
   </tbody>
 </table>
