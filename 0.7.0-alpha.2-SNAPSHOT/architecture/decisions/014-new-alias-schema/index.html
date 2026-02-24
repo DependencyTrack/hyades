@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.2-SNAPSHOT/architecture/decisions/000-index/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.2-SNAPSHOT/architecture/decisions/014-new-alias-schema/">
       
       
-        <link rel="prev" href="../../">
+        <link rel="prev" href="../013-finding-status/">
       
       
-        <link rel="next" href="../001-drop-kafka-dependency/">
+        <link rel="next" href="../../design/durable-execution/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Overview - Hyades</title>
+        <title>ADR-014: New Alias Schema - Hyades</title>
       
     
     
@@ -59,15 +59,15 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Overview - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.2-SNAPSHOT/assets/images/social/architecture/decisions/000-index.png" />
+<meta property="og:title" content="ADR-014: New Alias Schema - Hyades" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.2-SNAPSHOT/assets/images/social/architecture/decisions/014-new-alias-schema.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.2-SNAPSHOT/architecture/decisions/000-index/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.2-SNAPSHOT/architecture/decisions/014-new-alias-schema/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Overview - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.2-SNAPSHOT/assets/images/social/architecture/decisions/000-index.png" />
+<meta property="twitter:title" content="ADR-014: New Alias Schema - Hyades" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.2-SNAPSHOT/assets/images/social/architecture/decisions/014-new-alias-schema.png" />
 </head>
   
   
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#template" class="md-skip">
+        <a href="#context" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              ADR-014: New Alias Schema
             
           </span>
         </div>
@@ -1257,35 +1257,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../000-index/" class="md-nav__link">
         
   
   
@@ -1301,35 +1276,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#template" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Template
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1675,10 +1621,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../014-new-alias-schema/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-014: New Alias Schema
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1694,6 +1665,118 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#querying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Querying
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alias-assertions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alias Assertions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synchronization-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronization Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consequences
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2696,7 +2779,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/000-index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/014-new-alias-schema.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2704,41 +2787,357 @@
   
 
 
-  <h1>Overview</h1>
+  <h1>ADR-014: New Alias Schema</h1>
 
-<p>Here is where we keep our architecture decision records (<a href="https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions">ADR</a>s).</p>
-<h2 id="template">Template<a class="headerlink" href="#template" title="Permanent link">&para;</a></h2>
-<p>Use the following template (<a href="https://github.com/joelparkerhenderson/architecture-decision-record/blob/7d759443a20e8bafc3e5d19631bd7eda475b25d3/locales/en/templates/decision-record-template-by-michael-nygard/index.md">source</a>) when adding a new <a href="https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions">ADR</a>:</p>
-<div class="language-markdown highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>| Status                                               | Date       | Author(s)                                        |
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>|:-----------------------------------------------------|:-----------|:-------------------------------------------------|
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>| Proposed, Accepted, Rejected, Deprecated, Superseded | yyyy-mm-dd | [<span class="nt">@githubHandle</span>](<span class="na">https://github.com/githubHandle</span>) |
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="gu">## Context</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>What is the issue that we&#39;re seeing that is motivating this decision or change?
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="gu">## Decision</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>What is the change that we&#39;re proposing and/or doing?
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="gu">## Consequences</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a>What becomes easier or more difficult to do because of this change?
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Author(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Accepted</td>
+<td style="text-align: left;">2026-02-23</td>
+<td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>Vulnerability aliases are stored in the denormalized <code>VULNERABILITYALIAS</code> table:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ID</td>
+<td style="text-align: left;">BIGINT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">CVE_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">GHSA_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">GSD_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">INTERNAL_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">OSV_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">SNYK_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">SONATYPE_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">VULNDB_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">UUID</td>
+<td style="text-align: left;">UUID</td>
+<td style="text-align: left;">NOT NULL, UNIQUE</td>
+</tr>
+</tbody>
+</table>
+<p>This design poses a few challenges:</p>
+<ul>
+<li>Rows lack a natural key, making it impossible to detect and prevent duplicates.</li>
+<li>Modifying rows (i.e. adding a new ID to an existing alias group) is prone to race conditions.</li>
+<li>Due to the combination of the points above, batching operations on this table is not possible.</li>
+<li>Vulnerability sources are hardcoded as columns, making it unnecessarily challenging to add new sources.</li>
+<li>Querying the table is unnecessarily hard, as it requires the caller to know what column to query on.</li>
+<li>The lack of provenance for alias relationships prevents safe removal of relationships,
+  e.g. when upstream sources correct their data.</li>
+</ul>
+<p>The <a href="https://github.com/DependencyTrack/hyades-apiserver/blob/f969a32387c03b45eff186e2fcc4ba900a7059f9/apiserver/src/main/java/org/dependencytrack/persistence/VulnerabilityQueryManager.java#L474-L591">logic to create or modify alias records</a>
+is brittle and non-deterministic. Making it concurrency-safe would require acquisition of coarse advisory locks.</p>
+<p>Alias synchronization unfortunately is in the hot path for vulnerability analysis result reconciliation,
+and is performed concurrently with potentially overlapping data. To ensure that synchronization is both
+performant and correct, we need a solution that allows us to batch database operations,
+while effectively shielding us against data races.</p>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<h3 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h3>
+<p>Normalize the data into a new <code>VULNERABILITY_ALIAS</code> table with the following schema:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">GROUP_ID</td>
+<td style="text-align: left;">UUID</td>
+<td style="text-align: left;">NOT NULL</td>
+</tr>
+<tr>
+<td style="text-align: left;">SOURCE</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">VULN_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The separate ID columns are collapsed into <code>SOURCE</code> and <code>VULN_ID</code>.</li>
+<li><code>SOURCE</code> and <code>VULN_ID</code> form the natural (primary) key, effectively preventing duplicates.</li>
+<li>Alias relationships are identified via matching <code>GROUP_ID</code>.</li>
+</ul>
+<h3 id="querying">Querying<a class="headerlink" href="#querying" title="Permanent link">&para;</a></h3>
+<p>To query all aliases of a vulnerability identified by <code>source</code> and <code>vulnId</code>, <em>excluding the input pair itself</em>:</p>
+<div class="language-sql highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span>
+<span class="normal"><a href="#__codelineno-0-7">7</a></span>
+<span class="normal"><a href="#__codelineno-0-8">8</a></span>
+<span class="normal"><a href="#__codelineno-0-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">va</span><span class="p">.</span><span class="o">*</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;VULNERABILITY_ALIAS&quot;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">va</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">va</span><span class="p">.</span><span class="ss">&quot;GROUP_ID&quot;</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">   </span><span class="k">SELECT</span><span class="w"> </span><span class="n">va2</span><span class="p">.</span><span class="ss">&quot;GROUP_ID&quot;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">     </span><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;VULNERABILITY_ALIAS&quot;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">va2</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">va2</span><span class="p">.</span><span class="ss">&quot;SOURCE&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="k">source</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">      </span><span class="k">AND</span><span class="w"> </span><span class="n">va2</span><span class="p">.</span><span class="ss">&quot;VULN_ID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">vulnId</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="n">va</span><span class="p">.</span><span class="ss">&quot;SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">va</span><span class="p">.</span><span class="ss">&quot;VULN_ID&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="p">(:</span><span class="k">source</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">vulnId</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
+<h3 id="alias-assertions">Alias Assertions<a class="headerlink" href="#alias-assertions" title="Permanent link">&para;</a></h3>
+<p>To track provenance of alias relationships, a separate <code>VULNERABILITY_ALIAS_ASSERTION</code> table records
+which entity asserted that two vulnerabilities are aliases:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ASSERTER</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">VULN_SOURCE</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">VULN_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">ALIAS_SOURCE</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">ALIAS_ID</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">CREATED_AT</td>
+<td style="text-align: left;">TIMESTAMPTZ(3)</td>
+<td style="text-align: left;">NOT NULL, DEFAULT NOW()</td>
+</tr>
+</tbody>
+</table>
+<p>Each row records that <code>ASSERTER</code> claimed (<code>VULN_SOURCE</code>, <code>VULN_ID</code>) and (<code>ALIAS_SOURCE</code>, <code>ALIAS_ID</code>)
+are aliases. Assertions are directional: (<code>VULN_SOURCE</code>, <code>VULN_ID</code>) is the declaring vulnerability,
+(<code>ALIAS_SOURCE</code>, <code>ALIAS_ID</code>) is the alias attributed to it. This enables efficient reconciliation
+by querying existing assertions for a given vulnerability.</p>
+<p>Alias groups in the <code>VULNERABILITY_ALIAS</code> table are derived from assertions and serve as a
+materialized view for efficient read queries. They are recomputed whenever assertions change.
+Assertions provide an audit trail and enable workflows such as revoking assertions from
+a specific source, without affecting others.</p>
+<h3 id="synchronization-algorithm">Synchronization Algorithm<a class="headerlink" href="#synchronization-algorithm" title="Permanent link">&para;</a></h3>
+<p>Given an asserter (e.g. <code>NVD</code>) and a map of declaring vulnerabilities to their asserted aliases:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="p">{</span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;NVD&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">vulnId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;CVE-1&#39;</span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">    </span><span class="p">{</span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;GITHUB&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">vulnId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;GHSA-1&#39;</span><span class="p">},</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">    </span><span class="p">{</span><span class="nx">source</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;SNYK&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">vulnId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;SNYK-1&#39;</span><span class="p">}</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<ol>
+<li>Begin transaction.</li>
+<li>Acquire PostgreSQL advisory locks for all declaring vulnerabilities,
+   ordered by key to prevent deadlocks between concurrent transactions:
+   <div class="language-sql highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">PG_ADVISORY_XACT_LOCK</span><span class="p">(</span><span class="n">HASHTEXT</span><span class="p">(</span><span class="k">key</span><span class="p">))</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="k">UNNEST</span><span class="p">(</span><span class="nb">ARRAY</span><span class="p">[</span><span class="s1">&#39;vuln-alias-sync|NVD|CVE-1&#39;</span><span class="p">])</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">key</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">     </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="mi">1</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">t</span>
+</span></code></pre></div></td></tr></table></div></li>
+<li>Fetch existing assertions for the declaring vulnerabilities:
+   <div class="language-sql highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span>
+<span class="normal"><a href="#__codelineno-3-6">6</a></span>
+<span class="normal"><a href="#__codelineno-3-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="ss">&quot;ASSERTER&quot;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_SOURCE&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_ID&quot;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ALIAS_SOURCE&quot;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">     </span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ALIAS_ID&quot;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;VULNERABILITY_ALIAS_ASSERTION&quot;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;VULN_SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_ID&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">UNNEST</span><span class="p">(:</span><span class="n">sources</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">vulnIds</span><span class="p">))</span>
+</span></code></pre></div></td></tr></table></div></li>
+<li>Reconcile incoming aliases against existing assertions, scoped to the current asserter:<ul>
+<li>Assertions to create: incoming alias keys minus existing alias keys for this asserter.</li>
+<li>Assertions to delete: existing alias keys for this asserter minus incoming alias keys.</li>
+<li><code>UNKNOWN</code> cleanup: if the asserter is not <code>UNKNOWN</code> and <code>UNKNOWN</code> assertions
+  exist for the same declaring vulnerability, mark it for removal.</li>
+</ul>
+</li>
+<li>Delete stale assertions:
+   <div class="language-sql highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">DELETE</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;VULNERABILITY_ALIAS_ASSERTION&quot;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;ASSERTER&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_ID&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ALIAS_SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ALIAS_ID&quot;</span><span class="p">)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">UNNEST</span><span class="p">(:</span><span class="n">asserters</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">vulnSources</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">vulnIds</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">aliasSources</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">aliasIds</span><span class="p">))</span>
+</span></code></pre></div></td></tr></table></div></li>
+<li>Create new assertions:
+   <div class="language-sql highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
+<span class="normal"><a href="#__codelineno-5-2">2</a></span>
+<span class="normal"><a href="#__codelineno-5-3">3</a></span>
+<span class="normal"><a href="#__codelineno-5-4">4</a></span>
+<span class="normal"><a href="#__codelineno-5-5">5</a></span>
+<span class="normal"><a href="#__codelineno-5-6">6</a></span>
+<span class="normal"><a href="#__codelineno-5-7">7</a></span>
+<span class="normal"><a href="#__codelineno-5-8">8</a></span>
+<span class="normal"><a href="#__codelineno-5-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="ss">&quot;VULNERABILITY_ALIAS_ASSERTION&quot;</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="ss">&quot;ASSERTER&quot;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_SOURCE&quot;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_ID&quot;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ALIAS_SOURCE&quot;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ALIAS_ID&quot;</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="p">)</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="k">UNNEST</span><span class="p">(:</span><span class="n">asserters</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">vulnSources</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">vulnIds</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">aliasSources</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">aliasIds</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div></li>
+<li>Delete <code>UNKNOWN</code> assertions for declaring vulnerabilities where a real asserter now provides claims:
+   <div class="language-sql highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span>
+<span class="normal"><a href="#__codelineno-6-2">2</a></span>
+<span class="normal"><a href="#__codelineno-6-3">3</a></span>
+<span class="normal"><a href="#__codelineno-6-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">DELETE</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;VULNERABILITY_ALIAS_ASSERTION&quot;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="ss">&quot;ASSERTER&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;UNKNOWN&#39;</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;VULN_SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_ID&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">UNNEST</span><span class="p">(:</span><span class="n">sources</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">vulnIds</span><span class="p">))</span>
+</span></code></pre></div></td></tr></table></div></li>
+<li>Recompute alias groups for all modified vulnerabilities:<ol>
+<li>Expand transitively: iteratively query both <code>VULNERABILITY_ALIAS</code> and
+   <code>VULNERABILITY_ALIAS_ASSERTION</code> to discover all transitively related keys.
+   For example, if <code>CVE-1</code> is being linked to <code>GHSA-1</code>, but <code>GHSA-1</code> already
+   has an assertion linking it to <code>GHSA-2</code>, expansion ensures <code>GHSA-2</code> is included.</li>
+<li>Build a <a href="https://en.wikipedia.org/wiki/Disjoint-set_data_structure">union-find</a> from the expanded assertions to compute <a href="https://en.wikipedia.org/wiki/Component_(graph_theory)">connected components</a>.</li>
+<li>For each component, pick the lowest existing group UUID (deterministic via sorted set),
+   or generate a new one if the component has no prior group.</li>
+<li>Upsert alias records, only writing when the group ID actually changed:
+   <div class="language-sql highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">3</a></span>
+<span class="normal"><a href="#__codelineno-7-4">4</a></span>
+<span class="normal"><a href="#__codelineno-7-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="ss">&quot;VULNERABILITY_ALIAS&quot;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">va</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;GROUP_ID&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_ID&quot;</span><span class="p">)</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">UNNEST</span><span class="p">(:</span><span class="n">groupIds</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">sources</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="n">vulnIds</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="k">ON</span><span class="w"> </span><span class="n">CONFLICT</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;VULN_ID&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="k">UPDATE</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="k">SET</span><span class="w"> </span><span class="ss">&quot;GROUP_ID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EXCLUDED</span><span class="p">.</span><span class="ss">&quot;GROUP_ID&quot;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">va</span><span class="p">.</span><span class="ss">&quot;GROUP_ID&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">EXCLUDED</span><span class="p">.</span><span class="ss">&quot;GROUP_ID&quot;</span>
+</span></code></pre></div></td></tr></table></div></li>
+<li>Delete orphaned aliases no longer backed by any assertion.</li>
+</ol>
+</li>
+<li>Commit transaction and release locks (implicit).</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Advisory locks are scoped to <em>declaring</em> vulnerability only. This is sufficient because
+assertions are directional: a given asserter always writes assertions under the declaring
+vulnerability it owns (e.g. NVD writes assertions under <code>NVD|CVE-*</code>).</p>
+</div>
+<p>All <code>SELECT</code>, <code>DELETE</code>, and <code>INSERT</code> operations are batched via <code>UNNEST</code>, allowing multiple
+vulnerabilities to be processed in a single transaction with minimal round trips.
+The upsert's <code>WHERE ... IS DISTINCT FROM</code> clause avoids unnecessary writes.</p>
+<h3 id="data-migration">Data Migration<a class="headerlink" href="#data-migration" title="Permanent link">&para;</a></h3>
+<p>Existing data is migrated from <code>VULNERABILITYALIAS</code> to <code>VULNERABILITY_ALIAS</code> via Liquibase.
+The migration replicates the <a href="#synchronization-algorithm">synchronization algorithm</a> in SQL.</p>
+<p>The old <code>VULNERABILITYALIAS</code> table is dropped afterwards.</p>
+<p>Assertions are seeded from the migrated alias groups. For each group, one assertion per unordered
+pair of members is inserted with <code>ASSERTER = 'UNKNOWN'</code>, since the original data does not carry
+provenance information.</p>
+<p>An integration test verifies that the migration works as expected,
+including the handling of potential duplicates in the existing data set,
+and the correctness of seeded assertions.</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Adding new vulnerability sources requires no schema changes.</li>
+<li>Alias synchronization can be fully batched, reducing round trips in the hot path.</li>
+<li>The natural primary key prevents duplicate alias entries by construction.</li>
+<li>Querying aliases is uniform, and callers no longer need source-specific column knowledge.</li>
+<li>The old <code>UUID</code> column is dropped. Any external references to alias records by UUID will break.
+  No known external consumers depend on this identifier.</li>
+<li>Advisory locks add contention under concurrent writes to overlapping alias sets.
+  This is bounded by the lock granularity (per declaring vulnerability key), and acceptable
+  given the correctness guarantees it provides.</li>
+<li>Alias group recomputation requires transitive expansion, which issues additional queries.
+  In practice, alias groups are small (&lt; 5 members), so this is negligible.</li>
+<li>Alias assertions provide provenance but grow linearly with the number of aliases per
+  declaring vulnerability. Given the small expected group sizes, this is acceptable.</li>
+<li><code>UNKNOWN</code> assertions seeded during migration are automatically superseded when a real
+  asserter (e.g. NVD, GitHub) provides claims for the same declaring vulnerability.</li>
+</ul>
 
 
 
