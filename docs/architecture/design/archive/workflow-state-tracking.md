@@ -1,3 +1,6 @@
+!!! warning "Superseded"
+    This document describes an old design that has been superseded by [durable execution](../durable-execution.md).
+
 # Tracking of Workflow State for BOM Processing and Analysis
 
 !!! note

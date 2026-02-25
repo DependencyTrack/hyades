@@ -61,7 +61,7 @@
     <!-- Dependency Versions -->
     <lib.assertj.version>3.27.7</lib.assertj.version>
     <lib.checkstyle.version>13.2.0</lib.checkstyle.version>
-    <lib.cloud-sql-postgres-socket-factory.version>1.28.0</lib.cloud-sql-postgres-socket-factory.version>
+    <lib.cloud-sql-postgres-socket-factory.version>1.28.1</lib.cloud-sql-postgres-socket-factory.version>
     <lib.cpe-parser.version>3.0.1</lib.cpe-parser.version>
     <lib.commons-collections4.version>4.5.0</lib.commons-collections4.version>
     <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
@@ -70,11 +70,11 @@
     <lib.httpclient5.version>5.6</lib.httpclient5.version>
     <lib.java-uuid-generator.version>5.2.0</lib.java-uuid-generator.version>
     <lib.json-unit.version>5.1.0</lib.json-unit.version>
-    <lib.kafka.version>4.1.1</lib.kafka.version>
+    <lib.kafka.version>4.2.0</lib.kafka.version>
     <lib.maven-artifact.version>4.0.0-rc-5</lib.maven-artifact.version>
     <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.6.0</lib.minio.version>
-    <lib.open-feign.version>13.8</lib.open-feign.version>
+    <lib.open-feign.version>13.9</lib.open-feign.version>
     <lib.org-json.version>20251224</lib.org-json.version>
     <lib.resilience4j.version>2.3.0</lib.resilience4j.version>
     <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
@@ -99,7 +99,7 @@
     <scm.url>https://github.com/DependencyTrack/hyades.git</scm.url>
 
     <skipITs>true</skipITs>
-    <surefire-plugin.version>3.5.4</surefire-plugin.version>
+    <surefire-plugin.version>3.5.5</surefire-plugin.version>
   </properties>
 
   <dependencyManagement>
