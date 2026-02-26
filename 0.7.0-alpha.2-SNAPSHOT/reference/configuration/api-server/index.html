@@ -5076,6 +5076,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#dttask-schedulerenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.task-scheduler.enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#taskcomponentmetadatamaintenancecron" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -11173,6 +11184,30 @@
 </table>
 
 <h2 id="task-scheduling">Task Scheduling<a class="headerlink" href="#task-scheduling" title="Permanent link">&para;</a></h2>
+<h3 id="dttask-schedulerenabled">dt.task-scheduler.enabled<a class="headerlink" href="#dttask-schedulerenabled" title="Permanent link">&para;</a></h3>
+<p>Defines whether the task scheduler should be enabled.  <br/><br/>  May be disabled on specific nodes in the cluster to limit the amount of  background processing they're doing. Can help with dedicating nodes to  only serve web traffic.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_TASK_SCHEDULER_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="taskcomponentmetadatamaintenancecron">task.component.metadata.maintenance.cron<a class="headerlink" href="#taskcomponentmetadatamaintenancecron" title="Permanent link">&para;</a></h3>
 <p>Cron expression of the component metadata maintenance task.  <br/><br/>  The task deletes orphaned records from the <code>INTEGRITY_META_COMPONENT</code> and  <code>REPOSITORY_META_COMPONENT</code> tables.  </p>
 <table>
