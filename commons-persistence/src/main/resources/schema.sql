@@ -48,14 +48,13 @@ SELECT (
 )::NUMERIC;
 $$;
 
-CREATE PROCEDURE public."UPDATE_COMPONENT_METRICS"(component_uuid uuid)
+CREATE PROCEDURE public."UPDATE_COMPONENT_METRICS"(IN component_uuid uuid)
     LANGUAGE plpgsql
     AS $$
 DECLARE
   "v_component"                               RECORD; -- The component to update metrics for
   "v_vulnerability"                           RECORD; -- Loop variable for iterating over vulnerabilities the component is affected by
-  "v_alias"                                   RECORD; -- Loop variable for iterating over aliases of a vulnerability
-  "v_aliases_seen"                            TEXT[]; -- Array of aliases encountered while iterating over vulnerabilities
+  "v_aliases_seen"                            TEXT[] := '{}'; -- Array of aliases encountered while iterating over vulnerabilities
   "v_policy_violation"                        RECORD; -- Loop variable for iterating over policy violations assigned to the component
   "v_vulnerabilities"                         INT     := 0; -- Total number of vulnerabilities
   "v_critical"                                INT     := 0; -- Number of vulnerabilities with critical severity
@@ -102,45 +101,16 @@ BEGIN
     LOOP
       CONTINUE WHEN ("v_vulnerability"."SOURCE" || '|' || "v_vulnerability"."VULNID") = ANY ("v_aliases_seen");
 
-      FOR "v_alias" IN SELECT *
-                       FROM "VULNERABILITYALIAS" AS "VA"
-                       WHERE ("v_vulnerability"."SOURCE" = 'GITHUB' AND
-                              "VA"."GHSA_ID" = "v_vulnerability"."VULNID")
-                         OR ("v_vulnerability"."SOURCE" = 'INTERNAL' AND
-                             "VA"."INTERNAL_ID" = "v_vulnerability"."VULNID")
-                         OR ("v_vulnerability"."SOURCE" = 'NVD' AND
-                             "VA"."CVE_ID" = "v_vulnerability"."VULNID")
-                         OR ("v_vulnerability"."SOURCE" = 'OSSINDEX' AND
-                             "VA"."SONATYPE_ID" = "v_vulnerability"."VULNID")
-                         OR ("v_vulnerability"."SOURCE" = 'OSV' AND
-                             "VA"."OSV_ID" = "v_vulnerability"."VULNID")
-                         OR ("v_vulnerability"."SOURCE" = 'SNYK' AND
-                             "VA"."SNYK_ID" = "v_vulnerability"."VULNID")
-                         OR ("v_vulnerability"."SOURCE" = 'VULNDB' AND
-                             "VA"."VULNDB_ID" = "v_vulnerability"."VULNID")
-        LOOP
-          IF "v_alias"."GHSA_ID" IS NOT NULL THEN
-            "v_aliases_seen" = array_append("v_aliases_seen", 'GITHUB|' || "v_alias"."GHSA_ID");
-          END IF;
-          IF "v_alias"."INTERNAL_ID" IS NOT NULL THEN
-            "v_aliases_seen" = array_append("v_aliases_seen", 'INTERNAL|' || "v_alias"."INTERNAL_ID");
-          END IF;
-          IF "v_alias"."CVE_ID" IS NOT NULL THEN
-            "v_aliases_seen" = array_append("v_aliases_seen", 'NVD|' || "v_alias"."CVE_ID");
-          END IF;
-          IF "v_alias"."SONATYPE_ID" IS NOT NULL THEN
-            "v_aliases_seen" = array_append("v_aliases_seen", 'OSSINDEX|' || "v_alias"."SONATYPE_ID");
-          END IF;
-          IF "v_alias"."OSV_ID" IS NOT NULL THEN
-            "v_aliases_seen" = array_append("v_aliases_seen", 'OSV|' || "v_alias"."OSV_ID");
-          END IF;
-          IF "v_alias"."SNYK_ID" IS NOT NULL THEN
-            "v_aliases_seen" = array_append("v_aliases_seen", 'SNYK|' || "v_alias"."SNYK_ID");
-          END IF;
-          IF "v_alias"."VULNDB_ID" IS NOT NULL THEN
-            "v_aliases_seen" = array_append("v_aliases_seen", 'VULNDB|' || "v_alias"."VULNDB_ID");
-          END IF;
-        END LOOP;
+      "v_aliases_seen" = "v_aliases_seen" || ARRAY(
+        SELECT "SOURCE" || '|' || "VULN_ID"
+          FROM "VULNERABILITY_ALIAS"
+         WHERE "GROUP_ID" IN (
+            SELECT "GROUP_ID"
+              FROM "VULNERABILITY_ALIAS"
+             WHERE "SOURCE" = "v_vulnerability"."SOURCE"
+               AND "VULN_ID" = "v_vulnerability"."VULNID"
+         )
+      );
 
       "v_vulnerabilities" := "v_vulnerabilities" + 1;
 
@@ -313,7 +283,7 @@ BEGIN
 END;
 $$;
 
-CREATE PROCEDURE public."UPDATE_PROJECT_METRICS"(project_uuid uuid)
+CREATE PROCEDURE public."UPDATE_PROJECT_METRICS"(IN project_uuid uuid)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -505,6 +475,11 @@ DECLARE
   source_project RECORD;
   target_project RECORD;
 BEGIN
+  -- Defer checking of FK constraints to commit time.
+  -- We want clones to be atomic, but due to the multiple tables
+  -- with FKs being involved, that has a potential for lock contention.
+  SET CONSTRAINTS ALL DEFERRED;
+
   -- Determine details of the project to be cloned.
   SELECT "ID" AS id
        , "UUID" AS uuid
@@ -521,15 +496,6 @@ BEGIN
     RAISE EXCEPTION 'Target project version already exists: %', target_project_version;
   END IF;
 
-  -- When the target project is supposed to be the latest version,
-  -- ensure the previous latest version is no longer marked as such.
-  IF target_project_version_is_latest THEN
-    UPDATE "PROJECT"
-       SET "IS_LATEST" = FALSE
-     WHERE "NAME" = source_project.name
-       AND "IS_LATEST";
-  END IF;
-
   -- Clone the project itself.
   WITH created_project AS (
     INSERT INTO "PROJECT" (
@@ -540,7 +506,6 @@ BEGIN
     , "GROUP"
     , "NAME"
     , "VERSION"
-    , "IS_LATEST"
     , "DESCRIPTION"
     , "CLASSIFIER"
     , "INACTIVE_SINCE"
@@ -558,7 +523,6 @@ BEGIN
          , "GROUP"
          , "NAME"
          , target_project_version
-         , target_project_version_is_latest
          , "DESCRIPTION"
          , "CLASSIFIER"
          , "INACTIVE_SINCE"
@@ -808,8 +772,8 @@ BEGIN
         FROM "COMPONENTS_VULNERABILITIES"
        INNER JOIN tmp_component_mapping
           ON tmp_component_mapping.source_id = "COMPONENT_ID"
-       ORDER BY tmp_component_mapping.target_id
-              , "VULNERABILITY_ID";
+       ORDER BY "VULNERABILITY_ID"
+              , tmp_component_mapping.target_id;
 
       INSERT INTO "FINDINGATTRIBUTION" (
         "PROJECT_ID"
@@ -833,8 +797,8 @@ BEGIN
        INNER JOIN tmp_component_mapping
           ON tmp_component_mapping.source_id = "COMPONENT_ID"
        WHERE "PROJECT_ID" = source_project.id
-       ORDER BY tmp_component_mapping.target_id
-              , "VULNERABILITY_ID";
+       ORDER BY "VULNERABILITY_ID"
+              , tmp_component_mapping.target_id;
 
       IF include_findings_audit_history THEN
         WITH
@@ -861,9 +825,9 @@ BEGIN
           , "CVSSV2SCORE"
           , "OWASPVECTOR"
           , "CVSSV3VECTOR"
+          , "SEVERITY"
           , "CVSSV4SCORE"
           , "CVSSV4VECTOR"
-          , "SEVERITY"
           )
           SELECT tmp_component_mapping.target_id
                , target_project.id
@@ -880,9 +844,9 @@ BEGIN
                , "CVSSV2SCORE"
                , "OWASPVECTOR"
                , "CVSSV3VECTOR"
+               , "SEVERITY"
                , "CVSSV4SCORE"
                , "CVSSV4VECTOR"
-               , "SEVERITY"
             FROM source_analysis
            INNER JOIN tmp_component_mapping
               ON tmp_component_mapping.source_id = "COMPONENT_ID"
@@ -1146,12 +1110,30 @@ BEGIN
         FROM "SERVICECOMPONENTS_VULNERABILITIES"
        INNER JOIN tmp_service_mapping
           ON tmp_service_mapping.source_id = "SERVICECOMPONENT_ID"
-      ORDER BY tmp_service_mapping.target_id
-              , "VULNERABILITY_ID";
+      ORDER BY "VULNERABILITY_ID"
+             , tmp_service_mapping.target_id;
     END IF; -- include_findings
 
     DROP TABLE tmp_service_mapping;
   END IF; -- include_services
+
+  -- When the target project is supposed to be the latest version,
+  -- ensure the previous latest version is no longer marked as such.
+  --
+  -- This can acquire an exclusive lock on the project row that is currently
+  -- marked latest, potentially blocking other transactions that also want
+  -- to modify that row. To avoid long wait times, we perform this operation
+  -- at the very end, reducing the duration for which this lock may be held.
+  IF target_project_version_is_latest THEN
+    UPDATE "PROJECT"
+       SET "IS_LATEST" = FALSE
+     WHERE "NAME" = source_project.name
+       AND "IS_LATEST";
+
+    UPDATE "PROJECT"
+       SET "IS_LATEST" = TRUE
+     WHERE "ID" = target_project.id;
+  END IF;
 
   RETURN target_project.uuid;
 END;
@@ -1263,24 +1245,24 @@ CREATE FUNCTION public.jsonb_vuln_aliases(vuln_source text, vuln_id text) RETURN
     LANGUAGE sql STABLE PARALLEL SAFE
     AS $$
 SELECT JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
-         'cveId', "VA"."CVE_ID"
-       , 'ghsaId', "VA"."GHSA_ID"
-       , 'gsdId', "VA"."GSD_ID"
-       , 'internalId', "VA"."INTERNAL_ID"
-       , 'osvId', "VA"."OSV_ID"
-       , 'sonatypeId', "VA"."SONATYPE_ID"
-       , 'snykId', "VA"."SNYK_ID"
-       , 'vulnDbId', "VA"."VULNDB_ID"
+         'cveId', CASE WHEN va."SOURCE" = 'NVD' THEN va."VULN_ID" END
+       , 'ghsaId', CASE WHEN va."SOURCE" = 'GITHUB' THEN va."VULN_ID" END
+       , 'gsdId', CASE WHEN va."SOURCE" = 'GSD' THEN va."VULN_ID" END
+       , 'internalId', CASE WHEN va."SOURCE" = 'INTERNAL' THEN va."VULN_ID" END
+       , 'osvId', CASE WHEN va."SOURCE" = 'OSV' THEN va."VULN_ID" END
+       , 'sonatypeId', CASE WHEN va."SOURCE" = 'OSSINDEX' THEN va."VULN_ID" END
+       , 'snykId', CASE WHEN va."SOURCE" = 'SNYK' THEN va."VULN_ID" END
+       , 'vulnDbId', CASE WHEN va."SOURCE" = 'VULNDB' THEN va."VULN_ID" END
+       , 'csafId', CASE WHEN va."SOURCE" = 'CSAF' THEN va."VULN_ID" END
        )))
-  FROM "VULNERABILITYALIAS" AS "VA"
- WHERE ("vuln_source" = 'NVD' AND "VA"."CVE_ID" = "vuln_id")
-    OR ("vuln_source" = 'GITHUB' AND "VA"."GHSA_ID" = "vuln_id")
-    OR ("vuln_source" = 'GSD' AND "VA"."GSD_ID" = "vuln_id")
-    OR ("vuln_source" = 'INTERNAL' AND "VA"."INTERNAL_ID" = "vuln_id")
-    OR ("vuln_source" = 'OSV' AND "VA"."OSV_ID" = "vuln_id")
-    OR ("vuln_source" = 'SONATYPE' AND "VA"."SONATYPE_ID" = "vuln_id")
-    OR ("vuln_source" = 'SNYK' AND "VA"."SNYK_ID" = "vuln_id")
-    OR ("vuln_source" = 'VULNDB' AND "VA"."VULNDB_ID" = "vuln_id")
+  FROM "VULNERABILITY_ALIAS" AS va
+ WHERE va."GROUP_ID" IN (
+    SELECT "GROUP_ID"
+      FROM "VULNERABILITY_ALIAS"
+     WHERE "SOURCE" = "vuln_source"
+       AND "VULN_ID" = "vuln_id"
+ )
+   AND (va."SOURCE", va."VULN_ID") != ("vuln_source" ,"vuln_id")
 $$;
 
 CREATE FUNCTION public.odt_uuidv7(timestamp with time zone DEFAULT clock_timestamp()) RETURNS uuid
@@ -1496,6 +1478,25 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+CREATE TABLE public."ADVISORIES_VULNERABILITIES" (
+    "VULNERABILITY_ID" bigint NOT NULL,
+    "ADVISORY_ID" uuid NOT NULL
+);
+
+CREATE TABLE public."ADVISORY" (
+    "NAME" character varying(255) NOT NULL,
+    "VERSION" character varying(255) NOT NULL,
+    "PUBLISHER" character varying(1024) NOT NULL,
+    "TITLE" character varying(2048) NOT NULL,
+    "URL" character varying(1024) NOT NULL,
+    "FORMAT" character varying(255),
+    "CONTENT" text,
+    "LASTFETCHED" timestamp with time zone,
+    "SEARCHVECTOR" tsvector GENERATED ALWAYS AS (to_tsvector('english'::regconfig, (((((COALESCE("TITLE", ''::character varying))::text || ' '::text) || (COALESCE("URL", ''::character varying))::text) || ' '::text) || COALESCE("CONTENT", ''::text)))) STORED,
+    "ID" uuid NOT NULL,
+    "SEEN_AT" timestamp(3) with time zone
+);
+
 CREATE TABLE public."AFFECTEDVERSIONATTRIBUTION" (
     "ID" bigint NOT NULL,
     "FIRST_SEEN" timestamp with time zone NOT NULL,
@@ -1531,10 +1532,10 @@ CREATE TABLE public."ANALYSIS" (
     "CVSSV2SCORE" numeric,
     "OWASPVECTOR" character varying(255),
     "CVSSV3VECTOR" character varying(255),
-    "CVSSV4SCORE" numeric,
-    "CVSSV4VECTOR" character varying(255),
     "SEVERITY" public.severity,
-    "VULNERABILITY_POLICY_ID" bigint
+    "VULNERABILITY_POLICY_ID" bigint,
+    "CVSSV4VECTOR" character varying(255),
+    "CVSSV4SCORE" numeric
 );
 
 CREATE TABLE public."ANALYSISCOMMENT" (
@@ -1606,6 +1607,14 @@ ALTER TABLE public."BOM" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY 
     NO MINVALUE
     NO MAXVALUE
     CACHE 1
+);
+
+CREATE UNLOGGED TABLE public."CACHE_ENTRY" (
+    "CACHE_NAME" text NOT NULL,
+    "KEY" text NOT NULL,
+    "VALUE" bytea,
+    "CREATED_AT" timestamp with time zone DEFAULT now() NOT NULL,
+    "EXPIRES_AT" timestamp with time zone NOT NULL
 );
 
 CREATE TABLE public."COMPONENT" (
@@ -1715,6 +1724,30 @@ ALTER TABLE public."CONFIGPROPERTY" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT A
     CACHE 1
 );
 
+CREATE TABLE public."CSAF_AGGREGATOR" (
+    "ID" uuid NOT NULL,
+    "URL" text NOT NULL,
+    "NAMESPACE" text NOT NULL,
+    "NAME" text NOT NULL,
+    "ENABLED" boolean NOT NULL,
+    "LAST_DISCOVERY_AT" timestamp(3) with time zone,
+    "CREATED_AT" timestamp(3) with time zone NOT NULL,
+    "UPDATED_AT" timestamp(3) with time zone
+);
+
+CREATE TABLE public."CSAF_PROVIDER" (
+    "ID" uuid NOT NULL,
+    "URL" text NOT NULL,
+    "NAMESPACE" text NOT NULL,
+    "NAME" text NOT NULL,
+    "ENABLED" boolean NOT NULL,
+    "DISCOVERED_FROM" uuid,
+    "DISCOVERED_AT" timestamp(3) with time zone,
+    "LATEST_DOCUMENT_RELEASE_DATE" timestamp(3) with time zone,
+    "CREATED_AT" timestamp(3) with time zone NOT NULL,
+    "UPDATED_AT" timestamp(3) with time zone
+);
+
 CREATE TABLE public."DEPENDENCYMETRICS" (
     "COMPONENT_ID" bigint NOT NULL,
     "CRITICAL" integer NOT NULL,
@@ -1749,7 +1782,7 @@ CREATE TABLE public."DEPENDENCYMETRICS" (
 )
 PARTITION BY RANGE ("LAST_OCCURRENCE");
 
-CREATE TABLE public."DEPENDENCYMETRICS_20251028" (
+CREATE TABLE public."DEPENDENCYMETRICS_20260226" (
     "COMPONENT_ID" bigint NOT NULL,
     "CRITICAL" integer NOT NULL,
     "FINDINGS_AUDITED" integer,
@@ -1781,7 +1814,6 @@ CREATE TABLE public."DEPENDENCYMETRICS_20251028" (
     "UNASSIGNED_SEVERITY" integer,
     "VULNERABILITIES" integer NOT NULL
 );
-ALTER TABLE ONLY public."DEPENDENCYMETRICS" ATTACH PARTITION public."DEPENDENCYMETRICS_20251028" FOR VALUES FROM ('2025-10-27 23:00:00+00') TO ('2025-10-28 23:00:00+00');
 
 CREATE TABLE public."EPSS" (
     "ID" bigint NOT NULL,
@@ -1799,20 +1831,22 @@ ALTER TABLE public."EPSS" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY
     CACHE 1
 );
 
-CREATE TABLE public."EVENTSERVICELOG" (
-    "ID" bigint NOT NULL,
-    "SUBSCRIBERCLASS" character varying(255) NOT NULL,
-    "STARTED" timestamp with time zone,
-    "COMPLETED" timestamp with time zone
+CREATE TABLE public."EXTENSION_KV_STORE" (
+    "EXTENSION_POINT" text NOT NULL,
+    "EXTENSION" text NOT NULL,
+    "KEY" text NOT NULL,
+    "VALUE" text NOT NULL,
+    "CREATED_AT" timestamp(3) with time zone NOT NULL,
+    "UPDATED_AT" timestamp(3) with time zone,
+    "VERSION" bigint NOT NULL
 );
 
-ALTER TABLE public."EVENTSERVICELOG" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
-    SEQUENCE NAME public."EVENTSERVICELOG_ID_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
+CREATE TABLE public."EXTENSION_RUNTIME_CONFIG" (
+    "EXTENSION_POINT" text NOT NULL,
+    "EXTENSION" text NOT NULL,
+    "CONFIG" jsonb NOT NULL,
+    "CREATED_AT" timestamp(3) with time zone NOT NULL,
+    "UPDATED_AT" timestamp(3) with time zone
 );
 
 CREATE TABLE public."FINDINGATTRIBUTION" (
@@ -1824,7 +1858,8 @@ CREATE TABLE public."FINDINGATTRIBUTION" (
     "PROJECT_ID" bigint NOT NULL,
     "REFERENCE_URL" character varying(255),
     "UUID" uuid NOT NULL,
-    "VULNERABILITY_ID" bigint NOT NULL
+    "VULNERABILITY_ID" bigint NOT NULL,
+    "MATCHING_PERCENTAGE" smallint
 );
 
 ALTER TABLE public."FINDINGATTRIBUTION" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
@@ -1962,9 +1997,9 @@ CREATE TABLE public."NOTIFICATIONPUBLISHER" (
     "DEFAULT_PUBLISHER" boolean NOT NULL,
     "DESCRIPTION" character varying(255),
     "NAME" character varying(255) NOT NULL,
-    "PUBLISHER_CLASS" character varying(1024) NOT NULL,
+    "EXTENSION_NAME" character varying(1024) NOT NULL,
     "TEMPLATE" text,
-    "TEMPLATE_MIME_TYPE" character varying(255) NOT NULL,
+    "TEMPLATE_MIME_TYPE" character varying(255),
     "UUID" uuid NOT NULL
 );
 
@@ -1984,12 +2019,12 @@ CREATE TABLE public."NOTIFICATIONRULE" (
     "NAME" character varying(255) NOT NULL,
     "NOTIFICATION_LEVEL" public.notification_level,
     "NOTIFY_CHILDREN" boolean,
-    "NOTIFY_ON" character varying(1024),
     "PUBLISHER" bigint,
-    "PUBLISHER_CONFIG" text,
+    "PUBLISHER_CONFIG" jsonb,
     "SCOPE" character varying(255) NOT NULL,
     "UUID" uuid NOT NULL,
-    "LOG_SUCCESSFUL_PUBLISH" boolean
+    "LOG_SUCCESSFUL_PUBLISH" boolean,
+    "NOTIFY_ON" text[]
 );
 
 ALTER TABLE public."NOTIFICATIONRULE" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
@@ -2338,7 +2373,7 @@ CREATE MATERIALIZED VIEW public."PORTFOLIOMETRICS_GLOBAL" AS
      LEFT JOIN daily_metrics dm ON ((date_range.metrics_date = dm.metrics_date)))
   WITH NO DATA;
 
-CREATE TABLE public."PROJECTMETRICS_20251028" (
+CREATE TABLE public."PROJECTMETRICS_20260226" (
     "COMPONENTS" integer NOT NULL,
     "CRITICAL" integer NOT NULL,
     "FINDINGS_AUDITED" integer,
@@ -2371,7 +2406,6 @@ CREATE TABLE public."PROJECTMETRICS_20251028" (
     "VULNERABILITIES" integer NOT NULL,
     "VULNERABLECOMPONENTS" integer NOT NULL
 );
-ALTER TABLE ONLY public."PROJECTMETRICS" ATTACH PARTITION public."PROJECTMETRICS_20251028" FOR VALUES FROM ('2025-10-27 23:00:00+00') TO ('2025-10-28 23:00:00+00');
 
 CREATE TABLE public."PROJECTS_TAGS" (
     "TAG_ID" bigint NOT NULL,
@@ -2494,6 +2528,15 @@ ALTER TABLE public."ROLE" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY
     NO MINVALUE
     NO MAXVALUE
     CACHE 1
+);
+
+CREATE TABLE public."SECRET" (
+    "NAME" text NOT NULL,
+    "DESCRIPTION" text,
+    "VALUE" bytea NOT NULL,
+    "DEK" bytea NOT NULL,
+    "CREATED_AT" timestamp(3) with time zone NOT NULL,
+    "UPDATED_AT" timestamp(3) with time zone
 );
 
 CREATE TABLE public."SERVICECOMPONENT" (
@@ -2696,8 +2739,6 @@ CREATE TABLE public."VULNERABILITY" (
     "CVSSV3EXPLOITSCORE" numeric,
     "CVSSV3IMPACTSCORE" numeric,
     "CVSSV3VECTOR" character varying(255),
-    "CVSSV4SCORE" numeric,
-    "CVSSV4VECTOR" character varying(255),
     "CWES" character varying(255),
     "DESCRIPTION" text,
     "DETAIL" text,
@@ -2717,29 +2758,9 @@ CREATE TABLE public."VULNERABILITY" (
     "UPDATED" timestamp with time zone,
     "UUID" uuid NOT NULL,
     "VULNID" character varying(255) NOT NULL,
-    "VULNERABLEVERSIONS" character varying(255)
-);
-
-CREATE TABLE public."VULNERABILITYALIAS" (
-    "ID" bigint NOT NULL,
-    "CVE_ID" character varying(255),
-    "GHSA_ID" character varying(255),
-    "GSD_ID" character varying(255),
-    "INTERNAL_ID" character varying(255),
-    "OSV_ID" character varying(255),
-    "SNYK_ID" character varying(255),
-    "SONATYPE_ID" character varying(255),
-    "UUID" uuid NOT NULL,
-    "VULNDB_ID" character varying(255)
-);
-
-ALTER TABLE public."VULNERABILITYALIAS" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
-    SEQUENCE NAME public."VULNERABILITYALIAS_ID_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
+    "VULNERABLEVERSIONS" character varying(255),
+    "CVSSV4SCORE" numeric,
+    "CVSSV4VECTOR" character varying(255)
 );
 
 CREATE TABLE public."VULNERABILITYMETRICS" (
@@ -2782,6 +2803,21 @@ ALTER TABLE public."VULNERABILITYSCAN" ALTER COLUMN "ID" ADD GENERATED BY DEFAUL
     NO MINVALUE
     NO MAXVALUE
     CACHE 1
+);
+
+CREATE TABLE public."VULNERABILITY_ALIAS" (
+    "GROUP_ID" uuid NOT NULL,
+    "SOURCE" text NOT NULL,
+    "VULN_ID" text NOT NULL
+);
+
+CREATE TABLE public."VULNERABILITY_ALIAS_ASSERTION" (
+    "ASSERTER" text NOT NULL,
+    "VULN_SOURCE" text NOT NULL,
+    "VULN_ID" text NOT NULL,
+    "ALIAS_SOURCE" text NOT NULL,
+    "ALIAS_ID" text NOT NULL,
+    "CREATED_AT" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
 
 ALTER TABLE public."VULNERABILITY" ALTER COLUMN "ID" ADD GENERATED BY DEFAULT AS IDENTITY (
@@ -2932,6 +2968,16 @@ CREATE TABLE public.shedlock (
     locked_by character varying(255) NOT NULL
 );
 
+ALTER TABLE ONLY public."DEPENDENCYMETRICS" ATTACH PARTITION public."DEPENDENCYMETRICS_20260226" FOR VALUES FROM ('2026-02-25 23:00:00+00') TO ('2026-02-26 23:00:00+00');
+
+ALTER TABLE ONLY public."PROJECTMETRICS" ATTACH PARTITION public."PROJECTMETRICS_20260226" FOR VALUES FROM ('2026-02-25 23:00:00+00') TO ('2026-02-26 23:00:00+00');
+
+ALTER TABLE ONLY public."ADVISORIES_VULNERABILITIES"
+    ADD CONSTRAINT "ADVISORIES_VULNERABILITIES_PK" PRIMARY KEY ("ADVISORY_ID", "VULNERABILITY_ID");
+
+ALTER TABLE ONLY public."ADVISORY"
+    ADD CONSTRAINT "ADVISORY_PK" PRIMARY KEY ("ID");
+
 ALTER TABLE ONLY public."AFFECTEDVERSIONATTRIBUTION"
     ADD CONSTRAINT "AFFECTEDVERSIONATTRIBUTION_PK" PRIMARY KEY ("ID");
 
@@ -2959,6 +3005,9 @@ ALTER TABLE ONLY public."BOM"
 ALTER TABLE ONLY public."BOM"
     ADD CONSTRAINT "BOM_UUID_IDX" UNIQUE ("UUID");
 
+ALTER TABLE ONLY public."CACHE_ENTRY"
+    ADD CONSTRAINT "CACHE_ENTRY_PK" PRIMARY KEY ("CACHE_NAME", "KEY");
+
 ALTER TABLE ONLY public."COMPONENT_OCCURRENCE"
     ADD CONSTRAINT "COMPONENT_OCCURRENCE_PK" PRIMARY KEY ("ID");
 
@@ -2977,11 +3026,17 @@ ALTER TABLE ONLY public."CONFIGPROPERTY"
 ALTER TABLE ONLY public."CONFIGPROPERTY"
     ADD CONSTRAINT "CONFIGPROPERTY_U1" UNIQUE ("GROUPNAME", "PROPERTYNAME");
 
+ALTER TABLE ONLY public."CSAF_AGGREGATOR"
+    ADD CONSTRAINT "CSAF_AGGREGATOR_PK" PRIMARY KEY ("ID");
+
+ALTER TABLE ONLY public."CSAF_PROVIDER"
+    ADD CONSTRAINT "CSAF_PROVIDER_PK" PRIMARY KEY ("ID");
+
 ALTER TABLE ONLY public."DEPENDENCYMETRICS"
     ADD CONSTRAINT "DEPENDENCYMETRICS_PK" PRIMARY KEY ("COMPONENT_ID", "LAST_OCCURRENCE");
 
-ALTER TABLE ONLY public."DEPENDENCYMETRICS_20251028"
-    ADD CONSTRAINT "DEPENDENCYMETRICS_20251028_pkey" PRIMARY KEY ("COMPONENT_ID", "LAST_OCCURRENCE");
+ALTER TABLE ONLY public."DEPENDENCYMETRICS_20260226"
+    ADD CONSTRAINT "DEPENDENCYMETRICS_20260226_pkey" PRIMARY KEY ("COMPONENT_ID", "LAST_OCCURRENCE");
 
 ALTER TABLE ONLY public."EPSS"
     ADD CONSTRAINT "EPSS_CVE_PK" PRIMARY KEY ("ID");
@@ -2989,8 +3044,11 @@ ALTER TABLE ONLY public."EPSS"
 ALTER TABLE ONLY public."EPSS"
     ADD CONSTRAINT "EPSS_CVE_key" UNIQUE ("CVE");
 
-ALTER TABLE ONLY public."EVENTSERVICELOG"
-    ADD CONSTRAINT "EVENTSERVICELOG_PK" PRIMARY KEY ("ID");
+ALTER TABLE ONLY public."EXTENSION_KV_STORE"
+    ADD CONSTRAINT "EXTENSION_KV_STORE_PK" PRIMARY KEY ("EXTENSION_POINT", "EXTENSION", "KEY");
+
+ALTER TABLE ONLY public."EXTENSION_RUNTIME_CONFIG"
+    ADD CONSTRAINT "EXTENSION_RUNTIME_CONFIG_PK" PRIMARY KEY ("EXTENSION_POINT", "EXTENSION");
 
 ALTER TABLE ONLY public."FINDINGATTRIBUTION"
     ADD CONSTRAINT "FINDINGATTRIBUTION_PK" PRIMARY KEY ("ID");
@@ -3091,8 +3149,8 @@ ALTER TABLE ONLY public."POLICY"
 ALTER TABLE ONLY public."PROJECTMETRICS"
     ADD CONSTRAINT "PROJECTMETRICS_PK" PRIMARY KEY ("PROJECT_ID", "LAST_OCCURRENCE");
 
-ALTER TABLE ONLY public."PROJECTMETRICS_20251028"
-    ADD CONSTRAINT "PROJECTMETRICS_20251028_pkey" PRIMARY KEY ("PROJECT_ID", "LAST_OCCURRENCE");
+ALTER TABLE ONLY public."PROJECTMETRICS_20260226"
+    ADD CONSTRAINT "PROJECTMETRICS_20260226_pkey" PRIMARY KEY ("PROJECT_ID", "LAST_OCCURRENCE");
 
 ALTER TABLE ONLY public."PROJECTS_TAGS"
     ADD CONSTRAINT "PROJECTS_TAGS_PK" PRIMARY KEY ("PROJECT_ID", "TAG_ID");
@@ -3138,6 +3196,9 @@ ALTER TABLE ONLY public."ROLE"
 
 ALTER TABLE ONLY public."ROLE"
     ADD CONSTRAINT "ROLE_UUID_IDX" UNIQUE ("UUID");
+
+ALTER TABLE ONLY public."SECRET"
+    ADD CONSTRAINT "SECRET_PK" PRIMARY KEY ("NAME");
 
 ALTER TABLE ONLY public."SERVICECOMPONENT"
     ADD CONSTRAINT "SERVICECOMPONENT_PK" PRIMARY KEY ("ID");
@@ -3193,12 +3254,6 @@ ALTER TABLE ONLY public."VIOLATIONANALYSIS"
 ALTER TABLE ONLY public."VULNERABILITIES_TAGS"
     ADD CONSTRAINT "VULNERABILITIES_TAGS_PK" PRIMARY KEY ("VULNERABILITY_ID", "TAG_ID");
 
-ALTER TABLE ONLY public."VULNERABILITYALIAS"
-    ADD CONSTRAINT "VULNERABILITYALIAS_PK" PRIMARY KEY ("ID");
-
-ALTER TABLE ONLY public."VULNERABILITYALIAS"
-    ADD CONSTRAINT "VULNERABILITYALIAS_UUID_IDX" UNIQUE ("UUID");
-
 ALTER TABLE ONLY public."VULNERABILITYMETRICS"
     ADD CONSTRAINT "VULNERABILITYMETRICS_PK" PRIMARY KEY ("ID");
 
@@ -3207,6 +3262,12 @@ ALTER TABLE ONLY public."VULNERABILITY_POLICY"
 
 ALTER TABLE ONLY public."VULNERABILITYSCAN"
     ADD CONSTRAINT "VULNERABILITYSCAN_PK" PRIMARY KEY ("ID");
+
+ALTER TABLE ONLY public."VULNERABILITY_ALIAS_ASSERTION"
+    ADD CONSTRAINT "VULNERABILITY_ALIAS_ASSERTION_PK" PRIMARY KEY ("ASSERTER", "VULN_SOURCE", "VULN_ID", "ALIAS_SOURCE", "ALIAS_ID");
+
+ALTER TABLE ONLY public."VULNERABILITY_ALIAS"
+    ADD CONSTRAINT "VULNERABILITY_ALIAS_PK" PRIMARY KEY ("SOURCE", "VULN_ID");
 
 ALTER TABLE ONLY public."VULNERABILITY"
     ADD CONSTRAINT "VULNERABILITY_PK" PRIMARY KEY ("ID");
@@ -3241,6 +3302,8 @@ ALTER TABLE ONLY public.databasechangeloglock
 ALTER TABLE ONLY public.shedlock
     ADD CONSTRAINT shedlock_pk PRIMARY KEY (name);
 
+CREATE INDEX "ADVISORY_SEARCHVECTOR_IDX" ON public."ADVISORY" USING gin ("SEARCHVECTOR");
+
 CREATE INDEX "AFFECTEDVERSIONATTRIBUTION_KEYS_IDX" ON public."AFFECTEDVERSIONATTRIBUTION" USING btree ("VULNERABILITY", "VULNERABLE_SOFTWARE");
 
 CREATE INDEX "ANALYSISCOMMENT_ANALYSIS_ID_IDX" ON public."ANALYSISCOMMENT" USING btree ("ANALYSIS_ID");
@@ -3252,6 +3315,10 @@ CREATE INDEX "ANALYSIS_VULNERABILITY_ID_IDX" ON public."ANALYSIS" USING btree ("
 CREATE UNIQUE INDEX "APIKEY_PUBLIC_ID_IDX" ON public."APIKEY" USING btree ("PUBLIC_ID");
 
 CREATE INDEX "BOM_PROJECT_ID_IDX" ON public."BOM" USING btree ("PROJECT_ID");
+
+CREATE INDEX "CACHE_ENTRY_EXPIRES_AT_IDX" ON public."CACHE_ENTRY" USING btree ("EXPIRES_AT");
+
+CREATE INDEX "CACHE_ENTRY_NAME_CREATED_AT_DESC_IDX" ON public."CACHE_ENTRY" USING btree ("CACHE_NAME", "CREATED_AT" DESC);
 
 CREATE UNIQUE INDEX "COMPONENTS_VULNERABILITIES_COMPOSITE_IDX" ON public."COMPONENTS_VULNERABILITIES" USING btree ("COMPONENT_ID", "VULNERABILITY_ID");
 
@@ -3315,9 +3382,13 @@ CREATE INDEX "COMPONENT_SHA_512_IDX" ON public."COMPONENT" USING btree ("SHA_512
 
 CREATE INDEX "COMPONENT_SWID_TAGID_IDX" ON public."COMPONENT" USING btree ("SWIDTAGID");
 
+CREATE UNIQUE INDEX "CSAF_AGGREGATOR_URL_IDX" ON public."CSAF_AGGREGATOR" USING btree ("URL");
+
+CREATE UNIQUE INDEX "CSAF_PROVIDER_URL_IDX" ON public."CSAF_PROVIDER" USING btree ("URL");
+
 CREATE INDEX "DEPENDENCYMETRICS_PROJECT_ID_IDX" ON ONLY public."DEPENDENCYMETRICS" USING btree ("PROJECT_ID");
 
-CREATE INDEX "DEPENDENCYMETRICS_20251028_PROJECT_ID_idx" ON public."DEPENDENCYMETRICS_20251028" USING btree ("PROJECT_ID");
+CREATE INDEX "DEPENDENCYMETRICS_20260226_PROJECT_ID_idx" ON public."DEPENDENCYMETRICS_20260226" USING btree ("PROJECT_ID");
 
 CREATE UNIQUE INDEX "EPSS_CVE_IDX" ON public."EPSS" USING btree ("CVE");
 
@@ -3347,6 +3418,8 @@ CREATE INDEX "MAPPEDOIDCGROUP_GROUP_ID_IDX" ON public."MAPPEDOIDCGROUP" USING bt
 
 CREATE UNIQUE INDEX "NOTIFICATIONPUBLISHER_NAME_IDX" ON public."NOTIFICATIONPUBLISHER" USING btree ("NAME");
 
+CREATE UNIQUE INDEX "NOTIFICATIONRULE_NAME_IDX" ON public."NOTIFICATIONRULE" USING btree ("NAME");
+
 CREATE INDEX "NOTIFICATIONRULE_PROJECTS_NOTIFICATIONRULE_ID_IDX" ON public."NOTIFICATIONRULE_PROJECTS" USING btree ("NOTIFICATIONRULE_ID");
 
 CREATE INDEX "NOTIFICATIONRULE_PROJECTS_PROJECT_ID_IDX" ON public."NOTIFICATIONRULE_PROJECTS" USING btree ("PROJECT_ID");
@@ -3373,7 +3446,7 @@ CREATE UNIQUE INDEX "PORTFOLIOMETRICS_GLOBAL_LAST_OCCURRENCE_IDX" ON public."POR
 
 CREATE INDEX "PROJECTMETRICS_PROJECT_ID_LAST_OCCURRENCE_DESC_IDX" ON ONLY public."PROJECTMETRICS" USING btree ("PROJECT_ID", "LAST_OCCURRENCE" DESC);
 
-CREATE INDEX "PROJECTMETRICS_20251028_PROJECT_ID_LAST_OCCURRENCE_idx" ON public."PROJECTMETRICS_20251028" USING btree ("PROJECT_ID", "LAST_OCCURRENCE" DESC);
+CREATE INDEX "PROJECTMETRICS_20260226_PROJECT_ID_LAST_OCCURRENCE_idx" ON public."PROJECTMETRICS_20260226" USING btree ("PROJECT_ID", "LAST_OCCURRENCE" DESC);
 
 CREATE INDEX "PROJECT_CLASSIFIER_IDX" ON public."PROJECT" USING btree ("CLASSIFIER");
 
@@ -3423,8 +3496,6 @@ CREATE INDEX "SERVICECOMPONENT_PARENT_SERVICECOMPONENT_ID_IDX" ON public."SERVIC
 
 CREATE INDEX "SERVICECOMPONENT_PROJECT_ID_IDX" ON public."SERVICECOMPONENT" USING btree ("PROJECT_ID");
 
-CREATE INDEX "SUBSCRIBERCLASS_IDX" ON public."EVENTSERVICELOG" USING btree ("SUBSCRIBERCLASS");
-
 CREATE UNIQUE INDEX "TAG_NAME_IDX" ON public."TAG" USING btree ("NAME");
 
 CREATE UNIQUE INDEX "USER_PROJECT_ROLES_IDX" ON public."USER_PROJECT_ROLES" USING btree ("USER_ID", "PROJECT_ID");
@@ -3439,21 +3510,7 @@ CREATE INDEX "VIOLATIONANALYSIS_COMPONENT_ID_IDX" ON public."VIOLATIONANALYSIS" 
 
 CREATE INDEX "VIOLATIONANALYSIS_POLICYVIOLATION_ID_IDX" ON public."VIOLATIONANALYSIS" USING btree ("POLICYVIOLATION_ID");
 
-CREATE INDEX "VULNERABILITYALIAS_CVE_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("CVE_ID");
-
-CREATE INDEX "VULNERABILITYALIAS_GHSA_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("GHSA_ID");
-
-CREATE INDEX "VULNERABILITYALIAS_GSD_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("GSD_ID");
-
-CREATE INDEX "VULNERABILITYALIAS_INTERNAL_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("INTERNAL_ID");
-
-CREATE INDEX "VULNERABILITYALIAS_OSV_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("OSV_ID");
-
-CREATE INDEX "VULNERABILITYALIAS_SNYK_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("SNYK_ID");
-
-CREATE INDEX "VULNERABILITYALIAS_SONATYPE_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("SONATYPE_ID");
-
-CREATE INDEX "VULNERABILITYALIAS_VULNDB_ID_IDX" ON public."VULNERABILITYALIAS" USING btree ("VULNDB_ID");
+CREATE INDEX "VULNERABILITY_ALIAS_GROUP_IDX" ON public."VULNERABILITY_ALIAS" USING btree ("GROUP_ID");
 
 CREATE INDEX "VULNERABILITY_CREATED_IDX" ON public."VULNERABILITY" USING btree ("CREATED");
 
@@ -3475,15 +3532,21 @@ CREATE INDEX "VULNERABLESOFTWARE_VULNERABILITIES_VULNERABILITY_ID_IDX" ON public
 
 CREATE INDEX "VULNERABLESOFTWARE_VULNERABILITIES_VULNERABLESOFTWARE_ID_IDX" ON public."VULNERABLESOFTWARE_VULNERABILITIES" USING btree ("VULNERABLESOFTWARE_ID");
 
+CREATE INDEX "VULN_ALIAS_ASSERTION_ALIAS_IDX" ON public."VULNERABILITY_ALIAS_ASSERTION" USING btree ("ALIAS_SOURCE", "ALIAS_ID");
+
+CREATE INDEX "VULN_ALIAS_ASSERTION_VULN_IDX" ON public."VULNERABILITY_ALIAS_ASSERTION" USING btree ("VULN_SOURCE", "VULN_ID");
+
 CREATE INDEX "WORKFLOW_STATE_PARENT_STEP_ID_IDX" ON public."WORKFLOW_STATE" USING btree ("PARENT_STEP_ID");
 
-ALTER INDEX public."DEPENDENCYMETRICS_PROJECT_ID_IDX" ATTACH PARTITION public."DEPENDENCYMETRICS_20251028_PROJECT_ID_idx";
+ALTER INDEX public."DEPENDENCYMETRICS_PROJECT_ID_IDX" ATTACH PARTITION public."DEPENDENCYMETRICS_20260226_PROJECT_ID_idx";
 
-ALTER INDEX public."DEPENDENCYMETRICS_PK" ATTACH PARTITION public."DEPENDENCYMETRICS_20251028_pkey";
+ALTER INDEX public."DEPENDENCYMETRICS_PK" ATTACH PARTITION public."DEPENDENCYMETRICS_20260226_pkey";
 
-ALTER INDEX public."PROJECTMETRICS_PROJECT_ID_LAST_OCCURRENCE_DESC_IDX" ATTACH PARTITION public."PROJECTMETRICS_20251028_PROJECT_ID_LAST_OCCURRENCE_idx";
+ALTER INDEX public."PROJECTMETRICS_PROJECT_ID_LAST_OCCURRENCE_DESC_IDX" ATTACH PARTITION public."PROJECTMETRICS_20260226_PROJECT_ID_LAST_OCCURRENCE_idx";
 
-ALTER INDEX public."PROJECTMETRICS_PK" ATTACH PARTITION public."PROJECTMETRICS_20251028_pkey";
+ALTER INDEX public."PROJECTMETRICS_PK" ATTACH PARTITION public."PROJECTMETRICS_20260226_pkey";
+
+CREATE STATISTICS public."COMPONENT_PURL_LOWER_STATS" ON lower("PURL"::text) FROM public."COMPONENT";
 
 CREATE TRIGGER trigger_effective_permissions_mx_on_project_access_teams_delete AFTER DELETE ON public."PROJECT_ACCESS_TEAMS" REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION public.effective_permissions_mx_on_delete();
 
@@ -3522,6 +3585,12 @@ CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_delete AFTER DEL
 CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_insert AFTER INSERT ON public."PROJECT" FOR EACH ROW EXECUTE FUNCTION public.project_hierarchy_maintenance_on_project_insert();
 
 CREATE TRIGGER trigger_project_hierarchy_maintenance_on_project_update AFTER UPDATE OF "PARENT_PROJECT_ID" ON public."PROJECT" FOR EACH ROW WHEN ((old."PARENT_PROJECT_ID" IS DISTINCT FROM new."PARENT_PROJECT_ID")) EXECUTE FUNCTION public.project_hierarchy_maintenance_on_project_update();
+
+ALTER TABLE ONLY public."ADVISORIES_VULNERABILITIES"
+    ADD CONSTRAINT "ADVISORIES_VULNERABILITIES_ADVISORY_FK" FOREIGN KEY ("ADVISORY_ID") REFERENCES public."ADVISORY"("ID") ON DELETE CASCADE;
+
+ALTER TABLE ONLY public."ADVISORIES_VULNERABILITIES"
+    ADD CONSTRAINT "ADVISORIES_VULNERABILITIES_VULNERABILITY_FK" FOREIGN KEY ("VULNERABILITY_ID") REFERENCES public."VULNERABILITY"("ID") ON DELETE CASCADE;
 
 ALTER TABLE ONLY public."AFFECTEDVERSIONATTRIBUTION"
     ADD CONSTRAINT "AFFECTEDVERSIONATTRIBUTION_VULNERABILITY_FK" FOREIGN KEY ("VULNERABILITY") REFERENCES public."VULNERABILITY"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
@@ -3573,6 +3642,9 @@ ALTER TABLE ONLY public."COMPONENT"
 
 ALTER TABLE ONLY public."COMPONENT_PROPERTY"
     ADD CONSTRAINT "COMPONENT_PROPERTY_COMPONENT_ID_FK" FOREIGN KEY ("COMPONENT_ID") REFERENCES public."COMPONENT"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY public."CSAF_PROVIDER"
+    ADD CONSTRAINT "CSAF_PROVIDER_DISCOVERED_FROM_FK" FOREIGN KEY ("DISCOVERED_FROM") REFERENCES public."CSAF_AGGREGATOR"("ID") ON DELETE CASCADE;
 
 ALTER TABLE public."DEPENDENCYMETRICS"
     ADD CONSTRAINT "DEPENDENCYMETRICS_COMPONENT_FK" FOREIGN KEY ("COMPONENT_ID") REFERENCES public."COMPONENT"("ID") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
