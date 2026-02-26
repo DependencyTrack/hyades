@@ -3129,6 +3129,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dtdex-engineleader-electionenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.leader-election.enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dtdex-engineleader-electionlease-check-interval-ms" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3265,6 +3276,17 @@
     <span class="md-ellipsis">
       
         dt.dex-engine.task-event-buffer.max-batch-size
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-engineworkersenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.workers.enabled
       
     </span>
   </a>
@@ -3739,6 +3761,17 @@
   
     <nav class="md-nav" aria-label="Kafka">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dtkafkaprocessorenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.kafka.processor.enabled
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#dtkafkatopicprefix" class="md-nav__link">
@@ -7290,6 +7323,30 @@
 </table>
 
 <hr />
+<h3 id="dtdex-engineleader-electionenabled">dt.dex-engine.leader-election.enabled<a class="headerlink" href="#dtdex-engineleader-electionenabled" title="Permanent link">&para;</a></h3>
+<p>Whether leader election in the durable execution engine should be enabled.  <br/><br/>  Disabling leader election also disables the workflow task scheduler,  activity task scheduler, and maintenance worker, as only the leader  node is meant to handle those responsibilities.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_LEADER_ELECTION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="dtdex-engineleader-electionlease-check-interval-ms">dt.dex-engine.leader-election.lease-check-interval-ms<a class="headerlink" href="#dtdex-engineleader-electionlease-check-interval-ms" title="Permanent link">&para;</a></h3>
 <p>Defines the interval in milliseconds in which leadership lease acquisition or extension is attempted.  <br/><br/>  Must be smaller than <a href="#dtdex-engineleader-electionlease-duration-ms"><code>dt.dex-engine.leader-election.lease-duration-ms</code></a> to avoid  frequent leadership changes.  </p>
 <table>
@@ -7597,6 +7654,30 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_TASK_EVENT_BUFFER_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-engineworkersenabled">dt.dex-engine.workers.enabled<a class="headerlink" href="#dtdex-engineworkersenabled" title="Permanent link">&para;</a></h3>
+<p>Whether all durable execution task workers should be enabled.  <br/><br/>  Acts as a global kill switch that takes precedence over individual worker settings.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_WORKERS_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
@@ -8529,6 +8610,30 @@
 </table>
 
 <h2 id="kafka">Kafka<a class="headerlink" href="#kafka" title="Permanent link">&para;</a></h2>
+<h3 id="dtkafkaprocessorenabled">dt.kafka.processor.enabled<a class="headerlink" href="#dtkafkaprocessorenabled" title="Permanent link">&para;</a></h3>
+<p>Whether Kafka processors should be enabled.  May be disabled on specific nodes in the cluster to limit the amount of  background processing they're doing.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_KAFKA_PROCESSOR_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="dtkafkatopicprefix">dt.kafka.topic.prefix<a class="headerlink" href="#dtkafkatopicprefix" title="Permanent link">&para;</a></h3>
 <table>
   <tbody style="border: 0">
