@@ -1428,6 +1428,126 @@ Defines the maximum concurrency of the notification activity worker.
 
 ---
 
+### dt.dex-engine.activity-worker.notification.poll-backoff.initial-delay-ms
+
+Defines the initial poll backoff delay in milliseconds of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>200</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.notification.poll-backoff.max-delay-ms
+
+Defines the max poll backoff delay in milliseconds of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>10000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.notification.poll-backoff.multiplier
+
+Defines the poll backoff delay multiplier of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2.0</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.notification.poll-backoff.randomization-factor
+
+Defines the poll backoff randomization factor of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### dt.dex-engine.external-event-buffer.flush-interval-ms
 
 Defines the time in milliseconds between flushes of the external event buffer.  
