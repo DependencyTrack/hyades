@@ -6532,6 +6532,36 @@ Defines the number of worker threads that the event subsystem will consume.  Eve
 
 ## Task Scheduling
 
+### dt.task-scheduler.enabled
+
+Defines whether the task scheduler should be enabled.  <br/><br/>  May be disabled on specific nodes in the cluster to limit the amount of  background processing they're doing. Can help with dedicating nodes to  only serve web traffic.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_TASK_SCHEDULER_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### task.component.metadata.maintenance.cron
 
 Cron expression of the component metadata maintenance task.  <br/><br/>  The task deletes orphaned records from the `INTEGRITY_META_COMPONENT` and  `REPOSITORY_META_COMPONENT` tables.  
