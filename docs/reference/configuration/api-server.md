@@ -1608,6 +1608,36 @@ Defines the maximum number of items of the external event buffer.
 
 ---
 
+### dt.dex-engine.leader-election.enabled
+
+Whether leader election in the durable execution engine should be enabled.  <br/><br/>  Disabling leader election also disables the workflow task scheduler,  activity task scheduler, and maintenance worker, as only the leader  node is meant to handle those responsibilities.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_LEADER_ELECTION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### dt.dex-engine.leader-election.lease-check-interval-ms
 
 Defines the interval in milliseconds in which leadership lease acquisition or extension is attempted.  <br/><br/>  Must be smaller than [`dt.dex-engine.leader-election.lease-duration-ms`](#dtdex-engineleader-electionlease-duration-ms) to avoid  frequent leadership changes.  
@@ -1991,6 +2021,36 @@ Defines the maximum number of items that will be flushed at once.  <br/><br/>  I
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_TASK_EVENT_BUFFER_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.workers.enabled
+
+Whether all durable execution task workers should be enabled.  <br/><br/>  Acts as a global kill switch that takes precedence over individual worker settings.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_WORKERS_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
@@ -3167,6 +3227,36 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 ## Kafka
+
+### dt.kafka.processor.enabled
+
+Whether Kafka processors should be enabled.  May be disabled on specific nodes in the cluster to limit the amount of  background processing they're doing.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_KAFKA_PROCESSOR_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
 
 ### dt.kafka.topic.prefix
 
