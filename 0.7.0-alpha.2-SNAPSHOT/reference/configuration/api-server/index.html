@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -3056,6 +3056,50 @@
     <span class="md-ellipsis">
       
         dt.dex-engine.activity-worker.notification.max-concurrency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-engineactivity-workernotificationpoll-backoffinitial-delay-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.activity-worker.notification.poll-backoff.initial-delay-ms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-engineactivity-workernotificationpoll-backoffmax-delay-ms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.activity-worker.notification.poll-backoff.max-delay-ms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-engineactivity-workernotificationpoll-backoffmultiplier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.activity-worker.notification.poll-backoff.multiplier
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-engineactivity-workernotificationpoll-backoffrandomization-factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.activity-worker.notification.poll-backoff.randomization-factor
       
     </span>
   </a>
@@ -7086,6 +7130,102 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-engineactivity-workernotificationpoll-backoffinitial-delay-ms">dt.dex-engine.activity-worker.notification.poll-backoff.initial-delay-ms<a class="headerlink" href="#dtdex-engineactivity-workernotificationpoll-backoffinitial-delay-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the initial poll backoff delay in milliseconds of the notification activity worker.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>200</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-engineactivity-workernotificationpoll-backoffmax-delay-ms">dt.dex-engine.activity-worker.notification.poll-backoff.max-delay-ms<a class="headerlink" href="#dtdex-engineactivity-workernotificationpoll-backoffmax-delay-ms" title="Permanent link">&para;</a></h3>
+<p>Defines the max poll backoff delay in milliseconds of the notification activity worker.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>10000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-engineactivity-workernotificationpoll-backoffmultiplier">dt.dex-engine.activity-worker.notification.poll-backoff.multiplier<a class="headerlink" href="#dtdex-engineactivity-workernotificationpoll-backoffmultiplier" title="Permanent link">&para;</a></h3>
+<p>Defines the poll backoff delay multiplier of the notification activity worker.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2.0</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-engineactivity-workernotificationpoll-backoffrandomization-factor">dt.dex-engine.activity-worker.notification.poll-backoff.randomization-factor<a class="headerlink" href="#dtdex-engineactivity-workernotificationpoll-backoffrandomization-factor" title="Permanent link">&para;</a></h3>
+<p>Defines the poll backoff randomization factor of the notification activity worker.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_RANDOMIZATION_FACTOR</code></td>
     </tr>
   </tbody>
 </table>
