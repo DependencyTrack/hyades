@@ -1,8 +1,10 @@
 ### Upgrading to 0.7.0
 
 * The minimum supported PostgreSQL version has been raised from 13 to 14 ([hyades/#1910]).
+* **The vulnerability-analyzer service has been removed**. Vulnerability analysis
+  is now performed by the apiserver. Refer to the [design documentation](../architecture/design/vulnerability-analysis.md) for details.
 * **The notification-publisher service has been removed**. Publishing of notifications
-  is now performed by the apiserver.
+  is now performed by the apiserver. Refer to the [design documentation](../architecture/design/notifications.md) for details.
 * The way notification publishers and alerts are configured behind the scenes has changed.
     * Existing configuration is migrated during the upgrade on a best-effort basis.
     * To prevent partially migrated alert configurations from taking effect,
