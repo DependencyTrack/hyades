@@ -1428,6 +1428,126 @@ Defines the maximum concurrency of the notification activity worker.
 
 ---
 
+### dt.dex-engine.activity-worker.notification.poll-backoff.initial-delay-ms
+
+Defines the initial poll backoff delay in milliseconds of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>200</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_INITIAL_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.notification.poll-backoff.max-delay-ms
+
+Defines the max poll backoff delay in milliseconds of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>10000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_MAX_DELAY_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.notification.poll-backoff.multiplier
+
+Defines the poll backoff delay multiplier of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2.0</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_MULTIPLIER</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.notification.poll-backoff.randomization-factor
+
+Defines the poll backoff randomization factor of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>double</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.2</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### dt.dex-engine.external-event-buffer.flush-interval-ms
 
 Defines the time in milliseconds between flushes of the external event buffer.  
@@ -1481,6 +1601,36 @@ Defines the maximum number of items of the external event buffer.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_EXTERNAL_EVENT_BUFFER_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.leader-election.enabled
+
+Whether leader election in the durable execution engine should be enabled.  <br/><br/>  Disabling leader election also disables the workflow task scheduler,  activity task scheduler, and maintenance worker, as only the leader  node is meant to handle those responsibilities.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_LEADER_ELECTION_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
@@ -1871,6 +2021,36 @@ Defines the maximum number of items that will be flushed at once.  <br/><br/>  I
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_TASK_EVENT_BUFFER_MAX_BATCH_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.workers.enabled
+
+Whether all durable execution task workers should be enabled.  <br/><br/>  Acts as a global kill switch that takes precedence over individual worker settings.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_WORKERS_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
@@ -3047,6 +3227,36 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
 
 
 ## Kafka
+
+### dt.kafka.processor.enabled
+
+Whether Kafka processors should be enabled.  May be disabled on specific nodes in the cluster to limit the amount of  background processing they're doing.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_KAFKA_PROCESSOR_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
 
 ### dt.kafka.topic.prefix
 
@@ -6411,6 +6621,36 @@ Defines the number of worker threads that the event subsystem will consume.  Eve
 
 
 ## Task Scheduling
+
+### dt.task-scheduler.enabled
+
+Defines whether the task scheduler should be enabled.  <br/><br/>  May be disabled on specific nodes in the cluster to limit the amount of  background processing they're doing. Can help with dedicating nodes to  only serve web traffic.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_TASK_SCHEDULER_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
 
 ### task.component.metadata.maintenance.cron
 
