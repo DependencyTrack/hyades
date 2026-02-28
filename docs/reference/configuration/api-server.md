@@ -218,6 +218,126 @@ Controls the content of the `Access-Control-Max-Age` response header.  <br/>  Ha
 
 ## Cache
 
+### dt.cache."vuln-analyzer.oss-index.results".max-size
+
+Defines the maximum number of entries in the OSS Index result cache.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>30000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__VULN_ANALYZER_OSS_INDEX_RESULTS__MAX_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."vuln-analyzer.oss-index.results".ttl-ms
+
+Defines the TTL in milliseconds for OSS Index result cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>43200000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__VULN_ANALYZER_OSS_INDEX_RESULTS__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."vuln-analyzer.snyk.results".max-size
+
+Defines the maximum number of entries in the Snyk result cache.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>30000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__VULN_ANALYZER_SNYK_RESULTS__MAX_SIZE</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."vuln-analyzer.snyk.results".ttl-ms
+
+Defines the TTL in milliseconds for Snyk result cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>43200000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__VULN_ANALYZER_SNYK_RESULTS__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### dt.cache.provider
 
 Defines the cache provider to use.  
@@ -1541,6 +1661,126 @@ Defines the poll backoff randomization factor of the notification activity worke
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.vuln-analysis-reconciliation.enabled
+
+Defines whether the vulnerability analysis reconciliation activity worker should be enabled.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_RECONCILIATION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.vuln-analysis-reconciliation.max-concurrency
+
+Defines the maximum concurrency of the vulnerability analysis reconciliation activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_RECONCILIATION_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.vuln-analysis.enabled
+
+Defines whether the notification activity worker should be enabled.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.vuln-analysis.max-concurrency
+
+Defines the maximum concurrency of the notification activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>10</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_MAX_CONCURRENCY</code></td>
     </tr>
   </tbody>
 </table>
@@ -3687,840 +3927,6 @@ Whether Kafka processors should be enabled.  May be disabled on specific nodes i
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.mirror.consumer.auto.offset.reset
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.mirror.consumer.group.id
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.mirror.max.concurrency
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.mirror.processing.order
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>partition</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.mirror.retry.initial.delay.ms
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.mirror.retry.max.delay.ms
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.mirror.retry.multiplier
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.mirror.retry.randomization.factor
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_MIRROR_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.consumer.auto.offset.reset
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.consumer.group.id
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.max.concurrency
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.consumer.auto.offset.reset
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.consumer.fetch.min.bytes
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>524288</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_FETCH_MIN_BYTES</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.consumer.group.id
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.consumer.max.poll.records
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>10000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_CONSUMER_MAX_POLL_RECORDS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.max.batch.size
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>1000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_MAX_BATCH_SIZE</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.max.concurrency
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.processing.order
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>unordered</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.retry.initial.delay.ms
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>3000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.retry.max.delay.ms
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.retry.multiplier
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processed.retry.randomization.factor
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSED_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.processing.order
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.retry.initial.delay.ms
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>1000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.retry.max.delay.ms
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.retry.multiplier
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.vuln.scan.result.retry.randomization.factor
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_VULN_SCAN_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
     </tr>
   </tbody>
 </table>
@@ -8302,96 +7708,6 @@ Minimum duration in ISO 8601 format for which the vulnerability policy bundle fe
 
 ---
 
-### task.vulnerability.scan.maintenance.cron
-
-Cron expression of the vulnerability scan maintenance task.  <br/><br/>  The task deletes records older than the configured retention duration from the `VULNERABILITYSCAN` table.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 * * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_VULNERABILITY_SCAN_MAINTENANCE_CRON</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.vulnerability.scan.maintenance.lock.max.duration
-
-Maximum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT15M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_VULNERABILITY_SCAN_MAINTENANCE_LOCK_MAX_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.vulnerability.scan.maintenance.lock.min.duration
-
-Minimum duration in ISO 8601 format for which the vulnerability database maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT1M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_VULNERABILITY_SCAN_MAINTENANCE_LOCK_MIN_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### task.workflow.maintenance.cron
 
 Cron expression of the workflow maintenance task.  <br/><br/>  The task:  <ul>  <li>Transitions workflow steps from <code>PENDING</code> to <code>TIMED_OUT</code> state</li>  <li>Transitions workflow steps from <code>TIMED_OUT</code> to <code>FAILED</code> state</li>  <li>Transitions children of <code>FAILED</code> steps to <code>CANCELLED</code> state</li>  <li>Deletes finished workflows according to the configured retention duration</li>  </ul>  
@@ -8475,6 +7791,158 @@ Minimum duration in ISO 8601 format for which the workflow maintenance task will
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_WORKFLOW_MAINTENANCE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+## Vulnerability Analysis
+
+### dt.vuln-analyzer.internal.datasource.name
+
+Defines the name of the data source to be used by the internal vulnerability analyzer.  <br/><br/>  The internal analyzer performs no database writes, so this data source  *could* point to a read replica if needed.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>default</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_VULN_ANALYZER_INTERNAL_DATASOURCE_NAME</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.vuln-analyzer.internal.enabled
+
+Defines whether the internal vulnerability analyzer is enabled.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_VULN_ANALYZER_INTERNAL_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.vuln-analyzer.oss-index.enabled
+
+Defines whether the OSS Index vulnerability analyzer is enabled.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_VULN_ANALYZER_OSS_INDEX_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.vuln-analyzer.snyk.api-version
+
+Defines the Snyk REST API version to use.  <br/><br/>  Should only be changed if the default version is discontinued by Snyk  and an upgrade of Dependency-Track is not immediately possible.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>2025-11-05</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_VULN_ANALYZER_SNYK_API_VERSION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.vuln-analyzer.snyk.enabled
+
+Defines whether the Snyk vulnerability analyzer is enabled.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_VULN_ANALYZER_SNYK_ENABLED</code></td>
     </tr>
   </tbody>
 </table>
