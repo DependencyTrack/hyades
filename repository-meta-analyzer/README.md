@@ -3,10 +3,6 @@
 The repository metadata analyzer is responsible for fetching metadata about
 packages from remote repositories.
 
-In contrast to the [vulnerability analyzer](../vulnerability-analyzer/README.md),
-it exclusively supports the [package URL](https://github.com/package-url/purl-spec)
-component identifier. CPE and SWID tag IDs are not supported.
-
 ## How it works
 
 > **Note**  

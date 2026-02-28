@@ -14,10 +14,6 @@ TBD
 
 TBD
 
-### Vulnerability Analyzer
-
-TBD
-
 ### Repository Metadata Analyzer
 
 TBD

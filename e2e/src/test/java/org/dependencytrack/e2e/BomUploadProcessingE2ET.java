@@ -89,15 +89,6 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 .withEnv("DT_SECRET_EMAIL_PASSWORD", "fromPass");
     }
 
-    @Override
-    protected void customizeVulnAnalyzerContainer(final GenericContainer<?> container) {
-        // Disable all scanners except the internal one.
-        container
-                .withEnv("SCANNER_INTERNAL_ENABLED", "true")
-                .withEnv("SCANNER_OSSINDEX_ENABLED", "false")
-                .withEnv("SCANNER_SNYK_ENABLED", "false");
-    }
-
     @Test
     void test() throws Exception {
         apiServerClient.updateExtensionConfig(
@@ -192,7 +183,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                 finding -> {
                     assertThat(finding.component().name()).isEqualTo("jackson-databind");
                     assertThat(finding.vulnerability().vulnId()).isEqualTo("INT-123");
-                    assertThat(finding.attribution().analyzerIdentity()).isEqualTo("INTERNAL_ANALYZER");
+                    assertThat(finding.attribution().analyzerIdentity()).isEqualTo("internal");
                     assertThat(finding.attribution().attributedOn()).isNotBlank();
                 }
         );
@@ -267,6 +258,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                 "apiUri": "/api/v1/vulnerability/source/INTERNAL/vuln/INT-123/projects",
                                 "frontendUri": "/vulnerabilities/INTERNAL/INT-123/affectedProjects"
                               },
+                              "analysisTrigger" : "VULNERABILITY_ANALYSIS_TRIGGER_BOM_UPLOAD",
                               "vulnerabilityAnalysisLevel": "BOM_UPLOAD_ANALYSIS",
                               "affectedProjects": [
                                 {

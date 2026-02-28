@@ -69,15 +69,6 @@ public class BomProcessedNotificationDelayedE2ET extends AbstractE2ET {
         container.withEnv("TMP_DELAY_BOM_PROCESSED_NOTIFICATION", "true");
     }
 
-    @Override
-    protected void customizeVulnAnalyzerContainer(final GenericContainer<?> container) {
-        // Disable all scanners except the internal one.
-        container
-                .withEnv("SCANNER_INTERNAL_ENABLED", "true")
-                .withEnv("SCANNER_OSSINDEX_ENABLED", "false")
-                .withEnv("SCANNER_SNYK_ENABLED", "false");
-    }
-
     @Test
     void test() throws Exception {
         final List<NotificationPublisher> publishers = apiServerClient.getAllNotificationPublishers();

@@ -46,7 +46,7 @@ mvn -pl '!e2e' clean verify failsafe:integration-test -DskipITs=false
 To limit the test run to specific modules, use `-pl <module>`, for example:
 
 ```shell
-mvn -pl vulnerability-analyzer clean verify failsafe:integration-test -DskipITs=false
+mvn -pl repository-meta-analyzer clean verify failsafe:integration-test -DskipITs=false
 ```
 
 #### Execution in CI

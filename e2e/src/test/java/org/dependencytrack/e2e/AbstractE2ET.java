@@ -34,11 +34,11 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.PullPolicy;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
@@ -60,16 +60,13 @@ public class AbstractE2ET {
             .withTag(Optional.ofNullable(System.getenv("APISERVER_VERSION")).orElse("snapshot"));
     protected static DockerImageName REPO_META_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-repository-meta-analyzer")
             .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
-    protected static DockerImageName VULN_ANALYZER_IMAGE = DockerImageName.parse("ghcr.io/dependencytrack/hyades-vulnerability-analyzer")
-            .withTag(Optional.ofNullable(System.getenv("HYADES_VERSION")).orElse("snapshot"));
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     protected final Network internalNetwork = Network.newNetwork();
-    protected PostgreSQLContainer<?> postgresContainer;
+    protected PostgreSQLContainer postgresContainer;
     protected GenericContainer<?> redpandaContainer;
     protected GenericContainer<?> apiServerContainer;
     protected GenericContainer<?> repoMetaAnalyzerContainer;
-    protected GenericContainer<?> vulnAnalyzerContainer;
     protected ApiServerClient apiServerClient;
     private Path secretKeyPath;
 
@@ -85,19 +82,17 @@ public class AbstractE2ET {
 
         apiServerContainer = createApiServerContainer();
         repoMetaAnalyzerContainer = createRepoMetaAnalyzerContainer();
-        vulnAnalyzerContainer = createVulnAnalyzerContainer();
         deepStart(
                 apiServerContainer,
-                repoMetaAnalyzerContainer,
-                vulnAnalyzerContainer
+                repoMetaAnalyzerContainer
         ).join();
 
         apiServerClient = initializeApiServerClient();
     }
 
     @SuppressWarnings("resource")
-    private PostgreSQLContainer<?> createPostgresContainer() {
-        return new PostgreSQLContainer<>(POSTGRES_IMAGE)
+    private PostgreSQLContainer createPostgresContainer() {
+        return new PostgreSQLContainer(POSTGRES_IMAGE)
                 .withDatabaseName("dtrack")
                 .withUsername("dtrack")
                 .withPassword("dtrack")
@@ -172,6 +167,30 @@ public class AbstractE2ET {
                 .withEnv("INIT_TASKS_ENABLED", "false")
                 .withEnv("ALPINE_BCRYPT_ROUNDS", "4")
                 .withEnv("ALPINE_SECRET_KEY_PATH", "/var/run/secrets/secret.key")
+                // Reduce polling delays for dex workers.
+                // TODO: This should be simpler to configure.
+                .withEnv("DT_DEX_ENGINE_WORKFLOW_WORKER_DEFAULT_MIN_POLL_INTERVAL_MS", "10")
+                .withEnv("DT_DEX_ENGINE_WORKFLOW_WORKER_DEFAULT_POLL_BACKOFF_INITIAL_DELAY_MS", "10")
+                .withEnv("DT_DEX_ENGINE_WORKFLOW_WORKER_DEFAULT_POLL_BACKOFF_MULTIPLIER", "1")
+                .withEnv("DT_DEX_ENGINE_WORKFLOW_WORKER_DEFAULT_POLL_BACKOFF_RANDOMIZATION_FACTOR", "0.1")
+                .withEnv("DT_DEX_ENGINE_WORKFLOW_WORKER_DEFAULT_POLL_BACKOFF_MAX_DELAY_MS", "25")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_DEFAULT_MIN_POLL_INTERVAL_MS", "10")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_DEFAULT_POLL_BACKOFF_INITIAL_DELAY_MS", "10")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_DEFAULT_POLL_BACKOFF_MULTIPLIER", "1")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_DEFAULT_POLL_BACKOFF_RANDOMIZATION_FACTOR", "0.1")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_DEFAULT_POLL_BACKOFF_MAX_DELAY_MS", "25")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_INITIAL_DELAY_MS", "10")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_MULTIPLIER", "1")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_RANDOMIZATION_FACTOR", "0.1")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_MAX_DELAY_MS", "25")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_POLL_BACKOFF_INITIAL_DELAY_MS", "10")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_POLL_BACKOFF_MULTIPLIER", "1")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_POLL_BACKOFF_RANDOMIZATION_FACTOR", "0.1")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_POLL_BACKOFF_MAX_DELAY_MS", "25")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_RECONCILIATION_POLL_BACKOFF_INITIAL_DELAY_MS", "10")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_RECONCILIATION_POLL_BACKOFF_MULTIPLIER", "1")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_RECONCILIATION_POLL_BACKOFF_RANDOMIZATION_FACTOR", "0.1")
+                .withEnv("DT_DEX_ENGINE_ACTIVITY_WORKER_VULN_ANALYSIS_RECONCILIATION_POLL_BACKOFF_MAX_DELAY_MS", "25")
                 .withCopyFileToContainer(
                         MountableFile.forHostPath(secretKeyPath, 444),
                         "/var/run/secrets/secret.key"
@@ -211,26 +230,6 @@ public class AbstractE2ET {
     }
 
     protected void customizeRepoMetaAnalyzerContainer(final GenericContainer<?> container) {
-    }
-
-    @SuppressWarnings("resource")
-    private GenericContainer<?> createVulnAnalyzerContainer() {
-        final var container = new GenericContainer<>(VULN_ANALYZER_IMAGE)
-                .withImagePullPolicy("local".equals(VULN_ANALYZER_IMAGE.getVersionPart()) ? PullPolicy.defaultPolicy() : PullPolicy.alwaysPull())
-                .withEnv("JAVA_OPTS", "-Xmx256m")
-                .withEnv("QUARKUS_KAFKA_STREAMS_BOOTSTRAP_SERVERS", "redpanda:29092")
-                .withEnv("QUARKUS_DATASOURCE_JDBC_URL", "jdbc:postgresql://postgres:5432/dtrack")
-                .withEnv("QUARKUS_DATASOURCE_USERNAME", "dtrack")
-                .withEnv("QUARKUS_DATASOURCE_PASSWORD", "dtrack")
-                .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("vuln-analyzer")))
-                .withNetworkAliases("vuln-analyzer")
-                .withNetwork(internalNetwork)
-                .withStartupAttempts(3);
-        customizeVulnAnalyzerContainer(container);
-        return container;
-    }
-
-    protected void customizeVulnAnalyzerContainer(final GenericContainer<?> container) {
     }
 
     private ApiServerClient initializeApiServerClient() {
@@ -281,7 +280,6 @@ public class AbstractE2ET {
     void afterEach() {
         ApiServerAuthInterceptor.reset();
 
-        Optional.ofNullable(vulnAnalyzerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(repoMetaAnalyzerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(apiServerContainer).ifPresent(GenericContainer::stop);
         Optional.ofNullable(redpandaContainer).ifPresent(GenericContainer::stop);

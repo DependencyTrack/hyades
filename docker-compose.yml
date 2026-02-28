@@ -43,39 +43,6 @@ services:
       - "secret-data:/var/run/secrets:ro"
     restart: unless-stopped
 
-  vuln-analyzer:
-    image: ghcr.io/dependencytrack/hyades-vulnerability-analyzer:snapshot
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redpanda:
-        condition: service_healthy
-      initializer:
-        condition: service_completed_successfully
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "12" # Default number of input partitions is 12
-      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
-      QUARKUS_DATASOURCE_USERNAME: "dtrack"
-      QUARKUS_DATASOURCE_PASSWORD: "dtrack"
-      SCANNER_INTERNAL_ENABLED: "true"
-      # SCANNER_INTERNAL_TOPIC_PARTITIONS: "3"
-      SCANNER_OSSINDEX_ENABLED: "true"
-      # SCANNER_OSSINDEX_TOPIC_PARTITIONS: "3"
-      # SCANNER_OSSINDEX_API_USERNAME: "email@example.com"
-      # SCANNER_OSSINDEX_API_TOKEN: "your-token"
-      # SCANNER_SNYK_ENABLED: "true"
-      # SCANNER_SNYK_TOPIC_PARTITIONS: "3"
-      # SCANNER_SNYK_API_ORG_ID: "your-org-id"
-      # SCANNER_SNYK_API_TOKENS: "your-token-1,your-token-2"
-    ports:
-      # Dynamic host port binding to allow for scaling of the service.
-      # Scaling with Compose doesn't work when assigning static host ports.
-      - "8092"
-    profiles:
-      - demo
-    restart: unless-stopped
-
   initializer:
     image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
     container_name: dt-initializer
@@ -209,9 +176,6 @@ services:
       # KAFKA_TOPIC_PREFIX: ""
       # REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
       # REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
-      # VULN_ANALYSIS_TOPICS_PARTITIONS: "3"
-      # VULN_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
-      # VULN_MIRROR_TOPICS_RETENTION_MS: "43200000" # 12h
     volumes:
       - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro,Z"
     restart: on-failure
@@ -237,17 +201,6 @@ services:
                 valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisCommand
               - topicName: dtrack.repo-meta-analysis.result
                 valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisResult
-              - topicName: dtrack.vuln-analysis.component
-                keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
-                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanCommand
-              - topicName: dtrack.vuln-analysis.scanner.result
-                keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
-                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScannerResult
-              - topicName: dtrack.vuln-analysis.result
-                keyProtoType: org.dependencytrack.vulnanalysis.v1.ScanKey
-                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
-              - topicName: dtrack.vuln-analysis.result.processed
-                valueProtoType: org.dependencytrack.vulnanalysis.v1.ScanResult
             fileSystem:
               enabled: true
               paths: ["/etc/protos"]
