@@ -53,7 +53,7 @@ ghcr.io/dependencytrack/hyades-${moduleName}:local
 For example:
 
 ```
-ghcr.io/dependencytrack/hyades-repository-metaanalyzer:local
+ghcr.io/dependencytrack/hyades-repository-meta-analyzer:local
 ```
 
 ## `hyades-apiserver`
