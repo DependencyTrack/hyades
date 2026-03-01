@@ -1506,7 +1506,7 @@ Defines whether the metrics update activity worker should be enabled.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
+      <td style="border-width: 0"><code>true</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
@@ -1746,7 +1746,7 @@ Defines whether the policy evaluation activity worker should be enabled.
     </tr>
     <tr>
       <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
+      <td style="border-width: 0"><code>true</code></td>
     </tr>
     <tr>
       <th style="text-align: right">ENV</th>
