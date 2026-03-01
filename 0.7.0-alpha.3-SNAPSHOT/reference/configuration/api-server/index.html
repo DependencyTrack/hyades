@@ -3113,6 +3113,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dtdex-engineactivity-workermetrics-updateenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.activity-worker.metrics-update.enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-engineactivity-workermetrics-updatemax-concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.activity-worker.metrics-update.max-concurrency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dtdex-engineactivity-workernotificationenabled" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3172,6 +3194,28 @@
     <span class="md-ellipsis">
       
         dt.dex-engine.activity-worker.notification.poll-backoff.randomization-factor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-engineactivity-workerpolicy-evaluationenabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.activity-worker.policy-evaluation.enabled
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtdex-engineactivity-workerpolicy-evaluationmax-concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.dex-engine.activity-worker.policy-evaluation.max-concurrency
       
     </span>
   </a>
@@ -7085,6 +7129,54 @@
 </table>
 
 <hr />
+<h3 id="dtdex-engineactivity-workermetrics-updateenabled">dt.dex-engine.activity-worker.metrics-update.enabled<a class="headerlink" href="#dtdex-engineactivity-workermetrics-updateenabled" title="Permanent link">&para;</a></h3>
+<p>Defines whether the metrics update activity worker should be enabled.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_METRICS_UPDATE_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-engineactivity-workermetrics-updatemax-concurrency">dt.dex-engine.activity-worker.metrics-update.max-concurrency<a class="headerlink" href="#dtdex-engineactivity-workermetrics-updatemax-concurrency" title="Permanent link">&para;</a></h3>
+<p>Defines the maximum concurrency of the metrics update activity worker.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_METRICS_UPDATE_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="dtdex-engineactivity-workernotificationenabled">dt.dex-engine.activity-worker.notification.enabled<a class="headerlink" href="#dtdex-engineactivity-workernotificationenabled" title="Permanent link">&para;</a></h3>
 <p>Defines whether the notification activity worker should be enabled.  </p>
 <table>
@@ -7224,6 +7316,54 @@
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-engineactivity-workerpolicy-evaluationenabled">dt.dex-engine.activity-worker.policy-evaluation.enabled<a class="headerlink" href="#dtdex-engineactivity-workerpolicy-evaluationenabled" title="Permanent link">&para;</a></h3>
+<p>Defines whether the policy evaluation activity worker should be enabled.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>false</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_POLICY_EVALUATION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtdex-engineactivity-workerpolicy-evaluationmax-concurrency">dt.dex-engine.activity-worker.policy-evaluation.max-concurrency<a class="headerlink" href="#dtdex-engineactivity-workerpolicy-evaluationmax-concurrency" title="Permanent link">&para;</a></h3>
+<p>Defines the maximum concurrency of the policy evaluation activity worker.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>5</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_POLICY_EVALUATION_MAX_CONCURRENCY</code></td>
     </tr>
   </tbody>
 </table>
