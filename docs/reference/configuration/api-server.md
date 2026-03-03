@@ -1428,6 +1428,66 @@ Defines the interval in milliseconds in which the activity task scheduler polls 
 
 ---
 
+### dt.dex-engine.activity-worker.artifact-import.enabled
+
+Defines whether the artifact import activity worker should be enabled.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_ARTIFACT_IMPORT_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.artifact-import.max-concurrency
+
+Defines the maximum concurrency of the artifact import activity worker.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>10</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_ARTIFACT_IMPORT_MAX_CONCURRENCY</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### dt.dex-engine.activity-worker.default.enabled
 
 Defines whether the default activity worker should be enabled.  
