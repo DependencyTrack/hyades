@@ -258,7 +258,7 @@ class BomUploadProcessingE2ET extends AbstractE2ET {
                                 "apiUri": "/api/v1/vulnerability/source/INTERNAL/vuln/INT-123/projects",
                                 "frontendUri": "/vulnerabilities/INTERNAL/INT-123/affectedProjects"
                               },
-                              "analysisTrigger" : "VULNERABILITY_ANALYSIS_TRIGGER_BOM_UPLOAD",
+                              "analysisTrigger" : "ANALYSIS_TRIGGER_BOM_UPLOAD",
                               "vulnerabilityAnalysisLevel": "BOM_UPLOAD_ANALYSIS",
                               "affectedProjects": [
                                 {
