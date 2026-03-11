@@ -111,6 +111,7 @@ nav:
         - "ADR-012: Extension KV Store": architecture/decisions/012-extension-kv-store.md
         - "ADR-013: Finding Status": architecture/decisions/013-finding-status.md
         - "ADR-014: New Alias Schema": architecture/decisions/014-new-alias-schema.md
+        - "ADR-015: Package Metadata": architecture/decisions/015-package-metadata.md
     - Design:
         - Durable Execution: architecture/design/durable-execution.md
         - Notifications: architecture/design/notifications.md
