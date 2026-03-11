@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/notifications/overview/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/decisions/015-package-metadata/">
       
       
-        <link rel="prev" href="../../policy-compliance/expressions/">
+        <link rel="prev" href="../014-new-alias-schema/">
       
       
-        <link rel="next" href="../publishers/">
+        <link rel="next" href="../../design/durable-execution/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Overview - Hyades</title>
+        <title>ADR-015: Package Metadata - Hyades</title>
       
     
     
@@ -59,15 +59,15 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Overview - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/usage/notifications/overview.png" />
+<meta property="og:title" content="ADR-015: Package Metadata - Hyades" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/decisions/015-package-metadata.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/notifications/overview/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/decisions/015-package-metadata/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Overview - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/usage/notifications/overview.png" />
+<meta property="twitter:title" content="ADR-015: Package Metadata - Hyades" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/decisions/015-package-metadata.png" />
 </head>
   
   
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#introduction" class="md-skip">
+        <a href="#context" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              ADR-015: Package Metadata
             
           </span>
         </div>
@@ -255,8 +255,6 @@
   
   
   
-    
-  
   
     
     
@@ -264,13 +262,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../policy-compliance/overview/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../usage/policy-compliance/overview/" class="md-tabs__link">
           
   
   
@@ -289,11 +285,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../architecture/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   
@@ -611,29 +609,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -651,7 +644,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -719,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../policy-compliance/overview/" class="md-nav__link">
+      <a href="../../../usage/policy-compliance/overview/" class="md-nav__link">
         
   
   
@@ -747,7 +740,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../policy-compliance/expressions/" class="md-nav__link">
+      <a href="../../../usage/policy-compliance/expressions/" class="md-nav__link">
         
   
   
@@ -780,8 +773,6 @@
                 
   
   
-    
-  
   
   
     
@@ -792,11 +783,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
         
           
           <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
@@ -817,7 +808,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -832,35 +823,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../usage/notifications/overview/" class="md-nav__link">
         
   
   
@@ -876,118 +842,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Introduction
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#concepts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Concepts
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Concepts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#alerts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Alerts
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#publishers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Publishers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#templates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Templates
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#levels" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Levels
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#scopes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Scopes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#groups" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Groups
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1000,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../publishers/" class="md-nav__link">
+      <a href="../../../usage/notifications/publishers/" class="md-nav__link">
         
   
   
@@ -1028,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../templating/" class="md-nav__link">
+      <a href="../../../usage/notifications/templating/" class="md-nav__link">
         
   
   
@@ -1114,7 +968,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../secret-management/overview/" class="md-nav__link">
+      <a href="../../../usage/secret-management/overview/" class="md-nav__link">
         
   
   
@@ -1142,7 +996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../secret-management/providers/" class="md-nav__link">
+      <a href="../../../usage/secret-management/providers/" class="md-nav__link">
         
   
   
@@ -1228,7 +1082,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../access-control/roles/" class="md-nav__link">
+      <a href="../../../usage/access-control/roles/" class="md-nav__link">
         
   
   
@@ -1268,24 +1122,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -1303,7 +1162,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1321,7 +1180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   
@@ -1346,6 +1205,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1356,11 +1217,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
@@ -1381,7 +1242,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1399,7 +1260,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
+      <a href="../000-index/" class="md-nav__link">
         
   
   
@@ -1427,7 +1288,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -1455,7 +1316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+      <a href="../002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -1483,7 +1344,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+      <a href="../003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -1511,7 +1372,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+      <a href="../004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -1539,7 +1400,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -1567,7 +1428,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1595,7 +1456,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
+      <a href="../007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1623,7 +1484,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/009-auth-and-roles/" class="md-nav__link">
+      <a href="../009-auth-and-roles/" class="md-nav__link">
         
   
   
@@ -1651,7 +1512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
+      <a href="../010-vulnerability-datasource-extension-point/" class="md-nav__link">
         
   
   
@@ -1679,7 +1540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/011-notification-outbox/" class="md-nav__link">
+      <a href="../011-notification-outbox/" class="md-nav__link">
         
   
   
@@ -1707,7 +1568,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/012-extension-kv-store/" class="md-nav__link">
+      <a href="../012-extension-kv-store/" class="md-nav__link">
         
   
   
@@ -1735,7 +1596,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/013-finding-status/" class="md-nav__link">
+      <a href="../013-finding-status/" class="md-nav__link">
         
   
   
@@ -1763,7 +1624,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/decisions/014-new-alias-schema/" class="md-nav__link">
+      <a href="../014-new-alias-schema/" class="md-nav__link">
         
   
   
@@ -1788,10 +1649,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../architecture/decisions/015-package-metadata/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR-015: Package Metadata
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1807,6 +1693,96 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#repository_meta_component-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REPOSITORY_META_COMPONENT schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integrity_meta_component-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        INTEGRITY_META_COMPONENT schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issues-and-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issues and limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consequences
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1877,7 +1853,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/design/durable-execution/" class="md-nav__link">
+      <a href="../../design/durable-execution/" class="md-nav__link">
         
   
   
@@ -1905,7 +1881,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/design/notifications/" class="md-nav__link">
+      <a href="../../design/notifications/" class="md-nav__link">
         
   
   
@@ -1933,7 +1909,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/design/vulnerability-analysis/" class="md-nav__link">
+      <a href="../../design/vulnerability-analysis/" class="md-nav__link">
         
   
   
@@ -2011,7 +1987,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../architecture/design/archive/workflow-state-tracking/" class="md-nav__link">
+      <a href="../../design/archive/workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -2837,7 +2813,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/usage/notifications/overview.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/015-package-metadata.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2845,150 +2821,333 @@
   
 
 
-  <h1>Overview</h1>
+  <h1>ADR-015: Package Metadata</h1>
 
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
-<p>Dependency-Track includes a robust and configurable notification framework,
-capable of alerting users or systems about the occurrences of various events
-in the platform.</p>
-<h2 id="concepts">Concepts<a class="headerlink" href="#concepts" title="Permanent link">&para;</a></h2>
-<h3 id="alerts">Alerts<a class="headerlink" href="#alerts" title="Permanent link">&para;</a></h3>
-<p>Alerts, a.k.a. <em>notification rules</em>, are configurations that specify</p>
-<h3 id="publishers">Publishers<a class="headerlink" href="#publishers" title="Permanent link">&para;</a></h3>
-<p>Publishers are software components that send notifications emitted by the platform
-to a destination system. Dependency-Track supports multiple publishers, ranging from
-email to Webhook. Refer to <a href="../publishers/">Publishers</a> for details.</p>
-<h3 id="templates">Templates<a class="headerlink" href="#templates" title="Permanent link">&para;</a></h3>
-<p>Templates define how the platform-internal representation of notifications
-(see <a href="../../../reference/schemas/notification/">Notification Schema</a>) is transformed
-to match the expectation of notification recipients.</p>
-<p>While each <a href="#publishers">publisher</a> ships with a default template, administrators
-can also configure custom templates. Refer to <a href="../templating/">Templating</a> for details.</p>
-<h3 id="levels">Levels<a class="headerlink" href="#levels" title="Permanent link">&para;</a></h3>
-<p>Notifications can have one of three possible levels:</p>
-<ul>
-<li>Informational</li>
-<li>Warning</li>
-<li>Error</li>
-</ul>
-<p>These levels behave similar to logging levels, in that they allow <a href="#alerts">alerts</a>
-to define the verbosity of notifications being sent:</p>
-<ul>
-<li>Configuring an alert for level <em>Informational</em> will match notifications of level <em>Informational</em>, <em>Warning</em>, and <em>Error</em>.</li>
-<li>Configuring an alert for level <em>Warning</em> will match notifications of level <em>Warning</em> and <em>Error</em>.</li>
-<li>Configuring an alert for level <em>Error</em> will only match notifications of level <em>Error</em>.</li>
-</ul>
-<h3 id="scopes">Scopes<a class="headerlink" href="#scopes" title="Permanent link">&para;</a></h3>
-<p>Notifications are emitted for different <em>scopes</em>. A scope broadly categorises the <em>subject</em>
-of a notification.</p>
-<ul>
-<li><strong>SYSTEM</strong>: Informs about system-level events, such as users being created, or integrations failing.</li>
-<li><strong>PORTFOLIO</strong>: Informs about portfolio-level events, such as BOM uploads, or newly identified vulnerabilities.</li>
-</ul>
-<h3 id="groups">Groups<a class="headerlink" href="#groups" title="Permanent link">&para;</a></h3>
-<p>A group is a granular classification of notification subjects within a <a href="#scopes">scope</a>.</p>
 <table>
 <thead>
 <tr>
-<th>Scope</th>
-<th>Group</th>
-<th>Level(s)</th>
-<th>Description</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Author(s)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>SYSTEM</td>
-<td>ANALYZER</td>
-<td>(Any)</td>
-<td>Notifications generated as a result of interacting with an external source of vulnerability intelligence</td>
-</tr>
-<tr>
-<td>SYSTEM</td>
-<td>DATASOURCE_MIRRORING</td>
-<td>(Any)</td>
-<td>Notifications generated when performing mirroring of one of the supported datasources such as the NVD</td>
-</tr>
-<tr>
-<td>SYSTEM</td>
-<td>FILE_SYSTEM</td>
-<td>(Any)</td>
-<td>Notifications generated as a result of a file system operation. These are typically only generated on error conditions</td>
-</tr>
-<tr>
-<td>SYSTEM</td>
-<td>REPOSITORY</td>
-<td>(Any)</td>
-<td>Notifications generated as a result of interacting with one of the supported repositories such as Maven Central, RubyGems, or NPM</td>
-</tr>
-<tr>
-<td>SYSTEM</td>
-<td>USER_CREATED</td>
-<td>Informational</td>
-<td>Notifications generated as a result of a user creation</td>
-</tr>
-<tr>
-<td>SYSTEM</td>
-<td>USER_DELETED</td>
-<td>Informational</td>
-<td>Notifications generated as a result of a user deletion</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>NEW_VULNERABILITY</td>
-<td>Informational</td>
-<td>Notifications generated whenever a new vulnerability is identified</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>NEW_VULNERABLE_DEPENDENCY</td>
-<td>Informational</td>
-<td>Notifications generated as a result of a vulnerable component becoming a dependency of a project</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>GLOBAL_AUDIT_CHANGE</td>
-<td>Informational</td>
-<td>Notifications generated whenever an analysis or suppression state has changed on a finding from a component (global)</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>PROJECT_AUDIT_CHANGE</td>
-<td>Informational</td>
-<td>Notifications generated whenever an analysis or suppression state has changed on a finding from a project</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>BOM_CONSUMED</td>
-<td>Informational</td>
-<td>Notifications generated whenever a supported BOM is ingested and identified</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>BOM_PROCESSED</td>
-<td>Informational</td>
-<td>Notifications generated after a supported BOM is ingested, identified, and successfully processed</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>BOM_PROCESSING_FAILED</td>
-<td>Error</td>
-<td>Notifications generated whenever a BOM upload process fails</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>BOM_VALIDATION_FAILED</td>
-<td>Error</td>
-<td>Notifications generated whenever an invalid BOM is uploaded</td>
-</tr>
-<tr>
-<td>PORTFOLIO</td>
-<td>POLICY_VIOLATION</td>
-<td>Informational</td>
-<td>Notifications generated whenever a policy violation is identified</td>
+<td style="text-align: left;">Accepted</td>
+<td style="text-align: left;">2026-03-11</td>
+<td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
 </tr>
 </tbody>
 </table>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>To enable latest version checks, component age policies, and integrity verification,
+we retrieve the corresponding metadata from upstream package repositories.</p>
+<p>Currently, this data is persisted in the <code>REPOSITORY_META_COMPONENT</code> and <code>INTEGRITY_META_COMPONENT</code>
+tables. Note that <code>INTEGRITY_META_COMPONENT</code> is a new construct introduced in v5,
+while <code>REPOSITORY_META_COMPONENT</code> already existed in v4.</p>
+<h3 id="repository_meta_component-schema"><code>REPOSITORY_META_COMPONENT</code> schema<a class="headerlink" href="#repository_meta_component-schema" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ID</td>
+<td style="text-align: left;">BIGINT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">REPOSITORY_TYPE</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">NOT NULL</td>
+</tr>
+<tr>
+<td style="text-align: left;">NAMESPACE</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">NAME</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">NOT NULL</td>
+</tr>
+<tr>
+<td style="text-align: left;">LATEST_VERSION</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PUBLISHED</td>
+<td style="text-align: left;">TIMESTAMPTZ</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">LAST_CHECK</td>
+<td style="text-align: left;">TIMESTAMPTZ</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<h3 id="integrity_meta_component-schema"><code>INTEGRITY_META_COMPONENT</code> schema<a class="headerlink" href="#integrity_meta_component-schema" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ID</td>
+<td style="text-align: left;">BIGINT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">PURL</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">NOT NULL, UNIQUE</td>
+</tr>
+<tr>
+<td style="text-align: left;">MD5</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA1</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA256</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA512</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PUBLISHED_AT</td>
+<td style="text-align: left;">TIMESTAMPTZ</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">REPOSITORY_URL</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">LAST_FETCH</td>
+<td style="text-align: left;">TIMESTAMPTZ</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">STATUS</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<h3 id="issues-and-limitations">Issues and limitations<a class="headerlink" href="#issues-and-limitations" title="Permanent link">&para;</a></h3>
+<p>It is not possible to join the <code>COMPONENT</code> and <code>REPOSITORY_META_COMPONENT</code> tables:</p>
+<ul>
+<li><code>COMPONENT</code> has <code>PURL</code> and <code>PURL_COORDINATES</code> (PURL without qualifiers and subpath) columns.</li>
+<li><code>REPOSITORY_META_COMPONENT</code> has <code>REPOSITORY_TYPE</code>, <code>NAMESPACE</code> and <code>NAME</code> columns.</li>
+<li><code>REPOSITORY_TYPE</code> is not necessarily the same as a PURL type.</li>
+<li>Namespace and name segments of full PURLs might be URL-encoded (e.g. <code>pkg:npm/%40foo/bar@1.0.0</code>).</li>
+<li><code>NAMESPACE</code> and <code>NAME</code> columns of <code>REPOSITORY_META_COMPONENT</code> contain PURL namespace and name in URL-<strong>decoded</strong> form.</li>
+</ul>
+<p>Thus:</p>
+<ul>
+<li>There is no single column we can join on.</li>
+<li>Constructing or deconstructing PURLs we can join on in the query is not reliable.</li>
+</ul>
+<p>This causes a few bad limitations:</p>
+<ul>
+<li>When fetching data for the <code>/api/v1/finding/project/{uuid}</code> endpoint,
+  we run into the N+1 problem because we can't join.</li>
+<li>It is impossible to delete <code>REPOSITORY_META_COMPONENT</code> records that refer to
+  components that no longer exist in the portfolio. The table can thus only grow over time.</li>
+</ul>
+<p>Finally, the wording of <code>REPOSITORY_META_COMPONENT</code> and <code>INTEGRITY_META_COMPONENT</code> is
+confusing. Fundamentally what they describe is <em>package metadata</em> and <em>package artifact metadata</em>.</p>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>Re-design the schema for this data to be more expressive, and easier to join.</p>
+<p><code>REPOSITORY_META_COMPONENT</code> becomes <code>PACKAGE_METADATA</code>. 
+Its primary key is a PURL <em>without version, qualifiers, and subpath segments</em>,
+e.g. <code>pkg:maven/com.acme/acme-lib</code>. It stores:</p>
+<ul>
+<li>The latest available version for the component.</li>
+<li><em>Who</em> resolved this data (i.e., name of the resolver implementation).</li>
+<li><em>When</em> it was resolved.</li>
+<li><em>What source</em> it was resolved from (e.g. <code>maven-central</code>).</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">PURL</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">LATEST_VERSION</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">RESOLVED_BY</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">NOT NULL</td>
+</tr>
+<tr>
+<td style="text-align: left;">RESOLVED_AT</td>
+<td style="text-align: left;">TIMESTAMPTZ</td>
+<td style="text-align: left;">NOT NULL</td>
+</tr>
+<tr>
+<td style="text-align: left;">RESOLVED_FROM</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>Its purpose is to store information that applies to all versions of the package.
+Note that <code>LATEST_VERSION</code> is now nullable. A <code>NULL</code> value here is used to signal
+that resolution was attempted, but no data was found.</p>
+<p>The <code>PUBLISHED</code> column from <code>REPOSITORY_META_COMPONENT</code> is effectively dropped.
+Its presence was a design mistake, as it confused publish timestamps of the latest
+version, with that of an actual artifact.</p>
+<p><code>INTEGRITY_META_COMPONENT</code> becomes <code>PACKAGE_ARTIFACT_METADATA</code>.
+Its primary key is a full PURL, <em>including any qualifiers and subpaths</em>,
+which enables it to be joined with <code>COMPONENT</code> records. It stores:</p>
+<ul>
+<li>Artifact hashes.</li>
+<li>The publish timestamp.</li>
+<li><em>Who</em> resolved this data (i.e., name of the resolver implementation).</li>
+<li><em>When</em> it was resolved.</li>
+<li><em>What source</em> it was resolved from (e.g. <code>maven-central</code>).</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Constraints</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">PURL</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">PK</td>
+</tr>
+<tr>
+<td style="text-align: left;">PACKAGE_PURL</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">FK, NOT NULL</td>
+</tr>
+<tr>
+<td style="text-align: left;">HASH_MD5</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">HASH_SHA1</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">HASH_SHA256</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">HASH_SHA512</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">PUBLISHED_AT</td>
+<td style="text-align: left;">TIMESTAMPTZ</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">RESOLVED_BY</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;">NOT NULL</td>
+</tr>
+<tr>
+<td style="text-align: left;">RESOLVED_AT</td>
+<td style="text-align: left;">TIMESTAMPTZ</td>
+<td style="text-align: left;">NOT NULL</td>
+</tr>
+<tr>
+<td style="text-align: left;">RESOLVED_FROM</td>
+<td style="text-align: left;">TEXT</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>Its purpose is to store artifact-specific information. An important detail here is that
+considering PURL qualifiers is <em>critical</em>. <code>pkg:maven/com.acme/acme-lib@1.2.3?type=jar</code>
+and <code>pkg:maven/com.acme/acme-lib@1.2.3?type=pom</code> refer to different artifacts, despite
+sharing the same coordinates. Their hashes and potentially even publish timestamps differ.</p>
+<p>The <code>REPOSITORY_URL</code> column from <code>INTEGRITY_META_COMPONENT</code> is replaced with the combination
+of <code>RESOLVED_BY</code> and <code>RESOLVED_FROM</code>. It's not always possible to link metadata to a single
+URL, as sometimes multiple requests are required to assemble all necessary information.</p>
+<p>The <code>PACKAGE_PURL</code> column has a foreign key constraint referencing the <code>PACKAGE_METADATA</code>
+table. This enables clean joins from <code>COMPONENT</code> to <code>PACKAGE_METADATA</code>, for example:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="ss">&quot;LATEST_VERSION&quot;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;COMPONENT&quot;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">c</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w"> </span><span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;PACKAGE_ARTIFACT_METADATA&quot;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">pam</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pam</span><span class="p">.</span><span class="ss">&quot;PURL&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="ss">&quot;PURL&quot;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w"> </span><span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;PACKAGE_METADATA&quot;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">pm</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pm</span><span class="p">.</span><span class="ss">&quot;PURL&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pam</span><span class="p">.</span><span class="ss">&quot;PACKAGE_PURL&quot;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="ss">&quot;UUID&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;95d72ef7-a42f-4db6-9335-37aabe357315&#39;</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Package metadata resolution is fundamentally linked to PURL.
+No other identifier allows for accurate resolution and is thus not considered.
+Not all <code>COMPONENT</code> records have a PURL.</p>
+</div>
+<p>Every unique <code>COMPONENT.PURL</code> value should have a corresponding <code>PACKAGE_ARTIFACT_METADATA</code>
+record with matching <code>PURL</code> column. When ingesting data from BOMs or REST API requests,
+we already canonicalize PURLs, which means that qualifier ordering etc. is generally stable
+and will not lead to duplicate <code>PACKAGE_ARTIFACT_METADATA</code> rows.</p>
+<p>It also improves data consistency: Artifact metadata cannot exist without corresponding
+package metadata, even if the latter is "unknown". However, it does force <code>PACKAGE_METADATA</code>
+records to exist before <code>PACKAGE_ARTIFACT_METADATA</code> records can be created. Resolvers
+are expected to always resolve both sets of information, and the logic that orchestrates
+resolvers must ensure proper insertion order.</p>
+<p>The names <code>PACKAGE_METADATA</code> and <code>PACKAGE_ARTIFACT_METADATA</code> better convey what the
+data they're holding is about.</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The N+1 problem for endpoints like <code>/api/v1/finding/project/{uuid}</code> is eliminated.                                                                                                                    <br />
+  Package and artifact metadata can be fetched in a single query via joins.</li>
+<li>Orphaned metadata rows can be identified and cleaned up by left-joining
+  against <code>COMPONENT</code>, preventing unbounded table growth.</li>
+<li>The FK from <code>PACKAGE_ARTIFACT_METADATA</code> to <code>PACKAGE_METADATA</code> enforces data consistency
+  at the database level, but introduces a write-order dependency that all resolvers
+  and their orchestration logic must respect.</li>
+<li>Existing data in <code>REPOSITORY_META_COMPONENT</code> and <code>INTEGRITY_META_COMPONENT</code>
+  must be migrated. <code>REPOSITORY_META_COMPONENT</code> rows cannot be migrated losslessly
+  because they lack a PURL — they will need to be re-resolved.</li>
+</ul>
 
 
 
