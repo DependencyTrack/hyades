@@ -13,7 +13,3 @@ TBD
 ### Database
 
 TBD
-
-### Repository Metadata Analyzer
-
-TBD

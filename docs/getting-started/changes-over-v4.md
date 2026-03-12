@@ -9,9 +9,6 @@ than the engine shipped with v4. <!-- TODO: Link to policy docs when ready! -->
 * The API server now supports *high availability (HA) deployments* in active-active configuration.
 * *Zero downtime deployments* when running API server in HA configuration.
 * *Greatly reduced resource footprint* of the API server.
-* The status of asynchronous tasks (e.g. vulnerability analysis) is now
-  [tracked in a persistent manner](../architecture/design/workflow-state-tracking.md),
-  improving observability.
 
 ## Architecture / Operations
 
@@ -19,12 +16,6 @@ than the engine shipped with v4. <!-- TODO: Link to policy docs when ready! -->
 
 * [PostgreSQL] is the only [supported](../operations/database.md) database.
     * Support for H2, MySQL, and Microsoft SQL Server is dropped.
-* To facilitate communication between services, a [Kafka]-compatible broker is required.
-* Publishing of notifications, fetching component metadata from repositories,
-and vulnerability analysis is performed by services separately from the API server.
-    * The services can be scaled up and down as needed.
-    * Some services (i.e. `notification-publisher`) can be omitted entirely from a deployment,
-      if publishing of notification via e.g. Webhook is not needed.
 * [Database migrations] are performed through a more reliable, changelog-based approach.
 
 ## Breaking Changes
@@ -67,8 +58,6 @@ and vulnerability analysis is performed by services separately from the API serv
 [notification.proto]: https://github.com/DependencyTrack/hyades/blob/main/proto/src/main/proto/org/dependencytrack/notification/v1/notification.proto
 [CEL]: https://cel.dev/
 [Database migrations]: ../development/database-migrations.md
-[GraalVM]: https://www.graalvm.org/
-[Kafka]: https://kafka.apache.org/
 [Lucene]: https://lucene.apache.org/
 [PostgreSQL]: https://www.postgresql.org/
 [Protobuf]: https://protobuf.dev/

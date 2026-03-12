@@ -15,34 +15,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) OWASP Foundation. All Rights Reserved.
 services:
-  repo-meta-analyzer:
-    image: ghcr.io/dependencytrack/hyades-repository-meta-analyzer:snapshot
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redpanda:
-        condition: service_healthy
-      initializer:
-        condition: service_completed_successfully
-      secret-init:
-        condition: service_completed_successfully
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
-      KAFKA_STREAMS_NUM_STREAM_THREADS: "6" # Default number of input partitions is 6
-      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://dt-postgres:5432/dtrack"
-      QUARKUS_DATASOURCE_USERNAME: "dtrack"
-      QUARKUS_DATASOURCE_PASSWORD: "dtrack"
-      SECRET_KEY_PATH: "/var/run/secrets/secret.key"
-    ports:
-      # Dynamic host port binding to allow for scaling of the service.
-      # Scaling with Compose doesn't work when assigning static host ports.
-      - "8091"
-    profiles:
-      - demo
-    volumes:
-      - "secret-data:/var/run/secrets:ro"
-    restart: unless-stopped
-
   initializer:
     image: ghcr.io/dependencytrack/hyades-apiserver:snapshot
     container_name: dt-initializer
@@ -59,6 +31,8 @@ services:
       DT_DATASOURCE_PASSWORD: "dtrack"
       DT_DATASOURCE_POOL_ENABLED: "false"
       INIT_AND_EXIT: "true"
+    volumes:
+      - "apiserver-data:/data"
     restart: on-failure
 
   apiserver:
@@ -67,11 +41,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redpanda:
-        condition: service_healthy
       initializer:
-        condition: service_completed_successfully
-      secret-init:
         condition: service_completed_successfully
     environment:
       # Limit maximum heap size to 2GB.
@@ -83,15 +53,12 @@ services:
       DT_DATASOURCE_USERNAME: "dtrack"
       DT_DATASOURCE_PASSWORD: "dtrack"
       ALPINE_METRICS_ENABLED: "true"
-      ALPINE_SECRET_KEY_PATH: "/var/run/secrets/secret.key"
-      KAFKA_BOOTSTRAP_SERVERS: "dt-redpanda:29092"
       INTEGRITY_CHECK_ENABLED: "true"
       INIT_TASKS_ENABLED: "false"
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
       - "apiserver-data:/data"
-      - "secret-data:/var/run/secrets:ro"
     profiles:
       - demo
     restart: unless-stopped
@@ -125,101 +92,6 @@ services:
       - "postgres-data:/var/lib/postgresql/data"
     restart: unless-stopped
 
-  redpanda:
-    image: docker.redpanda.com/redpandadata/redpanda:v25.3.4
-    container_name: dt-redpanda
-    command:
-      - redpanda
-      - start
-      - --smp
-      - '1'
-      - --reserve-memory
-      - 0M
-      - --memory
-      - 512M
-      - --overprovisioned
-      - --node-id
-      - '0'
-      - --kafka-addr
-      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092,MINIKUBE://0.0.0.0:9093
-      - --advertise-kafka-addr
-      - PLAINTEXT://dt-redpanda:29092,OUTSIDE://localhost:9092,MINIKUBE://host.minikube.internal:9093
-      - --pandaproxy-addr
-      - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
-      - --advertise-pandaproxy-addr
-      - PLAINTEXT://dt-redpanda:28082,OUTSIDE://localhost:8082
-    healthcheck:
-      test: [ "CMD-SHELL", "rpk", "cluster", "health", "--exit-when-healthy" ]
-      interval: 5s
-      timeout: 3s
-      retries: 3
-    ports:
-      # Kafka API (for use from localhost)
-      - "9092:9092"
-      # Kafka API (for use from minikube)
-      - "9093:9093"
-    volumes:
-      - "redpanda-data:/var/lib/redpanda/data"
-    restart: unless-stopped
-
-  redpanda-init:
-    image: docker.redpanda.com/redpandadata/redpanda:v25.3.4
-    container_name: dt-redpanda-init
-    depends_on:
-      redpanda:
-        condition: service_healthy
-    entrypoint: "/bin/bash"
-    command: "/tmp/create-topics.sh"
-    user: "0" # Ensure user can read create-topics.sh
-    environment:
-      REDPANDA_BROKERS: "dt-redpanda:29092"
-      # KAFKA_TOPIC_PREFIX: ""
-      # REPO_META_ANALYSIS_TOPICS_PARTITIONS: "3"
-      # REPO_META_ANALYSIS_TOPICS_RETENTION_MS: "43200000" # 12h
-    volumes:
-      - "./scripts/create-topics.sh:/tmp/create-topics.sh:ro,Z"
-    restart: on-failure
-
-  redpanda-console:
-    image: docker.redpanda.com/redpandadata/console:v3.3.2
-    container_name: dt-redpanda-console
-    entrypoint: "/bin/sh"
-    command: "-c 'echo \"$$CONSOLE_CONFIG_FILE\" > \"$$CONFIG_FILEPATH\"; /app/console'"
-    depends_on:
-      redpanda:
-        condition: service_healthy
-    environment:
-      CONFIG_FILEPATH: "/tmp/config.yml"
-      CONSOLE_CONFIG_FILE: |
-        kafka:
-          brokers: ["redpanda:29092"]
-        serde:
-          protobuf:
-            enabled: true
-            mappings:
-              - topicName: dtrack.repo-meta-analysis.component
-                valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisCommand
-              - topicName: dtrack.repo-meta-analysis.result
-                valueProtoType: org.dependencytrack.repometaanalysis.v1.AnalysisResult
-            fileSystem:
-              enabled: true
-              paths: ["/etc/protos"]
-              refreshInterval: 5m
-    ports:
-      - "127.0.0.1:28080:8080"
-    volumes:
-      - "./proto/src/main/proto:/etc/protos:ro,Z"
-    restart: unless-stopped
-
-  secret-init:
-    image: alpine:latest
-    command: "/bin/sh -c 'if [ ! -f /tmp/secret/secret.key ]; then head -c 32 /dev/urandom > /tmp/secret/secret.key; fi'"
-    profiles:
-      - demo
-    volumes:
-      - "secret-data:/tmp/secret"
-    restart: on-failure
-
   prometheus:
     image: prom/prometheus:v2.55.1
     container_name: dt-prometheus
@@ -252,8 +124,6 @@ services:
 
 volumes:
   apiserver-data: { }
-  secret-data: { }
   postgres-data: { }
-  redpanda-data: { }
   grafana-data: { }
   prometheus-data: { }

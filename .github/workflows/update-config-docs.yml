@@ -54,16 +54,6 @@ jobs:
           --template ./scripts/config-docs.md.peb
           --output ./docs/reference/configuration/api-server.md
           ./hyades-apiserver/apiserver/src/main/resources/application.properties
-    - name: Generate Repository Metadata Analyzer Documentation
-      uses: jbangdev/jbang-action@7b0e42ecace72f0a0df37a1574c8c57b0d5a77aa # tag=v0.137.0
-      with:
-        trust: https://github.com/DependencyTrack/jbang-catalog
-        script: gen-config-docs@DependencyTrack
-        scriptargs: >-
-          --template ./scripts/config-docs.md.peb
-          --output ./docs/reference/configuration/repo-meta-analyzer.md
-          ./repository-meta-analyzer/src/main/resources/application.properties
-    # TODO: Add script invocations for the other services here!
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # tag=v8.1.0
       with:
