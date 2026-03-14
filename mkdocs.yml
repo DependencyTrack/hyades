@@ -115,6 +115,7 @@ nav:
     - Design:
         - Durable Execution: architecture/design/durable-execution.md
         - Notifications: architecture/design/notifications.md
+        - Package Metadata Resolution: architecture/design/package-metadata-resolution.md
         - Vulnerability Analysis: architecture/design/vulnerability-analysis.md
         - Archive:
             - Workflow State Tracking: architecture/design/archive/workflow-state-tracking.md
