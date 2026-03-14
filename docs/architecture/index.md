@@ -6,10 +6,6 @@
 
 TBD
 
-### Message Broker
-
-TBD
-
 ### Database
 
 TBD
