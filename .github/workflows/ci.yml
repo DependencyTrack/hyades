@@ -46,6 +46,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Test
-      run: |-
-        mvn -B --no-transfer-progress -pl '!e2e' clean verify \
-          failsafe:integration-test -DskipITs=false
+      run: mvn -B clean verify
