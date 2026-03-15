@@ -66,6 +66,8 @@ markdown_extensions:
       - name: mermaid
         class: mermaid
         format: !!python/name:pymdownx.superfences.fence_code_format
+- pymdownx.tabbed:
+    alternate_style: true
 - tables
 - toc:
     permalink: true
@@ -78,6 +80,7 @@ plugins:
 nav:
 - Getting Started:
     - Overview: index.md
+    - Quick Start: getting-started/quickstart.md
     - Changes over v4: getting-started/changes-over-v4.md
     - Migrating from v4: getting-started/migrating-from-v4.md
     - Upgrading: getting-started/upgrading.md
