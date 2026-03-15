@@ -56,33 +56,14 @@
     <!-- Dependency Versions -->
     <lib.assertj.version>3.27.7</lib.assertj.version>
     <lib.checkstyle.version>13.3.0</lib.checkstyle.version>
-    <lib.cloud-sql-postgres-socket-factory.version>1.28.1</lib.cloud-sql-postgres-socket-factory.version>
-    <lib.cpe-parser.version>3.0.1</lib.cpe-parser.version>
-    <lib.commons-collections4.version>4.5.0</lib.commons-collections4.version>
-    <lib.conscrypt.version>2.5.2</lib.conscrypt.version>
-    <lib.cvss-calculator.version>1.5.1</lib.cvss-calculator.version>
     <lib.greenmail.version>2.1.8</lib.greenmail.version>
-    <lib.httpclient5.version>5.6</lib.httpclient5.version>
-    <lib.java-uuid-generator.version>5.2.0</lib.java-uuid-generator.version>
-    <lib.json-unit.version>5.1.1</lib.json-unit.version>
-    <lib.kafka.version>4.2.0</lib.kafka.version>
-    <lib.maven-artifact.version>4.0.0-rc-5</lib.maven-artifact.version>
-    <lib.micrometer-jvm-extras.version>0.2.2</lib.micrometer-jvm-extras.version>
     <lib.minio.version>8.6.0</lib.minio.version>
     <lib.open-feign.version>13.9.3</lib.open-feign.version>
-    <lib.org-json.version>20251224</lib.org-json.version>
-    <lib.resilience4j.version>2.3.0</lib.resilience4j.version>
-    <lib.packageurl-java.version>1.5.0</lib.packageurl-java.version>
     <lib.protobuf-java.version>4.34.0</lib.protobuf-java.version>
-    <lib.quarkus-github-api.version>1.330.0</lib.quarkus-github-api.version>
-    <lib.snappy-java.version>1.1.10.8</lib.snappy-java.version>
     <lib.wiremock.version>2.35.2</lib.wiremock.version>
     <quarkus.platform.version>3.32.3</quarkus.platform.version>
-    <quarkus.wiremock.version>1.5.3</quarkus.wiremock.version>
-    <lib.brotli.version>0.1.2</lib.brotli.version>
 
     <!-- Plugin Versions -->
-    <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
 
     <!-- Tool Versions -->
@@ -108,50 +89,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.dependencytrack</groupId>
-        <artifactId>proto</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>us.springett</groupId>
-        <artifactId>cpe-parser</artifactId>
-        <version>${lib.cpe-parser.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-collections4</artifactId>
-        <version>${lib.commons-collections4.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents.client5</groupId>
-        <artifactId>httpclient5</artifactId>
-        <version>${lib.httpclient5.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.fasterxml.uuid</groupId>
-        <artifactId>java-uuid-generator</artifactId>
-        <version>${lib.java-uuid-generator.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>
         <version>${lib.protobuf-java.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.protobuf</groupId>
-        <artifactId>protobuf-java-util</artifactId>
-        <version>${lib.protobuf-java.version}</version>
-      </dependency>
-             
-      <dependency>
-        <groupId>org.apache.kafka</groupId>
-        <artifactId>kafka-clients</artifactId>
-        <version>${lib.kafka.version}</version>
       </dependency>
 
       <dependency>
@@ -186,11 +126,6 @@
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>${lib.assertj.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit-assertj</artifactId>
-        <version>${lib.json-unit.version}</version>
       </dependency>
       <dependency>
         <groupId>com.icegreen</groupId>
@@ -260,43 +195,6 @@
                 <systemPropertyVariables>
                   <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                 </systemPropertyVariables>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>${plugin.jacoco.version}</version>
-          <configuration>
-            <excludes>
-              <exclude>org/cyclonedx/proto/**/*</exclude>
-              <exclude>org/dependencytrack/proto/**/*</exclude>
-            </excludes>
-          </configuration>
-          <executions>
-            <execution>
-              <id>default-prepare-agent</id>
-              <goals>
-                <goal>prepare-agent</goal>
-              </goals>
-              <configuration>
-                <exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
-                <destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
-                <append>true</append>
-              </configuration>
-            </execution>
-            <execution>
-              <id>report</id>
-              <goals>
-                <goal>report</goal>
-              </goals>
-              <configuration>
-                <dataFile>${project.build.directory}/jacoco-quarkus.exec</dataFile>
-                <formats>
-                  <format>XML</format>
-                </formats>
               </configuration>
             </execution>
           </executions>
