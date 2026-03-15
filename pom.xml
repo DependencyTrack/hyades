@@ -27,7 +27,6 @@
 
   <modules>
     <module>proto</module>
-    <module>e2e</module>
   </modules>
 
   <licenses>
@@ -54,14 +53,8 @@
     <project.parentBaseDir>.</project.parentBaseDir>
 
     <!-- Dependency Versions -->
-    <lib.assertj.version>3.27.7</lib.assertj.version>
     <lib.checkstyle.version>13.3.0</lib.checkstyle.version>
-    <lib.greenmail.version>2.1.8</lib.greenmail.version>
-    <lib.minio.version>8.6.0</lib.minio.version>
-    <lib.open-feign.version>13.9.3</lib.open-feign.version>
     <lib.protobuf-java.version>4.34.0</lib.protobuf-java.version>
-    <lib.wiremock.version>2.35.2</lib.wiremock.version>
-    <quarkus.platform.version>3.32.3</quarkus.platform.version>
 
     <!-- Plugin Versions -->
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
@@ -81,56 +74,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>
         <version>${lib.protobuf-java.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.minio</groupId>
-        <artifactId>minio</artifactId>
-        <version>${lib.minio.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock-jre8-standalone</artifactId>
-        <version>${lib.wiremock.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.github.openfeign</groupId>
-        <artifactId>feign-core</artifactId>
-        <version>${lib.open-feign.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.openfeign</groupId>
-        <artifactId>feign-jackson</artifactId>
-        <version>${lib.open-feign.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.openfeign</groupId>
-        <artifactId>feign-jaxrs3</artifactId>
-        <version>${lib.open-feign.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${lib.assertj.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.icegreen</groupId>
-        <artifactId>greenmail-junit5</artifactId>
-        <version>${lib.greenmail.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -152,52 +98,6 @@
           <groupId>com.github.os72</groupId>
           <artifactId>protoc-jar-maven-plugin</artifactId>
           <version>${plugin.protoc-jar.version}</version>
-        </plugin>
-
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${surefire-plugin.version}</version>
-          <configuration>
-            <argLine>
-              @{argLine}
-              --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-              -Dquarkus.log.level=WARN
-              -Dquarkus.log.category.\"org.dependencytrack\".level=INFO
-              -Xmx2g
-            </argLine>
-            <systemPropertyVariables>
-              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            </systemPropertyVariables>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${surefire-plugin.version}</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>integration-test</goal>
-                <goal>verify</goal>
-              </goals>
-              <configuration>
-                <argLine>
-                  @{argLine}
-                  --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-                  -Dquarkus.log.level=WARN
-                  -Dquarkus.log.category.\"org.dependencytrack\".level=INFO
-                  -Xmx2g
-                </argLine>
-                <includes>
-                  <include>**/*IT.java</include>
-                  <include>**/*E2ET.java</include>
-                </includes>
-                <systemPropertyVariables>
-                  <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                </systemPropertyVariables>
-              </configuration>
-            </execution>
-          </executions>
         </plugin>
 
         <plugin>

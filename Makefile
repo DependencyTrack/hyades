@@ -43,10 +43,6 @@ lint-proto:
 	@buf lint
 .PHONY: lint-proto
 
-test:
-	@$(MVND) $(MVN_FLAGS) -Dcheckstyle.skip -Dcyclonedx.skip verify
-.PHONY: test
-
 clean:
 	@$(MVND) $(MVN_FLAGS) clean
 .PHONY: clean
