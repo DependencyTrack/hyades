@@ -6,14 +6,6 @@
 
 TBD
 
-### Message Broker
-
-TBD
-
 ### Database
-
-TBD
-
-### Repository Metadata Analyzer
 
 TBD

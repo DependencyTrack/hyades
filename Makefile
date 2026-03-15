@@ -31,12 +31,6 @@ build:
 	@$(MVND) $(MVN_FLAGS) -Pquick package
 .PHONY: build
 
-build-images:
-	@$(MVND) $(MVN_FLAGS) -Pquick package \
-		-Dquarkus.container-image.additional-tags=local \
-		-Dquarkus.container-image.build=true
-.PHONY: build-images
-
 install:
 	@$(MVND) $(MVN_FLAGS) -Pquick install
 .PHONY: install

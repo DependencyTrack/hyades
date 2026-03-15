@@ -115,6 +115,7 @@ nav:
     - Design:
         - Durable Execution: architecture/design/durable-execution.md
         - Notifications: architecture/design/notifications.md
+        - Package Metadata Resolution: architecture/design/package-metadata-resolution.md
         - Vulnerability Analysis: architecture/design/vulnerability-analysis.md
         - Archive:
             - Workflow State Tracking: architecture/design/archive/workflow-state-tracking.md
@@ -132,10 +133,7 @@ nav:
   - Documentation: development/documentation.md
 - Reference:
     - Configuration:
-        - Overview: reference/configuration/overview.md
         - API Server: reference/configuration/api-server.md
-        - Repository Metadata Analyzer: reference/configuration/repo-meta-analyzer.md
     - Schemas:
         - Notification: reference/schemas/notification.md
         - Policy: reference/schemas/policy.md
-    - Topics: reference/topics.md

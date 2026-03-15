@@ -26,11 +26,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>quarkus-extensions</module>
-    <module>commons</module>
-    <module>commons-kstreams</module>
-    <module>commons-persistence</module>
-    <module>repository-meta-analyzer</module>
     <module>proto</module>
     <module>e2e</module>
   </modules>
@@ -114,29 +109,8 @@
 
       <dependency>
         <groupId>org.dependencytrack</groupId>
-        <artifactId>commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.dependencytrack</groupId>
-        <artifactId>commons-kstreams</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.dependencytrack</groupId>
-        <artifactId>commons-persistence</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.dependencytrack</groupId>
         <artifactId>proto</artifactId>
         <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.cloud.sql</groupId>
-        <artifactId>postgres-socket-factory</artifactId>
-        <version>${lib.cloud-sql-postgres-socket-factory.version}</version>
       </dependency>
 
       <dependency>
@@ -173,23 +147,6 @@
         <artifactId>protobuf-java-util</artifactId>
         <version>${lib.protobuf-java.version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>io.github.resilience4j</groupId>
-        <artifactId>resilience4j-all</artifactId>
-        <version>${lib.resilience4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.resilience4j</groupId>
-        <artifactId>resilience4j-micrometer</artifactId>
-        <version>${lib.resilience4j.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>${lib.org-json.version}</version>
-      </dependency>
              
       <dependency>
         <groupId>org.apache.kafka</groupId>
@@ -198,84 +155,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.kafka</groupId>
-        <artifactId>kafka-streams</artifactId>
-        <version>${lib.kafka.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.kafka</groupId>
-        <artifactId>kafka-streams-test-utils</artifactId>
-        <version>${lib.kafka.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.github.mweirauch</groupId>
-        <artifactId>micrometer-jvm-extras</artifactId>
-        <version>${lib.micrometer-jvm-extras.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>io.minio</groupId>
         <artifactId>minio</artifactId>
         <version>${lib.minio.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.github.package-url</groupId>
-        <artifactId>packageurl-java</artifactId>
-        <version>${lib.packageurl-java.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dependencytrack</groupId>
-        <artifactId>quarkus-config-dependencytrack</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.quarkiverse.githubapi</groupId>
-        <artifactId>quarkus-github-api</artifactId>
-        <version>${lib.quarkus-github-api.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.quarkiverse.wiremock</groupId>
-        <artifactId>quarkus-wiremock</artifactId>
-        <version>${quarkus.wiremock.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.quarkiverse.wiremock</groupId>
-        <artifactId>quarkus-wiremock-test</artifactId>
-        <version>${quarkus.wiremock.version}</version>
-      </dependency>
-
-      <dependency>
-        <!--
-          Managing snappy-java to fix GHSA-qcwq-55hx-v3vh, GHSA-fjpj-2g6w-x25r, and GHSA-pqr6-cmr2-h8hf.
-          Snappy is introduced via kafka-clients; Once kafka-clients bumps its snappy-java version, we can remove this.
-        -->
-        <groupId>org.xerial.snappy</groupId>
-        <artifactId>snappy-java</artifactId>
-        <version>${lib.snappy-java.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-artifact</artifactId>
-        <version>${lib.maven-artifact.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>us.springett</groupId>
-        <artifactId>cvss-calculator</artifactId>
-        <version>${lib.cvss-calculator.version}</version>
       </dependency>
 
       <dependency>
@@ -315,12 +197,6 @@
         <artifactId>greenmail-junit5</artifactId>
         <version>${lib.greenmail.version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.brotli</groupId>
-        <artifactId>dec</artifactId>
-        <version>${lib.brotli.version}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -341,27 +217,6 @@
           <groupId>com.github.os72</groupId>
           <artifactId>protoc-jar-maven-plugin</artifactId>
           <version>${plugin.protoc-jar.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>io.smallrye</groupId>
-          <artifactId>jandex-maven-plugin</artifactId>
-          <version>3.5.3</version>
-          <executions>
-            <execution>
-              <id>make-index</id>
-              <goals>
-                <goal>jandex</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-maven-plugin</artifactId>
-          <version>${quarkus.platform.version}</version>
-          <extensions>true</extensions>
         </plugin>
 
         <plugin>

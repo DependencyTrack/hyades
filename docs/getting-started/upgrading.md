@@ -1,8 +1,13 @@
 ### Upgrading to 0.7.0
 
 * The minimum supported PostgreSQL version has been raised from 13 to 14 ([hyades/#1910]).
+* **Kafka is no longer required**. The platform can now sustain itself on PostgreSQL alone
+  and no longer requires a separate message broker. Most of the asynchronous processing has
+  been migrated to a [durable execution](../architecture/design/durable-execution.md) model.
 * **The vulnerability-analyzer service has been removed**. Vulnerability analysis
   is now performed by the apiserver. Refer to the [design documentation](../architecture/design/vulnerability-analysis.md) for details.
+* **The repository-meta-analyzer service has been removed**. Package metadata resolution
+  is now performed by the apiserver. Refer to the [design documentation](../architecture/design/package-metadata-resolution.md) for details.
 * **The notification-publisher service has been removed**. Publishing of notifications
   is now performed by the apiserver. Refer to the [design documentation](../architecture/design/notifications.md) for details.
 * The way notification publishers and alerts are configured behind the scenes has changed.
