@@ -65,22 +65,6 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # tag=v4.0.0
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # tag=v4.0.0
-        with:
-          install: true
-
-      - name: Docker login
-        if: ${{ !inputs.dry-run }}
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # tag=v4.0.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ github.repository_owner == 'DependencyTrack' && secrets.BOT_IMAGE_PUSH_TOKEN || secrets.GITHUB_TOKEN }}
-
       - name: Configure Git
         run: |
           git config user.name "dependencytrack-bot"
@@ -113,22 +97,6 @@ jobs:
             fi
           fi
 
-          BUILD_ARGS=(
-            "-Dquarkus.container-image.group=${GITHUB_REPOSITORY_OWNER,,}"
-            '-Dquarkus.container-image.build=true'
-            '-Dquarkus.docker.buildx.platform=linux/amd64,linux/arm64'
-          )
-
-          if [[ "${IS_PRERELEASE}" != "true" ]]; then
-            BUILD_ARGS+=('-Dquarkus.container-image.additional-tags=latest')
-          fi
-
-          if [[ "${{ inputs.dry-run }}" == "true" ]]; then
-            BUILD_ARGS+=('-Dquarkus.container-image.push=false')
-          else
-            BUILD_ARGS+=('-Dquarkus.container-image.push=true')
-          fi
-
           mvn release:prepare -Darguments="${BUILD_ARGS[*]}"
 
       - name: Create GitHub Release
@@ -147,15 +115,3 @@ jobs:
           gh release create "${RELEASE_VERSION}" \
             --generate-notes \
             ${PRERELEASE_FLAG}
-
-      - name: Upload BOMs to GitHub Release
-        if: ${{ !inputs.dry-run }}
-        env:
-          GITHUB_TOKEN: "${{ secrets.BOT_RELEASE_TOKEN }}"
-        run: |-
-          RELEASE_VERSION=$(git describe --tags --abbrev=0)
-          while IFS= read -r -d '' bom; do
-            MODULE=$(echo "${bom}" | cut -d "/" -f 2)
-            mv "${bom}" "${MODULE}-${RELEASE_VERSION}.cdx.json"
-          done < <(find . -name quarkus-run-cyclonedx.json -print0)
-          gh release upload "${RELEASE_VERSION}" ./*.cdx.json --clobber
