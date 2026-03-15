@@ -49,7 +49,6 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write # Required to create releases
-      packages: write # Required to push images to ghcr.io
     if: "${{ github.repository_owner == 'DependencyTrack' }}"
     steps:
       - name: Checkout Repository
@@ -97,7 +96,7 @@ jobs:
             fi
           fi
 
-          mvn release:prepare -Darguments="${BUILD_ARGS[*]}"
+          mvn release:prepare
 
       - name: Create GitHub Release
         if: ${{ !inputs.dry-run }}
