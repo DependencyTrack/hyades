@@ -368,7 +368,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/configuration/overview/" class="md-tabs__link">
+        <a href="../../reference/configuration/api-server/" class="md-tabs__link">
           
   
   
@@ -1907,6 +1907,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../architecture/design/package-metadata-resolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Metadata Resolution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../architecture/design/vulnerability-analysis/" class="md-nav__link">
         
   
@@ -1946,10 +1974,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_3_4" id="__nav_3_3_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_3_5" id="__nav_3_3_5_label" tabindex="0">
             
   
   
@@ -1967,8 +1995,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_3_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2560,34 +2588,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration/overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../reference/configuration/api-server/" class="md-nav__link">
         
   
@@ -2596,34 +2596,6 @@
     
   
     API Server
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/configuration/repo-meta-analyzer/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Repository Metadata Analyzer
   
 
     
@@ -2759,34 +2731,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/topics/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Topics
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -2832,9 +2776,6 @@ than the engine shipped with v4. <!-- TODO: Link to policy docs when ready! --><
 <li>The API server now supports <em>high availability (HA) deployments</em> in active-active configuration.</li>
 <li><em>Zero downtime deployments</em> when running API server in HA configuration.</li>
 <li><em>Greatly reduced resource footprint</em> of the API server.</li>
-<li>The status of asynchronous tasks (e.g. vulnerability analysis) is now
-  <a href="../architecture/design/workflow-state-tracking.md">tracked in a persistent manner</a>,
-  improving observability.</li>
 </ul>
 <h2 id="architecture-operations">Architecture / Operations<a class="headerlink" href="#architecture-operations" title="Permanent link">&para;</a></h2>
 <!-- TODO: Add more! -->
@@ -2842,14 +2783,6 @@ than the engine shipped with v4. <!-- TODO: Link to policy docs when ready! --><
 <ul>
 <li><a href="https://www.postgresql.org/">PostgreSQL</a> is the only <a href="../../operations/database/">supported</a> database.<ul>
 <li>Support for H2, MySQL, and Microsoft SQL Server is dropped.</li>
-</ul>
-</li>
-<li>To facilitate communication between services, a <a href="https://kafka.apache.org/">Kafka</a>-compatible broker is required.</li>
-<li>Publishing of notifications, fetching component metadata from repositories,
-and vulnerability analysis is performed by services separately from the API server.<ul>
-<li>The services can be scaled up and down as needed.</li>
-<li>Some services (i.e. <code>notification-publisher</code>) can be omitted entirely from a deployment,
-  if publishing of notification via e.g. Webhook is not needed.</li>
 </ul>
 </li>
 <li><a href="../../development/database-migrations/">Database migrations</a> are performed through a more reliable, changelog-based approach.</li>

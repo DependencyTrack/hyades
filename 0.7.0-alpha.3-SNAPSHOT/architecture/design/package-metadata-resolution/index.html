@@ -8,29 +8,31 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/reference/topics/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/design/package-metadata-resolution/">
       
       
-        <link rel="prev" href="../schemas/policy/">
+        <link rel="prev" href="../notifications/">
       
+      
+        <link rel="next" href="../vulnerability-analysis/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
-        <title>Topics - Hyades</title>
+        <title>Package Metadata Resolution - Hyades</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,7 +51,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -57,15 +59,15 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Topics - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/reference/topics.png" />
+<meta property="og:title" content="Package Metadata Resolution - Hyades" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/design/package-metadata-resolution.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/reference/topics/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/design/package-metadata-resolution/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Topics - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/reference/topics.png" />
+<meta property="twitter:title" content="Package Metadata Resolution - Hyades" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/design/package-metadata-resolution.png" />
 </head>
   
   
@@ -85,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#topics" class="md-skip">
+        <a href="#overview" class="md-skip">
           Skip to content
         </a>
       
@@ -105,7 +107,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Hyades" class="md-header__button md-logo" aria-label="Hyades" data-md-component="logo">
+    <a href="../../.." title="Hyades" class="md-header__button md-logo" aria-label="Hyades" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -125,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Topics
+              Package Metadata Resolution
             
           </span>
         </div>
@@ -237,7 +239,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../.." class="md-tabs__link">
+        <a href="../../.." class="md-tabs__link">
           
   
   
@@ -264,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../usage/policy-compliance/overview/" class="md-tabs__link">
+        <a href="../../../usage/policy-compliance/overview/" class="md-tabs__link">
           
   
   
@@ -283,11 +285,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../architecture/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   
@@ -314,7 +318,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../operations/configuration/overview/" class="md-tabs__link">
+        <a href="../../../operations/configuration/overview/" class="md-tabs__link">
           
   
   
@@ -337,7 +341,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../development/overview/" class="md-tabs__link">
+        <a href="../../../development/overview/" class="md-tabs__link">
           
   
   
@@ -353,8 +357,6 @@
   
   
   
-    
-  
   
     
     
@@ -362,13 +364,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../configuration/overview/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../reference/configuration/api-server/" class="md-tabs__link">
           
   
   
@@ -413,7 +413,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Hyades" class="md-nav__button md-logo" aria-label="Hyades" data-md-component="logo">
+    <a href="../../.." title="Hyades" class="md-nav__button md-logo" aria-label="Hyades" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -493,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -521,7 +521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/changes-over-v4/" class="md-nav__link">
+      <a href="../../../getting-started/changes-over-v4/" class="md-nav__link">
         
   
   
@@ -549,7 +549,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/migrating-from-v4/" class="md-nav__link">
+      <a href="../../../getting-started/migrating-from-v4/" class="md-nav__link">
         
   
   
@@ -577,7 +577,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/upgrading/" class="md-nav__link">
+      <a href="../../../getting-started/upgrading/" class="md-nav__link">
         
   
   
@@ -712,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/policy-compliance/overview/" class="md-nav__link">
+      <a href="../../../usage/policy-compliance/overview/" class="md-nav__link">
         
   
   
@@ -740,7 +740,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/policy-compliance/expressions/" class="md-nav__link">
+      <a href="../../../usage/policy-compliance/expressions/" class="md-nav__link">
         
   
   
@@ -826,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/notifications/overview/" class="md-nav__link">
+      <a href="../../../usage/notifications/overview/" class="md-nav__link">
         
   
   
@@ -854,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/notifications/publishers/" class="md-nav__link">
+      <a href="../../../usage/notifications/publishers/" class="md-nav__link">
         
   
   
@@ -882,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/notifications/templating/" class="md-nav__link">
+      <a href="../../../usage/notifications/templating/" class="md-nav__link">
         
   
   
@@ -968,7 +968,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/secret-management/overview/" class="md-nav__link">
+      <a href="../../../usage/secret-management/overview/" class="md-nav__link">
         
   
   
@@ -996,7 +996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/secret-management/providers/" class="md-nav__link">
+      <a href="../../../usage/secret-management/providers/" class="md-nav__link">
         
   
   
@@ -1082,7 +1082,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/access-control/roles/" class="md-nav__link">
+      <a href="../../../usage/access-control/roles/" class="md-nav__link">
         
   
   
@@ -1122,24 +1122,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -1157,7 +1162,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1175,7 +1180,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   
@@ -1253,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/000-index/" class="md-nav__link">
+      <a href="../../decisions/000-index/" class="md-nav__link">
         
   
   
@@ -1281,7 +1286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../../decisions/001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -1309,7 +1314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
+      <a href="../../decisions/002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -1337,7 +1342,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
+      <a href="../../decisions/003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -1365,7 +1370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
+      <a href="../../decisions/004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -1393,7 +1398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../../decisions/005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -1421,7 +1426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../../decisions/006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1449,7 +1454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
+      <a href="../../decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1477,7 +1482,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/009-auth-and-roles/" class="md-nav__link">
+      <a href="../../decisions/009-auth-and-roles/" class="md-nav__link">
         
   
   
@@ -1505,7 +1510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
+      <a href="../../decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
         
   
   
@@ -1533,7 +1538,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/011-notification-outbox/" class="md-nav__link">
+      <a href="../../decisions/011-notification-outbox/" class="md-nav__link">
         
   
   
@@ -1561,7 +1566,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/012-extension-kv-store/" class="md-nav__link">
+      <a href="../../decisions/012-extension-kv-store/" class="md-nav__link">
         
   
   
@@ -1589,7 +1594,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/013-finding-status/" class="md-nav__link">
+      <a href="../../decisions/013-finding-status/" class="md-nav__link">
         
   
   
@@ -1617,7 +1622,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/014-new-alias-schema/" class="md-nav__link">
+      <a href="../../decisions/014-new-alias-schema/" class="md-nav__link">
         
   
   
@@ -1645,7 +1650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/decisions/015-package-metadata/" class="md-nav__link">
+      <a href="../../decisions/015-package-metadata/" class="md-nav__link">
         
   
   
@@ -1678,6 +1683,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1688,11 +1695,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
@@ -1713,7 +1720,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1731,7 +1738,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/design/durable-execution/" class="md-nav__link">
+      <a href="../durable-execution/" class="md-nav__link">
         
   
   
@@ -1759,7 +1766,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/design/notifications/" class="md-nav__link">
+      <a href="../notifications/" class="md-nav__link">
         
   
   
@@ -1784,10 +1791,258 @@
                 
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Metadata Resolution
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Metadata Resolution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsible-consumption-of-public-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsible consumption of public infrastructure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persistence
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#singleton-constraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Singleton constraint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Triggers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#candidate-fetching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Candidate fetching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#continue-as-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continue-as-new
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concurrency-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolver-extension-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolver extension point
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maintenance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resiliency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resiliency
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/design/vulnerability-analysis/" class="md-nav__link">
+      <a href="../vulnerability-analysis/" class="md-nav__link">
         
   
   
@@ -1826,10 +2081,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_5" >
         
           
-          <label class="md-nav__link" for="__nav_3_3_4" id="__nav_3_3_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_3_5" id="__nav_3_3_5_label" tabindex="0">
             
   
   
@@ -1847,8 +2102,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_3_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1865,7 +2120,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/design/archive/workflow-state-tracking/" class="md-nav__link">
+      <a href="../archive/workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -2016,7 +2271,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/configuration/overview/" class="md-nav__link">
+      <a href="../../../operations/configuration/overview/" class="md-nav__link">
         
   
   
@@ -2044,7 +2299,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/configuration/datasources/" class="md-nav__link">
+      <a href="../../../operations/configuration/datasources/" class="md-nav__link">
         
   
   
@@ -2080,7 +2335,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/database/" class="md-nav__link">
+      <a href="../../../operations/database/" class="md-nav__link">
         
   
   
@@ -2165,7 +2420,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/overview/" class="md-nav__link">
+      <a href="../../../development/overview/" class="md-nav__link">
         
   
   
@@ -2193,7 +2448,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/building/" class="md-nav__link">
+      <a href="../../../development/building/" class="md-nav__link">
         
   
   
@@ -2221,7 +2476,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/testing/" class="md-nav__link">
+      <a href="../../../development/testing/" class="md-nav__link">
         
   
   
@@ -2249,7 +2504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/database-migrations/" class="md-nav__link">
+      <a href="../../../development/database-migrations/" class="md-nav__link">
         
   
   
@@ -2277,7 +2532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/durable-execution/" class="md-nav__link">
+      <a href="../../../development/durable-execution/" class="md-nav__link">
         
   
   
@@ -2305,7 +2560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/documentation/" class="md-nav__link">
+      <a href="../../../development/documentation/" class="md-nav__link">
         
   
   
@@ -2337,29 +2592,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -2377,7 +2627,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2445,35 +2695,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../configuration/api-server/" class="md-nav__link">
+      <a href="../../../reference/configuration/api-server/" class="md-nav__link">
         
   
   
@@ -2481,34 +2703,6 @@
     
   
     API Server
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../configuration/repo-meta-analyzer/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Repository Metadata Analyzer
   
 
     
@@ -2587,7 +2781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schemas/notification/" class="md-nav__link">
+      <a href="../../../reference/schemas/notification/" class="md-nav__link">
         
   
   
@@ -2615,7 +2809,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schemas/policy/" class="md-nav__link">
+      <a href="../../../reference/schemas/policy/" class="md-nav__link">
         
   
   
@@ -2638,92 +2832,6 @@
             
           </ul>
         </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Topics
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Topics
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#co-partitioning-requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Co-Partitioning Requirements
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -2754,7 +2862,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/reference/topics.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/design/package-metadata-resolution.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2762,38 +2870,275 @@
   
 
 
-<h1 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h1>
+  <h1>Package Metadata Resolution</h1>
+
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The package metadata resolution system retrieves metadata for packages from upstream
+repositories. This includes latest available versions, artifact hashes, and publish timestamps.
+The data is used for latest version checks, component age policies, and integrity verification.</p>
+<p>Resolution is orchestrated as a singleton <a href="../durable-execution/">durable workflow</a> that
+processes packages in controlled batches. The data model is documented in
+<a href="../../decisions/015-package-metadata/">ADR-015</a>.</p>
+<h2 id="responsible-consumption-of-public-infrastructure">Responsible consumption of public infrastructure<a class="headerlink" href="#responsible-consumption-of-public-infrastructure" title="Permanent link">&para;</a></h2>
+<p>Package registries like Maven Central, npm, and PyPI are shared public resources.
+Sonatype has documented that <a href="https://www.sonatype.com/blog/beyond-ips-addressing-organizational-overconsumption-in-maven-central">1% of IP addresses account for 83% of Maven Central's total bandwidth</a>,
+and that registries have begun enforcing <a href="https://www.sonatype.com/blog/maven-central-and-the-tragedy-of-the-commons">organization-level throttling</a> in response,
+returning HTTP 429 errors to excessive consumers.</p>
+<p>For a system like Dependency-Track, which may track hundreds of thousands of components across many
+projects, this has direct architectural implications. Making an HTTP request per component on every
+BOM upload or scheduled analysis cycle is not viable. Neither is spawning hundreds of concurrent
+requests against upstream registries. Both patterns would quickly exhaust rate limits, especially
+in larger deployments where multiple API server instances run concurrently.</p>
+<p>The resolution system is therefore designed around scheduled, controlled processing rather than
+ad-hoc lookups. Components that need metadata resolution are identified in batches, resolved
+sequentially per resolver, and persisted with enough provenance to avoid redundant upstream requests.</p>
+<h2 id="data-model">Data model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h2>
+<p>Two tables form a two-level hierarchy, both keyed by PURL:</p>
+<ul>
+<li><code>PACKAGE_METADATA</code>: Keyed by PURL <em>without version, qualifiers, or subpath</em>
+  (e.g. <code>pkg:maven/com.acme/acme-lib</code>). Stores the latest available version and resolution provenance.
+  One record per package.</li>
+<li><code>PACKAGE_ARTIFACT_METADATA</code>: Keyed by full PURL <em>including qualifiers and subpath</em>
+  (e.g. <code>pkg:maven/com.acme/acme-lib@1.2.3?type=jar</code>). Stores artifact hashes, publish timestamp,
+  and resolution provenance. One record per distinct artifact. Has a foreign key to <code>PACKAGE_METADATA</code>.</li>
+</ul>
+<p>This separates package-level information (latest version) from artifact-level information
+(hashes, publish timestamp). The FK constraint enforces that artifact metadata cannot exist
+without corresponding package metadata, and the orchestration logic respects the resulting
+write-order dependency.</p>
+<p>Refer to <a href="../../decisions/015-package-metadata/">ADR-015</a> for the full rationale.</p>
+<h3 id="persistence">Persistence<a class="headerlink" href="#persistence" title="Permanent link">&para;</a></h3>
+<p>Both tables use <code>COALESCE</code>-based upserts that preserve existing non-null values.
+A temporal guard (<code>WHERE "RESOLVED_AT" &lt; EXCLUDED."RESOLVED_AT"</code>) prevents older results
+from overwriting newer ones. Writes use PostgreSQL <code>UNNEST</code> to batch multiple rows
+per statement, reducing round trips.</p>
+<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h2>
+<p>Package metadata resolution is a singleton <a href="../durable-execution/">durable workflow</a>.</p>
+<h3 id="singleton-constraint">Singleton constraint<a class="headerlink" href="#singleton-constraint" title="Permanent link">&para;</a></h3>
+<p>The workflow uses a fixed instance ID (<code>resolve-package-metadata</code>). The dex engine enforces
+that only a single execution of a given workflow instance in non-terminal state can exist at
+any point in time. Attempts to create a run while one is already active are silently deduplicated.</p>
+<p>This guarantees that at most one resolution workflow is active across the entire cluster,
+regardless of how many API server instances are running. Concurrent resolution attempts are
+structurally impossible, which prevents redundant upstream requests and data races during
+persistence.</p>
+<h3 id="triggers">Triggers<a class="headerlink" href="#triggers" title="Permanent link">&para;</a></h3>
+<p>The workflow is triggered in three situations:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Name</th>
-<th style="text-align: left;">Partitions</th>
-<th style="text-align: left;">Config</th>
+<th style="text-align: left;">Trigger</th>
+<th style="text-align: left;">When</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>dtrack.repo-meta-analysis.component</code><sup>1</sup></td>
-<td style="text-align: left;">3</td>
-<td style="text-align: left;"></td>
+<td style="text-align: left;">Scheduled</td>
+<td style="text-align: left;">Configurable cron schedule</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>dtrack.repo-meta-analysis.result</code></td>
-<td style="text-align: left;">3</td>
-<td style="text-align: left;"></td>
+<td style="text-align: left;">BOM upload</td>
+<td style="text-align: left;">After importing a BOM that contains components</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>hyades-repository-meta-analyzer-command-by-purl-coordinates-repartition</code><sup>1</sup></td>
-<td style="text-align: left;">3</td>
-<td style="text-align: left;"></td>
+<td style="text-align: left;">Manual analysis</td>
+<td style="text-align: left;">When a user manually triggers vulnerability analysis for a project</td>
 </tr>
 </tbody>
 </table>
-<p><em><sup>1</sup> The topic is subject to <a href="#co-partitioning-requirements">co-partitioning requirements</a></em></p>
-<h2 id="co-partitioning-requirements">Co-Partitioning Requirements<a class="headerlink" href="#co-partitioning-requirements" title="Permanent link">&para;</a></h2>
-<p>Some topics must be <a href="https://www.confluent.io/blog/co-partitioning-in-kafka-streams/">co-partitioned</a>,
-meaning they must share the <em>exact same number of partitions</em>. Applications using those topics will not work
-correctly when this is not the case.</p>
+<p>All triggers create a run with the same singleton instance ID. If a run is already active,
+the creation request is a no-op. This makes triggers cheap to invoke, as the singleton constraint
+handles deduplication.</p>
+<h3 id="structure">Structure<a class="headerlink" href="#structure" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant W as resolve-package-metadata&lt;br/&gt;&lt;&lt;Workflow&gt;&gt;
+    participant F as fetch-candidates&lt;br/&gt;&lt;&lt;Activity&gt;&gt;
+    participant R as resolve-purl-metadata&lt;br/&gt;&lt;&lt;Activity&gt;&gt;
+
+    activate W
+    W -&gt;&gt; F: Fetch resolution candidates
+    activate F
+    F --&gt;&gt; W: Candidate groups (by resolver)
+    deactivate F
+    alt No candidates
+        Note over W: Complete
+    else Has candidates
+        par for each resolver
+            W -&gt;&gt; R: Resolve batch
+            activate R
+            R --&gt;&gt; W: Done (or failure)
+            deactivate R
+        end
+        Note over W: Continue-as-new
+    end
+    deactivate W</code></pre>
+<h3 id="candidate-fetching">Candidate fetching<a class="headerlink" href="#candidate-fetching" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Activity</th>
+<th style="text-align: left;">Task Queue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>fetch-package-metadata-resolution-candidates</code></td>
+<td style="text-align: left;"><code>default</code></td>
+</tr>
+</tbody>
+</table>
+<p>A PURL is eligible for resolution if:</p>
+<ul>
+<li>No <code>PACKAGE_ARTIFACT_METADATA</code> record exists for it, or</li>
+<li>no <code>PACKAGE_METADATA</code> record exists for it, or</li>
+<li>the corresponding <code>PACKAGE_METADATA</code> was last resolved over 24 hours ago.</li>
+</ul>
+<p>Candidates are fetched in batches of 250 and grouped by resolver. Each PURL is matched
+to the first resolver whose <code>normalize</code> method returns a non-null result. PURLs with no
+matching resolver are grouped under an empty resolver name. The resolve activity persists
+empty results for these so they don't re-appear as candidates in subsequent batches.</p>
+<h3 id="resolution">Resolution<a class="headerlink" href="#resolution" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Activity</th>
+<th style="text-align: left;">Task Queue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>resolve-purl-metadata</code></td>
+<td style="text-align: left;"><code>package-metadata-resolutions</code></td>
+</tr>
+</tbody>
+</table>
+<p>One activity per resolver processes its assigned PURLs sequentially. Different resolver
+activities run concurrently.</p>
+<p>For each PURL, the activity:</p>
+<ol>
+<li>Checks if it was already resolved within the last 5 minutes (idempotency guard for retries).</li>
+<li>Normalizes the PURL via the resolver factory.</li>
+<li>Looks up configured repositories for the PURL type, ordered by resolution priority.</li>
+<li>Iterates repositories, respecting internal/external classification, invoking the resolver
+   until one succeeds or all are exhausted.</li>
+<li>Buffers results and flushes to the database in batches of 25.</li>
+</ol>
+<p>If a resolver signals a retryable error (e.g. HTTP 429), the activity flushes any buffered
+results and propagates the error. The dex engine then retries the activity with backoff.
+Non-retryable errors for individual PURLs are caught and an empty result is persisted,
+preventing the PURL from becoming a candidate again immediately.</p>
+<h4 id="retry-policy">Retry policy<a class="headerlink" href="#retry-policy" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Initial delay</td>
+<td style="text-align: left;">5s</td>
+</tr>
+<tr>
+<td style="text-align: left;">Delay multiplier</td>
+<td style="text-align: left;">2x</td>
+</tr>
+<tr>
+<td style="text-align: left;">Randomization factor</td>
+<td style="text-align: left;">0.3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Max delay</td>
+<td style="text-align: left;">1m</td>
+</tr>
+<tr>
+<td style="text-align: left;">Max attempts</td>
+<td style="text-align: left;">3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="continue-as-new">Continue-as-new<a class="headerlink" href="#continue-as-new" title="Permanent link">&para;</a></h3>
+<p>After processing a batch, the workflow uses <code>continueAsNew</code> to start a fresh run that
+picks up the next batch. This prevents unbounded history growth: each run's event history
+covers only one batch. Without this, a single run resolving thousands of packages would
+accumulate a large history that degrades replay performance.</p>
+<p>It also creates a natural checkpoint. If the process is interrupted between batches,
+the next run starts with a fresh candidate query, skipping already-resolved PURLs
+based on the <code>RESOLVED_AT</code> timestamps in the database.</p>
+<p>The cycle continues until no more candidates are returned, at which point the workflow
+completes normally.</p>
+<h2 id="concurrency-control">Concurrency control<a class="headerlink" href="#concurrency-control" title="Permanent link">&para;</a></h2>
+<p>Concurrency is controlled at multiple levels:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Level</th>
+<th style="text-align: left;">Mechanism</th>
+<th style="text-align: left;">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Cluster</td>
+<td style="text-align: left;">Singleton instance ID</td>
+<td style="text-align: left;">At most one resolution workflow across the cluster</td>
+</tr>
+<tr>
+<td style="text-align: left;">Engine</td>
+<td style="text-align: left;"><code>package-metadata-resolutions</code> queue capacity</td>
+<td style="text-align: left;">Limits pending resolve activities (default: 25)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Node</td>
+<td style="text-align: left;">Activity worker max concurrency</td>
+<td style="text-align: left;">Limits parallel activity execution per node</td>
+</tr>
+<tr>
+<td style="text-align: left;">Resolver</td>
+<td style="text-align: left;">Sequential processing within each activity</td>
+<td style="text-align: left;">Each resolver processes one PURL at a time</td>
+</tr>
+</tbody>
+</table>
+<p>Refer to <a href="../durable-execution/">durable execution</a> for how queue capacity and worker
+concurrency interact.</p>
+<h2 id="resolver-extension-point">Resolver extension point<a class="headerlink" href="#resolver-extension-point" title="Permanent link">&para;</a></h2>
+<p>Resolvers are pluggable via the plugin system. The API surface consists of two interfaces:</p>
+<ul>
+<li><strong><code>PackageMetadataResolverFactory</code></strong>: Creates resolver instances. Declares whether a repository
+  is required, normalizes PURLs (returning <code>null</code> to signal non-support), and exposes the
+  extension name.</li>
+<li><strong><code>PackageMetadataResolver</code></strong>: Given a normalized PURL and an optional repository,
+  returns <code>PackageMetadata</code> or <code>null</code>.</li>
+</ul>
+<p>A single resolver handles a given PURL (first match wins based on factory ordering).
+Within that resolver, a single repository provides the result (first success wins based
+on the configured resolution order).</p>
+<p>Resolvers own their caching strategy. The candidate query marks a PURL as eligible
+after 24 hours, but a resolver can decide to serve from its own cache and skip the
+upstream request entirely.</p>
+<h2 id="maintenance">Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">&para;</a></h2>
+<p>A scheduled task cleans up orphaned metadata:</p>
+<ol>
+<li>Deletes <code>PACKAGE_ARTIFACT_METADATA</code> rows where no <code>COMPONENT</code> with a matching PURL exists.</li>
+<li>Deletes <code>PACKAGE_METADATA</code> rows where no <code>PACKAGE_ARTIFACT_METADATA</code> references them.</li>
+</ol>
+<p>The two-step cascade prevents unbounded table growth as components are removed from the portfolio.
+Distributed locking ensures only one node executes cleanup at a time.</p>
+<h2 id="resiliency">Resiliency<a class="headerlink" href="#resiliency" title="Permanent link">&para;</a></h2>
+<p>The <a href="../durable-execution/">durable execution</a> engine handles crash recovery and retries
+transparently:</p>
+<ul>
+<li>If a node crashes mid-resolution, the workflow resumes from the last completed step on restart.
+  Results already flushed to the database are not re-processed, because the 5-minute idempotency
+  window in the activity causes recently resolved PURLs to be skipped.</li>
+<li>When resolution fails for a specific resolver even after exhausting retries, the workflow
+  catches the <code>ActivityFailureException</code>, logs the failure, and continues. Results from
+  other resolvers are persisted normally.</li>
+<li>On graceful shutdown, the activity checks for thread interruption before each PURL,
+  flushes buffered results, and propagates the interruption.</li>
+</ul>
 
 
 
@@ -2898,10 +3243,10 @@ correctly when this is not the case.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.action.edit", "content.code.copy", "content.code.select", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.action.edit", "content.code.copy", "content.code.select", "navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.highlight", "search.share", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
