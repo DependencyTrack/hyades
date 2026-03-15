@@ -123,7 +123,9 @@ nav:
     - Configuration:
         - Overview: operations/configuration/overview.md
         - Data Sources: operations/configuration/datasources.md
+        - File Storage: operations/configuration/file-storage.md
     - Database: operations/database.md
+    - Scaling: operations/scaling.md
 - Development:
   - Overview: development/overview.md
   - Building: development/building.md
