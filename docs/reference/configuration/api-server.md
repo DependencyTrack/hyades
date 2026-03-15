@@ -218,6 +218,396 @@ Controls the content of the `Access-Control-Max-Age` response header.  <br/>  Ha
 
 ## Cache
 
+### dt.cache."package-metadata-resolver.cargo.responses".ttl-ms
+
+Defines the TTL in milliseconds for Cargo package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>7200000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_CARGO_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.composer.responses".ttl-ms
+
+Defines the TTL in milliseconds for Composer package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>7200000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_COMPOSER_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.cpan.responses".ttl-ms
+
+Defines the TTL in milliseconds for CPAN package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>14400000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_CPAN_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.gem.responses".ttl-ms
+
+Defines the TTL in milliseconds for RubyGems package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>7200000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_GEM_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.github.responses".ttl-ms
+
+Defines the TTL in milliseconds for GitHub package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>3600000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_GITHUB_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.gomodules.responses".ttl-ms
+
+Defines the TTL in milliseconds for Go Modules package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>14400000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_GOMODULES_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.hackage.responses".ttl-ms
+
+Defines the TTL in milliseconds for Hackage package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>14400000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_HACKAGE_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.hex.responses".ttl-ms
+
+Defines the TTL in milliseconds for Hex package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>7200000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_HEX_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.maven.responses".ttl-ms
+
+Defines the TTL in milliseconds for Maven package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>14400000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_MAVEN_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.nixpkgs.responses".ttl-ms
+
+Defines the TTL in milliseconds for Nixpkgs package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>14400000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_NIXPKGS_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.npm.responses".ttl-ms
+
+Defines the TTL in milliseconds for npm package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>3600000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_NPM_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.nuget.responses".ttl-ms
+
+Defines the TTL in milliseconds for NuGet package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>14400000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_NUGET_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.cache."package-metadata-resolver.pypi.responses".ttl-ms
+
+Defines the TTL in milliseconds for PyPI package metadata resolver response cache entries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>7200000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_CACHE__PACKAGE_METADATA_RESOLVER_PYPI_RESPONSES__TTL_MS</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### dt.cache."vuln-analyzer.oss-index.results".max-size
 
 Defines the maximum number of entries in the OSS Index result cache.  
@@ -1158,7 +1548,7 @@ Defines the name of the data source to be used by init tasks.
 
 ### dev.services.enabled
 
-Whether dev services shall be enabled.  <br/><br/>  When enabled, Dependency-Track will automatically launch containers for:  <ul>  <li>Frontend</li>  <li>Kafka</li>  <li>PostgreSQL</li>  </ul>  at startup, and configures itself to use them. They are disposed when  Dependency-Track stops. The containers are exposed on randomized ports,  which will be logged during startup.  <br/><br/>  Trying to enable dev services in a production build will prevent  the application from starting.  <br/><br/>  Note that the containers launched by the API server can not currently  be discovered and re-used by other Hyades services. This is a future  enhancement tracked in <https://github.com/DependencyTrack/hyades/issues/1188>.  
+Whether dev services shall be enabled.  <br/><br/>  When enabled, Dependency-Track will automatically launch containers for:  <ul>  <li>Frontend</li>  <li>PostgreSQL</li>  </ul>  at startup, and configures itself to use them. They are disposed when  Dependency-Track stops. The containers are exposed on randomized ports,  which will be logged during startup.  <br/><br/>  Trying to enable dev services in a production build will prevent  the application from starting.  <br/><br/>  Note that the containers launched by the API server can not currently  be discovered and re-used by other Hyades services. This is a future  enhancement tracked in <https://github.com/DependencyTrack/hyades/issues/1188>.  
 
 
 
@@ -1209,36 +1599,6 @@ The image to use for the frontend dev services container.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DEV_SERVICES_IMAGE_FRONTEND</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### dev.services.image.kafka
-
-The image to use for the Kafka dev services container.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>apache/kafka-native:3.9.1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DEV_SERVICES_IMAGE_KAFKA</code></td>
     </tr>
   </tbody>
 </table>
@@ -1299,36 +1659,6 @@ The port on which the frontend dev services container shall be exposed on the ho
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DEV_SERVICES_PORT_FRONTEND</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### dev.services.port.kafka
-
-The port on which the Kafka dev services container shall be exposed on the host.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>9092</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DEV_SERVICES_PORT_KAFKA</code></td>
     </tr>
   </tbody>
 </table>
@@ -1781,6 +2111,66 @@ Defines the poll backoff randomization factor of the notification activity worke
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_NOTIFICATION_POLL_BACKOFF_RANDOMIZATION_FACTOR</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.package-metadata-resolution.enabled
+
+Defines whether the package metadata activity worker should be enabled.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>boolean</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>true</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_PACKAGE_METADATA_RESOLUTION_ENABLED</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### dt.dex-engine.activity-worker.package-metadata-resolution.max-concurrency
+
+Defines the maximum concurrency of the package metadata activity worker.  <br/><br/>  Note that a concurrency of N means that at most N PURLs batches will be resolved  concurrently. Each batch performs HTTP requests against package registries.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>10</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_DEX_ENGINE_ACTIVITY_WORKER_PACKAGE_METADATA_RESOLUTION_MAX_CONCURRENCY</code></td>
     </tr>
   </tbody>
 </table>
@@ -2930,66 +3320,6 @@ Whether to execute initialization tasks on startup.
 
 ---
 
-### integrity.check.enabled
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INTEGRITY_CHECK_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### integrity.initializer.enabled
-
-Specifies whether the Integrity Initializer shall be enabled.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>INTEGRITY_INITIALIZER_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### tmp.delay.bom.processed.notification
 
 Delays the BOM_PROCESSED notification until the vulnerability analysis associated with a given BOM upload  is completed. The intention being that it is then "safe" to query the API for any identified vulnerabilities.  This is specifically for cases where polling the /api/v1/bom/token/<TOKEN> endpoint is not feasible.  THIS IS A TEMPORARY FUNCTIONALITY AND MAY BE REMOVED IN FUTURE RELEASES WITHOUT FURTHER NOTICE.  
@@ -3639,598 +3969,6 @@ Defines the socket / read timeout in seconds for outbound HTTP connections.
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>ALPINE_NO_PROXY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
-
-
-## Kafka
-
-### dt.kafka.processor.enabled
-
-Whether Kafka processors should be enabled.  May be disabled on specific nodes in the cluster to limit the amount of  background processing they're doing.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>true</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_KAFKA_PROCESSOR_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### dt.kafka.topic.prefix
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>DT_KAFKA_TOPIC_PREFIX</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.auto.offset.reset
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.bootstrap.servers
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Example</th>
-      <td style="border-width: 0"><code>localhost:9092</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_BOOTSTRAP_SERVERS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.keystore.password
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_KEYSTORE_PASSWORD</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.keystore.path
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_KEYSTORE_PATH</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.mtls.enabled
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_MTLS_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.repo.meta.analysis.result.consumer.auto.offset.reset
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[earliest, latest, none]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>earliest</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_CONSUMER_AUTO_OFFSET_RESET</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.repo.meta.analysis.result.consumer.group.id
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>dtrack-apiserver-processor</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_CONSUMER_GROUP_ID</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.repo.meta.analysis.result.max.concurrency
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>-1</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_MAX_CONCURRENCY</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.repo.meta.analysis.result.processing.order
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[key, partition, unordered]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>key</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_PROCESSING_ORDER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.repo.meta.analysis.result.retry.initial.delay.ms
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>1000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_INITIAL_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.repo.meta.analysis.result.retry.max.delay.ms
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>180000</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_MAX_DELAY_MS</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.repo.meta.analysis.result.retry.multiplier
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>integer</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>2</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_MULTIPLIER</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.processor.repo.meta.analysis.result.retry.randomization.factor
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>double</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0.3</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_PROCESSOR_REPO_META_ANALYSIS_RESULT_RETRY_RANDOMIZATION_FACTOR</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.security.protocol
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>enum</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Valid Values</th>
-      <td style="border-width: 0"><code>[PLAINTEXT, SASL_SSL_PLAINTEXT, SASL_PLAINTEXT, SSL]</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_SECURITY_PROTOCOL</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.tls.enabled
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>boolean</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>false</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_TLS_ENABLED</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.truststore.password
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_TRUSTSTORE_PASSWORD</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### kafka.truststore.path
-
-
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">false</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>string</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>null</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>KAFKA_TRUSTSTORE_PATH</code></td>
     </tr>
   </tbody>
 </table>
@@ -6238,96 +5976,6 @@ Defines whether the task scheduler should be enabled.  <br/><br/>  May be disabl
 
 ---
 
-### task.component.metadata.maintenance.cron
-
-Cron expression of the component metadata maintenance task.  <br/><br/>  The task deletes orphaned records from the `INTEGRITY_META_COMPONENT` and  `REPOSITORY_META_COMPONENT` tables.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 */12 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_COMPONENT_METADATA_MAINTENANCE_CRON</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.component.metadata.maintenance.lock.max.duration
-
-Maximum duration in ISO 8601 format for which the component metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT15M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_COMPONENT_METADATA_MAINTENANCE_LOCK_MAX_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.component.metadata.maintenance.lock.min.duration
-
-Minimum duration in ISO 8601 format for which the component metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT1M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_COMPONENT_METADATA_MAINTENANCE_LOCK_MIN_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
 ### task.csaf.document.import.cron
 
 Cron expression of the CSAF mirroring task.  
@@ -6591,96 +6239,6 @@ Minimum duration in ISO 8601 format for which the GitHub mirror task will hold a
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_GIT_HUB_ADVISORY_MIRROR_LOCK_MIN_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.integrity.meta.initializer.cron
-
-Cron expression of the integrity metadata initializer task.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 */12 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_INTEGRITY_META_INITIALIZER_CRON</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.integrity.meta.initializer.lock.max.duration
-
-Maximum duration in ISO 8601 format for which the integrity metadata initializer task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT15M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_INTEGRITY_META_INITIALIZER_LOCK_MAX_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.integrity.meta.initializer.lock.min.duration
-
-Minimum duration in ISO 8601 format for which the integrity metadata initializer task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT90S</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_INTEGRITY_META_INITIALIZER_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
@@ -7168,6 +6726,126 @@ Minimum duration in ISO 8601 format for which the OSV mirror task will hold a lo
 
 ---
 
+### task.package-metadata-resolution.cron
+
+Cron expression of the package metadata resolution task.  <br/><br/>  Note that package metadata resolution is also triggered by other  actions, such as BOM uploads. The scheduled execution is mostly  relevant for deployments that may sit idle for a long time.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0 1 * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PACKAGE_METADATA_RESOLUTION_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.package.metadata.maintenance.cron
+
+Cron expression of the package metadata maintenance task.  <br/><br/>  The task deletes orphaned records from the `PACKAGE_ARTIFACT_METADATA` and  `PACKAGE_METADATA` tables.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>cron</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0 */12 * * *</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PACKAGE_METADATA_MAINTENANCE_CRON</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.package.metadata.maintenance.lock.max.duration
+
+Maximum duration in ISO 8601 format for which the package metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT15M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PACKAGE_METADATA_MAINTENANCE_LOCK_MAX_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
+### task.package.metadata.maintenance.lock.min.duration
+
+Minimum duration in ISO 8601 format for which the package metadata maintenance task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
+
+
+
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">true</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>duration</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>PT1M</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>TASK_PACKAGE_METADATA_MAINTENANCE_LOCK_MIN_DURATION</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+---
+
 ### task.portfolio.metrics.update.cron
 
 Cron expression of the portfolio metrics update task.  
@@ -7341,96 +7019,6 @@ Minimum duration in ISO 8601 format for which the project maintenance task will 
     <tr>
       <th style="text-align: right">ENV</th>
       <td style="border-width: 0"><code>TASK_PROJECT_MAINTENANCE_LOCK_MIN_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.repository.meta.analysis.cron
-
-Cron expression of the portfolio repository metadata analysis task.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>cron</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>0 1 * * *</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_REPOSITORY_META_ANALYSIS_CRON</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.repository.meta.analysis.lock.max.duration
-
-Maximum duration in ISO 8601 format for which the portfolio repository metadata analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT15M</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_REPOSITORY_META_ANALYSIS_LOCK_MAX_DURATION</code></td>
-    </tr>
-  </tbody>
-</table>
-
-
----
-
-### task.repository.meta.analysis.lock.min.duration
-
-Minimum duration in ISO 8601 format for which the portfolio repository metadata analysis task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  
-
-
-
-<table>
-  <tbody style="border: 0">
-    <tr>
-      <th style="text-align: right">Required</th>
-      <td style="border-width: 0">true</td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Type</th>
-      <td style="border-width: 0"><code>duration</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">Default</th>
-      <td style="border-width: 0"><code>PT90S</code></td>
-    </tr>
-    <tr>
-      <th style="text-align: right">ENV</th>
-      <td style="border-width: 0"><code>TASK_REPOSITORY_META_ANALYSIS_LOCK_MIN_DURATION</code></td>
     </tr>
   </tbody>
 </table>
