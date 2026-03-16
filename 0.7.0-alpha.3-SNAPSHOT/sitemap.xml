@@ -137,6 +137,10 @@
          <lastmod>2026-03-16</lastmod>
     </url>
     <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/operations/observability/</loc>
+         <lastmod>2026-03-16</lastmod>
+    </url>
+    <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/operations/scaling/</loc>
          <lastmod>2026-03-16</lastmod>
     </url>

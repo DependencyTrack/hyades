@@ -2262,6 +2262,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../operations/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../operations/scaling/" class="md-nav__link">
         
   
@@ -2920,6 +2948,48 @@ and so on.</p>
 <p>No immediate action is required. Old property names and environment variables continue to work
 via a fallback mechanism. However, they are deprecated and support will be removed in a future release.
 Users are encouraged to update their configurations at their earliest convenience.</p>
+</li>
+<li>
+<p><strong>Health and metrics endpoints have moved to a dedicated management server</strong> that listens
+  on a separate port (default <code>9000</code>). The management server starts before init tasks, making
+  health probes available during the entire startup sequence.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Endpoint</th>
+<th style="text-align: left;">Before</th>
+<th style="text-align: left;">After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Health</td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:8080/health</code></td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:9000/health</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Liveness</td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:8080/health/live</code></td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:9000/health/live</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Readiness</td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:8080/health/ready</code></td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:9000/health/ready</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Startup</td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:8080/health/started</code></td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:9000/health/started</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Metrics</td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:8080/metrics</code></td>
+<td style="text-align: left;"><code>http://&lt;host&gt;:9000/metrics</code></td>
+</tr>
+</tbody>
+</table>
+<p>Refer to the <a href="../../operations/observability/">observability documentation</a> for details.</p>
 </li>
 <li>
 <p>The following init task configurations have been removed and replaced with <code>init.tasks.datasource.name</code>:</p>
