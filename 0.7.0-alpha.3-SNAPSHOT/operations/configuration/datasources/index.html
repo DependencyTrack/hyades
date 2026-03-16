@@ -2834,10 +2834,6 @@
 
 
 <h1 id="data-sources">Data Sources<a class="headerlink" href="#data-sources" title="Permanent link">&para;</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This document is only applicable to the API server component.</p>
-</div>
 <p>Data sources are logical objects through which database connections can be acquired.</p>
 <h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <p>Data sources are configured using properties in the following format:</p>
@@ -3025,7 +3021,7 @@ for all data sources, using <a href="../../../reference/configuration/api-server
 </span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37"></a><span class="w">      </span><span class="nt">DT_DATASOURCE_INIT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dtrack&quot;</span>
 </span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="w">      </span><span class="nt">DT_DATASOURCE_INIT_POOL_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
 </span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39"></a><span class="w">      </span><span class="c1"># Configure initialisation tasks to use the above data source.</span>
-</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40"></a><span class="w">      </span><span class="nt">INIT_TASKS_DATASOURCE_NAME</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;init&quot;</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40"></a><span class="w">      </span><span class="nt">DT_INIT_TASKS_DATASOURCE_NAME</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;init&quot;</span>
 </span></code></pre></div></td></tr></table></div>
 
 

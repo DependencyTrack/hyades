@@ -2882,6 +2882,46 @@
 </ul>
 </li>
 <li>
+<p><strong>All configuration properties have been standardized to use the <code>dt.</code> prefix</strong>.                                                                              <br />
+  Properties that previously used the <code>alpine.</code> prefix, or no prefix at all, are now under <code>dt.</code>.
+  For example:</p>
+<table>
+<thead>
+<tr>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>alpine.ldap.enabled</code></td>
+<td><code>dt.ldap.enabled</code></td>
+</tr>
+<tr>
+<td><code>alpine.oidc.enabled</code></td>
+<td><code>dt.oidc.enabled</code></td>
+</tr>
+<tr>
+<td><code>task.portfolio.metrics.update.cron</code></td>
+<td><code>dt.task.portfolio.metrics.update.cron</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The naming rule is straightforward:<ul>
+<li><code>alpine.&lt;suffix&gt;</code> → <code>dt.&lt;suffix&gt;</code> (for all former <code>alpine.*</code> properties)</li>
+<li><code>&lt;name&gt;</code> → <code>dt.&lt;name&gt;</code> (for all previously unprefixed properties)</li>
+</ul>
+</li>
+</ul>
+<p>When using environment variables, the same mapping applies: <code>ALPINE_LDAP_ENABLED</code> becomes
+<code>DT_LDAP_ENABLED</code>, <code>TASK_PORTFOLIO_METRICS_UPDATE_CRON</code> becomes <code>DT_TASK_PORTFOLIO_METRICS_UPDATE_CRON</code>,
+and so on.</p>
+<p>No immediate action is required. Old property names and environment variables continue to work
+via a fallback mechanism. However, they are deprecated and support will be removed in a future release.
+Users are encouraged to update their configurations at their earliest convenience.</p>
+</li>
+<li>
 <p>The following init task configurations have been removed and replaced with <code>init.tasks.datasource.name</code>:</p>
 <ul>
 <li><code>init.tasks.database.url</code></li>
