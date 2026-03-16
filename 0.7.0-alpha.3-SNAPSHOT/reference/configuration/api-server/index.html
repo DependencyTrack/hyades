@@ -4570,6 +4570,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#dtmanagementhost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.management.host
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtmanagementport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dt.management.port
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dtmetricsauthpassword" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -9692,6 +9714,54 @@
 </table>
 
 <h2 id="observability">Observability<a class="headerlink" href="#observability" title="Permanent link">&para;</a></h2>
+<h3 id="dtmanagementhost">dt.management.host<a class="headerlink" href="#dtmanagementhost" title="Permanent link">&para;</a></h3>
+<p>Defines the host for the management server, which exposes  health and metrics endpoints independently of the main server.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>string</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>0.0.0.0</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_MANAGEMENT_HOST</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h3 id="dtmanagementport">dt.management.port<a class="headerlink" href="#dtmanagementport" title="Permanent link">&para;</a></h3>
+<p>Defines the port for the management server, which exposes  health and metrics endpoints independently of the main server.  </p>
+<table>
+  <tbody style="border: 0">
+    <tr>
+      <th style="text-align: right">Required</th>
+      <td style="border-width: 0">false</td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Type</th>
+      <td style="border-width: 0"><code>integer</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">Default</th>
+      <td style="border-width: 0"><code>9000</code></td>
+    </tr>
+    <tr>
+      <th style="text-align: right">ENV</th>
+      <td style="border-width: 0"><code>DT_MANAGEMENT_PORT</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
 <h3 id="dtmetricsauthpassword">dt.metrics.auth.password<a class="headerlink" href="#dtmetricsauthpassword" title="Permanent link">&para;</a></h3>
 <p>Defines the password required to access metrics.  Has no effect when <a href="#dtmetricsauthusername"><code>dt.metrics.auth.username</code></a> is not set.  </p>
 <table>
@@ -9741,7 +9811,7 @@
 
 <hr />
 <h3 id="dtmetricsenabled">dt.metrics.enabled<a class="headerlink" href="#dtmetricsenabled" title="Permanent link">&para;</a></h3>
-<p>Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be available via the /metrics endpoint.  </p>
+<p>Defines whether Prometheus metrics will be exposed.  If enabled, metrics will be available via the /metrics endpoint  of the management server.  </p>
 <table>
   <tbody style="border: 0">
     <tr>
