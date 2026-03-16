@@ -2280,6 +2280,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logging
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2889,6 +2900,17 @@ using the <a href="https://prometheus.io/docs/instrumenting/exposition_formats/#
 <li><a href="../../reference/configuration/api-server/#dtmetricsauthpassword"><code>dt.metrics.auth.password</code></a></li>
 </ul>
 <p>Both must be set for authentication to take effect.</p>
+<h2 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h2>
+<p>By default, Dependency-Track logs at <code>INFO</code> level for application loggers (<code>alpine</code>, <code>org.dependencytrack</code>,
+<code>org.eclipse.jetty</code>) and <code>WARN</code> for all others.</p>
+<p>Log levels can be configured per logger as follows:</p>
+<div class="language-properties highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="na">dt.logging.level.&quot;org.dependencytrack&quot;</span><span class="o">=</span><span class="s">DEBUG</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">dt.logging.level.&quot;org.eclipse.jetty&quot;</span><span class="o">=</span><span class="s">WARN</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="na">dt.logging.level.&quot;ROOT&quot;</span><span class="o">=</span><span class="s">ERROR</span>
+</span></code></pre></div>
+<p>The special logger name <code>ROOT</code> applies to all loggers that are not explicitly configured.</p>
+<p>Refer to the <a href="../configuration/overview/#environment-variable-mapping">environment variable mapping</a> documentation
+for how to express these properties as environment variables.</p>
 
 
 

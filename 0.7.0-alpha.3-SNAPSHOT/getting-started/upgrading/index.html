@@ -2992,8 +2992,11 @@ Users are encouraged to update their configurations at their earliest convenienc
 <p>Refer to the <a href="../../operations/observability/">observability documentation</a> for details.</p>
 </li>
 <li>
-<p>The following init task configurations have been removed and replaced with <code>init.tasks.datasource.name</code>:</p>
-<ul>
+<p><strong>The <code>LOGGING_LEVEL</code> environment variable has been removed</strong>. Log levels are now configured
+  via <code>dt.logging.level."&lt;logger-name&gt;"</code> per-logger properties.
+  Refer to the <a href="../../operations/observability/#logging">logging documentation</a> for details.</p>
+</li>
+<li>The following init task configurations have been removed and replaced with <code>init.tasks.datasource.name</code>:<ul>
 <li><code>init.tasks.database.url</code></li>
 <li><code>init.tasks.database.username</code></li>
 <li><code>init.tasks.database.password</code></li>
