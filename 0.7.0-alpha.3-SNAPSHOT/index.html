@@ -1063,7 +1063,7 @@
   <span class="md-ellipsis">
     
   
-    Secret Management
+    Access Control
   
 
     
@@ -1076,120 +1076,6 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Secret Management
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="usage/secret-management/overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="usage/secret-management/providers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Providers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Access Control
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2315,6 +2201,120 @@
   
   
   
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secret Management
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Secret Management
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="operations/secret-management/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="operations/secret-management/providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="operations/scaling/" class="md-nav__link">
         
@@ -2858,19 +2858,17 @@
     <figcaption>&quot;<a href="https://commons.wikimedia.org/wiki/File:Hyades.jpg">Hyades</a>&quot; by Todd Vance (<a href="https://creativecommons.org/licenses/by-sa/2.5/legalcode" rel="license">CC BY-SA 2.5</a>)</figcaption>
 </figure>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
-<p>Project <em>Hyades</em>, named after <a href="https://en.wikipedia.org/wiki/Hyades_(star_cluster)">the star cluster closest to earth</a>, is an <em>incubating</em> project for decoupling
-responsibilities from <a href="https://dependencytrack.org/">Dependency-Track</a>'s monolithic API server into separate, scalable™ services.</p>
+<p>Project <em>Hyades</em>, named after <a href="https://en.wikipedia.org/wiki/Hyades_(star_cluster)">the star cluster closest to earth</a>, is the next generation of Dependency-Track,
+rearchitected for scale, resilience, and ease of operation.</p>
 <p>The main objectives of Hyades are:</p>
 <ul>
-<li>Enable Dependency-Track to handle portfolios spanning <em>hundreds of thousands of projects</em></li>
-<li>Improve <em>resilience</em> of Dependency-Track, providing <em>more confidence</em> when relying on it in critical workflows</li>
-<li>Improve deployment and configuration management experience for containerized / cloud native tech stacks</li>
+<li>Enable Dependency-Track to handle portfolios spanning <em>hundreds of thousands of projects</em>.</li>
+<li>Improve <em>resilience</em> of Dependency-Track, providing <em>more confidence</em> when relying on it in critical workflows.</li>
+<li>Improve deployment and configuration management experience for containerized / cloud native tech stacks.</li>
 </ul>
-<p>Other than separating responsibilities, the API server has been modified to allow for high availability
-(active-active) deployments. Various "hot paths", like processing of uploaded BOMs, have been optimized
-in the existing code. Further optimization is an ongoing effort.</p>
-<p>Hyades already is a <em>superset</em> of Dependency-Track, as changes up to Dependency-Track v4.11.4 were ported,
-and features made possible by the new architecture have been implemented on top.</p>
+<p>To achieve this, the platform has undergone significant architectural improvements, including <a href="architecture/design/durable-execution/">durable execution</a>
+for reliable background processing, a PostgreSQL-optimized persistence layer, a <a href="usage/policy-compliance/expressions/">new CEL-based policy engine</a>,
+and a modernized <a href="operations/configuration/overview/">configuration system</a>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Hyades is not yet fully production ready, please refer to the
@@ -2886,7 +2884,7 @@ for migration instructions.</p>
 <summary>tl;dr</summary>
 <p>The architecture of Dependency-Track v4 prevents it from scaling past a certain workload.</p>
 </details>
-<p>Dependency-Track, for the most part, is an event-based system. As a platform for ingesting data (in the form of BOMs),
+<p>Dependency-Track v4, for the most part, is an event-based system. As a platform for ingesting data (in the form of BOMs),
 listening for and itself emitting signals on it, an event-based architecture makes sense conceptually. The majority of
 operations Dependency-Track performs happen asynchronously, without client interaction.</p>
 <p>On a technical level, Dependency-Track uses an in-memory <a href="https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern">publish-subscribe</a> architecture,
@@ -2948,7 +2946,6 @@ Its thread pool size defaults to <code>4</code> and is not configurable.</p>
    would be an even bigger problem if the work was shared across multiple application instances, and would require
    distributed locking as a countermeasure, which is <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">inherently hard to get right</a>.</li>
 </ol>
-<p>In order to scale Dependency-Track beyond its current capabilities, a distributed messaging service is required.</p>
 <h3 id="related-issues">Related Issues<a class="headerlink" href="#related-issues" title="Permanent link">&para;</a></h3>
 <p>On multiple occasions in the past, the Dependency-Track community raised questions about high availability (HA)
 deployments, and / or how to better scale the platform:</p>

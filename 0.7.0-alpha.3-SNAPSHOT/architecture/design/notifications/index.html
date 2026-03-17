@@ -967,7 +967,7 @@
   <span class="md-ellipsis">
     
   
-    Secret Management
+    Access Control
   
 
     
@@ -980,120 +980,6 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Secret Management
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../usage/secret-management/overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../usage/secret-management/providers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Providers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Access Control
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2397,6 +2283,120 @@
   
   
   
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secret Management
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Secret Management
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operations/secret-management/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operations/secret-management/providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../../operations/scaling/" class="md-nav__link">
         
@@ -2994,7 +2994,7 @@ the <code>INSERT</code> operation using an <code>EXISTS</code> subquery against 
 <h2 id="relay">Relay<a class="headerlink" href="#relay" title="Permanent link">&para;</a></h2>
 <p>The outbox relay is a background process that continuously polls the <code>NOTIFICATION_OUTBOX</code> table,
 routes notifications to matching rules, and schedules publishing workflows.
-The polling interval is configurable via <a href="../../../reference/configuration/api-server/#notificationoutbox-relaypoll-interval-ms"><code>notification.outbox-relay.poll-interval-ms</code></a>,
+The polling interval is configurable via <a href="../../../reference/configuration/api-server/#dtnotificationoutbox-relaypoll-interval-ms"><code>dt.notification.outbox-relay.poll-interval-ms</code></a>,
 and defaults to 1 second.</p>
 <pre class="mermaid"><code>---
 title: Relay cycle
@@ -3020,7 +3020,7 @@ sequenceDiagram
 <p>Transaction-level <a href="https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS">advisory locks</a> prevent concurrent relay cycles across multiple API server instances.
 This ensures notifications are relayed in approximately the order they were emitted.
 The lack of concurrency is offset by batch processing. The batch size is configurable
-via <a href="../../../reference/configuration/api-server/#notificationoutbox-relaybatch-size"><code>notification.outbox-relay.batch-size</code></a>
+via <a href="../../../reference/configuration/api-server/#dtnotificationoutbox-relaybatch-size"><code>dt.notification.outbox-relay.batch-size</code></a>
 and defaults to 100.</p>
 <h3 id="routing">Routing<a class="headerlink" href="#routing" title="Permanent link">&para;</a></h3>
 <p>The router evaluates each notification against all enabled notification rules

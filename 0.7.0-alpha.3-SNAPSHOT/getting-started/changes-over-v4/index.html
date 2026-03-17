@@ -1087,7 +1087,7 @@
   <span class="md-ellipsis">
     
   
-    Secret Management
+    Access Control
   
 
     
@@ -1100,120 +1100,6 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Secret Management
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../usage/secret-management/overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../usage/secret-management/providers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Providers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Access Control
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2339,6 +2225,120 @@
   
   
   
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secret Management
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Secret Management
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/secret-management/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/secret-management/providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../operations/scaling/" class="md-nav__link">
         
@@ -2881,13 +2881,19 @@
 <!-- TODO: Add more! -->
 
 <ul>
-<li>New <em>powerful <a href="https://cel.dev/">CEL</a>-based policy engine</em>, providing more flexibility while being more efficient
-than the engine shipped with v4. <!-- TODO: Link to policy docs when ready! --></li>
-<li>Ability to automatically audit vulnerabilities across the entire portfolio using <a href="https://cel.dev/">CEL</a> expressions. <!-- TODO: Link to docs when ready! --></li>
-<li>Hash-based <em>integrity analysis</em> for components. <!-- TODO: Link to integrity analysis docs when ready! --></li>
-<li>The API server now supports <em>high availability (HA) deployments</em> in active-active configuration.</li>
-<li><em>Zero downtime deployments</em> when running API server in HA configuration.</li>
-<li><em>Greatly reduced resource footprint</em> of the API server.</li>
+<li><em>Designed for high availability</em>. Horizontal scalability, distributed work queues, and the option to separate
+  web and worker nodes. No single point of failure, and no additional infrastructure requirements outside the 
+  PostgreSQL database you already have.</li>
+<li><em>Resiliency as a first-class citizen</em>. Durable execution guarantees that background work such as BOM processing,
+  vulnerability analysis, and notifications completes even through node restarts and crashes.</li>
+<li><em>New powerful <a href="https://cel.dev/">CEL</a>-based policy engine</em>, providing more flexibility while being more efficient
+  than the engine shipped with v4. Policies can be complex, don't let rigid UI conditions limit you.</li>
+<li><em>Automatic portfolio-wide vulnerability analysis</em>. Leverage the new policy engine to audit
+  and suppress vulnerabilities before they surface in the UI or trigger notifications.</li>
+<li><em>Component integrity verification</em>. Detect components whose hashes don't match what's published in package
+  repositories.</li>
+<li><em>Centralized secrets management</em>. Manage credentials for integrations securely in one place.</li>
+<li><em>Reduced resource footprint</em>.</li>
 </ul>
 <h2 id="architecture-operations">Architecture / Operations<a class="headerlink" href="#architecture-operations" title="Permanent link">&para;</a></h2>
 <!-- TODO: Add more! -->

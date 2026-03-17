@@ -157,6 +157,14 @@
          <lastmod>2026-03-17</lastmod>
     </url>
     <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/operations/secret-management/overview/</loc>
+         <lastmod>2026-03-17</lastmod>
+    </url>
+    <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/operations/secret-management/providers/</loc>
+         <lastmod>2026-03-17</lastmod>
+    </url>
+    <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/reference/configuration/api-server/</loc>
          <lastmod>2026-03-17</lastmod>
     </url>
@@ -190,14 +198,6 @@
     </url>
     <url>
          <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/policy-compliance/overview/</loc>
-         <lastmod>2026-03-17</lastmod>
-    </url>
-    <url>
-         <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/secret-management/overview/</loc>
-         <lastmod>2026-03-17</lastmod>
-    </url>
-    <url>
-         <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/secret-management/providers/</loc>
          <lastmod>2026-03-17</lastmod>
     </url>
 </urlset>
