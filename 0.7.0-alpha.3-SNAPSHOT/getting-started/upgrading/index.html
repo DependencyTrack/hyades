@@ -2829,7 +2829,33 @@
 
 <h3 id="upgrading-to-070">Upgrading to 0.7.0<a class="headerlink" href="#upgrading-to-070" title="Permanent link">&para;</a></h3>
 <ul>
-<li>The minimum supported PostgreSQL version has been raised from 13 to 14 (<a href="https://github.com/DependencyTrack/hyades/issues/1910">hyades/#1910</a>).</li>
+<li>
+<p><strong>Bearer tokens changed from JWTs to opaque tokens.</strong> All existing user sessions
+  are invalidated on upgrade. Users will need to log in again. The session timeout configuration
+  property has been renamed:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Before</th>
+<th style="text-align: left;">After</th>
+<th style="text-align: left;">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>dt.auth.jwt.ttl.seconds</code></td>
+<td style="text-align: left;"><code>dt.auth.session-timeout-ms</code></td>
+<td style="text-align: left;">28800000</td>
+</tr>
+</tbody>
+</table>
+<p>Note that the default session lifetime changed from 7 days to 8 hours. Deployments that
+relied on the previous default, or that configured <code>dt.auth.jwt.ttl.seconds</code> explicitly,
+must update their configuration accordingly.</p>
+</li>
+<li>
+<p>The minimum supported PostgreSQL version has been raised from 13 to 14 (<a href="https://github.com/DependencyTrack/hyades/issues/1910">hyades/#1910</a>).</p>
+</li>
 <li><strong>Kafka is no longer required</strong>. The platform can now sustain itself on PostgreSQL alone
   and no longer requires a separate message broker. Most of the asynchronous processing has
   been migrated to a <a href="../../architecture/design/durable-execution/">durable execution</a> model.</li>
