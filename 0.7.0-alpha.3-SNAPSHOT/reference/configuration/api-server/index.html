@@ -3851,7 +3851,7 @@
 <dd>
 <p>Defines the interval in milliseconds in which leadership lease acquisition or extension is attempted.  <br/><br/>  Must be smaller than <a href="#dtdex-engineleader-electionlease-duration-ms"><code>dt.dex-engine.leader-election.lease-duration-ms</code></a> to avoid  frequent leadership changes.  </p>
 <p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code></code></td></tr>
+  <tr><th>Type</th><td style="border-width: 0"><code>integer</code></td></tr>
   <tr><th>Default</th><td><code>15000</code></td></tr>
   <tr><th>ENV</th><td><code>DT_DEX_ENGINE_LEADER_ELECTION_LEASE_CHECK_INTERVAL_MS</code></td></tr>
 </table></p>
@@ -3860,7 +3860,7 @@
 <dd>
 <p>Defines the duration in milliseconds for which leadership leases are acquired.  </p>
 <p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code></code></td></tr>
+  <tr><th>Type</th><td style="border-width: 0"><code>integer</code></td></tr>
   <tr><th>Default</th><td><code>30000</code></td></tr>
   <tr><th>ENV</th><td><code>DT_DEX_ENGINE_LEADER_ELECTION_LEASE_DURATION_MS</code></td></tr>
 </table></p>
@@ -4012,13 +4012,13 @@
   <tr><th>ENV</th><td><code>DT_API_KEY_PREFIX</code></td></tr>
 </table></p>
 </dd>
-<dt><span id="dtauthjwtttlseconds"><strong><code>dt.auth.jwt.ttl.seconds</code></strong> <a class="headerlink" href="#dtauthjwtttlseconds">¶</a></span></dt>
+<dt><span id="dtauthsession-timeout-ms"><strong><code>dt.auth.session-timeout-ms</code></strong> <a class="headerlink" href="#dtauthsession-timeout-ms">¶</a></span></dt>
 <dd>
-<p>Defines the number of seconds for which JWTs issued by Dependency-Track will be valid for.  </p>
+<p>Defines the user session timeout in milliseconds.  </p>
 <p><table>
   <tr><th>Type</th><td style="border-width: 0"><code>integer</code></td></tr>
-  <tr><th>Default</th><td><code>604800</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_AUTH_JWT_TTL_SECONDS</code></td></tr>
+  <tr><th>Default</th><td><code>28800000</code></td></tr>
+  <tr><th>ENV</th><td><code>DT_AUTH_SESSION_TIMEOUT_MS</code></td></tr>
 </table></p>
 </dd>
 <dt><span id="dtbcryptrounds"><strong><code>dt.bcrypt.rounds</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dtbcryptrounds">¶</a></span></dt>
@@ -4951,6 +4951,15 @@
   <tr><th>Type</th><td style="border-width: 0"><code>duration</code></td></tr>
   <tr><th>Default</th><td><code>PT1M</code></td></tr>
   <tr><th>ENV</th><td><code>DT_TASK_EPSS_MIRROR_LOCK_MIN_DURATION</code></td></tr>
+</table></p>
+</dd>
+<dt><span id="dttaskexpired-session-cleanupcron"><strong><code>dt.task.expired-session-cleanup.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskexpired-session-cleanupcron">¶</a></span></dt>
+<dd>
+<p>Cron expression of the expired session cleanup task.  </p>
+<p><table>
+  <tr><th>Type</th><td style="border-width: 0"><code>cron</code></td></tr>
+  <tr><th>Default</th><td><code>0 * * * *</code></td></tr>
+  <tr><th>ENV</th><td><code>DT_TASK_EXPIRED_SESSION_CLEANUP_CRON</code></td></tr>
 </table></p>
 </dd>
 <dt><span id="dttaskfortifysscuploadcron"><strong><code>dt.task.fortify.ssc.upload.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskfortifysscuploadcron">¶</a></span></dt>
