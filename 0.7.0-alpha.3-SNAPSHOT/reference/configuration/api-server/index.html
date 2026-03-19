@@ -4724,6 +4724,15 @@
   <tr><th>ENV</th><td><code>DT_SECRET_MANAGEMENT_DATABASE_DATASOURCE_NAME</code></td></tr>
 </table></p>
 </dd>
+<dt><span id="dtsecret-managementdatabasekek"><strong><code>dt.secret-management.database.kek</code></strong> <a class="headerlink" href="#dtsecret-managementdatabasekek">¶</a></span></dt>
+<dd>
+<p>Defines a base64-encoded AES-256 key (32 bytes) to use as the key encryption key (KEK)  for the database secret manager.  <br/><br/>  A secure key may be generated using OpenSSL like this: <code>openssl rand -base64 32</code>  <br/><br/>  When set, takes precedence over <a href="#dtsecret-managementdatabasekek"><code>dt.secret-management.database.kek</code></a>-keyset.path.  Unlike the keyset file approach, this option does not support KEK rotation.  <br/><br/>  Must be the same for all nodes in the cluster. When different keys are detected,  the application will fail to start.  </p>
+<p><table>
+  <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
+  <tr><th>Default</th><td><code>null</code></td></tr>
+  <tr><th>ENV</th><td><code>DT_SECRET_MANAGEMENT_DATABASE_KEK</code></td></tr>
+</table></p>
+</dd>
 <dt><span id="dtsecret-managementdatabasekek-keysetcreate-if-missing"><strong><code>dt.secret-management.database.kek-keyset.create-if-missing</code></strong> <a class="headerlink" href="#dtsecret-managementdatabasekek-keysetcreate-if-missing">¶</a></span></dt>
 <dd>
 <p>Defines whether a key encryption keyset should be created if it doesn't already exist.  </p>
@@ -4735,7 +4744,7 @@
 </dd>
 <dt><span id="dtsecret-managementdatabasekek-keysetpath"><strong><code>dt.secret-management.database.kek-keyset.path</code></strong> <a class="headerlink" href="#dtsecret-managementdatabasekek-keysetpath">¶</a></span></dt>
 <dd>
-<p>Defines the path to the key encryption keyset to use for the database secret manager.  <br/><br/>  Required when <a href="#dtsecret-managementprovider"><code>dt.secret-management.provider</code></a> is <code>database</code>.  </p>
+<p>Defines the path to the key encryption keyset to use for the database secret manager.  <br/><br/>  Must point to the same file for all nodes in the cluster, e.g. using a shared volume  or mounted k8s secret. When different keysets are detected, the application will fail  to start.  </p>
 <p><table>
   <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
   <tr><th>Default</th><td><code>${dt.data.directory}/keys/secret-management-kek.json</code></td></tr>
