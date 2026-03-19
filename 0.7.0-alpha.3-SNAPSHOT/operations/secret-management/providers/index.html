@@ -2895,7 +2895,7 @@ Implementation of these options is driven by user demand,
 so please do let us know if you need any of them.</p>
 <h2 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h2>
 <p>The default provider, which stores secrets in the <code>SECRET</code> database table.</p>
-<p>Secrets are encrypted using <a href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">AES-GCM-128</a>.
+<p>Secrets are encrypted using <a href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">AES-GCM-256</a>.
 The provider implements <a href="https://en.wikipedia.org/wiki/Hybrid_cryptosystem#Envelope_encryption">envelope encryption</a> to enable <a href="#kek-rotation">key rotation</a>.
 All crypto operations are facilitated by <a href="https://developers.google.com/tink/what-is">Google Tink</a>.</p>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
@@ -2903,6 +2903,7 @@ All crypto operations are facilitated by <a href="https://developers.google.com/
 <ul>
 <li><a href="../../../reference/configuration/api-server/#dtsecret-managementprovider"><code>dt.secret-management.provider</code></a></li>
 <li><a href="../../../reference/configuration/api-server/#dtsecret-managementdatabasedatasourcename"><code>dt.secret-management.database.datasource.name</code></a></li>
+<li><a href="../../../reference/configuration/api-server/#dtsecret-managementdatabasekek"><code>dt.secret-management.database.kek</code></a></li>
 <li><a href="../../../reference/configuration/api-server/#dtsecret-managementdatabasekek-keysetpath"><code>dt.secret-management.database.kek-keyset.path</code></a></li>
 <li><a href="../../../reference/configuration/api-server/#dtsecret-managementdatabasekek-keysetcreate-if-missing"><code>dt.secret-management.database.kek-keyset.create-if-missing</code></a></li>
 </ul>
@@ -2945,17 +2946,29 @@ a small selection of key management systems (KMS), which may be used to manage t
 Dependency-Track does not yet leverage this capability. If this is important to you,
 please raise an enhancement request.</p>
 </div>
+<h4 id="config-based-kek">Config-Based KEK<a class="headerlink" href="#config-based-kek" title="Permanent link">&para;</a></h4>
+<p>As an alternative to the keyset file, the KEK can be provided directly as a base64-encoded
+AES-256 key (32 bytes) via the <a href="../../../reference/configuration/api-server/#dtsecret-managementdatabasekek"><code>dt.secret-management.database.kek</code></a>
+property. When set, this takes precedence over the keyset file configuration.</p>
+<p>This is useful for multi-instance deployments where sharing a keyset file across nodes
+is inconvenient, for example when the KEK is stored in a secret manager that exposes
+values as environment variables rather than files.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The config-based KEK does <strong>not</strong> support <a href="#kek-rotation">KEK rotation</a>. If you anticipate
+the need to rotate the KEK, use the <a href="#creating-kek-keysets">file-based keyset approach</a> instead.</p>
+</div>
 <h4 id="creating-kek-keysets">Creating KEK Keysets<a class="headerlink" href="#creating-kek-keysets" title="Permanent link">&para;</a></h4>
 <p>To create a new KEK keyset, the following prerequisites are required:</p>
 <ul>
 <li>A working <a href="https://developers.google.com/tink/tinkey-overview">Google Tinkey</a> installation</li>
 </ul>
-<p>Create a new keyset using the <code>AES128_GCM</code> preset:</p>
+<p>Create a new keyset using the <code>AES256_GCM</code> preset:</p>
 <div class="language-shell highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
 <span class="normal"><a href="#__codelineno-0-2">2</a></span>
 <span class="normal"><a href="#__codelineno-0-3">3</a></span>
 <span class="normal"><a href="#__codelineno-0-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>tinkey<span class="w"> </span>create-keyset<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span>--key-template<span class="w"> </span>AES128_GCM<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span>--key-template<span class="w"> </span>AES256_GCM<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span>--out<span class="w"> </span>secret-management-kek.json<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span>--out-format<span class="w"> </span>json
 </span></code></pre></div></td></tr></table></div>
@@ -3109,14 +3122,14 @@ please raise an enhancement request.</p>
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>}
 </span></code></pre></div>
 </details>
-<p>Add a new key using the <code>AES128_GCM</code> template:</p>
+<p>Add a new key using the <code>AES256_GCM</code> template:</p>
 <div class="language-shell highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span>
 <span class="normal"><a href="#__codelineno-6-2">2</a></span>
 <span class="normal"><a href="#__codelineno-6-3">3</a></span>
 <span class="normal"><a href="#__codelineno-6-4">4</a></span>
 <span class="normal"><a href="#__codelineno-6-5">5</a></span>
 <span class="normal"><a href="#__codelineno-6-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a>tinkey<span class="w"> </span>add-key<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span>--key-template<span class="w"> </span>AES128_GCM<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span>--key-template<span class="w"> </span>AES256_GCM<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span>--in<span class="w"> </span>secret-management-kek.json<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span>--in-format<span class="w"> </span>json<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span>--out<span class="w"> </span>secret-management-kek-new.json<span class="w"> </span><span class="se">\</span>
