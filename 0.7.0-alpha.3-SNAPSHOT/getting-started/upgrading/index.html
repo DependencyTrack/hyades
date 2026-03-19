@@ -2830,6 +2830,14 @@
 <h3 id="upgrading-to-070">Upgrading to 0.7.0<a class="headerlink" href="#upgrading-to-070" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
+<p><strong>Secrets for Fortify SSC, DefectDojo, Kenna Security, and repository passwords have been
+  migrated to <a href="../../operations/secret-management/overview/">secret management</a>.</strong> During the
+  upgrade, Fortify SSC tokens, DefectDojo API keys, and Kenna Security tokens are cleared from
+  the database, and repositories with stored passwords are disabled. After upgrading, configure
+  the required secrets via the secret management provider, then manually re-enable the affected
+  repositories.</p>
+</li>
+<li>
 <p><strong>Bearer tokens changed from JWTs to opaque tokens.</strong> All existing user sessions
   are invalidated on upgrade. Users will need to log in again. The session timeout configuration
   property has been renamed:</p>
