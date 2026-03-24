@@ -4102,6 +4102,15 @@
   <tr><th>ENV</th><td><code>DT_INIT_TASKS_ENABLED</code></td></tr>
 </table></p>
 </dd>
+<dt><span id="dttelemetrysubmissionenableddefault"><strong><code>dt.telemetry.submission.enabled.default</code></strong> <a class="headerlink" href="#dttelemetrysubmissionenableddefault">¶</a></span></dt>
+<dd>
+<p>Defines the default value for the telemetry submission enabled setting.  <br/><br/>  This is only used during initial database seeding. Once the setting exists in the  database, it can be toggled via the REST API or the admin UI.  <br/><br/>  To opt out of telemetry before first startup, set this to <code>false</code>.  </p>
+<p><table>
+  <tr><th>Type</th><td style="border-width: 0"><code>boolean</code></td></tr>
+  <tr><th>Default</th><td><code>true</code></td></tr>
+  <tr><th>ENV</th><td><code>DT_TELEMETRY_SUBMISSION_ENABLED_DEFAULT</code></td></tr>
+</table></p>
+</dd>
 <dt><span id="dttmpdelaybomprocessednotification"><strong><code>dt.tmp.delay.bom.processed.notification</code></strong> <a class="headerlink" href="#dttmpdelaybomprocessednotification">¶</a></span></dt>
 <dd>
 <p>Delays the BOM_PROCESSED notification until the vulnerability analysis associated with a given BOM upload  is completed. The intention being that it is then "safe" to query the API for any identified vulnerabilities.  This is specifically for cases where polling the /api/v1/bom/token/<TOKEN> endpoint is not feasible.  THIS IS A TEMPORARY FUNCTIONALITY AND MAY BE REMOVED IN FUTURE RELEASES WITHOUT FURTHER NOTICE.  </p>
@@ -5124,31 +5133,13 @@
   <tr><th>ENV</th><td><code>DT_TASK_PACKAGE_METADATA_MAINTENANCE_LOCK_MIN_DURATION</code></td></tr>
 </table></p>
 </dd>
-<dt><span id="dttaskportfoliometricsupdatecron"><strong><code>dt.task.portfolio.metrics.update.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskportfoliometricsupdatecron">¶</a></span></dt>
+<dt><span id="dttaskportfolio-metrics-updatecron"><strong><code>dt.task.portfolio-metrics-update.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskportfolio-metrics-updatecron">¶</a></span></dt>
 <dd>
 <p>Cron expression of the portfolio metrics update task.  </p>
 <p><table>
   <tr><th>Type</th><td style="border-width: 0"><code>cron</code></td></tr>
   <tr><th>Default</th><td><code>10 * * * *</code></td></tr>
   <tr><th>ENV</th><td><code>DT_TASK_PORTFOLIO_METRICS_UPDATE_CRON</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dttaskportfoliometricsupdatelockmaxduration"><strong><code>dt.task.portfolio.metrics.update.lock.max.duration</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskportfoliometricsupdatelockmaxduration">¶</a></span></dt>
-<dd>
-<p>Maximum duration in ISO 8601 format for which the portfolio metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>duration</code></td></tr>
-  <tr><th>Default</th><td><code>PT15M</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_TASK_PORTFOLIO_METRICS_UPDATE_LOCK_MAX_DURATION</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dttaskportfoliometricsupdatelockminduration"><strong><code>dt.task.portfolio.metrics.update.lock.min.duration</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskportfoliometricsupdatelockminduration">¶</a></span></dt>
-<dd>
-<p>Minimum duration in ISO 8601 format for which the portfolio metrics update task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>duration</code></td></tr>
-  <tr><th>Default</th><td><code>PT90S</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_TASK_PORTFOLIO_METRICS_UPDATE_LOCK_MIN_DURATION</code></td></tr>
 </table></p>
 </dd>
 <dt><span id="dttaskprojectmaintenancecron"><strong><code>dt.task.project.maintenance.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskprojectmaintenancecron">¶</a></span></dt>
@@ -5203,6 +5194,15 @@
   <tr><th>Type</th><td style="border-width: 0"><code>duration</code></td></tr>
   <tr><th>Default</th><td><code>PT1M</code></td></tr>
   <tr><th>ENV</th><td><code>DT_TASK_TAG_MAINTENANCE_LOCK_MIN_DURATION</code></td></tr>
+</table></p>
+</dd>
+<dt><span id="dttasktelemetry-submissioncron"><strong><code>dt.task.telemetry-submission.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttasktelemetry-submissioncron">¶</a></span></dt>
+<dd>
+<p>Cron expression of the telemetry submission task.  <br/><br/>  The task enforces a 24-hour minimum interval between submissions,  so the cron expression controls how often the task checks  whether a submission is due.  </p>
+<p><table>
+  <tr><th>Type</th><td style="border-width: 0"><code>cron</code></td></tr>
+  <tr><th>Default</th><td><code>0 <em>/1 * * </em></code></td></tr>
+  <tr><th>ENV</th><td><code>DT_TASK_TELEMETRY_SUBMISSION_CRON</code></td></tr>
 </table></p>
 </dd>
 <dt><span id="dttaskvulnerabilityanalysiscron"><strong><code>dt.task.vulnerability.analysis.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskvulnerabilityanalysiscron">¶</a></span></dt>
