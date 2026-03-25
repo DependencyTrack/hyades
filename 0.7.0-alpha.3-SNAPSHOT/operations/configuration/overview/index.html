@@ -2055,6 +2055,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2893,6 +2904,17 @@ by <a href="https://microprofile.io/specifications/config/">MicroProfile Config<
 <p class="admonition-title">Tip</p>
 <p>The <a href="../../../reference/configuration/api-server/">configuration reference</a> includes the correct
 environment variable names for each listed config property.</p>
+</div>
+<h2 id="debugging">Debugging<a class="headerlink" href="#debugging" title="Permanent link">&para;</a></h2>
+<p>To debug whether config values are properly resolved, and from <em>which source</em> they are resolved,
+it's possible to enable debug logging via <a href="../../../reference/configuration/api-server/#dtconfiglogvalues"><code>dt.config.log.values</code></a>:</p>
+<div class="language-ini highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="na">dt.config.log.values</span><span class="o">=</span><span class="s">true</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="na">dt.logging.level.&quot;io.smallrye.config&quot;</span><span class="o">=</span><span class="s">DEBUG</span>
+</span></code></pre></div></td></tr></table></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This will <em>not</em> mask or omit any secrets. <strong>Do not use in production environments!</strong></p>
 </div>
 
 
