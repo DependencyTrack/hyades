@@ -61,7 +61,7 @@ by [MicroProfile Config]:
 To debug whether config values are properly resolved, and from *which source* they are resolved,
 it's possible to enable debug logging va [`dt.config.log.values`](../../reference/configuration/api-server.md#dtconfiglogvalues):
 
-``` linenums="1"
+```ini linenums="1"
 dt.config.log.values=true
 dt.logging.level."io.smallrye.config"=DEBUG
 ```
