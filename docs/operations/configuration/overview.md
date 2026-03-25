@@ -67,6 +67,6 @@ dt.logging.level."io.smallrye.config"=DEBUG
 ```
 
 !!! warning
-    This will *not* mask or omit any secrets*. **Do not use in production environments!**
+    This will *not* mask or omit any secrets. **Do not use in production environments!**
 
 [MicroProfile Config]: https://microprofile.io/specifications/config/
