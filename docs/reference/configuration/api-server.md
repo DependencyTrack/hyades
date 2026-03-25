@@ -978,6 +978,24 @@ Configuration properties may use the following types:
       <tr><th>ENV</th><td><code>DT_BCRYPT_ROUNDS</code></td></tr>
     </table>
 
+<span id="dtconfiglogvalues">**`dt.config.log.values`** [¶](#dtconfiglogvalues){ .headerlink }</span>
+:   Defines whether config value lookups should be logged.  <br/><br/>  Logging happens at DEBUG level. To make the logs visible, you must configure  `dt.logging.level."io.smallrye.config"=DEBUG`.  <br/><br/>  Note that this will not mask or omit any secrets.  **Do not use in production environments!**  
+
+    <table>
+      <tr><th>Type</th><td style="border-width: 0"><code>boolean</code></td></tr>
+      <tr><th>Default</th><td><code>false</code></td></tr>
+      <tr><th>ENV</th><td><code>DT_CONFIG_LOG_VALUES</code></td></tr>
+    </table>
+
+<span id="dtconfigprofile">**`dt.config.profile`** [¶](#dtconfigprofile){ .headerlink }</span>
+:   Defines the configuration profile to apply.  <br/><br/>  For example, the `web` profile may be used to disable any background processing,  effectively turning the node into a web-only instance.  
+
+    <table>
+      <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
+      <tr><th>Default</th><td><code>null</code></td></tr>
+      <tr><th>ENV</th><td><code>DT_CONFIG_PROFILE</code></td></tr>
+    </table>
+
 <span id="dtdatadirectory">**`dt.data.directory`** <strong style="color: red">*</strong> [¶](#dtdatadirectory){ .headerlink }</span>
 :   Defines the path to the data directory. This directory will hold logs,  keys, and any database or index files along with application-specific  files or directories.  
 
