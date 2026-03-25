@@ -25,7 +25,7 @@ By default, every instance serves API traffic **and** runs background workers.
 The `web` config profile disables all background processing, turning an instance
 into an API-only node. Activate it via [`dt.config.profile`](../reference/configuration/api-server.md#dtconfigprofile):
 
-``` linenums="1"
+```ini linenums="1"
 dt.config.profile=web
 ```
 
