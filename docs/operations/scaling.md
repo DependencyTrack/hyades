@@ -23,10 +23,10 @@ are impractical, the `s3` provider is available.
 
 By default, every instance serves API traffic **and** runs background workers.
 The `web` config profile disables all background processing, turning an instance
-into an API-only node. Activate it via:
+into an API-only node. Activate it via [`dt.config.profile`](../reference/configuration/api-server.md#dtconfigprofile):
 
-```
-SMALLRYE_CONFIG_PROFILE=web
+```ini linenums="1"
+dt.config.profile=web
 ```
 
 This results in two logical node types:
@@ -46,7 +46,7 @@ services:
   web:
     image: ghcr.io/dependencytrack/hyades-apiserver
     environment:
-      SMALLRYE_CONFIG_PROFILE: "web"
+      DT_CONFIG_PROFILE: "web"
       DT_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/dtrack"
       DT_DATASOURCE_USERNAME: "dtrack"
       DT_DATASOURCE_PASSWORD: "dtrack"
@@ -149,7 +149,7 @@ EXTRA_JAVA_OPTIONS="-XX:MaxGCPauseMillis=100"
 
 More CPU benefits worker throughput; more memory benefits caching and large BOM processing.
 
-## Dex Engine Tuning
+## dex Engine Tuning
 
 ### Buffers
 
@@ -204,7 +204,7 @@ Configuration:
 - [`notification.outbox-relay.poll-interval-ms`](../reference/configuration/api-server.md#dtnotificationoutbox-relaypoll-interval-ms)
 - [`notification.outbox-relay.batch-size`](../reference/configuration/api-server.md#dtnotificationoutbox-relaybatch-size)
 
-## Separate Database for Dex
+## Separate Database for dex
 
 By default, the durable execution engine uses the application database
 ([`dt.dex-engine.datasource.name`](../reference/configuration/api-server.md#dtdex-enginedatasourcename)`=default`). For larger deployments, pointing dex

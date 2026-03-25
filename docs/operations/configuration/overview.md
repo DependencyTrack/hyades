@@ -56,4 +56,17 @@ by [MicroProfile Config]:
     The [configuration reference](../../reference/configuration/api-server.md) includes the correct
     environment variable names for each listed config property.
 
+## Debugging
+
+To debug whether config values are properly resolved, and from *which source* they are resolved,
+it's possible to enable debug logging via [`dt.config.log.values`](../../reference/configuration/api-server.md#dtconfiglogvalues):
+
+```ini linenums="1"
+dt.config.log.values=true
+dt.logging.level."io.smallrye.config"=DEBUG
+```
+
+!!! warning
+    This will *not* mask or omit any secrets. **Do not use in production environments!**
+
 [MicroProfile Config]: https://microprofile.io/specifications/config/
