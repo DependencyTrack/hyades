@@ -2152,6 +2152,15 @@ Configuration properties may use the following types:
       <tr><th>ENV</th><td><code>DT_TASK_PROJECT_MAINTENANCE_LOCK_MIN_DURATION</code></td></tr>
     </table>
 
+<span id="dttaskscheduled-notification-dispatchcron">**`dt.task.scheduled-notification-dispatch.cron`** <strong style="color: red">*</strong> [¶](#dttaskscheduled-notification-dispatchcron){ .headerlink }</span>
+:   Cron expression for polling scheduled notification rules that are due for dispatch.  
+
+    <table>
+      <tr><th>Type</th><td style="border-width: 0"><code>cron</code></td></tr>
+      <tr><th>Default</th><td><code>* * * * *</code></td></tr>
+      <tr><th>ENV</th><td><code>DT_TASK_SCHEDULED_NOTIFICATION_DISPATCH_CRON</code></td></tr>
+    </table>
+
 <span id="dttasktagmaintenancecron">**`dt.task.tag.maintenance.cron`** <strong style="color: red">*</strong> [¶](#dttasktagmaintenancecron){ .headerlink }</span>
 :   Cron expression of the tag maintenance task.  <br/><br/>  The task deletes orphaned tags that are not used anymore.  
 
