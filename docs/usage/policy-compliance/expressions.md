@@ -145,6 +145,31 @@ project.depends_on(v1.Component{
     When constructing objects like [Component] on-the-fly, it is necessary to use their version namespace,
     i.e. `v1`. This is required in order to perform type checking, as well as ensuring backward compatibility.
 
+### License expression allowlist
+
+The following expression matches non-internal [Component]s whose [SPDX license expression][SPDX license expressions]
+cannot be satisfied using only the approved set of licenses.
+License-with-exception combinations are listed as a single compound entry.
+
+```js linenums="1"
+!spdx_expr_allows(component.license_expression, [
+  "MIT", "Apache-2.0", "BSD-3-Clause",
+  "GPL-2.0-only WITH Classpath-exception-2.0"
+])
+```
+
+When components don't have a license expression, `component.resolved_license.id` can be used as a fallback.
+A single license ID is a valid SPDX expression, so it gets the same version-aware treatment:
+
+```js linenums="1"
+!spdx_expr_allows(
+  has(component.license_expression)
+    ? component.license_expression
+    : component.resolved_license.id,
+  ["MIT", "Apache-2.0"]
+)
+```
+
 ### License blacklist
 
 The following expression matches [Component]s that are **not** internal to the organization,
@@ -215,6 +240,37 @@ has(component.published_at)
 ```js linenums="1"
 has(project.metadata) && has(project.metadata.tools)
 ```
+
+## SPDX License Expressions
+
+The `spdx_expr_*` functions evaluate [SPDX license expressions]. They operate on expression strings
+(typically `component.license_expression`) and can also be used with `component.resolved_license.id`
+as a fallback for components without a license expression.
+
+All license ID comparisons are **case-insensitive** per the SPDX specification.
+
+### Version equivalence
+
+Deprecated license IDs are treated as equivalent to their modern counterparts.
+For example, `GPL-2.0` and `GPL-2.0-only` are considered the same license.
+
+### Version ranges
+
+The `+` operator and `-or-later` suffix are understood as "this version or any later
+version in the same license family." For example, `GPL-3.0-only` satisfies an allow-list containing
+`GPL-2.0-or-later`, and `Apache-1.0+` satisfies an allow-list containing `Apache-2.0`.
+
+### Deprecated `WITH`-compounds
+
+Legacy compound IDs like `GPL-2.0-with-classpath-exception` are automatically
+resolved to their modern `WITH` expression form (`GPL-2.0-only WITH Classpath-exception-2.0`).
+
+### `WITH` composites
+
+License-with-exception combinations are treated as atomic composites. The full
+compound (e.g. `"GPL-2.0-only WITH Classpath-exception-2.0"`) must appear as a single entry in
+allow-lists, not as separate license and exception IDs. The license part uses version-aware matching
+(e.g. `GPL-2.0 WITH ...` matches `GPL-2.0-only WITH ...`), while the exception part requires an exact match.
 
 ## Function Reference
 
@@ -389,6 +445,74 @@ Currently supported versioning schemes:
     versioning scheme in `matches_range`. This helps with accuracy, as versioning schemes have different nuances
     across ecosystems, which makes comparisons error-prone.
 
+### `spdx_expr_allows`
+
+Checks whether an [SPDX license expression][SPDX license expressions] can be satisfied
+using only licenses from the given set. For `OR` expressions, at least one branch must
+be satisfiable. For `AND` expressions, all children must be satisfiable. `WITH` expressions
+are treated as atomic composites (see below).
+
+| Name         | Type           | Description                                              |
+|:-------------|:---------------|:---------------------------------------------------------|
+| `expression` | `string`       | An SPDX license expression                               |
+| `ids`        | `list(string)` | Allowed licenses, including `WITH` composites if needed  |
+
+**Returns:** `true` if the expression is satisfiable with the given IDs.
+
+```js linenums="1"
+spdx_expr_allows(component.license_expression, ["MIT", "Apache-2.0"])
+// "MIT"                  => true  (MIT is allowed)
+// "MIT OR GPL-3.0-only"  => true  (MIT branch is satisfiable)
+// "MIT AND Apache-2.0"   => true  (both are allowed)
+// "MIT AND GPL-3.0-only" => false (GPL-3.0-only is not allowed)
+// "GPL-3.0-only"         => false (not in the allowed set)
+```
+
+Version-range matching is applied automatically:
+
+```js linenums="1"
+spdx_expr_allows(component.license_expression, ["GPL-2.0-or-later"])
+// "GPL-2.0-only" => true  (2.0 is within 2.0-or-later range)
+// "GPL-3.0-only" => true  (3.0 is within 2.0-or-later range)
+// "GPL-1.0-only" => false (1.0 is below 2.0)
+// "GPL-2.0"      => true  (deprecated ID, equivalent to GPL-2.0-only)
+```
+
+!!! tip
+    `WITH` expressions (license-with-exception) are matched as a single unit.
+    The allowed set must contain the full compound entry, not the license and exception separately:
+
+    ```js linenums="1"
+    spdx_expr_allows(component.license_expression, [
+      "GPL-2.0-only WITH Classpath-exception-2.0"
+    ])
+    // "GPL-2.0-only WITH Classpath-exception-2.0" => true  (composite matches)
+    // "GPL-2.0-only"                              => false (plain license, not in set)
+    // "GPL-2.0-only WITH LLVM-exception"          => false (different composite)
+    ```
+
+### `spdx_expr_requires_any`
+
+Checks whether at least one of the given license IDs is required in every possible satisfaction
+of an [SPDX license expression][SPDX license expressions]. For `OR` expressions, at least one of
+the IDs must be required in all branches. For `AND` expressions, at least one of the IDs must be
+required in at least one child.
+
+| Name         | Type            | Description                |
+|:-------------|:----------------|:---------------------------|
+| `expression` | `string`        | An SPDX license expression |
+| `ids`        | `list(string)`  | License IDs to check       |
+
+**Returns:** `true` if at least one of the IDs is always required.
+
+```js linenums="1"
+spdx_expr_requires_any(component.license_expression, ["GPL-2.0-only", "GPL-3.0-only"])
+// "GPL-2.0-only AND MIT"         => true  (GPL-2.0-only always required)
+// "GPL-2.0-only OR GPL-3.0-only" => true  (every branch requires one)
+// "GPL-2.0 AND MIT"              => true  (GPL-2.0 is equivalent to GPL-2.0-only)
+// "GPL-2.0-only OR MIT"          => false (MIT branch requires neither)
+```
+
 ### `version_distance`
 
 Checks whether the distance between a [Component]'s current version and its latest known version
@@ -414,6 +538,7 @@ component.version_distance(">=", v1.VersionDistance{major: 1})
 [Package URL]: https://github.com/package-url/purl-spec/blob/master/PURL-SPECIFICATION.rst
 [Project]: ../../reference/schemas/policy.md#project
 [RE2]: https://github.com/google/re2/wiki/Syntax
+[SPDX license expressions]: https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/
 [Turing-complete]: https://en.wikipedia.org/wiki/Turing_completeness
 [VersionDistance]: ../../reference/schemas/policy.md#versiondistance
 [Vulnerability]: ../../reference/schemas/policy.md#vulnerability
