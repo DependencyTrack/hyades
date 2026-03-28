@@ -922,6 +922,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#license-expression-allowlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License expression allowlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#license-blacklist" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -970,6 +981,67 @@
     <span class="md-ellipsis">
       
         Optional field checking
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spdx-license-expressions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPDX License Expressions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SPDX License Expressions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#version-equivalence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version equivalence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version-ranges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version ranges
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deprecated-with-compounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deprecated WITH-compounds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-composites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WITH composites
       
     </span>
   </a>
@@ -1042,6 +1114,28 @@
     <span class="md-ellipsis">
       
         matches_range
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spdx_expr_allows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        spdx_expr_allows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spdx_expr_requires_any" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        spdx_expr_requires_any
       
     </span>
   </a>
@@ -3225,6 +3319,32 @@ with name <code>foo</code>, <em>but only if</em> a <a href="../../../reference/s
 <p>When constructing objects like <a href="../../../reference/schemas/policy/#component">Component</a> on-the-fly, it is necessary to use their version namespace,
 i.e. <code>v1</code>. This is required in order to perform type checking, as well as ensuring backward compatibility.</p>
 </div>
+<h3 id="license-expression-allowlist">License expression allowlist<a class="headerlink" href="#license-expression-allowlist" title="Permanent link">&para;</a></h3>
+<p>The following expression matches non-internal <a href="../../../reference/schemas/policy/#component">Component</a>s whose <a href="https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/">SPDX license expression</a>
+cannot be satisfied using only the approved set of licenses.
+License-with-exception combinations are listed as a single compound entry.</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">3</a></span>
+<span class="normal"><a href="#__codelineno-7-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="o">!</span><span class="nx">spdx_expr_allows</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">license_expression</span><span class="p">,</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Apache-2.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;BSD-3-Clause&quot;</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span><span class="s2">&quot;GPL-2.0-only WITH Classpath-exception-2.0&quot;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+<p>When components don't have a license expression, <code>component.resolved_license.id</code> can be used as a fallback.
+A single license ID is a valid SPDX expression, so it gets the same version-aware treatment:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span>
+<span class="normal"><a href="#__codelineno-8-4">4</a></span>
+<span class="normal"><a href="#__codelineno-8-5">5</a></span>
+<span class="normal"><a href="#__codelineno-8-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="o">!</span><span class="nx">spdx_expr_allows</span><span class="p">(</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span><span class="nx">has</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">license_expression</span><span class="p">)</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">    </span><span class="o">?</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nx">license_expression</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">  </span><span class="p">[</span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Apache-2.0&quot;</span><span class="p">]</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <h3 id="license-blacklist">License blacklist<a class="headerlink" href="#license-blacklist" title="Permanent link">&para;</a></h3>
 <p>The following expression matches <a href="../../../reference/schemas/policy/#component">Component</a>s that are <strong>not</strong> internal to the organization,
 and have either:</p>
@@ -3232,62 +3352,82 @@ and have either:</p>
 <li>No resolved <a href="../../../reference/schemas/policy/#license">License</a> at all</li>
 <li>A resolved <a href="../../../reference/schemas/policy/#license">License</a> that is not part of the <code>Permissive</code> license group</li>
 </ul>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
-<span class="normal"><a href="#__codelineno-7-2">2</a></span>
-<span class="normal"><a href="#__codelineno-7-3">3</a></span>
-<span class="normal"><a href="#__codelineno-7-4">4</a></span>
-<span class="normal"><a href="#__codelineno-7-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="o">!</span><span class="nx">component</span><span class="p">.</span><span class="nx">is_internal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="o">!</span><span class="nx">has</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">)</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">.</span><span class="nx">groups</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">licenseGroup</span><span class="p">,</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">         </span><span class="nx">licenseGroup</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;Permissive&quot;</span><span class="p">)</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="p">)</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
+<span class="normal"><a href="#__codelineno-9-2">2</a></span>
+<span class="normal"><a href="#__codelineno-9-3">3</a></span>
+<span class="normal"><a href="#__codelineno-9-4">4</a></span>
+<span class="normal"><a href="#__codelineno-9-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="o">!</span><span class="nx">component</span><span class="p">.</span><span class="nx">is_internal</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="o">!</span><span class="nx">has</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">)</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">    </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">component</span><span class="p">.</span><span class="nx">resolved_license</span><span class="p">.</span><span class="nx">groups</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">licenseGroup</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">         </span><span class="nx">licenseGroup</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;Permissive&quot;</span><span class="p">)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="vulnerability-blacklist">Vulnerability blacklist<a class="headerlink" href="#vulnerability-blacklist" title="Permanent link">&para;</a></h3>
 <p>The following expression matches <a href="../../../reference/schemas/policy/#component">Component</a>s in <a href="../../../reference/schemas/policy/#project">Project</a>s tagged as <code>3rd-party</code>, with at least one <a href="../../../reference/schemas/policy/#vulnerability">Vulnerability</a>
 being any of the given blacklisted IDs.</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
-<span class="normal"><a href="#__codelineno-8-2">2</a></span>
-<span class="normal"><a href="#__codelineno-8-3">3</a></span>
-<span class="normal"><a href="#__codelineno-8-4">4</a></span>
-<span class="normal"><a href="#__codelineno-8-5">5</a></span>
-<span class="normal"><a href="#__codelineno-8-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="s2">&quot;3rd-party&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">tags</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vulns</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">vuln</span><span class="p">,</span><span class="w"> </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="w">       </span><span class="s2">&quot;CVE-2017-5638&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">// struts RCE</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="w">       </span><span class="s2">&quot;CVE-2021-44228&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// log4shell</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="w">       </span><span class="s2">&quot;CVE-2022-22965&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// spring4shell</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">     </span><span class="p">])</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
+<span class="normal"><a href="#__codelineno-10-2">2</a></span>
+<span class="normal"><a href="#__codelineno-10-3">3</a></span>
+<span class="normal"><a href="#__codelineno-10-4">4</a></span>
+<span class="normal"><a href="#__codelineno-10-5">5</a></span>
+<span class="normal"><a href="#__codelineno-10-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="s2">&quot;3rd-party&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">tags</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vulns</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">vuln</span><span class="p">,</span><span class="w"> </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">id</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="w">       </span><span class="s2">&quot;CVE-2017-5638&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">// struts RCE</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="w">       </span><span class="s2">&quot;CVE-2021-44228&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// log4shell</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="w">       </span><span class="s2">&quot;CVE-2022-22965&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// spring4shell</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="w">     </span><span class="p">])</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="vulnerabilities-with-high-severity-in-public-facing-projects">Vulnerabilities with high severity in public facing projects<a class="headerlink" href="#vulnerabilities-with-high-severity-in-public-facing-projects" title="Permanent link">&para;</a></h3>
 <p>The following expression matches <a href="../../../reference/schemas/policy/#component">Component</a>s in <a href="../../../reference/schemas/policy/#project">Project</a>s tagged as <code>public-facing</code>, with at least one <code>HIGH</code>
 or <code>CRITICAL</code>
 <a href="../../../reference/schemas/policy/#vulnerability">Vulnerability</a>, where the <a href="https://www.first.org/cvss/v3.0/specification-document">CVSSv3</a> attack vector is <code>Network</code>.</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
-<span class="normal"><a href="#__codelineno-9-2">2</a></span>
-<span class="normal"><a href="#__codelineno-9-3">3</a></span>
-<span class="normal"><a href="#__codelineno-9-4">4</a></span>
-<span class="normal"><a href="#__codelineno-9-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="s2">&quot;public-facing&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">tags</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vulns</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">vuln</span><span class="p">,</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="w">    </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">severity</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;HIGH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">]</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="w">      </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">cvssv3_vector</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">&quot;.*/AV:N/.*&quot;</span><span class="p">)</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5"></a><span class="w">  </span><span class="p">)</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span>
+<span class="normal"><a href="#__codelineno-11-2">2</a></span>
+<span class="normal"><a href="#__codelineno-11-3">3</a></span>
+<span class="normal"><a href="#__codelineno-11-4">4</a></span>
+<span class="normal"><a href="#__codelineno-11-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="s2">&quot;public-facing&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">project</span><span class="p">.</span><span class="nx">tags</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vulns</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">vuln</span><span class="p">,</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="w">    </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">severity</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;HIGH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">]</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="w">      </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vuln</span><span class="p">.</span><span class="nx">cvssv3_vector</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">&quot;.*/AV:N/.*&quot;</span><span class="p">)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="w">  </span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="version-distance">Version distance<a class="headerlink" href="#version-distance" title="Permanent link">&para;</a></h3>
 <p>The <a href="#version_distance"><code>version_distance</code></a> function allows matching based on how far behind a component's version
 is from the latest known version. The distance is specified using a <a href="../../../reference/schemas/policy/#versiondistance">VersionDistance</a> object with <code>epoch</code>, <code>major</code>,
 <code>minor</code>, and <code>patch</code> fields.</p>
 <p>The following expression matches components that are more than one major version behind:</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">version_distance</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">v1</span><span class="p">.</span><span class="nx">VersionDistance</span><span class="p">{</span><span class="nx">major</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">})</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">version_distance</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">v1</span><span class="p">.</span><span class="nx">VersionDistance</span><span class="p">{</span><span class="nx">major</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">})</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="optional-field-checking">Optional field checking<a class="headerlink" href="#optional-field-checking" title="Permanent link">&para;</a></h3>
 <p>CEL does not have a concept of <code>null</code>. Accessing a field that is not set
 returns its default value (e.g. <code>""</code> for strings, <code>0</code> for numbers, <code>false</code> for booleans), which can
 lead to misleading matches. Use the <code>has()</code> macro to check for field presence before accessing it:</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span>
-<span class="normal"><a href="#__codelineno-11-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="nx">has</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">published_at</span><span class="p">)</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nx">published_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">duration</span><span class="p">(</span><span class="s2">&quot;8760h&quot;</span><span class="p">)</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1">1</a></span>
+<span class="normal"><a href="#__codelineno-13-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="nx">has</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">published_at</span><span class="p">)</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">component</span><span class="p">.</span><span class="nx">published_at</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nx">duration</span><span class="p">(</span><span class="s2">&quot;8760h&quot;</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="nx">has</span><span class="p">(</span><span class="nx">project</span><span class="p">.</span><span class="nx">metadata</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">has</span><span class="p">(</span><span class="nx">project</span><span class="p">.</span><span class="nx">metadata</span><span class="p">.</span><span class="nx">tools</span><span class="p">)</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="nx">has</span><span class="p">(</span><span class="nx">project</span><span class="p">.</span><span class="nx">metadata</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">has</span><span class="p">(</span><span class="nx">project</span><span class="p">.</span><span class="nx">metadata</span><span class="p">.</span><span class="nx">tools</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
+<h2 id="spdx-license-expressions">SPDX License Expressions<a class="headerlink" href="#spdx-license-expressions" title="Permanent link">&para;</a></h2>
+<p>The <code>spdx_expr_*</code> functions evaluate <a href="https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/">SPDX license expressions</a>. They operate on expression strings
+(typically <code>component.license_expression</code>) and can also be used with <code>component.resolved_license.id</code>
+as a fallback for components without a license expression.</p>
+<p>All license ID comparisons are <strong>case-insensitive</strong> per the SPDX specification.</p>
+<h3 id="version-equivalence">Version equivalence<a class="headerlink" href="#version-equivalence" title="Permanent link">&para;</a></h3>
+<p>Deprecated license IDs are treated as equivalent to their modern counterparts.
+For example, <code>GPL-2.0</code> and <code>GPL-2.0-only</code> are considered the same license.</p>
+<h3 id="version-ranges">Version ranges<a class="headerlink" href="#version-ranges" title="Permanent link">&para;</a></h3>
+<p>The <code>+</code> operator and <code>-or-later</code> suffix are understood as "this version or any later
+version in the same license family." For example, <code>GPL-3.0-only</code> satisfies an allow-list containing
+<code>GPL-2.0-or-later</code>, and <code>Apache-1.0+</code> satisfies an allow-list containing <code>Apache-2.0</code>.</p>
+<h3 id="deprecated-with-compounds">Deprecated <code>WITH</code>-compounds<a class="headerlink" href="#deprecated-with-compounds" title="Permanent link">&para;</a></h3>
+<p>Legacy compound IDs like <code>GPL-2.0-with-classpath-exception</code> are automatically
+resolved to their modern <code>WITH</code> expression form (<code>GPL-2.0-only WITH Classpath-exception-2.0</code>).</p>
+<h3 id="with-composites"><code>WITH</code> composites<a class="headerlink" href="#with-composites" title="Permanent link">&para;</a></h3>
+<p>License-with-exception combinations are treated as atomic composites. The full
+compound (e.g. <code>"GPL-2.0-only WITH Classpath-exception-2.0"</code>) must appear as a single entry in
+allow-lists, not as separate license and exception IDs. The license part uses version-aware matching
+(e.g. <code>GPL-2.0 WITH ...</code> matches <code>GPL-2.0-only WITH ...</code>), while the exception part requires an exact match.</p>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <p>For type definitions, refer to the <a href="../../../reference/schemas/policy/">schema reference</a>.</p>
 <p>In addition to the <a href="https://github.com/google/cel-spec/blob/v0.13.0/doc/langdef.md#list-of-standard-definitions">standard definitions</a> of the CEL specification, Dependency-Track offers the following functions.</p>
@@ -3316,7 +3456,7 @@ Useful for enforcing policies only when specific components are present in a pro
 </tbody>
 </table>
 <p><strong>Returns:</strong> <code>true</code> if a matching component exists in the project.</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="nx">project</span><span class="p">.</span><span class="nx">depends_on</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;baz&quot;</span><span class="p">})</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="nx">project</span><span class="p">.</span><span class="nx">depends_on</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;baz&quot;</span><span class="p">})</span>
 </span></code></pre></div></td></tr></table></div>
 <pre class="mermaid"><code>graph TD
   P["Project"]:::match --&gt; A["foo"]
@@ -3354,7 +3494,7 @@ Useful for enforcing policies only when specific components are present in a pro
 </tbody>
 </table>
 <p><strong>Returns:</strong> <code>true</code> if the receiver is a dependency (direct or transitive) of a matching component.</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">is_dependency_of</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">})</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">is_dependency_of</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">})</span>
 </span></code></pre></div></td></tr></table></div>
 <pre class="mermaid"><code>graph TD
   P["Project"] --&gt; A["foo"]:::criteria
@@ -3393,7 +3533,7 @@ Useful for enforcing policies only when specific components are present in a pro
 </tbody>
 </table>
 <p><strong>Returns:</strong> <code>true</code> if the receiver is a direct dependency of a matching component.</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">is_direct_dependency_of</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">})</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-17-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">is_direct_dependency_of</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">})</span>
 </span></code></pre></div></td></tr></table></div>
 <pre class="mermaid"><code>graph TD
   P["Project"] --&gt; A["foo"]:::criteria
@@ -3444,7 +3584,7 @@ Returns <code>true</code> only if every path from the project root to the receiv
 </tbody>
 </table>
 <p><strong>Returns:</strong> <code>true</code> if the receiver is exclusively introduced through a matching component.</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">is_exclusive_dependency_of</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">})</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-18-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">is_exclusive_dependency_of</span><span class="p">(</span><span class="nx">v1</span><span class="p">.</span><span class="nx">Component</span><span class="p">{</span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">})</span>
 </span></code></pre></div></td></tr></table></div>
 <pre class="mermaid"><code>graph TD
   P["Project"] --&gt; A["foo"]:::criteria
@@ -3484,7 +3624,7 @@ Returns <code>true</code> only if every path from the project root to the receiv
 </tbody>
 </table>
 <p><strong>Returns:</strong> <code>true</code> if the version is within the specified range.</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-17-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">matches_range</span><span class="p">(</span><span class="s2">&quot;vers:maven/&gt;0|&lt;1|!=0.2.4&quot;</span><span class="p">)</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-19-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">matches_range</span><span class="p">(</span><span class="s2">&quot;vers:maven/&gt;0|&lt;1|!=0.2.4&quot;</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <p>Currently supported versioning schemes:</p>
 <table>
@@ -3527,6 +3667,110 @@ Returns <code>true</code> only if every path from the project root to the receiv
 versioning scheme in <code>matches_range</code>. This helps with accuracy, as versioning schemes have different nuances
 across ecosystems, which makes comparisons error-prone.</p>
 </div>
+<h3 id="spdx_expr_allows"><code>spdx_expr_allows</code><a class="headerlink" href="#spdx_expr_allows" title="Permanent link">&para;</a></h3>
+<p>Checks whether an <a href="https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/">SPDX license expression</a> can be satisfied
+using only licenses from the given set. For <code>OR</code> expressions, at least one branch must
+be satisfiable. For <code>AND</code> expressions, all children must be satisfiable. <code>WITH</code> expressions
+are treated as atomic composites (see below).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>expression</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">An SPDX license expression</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ids</code></td>
+<td style="text-align: left;"><code>list(string)</code></td>
+<td style="text-align: left;">Allowed licenses, including <code>WITH</code> composites if needed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <code>true</code> if the expression is satisfiable with the given IDs.</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-20-1">1</a></span>
+<span class="normal"><a href="#__codelineno-20-2">2</a></span>
+<span class="normal"><a href="#__codelineno-20-3">3</a></span>
+<span class="normal"><a href="#__codelineno-20-4">4</a></span>
+<span class="normal"><a href="#__codelineno-20-5">5</a></span>
+<span class="normal"><a href="#__codelineno-20-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="nx">spdx_expr_allows</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">license_expression</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Apache-2.0&quot;</span><span class="p">])</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="c1">// &quot;MIT&quot;                  =&gt; true  (MIT is allowed)</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="c1">// &quot;MIT OR GPL-3.0-only&quot;  =&gt; true  (MIT branch is satisfiable)</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1">// &quot;MIT AND Apache-2.0&quot;   =&gt; true  (both are allowed)</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5"></a><span class="c1">// &quot;MIT AND GPL-3.0-only&quot; =&gt; false (GPL-3.0-only is not allowed)</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6"></a><span class="c1">// &quot;GPL-3.0-only&quot;         =&gt; false (not in the allowed set)</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Version-range matching is applied automatically:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-21-1">1</a></span>
+<span class="normal"><a href="#__codelineno-21-2">2</a></span>
+<span class="normal"><a href="#__codelineno-21-3">3</a></span>
+<span class="normal"><a href="#__codelineno-21-4">4</a></span>
+<span class="normal"><a href="#__codelineno-21-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="nx">spdx_expr_allows</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">license_expression</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GPL-2.0-or-later&quot;</span><span class="p">])</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2"></a><span class="c1">// &quot;GPL-2.0-only&quot; =&gt; true  (2.0 is within 2.0-or-later range)</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="c1">// &quot;GPL-3.0-only&quot; =&gt; true  (3.0 is within 2.0-or-later range)</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="c1">// &quot;GPL-1.0-only&quot; =&gt; false (1.0 is below 2.0)</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="c1">// &quot;GPL-2.0&quot;      =&gt; true  (deprecated ID, equivalent to GPL-2.0-only)</span>
+</span></code></pre></div></td></tr></table></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><code>WITH</code> expressions (license-with-exception) are matched as a single unit.
+The allowed set must contain the full compound entry, not the license and exception separately:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-22-1">1</a></span>
+<span class="normal"><a href="#__codelineno-22-2">2</a></span>
+<span class="normal"><a href="#__codelineno-22-3">3</a></span>
+<span class="normal"><a href="#__codelineno-22-4">4</a></span>
+<span class="normal"><a href="#__codelineno-22-5">5</a></span>
+<span class="normal"><a href="#__codelineno-22-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="nx">spdx_expr_allows</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">license_expression</span><span class="p">,</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2"></a><span class="w">  </span><span class="s2">&quot;GPL-2.0-only WITH Classpath-exception-2.0&quot;</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="p">])</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4"></a><span class="c1">// &quot;GPL-2.0-only WITH Classpath-exception-2.0&quot; =&gt; true  (composite matches)</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="c1">// &quot;GPL-2.0-only&quot;                              =&gt; false (plain license, not in set)</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6"></a><span class="c1">// &quot;GPL-2.0-only WITH LLVM-exception&quot;          =&gt; false (different composite)</span>
+</span></code></pre></div></td></tr></table></div>
+</div>
+<h3 id="spdx_expr_requires_any"><code>spdx_expr_requires_any</code><a class="headerlink" href="#spdx_expr_requires_any" title="Permanent link">&para;</a></h3>
+<p>Checks whether at least one of the given license IDs is required in every possible satisfaction
+of an <a href="https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/">SPDX license expression</a>. For <code>OR</code> expressions, at least one of
+the IDs must be required in all branches. For <code>AND</code> expressions, at least one of the IDs must be
+required in at least one child.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>expression</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">An SPDX license expression</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ids</code></td>
+<td style="text-align: left;"><code>list(string)</code></td>
+<td style="text-align: left;">License IDs to check</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> <code>true</code> if at least one of the IDs is always required.</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-23-1">1</a></span>
+<span class="normal"><a href="#__codelineno-23-2">2</a></span>
+<span class="normal"><a href="#__codelineno-23-3">3</a></span>
+<span class="normal"><a href="#__codelineno-23-4">4</a></span>
+<span class="normal"><a href="#__codelineno-23-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="nx">spdx_expr_requires_any</span><span class="p">(</span><span class="nx">component</span><span class="p">.</span><span class="nx">license_expression</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GPL-2.0-only&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;GPL-3.0-only&quot;</span><span class="p">])</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="c1">// &quot;GPL-2.0-only AND MIT&quot;         =&gt; true  (GPL-2.0-only always required)</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="c1">// &quot;GPL-2.0-only OR GPL-3.0-only&quot; =&gt; true  (every branch requires one)</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4"></a><span class="c1">// &quot;GPL-2.0 AND MIT&quot;              =&gt; true  (GPL-2.0 is equivalent to GPL-2.0-only)</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="c1">// &quot;GPL-2.0-only OR MIT&quot;          =&gt; false (MIT branch requires neither)</span>
+</span></code></pre></div></td></tr></table></div>
 <h3 id="version_distance"><code>version_distance</code><a class="headerlink" href="#version_distance" title="Permanent link">&para;</a></h3>
 <p>Checks whether the distance between a <a href="../../../reference/schemas/policy/#component">Component</a>'s current version and its latest known version
 matches a given <a href="../../../reference/schemas/policy/#versiondistance">VersionDistance</a>.</p>
@@ -3557,7 +3801,7 @@ matches a given <a href="../../../reference/schemas/policy/#versiondistance">Ver
 </tbody>
 </table>
 <p><strong>Returns:</strong> <code>true</code> if the version distance satisfies the comparison.</p>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-18-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">version_distance</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">v1</span><span class="p">.</span><span class="nx">VersionDistance</span><span class="p">{</span><span class="nx">major</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">})</span>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-24-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="nx">component</span><span class="p">.</span><span class="nx">version_distance</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">v1</span><span class="p">.</span><span class="nx">VersionDistance</span><span class="p">{</span><span class="nx">major</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">})</span>
 </span></code></pre></div></td></tr></table></div>
 
 
