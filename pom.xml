@@ -53,7 +53,7 @@
     <project.parentBaseDir>.</project.parentBaseDir>
 
     <!-- Dependency Versions -->
-    <lib.checkstyle.version>13.3.0</lib.checkstyle.version>
+    <lib.checkstyle.version>13.4.0</lib.checkstyle.version>
     <lib.protobuf-java.version>4.34.0</lib.protobuf-java.version>
 
     <!-- Plugin Versions -->
