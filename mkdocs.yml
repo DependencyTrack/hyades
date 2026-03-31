@@ -93,8 +93,6 @@ nav:
         - Overview: usage/notifications/overview.md
         - Publishers: usage/notifications/publishers.md
         - Templating: usage/notifications/templating.md
-    - Access Control:
-        - Roles: usage/access-control/roles.md
 - Architecture:
     - Overview: architecture/index.md
     - Decisions:
