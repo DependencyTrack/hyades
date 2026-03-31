@@ -19,6 +19,10 @@
     relied on the previous default, or that configured `dt.auth.jwt.ttl.seconds` explicitly,
     must update their configuration accordingly.
 
+* **The role system introduced in 5.6.0 has been removed**.
+  It [never worked as intended](https://github.com/DependencyTrack/hyades/issues/2116),
+  weakened the existing authorization mechanism, and fixing it is not possible without 
+  significant breaking changes to the system.
 * The minimum supported PostgreSQL version has been raised from 13 to 14 ([hyades/#1910]).
 * **Kafka is no longer required**. The platform can now sustain itself on PostgreSQL alone
   and no longer requires a separate message broker. Most of the asynchronous processing has
