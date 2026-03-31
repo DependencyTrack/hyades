@@ -601,7 +601,7 @@ Configuration properties may use the following types:
 
     <table>
       <tr><th>Type</th><td style="border-width: 0"><code>integer</code></td></tr>
-      <tr><th>Default</th><td><code>10</code></td></tr>
+      <tr><th>Default</th><td><code>5</code></td></tr>
       <tr><th>ENV</th><td><code>DT_DEX_ENGINE_ACTIVITY_WORKER_ARTIFACT_IMPORT_MAX_CONCURRENCY</code></td></tr>
     </table>
 
