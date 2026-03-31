@@ -1009,92 +1009,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Access Control
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Access Control
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../usage/access-control/roles/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Roles
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -2862,8 +2776,12 @@ relied on the previous default, or that configured <code>dt.auth.jwt.ttl.seconds
 must update their configuration accordingly.</p>
 </li>
 <li>
-<p>The minimum supported PostgreSQL version has been raised from 13 to 14 (<a href="https://github.com/DependencyTrack/hyades/issues/1910">hyades/#1910</a>).</p>
+<p><strong>The role system introduced in 5.6.0 has been removed</strong>.
+  It <a href="https://github.com/DependencyTrack/hyades/issues/2116">never worked as intended</a>,
+  weakened the existing authorization mechanism, and fixing it is not possible without 
+  significant breaking changes to the system.</p>
 </li>
+<li>The minimum supported PostgreSQL version has been raised from 13 to 14 (<a href="https://github.com/DependencyTrack/hyades/issues/1910">hyades/#1910</a>).</li>
 <li><strong>Kafka is no longer required</strong>. The platform can now sustain itself on PostgreSQL alone
   and no longer requires a separate message broker. Most of the asynchronous processing has
   been migrated to a <a href="../../architecture/design/durable-execution/">durable execution</a> model.</li>
