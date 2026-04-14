@@ -54,7 +54,7 @@
 
     <!-- Dependency Versions -->
     <lib.checkstyle.version>13.4.0</lib.checkstyle.version>
-    <lib.protobuf-java.version>4.34.0</lib.protobuf-java.version>
+    <lib.protobuf-java.version>4.34.1</lib.protobuf-java.version>
 
     <!-- Plugin Versions -->
     <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
