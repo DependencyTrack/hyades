@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/design/notifications/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/decisions/016-user-managed-vuln-policies/">
       
       
-        <link rel="prev" href="../durable-execution/">
+        <link rel="prev" href="../015-package-metadata/">
       
       
-        <link rel="next" href="../package-metadata-resolution/">
+        <link rel="next" href="../../design/durable-execution/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Notifications - Hyades</title>
+        <title>ADR-016: User-Managed Vulnerability Policies - Hyades</title>
       
     
     
@@ -59,15 +59,15 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Notifications - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/design/notifications.png" />
+<meta property="og:title" content="ADR-016: User-Managed Vulnerability Policies - Hyades" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/decisions/016-user-managed-vuln-policies.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/design/notifications/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/decisions/016-user-managed-vuln-policies/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Notifications - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/design/notifications.png" />
+<meta property="twitter:title" content="ADR-016: User-Managed Vulnerability Policies - Hyades" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/decisions/016-user-managed-vuln-policies.png" />
 </head>
   
   
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#overview" class="md-skip">
+        <a href="#context" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Notifications
+              ADR-016: User-Managed Vulnerability Policies
             
           </span>
         </div>
@@ -1033,6 +1033,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1043,11 +1045,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
@@ -1068,7 +1070,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1086,7 +1088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/000-index/" class="md-nav__link">
+      <a href="../000-index/" class="md-nav__link">
         
   
   
@@ -1114,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -1142,7 +1144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/002-workflow-orchestration/" class="md-nav__link">
+      <a href="../002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -1170,7 +1172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/003-notification-publishing/" class="md-nav__link">
+      <a href="../003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -1198,7 +1200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/004-file-storage-plugin/" class="md-nav__link">
+      <a href="../004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -1226,7 +1228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -1254,7 +1256,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1282,7 +1284,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
+      <a href="../007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1310,7 +1312,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/009-auth-and-roles/" class="md-nav__link">
+      <a href="../009-auth-and-roles/" class="md-nav__link">
         
   
   
@@ -1338,7 +1340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
+      <a href="../010-vulnerability-datasource-extension-point/" class="md-nav__link">
         
   
   
@@ -1366,7 +1368,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/011-notification-outbox/" class="md-nav__link">
+      <a href="../011-notification-outbox/" class="md-nav__link">
         
   
   
@@ -1394,7 +1396,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/012-extension-kv-store/" class="md-nav__link">
+      <a href="../012-extension-kv-store/" class="md-nav__link">
         
   
   
@@ -1422,7 +1424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/013-finding-status/" class="md-nav__link">
+      <a href="../013-finding-status/" class="md-nav__link">
         
   
   
@@ -1450,7 +1452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/014-new-alias-schema/" class="md-nav__link">
+      <a href="../014-new-alias-schema/" class="md-nav__link">
         
   
   
@@ -1478,7 +1480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/015-package-metadata/" class="md-nav__link">
+      <a href="../015-package-metadata/" class="md-nav__link">
         
   
   
@@ -1486,122 +1488,6 @@
     
   
     ADR-015: Package Metadata
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../decisions/016-user-managed-vuln-policies/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ADR-016: User-Managed Vulnerability Policies
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Design
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Design
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../durable-execution/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Durable Execution
   
 
     
@@ -1636,7 +1522,7 @@
   <span class="md-ellipsis">
     
   
-    Notifications
+    ADR-016: User-Managed Vulnerability Policies
   
 
     
@@ -1654,7 +1540,7 @@
   <span class="md-ellipsis">
     
   
-    Notifications
+    ADR-016: User-Managed Vulnerability Policies
   
 
     
@@ -1678,10 +1564,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Context
       
     </span>
   </a>
@@ -1689,119 +1575,24 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#emission" class="md-nav__link">
+  <a href="#decision" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Emission
+        Decision
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Emission">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#preliminary-filtering" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Preliminary filtering
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#relay" class="md-nav__link">
+  <a href="#consequences" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relay
+        Consequences
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Relay">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#concurrency-control" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Concurrency control
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#routing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Routing
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#large-notification-handling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Large notification handling
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#publishing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Publishing
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Publishing">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#publishers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Publishers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#retries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Retries
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1814,6 +1605,64 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
               
                 
   
@@ -1821,7 +1670,63 @@
   
   
     <li class="md-nav__item">
-      <a href="../package-metadata-resolution/" class="md-nav__link">
+      <a href="../../design/durable-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Durable Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design/package-metadata-resolution/" class="md-nav__link">
         
   
   
@@ -1849,7 +1754,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../vulnerability-analysis/" class="md-nav__link">
+      <a href="../../design/vulnerability-analysis/" class="md-nav__link">
         
   
   
@@ -1927,7 +1832,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../archive/workflow-state-tracking/" class="md-nav__link">
+      <a href="../../design/archive/workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -2867,7 +2772,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/design/notifications.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/016-user-managed-vuln-policies.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2875,156 +2780,81 @@
   
 
 
-  <h1>Notifications</h1>
+  <h1>ADR-016: User-Managed Vulnerability Policies</h1>
 
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The notification system is responsible for informing users and external systems about events
-occurring in the platform. It consists of three phases:</p>
-<ol>
-<li><strong>Emission</strong>: Writing notifications to an outbox table</li>
-<li><strong>Relay</strong>: Polling the outbox, routing notifications to matching rules, and scheduling workflows</li>
-<li><strong>Publishing</strong>: Delivering notifications to destination systems via durable workflows</li>
-</ol>
-<pre class="mermaid"><code>---
-title: Notification system overview
----
-flowchart LR
-    subgraph Emission
-        D["Domain logic"]
-        O[("NOTIFICATION_OUTBOX")]
-    end
-    subgraph Relay
-        R["Outbox relay"]
-        RT["Router"]
-    end
-    subgraph Publishing
-        W["dex engine"]
-        P["Publishers"]
-        E["External systems"]
-    end
-
-    D --&gt;|"INSERT"| O
-    R --&gt;|"DELETE RETURNING"| O
-    R --&gt; RT
-    RT --&gt;|"Schedule workflow"| W
-    W --&gt; P
-    P --&gt; E</code></pre>
-<p>This design follows the <a href="https://microservices.io/patterns/data/transactional-outbox.html">transactional outbox</a> pattern, as described in <a href="../../decisions/011-notification-outbox/">ADR-011</a>.
-It enables atomic emission of notifications, removing the need for external message brokers
-in the critical path.</p>
-<h2 id="emission">Emission<a class="headerlink" href="#emission" title="Permanent link">&para;</a></h2>
-<p>Notifications are emitted by inserting records into the <code>NOTIFICATION_OUTBOX</code> table.
-This can happen within the same database transaction that performs the business logic
-triggering the notification, thus avoiding the <a href="https://www.confluent.io/blog/dual-write-problem/">dual write problem</a>.</p>
-<pre class="mermaid"><code>erDiagram
-    NOTIFICATION_OUTBOX {
-        UUID ID PK
-        TIMESTAMPTZ TIMESTAMP
-        TEXT SCOPE
-        TEXT GROUP
-        TEXT LEVEL
-        BYTEA PAYLOAD
-    }</code></pre>
-<p>The <code>ID</code> column uses <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_7_(timestamp_and_random)">UUIDv7</a>, which combines global uniqueness with sortability.
-The <code>PAYLOAD</code> column contains the serialized notification in <a href="https://protobuf.dev/">Protobuf</a> format.
-Its schema is documented <a href="../../../reference/schemas/notification/">here</a>.</p>
-<h3 id="preliminary-filtering">Preliminary filtering<a class="headerlink" href="#preliminary-filtering" title="Permanent link">&para;</a></h3>
-<p>To reduce load on the outbox table, notifications are only inserted if <em>at least one</em>
-enabled notification rule could <em>potentially</em> match them. This check is performed during
-the <code>INSERT</code> operation using an <code>EXISTS</code> subquery against the <code>NOTIFICATIONRULE</code> table.</p>
-<p>Notifications that have no matching rules are discarded immediately.</p>
-<h2 id="relay">Relay<a class="headerlink" href="#relay" title="Permanent link">&para;</a></h2>
-<p>The outbox relay is a background process that continuously polls the <code>NOTIFICATION_OUTBOX</code> table,
-routes notifications to matching rules, and schedules publishing workflows.
-The polling interval is configurable via <a href="../../../reference/configuration/api-server/#dtnotificationoutbox-relaypoll-interval-ms"><code>dt.notification.outbox-relay.poll-interval-ms</code></a>,
-and defaults to 1 second.</p>
-<pre class="mermaid"><code>---
-title: Relay cycle
----
-sequenceDiagram
-    participant D as Database
-    participant R as Relay
-    participant RT as Router
-    participant DE as dex engine
-
-    activate R
-    R -&gt;&gt; D: Begin TX
-    R -&gt;&gt; D: Acquire advisory lock
-    D --&gt;&gt; R: Lock acquired
-    R -&gt;&gt; D: DELETE FROM NOTIFICATION_OUTBOX&lt;br/&gt;RETURNING PAYLOAD
-    D --&gt;&gt; R: Notifications
-    R -&gt;&gt; RT: Route notifications
-    RT --&gt;&gt; R: Matched rules per notification
-    R -&gt;&gt; DE: Schedule workflows (atomic)
-    R -&gt;&gt; D: Commit TX
-    deactivate R</code></pre>
-<h3 id="concurrency-control">Concurrency control<a class="headerlink" href="#concurrency-control" title="Permanent link">&para;</a></h3>
-<p>Transaction-level <a href="https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS">advisory locks</a> prevent concurrent relay cycles across multiple API server instances.
-This ensures notifications are relayed in approximately the order they were emitted.
-The lack of concurrency is offset by batch processing. The batch size is configurable
-via <a href="../../../reference/configuration/api-server/#dtnotificationoutbox-relaybatch-size"><code>dt.notification.outbox-relay.batch-size</code></a>
-and defaults to 100.</p>
-<h3 id="routing">Routing<a class="headerlink" href="#routing" title="Permanent link">&para;</a></h3>
-<p>The router evaluates each notification against all enabled notification rules
-(a.k.a. <a href="../../../usage/notifications/overview/#alerts">alerts</a>).
-A rule matches if:</p>
-<ul>
-<li>Its scope matches the notification's scope</li>
-<li>Its level is equal to or less verbose than the notification's level</li>
-<li>The notification's group is in the rule's configured groups</li>
-<li>If the rule is limited to specific projects or tags, the notification's subject matches</li>
-</ul>
-<p>Routing is performed in batches, using a single SQL query with <code>UNNEST</code>,
-reducing database round trips.</p>
-<h3 id="large-notification-handling">Large notification handling<a class="headerlink" href="#large-notification-handling" title="Permanent link">&para;</a></h3>
-<p>Notifications exceeding a configurable size threshold (default: 64KiB) are offloaded to
-file storage, rather than being passed directly to the dex engine. This prevents large payloads
-(e.g. <code>PROJECT_VULN_ANALYSIS_COMPLETED</code>) from bloating the workflow history. 
-The publishing workflow retrieves the notification from file storage
-and deletes the file upon completion.</p>
-<h2 id="publishing">Publishing<a class="headerlink" href="#publishing" title="Permanent link">&para;</a></h2>
-<p>For each notification with <em>at least one</em> matched rule, a <em>Publish Notification</em> workflow
-is scheduled. The workflow coordinates delivery for all matched rules.</p>
-<pre class="mermaid"><code>---
-title: Publish notification workflow
----
-sequenceDiagram
-    participant W as Workflow
-    participant A as Activity
-    participant D as Database
-    participant DE as Destination
-
-    activate W
-    par for each matched rule
-        W -&gt;&gt; A: Invoke activity
-        activate A
-        A -&gt;&gt; D: Get rule config
-        D --&gt;&gt; A: Publisher, template, config
-        A -&gt;&gt; DE: Publish notification
-        DE --&gt;&gt; A: Response
-        A --&gt;&gt; W: Result
-        deactivate A
-    end
-    deactivate W</code></pre>
-<p>Publishing for each rule is performed by a separate activity concurrently,
-allowing independent retries per rule. If delivery to one destination fails,
-it does not affect delivery to others.</p>
-<p>A workflow is considered successful if <em>at least one</em> rule's publishing succeeded.
-Conversely, if publishing for <em>all</em> rules failed, the entire workflow is marked as failed.</p>
-<h3 id="publishers">Publishers<a class="headerlink" href="#publishers" title="Permanent link">&para;</a></h3>
-<p>Publishers are implementations that deliver notifications to specific destination types.
-Built-in publishers include email, Kafka, Slack, Microsoft Teams, Jira, Webhook, and more.
-Refer to the <a href="../../../usage/notifications/publishers/">publishers</a> documentation for details.</p>
-<p>Publishers receive:</p>
-<ul>
-<li>The notification payload</li>
-<li>Rule-specific configuration (e.g. destination URL, credentials)</li>
-<li>A template renderer for formatting the notification</li>
-</ul>
-<h3 id="retries">Retries<a class="headerlink" href="#retries" title="Permanent link">&para;</a></h3>
-<p>Activities can signal retryable failures (e.g. rate limiting, temporary unavailability).
-The dex engine transparently handles retries with backoff. Non-retryable failures are terminal
-for a specific rule but do not affect other rules.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Author(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Proposed</td>
+<td style="text-align: left;">2026-04-13</td>
+<td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>Dependency-Track's vulnerability policy system currently only supports policies that are synchronized from a
+remote bundle, a ZIP archive of YAML files fetched periodically. While this approach works well for centrally
+managed policy sets distributed via CI pipelines, it presents a high barrier to entry for organizations that
+want to define policies directly through the UI or API. There is no way for a user to create, edit, or delete
+a vulnerability policy without modifying the bundle and triggering a sync.</p>
+<p>Additionally, the current system lacks mechanisms for controlling the order in which policies are evaluated,
+and for scoping policies to specific projects. All policies apply globally and are evaluated in insertion order,
+which makes it difficult to express intent like "this policy should only apply to payment services" or
+"this targeted override should take precedence over the general baseline."</p>
+<p>Several community requests have converged on the need for user-managed policies with scoping capabilities.
+The existing <code>TAG</code> infrastructure is already used throughout the system for project classification, making it
+a natural fit for policy scoping without introducing new concepts.</p>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<p>We will extend the vulnerability policy system to support user-managed policies alongside the existing
+bundle-sync mechanism. The two sources coexist in the same <code>VULNERABILITY_POLICY</code> table, distinguished by
+the presence or absence of a foreign key to <code>VULNERABILITY_POLICY_BUNDLE</code>.</p>
+<p><strong>Identification.</strong> Each policy receives a stable <code>UUID</code> column that serves as the external API identifier.
+The existing <code>NAME</code> column remains globally unique across both user-managed and bundle-synced policies, avoiding
+confusion from duplicate names. The UUID is immutable and generated server-side.</p>
+<p><strong>Source discrimination.</strong> Rather than introducing a separate <code>SOURCE</code> enum column, we derive source from
+<code>VULNERABILITY_POLICY_BUNDLE_ID</code>. When it is <code>NULL</code>, the policy is user-managed. When it references a bundle,
+the policy is bundle-managed. This avoids data inconsistency between a source flag and the actual FK state.
+The API exposes a read-only <code>source</code> field (<code>USER</code> or <code>BUNDLE</code>) computed from this column.</p>
+<p><strong>Priority ordering.</strong> We add a <code>PRIORITY</code> column (integer, 0 to 100, lower values indicating higher precedence)
+to give explicit control over evaluation order. Within the same priority level, project-scoped policies (those
+with tag bindings) evaluate before global policies (those without), following the principle that more specific
+rules should override broader defaults. This two-level ordering, explicit priority first and then specificity,
+provides both control and sensible defaults.</p>
+<p><strong>Tag-based project scoping.</strong> We introduce a <code>VULNERABILITY_POLICIES_TAGS</code> join table linking policies to tags.
+When a policy has tag bindings, it applies only to projects that have at least one of the bound tags. When a
+policy has no tag bindings, it applies globally. This reuses the existing <code>TAG</code> table and <code>PROJECTS_TAGS</code>
+relationship, keeping the concept space small.</p>
+<p><strong>Bundle isolation.</strong> The bundle sync mechanism is updated to only manage policies that belong to its bundle
+(identified by <code>VULNERABILITY_POLICY_BUNDLE_ID</code>). It cannot create, modify, or delete user-managed policies.
+Conversely, the CRUD API rejects modifications to bundle-managed policies.
+Deletion of a bundle cascades to its policies via the FK's <code>ON DELETE CASCADE</code>,
+with analysis reset and audit trail creation for each affected policy.</p>
+<p><strong>REST API.</strong> User-managed policy CRUD is exposed under <code>/api/v2/vuln-policies</code>,
+bundle management is exposed under <code>/api/v2/vuln-policy-bundles</code>.</p>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<p>Organizations can now manage vulnerability policies directly through the UI and API without needing to set up
+a bundle repository and CI pipeline. This lowers the barrier to entry significantly, especially for smaller
+teams or those evaluating the feature.</p>
+<p>The priority and tag-scoping mechanisms introduce more expressive policy evaluation, but also more complexity
+in understanding which policy will match a given finding. The evaluation order (priority, then scoped-before-global,
+then first-match-wins) must be clearly communicated in documentation to avoid user confusion.</p>
+<p>Bundle-synced and user-managed policies share a single name namespace. This is intentional, as it prevents
+the confusing situation where two policies with the same name behave differently. However, it means that a
+bundle sync can fail if it tries to create a policy whose name is already taken by a user-managed policy.
+This is an acceptable trade-off, because name conflicts surface as clear errors rather than silent shadowing.</p>
+<p>The <code>VULNERABILITY_POLICIES_TAGS</code> join table adds a new relationship to the <code>TAG</code> entity.
+The tag maintenance task must be updated to also check this table when determining
+whether a tag is orphaned.</p>
+<p>The database migration backfills <code>VULNERABILITY_POLICY_BUNDLE_ID</code> on all existing policies, associating them
+with the existing bundle record. This means that after migration, all pre-existing policies are bundle-managed
+and the system behaves identically to before until users explicitly create new policies.</p>
 
 
 
