@@ -1,5 +1,57 @@
 ### Upgrading to 0.7.0
 
+* **Vulnerability policy REST API endpoints have been migrated from v1 to v2.**
+  The following v1 endpoints have been removed:
+
+    | Removed endpoint                             | Replacement                           |
+    |:---------------------------------------------|:--------------------------------------|
+    | `GET /api/v1/policy/vulnerability`           | `GET /api/v2/vuln-policies`           |
+    | `GET /api/v1/policy/vulnerability/{uuid}`    | `GET /api/v2/vuln-policies/{uuid}`    |
+    | `PUT /api/v1/policy/vulnerability`           | `POST /api/v2/vuln-policies`          |
+    | `POST /api/v1/policy/vulnerability`          | `PUT /api/v2/vuln-policies/{uuid}`    |
+    | `DELETE /api/v1/policy/vulnerability/{uuid}` | `DELETE /api/v2/vuln-policies/{uuid}` |
+    | `GET /api/v1/policy/vulnerability/bundle`    | `GET /api/v2/vuln-policy-bundles`     |
+
+    Vulnerability policies can now be created and managed directly via the REST API,
+    without requiring an external bundle. Policies managed via bundles continue to work.
+
+* **Vulnerability policies now support only a single condition per policy.**
+  Previously, multiple conditions could be defined per policy. During the upgrade,
+  only the first condition of each policy is retained. Policies that relied on multiple
+  conditions must be restructured, potentially by splitting them into separate policies
+  or by combining conditions using CEL expressions.
+
+* **S3 support for vulnerability policy bundle retrieval has been removed.**
+  The following configuration properties are no longer recognized:
+
+    | Removed property                         |
+    |:-----------------------------------------|
+    | `dt.vulnerability.policy.s3.access.key`  |
+    | `dt.vulnerability.policy.s3.secret.key`  |
+    | `dt.vulnerability.policy.s3.bucket.name` |
+    | `dt.vulnerability.policy.s3.bundle.name` |
+    | `dt.vulnerability.policy.s3.region`      |
+
+    Deployments that previously fetched bundles from S3 must switch to serving the bundle
+    via HTTP(S) and use `dt.vulnerability.policy.bundle.url` instead.
+
+* **The `dt.vulnerability.policy.bundle.source.type` configuration property has been removed.**
+  Bundle retrieval now only supports HTTP(S). No replacement is necessary if `dt.vulnerability.policy.bundle.url`
+  is already configured with an HTTP(S) URL.
+
+* **The `dt.vulnerability.policy.analysis.enabled` configuration property has been removed.**
+  Vulnerability policy analysis is now always enabled when policies exist.
+
+* The vulnerability policy bundle sync task configuration has been renamed:
+
+    | Before                                                 | After                                           |
+    |:-------------------------------------------------------|:------------------------------------------------|
+    | `dt.task.vulnerability.policy.fetch.cron`              | `dt.task.vulnerability-policy-bundle-sync.cron` |
+    | `dt.task.vulnerability.policy.fetch.lock.max.duration` | *(removed)*                                     |
+    | `dt.task.vulnerability.policy.fetch.lock.min.duration` | *(removed)*                                     |
+
+    The default sync interval changed from every 5 minutes to every 15 minutes.
+
 * **Secrets for Fortify SSC, DefectDojo, Kenna Security, and repository passwords have been
   migrated to [secret management](../operations/secret-management/overview.md).** During the
   upgrade, Fortify SSC tokens, DefectDojo API keys, and Kenna Security tokens are cleared from
