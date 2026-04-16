@@ -4080,18 +4080,9 @@
   <tr><th>ENV</th><td><code>DT_TMP_DELAY_BOM_PROCESSED_NOTIFICATION</code></td></tr>
 </table></p>
 </dd>
-<dt><span id="dtvulnerabilitypolicyanalysisenabled"><strong><code>dt.vulnerability.policy.analysis.enabled</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicyanalysisenabled">¶</a></span></dt>
-<dd>
-<p>Defines whether vulnerability policy analysis is enabled.  </p>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>boolean</code></td></tr>
-  <tr><th>Default</th><td><code>false</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_ANALYSIS_ENABLED</code></td></tr>
-</table></p>
-</dd>
 <dt><span id="dtvulnerabilitypolicybundleauthbearertoken"><strong><code>dt.vulnerability.policy.bundle.auth.bearer.token</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicybundleauthbearertoken">¶</a></span></dt>
 <dd>
-<p>Defines the token to be used as bearerAuth against the service hosting the policy bundle.  </p>
+<p>Defines the bearer token to be used for authentication against the service hosting the vulnerability policy bundle.  </p>
 <p><table>
   <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
   <tr><th>Default</th><td><code>null</code></td></tr>
@@ -4100,7 +4091,7 @@
 </dd>
 <dt><span id="dtvulnerabilitypolicybundleauthpassword"><strong><code>dt.vulnerability.policy.bundle.auth.password</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicybundleauthpassword">¶</a></span></dt>
 <dd>
-<p>For nginx server, if username and bearer token both are provided, basic auth will be used,  else the auth header will be added based on the not null values  Defines the password to be used for basic authentication against the service hosting the policy bundle.  </p>
+<p>Defines the password to be used for basic authentication against the service hosting the vulnerability policy bundle.  </p>
 <p><table>
   <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
   <tr><th>Default</th><td><code>null</code></td></tr>
@@ -4109,72 +4100,21 @@
 </dd>
 <dt><span id="dtvulnerabilitypolicybundleauthusername"><strong><code>dt.vulnerability.policy.bundle.auth.username</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicybundleauthusername">¶</a></span></dt>
 <dd>
-<p>Defines the username to be used for basic authentication against the service hosting the policy bundle.  </p>
+<p>Defines the username to be used for basic authentication against the service hosting the vulnerability policy bundle.  </p>
 <p><table>
   <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
   <tr><th>Default</th><td><code>null</code></td></tr>
   <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_BUNDLE_AUTH_USERNAME</code></td></tr>
 </table></p>
 </dd>
-<dt><span id="dtvulnerabilitypolicybundlesourcetype"><strong><code>dt.vulnerability.policy.bundle.source.type</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicybundlesourcetype">¶</a></span></dt>
-<dd>
-<p>Defines the type of source from which policy bundles are being fetched from.  Required when <a href="#dtvulnerabilitypolicybundleurl"><code>dt.vulnerability.policy.bundle.url</code></a> is set.  </p>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>enum</code></td></tr>
-  <tr><th>Default</th><td><code>NGINX</code></td></tr>
-  <tr><th>Valid Values</th><td><code>[nginx, s3]</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_BUNDLE_SOURCE_TYPE</code></td></tr>
-</table></p>
-</dd>
 <dt><span id="dtvulnerabilitypolicybundleurl"><strong><code>dt.vulnerability.policy.bundle.url</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicybundleurl">¶</a></span></dt>
 <dd>
-<p>Defines where to fetch the policy bundle from.For S3, just the base url needs to be provided with port  For nginx, the whole url with bundle name needs to be given  </p>
+<p>Defines where to fetch the vulnerability policy bundle from.  </p>
 <p><table>
   <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
   <tr><th>Default</th><td><code>null</code></td></tr>
-  <tr><th>Example</th><td><code>http://example.com:80/bundles/bundle.zip</code></td></tr>
+  <tr><th>Example</th><td><code>https://example.com/bundles/bundle.zip</code></td></tr>
   <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_BUNDLE_URL</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dtvulnerabilitypolicys3accesskey"><strong><code>dt.vulnerability.policy.s3.access.key</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicys3accesskey">¶</a></span></dt>
-<dd>
-<p>S3 related details. Access key, secret key, bucket name and bundle names are mandatory if S3 is chosen. Region is optional  </p>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
-  <tr><th>Default</th><td><code>null</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_S3_ACCESS_KEY</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dtvulnerabilitypolicys3bucketname"><strong><code>dt.vulnerability.policy.s3.bucket.name</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicys3bucketname">¶</a></span></dt>
-<dd>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
-  <tr><th>Default</th><td><code>null</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_S3_BUCKET_NAME</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dtvulnerabilitypolicys3bundlename"><strong><code>dt.vulnerability.policy.s3.bundle.name</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicys3bundlename">¶</a></span></dt>
-<dd>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
-  <tr><th>Default</th><td><code>null</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_S3_BUNDLE_NAME</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dtvulnerabilitypolicys3region"><strong><code>dt.vulnerability.policy.s3.region</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicys3region">¶</a></span></dt>
-<dd>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
-  <tr><th>Default</th><td><code>null</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_S3_REGION</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dtvulnerabilitypolicys3secretkey"><strong><code>dt.vulnerability.policy.s3.secret.key</code></strong> <a class="headerlink" href="#dtvulnerabilitypolicys3secretkey">¶</a></span></dt>
-<dd>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>string</code></td></tr>
-  <tr><th>Default</th><td><code>null</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_VULNERABILITY_POLICY_S3_SECRET_KEY</code></td></tr>
 </table></p>
 </dd>
 </dl>
@@ -5174,6 +5114,15 @@
   <tr><th>ENV</th><td><code>DT_TASK_TELEMETRY_SUBMISSION_CRON</code></td></tr>
 </table></p>
 </dd>
+<dt><span id="dttaskvulnerability-policy-bundle-synccron"><strong><code>dt.task.vulnerability-policy-bundle-sync.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskvulnerability-policy-bundle-synccron">¶</a></span></dt>
+<dd>
+<p>Cron expression of the vulnerability policy bundle synchronization task.  <br/><br/>  Has no effect unless <a href="#dtvulnerabilitypolicybundleurl"><code>dt.vulnerability.policy.bundle.url</code></a> is also configured.  </p>
+<p><table>
+  <tr><th>Type</th><td style="border-width: 0"><code>cron</code></td></tr>
+  <tr><th>Default</th><td><code><em>/15 * * * </em></code></td></tr>
+  <tr><th>ENV</th><td><code>DT_TASK_VULNERABILITY_POLICY_BUNDLE_SYNC_CRON</code></td></tr>
+</table></p>
+</dd>
 <dt><span id="dttaskvulnerabilityanalysiscron"><strong><code>dt.task.vulnerability.analysis.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskvulnerabilityanalysiscron">¶</a></span></dt>
 <dd>
 <p>Cron expression of the portfolio vulnerability analysis task.  </p>
@@ -5253,33 +5202,6 @@
   <tr><th>Type</th><td style="border-width: 0"><code>duration</code></td></tr>
   <tr><th>Default</th><td><code>PT90S</code></td></tr>
   <tr><th>ENV</th><td><code>DT_TASK_VULNERABILITY_METRICS_UPDATE_LOCK_MIN_DURATION</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dttaskvulnerabilitypolicyfetchcron"><strong><code>dt.task.vulnerability.policy.fetch.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskvulnerabilitypolicyfetchcron">¶</a></span></dt>
-<dd>
-<p>Cron expression of the vulnerability policy bundle fetch task.  </p>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>cron</code></td></tr>
-  <tr><th>Default</th><td><code><em>/5 * * * </em></code></td></tr>
-  <tr><th>ENV</th><td><code>DT_TASK_VULNERABILITY_POLICY_FETCH_CRON</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dttaskvulnerabilitypolicyfetchlockmaxduration"><strong><code>dt.task.vulnerability.policy.fetch.lock.max.duration</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskvulnerabilitypolicyfetchlockmaxduration">¶</a></span></dt>
-<dd>
-<p>Maximum duration in ISO 8601 format for which the vulnerability policy bundle fetch task will hold a lock.  <br/><br/>  The duration should be long enough to cover the task's execution duration.  </p>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>duration</code></td></tr>
-  <tr><th>Default</th><td><code>PT5M</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_TASK_VULNERABILITY_POLICY_FETCH_LOCK_MAX_DURATION</code></td></tr>
-</table></p>
-</dd>
-<dt><span id="dttaskvulnerabilitypolicyfetchlockminduration"><strong><code>dt.task.vulnerability.policy.fetch.lock.min.duration</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskvulnerabilitypolicyfetchlockminduration">¶</a></span></dt>
-<dd>
-<p>Minimum duration in ISO 8601 format for which the vulnerability policy bundle fetch task will hold a lock.  <br/><br/>  The duration should be long enough to cover eventual clock skew across API server instances.  </p>
-<p><table>
-  <tr><th>Type</th><td style="border-width: 0"><code>duration</code></td></tr>
-  <tr><th>Default</th><td><code>PT5S</code></td></tr>
-  <tr><th>ENV</th><td><code>DT_TASK_VULNERABILITY_POLICY_FETCH_LOCK_MIN_DURATION</code></td></tr>
 </table></p>
 </dd>
 <dt><span id="dttaskworkflowmaintenancecron"><strong><code>dt.task.workflow.maintenance.cron</code></strong> <strong style="color: red">*</strong> <a class="headerlink" href="#dttaskworkflowmaintenancecron">¶</a></span></dt>
