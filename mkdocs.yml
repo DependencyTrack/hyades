@@ -89,6 +89,7 @@ nav:
     - Policy Compliance:
         - Overview: usage/policy-compliance/overview.md
         - Expressions: usage/policy-compliance/expressions.md
+        - Vulnerability Policies: usage/policy-compliance/vulnerability-policies.md
     - Notifications:
         - Overview: usage/notifications/overview.md
         - Publishers: usage/notifications/publishers.md
