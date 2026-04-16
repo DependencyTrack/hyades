@@ -2772,6 +2772,118 @@
 <h3 id="upgrading-to-070">Upgrading to 0.7.0<a class="headerlink" href="#upgrading-to-070" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
+<p><strong>Vulnerability policy REST API endpoints have been migrated from v1 to v2.</strong>
+  The following v1 endpoints have been removed:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Removed endpoint</th>
+<th style="text-align: left;">Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>GET /api/v1/policy/vulnerability</code></td>
+<td style="text-align: left;"><code>GET /api/v2/vuln-policies</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>GET /api/v1/policy/vulnerability/{uuid}</code></td>
+<td style="text-align: left;"><code>GET /api/v2/vuln-policies/{uuid}</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PUT /api/v1/policy/vulnerability</code></td>
+<td style="text-align: left;"><code>POST /api/v2/vuln-policies</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST /api/v1/policy/vulnerability</code></td>
+<td style="text-align: left;"><code>PUT /api/v2/vuln-policies/{uuid}</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>DELETE /api/v1/policy/vulnerability/{uuid}</code></td>
+<td style="text-align: left;"><code>DELETE /api/v2/vuln-policies/{uuid}</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>GET /api/v1/policy/vulnerability/bundle</code></td>
+<td style="text-align: left;"><code>GET /api/v2/vuln-policy-bundles</code></td>
+</tr>
+</tbody>
+</table>
+<p>Vulnerability policies can now be created and managed directly via the REST API,
+without requiring an external bundle. Policies managed via bundles continue to work.</p>
+</li>
+<li>
+<p><strong>Vulnerability policies now support only a single condition per policy.</strong>
+  Previously, multiple conditions could be defined per policy. During the upgrade,
+  only the first condition of each policy is retained. Policies that relied on multiple
+  conditions must be restructured, potentially by splitting them into separate policies
+  or by combining conditions using CEL expressions.</p>
+</li>
+<li>
+<p><strong>S3 support for vulnerability policy bundle retrieval has been removed.</strong>
+  The following configuration properties are no longer recognized:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Removed property</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>dt.vulnerability.policy.s3.access.key</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dt.vulnerability.policy.s3.secret.key</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dt.vulnerability.policy.s3.bucket.name</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dt.vulnerability.policy.s3.bundle.name</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dt.vulnerability.policy.s3.region</code></td>
+</tr>
+</tbody>
+</table>
+<p>Deployments that previously fetched bundles from S3 must switch to serving the bundle
+via HTTP(S) and use <code>dt.vulnerability.policy.bundle.url</code> instead.</p>
+</li>
+<li>
+<p><strong>The <code>dt.vulnerability.policy.bundle.source.type</code> configuration property has been removed.</strong>
+  Bundle retrieval now only supports HTTP(S). No replacement is necessary if <code>dt.vulnerability.policy.bundle.url</code>
+  is already configured with an HTTP(S) URL.</p>
+</li>
+<li>
+<p><strong>The <code>dt.vulnerability.policy.analysis.enabled</code> configuration property has been removed.</strong>
+  Vulnerability policy analysis is now always enabled when policies exist.</p>
+</li>
+<li>
+<p>The vulnerability policy bundle sync task configuration has been renamed:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Before</th>
+<th style="text-align: left;">After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>dt.task.vulnerability.policy.fetch.cron</code></td>
+<td style="text-align: left;"><code>dt.task.vulnerability-policy-bundle-sync.cron</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dt.task.vulnerability.policy.fetch.lock.max.duration</code></td>
+<td style="text-align: left;"><em>(removed)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dt.task.vulnerability.policy.fetch.lock.min.duration</code></td>
+<td style="text-align: left;"><em>(removed)</em></td>
+</tr>
+</tbody>
+</table>
+<p>The default sync interval changed from every 5 minutes to every 15 minutes.</p>
+</li>
+<li>
 <p><strong>Secrets for Fortify SSC, DefectDojo, Kenna Security, and repository passwords have been
   migrated to <a href="../../operations/secret-management/overview/">secret management</a>.</strong> During the
   upgrade, Fortify SSC tokens, DefectDojo API keys, and Kenna Security tokens are cleared from
