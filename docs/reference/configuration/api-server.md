@@ -2272,6 +2272,15 @@ Configuration properties may use the following types:
       <tr><th>ENV</th><td><code>DT_VULN_ANALYZER_INTERNAL_ENABLED</code></td></tr>
     </table>
 
+<span id="dtvuln-analyzeross-indexallow-local-connections">**`dt.vuln-analyzer.oss-index.allow-local-connections`** [¶](#dtvuln-analyzeross-indexallow-local-connections){ .headerlink }</span>
+:   Defines whether the OSS Index vulnerability analyzer is allowed to connect to local hosts.  
+
+    <table>
+      <tr><th>Type</th><td style="border-width: 0"><code>boolean</code></td></tr>
+      <tr><th>Default</th><td><code>false</code></td></tr>
+      <tr><th>ENV</th><td><code>DT_VULN_ANALYZER_OSS_INDEX_ALLOW_LOCAL_CONNECTIONS</code></td></tr>
+    </table>
+
 <span id="dtvuln-analyzeross-indexenabled">**`dt.vuln-analyzer.oss-index.enabled`** [¶](#dtvuln-analyzeross-indexenabled){ .headerlink }</span>
 :   Defines whether the OSS Index vulnerability analyzer is enabled.  
 
