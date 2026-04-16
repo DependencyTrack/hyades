@@ -200,4 +200,8 @@
          <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/policy-compliance/overview/</loc>
          <lastmod>2026-04-16</lastmod>
     </url>
+    <url>
+         <loc>https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/policy-compliance/vulnerability-policies/</loc>
+         <lastmod>2026-04-16</lastmod>
+    </url>
 </urlset>
