@@ -20,6 +20,42 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <a name="org-dependencytrack-notification-v1-Notification"></a>
 
 ## Notification
@@ -37,6 +73,8 @@
 | `timestamp` | `google.protobuf.Timestamp` |  | - |
 | `subject` | `google.protobuf.Any` |  | - |
 | `id` | `string` | Unique identifier of the notification in UUIDv7 format. | - |
+
+
 
 
 
@@ -162,6 +200,78 @@
 
 
 
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject"></a>
+
+### NewPolicyViolationsSummarySubject
+
+Subject for GROUP_NEW_POLICY_VIOLATIONS_SUMMARY notifications.
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `overview` | [`NewPolicyViolationsSummarySubject.Overview`](#org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-Overview) |  | - |
+| `project_summaries` | [`NewPolicyViolationsSummarySubject.ProjectSummaryEntry[]`](#org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectSummaryEntry) |  | - |
+| `violations_by_project` | [`NewPolicyViolationsSummarySubject.ProjectViolationsEntry[]`](#org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectViolationsEntry) |  | - |
+| `since` | `google.protobuf.Timestamp` |  | - |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject"></a>
+
+### NewVulnerabilitiesSummarySubject
+
+Subject for GROUP_NEW_VULNERABILITIES_SUMMARY notifications.
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `overview` | [`NewVulnerabilitiesSummarySubject.Overview`](#org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-Overview) |  | - |
+| `project_summaries` | [`NewVulnerabilitiesSummarySubject.ProjectSummaryEntry[]`](#org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectSummaryEntry) |  | - |
+| `findings_by_project` | [`NewVulnerabilitiesSummarySubject.ProjectFindingsEntry[]`](#org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectFindingsEntry) |  | - |
+| `since` | `google.protobuf.Timestamp` |  | - |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <a name="org-dependencytrack-notification-v1-NewVulnerabilitySubject"></a>
 
 ### NewVulnerabilitySubject
@@ -177,6 +287,7 @@
 | `affected_projects_reference` | [`BackReference`](#org-dependencytrack-notification-v1-BackReference) |  | - |
 | `vulnerability_analysis_level` | `string` |  | - |
 | `affected_projects` | [`Project[]`](#org-dependencytrack-notification-v1-Project) | List of projects affected by the vulnerability. DEPRECATED: This list only holds one item, and it is identical to the one in the project field. The field is kept for backward compatibility of JSON notifications, but consumers should not expect multiple projects here. Transmitting all affected projects in one notification is not feasible for large portfolios, see https://github.com/DependencyTrack/hyades/issues/467 for details. | - |
+| `analysis_trigger` | [`AnalysisTrigger`](#org-dependencytrack-notification-v1-AnalysisTrigger) | The trigger of the analysis that identified the vulnerability. | - |
 
 
 
@@ -340,6 +451,25 @@
 
 
 
+<a name="org-dependencytrack-notification-v1-VulnerabilityRetractedSubject"></a>
+
+### VulnerabilityRetractedSubject
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `component` | [`Component`](#org-dependencytrack-notification-v1-Component) | The component for which the vulnerability was previously reported. | - |
+| `project` | [`Project`](#org-dependencytrack-notification-v1-Project) | The project for which the vulnerability was previously reported. | - |
+| `vulnerability` | [`Vulnerability`](#org-dependencytrack-notification-v1-Vulnerability) | The previously reported vulnerability. | - |
+
+
+
+
+
+
+
 ## Messages
 
 
@@ -409,6 +539,320 @@
 | `sha512` | `string` |  | - |
 
 
+
+
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-Overview"></a>
+
+### NewPolicyViolationsSummarySubject.Overview
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `affected_projects_count` | `int32` |  | - |
+| `affected_components_count` | `int32` |  | - |
+| `new_violations_count` | `int32` |  | - |
+| `new_violations_count_by_type` | [`NewPolicyViolationsSummarySubject.Overview.NewViolationsCountByTypeEntry[]`](#org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-Overview-NewViolationsCountByTypeEntry) |  | - |
+| `suppressed_new_violations_count` | `int32` |  | - |
+| `total_new_violations_count` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-Overview-NewViolationsCountByTypeEntry"></a>
+
+### NewPolicyViolationsSummarySubject.Overview.NewViolationsCountByTypeEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `key` | `string` |  | - |
+| `value` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectSummaryEntry"></a>
+
+### NewPolicyViolationsSummarySubject.ProjectSummaryEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `project` | [`Project`](#org-dependencytrack-notification-v1-Project) |  | - |
+| `new_violations_count_by_type` | [`NewPolicyViolationsSummarySubject.ProjectSummaryEntry.NewViolationsCountByTypeEntry[]`](#org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectSummaryEntry-NewViolationsCountByTypeEntry) |  | - |
+| `suppressed_new_violations_count_by_type` | [`NewPolicyViolationsSummarySubject.ProjectSummaryEntry.SuppressedNewViolationsCountByTypeEntry[]`](#org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectSummaryEntry-SuppressedNewViolationsCountByTypeEntry) |  | - |
+| `total_new_violations_count_by_type` | [`NewPolicyViolationsSummarySubject.ProjectSummaryEntry.TotalNewViolationsCountByTypeEntry[]`](#org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectSummaryEntry-TotalNewViolationsCountByTypeEntry) |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectSummaryEntry-NewViolationsCountByTypeEntry"></a>
+
+### NewPolicyViolationsSummarySubject.ProjectSummaryEntry.NewViolationsCountByTypeEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `key` | `string` |  | - |
+| `value` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectSummaryEntry-SuppressedNewViolationsCountByTypeEntry"></a>
+
+### NewPolicyViolationsSummarySubject.ProjectSummaryEntry.SuppressedNewViolationsCountByTypeEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `key` | `string` |  | - |
+| `value` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectSummaryEntry-TotalNewViolationsCountByTypeEntry"></a>
+
+### NewPolicyViolationsSummarySubject.ProjectSummaryEntry.TotalNewViolationsCountByTypeEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `key` | `string` |  | - |
+| `value` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-ProjectViolationsEntry"></a>
+
+### NewPolicyViolationsSummarySubject.ProjectViolationsEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `project` | [`Project`](#org-dependencytrack-notification-v1-Project) |  | - |
+| `violations` | [`NewPolicyViolationsSummarySubject.Violation[]`](#org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-Violation) |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewPolicyViolationsSummarySubject-Violation"></a>
+
+### NewPolicyViolationsSummarySubject.Violation
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `uuid` | `string` |  | - |
+| `component` | [`Component`](#org-dependencytrack-notification-v1-Component) |  | - |
+| `policy_condition` | [`PolicyCondition`](#org-dependencytrack-notification-v1-PolicyCondition) |  | - |
+| `type` | `string` |  | - |
+| `timestamp` | `google.protobuf.Timestamp` |  | - |
+| `analysis_state` | `string` |  | - |
+| `suppressed` | `bool` |  | - |
+
+
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-Finding"></a>
+
+### NewVulnerabilitiesSummarySubject.Finding
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `component` | [`Component`](#org-dependencytrack-notification-v1-Component) |  | - |
+| `vulnerability` | [`Vulnerability`](#org-dependencytrack-notification-v1-Vulnerability) |  | - |
+| `analyzer_identity` | `string` |  | - |
+| `attributed_on` | `google.protobuf.Timestamp` |  | - |
+| `reference_url` | `string` |  | - |
+| `analysis_state` | `string` |  | - |
+| `suppressed` | `bool` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-Overview"></a>
+
+### NewVulnerabilitiesSummarySubject.Overview
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `affected_projects_count` | `int32` |  | - |
+| `affected_components_count` | `int32` |  | - |
+| `new_vulnerabilities_count` | `int32` |  | - |
+| `new_vulnerabilities_count_by_severity` | [`NewVulnerabilitiesSummarySubject.Overview.NewVulnerabilitiesCountBySeverityEntry[]`](#org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-Overview-NewVulnerabilitiesCountBySeverityEntry) |  | - |
+| `suppressed_new_vulnerabilities_count` | `int32` |  | - |
+| `total_new_vulnerabilities_count` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-Overview-NewVulnerabilitiesCountBySeverityEntry"></a>
+
+### NewVulnerabilitiesSummarySubject.Overview.NewVulnerabilitiesCountBySeverityEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `key` | `string` |  | - |
+| `value` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectFindingsEntry"></a>
+
+### NewVulnerabilitiesSummarySubject.ProjectFindingsEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `project` | [`Project`](#org-dependencytrack-notification-v1-Project) |  | - |
+| `findings` | [`NewVulnerabilitiesSummarySubject.Finding[]`](#org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-Finding) |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectSummaryEntry"></a>
+
+### NewVulnerabilitiesSummarySubject.ProjectSummaryEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `project` | [`Project`](#org-dependencytrack-notification-v1-Project) |  | - |
+| `new_vulnerabilities_count_by_severity` | [`NewVulnerabilitiesSummarySubject.ProjectSummaryEntry.NewVulnerabilitiesCountBySeverityEntry[]`](#org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectSummaryEntry-NewVulnerabilitiesCountBySeverityEntry) |  | - |
+| `suppressed_new_vulnerabilities_count_by_severity` | [`NewVulnerabilitiesSummarySubject.ProjectSummaryEntry.SuppressedNewVulnerabilitiesCountBySeverityEntry[]`](#org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectSummaryEntry-SuppressedNewVulnerabilitiesCountBySeverityEntry) |  | - |
+| `total_new_vulnerabilities_count_by_severity` | [`NewVulnerabilitiesSummarySubject.ProjectSummaryEntry.TotalNewVulnerabilitiesCountBySeverityEntry[]`](#org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectSummaryEntry-TotalNewVulnerabilitiesCountBySeverityEntry) |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectSummaryEntry-NewVulnerabilitiesCountBySeverityEntry"></a>
+
+### NewVulnerabilitiesSummarySubject.ProjectSummaryEntry.NewVulnerabilitiesCountBySeverityEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `key` | `string` |  | - |
+| `value` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectSummaryEntry-SuppressedNewVulnerabilitiesCountBySeverityEntry"></a>
+
+### NewVulnerabilitiesSummarySubject.ProjectSummaryEntry.SuppressedNewVulnerabilitiesCountBySeverityEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `key` | `string` |  | - |
+| `value` | `int32` |  | - |
+
+
+
+
+
+
+
+<a name="org-dependencytrack-notification-v1-NewVulnerabilitiesSummarySubject-ProjectSummaryEntry-TotalNewVulnerabilitiesCountBySeverityEntry"></a>
+
+### NewVulnerabilitiesSummarySubject.ProjectSummaryEntry.TotalNewVulnerabilitiesCountBySeverityEntry
+
+
+
+
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+| `key` | `string` |  | - |
+| `value` | `int32` |  | - |
 
 
 
@@ -631,7 +1075,25 @@
 
 
 
+
+
 ## Enums
+
+
+
+
+<a name="org-dependencytrack-notification-v1-AnalysisTrigger"></a>
+
+### AnalysisTrigger
+
+
+
+| Name | Description |
+| :--- | :---------- |
+| `ANALYSIS_TRIGGER_UNSPECIFIED` | No trigger specified. |
+| `ANALYSIS_TRIGGER_BOM_UPLOAD` | The analysis was triggered by a BOM upload. |
+| `ANALYSIS_TRIGGER_SCHEDULE` | The analysis was triggered by a schedule. |
+| `ANALYSIS_TRIGGER_MANUAL` | The analysis was triggered manually. |
 
 
 
@@ -665,6 +1127,10 @@
 | `GROUP_USER_CREATED` |  |
 | `GROUP_USER_DELETED` |  |
 | `GROUP_BOM_VALIDATION_FAILED` |  |
+| `GROUP_VULNERABILITY_RETRACTED` | A previously identified vulnerability is no longer applicable,
+e.g. due to upstream sources correcting their data. |
+| `GROUP_NEW_VULNERABILITIES_SUMMARY` | Scheduled summary of new vulnerabilities across projects. |
+| `GROUP_NEW_POLICY_VIOLATIONS_SUMMARY` | Scheduled summary of new policy violations across projects. |
 
 
 
