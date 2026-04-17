@@ -8,7 +8,14 @@ in the platform.
 
 ### Alerts
 
-Alerts, a.k.a. *notification rules*, are configurations that specify
+Alerts, a.k.a. *notification rules*, are configurations that specify which notifications
+are sent to which destinations. An alert defines the scope, groups, and level of notifications
+it is interested in, and optionally restricts matching to specific projects or tags.
+
+Alerts can further be refined with a *filter expression*, written in [CEL], that evaluates
+against the content of each notification. This allows filtering by properties such as
+vulnerability severity, CVSS score, or component name, without requiring dedicated UI controls
+for each filter criterion. Refer to [Filter Expressions](filter-expressions.md) for details.
 
 ### Publishers
 
@@ -69,3 +76,5 @@ A group is a granular classification of notification subjects within a [scope](#
 | PORTFOLIO | BOM_PROCESSING_FAILED         | Error         | Notifications generated whenever a BOM upload process fails                                                                       |
 | PORTFOLIO | BOM_VALIDATION_FAILED         | Error         | Notifications generated whenever an invalid BOM is uploaded                                                                       |
 | PORTFOLIO | POLICY_VIOLATION              | Informational | Notifications generated whenever a policy violation is identified                                                                 |
+
+[CEL]: https://cel.dev/
