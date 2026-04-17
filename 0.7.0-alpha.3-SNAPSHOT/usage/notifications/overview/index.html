@@ -1084,6 +1084,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../filter-expressions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filter Expressions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../templating/" class="md-nav__link">
         
   
@@ -2907,7 +2935,13 @@ capable of alerting users or systems about the occurrences of various events
 in the platform.</p>
 <h2 id="concepts">Concepts<a class="headerlink" href="#concepts" title="Permanent link">&para;</a></h2>
 <h3 id="alerts">Alerts<a class="headerlink" href="#alerts" title="Permanent link">&para;</a></h3>
-<p>Alerts, a.k.a. <em>notification rules</em>, are configurations that specify</p>
+<p>Alerts, a.k.a. <em>notification rules</em>, are configurations that specify which notifications
+are sent to which destinations. An alert defines the scope, groups, and level of notifications
+it is interested in, and optionally restricts matching to specific projects or tags.</p>
+<p>Alerts can further be refined with a <em>filter expression</em>, written in <a href="https://cel.dev/">CEL</a>, that evaluates
+against the content of each notification. This allows filtering by properties such as
+vulnerability severity, CVSS score, or component name, without requiring dedicated UI controls
+for each filter criterion. Refer to <a href="../filter-expressions/">Filter Expressions</a> for details.</p>
 <h3 id="publishers">Publishers<a class="headerlink" href="#publishers" title="Permanent link">&para;</a></h3>
 <p>Publishers are software components that send notifications emitted by the platform
 to a destination system. Dependency-Track supports multiple publishers, ranging from

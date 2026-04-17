@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/decisions/016-user-managed-vuln-policies/">
+        <link rel="canonical" href="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/notifications/filter-expressions/">
       
       
-        <link rel="prev" href="../015-package-metadata/">
+        <link rel="prev" href="../publishers/">
       
       
-        <link rel="next" href="../017-notification-filter-expressions/">
+        <link rel="next" href="../templating/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>ADR-016: User-Managed Vulnerability Policies - Hyades</title>
+        <title>Filter Expressions - Hyades</title>
       
     
     
@@ -59,15 +59,15 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="ADR-016: User-Managed Vulnerability Policies - Hyades" />
-<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/decisions/016-user-managed-vuln-policies.png" />
+<meta property="og:title" content="Filter Expressions - Hyades" />
+<meta property="og:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/usage/notifications/filter-expressions.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/architecture/decisions/016-user-managed-vuln-policies/" />
+<meta property="og:url" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/usage/notifications/filter-expressions/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="ADR-016: User-Managed Vulnerability Policies - Hyades" />
-<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/architecture/decisions/016-user-managed-vuln-policies.png" />
+<meta property="twitter:title" content="Filter Expressions - Hyades" />
+<meta property="twitter:image" content="https://dependencytrack.github.io/hyades/latest/0.7.0-alpha.3-SNAPSHOT/assets/images/social/usage/notifications/filter-expressions.png" />
 </head>
   
   
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#context" class="md-skip">
+        <a href="#introduction" class="md-skip">
           Skip to content
         </a>
       
@@ -127,7 +127,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ADR-016: User-Managed Vulnerability Policies
+              Filter Expressions
             
           </span>
         </div>
@@ -255,6 +255,8 @@
   
   
   
+    
+  
   
     
     
@@ -262,11 +264,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../usage/policy-compliance/overview/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../policy-compliance/overview/" class="md-tabs__link">
           
   
   
@@ -285,13 +289,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
           
   
   
@@ -637,24 +639,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -672,7 +679,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -740,7 +747,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/policy-compliance/overview/" class="md-nav__link">
+      <a href="../../policy-compliance/overview/" class="md-nav__link">
         
   
   
@@ -768,7 +775,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/policy-compliance/expressions/" class="md-nav__link">
+      <a href="../../policy-compliance/expressions/" class="md-nav__link">
         
   
   
@@ -796,7 +803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/policy-compliance/vulnerability-policies/" class="md-nav__link">
+      <a href="../../policy-compliance/vulnerability-policies/" class="md-nav__link">
         
   
   
@@ -829,6 +836,8 @@
                 
   
   
+    
+  
   
   
     
@@ -839,11 +848,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
@@ -864,7 +873,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -882,7 +891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/notifications/overview/" class="md-nav__link">
+      <a href="../overview/" class="md-nav__link">
         
   
   
@@ -910,7 +919,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/notifications/publishers/" class="md-nav__link">
+      <a href="../publishers/" class="md-nav__link">
         
   
   
@@ -935,10 +944,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../usage/notifications/filter-expressions/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filter Expressions
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -954,6 +988,212 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Syntax
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluation-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation Context
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluation Context">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enum-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enum Constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subject-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subject Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#failure-behaviour" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Failure Behaviour
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filtering-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtering Order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#only-critical-and-high-severity-vulnerabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Only critical and high severity vulnerabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vulnerabilities-with-a-cvss-v3-score-above-a-threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vulnerabilities with a CVSS v3 score above a threshold
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notifications-for-projects-matching-a-name-prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications for projects matching a name prefix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vulnerabilities-with-a-specific-cwe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vulnerabilities with a specific CWE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combining-multiple-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combining multiple conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scheduled-alerts-only-when-critical-vulnerabilities-were-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scheduled alerts: only when critical vulnerabilities were found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-field-checking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional field checking
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -966,7 +1206,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../usage/notifications/templating/" class="md-nav__link">
+      <a href="../templating/" class="md-nav__link">
         
   
   
@@ -1006,29 +1246,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -1046,7 +1281,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1064,7 +1299,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../../../architecture/" class="md-nav__link">
         
   
   
@@ -1089,8 +1324,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1101,11 +1334,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
         
           
           <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
@@ -1126,7 +1359,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1144,7 +1377,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../000-index/" class="md-nav__link">
+      <a href="../../../architecture/decisions/000-index/" class="md-nav__link">
         
   
   
@@ -1172,7 +1405,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../001-drop-kafka-dependency/" class="md-nav__link">
+      <a href="../../../architecture/decisions/001-drop-kafka-dependency/" class="md-nav__link">
         
   
   
@@ -1200,7 +1433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../002-workflow-orchestration/" class="md-nav__link">
+      <a href="../../../architecture/decisions/002-workflow-orchestration/" class="md-nav__link">
         
   
   
@@ -1228,7 +1461,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../003-notification-publishing/" class="md-nav__link">
+      <a href="../../../architecture/decisions/003-notification-publishing/" class="md-nav__link">
         
   
   
@@ -1256,7 +1489,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../004-file-storage-plugin/" class="md-nav__link">
+      <a href="../../../architecture/decisions/004-file-storage-plugin/" class="md-nav__link">
         
   
   
@@ -1284,7 +1517,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../005-materialize-project-hierarchies/" class="md-nav__link">
+      <a href="../../../architecture/decisions/005-materialize-project-hierarchies/" class="md-nav__link">
         
   
   
@@ -1312,7 +1545,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../006-consolidate-user-tables/" class="md-nav__link">
+      <a href="../../../architecture/decisions/006-consolidate-user-tables/" class="md-nav__link">
         
   
   
@@ -1340,7 +1573,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../007-spec-first-rest-api-v2/" class="md-nav__link">
+      <a href="../../../architecture/decisions/007-spec-first-rest-api-v2/" class="md-nav__link">
         
   
   
@@ -1368,7 +1601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../009-auth-and-roles/" class="md-nav__link">
+      <a href="../../../architecture/decisions/009-auth-and-roles/" class="md-nav__link">
         
   
   
@@ -1396,7 +1629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../010-vulnerability-datasource-extension-point/" class="md-nav__link">
+      <a href="../../../architecture/decisions/010-vulnerability-datasource-extension-point/" class="md-nav__link">
         
   
   
@@ -1424,7 +1657,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../011-notification-outbox/" class="md-nav__link">
+      <a href="../../../architecture/decisions/011-notification-outbox/" class="md-nav__link">
         
   
   
@@ -1452,7 +1685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../012-extension-kv-store/" class="md-nav__link">
+      <a href="../../../architecture/decisions/012-extension-kv-store/" class="md-nav__link">
         
   
   
@@ -1480,7 +1713,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../013-finding-status/" class="md-nav__link">
+      <a href="../../../architecture/decisions/013-finding-status/" class="md-nav__link">
         
   
   
@@ -1508,7 +1741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../014-new-alias-schema/" class="md-nav__link">
+      <a href="../../../architecture/decisions/014-new-alias-schema/" class="md-nav__link">
         
   
   
@@ -1536,7 +1769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../015-package-metadata/" class="md-nav__link">
+      <a href="../../../architecture/decisions/015-package-metadata/" class="md-nav__link">
         
   
   
@@ -1561,35 +1794,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ADR-016: User-Managed Vulnerability Policies
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../architecture/decisions/016-user-managed-vuln-policies/" class="md-nav__link">
         
   
   
@@ -1605,57 +1813,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Context
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#decision" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Decision
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#consequences" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Consequences
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1668,7 +1825,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../017-notification-filter-expressions/" class="md-nav__link">
+      <a href="../../../architecture/decisions/017-notification-filter-expressions/" class="md-nav__link">
         
   
   
@@ -1754,7 +1911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/durable-execution/" class="md-nav__link">
+      <a href="../../../architecture/design/durable-execution/" class="md-nav__link">
         
   
   
@@ -1782,7 +1939,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/notifications/" class="md-nav__link">
+      <a href="../../../architecture/design/notifications/" class="md-nav__link">
         
   
   
@@ -1810,7 +1967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/package-metadata-resolution/" class="md-nav__link">
+      <a href="../../../architecture/design/package-metadata-resolution/" class="md-nav__link">
         
   
   
@@ -1838,7 +1995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/vulnerability-analysis/" class="md-nav__link">
+      <a href="../../../architecture/design/vulnerability-analysis/" class="md-nav__link">
         
   
   
@@ -1916,7 +2073,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design/archive/workflow-state-tracking/" class="md-nav__link">
+      <a href="../../../architecture/design/archive/workflow-state-tracking/" class="md-nav__link">
         
   
   
@@ -2856,7 +3013,7 @@
 
 
   
-    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/architecture/decisions/016-user-managed-vuln-policies.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/DependencyTrack/hyades/blob/main/docs/usage/notifications/filter-expressions.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2864,65 +3021,206 @@
   
 
 
-  <h1>ADR-016: User-Managed Vulnerability Policies</h1>
+  <h1>Filter Expressions</h1>
 
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>Alerts can include a filter expression to control which notifications are dispatched
+based on their content. Filter expressions are written in <a href="https://cel.dev/">CEL</a> (Common Expression Language),
+the same language used for <a href="../../policy-compliance/expressions/">policy compliance expressions</a>.</p>
+<p>Without a filter expression, an alert matches all notifications that satisfy its scope, group,
+level, and project or tag restrictions. A filter expression adds a further condition: the
+notification is only dispatched when the expression evaluates to <code>true</code>.</p>
+<p><img alt="Filter expression field in the alert editor" src="../images/filter-expression-editor.png" /></p>
+<h2 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">&para;</a></h2>
+<p>Filter expressions use the same <a href="../../policy-compliance/expressions/#syntax">CEL syntax</a> as
+policy compliance expressions. CEL is not <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-complete</a> and does not support constructs
+like <code>if</code> statements or loops. It compensates for this with <a href="https://github.com/google/cel-spec/blob/v0.13.0/doc/langdef.md#macros">macros</a> like <code>all</code>, <code>exists</code>,
+<code>exists_one</code>, <code>map</code>, and <code>filter</code>.</p>
+<p>Refer to the official <a href="https://github.com/google/cel-spec/blob/v0.13.0/doc/langdef.md#language-definition">language definition</a> for a thorough description of the syntax.</p>
+<h2 id="evaluation-context">Evaluation Context<a class="headerlink" href="#evaluation-context" title="Permanent link">&para;</a></h2>
+<p>The context in which filter expressions are evaluated contains the following variables:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Status</th>
-<th style="text-align: left;">Date</th>
-<th style="text-align: left;">Author(s)</th>
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">Accepted</td>
-<td style="text-align: left;">2026-04-13</td>
-<td style="text-align: left;"><a href="https://github.com/nscuro">@nscuro</a></td>
+<td style="text-align: left;"><code>level</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#level"><code>Level</code></a></td>
+<td style="text-align: left;">The notification level, as an integer enum value. Use named constants (see below).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>scope</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#scope"><code>Scope</code></a></td>
+<td style="text-align: left;">The notification scope, as an integer enum value. Use named constants (see below).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#group"><code>Group</code></a></td>
+<td style="text-align: left;">The notification group, as an integer enum value. Use named constants (see below).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>title</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">The notification title.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>content</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">The notification content.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>timestamp</code></td>
+<td style="text-align: left;"><a href="https://protobuf.dev/reference/protobuf/google.protobuf/#timestamp"><code>google.protobuf.Timestamp</code></a></td>
+<td style="text-align: left;">The time at which the notification was created.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>subject</code></td>
+<td style="text-align: left;">dynamic</td>
+<td style="text-align: left;">The notification subject, typed according to the notification group (see below).</td>
 </tr>
 </tbody>
 </table>
-<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
-<p>Dependency-Track's vulnerability policy system currently only supports policies that are synchronized from a
-remote bundle, a ZIP archive of YAML files fetched periodically. While this approach works well for centrally
-managed policy sets distributed via CI pipelines, it presents a high barrier to entry for organizations that
-want to define policies directly through the UI or API. There is no way for a user to create, edit, or delete
-a vulnerability policy without modifying the bundle and triggering a sync.</p>
-<p>Additionally, the current system lacks mechanisms for controlling the order in which policies are evaluated.
-All policies are evaluated in insertion order, which makes it difficult to express intent like
-"this targeted override should take precedence over the general baseline".</p>
-<p>Several community requests have converged on the need for user-managed policies.</p>
-<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
-<p>We will extend the vulnerability policy system to support user-managed policies alongside the existing
-bundle-sync mechanism. The two sources coexist in the same <code>VULNERABILITY_POLICY</code> table, distinguished by
-the presence or absence of a foreign key to <code>VULNERABILITY_POLICY_BUNDLE</code>.</p>
-<p><strong>Identification.</strong> Each policy receives a stable <code>UUID</code> column that serves as the external API identifier.
-The existing <code>NAME</code> column remains globally unique across both user-managed and bundle-synced policies, avoiding
-confusion from duplicate names. The UUID is immutable and generated server-side.</p>
-<p><strong>Source discrimination.</strong> Rather than introducing a separate <code>SOURCE</code> enum column, we derive source from
-<code>VULNERABILITY_POLICY_BUNDLE_ID</code>. When it is <code>NULL</code>, the policy is user-managed. When it references a bundle,
-the policy is bundle-managed. This avoids data inconsistency between a source flag and the actual FK state.
-The API exposes a read-only <code>source</code> field (<code>USER</code> or <code>BUNDLE</code>) computed from this column.</p>
-<p><strong>Priority ordering.</strong> We add a <code>PRIORITY</code> column (integer, 0 to 100, lower values indicating higher precedence)
-to give explicit control over evaluation order.</p>
-<p><strong>Bundle isolation.</strong> The bundle sync mechanism is updated to only manage policies that belong to its bundle
-(identified by <code>VULNERABILITY_POLICY_BUNDLE_ID</code>). It cannot create, modify, or delete user-managed policies.
-Conversely, the CRUD API rejects modifications to bundle-managed policies.
-Deletion of a bundle cascades to its policies via the FK's <code>ON DELETE CASCADE</code>,
-with analysis reset and audit trail creation for each affected policy.</p>
-<p><strong>REST API.</strong> User-managed policy CRUD is exposed under <code>/api/v2/vuln-policies</code>,
-bundle management is exposed under <code>/api/v2/vuln-policy-bundles</code>.</p>
-<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
-<p>Organizations can now manage vulnerability policies directly through the UI and API without needing to set up
-a bundle repository and CI pipeline. This lowers the barrier to entry significantly, especially for smaller
-teams or those evaluating the feature.</p>
-<p>Bundle-synced and user-managed policies share a single name namespace. This is intentional, as it prevents
-the confusing situation where two policies with the same name behave differently. However, it means that a
-bundle sync can fail if it tries to create a policy whose name is already taken by a user-managed policy.
-This is an acceptable trade-off, because name conflicts surface as clear errors rather than silent shadowing.</p>
-<p>The database migration backfills <code>VULNERABILITY_POLICY_BUNDLE_ID</code> on all existing policies, associating them
-with the existing bundle record. This means that after migration, all pre-existing policies are bundle-managed
-and the system behaves identically to before until users explicitly create new policies.</p>
+<h3 id="enum-constants">Enum Constants<a class="headerlink" href="#enum-constants" title="Permanent link">&para;</a></h3>
+<p>The <code>level</code>, <code>scope</code>, and <code>group</code> variables hold integer values. To compare them in a readable way,
+use the named constants from the <a href="../../../reference/schemas/notification/#enums">notification schema</a>:</p>
+<div class="language-js highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nx">level</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">Level</span><span class="p">.</span><span class="nx">LEVEL_INFORMATIONAL</span>
+</span></code></pre></div>
+<div class="language-js highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">Group</span><span class="p">.</span><span class="nx">GROUP_NEW_VULNERABILITY</span>
+</span></code></pre></div>
+<div class="language-js highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">scope</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">Scope</span><span class="p">.</span><span class="nx">SCOPE_PORTFOLIO</span>
+</span></code></pre></div>
+<h3 id="subject-types">Subject Types<a class="headerlink" href="#subject-types" title="Permanent link">&para;</a></h3>
+<p>The <code>subject</code> variable holds the notification's subject, which varies depending on the notification
+group. Refer to the <a href="../../../reference/schemas/notification/#subjects">notification schema reference</a>
+for full details of each subject type and its fields.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Group</th>
+<th style="text-align: left;">Subject Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>BOM_CONSUMED</code>, <code>BOM_PROCESSED</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#bomconsumedorprocessedsubject">BomConsumedOrProcessedSubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BOM_PROCESSING_FAILED</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#bomprocessingfailedsubject">BomProcessingFailedSubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>BOM_VALIDATION_FAILED</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#bomvalidationfailedsubject">BomValidationFailedSubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>NEW_VULNERABILITY</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#newvulnerabilitysubject">NewVulnerabilitySubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>NEW_VULNERABLE_DEPENDENCY</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#newvulnerabledependencysubject">NewVulnerableDependencySubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POLICY_VIOLATION</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#policyviolationsubject">PolicyViolationSubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PROJECT_AUDIT_CHANGE</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#vulnerabilityanalysisdecisionchangesubject">VulnerabilityAnalysisDecisionChangeSubject</a> or <a href="../../../reference/schemas/notification/#policyviolationanalysisdecisionchangesubject">PolicyViolationAnalysisDecisionChangeSubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PROJECT_VULN_ANALYSIS_COMPLETE</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#projectvulnanalysiscompletesubject">ProjectVulnAnalysisCompleteSubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>VEX_CONSUMED</code>, <code>VEX_PROCESSED</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#vexconsumedorprocessedsubject">VexConsumedOrProcessedSubject</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>USER_CREATED</code>, <code>USER_DELETED</code></td>
+<td style="text-align: left;"><a href="../../../reference/schemas/notification/#usersubject">UserSubject</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
+<p>Filter expressions are validated when an alert is saved. If the expression contains syntax errors
+or references types that do not exist, the save operation will fail and the errors will be reported
+with their exact location (line and column).</p>
+<p><img alt="Validation error for an invalid filter expression" src="../images/filter-expression-editor-error.png" /></p>
+<p>The maximum length of a filter expression is 2048 characters.</p>
+<h2 id="failure-behaviour">Failure Behaviour<a class="headerlink" href="#failure-behaviour" title="Permanent link">&para;</a></h2>
+<p>If a filter expression fails to evaluate at dispatch time (for example due to accessing a field
+that does not exist on the subject), the alert matches the notification regardless.
+This "fail-open" strategy ensures that a broken expression causes over-notification rather than
+silently suppressing notifications. Evaluation failures are logged as warnings.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>An alert with an expression that consistently fails will behave as though
+it has no filter expression at all. Check the application logs for evaluation warnings
+if an alert appears to match more broadly than expected.</p>
+</div>
+<h2 id="filtering-order">Filtering Order<a class="headerlink" href="#filtering-order" title="Permanent link">&para;</a></h2>
+<p>When a notification is dispatched, Dependency-Track evaluates the following filters in order:</p>
+<ol>
+<li><strong>Scope, group, and level</strong> matching (configured on the alert).</li>
+<li><strong>Project and tag restrictions</strong> (if the alert is limited to specific projects or tags).</li>
+<li><strong>Filter expression</strong> (if the alert has one).</li>
+</ol>
+<p>The filter expression is only evaluated when the notification has already passed the preceding
+checks. This means that project and tag restrictions are always enforced, regardless of what the
+expression contains.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="only-critical-and-high-severity-vulnerabilities">Only critical and high severity vulnerabilities<a class="headerlink" href="#only-critical-and-high-severity-vulnerabilities" title="Permanent link">&para;</a></h3>
+<p>The following expression matches <code>NEW_VULNERABILITY</code> notifications where the vulnerability
+severity is <code>CRITICAL</code> or <code>HIGH</code>:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nx">subject</span><span class="p">.</span><span class="nx">vulnerability</span><span class="p">.</span><span class="nx">severity</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;HIGH&quot;</span><span class="p">]</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="vulnerabilities-with-a-cvss-v3-score-above-a-threshold">Vulnerabilities with a CVSS v3 score above a threshold<a class="headerlink" href="#vulnerabilities-with-a-cvss-v3-score-above-a-threshold" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nx">subject</span><span class="p">.</span><span class="nx">vulnerability</span><span class="p">.</span><span class="nx">cvss_v3</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">7.0</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="notifications-for-projects-matching-a-name-prefix">Notifications for projects matching a name prefix<a class="headerlink" href="#notifications-for-projects-matching-a-name-prefix" title="Permanent link">&para;</a></h3>
+<p>The following expression matches notifications whose subject contains a project with a name
+starting with <code>acme-</code>:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nx">subject</span><span class="p">.</span><span class="nx">project</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s2">&quot;acme-&quot;</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For simple project-based filtering, consider using project and tag restrictions on the
+alert instead. Filter expressions are more useful for content-based conditions
+that cannot be expressed through project or tag restrictions alone.</p>
+</div>
+<h3 id="vulnerabilities-with-a-specific-cwe">Vulnerabilities with a specific CWE<a class="headerlink" href="#vulnerabilities-with-a-specific-cwe" title="Permanent link">&para;</a></h3>
+<p>The following expression matches <code>NEW_VULNERABILITY</code> notifications where the vulnerability
+has CWE-79 (Cross-site Scripting) among its CWEs:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nx">subject</span><span class="p">.</span><span class="nx">vulnerability</span><span class="p">.</span><span class="nx">cwes</span><span class="p">.</span><span class="nx">exists</span><span class="p">(</span><span class="nx">cwe</span><span class="p">,</span><span class="w"> </span><span class="nx">cwe</span><span class="p">.</span><span class="nx">cwe_id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">79</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="combining-multiple-conditions">Combining multiple conditions<a class="headerlink" href="#combining-multiple-conditions" title="Permanent link">&para;</a></h3>
+<p>The following expression matches <code>NEW_VULNERABILITY</code> notifications for <code>CRITICAL</code> vulnerabilities
+with a network attack vector in CVSSv3:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nx">subject</span><span class="p">.</span><span class="nx">vulnerability</span><span class="p">.</span><span class="nx">severity</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;CRITICAL&quot;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">subject</span><span class="p">.</span><span class="nx">vulnerability</span><span class="p">.</span><span class="nx">cvss_v3_vector</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">&quot;.*/AV:N/.*&quot;</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="scheduled-alerts-only-when-critical-vulnerabilities-were-found">Scheduled alerts: only when critical vulnerabilities were found<a class="headerlink" href="#scheduled-alerts-only-when-critical-vulnerabilities-were-found" title="Permanent link">&para;</a></h3>
+<p>For scheduled alerts that produce vulnerability summaries, the subject contains
+an overview with vulnerability counts grouped by severity. The following expression matches
+only when at least one <code>CRITICAL</code> vulnerability was found in the reporting period:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="s2">&quot;CRITICAL&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">subject</span><span class="p">.</span><span class="nx">overview</span><span class="p">.</span><span class="nx">new_vulnerabilities_count_by_severity</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="optional-field-checking">Optional field checking<a class="headerlink" href="#optional-field-checking" title="Permanent link">&para;</a></h3>
+<p>CEL does not have a concept of <code>null</code>. Accessing a field that is not set returns its default
+value (e.g. <code>""</code> for strings, <code>0</code> for numbers), which can lead to misleading matches.
+Use the <code>has()</code> macro to check for field presence before accessing it:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
+<span class="normal"><a href="#__codelineno-9-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nx">has</span><span class="p">(</span><span class="nx">subject</span><span class="p">.</span><span class="nx">vulnerability</span><span class="p">.</span><span class="nx">cvss_v3_vector</span><span class="p">)</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">subject</span><span class="p">.</span><span class="nx">vulnerability</span><span class="p">.</span><span class="nx">cvss_v3_vector</span><span class="p">.</span><span class="nx">matches</span><span class="p">(</span><span class="s2">&quot;.*/AV:N/.*&quot;</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 
 
 
