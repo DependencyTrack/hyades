@@ -113,6 +113,7 @@ nav:
         - "ADR-014: New Alias Schema": architecture/decisions/014-new-alias-schema.md
         - "ADR-015: Package Metadata": architecture/decisions/015-package-metadata.md
         - "ADR-016: User-Managed Vulnerability Policies": architecture/decisions/016-user-managed-vuln-policies.md
+        - "ADR-017: Notification Filter Expressions": architecture/decisions/017-notification-filter-expressions.md
     - Design:
         - Durable Execution: architecture/design/durable-execution.md
         - Notifications: architecture/design/notifications.md
