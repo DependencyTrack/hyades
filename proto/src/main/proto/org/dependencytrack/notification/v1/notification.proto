@@ -6,7 +6,7 @@ import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 
 option java_multiple_files = true;
-option java_package = "org.dependencytrack.proto.notification.v1";
+option java_package = "org.dependencytrack.notification.proto.v1";
 
 message Notification {
   Level level = 1;
@@ -57,6 +57,16 @@ enum Group {
   GROUP_USER_DELETED = 20;
   GROUP_BOM_VALIDATION_FAILED = 21;
 
+  // A previously identified vulnerability is no longer applicable,
+  // e.g. due to upstream sources correcting their data.
+  GROUP_VULNERABILITY_RETRACTED = 22;
+
+  // Scheduled summary of new vulnerabilities across projects.
+  GROUP_NEW_VULNERABILITIES_SUMMARY = 23;
+
+  // Scheduled summary of new policy violations across projects.
+  GROUP_NEW_POLICY_VIOLATIONS_SUMMARY = 24;
+
   // Indexing service has been removed as of
   // https://github.com/DependencyTrack/hyades/issues/661
   reserved 5;
@@ -101,13 +111,16 @@ message NewVulnerabilitySubject {
   Project project = 2;
   Vulnerability vulnerability = 3;
   BackReference affected_projects_reference = 4;
-  optional string vulnerability_analysis_level = 5;
+  optional string vulnerability_analysis_level = 5 [deprecated = true];
   // List of projects affected by the vulnerability.
   // DEPRECATED: This list only holds one item, and it is identical to the one in the project field.
   // The field is kept for backward compatibility of JSON notifications, but consumers should not expect multiple projects here.
   // Transmitting all affected projects in one notification is not feasible for large portfolios,
   // see https://github.com/DependencyTrack/hyades/issues/467 for details.
   repeated Project affected_projects = 6 [deprecated = true];
+
+  // The trigger of the analysis that identified the vulnerability.
+  AnalysisTrigger analysis_trigger = 7;
 }
 
 message NewVulnerableDependencySubject {
@@ -256,4 +269,107 @@ message PolicyViolationAnalysis {
   PolicyViolation policy_violation = 3;
   optional string state = 4;
   optional bool suppressed = 5;
+}
+
+enum AnalysisTrigger {
+  // No trigger specified.
+  ANALYSIS_TRIGGER_UNSPECIFIED = 0;
+
+  // The analysis was triggered by a BOM upload.
+  ANALYSIS_TRIGGER_BOM_UPLOAD = 1;
+
+  // The analysis was triggered by a schedule.
+  ANALYSIS_TRIGGER_SCHEDULE = 2;
+
+  // The analysis was triggered manually.
+  ANALYSIS_TRIGGER_MANUAL = 3;
+}
+
+message VulnerabilityRetractedSubject {
+  // The component for which the vulnerability was previously reported.
+  Component component = 1;
+
+  // The project for which the vulnerability was previously reported.
+  Project project = 2;
+
+  // The previously reported vulnerability.
+  Vulnerability vulnerability = 3;
+}
+
+// Subject for GROUP_NEW_VULNERABILITIES_SUMMARY notifications.
+message NewVulnerabilitiesSummarySubject {
+  Overview overview = 1;
+  repeated ProjectSummaryEntry project_summaries = 2;
+  repeated ProjectFindingsEntry findings_by_project = 3;
+  google.protobuf.Timestamp since = 4;
+
+  message Overview {
+    int32 affected_projects_count = 1;
+    int32 affected_components_count = 2;
+    int32 new_vulnerabilities_count = 3;
+    map<string, int32> new_vulnerabilities_count_by_severity = 4;
+    int32 suppressed_new_vulnerabilities_count = 5;
+    int32 total_new_vulnerabilities_count = 6;
+  }
+
+  message ProjectSummaryEntry {
+    Project project = 1;
+    map<string, int32> new_vulnerabilities_count_by_severity = 2;
+    map<string, int32> suppressed_new_vulnerabilities_count_by_severity = 3;
+    map<string, int32> total_new_vulnerabilities_count_by_severity = 4;
+  }
+
+  message ProjectFindingsEntry {
+    Project project = 1;
+    repeated Finding findings = 2;
+  }
+
+  message Finding {
+    Component component = 1;
+    Vulnerability vulnerability = 2;
+    optional string analyzer_identity = 3;
+    google.protobuf.Timestamp attributed_on = 4;
+    optional string reference_url = 5;
+    optional string analysis_state = 6;
+    bool suppressed = 7;
+  }
+}
+
+// Subject for GROUP_NEW_POLICY_VIOLATIONS_SUMMARY notifications.
+message NewPolicyViolationsSummarySubject {
+  Overview overview = 1;
+  repeated ProjectSummaryEntry project_summaries = 2;
+  repeated ProjectViolationsEntry violations_by_project = 3;
+  google.protobuf.Timestamp since = 4;
+
+  message Overview {
+    int32 affected_projects_count = 1;
+    int32 affected_components_count = 2;
+    int32 new_violations_count = 3;
+    map<string, int32> new_violations_count_by_type = 4;
+    int32 suppressed_new_violations_count = 5;
+    int32 total_new_violations_count = 6;
+  }
+
+  message ProjectSummaryEntry {
+    Project project = 1;
+    map<string, int32> new_violations_count_by_type = 2;
+    map<string, int32> suppressed_new_violations_count_by_type = 3;
+    map<string, int32> total_new_violations_count_by_type = 4;
+  }
+
+  message ProjectViolationsEntry {
+    Project project = 1;
+    repeated Violation violations = 2;
+  }
+
+  message Violation {
+    string uuid = 1;
+    Component component = 2;
+    PolicyCondition policy_condition = 3;
+    string type = 4;
+    google.protobuf.Timestamp timestamp = 5;
+    optional string analysis_state = 6;
+    bool suppressed = 7;
+  }
 }

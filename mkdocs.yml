@@ -93,6 +93,7 @@ nav:
     - Notifications:
         - Overview: usage/notifications/overview.md
         - Publishers: usage/notifications/publishers.md
+        - Filter Expressions: usage/notifications/filter-expressions.md
         - Templating: usage/notifications/templating.md
 - Architecture:
     - Overview: architecture/index.md
