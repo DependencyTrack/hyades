@@ -357,7 +357,7 @@ Configuration properties may use the following types:
 
     <table>
       <tr><th>Type</th><td style="border-width: 0"><code>integer</code></td></tr>
-      <tr><th>Default</th><td><code>20</code></td></tr>
+      <tr><th>Default</th><td><code>30</code></td></tr>
       <tr><th>ENV</th><td><code>DT_DATABASE_POOL_MAX_SIZE</code></td></tr>
     </table>
 
@@ -369,7 +369,7 @@ Configuration properties may use the following types:
 
     <table>
       <tr><th>Type</th><td style="border-width: 0"><code>integer</code></td></tr>
-      <tr><th>Default</th><td><code>10</code></td></tr>
+      <tr><th>Default</th><td><code>15</code></td></tr>
       <tr><th>ENV</th><td><code>DT_DATABASE_POOL_MIN_IDLE</code></td></tr>
     </table>
 
@@ -709,7 +709,7 @@ Configuration properties may use the following types:
 
     <table>
       <tr><th>Type</th><td style="border-width: 0"><code>integer</code></td></tr>
-      <tr><th>Default</th><td><code>10</code></td></tr>
+      <tr><th>Default</th><td><code>3</code></td></tr>
       <tr><th>ENV</th><td><code>DT_DEX_ENGINE_ACTIVITY_WORKER_PACKAGE_METADATA_RESOLUTION_MAX_CONCURRENCY</code></td></tr>
     </table>
 
