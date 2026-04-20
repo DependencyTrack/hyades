@@ -69,16 +69,12 @@ tags:
   description: Endpoints related to components
 - name: Extensions
   description: Endpoints related to extensions
-- name: Metrics
-  description: Endpoints related to metrics
 - name: Projects
   description: Endpoints related to projects
 - name: Secrets
   description: Endpoints related to secrets
 - name: Task Queues
   description: Endpoints related to task queue management
-- name: Teams
-  description: Endpoints related to teams
 - name: Vulnerability Policies
   description: Endpoints related to vulnerability policies
 - name: Workflows
