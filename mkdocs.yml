@@ -77,7 +77,9 @@ markdown_extensions:
 plugins:
 - search
 - social
-- swagger-ui-tag
+- swagger-ui-tag:
+    filter: true
+    supportedSubmitMethods: []
 
 nav:
 - Getting Started:
@@ -144,9 +146,8 @@ nav:
 - Reference:
     - Configuration:
         - API Server: reference/configuration/api-server.md
-    - REST API:
-        - v1: reference/api/v1.md
-        - v2: reference/api/v2.md
+    - REST API v1: reference/api/v1.md
+    - REST API v2: reference/api/v2.md
     - Schemas:
         - Notification: reference/schemas/notification.md
         - Policy: reference/schemas/policy.md
