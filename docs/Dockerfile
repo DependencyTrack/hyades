@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # This file is part of Dependency-Track.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,17 +14,5 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) OWASP Foundation. All Rights Reserved.
-
-set -euxo pipefail
-
-SCRIPT_DIR="$(cd -P -- "$(dirname "$0")" && pwd -P)"
-ROOT_DIR="$(cd -P -- "${SCRIPT_DIR}/.." && pwd -P)"
-
-DOCS_IMAGE="hyades-docs"
-
-docker build -t "${DOCS_IMAGE}" "${ROOT_DIR}/docs"
-
-docker run --rm -it -u "$(id -u):$(id -g)" --name hyades-docs \
-  -p "127.0.0.1:8000:8000" \
-  -v "${ROOT_DIR}:/docs" \
-  "${DOCS_IMAGE}" serve --livereload -a '0.0.0.0:8000'
+FROM squidfunk/mkdocs-material
+RUN pip install mkdocs-swagger-ui-tag

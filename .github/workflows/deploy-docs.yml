@@ -47,7 +47,7 @@ jobs:
           check-latest: true
       - name: Install Requirements
         run: |-
-          pip install 'mkdocs-material[imaging]' mike
+          pip install 'mkdocs-material[imaging]' mike mkdocs-swagger-ui-tag
       - name: Determine Project Version
         id: determine_version
         run: |-
