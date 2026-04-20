@@ -42,9 +42,9 @@ jobs:
           --dir /tmp/openapi-spec
     - name: Update Spec Files
       run: |-
-        cp /tmp/openapi-spec/apiserver/target/classes/org/dependencytrack/api/v1/openapi.yaml \
+        cp /tmp/openapi-spec/v1/openapi.yaml \
           docs/reference/api/openapi-v1.yaml
-        cp /tmp/openapi-spec/api/target/classes/org/dependencytrack/api/v2/openapi.yaml \
+        cp /tmp/openapi-spec/v2/openapi.yaml \
           docs/reference/api/openapi-v2.yaml
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # tag=v8.1.1
