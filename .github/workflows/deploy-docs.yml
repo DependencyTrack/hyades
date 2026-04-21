@@ -25,6 +25,7 @@ on:
       - main
   release:
     types:
+    - prereleased
     - released
 
 permissions: { }
@@ -56,6 +57,8 @@ jobs:
           ALIASES=""
           if [[ $VERSION == *-SNAPSHOT ]]; then
             ALIASES="snapshot"
+          elif ${{ github.event.release.prerelease }}; then
+            ALIASES=""
           else
             ALIASES="latest"
           fi
