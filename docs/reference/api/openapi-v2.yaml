@@ -2504,22 +2504,26 @@ components:
           description: Whether the provider is enabled
     list-extension-points-response:
       required:
-      - extension_points
+      - items
       type: object
       properties:
-        extension_points:
+        items:
           type: array
           items:
             $ref: "#/components/schemas/list-extension-points-response-item"
+      allOf:
+      - $ref: "#/components/schemas/paginated-response"
     list-extensions-response:
       required:
-      - extensions
+      - items
       type: object
       properties:
-        extensions:
+        items:
           type: array
           items:
             $ref: "#/components/schemas/list-extensions-response-item"
+      allOf:
+      - $ref: "#/components/schemas/paginated-response"
     get-extension-config-response:
       required:
       - config
@@ -3228,11 +3232,19 @@ components:
           type: string
     list-extensions-response-item:
       required:
+      - configurable
       - name
+      - testable
       type: object
       properties:
         name:
           type: string
+        configurable:
+          type: boolean
+          description: Whether the extension supports runtime configuration.
+        testable:
+          type: boolean
+          description: Whether the extension can be tested.
     extension-test-check:
       required:
       - name
