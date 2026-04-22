@@ -8,7 +8,7 @@ info:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   title: OWASP Dependency-Track
-  version: 5.7.0-alpha.3-SNAPSHOT
+  version: 5.7.0-alpha.3
 servers:
 - url: /api
 paths:
