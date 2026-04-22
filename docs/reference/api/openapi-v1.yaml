@@ -8,7 +8,7 @@ info:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   title: OWASP Dependency-Track
-  version: 5.7.0-alpha.3
+  version: 5.7.0-alpha.4-SNAPSHOT
 servers:
 - url: /api
 paths:
@@ -2046,7 +2046,6 @@ paths:
           - INTERNAL
           - OSV
           - SNYK
-          - CSAF
       - in: header
         name: accept
         schema:
@@ -9142,35 +9141,6 @@ paths:
       summary: Updates tags for a vulnerability
       tags:
       - vulnerability
-  /v1/workflow/token/{uuid}/status:
-    get:
-      description: <p>Requires permission <strong>BOM_UPLOAD</strong></p>
-      operationId: getWorkflowStates
-      parameters:
-      - description: The UUID of the token to query
-        in: path
-        name: uuid
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/WorkflowState"
-          description: A list of workflow states
-        "401":
-          description: Unauthorized
-        "404":
-          description: Workflow does not exist
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
-      summary: Retrieves workflow states associated with the token received from bom
-        upload .
-      tags:
-      - workflow
   /version:
     get:
       description: Returns a simple json object containing the name of the application
@@ -9293,7 +9263,6 @@ components:
           - INTERNAL
           - OSV
           - SNYK
-          - CSAF
         uuid:
           type: string
           format: uuid
@@ -12278,9 +12247,6 @@ components:
     VulnerabilityAlias:
       type: object
       properties:
-        csafId:
-          type: string
-          pattern: "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\n\\r\\t]*$"
         cveId:
           type: string
           pattern: "^[\\p{IsWhite_Space}\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\n\\r\\t]*$"
@@ -12323,46 +12289,6 @@ components:
           format: int32
       required:
       - measuredAt
-    WorkflowState:
-      type: object
-      properties:
-        failureReason:
-          type: string
-        parent:
-          $ref: "#/components/schemas/WorkflowState"
-        startedAt:
-          type: string
-          format: date-time
-        status:
-          type: string
-          enum:
-          - PENDING
-          - TIMED_OUT
-          - COMPLETED
-          - FAILED
-          - CANCELLED
-          - NOT_APPLICABLE
-        step:
-          type: string
-          enum:
-          - BOM_CONSUMPTION
-          - BOM_PROCESSING
-          - VULN_ANALYSIS
-          - REPO_META_ANALYSIS
-          - POLICY_EVALUATION
-          - METRICS_UPDATE
-          - POLICY_BUNDLE_SYNC
-          - PROJECT_CLONE
-        token:
-          type: string
-          format: uuid
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-      - status
-      - step
-      - token
   securitySchemes:
     ApiKeyAuth:
       in: header
