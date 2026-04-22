@@ -63,8 +63,6 @@ security:
 - apiKeyAuth: []
 - bearerAuth: []
 tags:
-- name: Advisories
-  description: Endpoints related to advisories
 - name: Components
   description: Endpoints related to components
 - name: Extensions
@@ -80,194 +78,6 @@ tags:
 - name: Workflows
   description: Endpoints related to workflows
 paths:
-  /advisories:
-    get:
-      tags:
-      - Advisories
-      summary: List all advisories
-      description: |-
-        Returns a paginated list of advisories, sorted by name in ascending order.
-
-        Always reports `EXACT` total counts.
-
-        Requires the `VULNERABILITY_MANAGEMENT` or `VULNERABILITY_MANAGEMENT_READ` permission.
-      operationId: listAdvisories
-      parameters:
-      - name: format
-        in: query
-        description: "Filter advisories by format (e.g., CSAF)"
-        required: false
-        schema:
-          type: string
-      - name: search_text
-        in: query
-        description: Search text to filter advisories
-        required: false
-        schema:
-          type: string
-      - name: page_token
-        in: query
-        description: Opaque token pointing to a specific position in a collection
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: Maximum number of items to retrieve from the collection
-        schema:
-          maximum: 1000
-          minimum: 1
-          type: integer
-          format: int32
-          default: 100
-      responses:
-        "200":
-          description: Paginated list of advisories
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/list-advisories-response"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-    post:
-      tags:
-      - Advisories
-      summary: Upload advisory document
-      description: Requires permission <strong>VULNERABILITY_ANALYSIS_CREATE</strong>
-      operationId: uploadAdvisory
-      parameters:
-      - name: format
-        in: query
-        description: The format of the advisory document
-        required: true
-        schema:
-          type: string
-          enum:
-          - CSAF
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              required:
-              - file
-              type: object
-              properties:
-                file:
-                  type: string
-                  description: The advisory document file to upload
-                  format: binary
-        required: true
-      responses:
-        "201":
-          description: Advisory Uploaded
-          headers:
-            Location:
-              description: URL of the created advisory
-              schema:
-                type: string
-                format: uri
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/upload-advisory-response"
-        "400":
-          $ref: "#/components/responses/invalid-request-error"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/problem-details"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /advisories/{id}:
-    get:
-      tags:
-      - Advisories
-      summary: Get advisory details
-      description: Requires permission <strong>VULNERABILITY_ANALYSIS_READ</strong>
-      operationId: getAdvisoryById
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the advisory to view
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: Advisory details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/get-advisory-response"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-    delete:
-      tags:
-      - Advisories
-      summary: Delete advisory
-      description: Requires permission <strong>VULNERABILITY_ANALYSIS_UPDATE</strong>
-      operationId: deleteAdvisory
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the advisory to delete
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "204":
-          description: Advisory Deleted
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /advisories/{id}/mark-seen:
-    post:
-      tags:
-      - Advisories
-      summary: Mark advisory as seen
-      description: Requires permission <strong>VULNERABILITY_ANALYSIS_UPDATE</strong>
-      operationId: markAdvisoryAsSeen
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the advisory to mark as seen
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "204":
-          description: Advisory Marked as Seen
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
   /components:
     get:
       tags:
@@ -436,423 +246,6 @@ paths:
           $ref: "#/components/responses/generic-forbidden-error"
         "409":
           $ref: "#/components/responses/generic-conflict-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /csaf-aggregators:
-    get:
-      tags:
-      - CSAF
-      summary: List CSAF aggregators
-      description: |-
-        Returns a paginated list of CSAF aggregators, sorted by namespace in ascending order.
-
-        Always reports `EXACT` total counts.
-
-        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ` permission.
-      operationId: listCsafAggregators
-      parameters:
-      - name: search_text
-        in: query
-        description: "Search text to filter aggregators. Has \"contains\" semantics\
-          \ on the `namespace`, `name`, and `url` fields. Is treated case-insensitively."
-        schema:
-          type: string
-      - name: page_token
-        in: query
-        description: Opaque token pointing to a specific position in a collection
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: Maximum number of items to retrieve from the collection
-        schema:
-          maximum: 1000
-          minimum: 1
-          type: integer
-          format: int32
-          default: 100
-      responses:
-        "200":
-          description: Paginated list of CSAF aggregators
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/list-csaf-aggregators-response"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-    post:
-      tags:
-      - CSAF
-      summary: Create a new CSAF aggregator
-      description: Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_CREATE`
-        permission.
-      operationId: createCsafAggregator
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/create-csaf-aggregator-request"
-        required: true
-      responses:
-        "201":
-          description: CSAF aggregator created
-          headers:
-            Location:
-              description: URL of the created aggregator
-              schema:
-                type: string
-                format: uri
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/csaf-aggregator"
-        "400":
-          $ref: "#/components/responses/invalid-request-error"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "409":
-          description: A CSAF aggregator with the specified URL already exists
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/problem-details"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /csaf-aggregators/{id}:
-    get:
-      tags:
-      - CSAF
-      summary: Get a CSAF aggregator
-      description: Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ`
-        permission.
-      operationId: getCsafAggregator
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the CSAF aggregator
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: CSAF aggregator
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/csaf-aggregator"
-        "400":
-          $ref: "#/components/responses/invalid-request-error"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-    delete:
-      tags:
-      - CSAF
-      summary: Delete a CSAF aggregator
-      description: |-
-        **Warning**: Deleting an aggregator will also delete all providers
-        that were discovered from it.
-
-        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_DELETE` permission.
-      operationId: deleteCsafAggregator
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the CSAF aggregator to delete
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "204":
-          description: CSAF source deleted
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-    patch:
-      tags:
-      - CSAF
-      summary: Update a CSAF aggregator
-      description: Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_UPDATE`
-        permission.
-      operationId: updateCsafAggregator
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the CSAF aggregator to update
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/update-csaf-aggregator-request"
-        required: true
-      responses:
-        "200":
-          description: CSAF aggregator updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/csaf-aggregator"
-        "400":
-          $ref: "#/components/responses/invalid-request-error"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /csaf-aggregators/{id}/provider-discovery:
-    post:
-      tags:
-      - CSAF
-      summary: Trigger CSAF provider discovery for an aggregator
-      description: |-
-        Triggers the discovery of CSAF providers from a given aggregator.
-
-        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_UPDATE` permission.
-      operationId: triggerCsafProviderDiscovery
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the CSAF aggregator to trigger provider discovery for
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "202":
-          description: Discovery triggered
-          headers:
-            Location:
-              description: URL of the aggregator
-              schema:
-                type: string
-                format: uri
-        "400":
-          $ref: "#/components/responses/invalid-request-error"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        "409":
-          $ref: "#/components/responses/generic-conflict-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /csaf-providers:
-    get:
-      tags:
-      - CSAF
-      summary: List CSAF provider
-      description: |-
-        Returns a paginated list of CSAF providers, sorted by namespace in ascending order.
-
-        Always reports `EXACT` total counts.
-
-        Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ` permission.
-      operationId: listCsafProviders
-      parameters:
-      - name: discovered
-        in: query
-        description: "Whether to only include providers that were discovered from\
-          \ aggregators (`true`), or those that weren't (`false`). Omitting this parameter\
-          \ includes all providers."
-        schema:
-          type: boolean
-      - name: search_text
-        in: query
-        description: |-
-          Search text to filter providers.
-          Has "contains" semantics on the `namespace`, `name`, and `url` fields.
-          Is treated case-insensitively.
-        schema:
-          type: string
-      - name: page_token
-        in: query
-        description: Opaque token pointing to a specific position in a collection
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: Maximum number of items to retrieve from the collection
-        schema:
-          maximum: 1000
-          minimum: 1
-          type: integer
-          format: int32
-          default: 100
-      responses:
-        "200":
-          description: Paginated list of CSAF providers
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/list-csaf-providers-response"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-    post:
-      tags:
-      - CSAF
-      summary: Create a new CSAF provider
-      description: Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_CREATE`
-        permission.
-      operationId: createCsafProvider
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/create-csaf-provider-request"
-        required: true
-      responses:
-        "201":
-          description: CSAF provider created
-          headers:
-            Location:
-              description: URL of the created provider
-              schema:
-                type: string
-                format: uri
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/csaf-provider"
-        "400":
-          $ref: "#/components/responses/invalid-request-error"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "409":
-          description: A CSAF provider with the specified URL already exists
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/problem-details"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /csaf-providers/{id}:
-    get:
-      tags:
-      - CSAF
-      summary: Get a CSAF provider
-      description: Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_READ`
-        permission.
-      operationId: getCsafProvider
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the CSAF provider
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: CSAF provider
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/csaf-provider"
-        "400":
-          $ref: "#/components/responses/invalid-request-error"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-    delete:
-      tags:
-      - CSAF
-      summary: Delete a CSAF provider
-      description: Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_DELETE`
-        permission.
-      operationId: deleteCsafProvider
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the CSAF provider to delete
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "204":
-          description: CSAF provider deleted
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-    patch:
-      tags:
-      - CSAF
-      summary: Update a CSAF provider
-      description: Requires the `SYSTEM_CONFIGURATION` or `SYSTEM_CONFIGURATION_UPDATE`
-        permission.
-      operationId: updateCsafProvider
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the CSAF provider to update
-        required: true
-        schema:
-          type: string
-          format: uuid
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/update-csaf-provider-request"
-        required: true
-      responses:
-        "200":
-          description: CSAF provider updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/csaf-provider"
-        "400":
-          $ref: "#/components/responses/invalid-request-error"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
         default:
           $ref: "#/components/responses/generic-error"
   /extension-points:
@@ -1097,90 +490,6 @@ paths:
                 anyOf:
                 - $ref: "#/components/schemas/json-schema-validation-problem-details"
                 - $ref: "#/components/schemas/problem-details"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /projects/{uuid}/advisories:
-    get:
-      tags:
-      - Projects
-      summary: List advisories affecting a project
-      description: |-
-        Returns a paginated list of advisories affecting the project, sorted by ID in ascending order.
-
-        Requires the `VIEW_VULNERABILITY` permission.
-      operationId: listAdvisoriesForProject
-      parameters:
-      - name: uuid
-        in: path
-        description: The UUID of the project
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: page_token
-        in: query
-        description: Opaque token pointing to a specific position in a collection
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: Maximum number of items to retrieve from the collection
-        schema:
-          maximum: 1000
-          minimum: 1
-          type: integer
-          format: int32
-          default: 100
-      responses:
-        "200":
-          description: Paginated list of advisories affecting the project
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/list-project-advisories-response"
-        "401":
-          $ref: "#/components/responses/generic-unauthorized-error"
-        "403":
-          $ref: "#/components/responses/generic-forbidden-error"
-        "404":
-          $ref: "#/components/responses/generic-not-found-error"
-        default:
-          $ref: "#/components/responses/generic-error"
-  /projects/{uuid}/advisories/{advisoryId}/findings:
-    get:
-      tags:
-      - Projects
-      summary: List findings by project and advisory
-      description: Requires permission <strong>VIEW_VULNERABILITY</strong>
-      operationId: getFindingsByProjectAdvisory
-      parameters:
-      - name: uuid
-        in: path
-        description: The UUID of the project
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: advisoryId
-        in: path
-        description: The advisory ID
-        required: true
-        schema:
-          type: string
-          format: uuid
-      responses:
-        "200":
-          description: List of findings for the project and advisory
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/list-project-advisory-findings-response"
         "401":
           $ref: "#/components/responses/generic-unauthorized-error"
         "403":
@@ -2181,7 +1490,12 @@ paths:
           $ref: "#/components/responses/generic-error"
 components:
   schemas:
-    list-advisories-response:
+    sort-direction:
+      type: string
+      enum:
+      - ASC
+      - DESC
+    list-components-response:
       required:
       - items
       type: object
@@ -2189,18 +1503,21 @@ components:
         items:
           type: array
           items:
-            $ref: "#/components/schemas/list-advisories-response-item"
+            $ref: "#/components/schemas/list-components-response-item"
       allOf:
       - $ref: "#/components/schemas/paginated-response"
-    upload-advisory-response:
+    json-schema-validation-problem-details:
       required:
-      - id
+      - errors
       type: object
       properties:
-        id:
-          type: string
-          description: The unique identifier of the created advisory
-          format: uuid
+        errors:
+          type: array
+          description: List of JSON Schema validation errors
+          items:
+            $ref: "#/components/schemas/json-schema-validation-error"
+      allOf:
+      - $ref: "#/components/schemas/problem-details"
     problem-details:
       required:
       - detail
@@ -2238,45 +1555,6 @@ components:
       externalDocs:
         url: https://www.rfc-editor.org/rfc/rfc9457.html
       x-parent: true
-    get-advisory-response:
-      required:
-      - content
-      type: object
-      properties:
-        content:
-          type: string
-          description: The full content of the advisory document
-          nullable: true
-      allOf:
-      - $ref: "#/components/schemas/list-advisories-response-item"
-    sort-direction:
-      type: string
-      enum:
-      - ASC
-      - DESC
-    list-components-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/list-components-response-item"
-      allOf:
-      - $ref: "#/components/schemas/paginated-response"
-    json-schema-validation-problem-details:
-      required:
-      - errors
-      type: object
-      properties:
-        errors:
-          type: array
-          description: List of JSON Schema validation errors
-          items:
-            $ref: "#/components/schemas/json-schema-validation-error"
-      allOf:
-      - $ref: "#/components/schemas/problem-details"
     create-component-request:
       required:
       - name
@@ -2354,154 +1632,6 @@ components:
             $ref: "#/components/schemas/constraint-violation-error"
       allOf:
       - $ref: "#/components/schemas/problem-details"
-    list-csaf-aggregators-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/csaf-aggregator"
-      allOf:
-      - $ref: "#/components/schemas/paginated-response"
-    create-csaf-aggregator-request:
-      required:
-      - enabled
-      - name
-      - namespace
-      - url
-      type: object
-      properties:
-        namespace:
-          type: string
-          format: uri
-        name:
-          minLength: 1
-          type: string
-          description: The name of the CSAF aggregator
-        url:
-          type: string
-          description: The URL of the CSAF aggregator
-          format: uri
-        enabled:
-          type: boolean
-          description: Whether the aggregator is enabled
-    csaf-aggregator:
-      required:
-      - created_at
-      - enabled
-      - id
-      - name
-      - namespace
-      - url
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        url:
-          type: string
-          format: uri
-        namespace:
-          type: string
-          format: uri
-        name:
-          type: string
-        enabled:
-          type: boolean
-        last_discovery_at:
-          $ref: "#/components/schemas/timestamp"
-        created_at:
-          $ref: "#/components/schemas/timestamp"
-        updated_at:
-          $ref: "#/components/schemas/timestamp"
-    update-csaf-aggregator-request:
-      required:
-      - enabled
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether the aggregator is enabled
-    list-csaf-providers-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/csaf-provider"
-      allOf:
-      - $ref: "#/components/schemas/paginated-response"
-    create-csaf-provider-request:
-      required:
-      - enabled
-      - name
-      - namespace
-      - url
-      type: object
-      properties:
-        namespace:
-          type: string
-          format: uri
-        name:
-          minLength: 1
-          type: string
-          description: The name of the CSAF provider
-        url:
-          type: string
-          description: The URL of the CSAF provider
-          format: uri
-        enabled:
-          type: boolean
-          description: Whether the provider is enabled
-    csaf-provider:
-      required:
-      - created_at
-      - enabled
-      - id
-      - name
-      - namespace
-      - url
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        url:
-          type: string
-          format: uri
-        namespace:
-          type: string
-          format: uri
-        name:
-          type: string
-        enabled:
-          type: boolean
-          description: Whether the aggregator is enabled.
-        discovered_from:
-          type: string
-          description: "ID of the aggregator that the provider was discovered from,\
-            \ **if** it was discovered."
-          format: uuid
-        discovered_at:
-          $ref: "#/components/schemas/timestamp"
-        latest_document_release_date:
-          $ref: "#/components/schemas/timestamp"
-        created_at:
-          $ref: "#/components/schemas/timestamp"
-        updated_at:
-          $ref: "#/components/schemas/timestamp"
-    update-csaf-provider-request:
-      required:
-      - enabled
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether the provider is enabled
     list-extension-points-response:
       required:
       - items
@@ -2564,26 +1694,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/extension-test-check"
-    list-project-advisories-response:
-      required:
-      - items
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/list-project-advisories-response-item"
-      allOf:
-      - $ref: "#/components/schemas/paginated-response"
-    list-project-advisory-findings-response:
-      required:
-      - data
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/list-project-advisory-findings-response-item"
     clone-project-request:
       required:
       - version
@@ -2993,56 +2103,6 @@ components:
         total:
           $ref: "#/components/schemas/total-count"
       x-parent: true
-    list-advisories-response-item:
-      required:
-      - affected_component_count
-      - affected_project_count
-      - id
-      - last_fetched
-      - name
-      - publisher
-      - title
-      - url
-      - version
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the advisory
-          format: uuid
-        publisher:
-          type: string
-          description: The publisher of the advisory
-        name:
-          type: string
-          description: The name/tracking ID of the advisory
-        version:
-          type: string
-          description: The version of the advisory
-        title:
-          type: string
-          description: The title of the advisory
-        url:
-          type: string
-          description: The URL of the advisory
-          format: uri
-        seen_at:
-          $ref: "#/components/schemas/timestamp"
-        last_fetched:
-          $ref: "#/components/schemas/timestamp"
-        format:
-          type: string
-          description: "The format of the advisory (e.g., CSAF)"
-        affected_component_count:
-          type: integer
-          description: The number of affected components. Reports counts up to 1001.
-            A number of 1001 should be interpreted as "more than 1000 components".
-          format: int32
-        affected_project_count:
-          type: integer
-          description: The number of affected projects. Reports counts up to 1001.
-            A number of 1001 should be interpreted as "more than 1000 projects".
-          format: int32
     list-components-response-item:
       type: object
       properties:
@@ -3259,83 +2319,6 @@ components:
         message:
           type: string
           example: Connection failed
-    list-project-advisories-response-item:
-      required:
-      - findings_count
-      - format
-      - id
-      - last_fetched
-      - name
-      - publisher
-      - title
-      - url
-      - version
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the advisory
-          format: uuid
-        publisher:
-          type: string
-          description: The publisher of the advisory
-        name:
-          type: string
-          description: The name/tracking ID of the advisory
-        version:
-          type: string
-          description: The version of the advisory
-        title:
-          type: string
-          description: The title of the advisory
-        url:
-          type: string
-          description: The URL of the advisory
-          format: uri
-        seen_at:
-          $ref: "#/components/schemas/timestamp"
-        last_fetched:
-          $ref: "#/components/schemas/timestamp"
-        format:
-          type: string
-          description: "The format of the advisory (e.g., CSAF)"
-        findings_count:
-          type: integer
-          description: The number of findings for this advisory in the project
-          format: int64
-    list-project-advisory-findings-response-item:
-      required:
-      - component_uuid
-      - confidence
-      - desc
-      - group
-      - name
-      - version
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the component
-        confidence:
-          maximum: 100
-          minimum: 0
-          type: integer
-          description: The confidence/matching percentage of the finding as integer
-            ranging 0...100
-          format: int32
-        desc:
-          type: string
-          description: The description of the component
-        group:
-          type: string
-          description: The group of the component
-        version:
-          type: string
-          description: The version of the component
-        component_uuid:
-          type: string
-          description: The UUID of the component
-          format: uuid
     clone-project-include:
       type: string
       enum:
@@ -3745,6 +2728,28 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/problem-details"
+    generic-conflict-error:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/problem-details"
+          example:
+            type: about:blank
+            status: 409
+            title: Conflict
+            detail: The resource already exists.
+    generic-not-found-error:
+      description: Not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/problem-details"
+          example:
+            type: about:blank
+            status: 404
+            title: Not Found
+            detail: The requested resource could not be found.
     invalid-request-error:
       description: Bad request
       content:
@@ -3760,35 +2765,7 @@ components:
             - path: foo.bar
               value: baz
               message: Must be a number
-    generic-not-found-error:
-      description: Not found
-      content:
-        application/problem+json:
-          schema:
-            $ref: "#/components/schemas/problem-details"
-          example:
-            type: about:blank
-            status: 404
-            title: Not Found
-            detail: The requested resource could not be found.
-    generic-conflict-error:
-      description: Forbidden
-      content:
-        application/problem+json:
-          schema:
-            $ref: "#/components/schemas/problem-details"
-          example:
-            type: about:blank
-            status: 409
-            title: Conflict
-            detail: The resource already exists.
   parameters:
-    page-token:
-      name: page_token
-      in: query
-      description: Opaque token pointing to a specific position in a collection
-      schema:
-        type: string
     pagination-limit:
       name: limit
       in: query
@@ -3799,6 +2776,12 @@ components:
         type: integer
         format: int32
         default: 100
+    page-token:
+      name: page_token
+      in: query
+      description: Opaque token pointing to a specific position in a collection
+      schema:
+        type: string
     sort-direction:
       name: sort_direction
       in: query
