@@ -1836,15 +1836,6 @@ Configuration properties may use the following types:
       <tr><th>ENV</th><td><code>DT_TASK_SCHEDULER_ENABLED</code></td></tr>
     </table>
 
-<span id="dttaskcsafdocumentimportcron">**`dt.task.csaf.document.import.cron`** <strong style="color: red">*</strong> [¶](#dttaskcsafdocumentimportcron){ .headerlink }</span>
-:   Cron expression of the CSAF mirroring task.  
-
-    <table>
-      <tr><th>Type</th><td style="border-width: 0"><code>cron</code></td></tr>
-      <tr><th>Default</th><td><code>0 5 * * *</code></td></tr>
-      <tr><th>ENV</th><td><code>DT_TASK_CSAF_DOCUMENT_IMPORT_CRON</code></td></tr>
-    </table>
-
 <span id="dttaskdefectdojouploadcron">**`dt.task.defect.dojo.upload.cron`** <strong style="color: red">*</strong> [¶](#dttaskdefectdojouploadcron){ .headerlink }</span>
 :   Cron expression of the DefectDojo upload task.  
 
