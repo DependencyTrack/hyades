@@ -54,7 +54,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # tag=v6.0.2
         with:
-          token: ${{ github.repository_owner == 'DependencyTrack' && secrets.BOT_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ github.repository_owner == 'DependencyTrack' && secrets.BOT_RELEASE_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Set up JDK
@@ -101,7 +101,7 @@ jobs:
       - name: Create GitHub Release
         if: ${{ !inputs.dry-run }}
         env:
-          GITHUB_TOKEN: "${{ secrets.BOT_RELEASE_TOKEN }}"
+          GITHUB_TOKEN: "${{ secrets.BOT_RELEASE_GITHUB_TOKEN }}"
         run: |
           RELEASE_VERSION=$(git describe --tags --abbrev=0)
           echo "Release version: ${RELEASE_VERSION}"
