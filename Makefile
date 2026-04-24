@@ -28,20 +28,12 @@ else
 endif
 
 build:
-	@$(MVND) $(MVN_FLAGS) -Pquick package
+	@$(MVND) $(MVN_FLAGS) package
 .PHONY: build
 
 install:
-	@$(MVND) $(MVN_FLAGS) -Pquick install
+	@$(MVND) $(MVN_FLAGS) install
 .PHONY: install
-
-lint-java:
-	@$(MVND) $(MVN_FLAGS) validate
-.PHONY: lint-java
-
-lint-proto:
-	@buf lint
-.PHONY: lint-proto
 
 clean:
 	@$(MVND) $(MVN_FLAGS) clean
