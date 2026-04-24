@@ -49,6 +49,42 @@ info:
 
     Note that if no sortable fields are documented for an operation,
     sorting is not supported *at all*.
+
+    ## Errors
+
+    All error responses use the `application/problem+json` media type
+    as defined in [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html).
+
+    Example:
+
+    ```json
+    {
+      "type": "about:blank",
+      "status": 404,
+      "title": "Resource Not Found",
+      "detail": "No project with UUID 0976ef46-e4a0-4be4-8b0e-00e9d3625c1f exists"
+    }
+    ```
+
+    ## HTTP Methods
+
+    | Method   | Semantics                  |
+    |----------|----------------------------|
+    | `GET`    | Retrieve a resource        |
+    | `POST`   | Create a new resource      |
+    | `PUT`    | Update a resource          |
+    | `PATCH`  | Partially update a resource|
+    | `DELETE` | Delete a resource          |
+
+    ## Response Conventions
+
+    Create and update operations (`POST`, `PUT`, `PATCH`) do not return
+    the full resource in the response. They return either no body,
+    or only server-generated identifiers (e.g. a UUID).
+    `POST` responses may include a `Location` header linking to the
+    created resource.
+
+    Delete operations return `204 No Content` with no body.
   contact:
     name: The Dependency-Track Authors
     url: https://github.com/DependencyTrack/dependency-track
