@@ -608,6 +608,48 @@ paths:
       summary: Returns dependency metadata for a project in CycloneDX format
       tags:
       - bom
+  /v1/bom/token/{uuid}:
+    get:
+      deprecated: true
+      description: |-
+        <p>
+          This endpoint is intended to be used in conjunction with uploading a supported BOM document.
+          Upon upload, a token will be returned. The token can then be queried using this endpoint to
+          determine if any tasks (such as vulnerability analysis) is being performed on the BOM:
+          <ul>
+            <li>A value of <code>true</code> indicates processing is occurring.</li>
+            <li>A value of <code>false</code> indicates that no processing is occurring for the specified token.</li>
+          </ul>
+          However, a value of <code>false</code> also does not confirm the token is valid,
+          only that no processing is associated with the specified token.
+        </p>
+        <p>Requires permission <strong>BOM_UPLOAD</strong></p>
+        <p><strong>Deprecated</strong>. Use <code>/v1/event/token/{uuid}</code> instead.</p>
+      operationId: isTokenBeingProcessed
+      parameters:
+      - description: The UUID of the token to query
+        in: path
+        name: uuid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsTokenBeingProcessedResponse"
+          description: The processing status of the provided token
+        "401":
+          description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: "Determines if there are any tasks associated with the token that are\
+        \ being processed, or in the queue to be processed."
+      tags:
+      - bom
   /v1/calculator/cvss:
     get:
       operationId: getCvssScores
@@ -1628,7 +1670,7 @@ paths:
           However, a value of <code>false</code> also does not confirm the token is valid,
           only that no processing is associated with the specified token.
         </p>
-      operationId: isTokenBeingProcessed
+      operationId: isTokenBeingProcessed_1
       parameters:
       - description: The UUID of the token to query
         in: path
@@ -1956,24 +1998,6 @@ paths:
       - ApiKeyAuth: []
       - BearerAuth: []
       summary: Returns a list of all findings grouped by vulnerability
-      tags:
-      - finding
-  /v1/finding/portfolio/analyze:
-    post:
-      description: <p>Requires permission <strong>SYSTEM_CONFIGURATION</strong> or
-        <strong>SYSTEM_CONFIGURATION_CREATE</strong></p>
-      operationId: analyzePortfolio
-      responses:
-        "200":
-          description: Analysis triggered successfully
-        "304":
-          description: Analysis is already in progress
-        "401":
-          description: Unauthorized
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
-      summary: Triggers Vulnerability Analysis for the entire portfolio
       tags:
       - finding
   /v1/finding/project/{uuid}:
