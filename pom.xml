@@ -25,10 +25,6 @@
   <version>0.7.0-alpha.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <modules>
-    <module>proto</module>
-  </modules>
-
   <licenses>
     <license>
       <name>Apache-2.0</name>
@@ -52,34 +48,11 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.parentBaseDir>.</project.parentBaseDir>
 
-    <!-- Dependency Versions -->
-    <lib.checkstyle.version>13.4.0</lib.checkstyle.version>
-    <lib.protobuf-java.version>4.34.1</lib.protobuf-java.version>
-
-    <!-- Plugin Versions -->
-    <plugin.protoc-jar.version>3.11.4</plugin.protoc-jar.version>
-
-    <!-- Tool Versions -->
-    <tool.protoc.version>com.google.protobuf:protoc:${lib.protobuf-java.version}</tool.protoc.version>
-
     <!-- Default SCM Properties -->
     <scm.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.connection>
     <scm.developer.connection>scm:git:ssh://git@github.com/DependencyTrack/hyades.git</scm.developer.connection>
     <scm.url>https://github.com/DependencyTrack/hyades.git</scm.url>
-
-    <skipITs>true</skipITs>
-    <surefire-plugin.version>3.5.5</surefire-plugin.version>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.protobuf</groupId>
-        <artifactId>protobuf-java</artifactId>
-        <version>${lib.protobuf-java.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <pluginManagement>
@@ -95,12 +68,6 @@
         </plugin>
 
         <plugin>
-          <groupId>com.github.os72</groupId>
-          <artifactId>protoc-jar-maven-plugin</artifactId>
-          <version>${plugin.protoc-jar.version}</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>3.3.1</version>
@@ -110,57 +77,16 @@
             <pushChanges>true</pushChanges>
             <localCheckout>true</localCheckout>
             <releaseProfiles>quick</releaseProfiles>
-            <preparationGoals>clean verify -Pquick</preparationGoals>
+            <preparationGoals>clean verify</preparationGoals>
             <completionGoals>clean</completionGoals>
             <signTag>false</signTag>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
-
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.6.0</version>
-        <configuration>
-          <configLocation>${project.parentBaseDir}/.checkstyle.xml</configLocation>
-          <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <includeResources>false</includeResources>
-          <includeTestResources>false</includeTestResources>
-          <propertyExpansion>
-            parentBaseDir=${project.parentBaseDir}
-          </propertyExpansion>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>${lib.checkstyle.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-    </plugins>
   </build>
 
   <profiles>
-    <profile>
-      <id>quick</id>
-      <properties>
-        <checkstyle.skip>true</checkstyle.skip>
-        <jacoco.skip>true</jacoco.skip>
-        <maven.test.skip>true</maven.test.skip>
-      </properties>
-    </profile>
-
     <profile>
       <!--
         When running in GitHub Actions, the SCM connection must be via HTTPS
