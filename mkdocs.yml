@@ -9,6 +9,7 @@ edit_uri: blob/main/docs/
 
 theme:
   name: material
+  custom_dir: overrides
   palette:
   - scheme: default
     media: "(prefers-color-scheme: light)"
