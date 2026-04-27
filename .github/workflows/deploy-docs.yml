@@ -58,7 +58,7 @@ jobs:
           ALIASES=""
           if [[ $VERSION == *-SNAPSHOT ]]; then
             ALIASES="snapshot"
-          elif ${{ github.event.release.prerelease }}; then
+          elif [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
             ALIASES=""
           else
             ALIASES="latest"
