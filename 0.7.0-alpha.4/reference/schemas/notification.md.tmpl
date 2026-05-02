@@ -1,0 +1,89 @@
+{{ range .Files }}
+{{ range .Messages }}
+{{ if eq .LongName "Notification" }}
+
+<a name="{{.FullName | anchor}}"></a>
+
+## {{ .LongName }}
+
+{{ .Description }}
+
+{{ if .HasFields }}
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+{{ range .Fields -}}
+| `{{ .Name }}` | {{ if and (ne .LongType "int64") (ne .LongType "int32") (ne .LongType "float") (ne .LongType "bytes") (ne .LongType "double") (ne .LongType "google.protobuf.Empty") (ne .LongType "string") (ne .LongType "bool") (ne .LongType "google.protobuf.Timestamp") (ne .LongType "google.protobuf.Any")}}[`{{ .LongType }}{{ if eq .Label "repeated" }}[]{{ end }}`](#{{ .FullType | anchor }}){{ else }}`{{ .LongType }}{{ if eq .Label "repeated" }}[]{{ end }}`{{ end }} | {{ .Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} | - |
+{{ end }}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+
+## Subjects
+
+{{ range .Files }}
+{{ range .Messages }}
+{{ if hasSuffix "Subject" .LongName }}
+
+<a name="{{.FullName | anchor}}"></a>
+
+### {{ .LongName }}
+
+{{ .Description }}
+
+{{ if .HasFields }}
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+{{ range .Fields -}}
+| `{{ .Name }}` | {{ if and (ne .LongType "int64") (ne .LongType "int32") (ne .LongType "float") (ne .LongType "bytes") (ne .LongType "double") (ne .LongType "google.protobuf.Empty") (ne .LongType "string") (ne .LongType "bool") (ne .LongType "google.protobuf.Timestamp")}}[`{{ .LongType }}{{ if eq .Label "repeated" }}[]{{ end }}`](#{{ .FullType | anchor }}){{ else }}`{{ .LongType }}{{ if eq .Label "repeated" }}[]{{ end }}`{{ end }} | {{.Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} | - |
+{{ end }}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+
+## Messages
+
+{{ range .Files }}
+{{ range .Messages }}
+{{ if not (or (eq .LongName "Notification") (hasSuffix "Subject" .LongName)) }}
+
+<a name="{{.FullName | anchor}}"></a>
+
+### {{ .LongName }}
+
+{{ .Description }}
+
+{{ if .HasFields }}
+| Field | Type | Description |
+| :---- | :--- | :---------- |
+{{ range .Fields -}}
+| `{{ .Name }}` | {{ if and (ne .LongType "int64") (ne .LongType "int32") (ne .LongType "float") (ne .LongType "bytes") (ne .LongType "double") (ne .LongType "google.protobuf.Empty") (ne .LongType "string") (ne .LongType "bool") (ne .LongType "google.protobuf.Timestamp")}}[`{{ .LongType }}{{ if eq .Label "repeated" }}[]{{ end }}`](#{{ .FullType | anchor }}){{ else }}`{{ .LongType }}{{ if eq .Label "repeated" }}[]{{ end }}`{{end}} | {{.Description | replace "\n\n" "<br/><br/>" | replace "\n" " "}} | - |
+{{ end }}
+{{ end }}
+
+{{ end }}
+{{ end }}
+{{ end }}
+
+## Enums
+
+{{ range .Files }}
+{{ range .Enums }}
+
+<a name="{{ .FullName | anchor }}"></a>
+
+### {{ .LongName }}
+
+{{ .Description }}
+
+| Name | Description |
+| :--- | :---------- |
+{{ range .Values -}}
+| `{{ .Name }}` | {{ .Description }} |
+{{ end }}
+
+{{ end }}
+{{ end }}
