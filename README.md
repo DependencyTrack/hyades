@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **v5 is coming.** Whether you operate or contribute to Dependency-Track, read [V5_MIGRATION.md](https://github.com/DependencyTrack/hyades-apiserver/blob/main/V5_MIGRATION.md).
+
 # Hyades
 
 Companion repository for the upcoming [Dependency-Track v5](https://github.com/DependencyTrack/hyades-apiserver).
