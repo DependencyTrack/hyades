@@ -1,7 +1,7 @@
 > [!WARNING]
 > **This repository has been archived.**
 >
-> Dependency-Track v5.0.0 has shipped. Active development continues at
+> Active development continues at
 > [DependencyTrack/dependency-track](https://github.com/DependencyTrack/dependency-track).
 >
 > - **v5 source code**: [`dependency-track:main`](https://github.com/DependencyTrack/dependency-track)
