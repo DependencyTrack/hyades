@@ -1,17 +1,25 @@
-> [!IMPORTANT]
-> **v5 is coming.** Whether you operate or contribute to Dependency-Track, read [V5_MIGRATION.md](https://github.com/DependencyTrack/hyades-apiserver/blob/main/V5_MIGRATION.md).
+> [!WARNING]
+> **This repository has been archived.**
+>
+> Dependency-Track v5.0.0 has shipped. Active development continues at
+> [DependencyTrack/dependency-track](https://github.com/DependencyTrack/dependency-track).
+>
+> - **v5 source code**: [`dependency-track:main`](https://github.com/DependencyTrack/dependency-track)
+> - **v4 source code**: [`dependency-track:4.14.x`](https://github.com/DependencyTrack/dependency-track/tree/4.14.x)
+> - **Issues and pull requests**: please file them against
+>   [`DependencyTrack/dependency-track`](https://github.com/DependencyTrack/dependency-track/issues)
+> - **Migrating from v4 to v5**: see
+>   [V5_MIGRATION.md](https://github.com/DependencyTrack/dependency-track/blob/main/V5_MIGRATION.md)
+>
+> Container images continue to be published at:
+> - `ghcr.io/dependencytrack/apiserver`
+> - `docker.io/dependencytrack/apiserver`
+> - `docker.io/dependencytrack/frontend`
+> - `ghcr.io/dependencytrack/frontend`
 
 # Hyades
 
 Companion repository for the upcoming [Dependency-Track v5](https://github.com/DependencyTrack/hyades-apiserver).
-
-> [!IMPORTANT]
-> This repository is no longer maintained, and will be archived as part of the [v5 GA cutover][v5-cutover].
-> Until then, Hyades is available via the repositories linked below.
-
-> [!TIP]
-> If you're looking for the Docker Compose setup previously hosted in this repository,
-> it has moved to the [quickstart tutorial](https://dependencytrack.github.io/docs/next/tutorials/quickstart/).
 
 ## See also
 
